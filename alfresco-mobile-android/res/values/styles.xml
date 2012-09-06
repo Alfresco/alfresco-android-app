@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of the Alfresco Mobile SDK.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources>
+
+    <style name="alfrescotheme" parent="android:Theme.Holo.Light">
+        <item name="android:actionBarTabTextStyle">@style/actionbar_top</item>
+        <item name="android:actionOverflowButtonStyle">@style/actionbar_more</item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- COLOR -->
+    <!-- =============================================================== -->
+    <color name="actionbar_black_top">#515151</color>
+    <color name="actionbar_black_center">#1D1D1D</color>
+    <color name="actionbar_black_bottom">#000000</color>
+    <color name="actionbar_black_linelight">#878787</color>
+    <color name="actionbar_grey_top">#A4A4A4</color>
+    <color name="actionbar_grey_bottom">#757575</color>
+
+    <!-- =============================================================== -->
+    <!-- STYLE -->
+    <!-- =============================================================== -->
+
+    <style name="top_bar">
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/browse_toptext_size</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+        <item name="android:ellipsize">start</item>
+        <item name="android:background">@drawable/grey_bar</item>
+    </style>
+
+    <style name="list_item_icon">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:adjustViewBounds">false</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_margin">@dimen/browse_margin</item>
+        <item name="android:layout_height">@dimen/browse_icons</item>
+        <item name="android:layout_width">@dimen/browse_icons</item>
+    </style>
+
+    <style name="list_item_toptext">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/browse_toptext_size</item>
+    </style>
+
+    <style name="list_item_bottomtext">
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_gravity">bottom|center</item>
+        <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:textSize">@dimen/browse_bottomtext_size</item>
+    </style>
+
+    <style name="list_item_activities">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:textSize">@dimen/browse_toptext_size</item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- Action Bar -->
+    <!-- =============================================================== -->
+    <style name="actionbar_top" parent="list_item_toptext">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">@dimen/browse_bottomtext_size</item>
+    </style>
+    
+     <style name="actionbar_more" parent="@android:style/Widget.Holo.ActionButton.Overflow">
+        <!-- <item name="android:background">@drawable/ic_menu_moreoverflow_normal_holo_dark</item>-->
+    </style>
+
+</resources>

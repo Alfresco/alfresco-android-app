@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:layout_margin="0dp"
+    >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip"
+        android:layout_marginBottom="0dip"
+        android:orientation="vertical" >
+
+        <TableLayout
+            android:id="@+id/default_server"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:shrinkColumns="1"
+            android:stretchColumns="1" >
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <ImageView
+                    android:id="@+id/icon"
+                    style="@style/list_item_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/thumbnail_description"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/mime_file" />
+
+                <LinearLayout
+                    android:id="@+id/group_summary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="5dip" >
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="@style/list_item_toptext"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Green Grass.JPG" />
+
+                    <TextView
+                        android:id="@+id/details"
+                        style="@style/list_item_bottomtext"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="G419 days ago - 142Kb, version 1.0" />
+
+                    <TextView
+                        android:id="@+id/description"
+                        style="@style/list_item_bottomtext"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dip"
+                        android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+
+                <Button
+                    android:id="@+id/action_openin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/action_open" />
+
+                <LinearLayout
+                    android:id="@+id/group_actions"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="2"
+                    android:gravity="bottom"
+                    android:orientation="horizontal" >
+
+                    <ImageButton
+                        android:id="@+id/like"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/action_like"
+                        android:src="@drawable/ic_unlike" />
+
+                    <ImageButton
+                        android:id="@+id/display_favorites"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/action_favorite"
+                        android:src="@drawable/ic_menu_star" />
+
+                    <ImageButton
+                        android:id="@+id/share"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:contentDescription="@string/action_share"
+                        android:src="@drawable/ic_menu_share" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:id="@+id/metadata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_marginBottom="15dip" >
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

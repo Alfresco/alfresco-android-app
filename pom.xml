@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2005-2012 Alfresco Software Limited. This file is part 
+	of the Alfresco Mobile SDK. Licensed under the Apache License, Version 2.0 
+	(the "License"); you may not use this file except in compliance with the 
+	License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>org.alfresco.mobile.android.apps</groupId>
+	<artifactId>alfresco-mobile-android-apps</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Alfresco Mobile Android Apps</name>
+	<packaging>pom</packaging>
+
+	<organization>
+		<name>Alfresco Software</name>
+		<url>http://www.alfresco.com/</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</connection>
+		<developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</developerConnection>
+		<url>https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</url>
+	</scm>
+	
+	<modules>
+		<module>alfresco-mobile-android</module>
+	</modules>
+
+	<distributionManagement>
+		<repository>
+			<id>alfresco-internal</id>
+			<name>Alfresco Internal Releases Repository</name>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/internal-releases</url>
+		</repository>
+		<snapshotRepository>
+			<id>alfresco-internal-snapshots</id>
+			<name>Alfresco Internal Snapshots Repository</name>
+			<url>https://artifacts.alfresco.com/nexus/content/repositories/internal-snapshots</url>
+		</snapshotRepository>
+		<site>
+			<id>alfresco.mobile.website</id>
+			<name>Alfresco Mobile SDK Website</name>
+			<url>https://bamboo.alfresco.com/bamboo/browse/MOBILE-ANDROIDAPPSHEAD/latest/artifact</url>
+		</site>
+	</distributionManagement>
+
+	<issueManagement>
+		<system>Jira</system>
+		<url>https://issues.alfresco.com/jira/browse/MOBSDK</url>
+	</issueManagement>
+
+	<ciManagement>
+		<system>bamboo</system>
+		<url>https://bamboo.alfresco.com/bamboo/browse/MOBILE-ANDROIDAPPSHEAD</url>
+	</ciManagement>
+
+	<developers>
+		<developer>
+			<name>Jean Marie Pascal</name>
+			<id>jpascal</id>
+			<email>jeanmarie.pascal@alfresco.com</email>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Gavin Cornwell</name>
+			<id>gc</id>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Tony Bedford</name>
+			<id>tbedford</id>
+			<roles>
+				<role>Documentation</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Samuel Langlois</name>
+			<id>slanglois</id>
+			<roles>
+				<role>Build Manager</role>
+			</roles>
+		</developer>
+	</developers>
+
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.compile.source>1.6</maven.compile.source>
+		<maven.compile.target>1.6</maven.compile.target>
+		<android.version.number>14</android.version.number>
+		<android.version>4.1.1.4</android.version>
+		<chemistry.opencmis.version>0.8.0-SNAPSHOT</chemistry.opencmis.version>
+		<alfresco.opencmis.version>0.4-ANDROID</alfresco.opencmis.version>
+		<site.basedir>${project.parent.basedir}</site.basedir>
+		<junit.version>4.10</junit.version>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.antlr</groupId>
+					<artifactId>antlr3-maven-plugin</artifactId>
+					<version>3.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.antlr</groupId>
+					<artifactId>maven-gunit-plugin</artifactId>
+					<version>3.4</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.3</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>2.5.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>2.5</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-deploy-plugin</artifactId>
+					<version>2.7</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-install-plugin</artifactId>
+					<version>2.3.1</version>
+				</plugin>
+				<plugin>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.2.1</version>
+				</plugin>
+				<plugin>
+					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+					<artifactId>android-maven-plugin</artifactId>
+					<version>3.3.0</version>
+					<extensions>true</extensions>
+					<configuration>
+						<sdk>
+							<platform>${android.version.number}</platform>
+						</sdk>
+						<undeployBeforeDeploy>true</undeployBeforeDeploy>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.1</version>
+					<dependencies>
+						<dependency>
+							<groupId>org.kohsuke</groupId>
+							<artifactId>doxia-module-markdown</artifactId>
+							<version>1.0</version>
+						</dependency>
+					</dependencies>
+					<configuration>
+						<inputEncoding>UTF-8</inputEncoding>
+						<outputEncoding>UTF-8</outputEncoding>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<target>${maven.compile.target}</target>
+					<source>${maven.compile.source}</source>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<includePom>true</includePom>
+				</configuration>
+			</plugin>
+
+			<!-- TODO Define documentation for each site -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<encoding>${project.build.sourceEncoding}</encoding>
+				</configuration>
+				<executions>
+					<execution>
+						<id>copy-sitedescriptor</id>
+						<phase>pre-site</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/src/site/</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${site.basedir}/src/site/</directory>
+									<includes>
+										<include>**/*.*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+					<workspace>.</workspace>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>maven-version-plugin</artifactId>
+				<version>1.0</version>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.12.1</version>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<X-Compile-Source-JDK>${maven.compile.source}</X-Compile-Source-JDK>
+							<X-Compile-Target-JDK>${maven.compile.target}</X-Compile-Target-JDK>
+							<!-- TODO Commit Revision number -->
+							<X-Apache-SVN-Revision>${buildNumber}</X-Apache-SVN-Revision>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor-Id>${project.groupId}</Implementation-Vendor-Id>
+							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<dependencies>
+					<dependency>
+						<groupId>com.google.code.maven-svn-wagon</groupId>
+						<artifactId>maven-svn-wagon</artifactId>
+						<version>1.4</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<repositories>
+		<repository>
+			<id>alfresco-internals</id>
+			<name>Alfresco Internal Repositories</name>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/internal/</url>
+		</repository>
+		<repository>
+			<id>apache-repository</id>
+			<name>Apache Maven Repository</name>
+			<url>https://repository.apache.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.12.1</version>
+				<configuration>
+					<aggregate>true</aggregate>
+					<reportsDirectories>
+						<reportsDirectory>${project.build.directory}/surefire-reports/</reportsDirectory>
+						<reportsDirectory>${project.build.directory}/failsafe-reports/</reportsDirectory>
+					</reportsDirectories>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.3</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+				<configuration>
+					<tagListOptions>
+						<tagClasses>
+							<tagClass>
+								<displayName>Todo Tags</displayName>
+								<tags>
+									<tag>
+										<matchString>TODO</matchString>
+										<matchType>ignoreCase</matchType>
+									</tag>
+									<tag>
+										<matchString>@todo</matchString>
+										<matchType>exact</matchType>
+									</tag>
+								</tags>
+							</tagClass>
+							<tagClass>
+								<displayName>Fix Tags</displayName>
+								<tags>
+									<tag>
+										<matchString>FIXME</matchString>
+										<matchType>exact</matchType>
+									</tag>
+								</tags>
+							</tagClass>
+						</tagClasses>
+					</tagListOptions>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8.1</version>
+				<inherited>false</inherited>
+				<reportSets>
+					<reportSet>
+						<id>aggregate</id>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				<configuration>
+					<doctitle>Alfresco Mobile Android ${project.version}</doctitle>
+					<windowtitle>Alfresco Mobile Android ${project.version}</windowtitle>
+					<excludePackageNames>org.apache.chemistry.opencmis.*,org.alfresco.mobile.android.test.*,org.alfresco.mobile.android.samples.*</excludePackageNames>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.5</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>summary</report>
+							<report>dependency-convergence</report>
+							<report>dependency-management</report>
+							<report>license</report>
+							<report>issue-tracking</report>
+							<report>project-team</report>
+							<report>cim</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+		</plugins>
+	</reporting>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android</artifactId>
+				<version>${android.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>android-test</artifactId>
+				<version>${android.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.google.android</groupId>
+				<artifactId>annotations</artifactId>
+				<version>${android.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<profiles>
+		<profile>
+			<id>jira</id>
+			<properties>
+				<jira.username>${env.USER}</jira.username>
+				<jira.password>your-jira-password</jira.password>
+			</properties>
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-changes-plugin</artifactId>
+						<version>2.7.1</version>
+						<configuration>
+							<aggregated>true</aggregated>
+							<filter>project=MOBSDK&amp;component=Android</filter>
+							<columnNames>Type,Key,Summary,Assignee,Status,Resolution,Fix
+								Version</columnNames>
+							<sortColumnNames>Type,Key DESC</sortColumnNames>
+							<jiraUser>${jira.username}</jiraUser>
+							<jiraPassword>${jira.password}</jiraPassword>
+							<configuration>
+								<reportSets>
+									<reportSet>
+										<reports>
+											<report>jira-report</report>
+										</reports>
+									</reportSet>
+								</reportSets>
+							</configuration>
+						</configuration>
+					</plugin>
+				</plugins>
+
+			</reporting>
+		</profile>
+	</profiles>
+
+</project>

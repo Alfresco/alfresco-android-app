@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of the Alfresco Mobile SDK.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Alfresco</string>
+    <string name="empty_accounts">No account available</string>
+
+    <!-- HOME SCREEN -->
+    <string name="home_title">Let\'s get you started... </string>
+    <string name="home_sign_cloud">Sign up for Alfresco Cloud</string>
+    <string name="home_sign_cloud_description">New to Alfresco ? Create a free online account to store your documents and access them from anywhere.</string>
+    <string name="home_account">I already have an account</string>
+    <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
+    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at our Guides in the Help area</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
+    <string name="account_wizard_alfresco_server_description">Connect to an alfresco Server</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud_description">Access your Alfresco online account</string>
+    <string name="account_wizard_alfresco_help">New to Alfresco ? <a href="org.alfresco.mobile.android://sign_up_cloud">Sign Up</a> for a free account</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <string name="action_add_account">Add</string>
+    <string name="account_username">Username</string>
+    <string name="account_password">Password</string>
+    <string name="account_hostname">Hostname</string>
+    <string name="account_description">Description</string>
+    <string name="account_advanced">Advanced</string>
+    <string name="account_https">HTTPS</string>
+    <string name="account_port">Port</string>
+    <string name="account_servicedocument">Service URL</string>
+    <string name="account_wizard_step2_title">Account Authentication Information</string>
+    <string name="account_verify">Verifying Account Information...</string>
+    <string name="email_hint">example@acme.com</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
+    <string name="account_wizard_alldone">All Done !</string>
+    <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
+    <string name="account_wizard_donee">Done.</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <string name="account_wizard_step1">Step 1 of 3</string>
+    <string name="account_wizard_step1_description">Select Account</string>
+    <string name="account_wizard_step2">Step 2 of 3</string>
+    <string name="account_wizard_step2_description">Account Information</string>
+    <string name="account_wizard_step3">Step 3 of 3</string>
+    <string name="account_wizard_step3_description">All Done</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <string name="optional">Optional</string>
+    <string name="required">Required</string>
+
+    <!-- MAIN MENU -->
+    <string name="menu_browse_root">Repository</string>
+    <string name="menu_browse_all_sites">All Sites</string>
+    <string name="menu_browse_my_sites">My Sites</string>
+    <string name="menu_browse_favorite_sites">Favorite Sites</string>
+    <string name="menu_browse_tags">Tags</string>
+    <string name="menu_browse_activities">Activities</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_downloads">Downloads</string>
+    <string name="menu_about">About</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_hide_show_tabs">Hide/Show Tabs</string>
+    <string name="menu_more">More</string>
+    <string name="menu_accounts">Accounts</string>
+    <string name="menu_alfresco">My Alfresco</string>
+    <string name="menu_account_manage">Manage</string>
+    <string name="menu_help">Help</string>
+    
+    <!-- CLOUD SIGNUP -->
+    <string name="cloud_signup_firstname">First Name</string>
+    <string name="cloud_signup_lastname">Last Name</string>
+    <string name="cloud_signup_email">Email</string>
+    <string name="cloud_signup_password">Password</string>
+    <string name="cloud_signup_password_hint">6 characters min.</string>
+    <string name="cloud_signup_confirm">Confirm Password</string>
+    <string name="cloud_signup_action">Sign up</string>
+    <string name="cloud_signup_hint">By tapping Sign Up, you are agreeing to the Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">Terms of Service</a> and <a href="http://www.alfresco.com/privacy">Privacy Policy</a>.</string>
+    <string name="sign_up_cloud">Sign-up for Alfresco Cloud</string>
+    <string name="sign_up_cloud_email_verification">Account waiting for email verification</string>
+    <string name="sign_up_cloud_email_verification_line1">You\'ve sign-up for Alfresco in the clous using the email address:</string>
+    <string name="sign_up_cloud_email_verification_line2">Please check your email. We\'ve sent you a link that you\'ll need to use to complete the registration.</string>
+    <string name="sign_up_cloud_email_having_trouble">Having trouble activating ?</string>
+    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your account.</string>
+    <string name="sign_up_cloud_awaiting_email">Awaiting Email Verification</string>
+    <string name="cloud_signup_resend">Resend Email</string>
+    <string name="cloud_signup_resend_successfull">Successfully Resent Email</string>
+    <string name="cloud_signup_resend_body">Not receiving our email? Please check you entered the email address correctly and remember to look in your spam folders</string>
+    
+    
+    <!-- NETWORK -->
+   <string name="error_network_title">No Network.</string>
+   <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
+    
+    
+    <!-- OTHER -->
+    <string name="error_retrieve_likes">Could not retrieve Like/Unlike tag for this document.</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="save">Save</string>
+    <string name="action_ok">OK</string>
+    <string name="enter_details">Enter your details</string>
+        <!-- About Message -->
+    <string name="about_description">        <![CDATA[
+<p>Alfresco Mobile connects to Alfresco Enterprise (3.4 and above), Alfresco Team, and Alfresco Cloud* and provides access to your corporate documents on the go.</p> 
+
+<p>Alfresco Mobile connects to your Alfresco repository using your Alfresco log-in credentials (over HTTP or HTTPS), and manages user access based on their permissions.</p> 
+]]>
+    </string>
+    
+    
+</resources>

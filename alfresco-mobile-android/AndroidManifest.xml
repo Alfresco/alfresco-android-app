@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of the Alfresco Mobile SDK.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.alfresco.mobile.android.application"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="11"
+        android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.NFC" />
+
+    <application
+        android:name=".AlfrescoApplication"
+        android:configChanges="orientation|keyboardHidden"
+        android:icon="@drawable/ic_alfresco"
+        android:label="@string/app_name"
+        android:theme="@style/alfrescotheme" >
+
+        <!-- *************************************************************** -->
+        <!-- ALFRESCO APP -->
+        <!-- *************************************************************** -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.HomeScreenActivity"
+            android:label="@string/app_name"
+            android:noHistory="true"
+            android:theme="@android:style/Theme.Holo" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTop"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REMOVE_AND_REFRESH" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE" />
+
+                <data android:mimeType="org.alfresco.mobile.android/object.account" />
+                <data android:mimeType="org.alfresco.mobile.android/object.node" />
+                <data android:mimeType="org.alfresco.mobile.android/object.file" />
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="org.alfresco.mobile.android" />
+            </intent-filter>
+           
+            <!-- Filter URL that matches CLOUD API --> 
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="http" />
+                <data android:host="devapis.alfresco.com" />
+            </intent-filter>
+            
+            <!-- Filter URL that matches alfresco service --> 
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="http" android:host="devapis.alfresco.com"/>
+                <data android:scheme="https" android:host="my.alfresco.com"/>
+                
+                <!-- USeless without host
+                <data android:scheme="http"  android:pathPrefix="/alfresco/service"/>
+                <data android:scheme="http" android:pathPrefix="/share/page/site"/>
+                <data android:scheme="http" android:pathPrefix="/alfresco/cmisatom"/>
+                
+                <data android:scheme="https" android:pathPrefix="/alfresco/service"/>
+                <data android:scheme="https" android:pathPrefix="/share/page/site"/>
+                <data android:scheme="https" android:pathPrefix="/alfresco/cmisatom"/>
+                --> 
+            </intent-filter>
+            
+            <intent-filter>
+            	<action android:name="android.intent.action.SEND"/>
+            	<category android:name="android.intent.category.DEFAULT"/>
+            	<data android:mimeType="text/plain"/>
+        	</intent-filter>  
+            
+            <!-- Filter NFC URL --> 
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                 <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+                <data android:host="devapis.alfresco.com" />
+            </intent-filter>
+            
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
+    </application>
+
+</manifest>
