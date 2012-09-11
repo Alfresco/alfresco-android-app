@@ -120,9 +120,8 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
         //TODO REMOVE ALL BEFORE RELEASE!!
         //Specific for Test Instance server
         if (baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL)){
-            
             //TODO Remove it when public
-            baseUrl = "http://devapis.alfresco.com";
+            String tmpurl = "http://devapis.alfresco.com";
             
             // Check Properties available inside the device
             if (LoginLoaderCallback.ENABLE_CONFIG_FILE){
@@ -134,7 +133,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                     {
                         // load a properties file
                         prop.load(new FileInputStream(f));
-                        baseUrl = prop.getProperty("url");
+                        tmpurl = prop.getProperty("url");
                     }
                     catch (IOException ex)
                     {
@@ -143,7 +142,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                 }  
             }
             
-            settings.put(LoginLoaderCallback.BASE_URL, baseUrl);
+            settings.put(LoginLoaderCallback.BASE_URL, tmpurl);
             return new CloudSessionLoader(activity, username, password, settings);
         } else {
             return new SessionLoader(activity, baseUrl, username, password, settings);
@@ -158,7 +157,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
         {
             SessionUtils.setsession(activity, session);
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            long id = serverDao.insert(description, session.getBaseUrl(), username, password, session.getRepositoryInfo()
+            long id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
                     .getIdentifier(),
                     (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD)
                             : Integer.valueOf(Account.TYPE_ALFRESCO_CMIS));
