@@ -85,7 +85,10 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
     public void onStart()
     {
         super.onStart();
-        mTabHost.setCurrentTabByTag(TAB_COMMENTS);
+        if (mTabHost != null)
+        {
+            mTabHost.setCurrentTabByTag(TAB_COMMENTS);
+        }
     }
 
     private static final String TAB_COMMENTS = "Comments";
@@ -98,8 +101,7 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
     {
         mTabHost.setup(); // you must call this before adding your tabs!
 
-        if (node.isDocument())
-            mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_versions, android.R.id.tabcontent));
+        if (node.isDocument()) mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_versions, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_COMMENTS, R.string.action_comments, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_TAGS, R.string.action_tags, android.R.id.tabcontent));
         mTabHost.setOnTabChangedListener(this);
@@ -121,8 +123,7 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
             addComments(node);
         else if (TAB_HISTORY.equals(tabId) && node.isDocument())
             addVersions((Document) node);
-        else if (TAB_TAGS.equals(tabId))
-            addTags(node);
+        else if (TAB_TAGS.equals(tabId)) addTags(node);
     }
 
     public void addComments(Node n)
@@ -138,11 +139,12 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, VersionFragment.TAG, false);
     }
-    
+
     public void addTags(Node d)
     {
         BaseFragment frag = TagsListNodeFragment.newInstance(d);
         frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, TagsListNodeFragment.TAG, false);
+        FragmentDisplayer
+                .replaceFragment(getActivity(), frag, android.R.id.tabcontent, TagsListNodeFragment.TAG, false);
     }
 }
