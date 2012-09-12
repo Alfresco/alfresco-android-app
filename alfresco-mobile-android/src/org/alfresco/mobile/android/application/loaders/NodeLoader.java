@@ -118,7 +118,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             }
             catch (Exception e)
             {
-                Log.d("NodeLoader", e.getMessage());
+                Log.d("NodeLoader", e.toString());
             }
         }
         catch (Exception e)
