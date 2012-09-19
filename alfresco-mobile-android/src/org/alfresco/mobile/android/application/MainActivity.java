@@ -54,8 +54,11 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.application.utils.PhotoCapture;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
@@ -109,6 +112,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     private Account currentAccount;
 
+    private PhotoCapture photoCapture = null;
+    private VideoCapture videoCapture = null;
+    private AudioCapture audioCapture = null;
+    
+    
     // ///////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////
@@ -163,7 +171,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        finish();
+    	if (photoCapture != null  &&  requestCode == photoCapture.getRequestCode() )
+    		photoCapture.capturedCallback (requestCode, resultCode, data);
+    	else
+    	if (videoCapture != null  &&  requestCode == videoCapture.getRequestCode() )
+        	videoCapture.capturedCallback (requestCode, resultCode, data);
+    	else
+		if (audioCapture != null  &&  requestCode == audioCapture.getRequestCode() )
+			audioCapture.capturedCallback (requestCode, resultCode, data);
+    	else
+    		finish();	//TODO Not sure why this was here.  Do we really want to end the Activity on any child result?
     }
 
     @Override
@@ -831,10 +848,47 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
+    public boolean onOptionsItemSelected (MenuItem item)
     {
+    	Folder parentFolder = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getParent();
+    	
         switch (item.getItemId())
         {
+        	case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
+        		
+            	if (parentFolder != null)
+                {
+            		audioCapture = null;
+            		videoCapture = null;
+            		photoCapture = new PhotoCapture (this, parentFolder);
+            		
+                	photoCapture.captureData (); 
+                }
+            	return true;
+            	
+        	case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
+        
+            	if (parentFolder != null)
+                {
+            		audioCapture = null;
+            		photoCapture = null;
+            		videoCapture = new VideoCapture (this, parentFolder);
+            		
+                	videoCapture.captureData (); 
+                }
+            	return true;
+            	
+        	case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+        		if (parentFolder != null)
+                {
+        			photoCapture = null;
+        			videoCapture = null;
+                	audioCapture = new AudioCapture (this, parentFolder);
+                	
+                	audioCapture.captureData (); 
+                }
+            	return true;
+        		
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountFragment) getFragment(AccountFragment.TAG)).add();
                 return true;
@@ -848,20 +902,22 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
-                FragmentDisplayer.replaceFragment(this, new KeywordSearch(), getFragmentPlace(), KeywordSearch.TAG,
-                        true);
+                FragmentDisplayer.replaceFragment(this, new KeywordSearch(), getFragmentPlace(), KeywordSearch.TAG, true);
                 return true;
+                
             case MenuActionItem.MENU_CREATE_FOLDER:
                 ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).createFolder();
                 return true;
+                
             case MenuActionItem.MENU_UPLOAD:
-                ActionManager.actionPickFile(getFragment(ChildrenBrowserFragment.TAG),
-                        IntentIntegrator.REQUESTCODE_FILEPICKER);
+            	ActionManager.actionPickFile(getFragment(ChildrenBrowserFragment.TAG), IntentIntegrator.REQUESTCODE_FILEPICKER);
                 return true;
+                
             case MenuActionItem.MENU_DELETE_FOLDER:
                 // ((DetailsFragment)
                 // getFragment(DetailsFragment.TAG)).delete();
                 return true;
+                
             case MenuActionItem.MENU_REFRESH:
                 ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                 return true;
