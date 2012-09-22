@@ -64,7 +64,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -564,7 +563,6 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
     {
-        Resources res = getResources();
         TabSpec tabSpec = mTabHost.newTabSpec(tag);
         tabSpec.setContent(tabContentId);
         tabSpec.setIndicator(this.getText(labelId));

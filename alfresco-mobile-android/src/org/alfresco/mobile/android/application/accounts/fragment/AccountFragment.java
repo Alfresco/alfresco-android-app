@@ -64,13 +64,13 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         setListShown(false);
         return new AccountsLoader(getActivity());
     }
-    
+
     @Override
     public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
     {
         if (adapter == null)
             adapter = new AccountAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Account>(0));
-        
+
         PagingResult<Account> pagingResultFiles = new PagingResultImpl<Account>(results, false, results.size());
         displayPagingData(pagingResultFiles, loaderId, callback);
     }
@@ -80,22 +80,23 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     {
         // TODO Auto-generated method stub
     }
-    
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        ((MainActivity) getActivity()).addAccountDetails(((Account)l.getItemAtPosition(position)).getId());
+        ((MainActivity) getActivity()).addAccountDetails(((Account) l.getItemAtPosition(position)).getId());
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    
-    public void refresh(){
+
+    public void refresh()
+    {
         reload(bundle, loaderId, callback);
         ((MainActivity) getActivity()).refreshAccount();
     }
-    
+
     public void add()
     {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
@@ -110,11 +111,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         CreateAccountDialogFragment newFragment = new CreateAccountDialogFragment();
         newFragment.show(ft, CreateAccountDialogFragment.TAG);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    
+
     public void getMenu(Menu menu)
     {
         MenuItem mi;
@@ -122,7 +123,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_ADD, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_ADD,
                 R.string.action_add_account);
         mi.setIcon(R.drawable.ic_account_add);
-        mi.setShowAsAction( MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
-        
+
 }

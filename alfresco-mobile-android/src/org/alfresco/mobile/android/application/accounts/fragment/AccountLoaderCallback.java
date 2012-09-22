@@ -87,7 +87,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
     public Loader<LoaderResult<AlfrescoSession>> onCreateLoader(final int id, Bundle args)
     {
 
-        //TODO Check this portion
+        // TODO Check this portion
         if (args != null)
         {
             if (args.getString(ARGUMENT_URL) == null)
@@ -108,23 +108,25 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                         activity.getLoaderManager().destroyLoader(id);
                     }
                 });
-        
-        //Default settings for Alfresco Application
+
+        // Default settings for Alfresco Application
         HashMap<String, Serializable> settings = new HashMap<String, Serializable>(2);
         settings.put(SessionParameter.CONNECT_TIMEOUT, "10000");
         settings.put(SessionParameter.READ_TIMEOUT, "60000");
         settings.put(AlfrescoSession.EXTRACT_METADATA, true);
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(activity, "AlfrescoMobile"));
-        
-        //TODO REMOVE ALL BEFORE RELEASE!!
-        //Specific for Test Instance server
-        if (baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL)){
-            //TODO Remove it when public
+
+        // TODO REMOVE ALL BEFORE RELEASE!!
+        // Specific for Test Instance server
+        if (baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
+        {
+            // TODO Remove it when public
             String tmpurl = "http://devapis.alfresco.com";
-            
+
             // Check Properties available inside the device
-            if (LoginLoaderCallback.ENABLE_CONFIG_FILE){
+            if (LoginLoaderCallback.ENABLE_CONFIG_FILE)
+            {
                 File f = new File(LoginLoaderCallback.CLOUD_CONFIG_PATH);
                 if (f.exists() && LoginLoaderCallback.ENABLE_CONFIG_FILE)
                 {
@@ -139,15 +141,18 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                     {
                         throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
                     }
-                }  
+                }
             }
-            
+
+            settings.put(LoginLoaderCallback.CLOUD_BASIC_AUTH, true);
             settings.put(LoginLoaderCallback.BASE_URL, tmpurl);
             settings.put(LoginLoaderCallback.USER, username);
             settings.put(LoginLoaderCallback.PASSWORD, password);
 
             return new CloudSessionLoader(activity, null, settings);
-        } else {
+        }
+        else
+        {
             return new SessionLoader(activity, baseUrl, username, password, settings);
         }
     }
@@ -161,9 +166,8 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
             SessionUtils.setsession(activity, session);
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             long id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
-                    .getIdentifier(),
-                    (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD)
-                            : Integer.valueOf(Account.TYPE_ALFRESCO_CMIS));
+                    .getIdentifier(), (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD)
+                    : Integer.valueOf(Account.TYPE_ALFRESCO_CMIS));
             SessionUtils.setAccount(activity, serverDao.findById(id));
 
             if (fr != null)

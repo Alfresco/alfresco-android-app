@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.loaders;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;

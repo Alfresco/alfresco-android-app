@@ -21,15 +21,12 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -109,7 +106,6 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
     {
-        Resources res = getResources();
         TabSpec tabSpec = mTabHost.newTabSpec(tag);
         tabSpec.setContent(tabContentId);
         tabSpec.setIndicator(this.getText(labelId));

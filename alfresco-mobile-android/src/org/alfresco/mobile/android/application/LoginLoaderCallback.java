@@ -50,6 +50,7 @@ public class LoginLoaderCallback implements LoaderCallbacks<LoaderResult<Alfresc
     public static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
     public static final String USER = "org.alfresco.mobile.credential.user";
     public static final String PASSWORD = "org.alfresco.mobile.credential.password";
+    public static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
     
     public static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cloud-config.properties";
     public static final boolean ENABLE_CONFIG_FILE = true;
@@ -115,6 +116,7 @@ public class LoginLoaderCallback implements LoaderCallbacks<LoaderResult<Alfresc
                 }  
             }
             
+            settings.put(CLOUD_BASIC_AUTH, true);
             settings.put(BASE_URL, url);
             settings.put(USER, username);
             settings.put(PASSWORD, password);
