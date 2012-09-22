@@ -31,12 +31,16 @@ public class MenuActionItem
     public static final int MENU_CREATE_FOLDER = 20;
 
     public static final int MENU_UPLOAD = 30;
+    
+    public static final int MENU_DEVICE_CAPTURE = 31;
 
     public static final int MENU_REFRESH = 40;
     
     public static final int MENU_DELETE_FOLDER = 50;
 
 
+    
+    
     // ///////////////////////////////////////////
     // DETAILS
     // ///////////////////////////////////////////
@@ -66,7 +70,17 @@ public class MenuActionItem
     public static final int MENU_ACCOUNT_EDIT = 210;
 
     public static final int MENU_ACCOUNT_DELETE = 220;
+
     
+    // ///////////////////////////////////////////
+    // DEVICE CAPTURE SUB-MENU
+    // ///////////////////////////////////////////
+    public static final int MENU_DEVICE_CAPTURE_CAMERA_PHOTO = 300;
+    
+    public static final int MENU_DEVICE_CAPTURE_CAMERA_VIDEO = 310;
+    
+    public static final int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
+
 
     // ///////////////////////////////////////////
     // GENERAL

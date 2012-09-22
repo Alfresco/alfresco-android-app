@@ -51,6 +51,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.widget.ListView;
 
@@ -321,10 +322,14 @@ public class ChildrenBrowserFragment extends NavigationFragment
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                    R.string.action_upload);
-            mi.setIcon(R.drawable.ic_upload);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            SubMenu devCaptureMenu = menu.addSubMenu (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.action_upload);
+            devCaptureMenu.setIcon (android.R.drawable.ic_menu_add);        
+            devCaptureMenu.getItem().setShowAsAction (MenuItem.SHOW_AS_ACTION_ALWAYS);
+            
+            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.action_photo);
+            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.action_video);
+            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
+            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD, R.string.action_upload);
         }
 
         if (extended && parentFolder != null && permission.canEdit())
