@@ -15,16 +15,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.accounts.fragment;
+package org.alfresco.mobile.android.application.accounts.signup;
 
-import org.alfresco.mobile.android.api.asynchronous.CloudSignupLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.session.CloudSignupRequest;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;

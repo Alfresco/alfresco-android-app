@@ -49,4 +49,52 @@
 			<artifactId>annotations</artifactId>
 		</dependency>
 	</dependencies>
+
+
+	<profiles>
+		<profile>
+			<id>beta-release</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/res</directory>
+						<filtering>true</filtering>
+						<targetPath>${project.build.directory}/filtered-res</targetPath>
+						<includes>
+							<include>**/*.*</include>
+						</includes>
+					</resource>
+				</resources>
+				<finalName>${project.artifactId}</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>resources</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>net.hockeyapp.android</groupId>
+					<artifactId>HockeySDK</artifactId>
+					<version>2.2.1</version>
+				</dependency>
+			</dependencies>
+		</profile>
+	</profiles>
+
 </project>

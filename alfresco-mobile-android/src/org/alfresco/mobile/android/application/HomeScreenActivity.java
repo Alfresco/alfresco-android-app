@@ -22,7 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.CreateAccountDialogFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.SignupCloudDialogFragment;
+import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 
 import android.app.Activity;
 import android.app.Fragment;

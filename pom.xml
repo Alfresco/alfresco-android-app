@@ -16,7 +16,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Alfresco Android APPS (Parent)</name>
+	<name>Alfresco Mobile Android APPS (Parent)</name>
 	<description>Android APPS based on Alfresco Android SDK</description>
 	<url>http://www.alfresco.com/products/mobile</url>
 	<inceptionYear>2012</inceptionYear>

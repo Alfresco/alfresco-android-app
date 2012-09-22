@@ -36,7 +36,7 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsF
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.CreateAccountDialogFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.SignupCloudDialogFragment;
+import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.KeywordSearch;
@@ -54,12 +54,12 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
-import org.alfresco.mobile.android.ui.properties.PropertiesFragment;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -102,8 +102,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     private Node currentNode;
 
     private Map<Integer, Account> accounts;
-
-    private boolean canExit = false;
 
     private int fragmentQueue = -1;
 
@@ -149,6 +147,24 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         }
 
         initActionBar();
+        checkForUpdates();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        checkForCrashes();
+    }
+
+    private void checkForCrashes()
+    {
+        ReportManager.checkForCrashes(this);
+    }
+
+    private void checkForUpdates()
+    {
+        ReportManager.checkForUpdates(this);
     }
 
     // ///////////////////////////////////////////
@@ -472,8 +488,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         slideMenu.setVisibility(View.GONE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_out_to_left));
     }
-    
-    private boolean isSlideMenuVisible(){
+
+    private boolean isSlideMenuVisible()
+    {
         return findViewById(R.id.slide_pane).getVisibility() == View.VISIBLE;
     }
 
@@ -517,9 +534,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_download:
-                addLocalFileNavigationFragment(StorageManager.getDownloadFolder(this, SessionUtils.getsession(this).getBaseUrl(), SessionUtils.getsession(this).getPersonIdentifier()));
-                //FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this),
-                //        addLocalFileNavigationFragment.TAG, true);
+                addLocalFileNavigationFragment(StorageManager.getDownloadFolder(this, SessionUtils.getsession(this)
+                        .getBaseUrl(), SessionUtils.getsession(this).getPersonIdentifier()));
+                // FragmentDisplayer.replaceFragment(this,
+                // DisplayUtils.getLeftFragmentId(this),
+                // addLocalFileNavigationFragment.TAG, true);
                 break;
             case R.id.menu_about:
                 showAbout();
@@ -531,7 +550,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public void showMainMenuFragment(View v)
     {
-        canExit = false;
         clearScreen();
         DisplayUtils.hideLeftTitlePane(this);
         doMainMenuAction(v.getId());

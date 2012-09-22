@@ -143,7 +143,10 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
             }
             
             settings.put(LoginLoaderCallback.BASE_URL, tmpurl);
-            return new CloudSessionLoader(activity, username, password, settings);
+            settings.put(LoginLoaderCallback.USER, username);
+            settings.put(LoginLoaderCallback.PASSWORD, password);
+
+            return new CloudSessionLoader(activity, null, settings);
         } else {
             return new SessionLoader(activity, baseUrl, username, password, settings);
         }
