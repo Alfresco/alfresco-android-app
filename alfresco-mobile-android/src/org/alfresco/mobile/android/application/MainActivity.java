@@ -195,9 +195,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             videoCapture.capturedCallback(requestCode, resultCode, data);
         else if (audioCapture != null && requestCode == audioCapture.getRequestCode())
             audioCapture.capturedCallback(requestCode, resultCode, data);
-        else
-            finish(); // TODO Not sure why this was here. Do we really want to
-                      // end the Activity on any child result?
     }
 
     @Override
