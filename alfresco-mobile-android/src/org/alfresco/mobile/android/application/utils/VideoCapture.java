@@ -19,6 +19,7 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -31,9 +32,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 
-public class VideoCapture extends DeviceCapture
+public class VideoCapture extends DeviceCapture implements Serializable 
 {	
-	public VideoCapture(Activity parent, Folder folder) 
+    private static final long serialVersionUID = 1L;
+
+    
+    public VideoCapture(Activity parent, Folder folder) 
 	{
 		super (parent, folder);
 	}

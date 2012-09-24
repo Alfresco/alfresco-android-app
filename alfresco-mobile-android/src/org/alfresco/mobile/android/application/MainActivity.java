@@ -138,7 +138,17 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         if (savedInstanceState != null)
         {
             currentAccount = (Account) savedInstanceState.getSerializable("account");
-
+            
+            audioCapture = (AudioCapture) savedInstanceState.getSerializable("audioCap");
+            if (audioCapture != null)  audioCapture.setActivity(this);
+            
+            videoCapture = (VideoCapture) savedInstanceState.getSerializable("videoCap");
+            if (videoCapture != null)  videoCapture.setActivity(this);
+            
+            photoCapture = (PhotoCapture) savedInstanceState.getSerializable("photoCap");
+            if (photoCapture != null)  photoCapture.setActivity(this);
+            
+            
             String[] d = savedInstanceState.getStringArray("stackCentral");
             if (d != null)
             {
@@ -401,6 +411,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         String[] stringArray = Arrays.copyOf(stackCentral.toArray(), stackCentral.size(), String[].class);
         outState.putStringArray("stackCentral", stringArray);
         outState.putSerializable("account", currentAccount);
+        
+        if (audioCapture != null) 
+            outState.putSerializable("audioCap", audioCapture);
+        
+        if (videoCapture != null)
+            outState.putSerializable("videoCap", videoCapture);
+        
+        if (photoCapture != null)
+            outState.putSerializable("photoCap", photoCapture);
     }
 
     // ///////////////////////////////////////////
