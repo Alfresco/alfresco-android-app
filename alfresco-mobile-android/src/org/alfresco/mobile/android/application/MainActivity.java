@@ -79,6 +79,7 @@ import android.content.Intent;
 import android.content.Loader;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -824,7 +825,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
 

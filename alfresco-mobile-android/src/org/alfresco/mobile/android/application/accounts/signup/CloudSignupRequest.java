@@ -53,15 +53,21 @@ public class CloudSignupRequest
         request.registrationTime = JSONConverter.getString(json, CloudConstant.CLOUD_REGISTRATIONDATE);
 
         if (json.containsKey(CloudConstant.CLOUD_ISACTIVATED))
+        {
             request.isActivated = JSONConverter.getBoolean(json, CloudConstant.CLOUD_ISACTIVATED);
+        }
         if (json.containsKey(CloudConstant.CLOUD_ISREGISTERED))
+        {
             request.isRegistered = JSONConverter.getBoolean(json, CloudConstant.CLOUD_ISREGISTERED);
+        }
         if (json.containsKey(CloudConstant.CLOUD_ISPREREGISTERED))
+        {
             request.isPreRegistered = JSONConverter.getBoolean(json, CloudConstant.CLOUD_ISPREREGISTERED);
+        }
 
         return request;
     }
-    
+
     // TODO Replace by official one.
     private static final String SIGNUP_CLOUD_URL = "http://devapis.alfresco.com";
 
@@ -97,8 +103,7 @@ public class CloudSignupRequest
         if (resp.getErrorContent() == null)
         {
             Map<String, Object> json = JsonUtils.parseObject(resp.getStream(), resp.getCharset());
-            return parsePublicAPIJson((Map<String, Object>) json
-                    .get(CloudConstant.CLOUD_REGISTRATION));
+            return parsePublicAPIJson((Map<String, Object>) json.get(CloudConstant.CLOUD_REGISTRATION));
         }
         else
         {
@@ -128,7 +133,7 @@ public class CloudSignupRequest
             return false;
         }
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////////
     // CLOUD ACCOUNT
     // //////////////////////////////////////////////////////////////////////////////

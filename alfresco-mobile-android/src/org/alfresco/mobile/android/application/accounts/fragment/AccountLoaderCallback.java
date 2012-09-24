@@ -119,7 +119,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
 
         // TODO REMOVE ALL BEFORE RELEASE!!
         // Specific for Test Instance server
-        if (baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
+        if (baseUrl!= null && baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
         {
             // TODO Remove it when public
             String tmpurl = "http://devapis.alfresco.com";
