@@ -20,9 +20,9 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialogFragment;
+import org.alfresco.mobile.android.ui.utils.ContentFileProgressImpl;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 
 public class AddContentDialogFragment extends CreateDocumentDialogFragment
 {
-
     public AddContentDialogFragment()
     {
     }
@@ -39,7 +38,8 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     public static AddContentDialogFragment newInstance(Folder folder, File f)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments(createBundle(folder, new ContentFileImpl(f)));
+        
+        adf.setArguments (createBundle(folder, new ContentFileProgressImpl(f)));
         return adf;
     }
 
@@ -61,8 +61,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getsession(getActivity());
-        return super.onCreateView(inflater, container, savedInstanceState);
+        
+        return super.onCreateView (inflater, container, savedInstanceState);
     }
-    
-    
 }
