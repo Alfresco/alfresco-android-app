@@ -83,11 +83,6 @@ public class AccountSchema
     public static void onCreate(Context context, SQLiteDatabase db)
     {
         db.execSQL(AccountSchema.QUERY_TABLE_CREATE);
-        
-        AccountDAO serverDao = new AccountDAO(context, db);
-        //serverDao.insert("TEAM", "http://alfresco.teamhosted.com:80/alfresco/service/cmis", "ipaduser", "1padu$er2","Main Repository", Integer.valueOf(SessionSettings.BINDING_TYPE_ALFRESCO_CMIS)); 
-        //serverDao.insert("TS", "https://ts.alfresco.com/alfresco/service/cmis", "mdubresson", "password","Main Repository", Integer.valueOf(SessionSettings.BINDING_TYPE_ALFRESCO_CMIS)); 
-        //serverDao.insert("192.168.1.68", "http://192.168.1.68:8080/alfresco/service/cmis", "admin", "admin","Main Repository", Integer.valueOf(SessionSettings.BINDING_TYPE_ALFRESCO_CMIS)); 
     }
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)

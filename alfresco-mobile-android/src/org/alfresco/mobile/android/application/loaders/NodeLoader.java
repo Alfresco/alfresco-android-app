@@ -28,15 +28,12 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -118,7 +115,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             }
             catch (Exception e)
             {
-                Log.d("NodeLoader", e.getMessage());
+                Log.d("NodeLoader", e.toString());
             }
         }
         catch (Exception e)
@@ -143,17 +140,16 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         return identifier;
     }
 
-    //TODO Better!
-    private static final String BASE_URL = "org.alfresco.mobile.binding.baseurl";
-    
     private void findSession(URL tmpurl)
     {
         String url = selectAccount.getUrl();
         if (url.startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
         {
             if (settings == null) settings = new HashMap<String, Serializable>();
-            if (!settings.containsKey(BASE_URL)) settings.put(BASE_URL, url);
-            session = CloudSession.connect(selectAccount.getUsername(), selectAccount.getPassword(), null, settings);
+            if (!settings.containsKey(LoginLoaderCallback.BASE_URL)) settings.put(LoginLoaderCallback.BASE_URL, url);
+            settings.put(LoginLoaderCallback.USER, selectAccount.getUsername());
+            settings.put(LoginLoaderCallback.PASSWORD, selectAccount.getPassword());
+            session = CloudSession.connect(null, settings);
         }
         else
         {
