@@ -21,7 +21,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.api.utils.CloudUrlRegistry;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;

@@ -19,7 +19,6 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
-import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Folder;
 

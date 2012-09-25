@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
@@ -44,7 +45,6 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
-import org.alfresco.mobile.android.ui.documentfolder.actions.DownloadTaskCallback;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -64,7 +64,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -564,7 +563,6 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
     {
-        Resources res = getResources();
         TabSpec tabSpec = mTabHost.newTabSpec(tag);
         tabSpec.setContent(tabContentId);
         tabSpec.setIndicator(this.getText(labelId));

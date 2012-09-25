@@ -21,15 +21,12 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,7 +82,10 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
     public void onStart()
     {
         super.onStart();
-        mTabHost.setCurrentTabByTag(TAB_COMMENTS);
+        if (mTabHost != null)
+        {
+            mTabHost.setCurrentTabByTag(TAB_COMMENTS);
+        }
     }
 
     private static final String TAB_COMMENTS = "Comments";
@@ -98,8 +98,7 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
     {
         mTabHost.setup(); // you must call this before adding your tabs!
 
-        if (node.isDocument())
-            mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_versions, android.R.id.tabcontent));
+        if (node.isDocument()) mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_versions, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_COMMENTS, R.string.action_comments, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_TAGS, R.string.action_tags, android.R.id.tabcontent));
         mTabHost.setOnTabChangedListener(this);
@@ -107,7 +106,6 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
     {
-        Resources res = getResources();
         TabSpec tabSpec = mTabHost.newTabSpec(tag);
         tabSpec.setContent(tabContentId);
         tabSpec.setIndicator(this.getText(labelId));
@@ -121,8 +119,7 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
             addComments(node);
         else if (TAB_HISTORY.equals(tabId) && node.isDocument())
             addVersions((Document) node);
-        else if (TAB_TAGS.equals(tabId))
-            addTags(node);
+        else if (TAB_TAGS.equals(tabId)) addTags(node);
     }
 
     public void addComments(Node n)
@@ -138,11 +135,12 @@ public class ExtraDetailsFragment extends BaseFragment implements OnTabChangeLis
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, VersionFragment.TAG, false);
     }
-    
+
     public void addTags(Node d)
     {
         BaseFragment frag = TagsListNodeFragment.newInstance(d);
         frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, TagsListNodeFragment.TAG, false);
+        FragmentDisplayer
+                .replaceFragment(getActivity(), frag, android.R.id.tabcontent, TagsListNodeFragment.TAG, false);
     }
 }
