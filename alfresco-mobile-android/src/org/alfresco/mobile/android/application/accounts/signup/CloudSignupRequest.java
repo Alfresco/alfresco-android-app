@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
@@ -71,6 +70,8 @@ public class CloudSignupRequest
     // TODO Replace by official one.
     private static final String SIGNUP_CLOUD_URL = "http://devapis.alfresco.com";
 
+    private static final int SESSION_SIGNUP_ERROR = 104;
+
     // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
 
     @SuppressWarnings("unchecked")
@@ -108,7 +109,7 @@ public class CloudSignupRequest
         else
         {
             Log.d("error", resp.getErrorContent());
-            throw new AlfrescoServiceException(ErrorCodeRegistry.SESSION_SIGNUP_ERROR, resp.getErrorContent());
+            throw new AlfrescoServiceException(SESSION_SIGNUP_ERROR, resp.getErrorContent());
         }
     }
 
