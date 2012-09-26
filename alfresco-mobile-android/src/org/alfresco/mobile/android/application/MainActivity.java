@@ -62,7 +62,7 @@ import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
-import org.alfresco.mobile.android.ui.properties.PropertiesFragment;
+
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;

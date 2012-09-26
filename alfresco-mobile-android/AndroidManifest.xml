@@ -131,9 +131,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        
-        <activity android:name="org.alfresco.mobile.android.ui.utils.ProgressNotification"/>
-        
+         
     </application>
 
 </manifest>
