@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
 
@@ -36,9 +37,12 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 
-public class AudioCapture extends DeviceCapture
+public class AudioCapture extends DeviceCapture implements Serializable 
 {	
-	public AudioCapture(Activity parent, Folder folder) 
+    private static final long serialVersionUID = 1L;
+
+    
+    public AudioCapture(Activity parent, Folder folder) 
 	{
 		super (parent, folder);
 	}
