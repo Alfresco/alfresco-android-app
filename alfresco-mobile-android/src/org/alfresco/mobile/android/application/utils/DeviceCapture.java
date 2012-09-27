@@ -19,6 +19,7 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.fragments.browser.AddContentDialogFragment;
@@ -26,19 +27,23 @@ import org.alfresco.mobile.android.application.fragments.browser.AddContentDialo
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 
 
-public abstract class DeviceCapture 
+public abstract class DeviceCapture implements Serializable 
 {
-	public static final int REQUEST_CAPTURE = 18436;
+    private static final long serialVersionUID = 1L;
+    
+    private Folder repositoryFolder = null;
+    
+    transient private Context context = null;
+    
+	transient protected Activity parentActivity = null;
 	
-	protected Activity parentActivity = null;
 	protected File payload = null;
 	
-	private Folder repositoryFolder = null;
-
-	
+		
 	abstract public boolean hasDevice();
 	
 	abstract public boolean captureData();
@@ -47,7 +52,7 @@ public abstract class DeviceCapture
 	
 	public void capturedCallback (int requestCode, int resultCode, Intent data)
 	{
-		if (data != null  &&  requestCode == getRequestCode()  &&  resultCode == Activity.RESULT_OK)
+		if (requestCode == getRequestCode()  &&  resultCode == Activity.RESULT_OK)
 		{
 			payloadCaptured (requestCode, resultCode, data);
 			
@@ -55,8 +60,19 @@ public abstract class DeviceCapture
 		}
 	}
 	
+	public void setActivity (Activity parentActivity)
+	{
+	    this.parentActivity = parentActivity;
+	}
+	
+	DeviceCapture (Context ctxt)
+	{
+	    this.context = ctxt;
+	}
+	
 	DeviceCapture (Activity parentActivity, Folder repositoryFolder)
 	{
+	    this.context = parentActivity;
 		this.parentActivity = parentActivity;
 		this.repositoryFolder = repositoryFolder;
 	}
@@ -90,3 +106,4 @@ public abstract class DeviceCapture
 		return getClass().hashCode();
 	}
 }
+
