@@ -2,6 +2,7 @@
 bin
 gen
 lint.xml
+project.properties
 
 #Eclipse
 .project
