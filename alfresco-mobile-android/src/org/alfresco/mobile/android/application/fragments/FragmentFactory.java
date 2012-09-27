@@ -27,9 +27,12 @@ import org.alfresco.mobile.android.application.fragments.browser.local.LocalFile
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 
 import android.app.Fragment;
+import android.util.Log;
 
 public class FragmentFactory
 {
+
+    private static final String TAG = "FragmentFactory";
 
     public static Fragment createInstance(String tag)
     {
@@ -42,7 +45,7 @@ public class FragmentFactory
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         return null;
     }

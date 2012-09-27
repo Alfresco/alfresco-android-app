@@ -14,11 +14,11 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="1"
+    android:versionCode="4"
     android:versionName="1.0" >
 
     <uses-sdk
@@ -51,6 +51,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -80,8 +81,8 @@
 
                 <data android:scheme="org.alfresco.mobile.android" />
             </intent-filter>
-           
-            <!-- Filter URL that matches CLOUD API --> 
+
+            <!-- Filter URL that matches CLOUD API -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -90,42 +91,51 @@
                 <data android:scheme="http" />
                 <data android:host="devapis.alfresco.com" />
             </intent-filter>
-            
-            <!-- Filter URL that matches alfresco service --> 
+
+            <!-- Filter URL that matches alfresco service -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="http" android:host="devapis.alfresco.com"/>
-                <data android:scheme="https" android:host="my.alfresco.com"/>
-                
-                <!-- USeless without host
+                <data
+                    android:host="devapis.alfresco.com"
+                    android:scheme="http" />
+                <data
+                    android:host="my.alfresco.com"
+                    android:scheme="https" />
+
+                <!--
+                USeless without host
                 <data android:scheme="http"  android:pathPrefix="/alfresco/service"/>
                 <data android:scheme="http" android:pathPrefix="/share/page/site"/>
                 <data android:scheme="http" android:pathPrefix="/alfresco/cmisatom"/>
                 
                 <data android:scheme="https" android:pathPrefix="/alfresco/service"/>
                 <data android:scheme="https" android:pathPrefix="/share/page/site"/>
-                <data android:scheme="https" android:pathPrefix="/alfresco/cmisatom"/>
-                --> 
+                <data android:scheme="https" android:pathPrefix="/alfresco/cmisatom"/>
+                -->
             </intent-filter>
-            
             <intent-filter>
-            	<action android:name="android.intent.action.SEND"/>
-            	<category android:name="android.intent.category.DEFAULT"/>
-            	<data android:mimeType="text/plain"/>
-        	</intent-filter>  
-            
-            <!-- Filter NFC URL --> 
+                <action android:name="android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+
+            <!-- Filter NFC URL -->
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-                 <category android:name="android.intent.category.DEFAULT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="devapis.alfresco.com" />
+                <data android:host="ts.alfresco.com" />
+                <data android:host="my.alfresco.com" />
             </intent-filter>
-            
 
             <meta-data
                 android:name="android.app.searchable"

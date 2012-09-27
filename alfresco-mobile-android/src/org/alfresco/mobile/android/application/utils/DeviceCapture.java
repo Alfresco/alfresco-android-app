@@ -106,3 +106,4 @@ public abstract class DeviceCapture implements Serializable
 		return getClass().hashCode();
 	}
 }
+

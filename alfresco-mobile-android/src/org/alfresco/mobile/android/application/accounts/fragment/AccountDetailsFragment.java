@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.alfresco.mobile.android.api.asynchronous.CloudSignupLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
@@ -28,6 +27,8 @@ import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
+import org.alfresco.mobile.android.application.accounts.signup.SignupCloudLoaderCallback;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;

@@ -22,4 +22,3 @@ gen-external-apklibs
 target
 release.properties
 pom.xml.*
-alfresco-mobile-android/project.properties

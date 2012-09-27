@@ -14,8 +14,12 @@
 	<groupId>org.alfresco.mobile.android.apps</groupId>
 	<artifactId>alfresco-mobile-android-apps</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Alfresco Mobile Android Apps</name>
 	<packaging>pom</packaging>
+
+	<name>Alfresco Mobile Android APPS (Parent)</name>
+	<description>Android APPS based on Alfresco Android SDK</description>
+	<url>http://www.alfresco.com/products/mobile</url>
+	<inceptionYear>2012</inceptionYear>
 
 	<organization>
 		<name>Alfresco Software</name>
@@ -31,11 +35,11 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</connection>
-		<developerConnection>scm:svn:https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</developerConnection>
-		<url>https://svn.alfresco.com/repos/alfresco-enterprise/mobile/prototypes/Android/alfresco-mobile/apps</url>
+		<url>https://github.com/Alfresco/alfresco-android-app.git</url>
+		<connection>scm:git:git://github.com/Alfresco/alfresco-android-app.git</connection>
+		<developerConnection>scm:git:git@github.com:Alfresco/alfresco-android-app.git</developerConnection>
 	</scm>
-	
+
 	<modules>
 		<module>alfresco-mobile-android</module>
 	</modules>
@@ -465,5 +469,4 @@
 			</reporting>
 		</profile>
 	</profiles>
-
 </project>
