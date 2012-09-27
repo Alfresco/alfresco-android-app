@@ -37,87 +37,90 @@ import android.provider.MediaStore;
 
 
 public class AudioCapture extends DeviceCapture
-{	
-	public AudioCapture(Activity parent, Folder folder) 
-	{
-		super (parent, folder);
-	}
+{   
+    
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	public boolean hasDevice()
-	{
-		return (parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE));
-	}
-	
-	@Override
-	public boolean captureData() 
-	{
-		if (hasDevice())
-		{
-			try 
-			{
-				Intent intent = new Intent (MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-				parentActivity.startActivityForResult (intent, getRequestCode() );
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-				return false;
-			}
-			
-			return true;
-		}
-		else
-			return false;
-	}
+    public AudioCapture(Activity parent, Folder folder) 
+    {
+        super (parent, folder);
+    }
 
-	@Override
-	protected void payloadCaptured (int requestCode, int resultCode, Intent data)
-	{
-		Uri savedUri = data.getData();
-		
-		try 
-		{
-			String filePath 	= 	getAudioFilePathFromUri (savedUri);
-			String newFilePath 	= 	Environment.getExternalStorageDirectory().getPath() +
-									"/AndroidSoundCapture." + 
-									filePath.substring(filePath.lastIndexOf(".")+1);
-									
-	        copyFile (filePath, newFilePath);
-	        
-	        parentActivity.getContentResolver().delete (savedUri, null, null);  
-	        (new File(filePath)).delete();
-	        
-	        payload = new File (newFilePath);
-	    } 
-		catch (IOException e)
-	    {
-			e.printStackTrace();
-	    }
-	}
+    @Override
+    public boolean hasDevice()
+    {
+        return (parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_MICROPHONE));
+    }
+    
+    @Override
+    public boolean captureData() 
+    {
+        if (hasDevice())
+        {
+            try 
+            {
+                Intent intent = new Intent (MediaStore.Audio.Media.RECORD_SOUND_ACTION);
+                parentActivity.startActivityForResult (intent, getRequestCode() );
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+                return false;
+            }
+            
+            return true;
+        }
+        else
+            return false;
+    }
 
-	private String getAudioFilePathFromUri (Uri uri)
-	{
-		Cursor cursor = parentActivity.getContentResolver().query (uri, null, null, null, null);
-		cursor.moveToFirst();
-		int index = cursor.getColumnIndex (MediaStore.Audio.AudioColumns.DATA);
-		return cursor.getString (index);
-	}
-	
-	private void copyFile (String fileName, String newFileName) throws IOException
-	{
-	    InputStream in = new FileInputStream (fileName);
-	    OutputStream out = new FileOutputStream (newFileName);
+    @Override
+    protected void payloadCaptured (int requestCode, int resultCode, Intent data)
+    {
+        Uri savedUri = data.getData();
+        
+        try 
+        {
+            String filePath     =   getAudioFilePathFromUri (savedUri);
+            String newFilePath  =   Environment.getExternalStorageDirectory().getPath() +
+                                    "/AndroidSoundCapture." + 
+                                    filePath.substring(filePath.lastIndexOf(".")+1);
+                                    
+            copyFile (filePath, newFilePath);
+            
+            parentActivity.getContentResolver().delete (savedUri, null, null);  
+            (new File(filePath)).delete();
+            
+            payload = new File (newFilePath);
+        } 
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
-	    // Transfer bytes from in to out
-	    byte[] buf = new byte[1024];
-	    int len;
-	    while ((len = in.read(buf)) > 0)
-	    {
-	        out.write (buf, 0, len);
-	    }
-	    
-	    in.close();
-	    out.close();
-	}
+    private String getAudioFilePathFromUri (Uri uri)
+    {
+        Cursor cursor = parentActivity.getContentResolver().query (uri, null, null, null, null);
+        cursor.moveToFirst();
+        int index = cursor.getColumnIndex (MediaStore.Audio.AudioColumns.DATA);
+        return cursor.getString (index);
+    }
+    
+    private void copyFile (String fileName, String newFileName) throws IOException
+    {
+        InputStream in = new FileInputStream (fileName);
+        OutputStream out = new FileOutputStream (newFileName);
+
+        // Transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0)
+        {
+            out.write (buf, 0, len);
+        }
+        
+        in.close();
+        out.close();
+    }
 }

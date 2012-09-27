@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -49,6 +50,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
 import android.os.Bundle;
 
+@TargetApi(11)
 public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<AlfrescoSession>>
 {
 
@@ -122,7 +124,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
         if (baseUrl!= null && baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
         {
             // TODO Remove it when public
-            String tmpurl = "http://devapis.alfresco.com";
+            String tmpurl = "http://devapis.alfresco.com/alfresco/a";
 
             // Check Properties available inside the device
             if (LoginLoaderCallback.ENABLE_CONFIG_FILE)

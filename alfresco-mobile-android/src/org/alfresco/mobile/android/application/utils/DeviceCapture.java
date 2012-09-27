@@ -19,74 +19,113 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.fragments.browser.AddContentDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 
-
-public abstract class DeviceCapture 
+@TargetApi(11)
+public abstract class DeviceCapture implements Serializable
 {
-	public static final int REQUEST_CAPTURE = 18436;
-	
-	protected Activity parentActivity = null;
-	protected File payload = null;
-	
-	private Folder repositoryFolder = null;
 
-	
-	abstract public boolean hasDevice();
-	
-	abstract public boolean captureData();
+    public static final int REQUEST_CAPTURE = 18436;
 
-	abstract protected void payloadCaptured (int requestCode, int resultCode, Intent data);
-	
-	public void capturedCallback (int requestCode, int resultCode, Intent data)
-	{
-		if (data != null  &&  requestCode == getRequestCode()  &&  resultCode == Activity.RESULT_OK)
-		{
-			payloadCaptured (requestCode, resultCode, data);
-			
-			upload ();
-		}
-	}
-	
-	DeviceCapture (Activity parentActivity, Folder repositoryFolder)
-	{
-		this.parentActivity = parentActivity;
-		this.repositoryFolder = repositoryFolder;
-	}
-	
-	private void upload ()
-	{
-		FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
-		Fragment prev = parentActivity.getFragmentManager().findFragmentByTag (AddContentDialogFragment.TAG);
-        
-		if (prev != null)
-            ft.remove(prev);
+    private static final long serialVersionUID = 1L;
 
-        ft.addToBackStack (null);
-        
-		AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance (repositoryFolder, payload);
-		
-		newFragment.show (ft, AddContentDialogFragment.TAG);
-	}
-	
-	protected void finalize()
-	{
-		if (payload != null)
-		{
-			payload.delete();
-			payload = null;
-		}
-	}
-	
-	public int getRequestCode ()
-	{
-		return getClass().hashCode();
-	}
+    private Folder repositoryFolder = null;
+
+    transient private Context context = null;
+
+    transient protected Activity parentActivity = null;
+
+    protected File payload = null;
+
+    abstract public boolean hasDevice();
+
+    abstract public boolean captureData();
+
+    abstract protected void payloadCaptured(int requestCode, int resultCode, Intent data);
+
+    public void capturedCallback(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == getRequestCode() && resultCode == Activity.RESULT_OK)
+        {
+            payloadCaptured(requestCode, resultCode, data);
+
+            upload();
+        }
+    }
+
+    public void setActivity(Activity parentActivity)
+    {
+        this.parentActivity = parentActivity;
+    }
+
+    DeviceCapture(Context ctxt)
+    {
+        this.context = ctxt;
+    }
+
+    DeviceCapture(Activity parentActivity, Folder repositoryFolder)
+    {
+        this.context = parentActivity;
+        this.parentActivity = parentActivity;
+        this.repositoryFolder = repositoryFolder;
+    }
+
+    private void upload()
+    {
+        FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
+        Fragment prev = parentActivity.getFragmentManager().findFragmentByTag(AddContentDialogFragment.TAG);
+
+        if (prev != null) ft.remove(prev);
+
+        ft.addToBackStack(null);
+
+        final AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload);
+        newFragment.setOnCreateListener(new OnNodeCreateListener()
+        {
+
+            @Override
+            public void beforeContentCreation(String arg0)
+            {
+                // TODO Auto-generated method stub
+
+            }
+
+            @Override
+            public void afterContentCreation(Node arg0)
+            {
+                ActionManager.actionRefresh(newFragment, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
+                        IntentIntegrator.NODE_TYPE);
+
+            }
+        });
+        newFragment.show(ft, AddContentDialogFragment.TAG);
+    }
+
+    protected void finalize()
+    {
+        if (payload != null)
+        {
+            payload.delete();
+            payload = null;
+        }
+    }
+
+    public int getRequestCode()
+    {
+        return getClass().hashCode();
+    }
 }

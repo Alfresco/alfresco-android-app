@@ -96,6 +96,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+@TargetApi(11)
 public class MainActivity extends Activity implements LoaderCallbacks<List<Account>>, OnMenuItemClickListener
 {
 
@@ -145,6 +146,13 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 List<String> list = Arrays.asList(d);
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
+
+                audioCapture = (AudioCapture) savedInstanceState.getSerializable("audioCap");
+                if (audioCapture != null) audioCapture.setActivity(this);
+                videoCapture = (VideoCapture) savedInstanceState.getSerializable("videoCap");
+                if (videoCapture != null) videoCapture.setActivity(this);
+                photoCapture = (PhotoCapture) savedInstanceState.getSerializable("photoCap");
+                if (photoCapture != null) photoCapture.setActivity(this);
             }
         }
         else
@@ -284,6 +292,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     {
         super.onNewIntent(intent);
 
+        try
+        {
         Boolean backstack = false;
 
         // Intent after session loading
@@ -378,21 +388,21 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
             {
                 ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                if (intent.getExtras() != null && intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA) != null)
+                if (intent.getExtras() != null && intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA) != null && currentNode != null)
                 {
-                    if (currentNode != null
-                            && !currentNode.getIdentifier().equals(
+                    clearScreen();
+                    /*FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
+                    if (!DisplayUtils.hasCentralPane(this))
+                    {
+                        backstack = true;
+                        getFragmentManager().popBackStack();
+                    }
+                    if (!currentNode.getIdentifier().equals(
                                     intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA)
                                             .getString(IntentIntegrator.EXTRA_NODE)))
                     {
-                        FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                        if (!DisplayUtils.hasCentralPane(this))
-                        {
-                            backstack = true;
-                            getFragmentManager().popBackStack();
-                        }
                         addPropertiesFragment(currentNode, backstack);
-                    }
+                    }*/
                 }
                 else
                 {
@@ -406,6 +416,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 }
             }
         }
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showLongToast(this, e.getMessage());
+        }
     }
 
     @Override
@@ -415,6 +430,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         String[] stringArray = Arrays.copyOf(stackCentral.toArray(), stackCentral.size(), String[].class);
         outState.putStringArray("stackCentral", stringArray);
         outState.putSerializable("account", currentAccount);
+        if (audioCapture != null) outState.putSerializable("audioCap", audioCapture);
+        if (videoCapture != null) outState.putSerializable("videoCap", videoCapture);
+        if (photoCapture != null) outState.putSerializable("photoCap", photoCapture);
     }
 
     // ///////////////////////////////////////////
