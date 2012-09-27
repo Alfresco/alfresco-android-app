@@ -103,7 +103,7 @@ public abstract class DeviceCapture implements Serializable
 	
 	public int getRequestCode ()
 	{
-		return getClass().hashCode();
+		return Math.abs(getClass().hashCode());
 	}
 }
 
