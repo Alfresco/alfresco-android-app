@@ -118,7 +118,10 @@
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
-        <!-- About Message -->
+    
+    
+    <!-- About Message -->
+    <string name="buildnumber_version">Version : </string>
     <string name="about_description">        <![CDATA[
 <p>Alfresco Mobile connects to Alfresco Enterprise (3.4 and above), Alfresco Team, and Alfresco Cloud* and provides access to your corporate documents on the go.</p> 
 

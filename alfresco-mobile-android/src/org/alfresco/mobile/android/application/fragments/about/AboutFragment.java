@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.about;
 import org.alfresco.mobile.android.application.R;
 
 import android.app.Fragment;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.LayoutInflater;
@@ -37,16 +38,30 @@ public class AboutFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (container == null) { return null; }
-        return inflater.inflate(R.layout.sdkapp_about, container, false);
+        View v = inflater.inflate(R.layout.sdkapp_about, container, false);
+        
+        TextView foo = (TextView) v.findViewById(R.id.about_description);
+        foo.setText(Html.fromHtml(getString(R.string.about_description)));
+        
+        //Version Number
+        TextView tv = (TextView) v.findViewById(R.id.about_buildnumber);
+        String versionNumber = "";
+        try
+        {
+            StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version));
+            sb.append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
+            sb.append(" (");
+            sb.append(getText(R.string.bamboo_buildnumber));
+            sb.append(")");
+            versionNumber = sb.toString();
+        }
+        catch (NameNotFoundException e)
+        {
+            versionNumber = "vX.X.X";
+        }
+        tv.setText(versionNumber);
+        
+        return v;
     }
     
-    /** Called when the activity is first created. */
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        
-        TextView foo = (TextView) getActivity().findViewById(R.id.about_description);
-        foo.setText(Html.fromHtml(getString(R.string.about_description)));
-    }
 }
