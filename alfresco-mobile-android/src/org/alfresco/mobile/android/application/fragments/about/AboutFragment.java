@@ -49,15 +49,15 @@ public class AboutFragment extends Fragment
         try
         {
             StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version));
+            sb.append(" ");
             sb.append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
-            sb.append(" (");
+            sb.append(".");
             sb.append(getText(R.string.bamboo_buildnumber));
-            sb.append(")");
             versionNumber = sb.toString();
         }
         catch (NameNotFoundException e)
         {
-            versionNumber = "vX.X.X";
+            versionNumber = "X.x.x.x";
         }
         tv.setText(versionNumber);
         
