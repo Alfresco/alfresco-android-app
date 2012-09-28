@@ -31,7 +31,6 @@ import android.view.ViewGroup;
 
 public class AddContentDialogFragment extends CreateDocumentDialogFragment
 {
-
     public AddContentDialogFragment()
     {
     }
@@ -39,7 +38,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     public static AddContentDialogFragment newInstance(Folder folder, File f)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments (createBundle(folder, new ContentFileProgressImpl(f)));
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f)));
         return adf;
     }
 
@@ -63,6 +62,4 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         alfSession = SessionUtils.getsession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-    
-    
 }

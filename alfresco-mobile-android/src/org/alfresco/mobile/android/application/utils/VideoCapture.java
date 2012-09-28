@@ -19,6 +19,7 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
+import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
 
@@ -30,52 +31,53 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 
-public class VideoCapture extends DeviceCapture
-{   
+public class VideoCapture extends DeviceCapture implements Serializable 
+{	
     private static final long serialVersionUID = 1L;
 
-    public VideoCapture(Activity parent, Folder folder) 
-    {
-        super (parent, folder);
-    }
-
-    @Override
-    public boolean hasDevice()
-    {
-        return (parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) ||
-                parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT));
-    }
     
-    @Override
-    public boolean captureData() 
-    {
-        if (hasDevice())
-        {
-            try 
-            {
-                Intent intent = new Intent (MediaStore.ACTION_VIDEO_CAPTURE);
-                
-                payload = new File (Environment.getExternalStorageDirectory(), "AndroidVideoCapture.mp4");
-                
-                intent.putExtra (MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload) );
-                intent.putExtra (MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                
-                parentActivity.startActivityForResult (intent, getRequestCode() );
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-                return false;
-            }
-            
-            return true;
-        }
-        else
-            return false;
-    }
+    public VideoCapture(Activity parent, Folder folder) 
+	{
+		super (parent, folder);
+	}
 
-    @Override
-    protected void payloadCaptured (int requestCode, int resultCode, Intent data)
-    {
-    }
+	@Override
+	public boolean hasDevice()
+	{
+		return (parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) ||
+				parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT));
+	}
+	
+	@Override
+	public boolean captureData() 
+	{
+		if (hasDevice())
+		{
+			try 
+			{
+				Intent intent = new Intent (MediaStore.ACTION_VIDEO_CAPTURE);
+				
+				payload = new File (Environment.getExternalStorageDirectory(), "AndroidVideoCapture.mp4");
+				
+				intent.putExtra (MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload) );
+				intent.putExtra (MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				
+				parentActivity.startActivityForResult (intent, getRequestCode() );
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+			
+			return true;
+		}
+		else
+			return false;
+	}
+
+	@Override
+	protected void payloadCaptured (int requestCode, int resultCode, Intent data)
+	{
+	}
 }
