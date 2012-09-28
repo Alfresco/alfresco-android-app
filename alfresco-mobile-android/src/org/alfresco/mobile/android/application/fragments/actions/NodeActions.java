@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
@@ -43,6 +44,7 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
 
+@TargetApi(11)
 public class NodeActions implements ActionMode.Callback
 {
 

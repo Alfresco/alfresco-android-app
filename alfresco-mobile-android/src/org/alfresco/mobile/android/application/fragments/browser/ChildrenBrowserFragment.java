@@ -41,6 +41,7 @@ import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogF
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -55,6 +56,7 @@ import android.view.SubMenu;
 import android.view.View;
 import android.widget.ListView;
 
+@TargetApi(11)
 public class ChildrenBrowserFragment extends NavigationFragment
 {
 
@@ -139,7 +141,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
 
         if (hideDetails)
         {
-            ((MainActivity) getActivity()).clearCentralPane();
+            ((MainActivity) getActivity()).clearScreen();
             selectedItems.clear();
             refreshListView();
         }
@@ -222,7 +224,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
             @Override
             public void beforeContentCreation(String name)
             {
-                mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
+               /* mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
                         true, new OnCancelListener()
                         {
                             @Override
@@ -230,13 +232,13 @@ public class ChildrenBrowserFragment extends NavigationFragment
                             {
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
                             }
-                        });
+                        });*/
             }
 
             @Override
             public void afterContentCreation(Node node)
             {
-                mProgressDialog.dismiss();
+                //mProgressDialog.dismiss();
                 refresh();
             }
         });
@@ -286,7 +288,9 @@ public class ChildrenBrowserFragment extends NavigationFragment
 
     public void refresh()
     {
-        if (parentFolder == null) parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
+        if (parentFolder == null){
+            parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
+        }
         super.refresh();
     }
 

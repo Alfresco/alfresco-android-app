@@ -96,6 +96,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
 
+@TargetApi(11)
 public class MainActivity extends Activity implements LoaderCallbacks<List<Account>>, OnMenuItemClickListener
 {
 
@@ -138,17 +139,25 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         if (savedInstanceState != null)
         {
             currentAccount = (Account) savedInstanceState.getSerializable("account");
-            
+
             audioCapture = (AudioCapture) savedInstanceState.getSerializable("audioCap");
-            if (audioCapture != null)  audioCapture.setActivity(this);
-            
+            if (audioCapture != null)
+            {
+                audioCapture.setActivity(this);
+            }
+
             videoCapture = (VideoCapture) savedInstanceState.getSerializable("videoCap");
-            if (videoCapture != null)  videoCapture.setActivity(this);
-            
+            if (videoCapture != null)
+            {
+                videoCapture.setActivity(this);
+            }
+
             photoCapture = (PhotoCapture) savedInstanceState.getSerializable("photoCap");
-            if (photoCapture != null)  photoCapture.setActivity(this);
-            
-            
+            if (photoCapture != null)
+            {
+                photoCapture.setActivity(this);
+            }
+
             String[] d = savedInstanceState.getStringArray("stackCentral");
             if (d != null)
             {
@@ -294,106 +303,120 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     {
         super.onNewIntent(intent);
 
-        Boolean backstack = false;
+        try
+        {
+            Boolean backstack = false;
 
-        // Intent after session loading
-        if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
-        {
-            if (fragmentQueue != -1) doMainMenuAction(fragmentQueue);
-            fragmentQueue = -1;
-            setProgressBarIndeterminateVisibility(false);
-        }
-        else if (Intent.ACTION_VIEW.equals(intent.getAction()) && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
-        {
-            if (intent.getExtras().containsKey(IntentIntegrator.EXTRA_NODE))
+            // Intent after session loading
+            if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
             {
-                BaseFragment frag = DetailsFragment.newInstance((Document) intent.getExtras().get(
-                        IntentIntegrator.EXTRA_NODE));
-                frag.setSession(SessionUtils.getsession(this));
-                FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, false);
+                if (fragmentQueue != -1) doMainMenuAction(fragmentQueue);
+                fragmentQueue = -1;
+                setProgressBarIndeterminateVisibility(false);
             }
-            else
+            else if (Intent.ACTION_VIEW.equals(intent.getAction())
+                    && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
             {
-
-            }
-        }
-        else if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
-        {
-            FragmentDisplayer.removeFragment(this, SignupCloudDialogFragment.TAG);
-            displayAccounts();
-        }
-        else if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
-        {
-            // case phone
-            if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) return;
-
-            if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
-            createSwitchAccount(currentAccount);
-            if (currentNode.isDocument())
-                addPropertiesFragment(currentNode);
-            else
-                addNavigationFragment((Folder) currentNode);
-        }
-        else if (Intent.ACTION_VIEW.equals(intent.getAction())
-                && "org.alfresco.mobile.android".equals(intent.getData().getScheme()))
-        {
-            FragmentTransaction ft = getFragmentManager().beginTransaction();
-            Fragment prev = getFragmentManager().findFragmentByTag(SignupCloudDialogFragment.TAG);
-            if (prev != null) ft.remove(prev);
-            prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
-            if (prev != null) ft.remove(prev);
-
-            // Create and show the dialog.
-            SignupCloudDialogFragment newFragment = new SignupCloudDialogFragment();
-            newFragment.show(ft, SignupCloudDialogFragment.TAG);
-        }
-        else if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
-        {
-            if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_OTHERS))
-            {
-                if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
+                if (intent.getExtras().containsKey(IntentIntegrator.EXTRA_NODE))
                 {
-                    if (((AccountFragment) getFragment(AccountFragment.TAG)) != null)
-                    {
-                        ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                        FragmentDisplayer.removeFragment(this, AccountDetailsFragment.TAG);
-                    }
-                    if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
-                    getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
-                    getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
-                }
-                else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
-                {
-                    ((LocalFileBrowserFragment) getFragment(LocalFileBrowserFragment.TAG)).refresh();
+                    BaseFragment frag = DetailsFragment.newInstance((Document) intent.getExtras().get(
+                            IntentIntegrator.EXTRA_NODE));
+                    frag.setSession(SessionUtils.getsession(this));
+                    FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, false);
                 }
                 else
                 {
-                    ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
+
+                }
+            }
+            else if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
+            {
+                FragmentDisplayer.removeFragment(this, SignupCloudDialogFragment.TAG);
+                displayAccounts();
+            }
+            else if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
+            {
+                // case phone
+                if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) return;
+
+                if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
+                createSwitchAccount(currentAccount);
+                if (currentNode.isDocument())
+                    addPropertiesFragment(currentNode);
+                else
+                    addNavigationFragment((Folder) currentNode);
+            }
+            else if (Intent.ACTION_VIEW.equals(intent.getAction())
+                    && "org.alfresco.mobile.android".equals(intent.getData().getScheme()))
+            {
+                FragmentTransaction ft = getFragmentManager().beginTransaction();
+                Fragment prev = getFragmentManager().findFragmentByTag(SignupCloudDialogFragment.TAG);
+                if (prev != null) ft.remove(prev);
+                prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
+                if (prev != null) ft.remove(prev);
+
+                // Create and show the dialog.
+                SignupCloudDialogFragment newFragment = new SignupCloudDialogFragment();
+                newFragment.show(ft, SignupCloudDialogFragment.TAG);
+            }
+            else if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
+            {
+                if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_OTHERS))
+                {
+                    if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
+                    {
+                        if (((AccountFragment) getFragment(AccountFragment.TAG)) != null)
+                        {
+                            ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
+                            FragmentDisplayer.removeFragment(this, AccountDetailsFragment.TAG);
+                        }
+                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+                        getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
+                        getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
+                    }
+                    else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
+                    {
+                        ((LocalFileBrowserFragment) getFragment(LocalFileBrowserFragment.TAG)).refresh();
+                    }
+                    else
+                    {
+                        ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
+                        FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
+                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+                    }
+                }
+                else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_ALL))
+                {
+                    if (getFragment(ChildrenBrowserFragment.TAG) != null)
+                        ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                     FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                    if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+                    if (!DisplayUtils.hasCentralPane(this))
+                    {
+                        backstack = true;
+                        getFragmentManager().popBackStack();
+                    }
+                    addPropertiesFragment(currentNode, backstack);
                 }
-            }
-            else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_ALL))
-            {
-                if (getFragment(ChildrenBrowserFragment.TAG) != null)
+                else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
+                {
                     ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                if (!DisplayUtils.hasCentralPane(this))
-                {
-                    backstack = true;
-                    getFragmentManager().popBackStack();
-                }
-                addPropertiesFragment(currentNode, backstack);
-            }
-            else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
-            {
-                ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                if (intent.getExtras() != null && intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA) != null)
-                {
-                    if (currentNode != null
-                            && !currentNode.getIdentifier().equals(
-                                    intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA)
-                                            .getString(IntentIntegrator.EXTRA_NODE)))
+                    if (intent.getExtras() != null && intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA) != null
+                            && currentNode != null)
+                    {
+                        clearScreen();
+                        /*
+                         * FragmentDisplayer.removeFragment(this,
+                         * DetailsFragment.TAG); if
+                         * (!DisplayUtils.hasCentralPane(this)) { backstack =
+                         * true; getFragmentManager().popBackStack(); } if
+                         * (!currentNode.getIdentifier().equals(
+                         * intent.getExtras
+                         * ().getBundle(ActionManager.REFRESH_EXTRA)
+                         * .getString(IntentIntegrator.EXTRA_NODE))) {
+                         * addPropertiesFragment(currentNode, backstack); }
+                         */
+                    }
+                    else
                     {
                         FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
                         if (!DisplayUtils.hasCentralPane(this))
@@ -404,17 +427,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                         addPropertiesFragment(currentNode, backstack);
                     }
                 }
-                else
-                {
-                    FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                    if (!DisplayUtils.hasCentralPane(this))
-                    {
-                        backstack = true;
-                        getFragmentManager().popBackStack();
-                    }
-                    addPropertiesFragment(currentNode, backstack);
-                }
             }
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showLongToast(this, e.getMessage());
         }
     }
 
@@ -425,15 +442,20 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         String[] stringArray = Arrays.copyOf(stackCentral.toArray(), stackCentral.size(), String[].class);
         outState.putStringArray("stackCentral", stringArray);
         outState.putSerializable("account", currentAccount);
-        
-        if (audioCapture != null) 
+        if (audioCapture != null)
+        {
             outState.putSerializable("audioCap", audioCapture);
-        
+        }
+
         if (videoCapture != null)
+        {
             outState.putSerializable("videoCap", videoCapture);
-        
+        }
+
         if (photoCapture != null)
+        {
             outState.putSerializable("photoCap", photoCapture);
+        }
     }
 
     // ///////////////////////////////////////////

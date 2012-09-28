@@ -36,20 +36,23 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 
+@TargetApi(11)
 public class LoginLoaderCallback implements LoaderCallbacks<LoaderResult<AlfrescoSession>>
 {
     //TODO REMOVE ALL BEFORE RELEASE!!
     public static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
     public static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
-    public static final String USER = "org.alfresco.mobile.credential.user";
-    public static final String PASSWORD = "org.alfresco.mobile.credential.password";
+    public static final String USER = "org.alfresco.mobile.internal.credential.user";
+    public static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
     public static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
     
     public static final String CLOUD_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath() + "/alfresco-mobile/cloud-config.properties";
@@ -95,7 +98,7 @@ public class LoginLoaderCallback implements LoaderCallbacks<LoaderResult<Alfresc
         if (url.startsWith(ALFRESCO_CLOUD_URL)){
             
             //TODO Remove it when public
-            url = "http://devapis.alfresco.com";
+            url = "http://devapis.alfresco.com/alfresco/a";
             
             // Check Properties available inside the device
             if (ENABLE_CONFIG_FILE){
@@ -136,7 +139,8 @@ public class LoginLoaderCallback implements LoaderCallbacks<LoaderResult<Alfresc
             i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
             activity.startActivity(i);
         } else {
-            MessengerManager.showToast(activity, "ERROR : Session not loaded");
+            MessengerManager.showLongToast(activity, "ERROR : Session not loaded : " + results.getException().getMessage());
+            Log.e("Session", Log.getStackTraceString(results.getException()));
         }
     }
 
