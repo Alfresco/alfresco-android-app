@@ -19,7 +19,6 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
-import java.io.Serializable;
 
 import org.alfresco.mobile.android.api.model.Folder;
 
@@ -31,7 +30,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 
 
-public class PhotoCapture extends DeviceCapture implements Serializable 
+public class PhotoCapture extends DeviceCapture
 {	
     private static final long serialVersionUID = 1L;
 
