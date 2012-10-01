@@ -16,41 +16,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="alfrescotheme" parent="android:Theme.Holo.Light">
-        <item name="android:actionBarTabTextStyle">@style/actionbar_top</item>
-        <item name="android:actionOverflowButtonStyle">@style/actionbar_more</item>
     </style>
 
     <!-- =============================================================== -->
     <!-- COLOR -->
     <!-- =============================================================== -->
-    <color name="actionbar_black_top">#515151</color>
-    <color name="actionbar_black_center">#1D1D1D</color>
-    <color name="actionbar_black_bottom">#000000</color>
-    <color name="actionbar_black_linelight">#878787</color>
     <color name="actionbar_grey_top">#A4A4A4</color>
     <color name="actionbar_grey_bottom">#757575</color>
+    <color name="emphasis">#31b6e7</color>
 
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
-
-    <style name="top_bar">
-        <item name="android:gravity">center</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/browse_toptext_size</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:singleLine">true</item>
-        <item name="android:scrollHorizontally">true</item>
-        <item name="android:focusable">true</item>
-        <item name="android:focusableInTouchMode">true</item>
-        <item name="android:ellipsize">start</item>
-        <item name="android:background">@drawable/grey_bar</item>
-    </style>
-
     <style name="list_item_icon">
         <item name="android:layout_gravity">center</item>
         <item name="android:adjustViewBounds">false</item>
@@ -88,17 +68,13 @@
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
     </style>
-
-    <!-- =============================================================== -->
-    <!-- Action Bar -->
-    <!-- =============================================================== -->
-    <style name="actionbar_top" parent="list_item_toptext">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:textSize">@dimen/browse_bottomtext_size</item>
+    
+    <style name="sectionHeader" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:drawableBottom">@drawable/section_header</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:textColor">@color/emphasis</item>
+        <item name="android:textSize">14sp</item>
     </style>
     
-     <style name="actionbar_more" parent="@android:style/Widget.Holo.ActionButton.Overflow">
-        <!-- <item name="android:background">@drawable/ic_menu_moreoverflow_normal_holo_dark</item>-->
-    </style>
-
 </resources>

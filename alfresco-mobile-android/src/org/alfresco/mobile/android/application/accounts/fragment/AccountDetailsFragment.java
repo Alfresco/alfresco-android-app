@@ -130,8 +130,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 // Load First Account by default
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc.getUrl(), acc.getUsername(), acc
-                        .getPassword());
+                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -145,7 +144,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 SignupCloudLoaderCallback call = new SignupCloudLoaderCallback(getActivity(),
-                        AccountDetailsFragment.this, null, null, acc.getUsername(), null, null, null);
+                        AccountDetailsFragment.this, null, null, acc.getUsername(), null, null);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(CloudSignupLoader.ID, null, call);
                 lm.getLoader(CloudSignupLoader.ID).forceLoad();
@@ -199,8 +198,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 SessionUtils.setsession(getActivity(), null);
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc.getUrl(), acc.getUsername(), acc
-                        .getPassword());
+                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getActivity().getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -328,7 +326,7 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 retrieveFormValues(v);
                 if (accountDao.update(acc.getId(), description, url, username, password, acc.getRepositoryId(),
-                        Integer.valueOf(Account.TYPE_ALFRESCO_CMIS), null))
+                        Integer.valueOf(Account.TYPE_ALFRESCO_CMIS), null, null, null))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                     initValues(vRoot, false);
@@ -371,21 +369,22 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(DialogInterface dialog, int item)
             {
                 accountDao.delete(acc.getId());
-                //In case where currentAccount is the one deleted.
+                // In case where currentAccount is the one deleted.
                 if (SessionUtils.getAccount(getActivity()) != null
                         && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
                 {
                     SessionUtils.setAccount(getActivity(), null);
                 }
-                
+
                 if (!accountDao.findAll().isEmpty())
                     ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                        IntentIntegrator.ACCOUNT_TYPE);
-                else{
+                            IntentIntegrator.ACCOUNT_TYPE);
+                else
+                {
                     getActivity().finish();
                     startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
                 }
-                    
+
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -413,12 +412,12 @@ public class AccountDetailsFragment extends BaseFragment
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_EDIT, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
                     R.string.action_edit);
             mi.setIcon(R.drawable.ic_edit);
-            mi.setShowAsAction( MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_DELETE, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
                 R.string.action_delete);
         mi.setIcon(R.drawable.ic_delete);
-        mi.setShowAsAction( MenuItem.SHOW_AS_ACTION_IF_ROOM|MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
 }

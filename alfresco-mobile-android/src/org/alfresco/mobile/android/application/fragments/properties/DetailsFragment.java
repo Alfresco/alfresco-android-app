@@ -18,14 +18,17 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -50,9 +53,9 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListen
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
+import org.alfresco.mobile.android.ui.manager.PropertyManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
-import org.alfresco.mobile.android.ui.properties.PropertiesFragment;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -67,6 +70,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -81,25 +85,23 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-public class DetailsFragment extends PropertiesFragment implements OnTabChangeListener
+public class DetailsFragment extends MetadataFragment implements OnTabChangeListener
 {
 
     public static final String TAG = "DetailsFragment";
-    
+
     private TabHost mTabHost;
 
     public static final String ARGUMENT_NODE = "node";
-    
-    protected RenditionManager renditionManager;
 
+    protected RenditionManager renditionManager;
 
     public DetailsFragment()
     {
     }
-    
+
     protected Node node;
 
-    
     public static Bundle createBundleArgs(Node node)
     {
         Bundle args = new Bundle();
@@ -127,7 +129,7 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         setRetainInstance(false);
         alfSession = SessionUtils.getsession(getActivity());
         View v = inflater.inflate(R.layout.sdk_details, container, false);
-        
+
         node = (Node) getArguments().get(ARGUMENT_NODE);
         renditionManager = new RenditionManager(getActivity(), alfSession);
 
@@ -140,10 +142,13 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         // Preview
         ImageView iv = (ImageView) v.findViewById(R.id.icon);
         int iconId = R.drawable.mime_folder;
-        if (node.isDocument()){
+        if (node.isDocument())
+        {
             iconId = MimeTypeManager.getIcon(node.getName());
             renditionManager.display(iv, node, iconId);
-        } else {
+        }
+        else
+        {
             iv.setImageResource(iconId);
         }
 
@@ -158,14 +163,15 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         {
             tv.setVisibility(View.GONE);
         }
-        
-        //TAB
-        
+
+        // TAB
+
         mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
         setupTabs();
-        
-        if (mTabHost == null){
-            ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata); 
+
+        if (mTabHost == null)
+        {
+            ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, null, null, false);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC, R.drawable.ic_location,
                     new OnClickListener()
@@ -174,16 +180,15 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
                         public void onClick(View v)
                         {
                             ActionManager.actionShowMap(DetailsFragment.this, node.getName(),
-                                    node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
-                                    node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
+                                    node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(), node
+                                            .getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
                         }
                     });
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF, null, null);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO, null, null);
         }
-           
 
-        //BUTTONS
+        // BUTTONS
         Button b = (Button) v.findViewById(R.id.action_openin);
         if (node.isDocument() && ((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
                 && ((Document) node).getContentStreamLength() > 0)
@@ -237,24 +242,20 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         {
             ba.setVisibility(View.GONE);
         }
-        
+
         IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
         lcb.setImageButton(ba);
         lcb.execute(false);
-        
-        ba = (ImageButton) v.findViewById(R.id.share);
+
+       /* ba = (ImageButton) v.findViewById(R.id.share);
         ba.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                share();  
+                share();
             }
-        });
-        
-        //((MainActivity) getActivity()).addComments(node);
-        if (DisplayUtils.hasRightPane(getActivity()))
-            ((MainActivity) getActivity()).addExtraDetails(node);
+        });*/
 
         return v;
     }
@@ -265,8 +266,7 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         DisplayUtils.setTitleFragmentPlace(getActivity(), "Properties");
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
-        if (mTabHost != null)
-            mTabHost.setCurrentTabByTag(TAB_METADATA);
+        if (mTabHost != null) mTabHost.setCurrentTabByTag(TAB_METADATA);
         super.onStart();
     }
 
@@ -283,7 +283,7 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
     // ///////////////////////////////////////////////////////////////////////////
     public void share()
     {
-        //TODO Share Link OR Content
+        // TODO Share Link OR Content
         ActionManager.actionShareLink(this, ((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
                 .getDocumentFolderService()).getDownloadUrl((Document) node));
     }
@@ -297,15 +297,17 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
 
     private File getDownloadFile()
     {
-        //File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File folder = StorageManager.getDownloadFolder(getActivity(), alfSession.getBaseUrl(), alfSession.getPersonIdentifier());
+        // File folder =
+        // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File folder = StorageManager.getDownloadFolder(getActivity(), alfSession.getBaseUrl(),
+                alfSession.getPersonIdentifier());
         return new File(folder, node.getName());
     }
 
     public void download()
     {
-        Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry().getDocumentFolderService())
-                .getDownloadUrl((Document) node));
+        Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
+                .getDocumentFolderService()).getDownloadUrl((Document) node));
 
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
 
@@ -471,26 +473,33 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
         UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(node);
         newFragment.show(ft, UpdateDialogFragment.TAG);
     }
-    
+
     public void like(View v)
     {
         IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
         lcb.setImageButton((ImageButton) v.findViewById(R.id.like));
         lcb.execute(true);
     }
+    
+    public void comment(){
+        addComments(node, DisplayUtils.getMainPaneId(getActivity()), true);
+    }
+    
+    public void versions(){
+        addVersions((Document) node,  DisplayUtils.getMainPaneId(getActivity()), true);
+    }
+    
+    public void tags(){
+        addTags(node,  DisplayUtils.getMainPaneId(getActivity()), true);
+   }
 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
 
-    public static void getMenu(AlfrescoSession session, Menu menu, Node node)
+    public static void getMenu(AlfrescoSession session, Activity activity, Menu menu, Node node)
     {
         MenuItem mi;
-
-        /*mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE,
-                R.string.action_share);
-        mi.setIcon(R.drawable.ic_share);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
 
         if (node.isDocument())
         {
@@ -511,7 +520,7 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
-        
+
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
@@ -527,20 +536,38 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
+
+        if (!DisplayUtils.hasCentralPane(activity))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMMENT, Menu.FIRST + MenuActionItem.MENU_COMMENT,
+                    R.string.action_comments);
+            mi.setIcon(R.drawable.ic_comment);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST + MenuActionItem.MENU_VERSION_HISTORY,
+                    R.string.action_versions);
+            mi.setIcon(R.drawable.ic_menu_recent_history);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS,
+                    R.string.action_tags);
+            mi.setIcon(R.drawable.mime_tags);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
     }
 
     public void getMenu(Menu menu)
     {
-        getMenu(alfSession, menu, node);
+        getMenu(alfSession, getActivity(), menu, node);
     }
 
     public Node getCurrentNode()
     {
         return node;
     }
-    
+
     private static final String TAB_METADATA = "Metadata";
-    
+
     private static final String TAB_COMMENTS = "Comments";
 
     private static final String TAB_HISTORY = "History";
@@ -549,16 +576,20 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
 
     private void setupTabs()
     {
-        if (mTabHost == null) return;
-        
+        if (mTabHost == null) { return; }
+
         mTabHost.setup(); // you must call this before adding your tabs!
 
         if (node.isDocument())
+        {
             mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_versions, android.R.id.tabcontent));
+        }
         mTabHost.addTab(newTab(TAB_METADATA, R.string.metadata, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_COMMENTS, R.string.action_comments, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_TAGS, R.string.action_tags, android.R.id.tabcontent));
         mTabHost.setOnTabChangedListener(this);
+        
+        
     }
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
@@ -573,44 +604,64 @@ public class DetailsFragment extends PropertiesFragment implements OnTabChangeLi
     public void onTabChanged(String tabId)
     {
         if (TAB_METADATA.equals(tabId))
+        {
             addMetadata(node);
+        }
         else if (TAB_COMMENTS.equals(tabId))
+        {
             addComments(node);
+        }
         else if (TAB_HISTORY.equals(tabId) && node.isDocument())
+        {
             addVersions((Document) node);
+        }
         else if (TAB_TAGS.equals(tabId))
+        {
             addTags(node);
+        }
+    }
+    
+    public void addComments(Node n, int layoutId, boolean backstack)
+    {
+        BaseFragment frag = CommentsFragment.newInstance(n);
+        frag.setSession(alfSession);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, CommentsFragment.TAG, backstack);
     }
 
     public void addComments(Node n)
     {
-        BaseFragment frag = CommentsFragment.newInstance(n);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, CommentsFragment.TAG, false);
+       addComments(n, android.R.id.tabcontent, false);
     }
-    
+
     public void addMetadata(Node n)
     {
-        int layoutid = R.id.metadata;
-        if (getResources().getBoolean(R.bool.tablet_middle))
-            layoutid = android.R.id.tabcontent;
+        int layoutid = android.R.id.tabcontent;
         BaseFragment frag = MetadataFragment.newInstance(n);
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, layoutid, MetadataFragment.TAG, false);
     }
 
-    public void addVersions(Document d)
+    public void addVersions(Document d, int layoutId, boolean backstack)
     {
         BaseFragment frag = VersionFragment.newInstance(d);
         frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, VersionFragment.TAG, false);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, VersionFragment.TAG, backstack);
+    }
+    
+    public void addVersions(Document d)
+    {
+        addVersions(d, android.R.id.tabcontent, false);
+    }
+
+    public void addTags(Node d, int layoutId, boolean backstack)
+    {
+        BaseFragment frag = TagsListNodeFragment.newInstance(d);
+        frag.setSession(alfSession);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, TagsListNodeFragment.TAG, backstack);
     }
     
     public void addTags(Node d)
     {
-        BaseFragment frag = TagsListNodeFragment.newInstance(d);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, TagsListNodeFragment.TAG, false);
+        addTags(d, android.R.id.tabcontent, false);
     }
-    
 }

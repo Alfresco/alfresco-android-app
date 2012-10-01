@@ -18,11 +18,17 @@
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
+import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialogFragment;
-import org.alfresco.mobile.android.ui.utils.ContentFileProgressImpl;
+import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,7 +40,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     public AddContentDialogFragment()
     {
     }
-    
+
     public static AddContentDialogFragment newInstance(Folder folder, File f)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
@@ -54,6 +60,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     {
         alfSession = SessionUtils.getsession(getActivity());
         super.onActivityCreated(savedInstanceState);
+        setOnCreateListener(nodeCreateListener);
     }
 
     @Override
@@ -62,4 +69,44 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         alfSession = SessionUtils.getsession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
+    OnNodeCreateListener nodeCreateListener = new OnNodeCreateListener()
+    {
+
+        @Override
+        public void beforeContentCreation(Folder parentFolder, String name, Map<String, Serializable> props,
+                ContentFile contentFile)
+        {
+            if (contentFile != null)
+            {
+                Bundle progressBundle = new Bundle();
+                ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+
+                if (f.getClass() == ContentFileProgressImpl.class)
+                {
+                    ((ContentFileProgressImpl) f).setFilename(name);
+                    progressBundle.putString("name", name);
+                }
+                else
+                {
+                    progressBundle.putString("name", f.getFile().getName());
+                }
+
+                progressBundle.putInt("dataSize", (int) f.getFile().length());
+                progressBundle.putInt("dataIncrement", (int) (f.getFile().length() / 10));
+
+                ProgressNotification
+                        .createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
+            }
+
+        }
+
+        @Override
+        public void afterContentCreation(Node arg0)
+        {
+            // TODO Auto-generated method stub
+
+        }
+    };
+
 }

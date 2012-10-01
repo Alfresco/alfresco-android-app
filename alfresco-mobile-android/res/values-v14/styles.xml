@@ -18,7 +18,7 @@
 -->
 <resources>
 
-    <style name="alfrescotheme" parent="android:Theme.Holo.Light.DarkActionBar">
+    <style name="alfrescotheme" parent="android:Theme.Holo.Light">
     
 	</style>
 

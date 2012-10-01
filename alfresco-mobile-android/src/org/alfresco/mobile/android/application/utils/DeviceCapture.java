@@ -20,7 +20,9 @@ package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.fragments.browser.AddContentDialogFragment;
@@ -96,20 +98,19 @@ public abstract class DeviceCapture implements Serializable
         final AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload);
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
-
-            @Override
-            public void beforeContentCreation(String arg0)
-            {
-                // TODO Auto-generated method stub
-
-            }
-
             @Override
             public void afterContentCreation(Node arg0)
             {
                 ActionManager.actionRefresh(newFragment, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
                         IntentIntegrator.NODE_TYPE);
 
+            }
+
+            @Override
+            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
+            {
+                // TODO Auto-generated method stub
+                
             }
         });
         newFragment.show(ft, AddContentDialogFragment.TAG);

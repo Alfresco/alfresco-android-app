@@ -23,6 +23,7 @@ import java.net.URL;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -57,7 +58,7 @@ public class CreateAccountDialogFragment extends DialogFragment
 
     public CreateAccountDialogFragment()
     {
-        setStyle(android.R.style.Theme_Holo_Dialog, android.R.style.Theme_Holo_Dialog);
+        setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
 
     public static Bundle createBundle()
@@ -69,15 +70,26 @@ public class CreateAccountDialogFragment extends DialogFragment
     @Override
     public void onStart()
     {
-        getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_login);
+        if (getDialog() != null)
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_login);
+        }
         super.onStart();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getDialog().setTitle("Connect to an Alfresco");
-        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        if (getDialog() != null)
+        {
+            getDialog().setTitle("Connect to an Alfresco");
+            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        }
+        else
+        {
+            getActivity().getActionBar().show();
+            getActivity().setTitle("Connect to an Alfresco");
+        }
 
         View v = inflater.inflate(R.layout.sdkapp_wizard_account, container, false);
 
@@ -101,16 +113,10 @@ public class CreateAccountDialogFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                cloudAccountType = true;
-                flip.findViewById(R.id.advanced).setVisibility(View.GONE);
-                flip.findViewById(R.id.advanced_settings).setVisibility(View.GONE);
-                flip.findViewById(R.id.repository_hostname_group).setVisibility(View.GONE);
-                ((EditText) flip.findViewById(R.id.repository_username)).setHint("example@acme.com");
-                
-                /*((EditText) flip.findViewById(R.id.repository_username)).setText("jeanmarie.pascal@alfresco.com");
-                ((EditText) flip.findViewById(R.id.repository_password)).setText("password");
-                ((EditText) flip.findViewById(R.id.repository_description)).setText("Alfresco Cloud");*/
-                flip.setDisplayedChild(1);
+                flip.setDisplayedChild(2);
+                WizardOAuthAppFragment newFragment = new WizardOAuthAppFragment();
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, R.id.oauth_pane, WizardOAuthAppFragment.TAG,
+                        false);
             }
         });
 
@@ -120,14 +126,14 @@ public class CreateAccountDialogFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                View vt = (View) getDialog().findViewById(R.id.advanced_settings);
+                View vt = (View) findViewByIdInternal(R.id.advanced_settings);
                 if (vt.getVisibility() == View.VISIBLE)
                     vt.setVisibility(View.GONE);
                 else
                     vt.setVisibility(View.VISIBLE);
             }
         });
-        
+
         TextView t2 = (TextView) v.findViewById(R.id.cloud_signup_hint);
         t2.setMovementMethod(LinkMovementMethod.getInstance());
 
@@ -140,7 +146,7 @@ public class CreateAccountDialogFragment extends DialogFragment
                 validateServer(v);
             }
         });
-        
+
         step2 = (Button) v.findViewById(R.id.previous);
         step2.setOnClickListener(new OnClickListener()
         {
@@ -158,10 +164,10 @@ public class CreateAccountDialogFragment extends DialogFragment
             public void onClick(View v)
             {
                 dismiss();
-                //Intent i = new Intent(getActivity(), MainActivity.class);
+                // Intent i = new Intent(getActivity(), MainActivity.class);
                 ActionManager.actionRefresh(CreateAccountDialogFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
                         IntentIntegrator.ACCOUNT_TYPE);
-                //getActivity().startActivity(i);
+                // getActivity().startActivity(i);
             }
         });
 
@@ -213,13 +219,13 @@ public class CreateAccountDialogFragment extends DialogFragment
     private void retrieveFormValues()
     {
 
-        EditText form_value = (EditText) getDialog().findViewById(R.id.repository_username);
+        EditText form_value = (EditText) findViewByIdInternal(R.id.repository_username);
         username = form_value.getText().toString();
 
-        form_value = (EditText) getDialog().findViewById(R.id.repository_description);
+        form_value = (EditText) findViewByIdInternal(R.id.repository_description);
         description = form_value.getText().toString();
 
-        form_value = (EditText) getDialog().findViewById(R.id.repository_password);
+        form_value = (EditText) findViewByIdInternal(R.id.repository_password);
         password = form_value.getText().toString();
 
         // Check values
@@ -231,7 +237,7 @@ public class CreateAccountDialogFragment extends DialogFragment
         }
         else
         {
-            form_value = (EditText) getDialog().findViewById(R.id.repository_hostname);
+            form_value = (EditText) findViewByIdInternal(R.id.repository_hostname);
             if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
                 host = form_value.getText().toString();
             else
@@ -240,14 +246,14 @@ public class CreateAccountDialogFragment extends DialogFragment
                 return;
             }
 
-            Switch sw = (Switch) getDialog().findViewById(R.id.repository_https);
+            Switch sw = (Switch) findViewByIdInternal(R.id.repository_https);
             https = sw.isChecked();
             String protocol = https ? "https" : "http";
 
-            form_value = (EditText) getDialog().findViewById(R.id.repository_port);
+            form_value = (EditText) findViewByIdInternal(R.id.repository_port);
             port = Integer.parseInt(form_value.getText().toString());
 
-            form_value = (EditText) getDialog().findViewById(R.id.repository_servicedocument);
+            form_value = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
             servicedocument = form_value.getText().toString();
             URL u = null;
             try
@@ -267,6 +273,18 @@ public class CreateAccountDialogFragment extends DialogFragment
     public void validateAccount()
     {
         flip.showNext();
+    }
+
+    private View findViewByIdInternal(int id)
+    {
+        if (getDialog() != null)
+        {
+            return getDialog().findViewById(id);
+        }
+        else
+        {
+            return getActivity().findViewById(id);
+        }
     }
 
 }

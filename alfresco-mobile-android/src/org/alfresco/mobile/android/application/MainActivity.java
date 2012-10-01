@@ -45,9 +45,9 @@ import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFr
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
+import org.alfresco.mobile.android.application.fragments.help.HelpFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.fragments.properties.ExtraDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -55,6 +55,7 @@ import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
+import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.PhotoCapture;
@@ -90,7 +91,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -170,13 +170,20 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         {
             clearScreen();
             if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
+            {
                 displayAccounts();
+            }
             else
+            {
                 displayMainMenu();
+            }
         }
 
         initActionBar();
         checkForUpdates();
+
+        // Display or not Left/central panel for middle tablet.
+        DisplayUtils.switchSingleOrTwo(this, false);
     }
 
     @Override
@@ -209,11 +216,17 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
+        {
             photoCapture.capturedCallback(requestCode, resultCode, data);
+        }
         else if (videoCapture != null && requestCode == videoCapture.getRequestCode())
+        {
             videoCapture.capturedCallback(requestCode, resultCode, data);
+        }
         else if (audioCapture != null && requestCode == audioCapture.getRequestCode())
+        {
             audioCapture.capturedCallback(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -262,8 +275,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             if (currentAccount.getActivation() == null && hasNetwork())
             {
                 // Load First Account by default
-                LoginLoaderCallback call = new LoginLoaderCallback(this, currentAccount.getUrl(),
-                        currentAccount.getUsername(), currentAccount.getPassword());
+                LoginLoaderCallback call = new LoginLoaderCallback(this, currentAccount);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -272,7 +284,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         else
         {
             currentAccount = SessionUtils.getAccount(this);
-            if (currentAccount == null) currentAccount = results.get(0);
+            if (currentAccount == null)
+            {
+                currentAccount = results.get(0);
+            }
         }
         SessionUtils.setAccount(this, currentAccount);
         createSwitchAccount(currentAccount);
@@ -284,7 +299,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         super.onStart();
 
         if (currentAccount != null)
+        {
             createSwitchAccount(currentAccount);
+        }
         else if (accounts != null)
         {
             currentAccount = accounts.get(0);
@@ -387,15 +404,31 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_ALL))
                 {
-                    if (getFragment(ChildrenBrowserFragment.TAG) != null)
-                        ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                    FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                    if (!DisplayUtils.hasCentralPane(this))
+                    if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
                     {
-                        backstack = true;
-                        getFragmentManager().popBackStack();
+                        clearCentralPane();
+                        clearScreen();
+                        if (((AccountFragment) getFragment(AccountFragment.TAG)) != null)
+                        {
+                            ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
+                            FragmentDisplayer.removeFragment(this, AccountDetailsFragment.TAG);
+                        }
+                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+                        getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
+                        getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
+                    } else {
+                        if (getFragment(ChildrenBrowserFragment.TAG) != null)
+                        {
+                            ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
+                        }
+                        FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
+                        if (!DisplayUtils.hasCentralPane(this))
+                        {
+                            backstack = true;
+                            getFragmentManager().popBackStack();
+                        }
+                        addPropertiesFragment(currentNode, backstack);  
                     }
-                    addPropertiesFragment(currentNode, backstack);
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
                 {
@@ -404,17 +437,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                             && currentNode != null)
                     {
                         clearScreen();
-                        /*
-                         * FragmentDisplayer.removeFragment(this,
-                         * DetailsFragment.TAG); if
-                         * (!DisplayUtils.hasCentralPane(this)) { backstack =
-                         * true; getFragmentManager().popBackStack(); } if
-                         * (!currentNode.getIdentifier().equals(
-                         * intent.getExtras
-                         * ().getBundle(ActionManager.REFRESH_EXTRA)
-                         * .getString(IntentIntegrator.EXTRA_NODE))) {
-                         * addPropertiesFragment(currentNode, backstack); }
-                         */
                     }
                     else
                     {
@@ -507,8 +529,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             setProgressBarIndeterminateVisibility(true);
             currentAccount = acc;
             SessionUtils.setsession(this, null);
-            LoginLoaderCallback call = new LoginLoaderCallback(MainActivity.this, acc.getUrl(), acc.getUsername(),
-                    acc.getPassword());
+            LoginLoaderCallback call = new LoginLoaderCallback(MainActivity.this, acc);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(SessionLoader.ID, null, call);
             lm.getLoader(SessionLoader.ID).forceLoad();
@@ -590,14 +611,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_download:
-                addLocalFileNavigationFragment(StorageManager.getDownloadFolder(this, SessionUtils.getsession(this)
-                        .getBaseUrl(), SessionUtils.getsession(this).getPersonIdentifier()));
-                // FragmentDisplayer.replaceFragment(this,
-                // DisplayUtils.getLeftFragmentId(this),
-                // addLocalFileNavigationFragment.TAG, true);
+                addLocalFileNavigationFragment(StorageManager.getDownloadFolder(this, currentAccount.getUrl(),
+                        currentAccount.getUsername()));
                 break;
             case R.id.menu_about:
                 showAbout();
+                break;
+            case R.id.menu_help:
+                showHelp();
                 break;
             default:
                 break;
@@ -702,15 +723,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         ((View) findViewById(getFragmentPlace(true)).getParent()).setVisibility(View.VISIBLE);
     }
 
-    public void addExtraDetails(Node n)
-    {
-        if (DisplayUtils.hasCentralPane(this)) stackCentral.push(ExtraDetailsFragment.TAG);
-        BaseFragment frag = ExtraDetailsFragment.newInstance(n);
-        frag.setSession(SessionUtils.getsession(this));
-        FragmentDisplayer.replaceFragment(this, frag, R.id.right_pane_body, ExtraDetailsFragment.TAG, false);
-        ((View) findViewById(R.id.right_pane_body).getParent()).setVisibility(View.VISIBLE);
-    }
-
     public void addVersions(Document d)
     {
         if (DisplayUtils.hasCentralPane(this)) stackCentral.push(VersionFragment.TAG);
@@ -733,6 +745,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     {
         Fragment f = new AboutFragment();
         FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
+        DisplayUtils.switchSingleOrTwo(this, true);
+    }
+
+    public void showHelp()
+    {
+        Fragment f = new HelpFragment();
+        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), HelpFragment.TAG, true);
+        DisplayUtils.switchSingleOrTwo(this, true);
     }
 
     public void displayMainMenu()
@@ -761,19 +781,20 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     public int getFragmentPlace(boolean right)
     {
         int id = R.id.left_pane_body;
-        if (right && DisplayUtils.hasRightPane(this))
-            id = R.id.right_pane_body;
-        else if (DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
+        /*
+         * if (right && DisplayUtils.hasRightPane(this)) id =
+         * R.id.right_pane_body;
+         */
+        if (DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
         return id;
     }
 
     public int getFragmentPlaceId()
     {
-        if (DisplayUtils.hasRightPane(this))
-        {
-            return DisplayUtils.getRightFragmentId(this);
-        }
-        else if (DisplayUtils.hasCentralPane(this))
+        /*
+         * if (DisplayUtils.hasRightPane(this)) { return
+         * DisplayUtils.getRightFragmentId(this); } else
+         */if (DisplayUtils.hasCentralPane(this))
         {
             return DisplayUtils.getCentralFragmentId(this);
         }
@@ -785,11 +806,12 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public void clearScreen()
     {
-        if (DisplayUtils.hasRightPane(this))
-        {
-            FragmentDisplayer.removeFragment(this, DisplayUtils.getRightFragmentId(this));
-            DisplayUtils.hide(DisplayUtils.getRightPane(this));
-        }
+        /*
+         * if (DisplayUtils.hasRightPane(this)) {
+         * FragmentDisplayer.removeFragment(this,
+         * DisplayUtils.getRightFragmentId(this));
+         * DisplayUtils.hide(DisplayUtils.getRightPane(this)); }
+         */
         if (DisplayUtils.hasCentralPane(this))
         {
             FragmentDisplayer.removeFragment(this, DisplayUtils.getCentralFragmentId(this));
@@ -819,7 +841,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         try
         {
             ActionBar bar = getActionBar();
-            bar.setBackgroundDrawable(getResources().getDrawable(R.drawable.black_bar));
 
             // Create Quick Account Icon.
             LinearLayout l1 = new LinearLayout(this);
@@ -837,13 +858,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 }
             });
 
-            ImageView im = new ImageView(this);
-            im.setBackgroundDrawable(getResources().getDrawable(R.drawable.switch_account));
-            im.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-
-            l1.addView(im);
-            getActionBar().setCustomView(l1);
-
             bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
 
             if (DisplayUtils.hasCentralPane(this))
@@ -856,7 +870,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_USE_LOGO);
             }
 
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            if (AndroidVersion.isICSOrAbove())
             {
                 bar.setHomeButtonEnabled(true);
             }
@@ -887,7 +901,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_OPTION, Menu.FIRST + MenuActionItem.MENU_SEARCH_OPTION,
                     R.string.search_option);
-            mi.setIcon(R.drawable.ic_menu_find_holo_dark);
+            // mi.setIcon(R.drawable.ic_menu_find_holo_dark);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
         else if (isVisible(ChildrenBrowserFragment.TAG))
@@ -1001,6 +1015,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             case MenuActionItem.MENU_EDIT:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).edit();
                 return true;
+            case MenuActionItem.MENU_COMMENT:
+                ((DetailsFragment) getFragment(DetailsFragment.TAG)).comment();
+                return true;
+            case MenuActionItem.MENU_VERSION_HISTORY:
+                ((DetailsFragment) getFragment(DetailsFragment.TAG)).versions();
+                return true;
+            case MenuActionItem.MENU_TAGS:
+                ((DetailsFragment) getFragment(DetailsFragment.TAG)).tags();
+                return true;
             case MenuActionItem.MENU_DELETE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).delete();
                 return true;
@@ -1021,6 +1044,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 return true;
             case MenuActionItem.ABOUT_ID:
                 showAbout();
+                DisplayUtils.switchSingleOrTwo(this, true);
                 return true;
 
             case android.R.id.home:
@@ -1042,11 +1066,33 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     public void onBackPressed()
     {
         if (isSlideMenuVisible())
+        {
             hideSlideMenu();
+        }
+        else if (getResources().getBoolean(R.bool.tablet_middle))
+        {
+            // Sepcific case where we want to display one or two panes.
+            if (getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(this)) == null)
+            {
+                super.onBackPressed();
+            }
+            else
+            {
+                DisplayUtils.getLeftPane(this).setVisibility(View.VISIBLE);
+                DisplayUtils.getCentralPane(this).setVisibility(View.GONE);
+                FragmentDisplayer.remove(this,
+                        getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(this)), false);
+            }
+        }
         else
+        {
             super.onBackPressed();
+        }
 
-        if (DisplayUtils.hasCentralPane(this)) invalidateOptionsMenu();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            invalidateOptionsMenu();
+        }
     }
 
     // ///////////////////////////////////////////

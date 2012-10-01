@@ -5,6 +5,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
@@ -41,7 +42,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     {
         if (container == null) { return null; }
         View v = inflater.inflate(R.layout.app_tab_extra, container, false);
-        
+
         init(v, emptyListMessageId);
 
         mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
@@ -55,6 +56,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
         super.onStart();
         mTabHost.setCurrentTabByTag(MY_SITES);
         getActivity().invalidateOptionsMenu();
+        DisplayUtils.hideLeftTitlePane(getActivity());
     }
 
     private static final String ALL_SITES = "All";
@@ -84,24 +86,28 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onTabChanged(String tabId)
     {
-        if (SessionUtils.getsession(getActivity()) == null) return;
+        if (SessionUtils.getsession(getActivity()) == null) { return; }
         Bundle b = getListingBundle();
         if (MY_SITES.equals(tabId))
+        {
             b = createBundleArgs(alfSession.getPersonIdentifier(), false);
+        }
         else if (FAV_SITES.equals(tabId))
+        {
             b = createBundleArgs(alfSession.getPersonIdentifier(), true);
+        }
         reload(b, loaderId, this);
-    
+
     }
-    
-    
-    private static Bundle getListingBundle(){
+
+    private static Bundle getListingBundle()
+    {
         ListingContext lc = new ListingContext();
         lc.setSortProperty(SiteService.SORT_PROPERTY_TITLE);
         lc.setIsSortAscending(true);
         return createBundleArgs(lc, LOAD_AUTO);
     }
-    
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {

@@ -28,13 +28,18 @@ import java.util.Properties;
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
@@ -42,6 +47,7 @@ import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
@@ -66,7 +72,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
 
     private ProgressDialog mProgressDialog;
 
-    private CreateAccountDialogFragment fr;
+    private Fragment fr;
 
     private static final String ARGUMENT_URL = "agumentUrl";
 
@@ -74,8 +80,10 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
 
     private String description;
 
-    public AccountLoaderCallback(Activity activity, CreateAccountDialogFragment fr, String url, String username,
-            String password, String description)
+    private OAuthData data;
+
+    public AccountLoaderCallback(Activity activity, Fragment fr, String url, String username, String password,
+            String description)
     {
         this.activity = activity;
         this.baseUrl = url;
@@ -83,6 +91,13 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
         this.password = password;
         this.description = description;
         this.fr = fr;
+    }
+
+    public AccountLoaderCallback(Activity activity, Fragment fr, OAuthData data)
+    {
+        this.activity = activity;
+        this.fr = fr;
+        this.data = data;
     }
 
     @Override
@@ -119,9 +134,13 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(activity, "AlfrescoMobile"));
 
+        if (data != null)
+        {
+            return new CloudSessionLoader(activity, data, settings);
+        }
         // TODO REMOVE ALL BEFORE RELEASE!!
         // Specific for Test Instance server
-        if (baseUrl!= null && baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
+        else if (baseUrl != null && baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
         {
             // TODO Remove it when public
             String tmpurl = "http://devapis.alfresco.com/alfresco/a";
@@ -160,21 +179,42 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<AlfrescoSession>> arg0, LoaderResult<AlfrescoSession> results)
+    public void onLoadFinished(Loader<LoaderResult<AlfrescoSession>> loader, LoaderResult<AlfrescoSession> results)
     {
         AlfrescoSession session = results.getData();
         if (session != null)
         {
             SessionUtils.setsession(activity, session);
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            long id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
-                    .getIdentifier(), (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD)
-                    : Integer.valueOf(Account.TYPE_ALFRESCO_CMIS));
+            long id = -1L;
+            if (data == null)
+            {
+                id = serverDao.insert(
+                        description,
+                        baseUrl,
+                        username,
+                        password,
+                        session.getRepositoryInfo().getIdentifier(),
+                        (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD) : Integer
+                                .valueOf(Account.TYPE_ALFRESCO_CMIS), null, null);
+            }
+            else
+            {
+                Person user = null;
+                if (loader instanceof CloudSessionLoader)
+                {
+                    user = ((CloudSessionLoader) loader).getUser();
+                }
+                id = serverDao.insert("Alfresco Cloud", OAuthConstant.CLOUD_URL, user.getIdentifier(), null, session
+                        .getRepositoryInfo().getIdentifier(), Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD), data
+                        .getAccessToken(), data.getRefreshToken());
+            }
+
             SessionUtils.setAccount(activity, serverDao.findById(id));
 
             if (fr != null)
             {
-                fr.validateAccount();
+                ActionManager.actionRefresh(fr, IntentIntegrator.CATEGORY_REFRESH_ALL, IntentIntegrator.ACCOUNT_TYPE);
             }
             mProgressDialog.dismiss();
         }
