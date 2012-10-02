@@ -17,7 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -78,8 +85,12 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -95,6 +106,7 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @TargetApi(11)
 public class MainActivity extends Activity implements LoaderCallbacks<List<Account>>, OnMenuItemClickListener
@@ -617,9 +629,23 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             case R.id.menu_about:
                 showAbout();
                 break;
+                
             case R.id.menu_help:
-                showHelp();
+                String newFile;
+                try
+                {
+                    newFile = writeAsset("gettingstarted.pdf");
+                    
+                    if (newFile.length() > 0)
+                    {
+                        launchPDF(newFile);
+                    }
+                }
+                catch (IOException e)
+                {
+                }
                 break;
+                
             default:
                 break;
         }
@@ -1147,6 +1173,9 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public static final int NETWORK_PROBLEM = 600;
 
+    public static final int GET_PDF_VIEWER = 700;
+    
+    
     @Override
     protected Dialog onCreateDialog(int id)
     {
@@ -1176,8 +1205,105 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                             }
                         }).create();
                 dialog.show();
+                break;
+                
+            case GET_PDF_VIEWER:
+                dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name)
+                        .setMessage("You need a PDF viewer to display this document.  Do you want to get one now?")
+                        .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int id)
+                            {
+                                getAdobeReader();
+                                dialog.dismiss();
+                            }
+                        })
+                        .create();
+                dialog.show();
         }
         // TODO Auto-generated method stub
         return super.onCreateDialog(id);
+    }
+    
+    boolean launchPDF(String pdfFile)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(pdfFile)), "application/pdf");
+        
+        PackageManager pm = getPackageManager();
+        List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+        if (activities.size() > 0) 
+        {
+            startActivity(intent);
+        }
+        else
+        {
+            showDialog(GET_PDF_VIEWER);            
+            return false;
+        }
+        
+        return true;
+    }
+
+    void getAdobeReader()
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=com.adobe.reader"));
+        startActivity(intent);
+    }
+    
+    String writeAsset (String assetFilename) throws IOException
+    {
+        String newFilename = "";
+        
+        if (Environment.getExternalStorageState().equals (Environment.MEDIA_MOUNTED))
+        {
+            newFilename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + assetFilename;
+            BufferedInputStream bis = null;
+            BufferedOutputStream bos = null;
+            
+            try
+            {
+                InputStream is = getAssets().open(assetFilename);
+                OutputStream os = new FileOutputStream(newFilename);
+                
+                bis = new BufferedInputStream(is);
+                bos = new BufferedOutputStream(os);
+                byte[] buf = new byte[1024];
+        
+                int n = 0;
+                int o = 0;
+                while ((n = bis.read(buf, o, buf.length)) > 0) 
+                {
+                    bos.write(buf, 0, n);
+                }
+            }
+            catch (IOException e)
+            {
+                newFilename = "";
+            }
+    
+            if (bis != null)
+            {
+                bis.close();
+            }
+            if (bos != null)
+            {
+                bos.close();
+            }
+        }
+        else
+        {
+            Toast.makeText(this, "SD Card is not available", Toast.LENGTH_LONG).show();
+        }
+        
+        return newFilename;
     }
 }
