@@ -22,16 +22,16 @@
         <shape android:shape="rectangle" >
             <stroke
                 android:width="2dip"
-                android:color="@color/actionbar_black_linelight" />
+                android:color="@android:color/background_light" />
         </shape>
     </item>
-    <item android:top="1dip">
+    <item android:top="2dip">
         <shape android:shape="rectangle" >
             <gradient
-                android:angle="-90"
-                android:centerColor="@color/actionbar_black_center"
-                android:endColor="@color/actionbar_black_bottom"
-                android:startColor="@color/actionbar_black_top" />
+                android:angle="0"
+                android:centerColor="@color/actionbar_grey_bottom"
+                android:endColor="@android:color/background_light"
+                android:startColor="@android:color/background_light" />
         </shape>
     </item>
 </layer-list>

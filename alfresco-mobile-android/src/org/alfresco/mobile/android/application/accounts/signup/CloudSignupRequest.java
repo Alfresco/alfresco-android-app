@@ -1,10 +1,14 @@
 package org.alfresco.mobile.android.application.accounts.signup;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
@@ -67,9 +71,6 @@ public class CloudSignupRequest
         return request;
     }
 
-    // TODO Replace by official one.
-    private static final String SIGNUP_CLOUD_URL = "http://devapis.alfresco.com";
-
     private static final int SESSION_SIGNUP_ERROR = 104;
 
     // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
@@ -78,7 +79,7 @@ public class CloudSignupRequest
     public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
             String apiKey)
     {
-        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(SIGNUP_CLOUD_URL));
+        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(OAuthConstant.CLOUD_URL));
 
         // prepare json data
         JSONObject jo = new JSONObject();
@@ -86,9 +87,14 @@ public class CloudSignupRequest
         jo.put(CloudConstant.CLOUD_FIRSTNAME_VALUE, firstName);
         jo.put(CloudConstant.CLOUD_LASTNAME_VALUE, lastName);
         jo.put(CloudConstant.CLOUD_PASSWORD_VALUE, password);
-        jo.put(CloudConstant.CLOUD_KEY, apiKey);
+        //jo.put(CloudConstant.CLOUD_KEY, apiKey);
         jo.put(CloudConstant.CLOUD_SOURCE_VALUE, "mobile-android");
 
+        Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
+        List<String> headers = new ArrayList<String>();
+        headers.add(apiKey);
+        fixedHeaders.put("key", headers);
+        
         final JsonDataWriter formData = new JsonDataWriter(jo);
 
         // send and parse
@@ -99,7 +105,7 @@ public class CloudSignupRequest
                     {
                         formData.write(out);
                     }
-                });
+                }, fixedHeaders);
 
         if (resp.getErrorContent() == null)
         {
@@ -115,7 +121,7 @@ public class CloudSignupRequest
 
     public static boolean checkAccount(CloudSignupRequest signupRequest)
     {
-        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, SIGNUP_CLOUD_URL));
+        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.CLOUD_URL));
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, null);
         if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
@@ -139,7 +145,9 @@ public class CloudSignupRequest
     // CLOUD ACCOUNT
     // //////////////////////////////////////////////////////////////////////////////
 
-    private static final String CLOUD_SIGNUP = "/alfresco/service/internal/cloud/accounts/signupqueue";
+    private static final String CLOUD_SIGNUP = "/alfresco/a/-default-/internal/cloud/accounts/signupqueue";
+    
+    //private static final String CLOUD_SIGNUP = "/internal/cloud/accounts/signupqueue";
 
     private static final String VARIABLE_ACCOUNTID = "{accountid}";
 

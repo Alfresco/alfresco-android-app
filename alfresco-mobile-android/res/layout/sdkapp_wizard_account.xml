@@ -14,22 +14,38 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center_horizontal" >
+    android:gravity="center"
+    android:layout_gravity="center"
+            android:layout_width="fill_parent"
+>
 
     <ViewFlipper
         android:id="@+id/account_wizard"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:minWidth="600dp" >
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent" >
 
         <include layout="@layout/sdkapp_wizard_account_step1" />
 
-        <include layout="@layout/sdkapp_wizard_account_step2" android:id="@+id/step_creation_2" />
+        <include
+            android:id="@+id/step_creation_2"
+            layout="@layout/sdkapp_wizard_account_step2" />
+            
+        <LinearLayout
+		    android:id="@+id/oauth_pane"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:orientation="vertical"
+		    android:gravity="center"
+		    android:layout_gravity="center"
+		    android:visibility="visible" />
+            
+        <include
+            android:id="@+id/step_creation_cloud"
+            layout="@layout/app_main_single" />
 
         <include layout="@layout/sdkapp_wizard_account_step3" />
     </ViewFlipper>

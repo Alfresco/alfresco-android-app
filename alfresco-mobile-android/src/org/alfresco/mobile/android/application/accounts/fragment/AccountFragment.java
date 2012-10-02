@@ -22,15 +22,19 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
@@ -69,7 +73,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
     {
         if (adapter == null)
-            adapter = new AccountAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<Account>(0));
+            adapter = new AccountAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
 
         PagingResult<Account> pagingResultFiles = new PagingResultImpl<Account>(results, false, results.size());
         displayPagingData(pagingResultFiles, loaderId, callback);
@@ -85,6 +89,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         ((MainActivity) getActivity()).addAccountDetails(((Account) l.getItemAtPosition(position)).getId());
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -99,7 +104,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
 
     public void add()
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        /*FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
         if (prev != null)
         {
@@ -109,7 +114,10 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
 
         // Create and show the dialog.
         CreateAccountDialogFragment newFragment = new CreateAccountDialogFragment();
-        newFragment.show(ft, CreateAccountDialogFragment.TAG);
+        newFragment.show(ft, CreateAccountDialogFragment.TAG);*/
+        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                WizardSelectAccountFragment.TAG, true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

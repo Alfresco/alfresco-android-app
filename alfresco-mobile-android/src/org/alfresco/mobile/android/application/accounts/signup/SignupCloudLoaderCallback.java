@@ -20,10 +20,12 @@ package org.alfresco.mobile.android.application.accounts.signup;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -47,23 +49,20 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
 
     private String password;
 
-    private String apiKey;
-
     private String description;
 
     private ProgressDialog mProgressDialog;
 
     private Fragment fr;
 
-    public SignupCloudLoaderCallback(Activity activity, Fragment fr, String firstName,
-            String lastName, String emailAddress, String password, String apiKey, String description)
+    public SignupCloudLoaderCallback(Activity activity, Fragment fr, String firstName, String lastName,
+            String emailAddress, String password, String description)
     {
         this.activity = activity;
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailAddress = emailAddress;
         this.password = password;
-        this.apiKey = apiKey;
         this.description = description;
         this.fr = fr;
     }
@@ -81,7 +80,8 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
                         activity.getLoaderManager().destroyLoader(id);
                     }
                 });
-        return new CloudSignupLoader(activity, firstName, lastName, emailAddress, password, apiKey);
+        return new CloudSignupLoader(activity, firstName, lastName, emailAddress, password, activity.getText(
+                R.string.apigee_key).toString());
     }
 
     @Override
@@ -91,13 +91,21 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
         if (request != null && fr instanceof SignupCloudDialogFragment)
         {
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            //TODO replace
-            serverDao.insert(description, LoginLoaderCallback.ALFRESCO_CLOUD_URL, emailAddress, password, "", Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD), request.getIdentifier()+"?key="+request.getRegistrationKey());
+            // TODO replace
+            serverDao.insert(description, LoginLoaderCallback.ALFRESCO_CLOUD_URL, emailAddress, password, "",
+                    Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
+                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null);
             mProgressDialog.dismiss();
-            ((SignupCloudDialogFragment)fr).displayAccounts();
-        } else if (request != null && fr instanceof AccountDetailsFragment){
+            ((SignupCloudDialogFragment) fr).displayAccounts();
+        }
+        else if (request != null && fr instanceof AccountDetailsFragment)
+        {
             mProgressDialog.dismiss();
             activity.showDialog(MainActivity.CLOUD_RESEND_EMAIL);
+        }  else if (results.hasException())
+        {
+            mProgressDialog.dismiss();
+            MessengerManager.showLongToast(activity, results.getException().getMessage());
         }
     }
 

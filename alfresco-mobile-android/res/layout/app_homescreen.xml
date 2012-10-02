@@ -21,22 +21,15 @@
     android:layout_height="fill_parent"
         android:id="@+id/master_pane"
     android:gravity="center" >
-
+
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/left_pane"
-        android:layout_width="600dip"
+        android:id="@+id/left_pane_body"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="visible" >
-
-        <ImageView
-            android:layout_width="500dip"
-            android:layout_height="150dip"
-            android:scaleType="fitCenter"
-            android:src="@drawable/about_logo" />
 
         <TextView
             android:layout_width="match_parent"
@@ -54,8 +47,7 @@
             android:drawableLeft="@drawable/ic_cloud"
             android:text="@string/home_sign_cloud"
             android:textSize="@dimen/home_button_size"
-            android:onClick="cloud"
-             />
+            android:onClick="cloud" />
 
         <TextView
             android:layout_width="match_parent"
@@ -72,7 +64,6 @@
             android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_login"
             android:text="@string/home_account"
-            android:textSize="@dimen/home_button_size"
             android:onClick="launch" />
 
         <TextView

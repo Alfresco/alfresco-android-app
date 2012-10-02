@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments;
 import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.view.View;
 import android.widget.TextView;
 
@@ -93,10 +94,10 @@ public abstract class DisplayUtils
         return getCentralPane(a) != null;
     }
 
-    public static boolean hasRightPane(Activity a)
-    {
-        return getRightPane(a) != null;
-    }
+    /*
+     * public static boolean hasRightPane(Activity a) { return getRightPane(a)
+     * != null; }
+     */
 
     // ///////////////////////////////////////////
     // RETRIEVE FRAGMENT IDS
@@ -111,10 +112,10 @@ public abstract class DisplayUtils
         return R.id.central_pane_body;
     }
 
-    public static int getRightFragmentId(Activity a)
-    {
-        return R.id.right_pane_body;
-    }
+    /*
+     * public static int getRightFragmentId(Activity a) { return
+     * R.id.right_pane_body; }
+     */
 
     public static int getMainPaneId(Activity a)
     {
@@ -135,11 +136,11 @@ public abstract class DisplayUtils
         return a.findViewById(R.id.central_pane);
     }
 
-    public static View getRightPane(Activity a)
-    {
-        return a.findViewById(R.id.right_pane);
-    }
-    
+    /*
+     * public static View getRightPane(Activity a) { return
+     * a.findViewById(R.id.right_pane); }
+     */
+
     public static View getMainPane(Activity a)
     {
         if (hasCentralPane(a)) return getCentralPane(a);
@@ -159,9 +160,29 @@ public abstract class DisplayUtils
         v.setVisibility(View.VISIBLE);
     }
 
-    public static void hideExceptMain(Activity a)
+    /*
+     * public static void hideExceptMain(Activity a) { if (hasRightPane(a))
+     * hide(getRightPane(a)); if (hasCentralPane(a)) hide(getLeftPane(a)); }
+     */
+
+    // ///////////////////////////////////////////
+    // SHOW / HIDE 2 OR SINGLE PANE
+    // ///////////////////////////////////////////
+    public static void switchSingleOrTwo(Activity activity, boolean isNull)
     {
-        if (hasRightPane(a)) hide(getRightPane(a));
-        if (hasCentralPane(a)) hide(getLeftPane(a));
+        if (activity.getResources().getBoolean(R.bool.tablet_middle) && hasCentralPane(activity))
+        {
+            Fragment fr = activity.getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(activity));
+            if ((fr != null && !isNull) || (fr == null && isNull))
+            {
+                DisplayUtils.getLeftPane(activity).setVisibility(View.GONE);
+                DisplayUtils.getCentralPane(activity).setVisibility(View.VISIBLE);
+            }
+            else if ((fr == null && !isNull) || (fr != null && isNull))
+            {
+                DisplayUtils.getLeftPane(activity).setVisibility(View.VISIBLE);
+                DisplayUtils.getCentralPane(activity).setVisibility(View.GONE);
+            }
+        }
     }
 }

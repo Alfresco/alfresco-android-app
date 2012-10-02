@@ -28,24 +28,28 @@
 
         <LinearLayout
             android:id="@+id/left_pane"
-            android:layout_width="300dp"
+            android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_weight="@dimen/weight_left_panel"
             android:orientation="vertical"
-            android:visibility="visible" >
+            android:visibility="visible"
+            >
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal" >
+                android:orientation="horizontal"
+                >
 
                 <TextView
                     android:id="@+id/left_pane_title"
-                    style="@style/top_bar"
+                	style="@style/sectionHeader"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    />
             </LinearLayout>
 
             <LinearLayout
@@ -57,16 +61,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="1dip"
+            android:layout_width="3dip"
             android:layout_height="fill_parent"
-            android:background="@android:color/black" />
+            android:background="@drawable/shadow" />
 
         <LinearLayout
             android:id="@+id/central_pane"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="0.8"
             android:background="@android:color/white"
+            android:layout_weight="@dimen/weight_right_panel"
             android:orientation="vertical"
             android:visibility="visible" >
 
@@ -95,12 +99,6 @@
                 android:gravity="center"
                 android:orientation="vertical" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="1dip"
-            android:layout_height="fill_parent"
-            android:background="@android:color/black" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -108,7 +106,6 @@
         android:layout_width="300dip"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:background="@drawable/black_bar"
         android:focusable="false"
         android:clickable="false"
         android:visibility="gone">

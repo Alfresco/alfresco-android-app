@@ -38,8 +38,6 @@ public class MenuActionItem
     
     public static final int MENU_DELETE_FOLDER = 50;
 
-
-    
     
     // ///////////////////////////////////////////
     // DETAILS
@@ -57,9 +55,12 @@ public class MenuActionItem
     public static final int MENU_LIKE = 150;
     
     public static final int MENU_EDIT = 160;
+    
+    public static final int MENU_VERSION_HISTORY = 170;
 
-    public static final int MENU_DELETE = 170;
-
+    public static final int MENU_TAGS = 180;
+    
+    public static final int MENU_DELETE = 190;
     
     // ///////////////////////////////////////////
     // Account

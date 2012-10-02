@@ -38,7 +38,7 @@ public class AboutFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (container == null) { return null; }
-        View v = inflater.inflate(R.layout.sdkapp_about, container, false);
+        View v = inflater.inflate(R.layout.app_about, container, false);
         
         TextView foo = (TextView) v.findViewById(R.id.about_description);
         foo.setText(Html.fromHtml(getString(R.string.about_description)));

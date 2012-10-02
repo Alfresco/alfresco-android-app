@@ -44,6 +44,11 @@ public class Account implements Serializable
     private long typeId;
 
     private String activation;
+    
+    private String accessToken;
+
+    private String refreshToken;
+
 
     protected Context context;
 
@@ -52,7 +57,7 @@ public class Account implements Serializable
     }
 
     public Account(long id, String description, String url, String username, String password, String repositoryId,
-            long typeId, String activation)
+            long typeId, String activation, String accessToken, String refreshToken)
     {
         super();
         this.id = id;
@@ -63,6 +68,29 @@ public class Account implements Serializable
         this.repositoryId = repositoryId;
         this.typeId = typeId;
         this.activation = activation;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+
+    }
+
+    public static int getTypeAlfrescoCmis()
+    {
+        return TYPE_ALFRESCO_CMIS;
+    }
+
+    public static int getTypeAlfrescoCloud()
+    {
+        return TYPE_ALFRESCO_CLOUD;
+    }
+
+    public String getAccessToken()
+    {
+        return accessToken;
+    }
+
+    public String getRefreshToken()
+    {
+        return refreshToken;
     }
 
     public String getUsername()
