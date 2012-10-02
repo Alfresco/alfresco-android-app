@@ -28,73 +28,93 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 
-public class AccountsLoader extends AsyncTaskLoader<List<Account>> {
+public class AccountsLoader extends AsyncTaskLoader<List<Account>>
+{
 
     public static final int ID = 46893278;
-    
-	List<Account> mApps;
-	private Context context;
-	private DatabaseManager db;
 
-	public AccountsLoader(Context context) {
-		super(context);
-		this.context = context;
-	}
+    List<Account> mApps;
 
-	@Override
-	public List<Account> loadInBackground() {
-		AccountDAO AccountDao = new AccountDAO(context, SessionUtils.getDataBaseManager(context).getWriteDb());
-		ArrayList<Account> l = new ArrayList<Account>(AccountDao.findAll());
-		return l;
-	}
+    private Context context;
 
-	@Override
-	public void deliverResult(List<Account> data) {
-		if (isReset()) {
-			if (data != null) {
-				onReleaseResources(data);
-			}
-		}
-		List<Account> oldApps = data;
-		mApps = data;
+    private DatabaseManager db;
 
-		if (isStarted()) {
-			super.deliverResult(data);
-		}
+    public AccountsLoader(Context context)
+    {
+        super(context);
+        this.context = context;
+    }
 
-		if (oldApps != null) {
-			onReleaseResources(oldApps);
-		}
-	}
+    @Override
+    public List<Account> loadInBackground()
+    {
+        AccountDAO AccountDao = new AccountDAO(context, SessionUtils.getDataBaseManager(context).getWriteDb());
+        ArrayList<Account> l = new ArrayList<Account>(AccountDao.findAll());
+        return l;
+    }
 
-	@Override
-	protected void onStartLoading() {
-		if (mApps != null) {
-			deliverResult(mApps);
-		} else {
-			forceLoad();
-		}
-	}
+    @Override
+    public void deliverResult(List<Account> data)
+    {
+        if (isReset())
+        {
+            if (data != null)
+            {
+                onReleaseResources(data);
+            }
+        }
+        List<Account> oldApps = data;
+        mApps = data;
 
-	@Override
-	public void onCanceled(List<Account> data) {
-		if (db != null) {
-			db.close();
-		}
-		super.onCanceled(data);
-	}
+        if (isStarted())
+        {
+            super.deliverResult(data);
+        }
 
-	@Override
-	protected void onAbandon() {
-		if (db != null) {
-			db.close();
-		}
-		super.onAbandon();
-	}
+        if (oldApps != null)
+        {
+            onReleaseResources(oldApps);
+        }
+    }
 
-	protected void onReleaseResources(List<Account> apps) {
-		if (db != null) {
-			db.close();
-		}
-	}
+    @Override
+    protected void onStartLoading()
+    {
+        if (mApps != null)
+        {
+            deliverResult(mApps);
+        }
+        else
+        {
+            forceLoad();
+        }
+    }
+
+    @Override
+    public void onCanceled(List<Account> data)
+    {
+        if (db != null)
+        {
+            db.close();
+        }
+        super.onCanceled(data);
+    }
+
+    @Override
+    protected void onAbandon()
+    {
+        if (db != null)
+        {
+            db.close();
+        }
+        super.onAbandon();
+    }
+
+    protected void onReleaseResources(List<Account> apps)
+    {
+        if (db != null)
+        {
+            db.close();
+        }
+    }
 }

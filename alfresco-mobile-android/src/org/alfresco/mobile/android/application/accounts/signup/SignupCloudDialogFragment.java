@@ -48,25 +48,31 @@ public class SignupCloudDialogFragment extends DialogFragment
 
     private String password;
 
-    private String apiKey;
-
     public SignupCloudDialogFragment()
     {
-        setStyle(android.R.style.Theme_Holo_Dialog, android.R.style.Theme_Holo_Dialog);
+        setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
 
     @Override
     public void onStart()
     {
-        getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
+        if (getDialog() != null){
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
+        }
         super.onStart();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getDialog().setTitle(R.string.sign_up_cloud);
-        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        if (getDialog() != null){
+            getDialog().setTitle(R.string.sign_up_cloud);
+            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        } else {
+            getActivity().getActionBar().show();
+            getActivity().setTitle(R.string.sign_up_cloud);
+        }
+        
 
         View v = inflater.inflate(R.layout.app_cloud_signup, container, false);
 
@@ -82,14 +88,6 @@ public class SignupCloudDialogFragment extends DialogFragment
                 signup(v);
             }
         });
-        
-        
-        /*((EditText) v.findViewById(R.id.cloud_signup_firstname)).setText("Jean Marie");
-        ((EditText) v.findViewById(R.id.cloud_signup_email)).setText("jeanmarie.pascal@neuf.fr");
-        ((EditText) v.findViewById(R.id.cloud_signup_lastname)).setText("PASCAL");
-        ((EditText) v.findViewById(R.id.cloud_signup_password)).setText("password");
-        ((EditText) v.findViewById(R.id.cloud_signup_confirm)).setText("password");*/
-
         return v;
     }
 
@@ -98,7 +96,7 @@ public class SignupCloudDialogFragment extends DialogFragment
         if (retrieveFormValues())
         {
             SignupCloudLoaderCallback call = new SignupCloudLoaderCallback(getActivity(), this, firstName, lastName,
-                    emailAddress, password, apiKey, "Alfresco Cloud");
+                    emailAddress, password, "Alfresco Cloud");
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(CloudSignupLoader.ID, null, call);
             lm.getLoader(CloudSignupLoader.ID).forceLoad();
@@ -108,7 +106,7 @@ public class SignupCloudDialogFragment extends DialogFragment
     private boolean retrieveFormValues()
     {
 
-        EditText form_value = (EditText) getDialog().findViewById(R.id.cloud_signup_firstname);
+        EditText form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_firstname);
         firstName = form_value.getText().toString();
 
         if (firstName.length() == 0)
@@ -117,7 +115,7 @@ public class SignupCloudDialogFragment extends DialogFragment
             return false;
         }
 
-        form_value = (EditText) getDialog().findViewById(R.id.cloud_signup_lastname);
+        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_lastname);
         lastName = form_value.getText().toString();
 
         if (lastName.length() == 0)
@@ -126,10 +124,10 @@ public class SignupCloudDialogFragment extends DialogFragment
             return false;
         }
 
-        form_value = (EditText) getDialog().findViewById(R.id.cloud_signup_password);
+        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         password = form_value.getText().toString();
 
-        form_value = (EditText) getDialog().findViewById(R.id.cloud_signup_password);
+        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         String confirm = form_value.getText().toString();
 
         if (!confirm.equals(password) && password.length() <= 6 && confirm.length() <= 6)
@@ -138,7 +136,7 @@ public class SignupCloudDialogFragment extends DialogFragment
             return false;
         }
 
-        form_value = (EditText) getDialog().findViewById(R.id.cloud_signup_email);
+        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
         emailAddress = form_value.getText().toString();
 
         if (emailAddress.length() == 0)
@@ -154,5 +152,13 @@ public class SignupCloudDialogFragment extends DialogFragment
         Intent i = new Intent(getActivity(), MainActivity.class);
         i.setAction(IntentIntegrator.ACTION_CHECK_SIGNUP);
         getActivity().startActivity(i);
+    }
+    
+    private View findViewByIdInternal(int id){
+        if (getDialog() != null){
+            return getDialog().findViewById(id);
+        } else {
+            return getActivity().findViewById(id);
+        }
     }
 }

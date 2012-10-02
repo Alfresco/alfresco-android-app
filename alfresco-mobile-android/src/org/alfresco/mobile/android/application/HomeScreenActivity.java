@@ -21,12 +21,14 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.CreateAccountDialogFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.WizardConfirmationFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.WizardSelectAccountFragment;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
@@ -41,41 +43,36 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sdkapp_homescreen);
-        getActionBar().hide();
+        setContentView(R.layout.app_main_single);
         getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
         getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
+        findViewById(R.id.left_pane).setVisibility(View.GONE);
+        getActionBar().hide();
 
-        findViewById(R.id.master_pane).setVisibility(View.GONE);
+        HomeScreenFragment newFragment = new HomeScreenFragment();
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                HomeScreenFragment.TAG, false);
     }
-    
-    public void cloud(View v){
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(SignupCloudDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
 
-        // Create and show the dialog.
+    public void cloud(View v)
+    {
         SignupCloudDialogFragment newFragment = new SignupCloudDialogFragment();
-        newFragment.show(ft, SignupCloudDialogFragment.TAG);
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                SignupCloudDialogFragment.TAG, true);
     }
 
     public void launch(View v)
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                WizardSelectAccountFragment.TAG, true);
+    }
 
-        // Create and show the dialog.
-        CreateAccountDialogFragment newFragment = new CreateAccountDialogFragment();
-        newFragment.show(ft, CreateAccountDialogFragment.TAG);
+    public void validateServer()
+    {
+        WizardConfirmationFragment newFragment = new WizardConfirmationFragment();
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                WizardConfirmationFragment.TAG, false);
     }
 
     @Override
@@ -91,8 +88,23 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         {
             Intent i = new Intent(this, MainActivity.class);
             this.startActivity(i);
-        } else {
-            findViewById(R.id.master_pane).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            getActionBar().show();
+            findViewById(R.id.left_pane).setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        super.onNewIntent(intent);
+        if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction())
+                && intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH)
+                && IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
+        {
+            validateServer();
         }
     }
 

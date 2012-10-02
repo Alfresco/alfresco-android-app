@@ -31,7 +31,7 @@
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:orientation="vertical"
-            android:visibility="gone" >
+            >
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -42,10 +42,10 @@
 
                 <TextView
                     android:id="@+id/left_pane_title"
-                    style="@style/top_bar"
+                	style="@style/sectionHeader"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
             </LinearLayout>
 
             <LinearLayout
@@ -68,7 +68,7 @@
             android:layout_weight="0.8"
             android:background="@android:color/white"
             android:orientation="vertical"
-            android:visibility="visible" >
+            >
 
             <LinearLayout
                 xmlns:android="http://schemas.android.com/apk/res/android"
@@ -108,7 +108,6 @@
         android:layout_width="300dip"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:background="@drawable/black_bar"
         android:focusable="false"
         android:clickable="false"
         android:visibility="gone">

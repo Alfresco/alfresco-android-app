@@ -18,8 +18,11 @@
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
+import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -118,8 +121,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
         Node item = (Node) l.getItemAtPosition(position);
 
         Boolean hideDetails = false;
-        if (!selectedItems.isEmpty())
-            hideDetails = selectedItems.get(0).equals(item);
+        if (!selectedItems.isEmpty()) hideDetails = selectedItems.get(0).equals(item);
 
         selectedItems.clear();
         selectedItems.add(item);
@@ -157,6 +159,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
                 // Show properties
                 ((MainActivity) getActivity()).addPropertiesFragment(item);
                 refreshListView();
+                DisplayUtils.switchSingleOrTwo(getActivity(), true);
             }
         }
     }
@@ -222,24 +225,16 @@ public class ChildrenBrowserFragment extends NavigationFragment
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
             @Override
-            public void beforeContentCreation(String name)
+            public void afterContentCreation(Node node)
             {
-               /* mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
-                        true, new OnCancelListener()
-                        {
-                            @Override
-                            public void onCancel(DialogInterface dialog)
-                            {
-                                getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
-                            }
-                        });*/
+                refresh();
             }
 
             @Override
-            public void afterContentCreation(Node node)
+            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
-                //mProgressDialog.dismiss();
-                refresh();
+                // TODO Auto-generated method stub
+
             }
         });
 
@@ -262,7 +257,14 @@ public class ChildrenBrowserFragment extends NavigationFragment
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
             @Override
-            public void beforeContentCreation(String name)
+            public void afterContentCreation(Node node)
+            {
+                mProgressDialog.dismiss();
+                refresh();
+            }
+
+            @Override
+            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
                 mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
                         true, new OnCancelListener()
@@ -273,13 +275,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
                                 getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
                             }
                         });
-            }
 
-            @Override
-            public void afterContentCreation(Node node)
-            {
-                mProgressDialog.dismiss();
-                refresh();
             }
         });
 
@@ -288,7 +284,8 @@ public class ChildrenBrowserFragment extends NavigationFragment
 
     public void refresh()
     {
-        if (parentFolder == null){
+        if (parentFolder == null)
+        {
             parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
         }
         super.refresh();
@@ -326,14 +323,19 @@ public class ChildrenBrowserFragment extends NavigationFragment
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
-            SubMenu devCaptureMenu = menu.addSubMenu (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.action_upload);
-            devCaptureMenu.setIcon (android.R.drawable.ic_menu_add);        
-            devCaptureMenu.getItem().setShowAsAction (MenuItem.SHOW_AS_ACTION_ALWAYS);
-            
-            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.action_photo);
-            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.action_video);
-            devCaptureMenu.add (Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
-            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD, R.string.action_upload);
+            SubMenu devCaptureMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
+                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.action_upload);
+            devCaptureMenu.setIcon(android.R.drawable.ic_menu_add);
+            devCaptureMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.action_photo);
+            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.action_video);
+            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
+            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
+                    R.string.action_upload);
         }
 
         if (extended && parentFolder != null && permission.canEdit())

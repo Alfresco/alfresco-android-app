@@ -71,12 +71,20 @@ public class AccountSchema
     public static final String COLUMN_ACTIVATION = "activation";
 
     public static final int COLUMN_ACTIVATION_ID = 7;
+    
+    public static final String COLUMN_ACCESS_TOKEN = "accessToken";
+
+    public static final int COLUMN_ACCESS_TOKEN_ID = 8;
+    
+    public static final String COLUMN_REFRESH_TOKEN = "refreshToken";
+
+    public static final int COLUMN_REFRESH_TOKEN_ID = 9;
 
 
     private static final String QUERY_TABLE_CREATE = "create table " + TABLENAME + " (" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_NAME + " TEXT NOT NULL," + COLUMN_URL + " TEXT NOT NULL,"
-            + COLUMN_USERNAME + " TEXT NOT NULL," + COLUMN_PASSWORD + " TEXT NOT NULL," + COLUMN_REPOSITORY_ID + " TEXT NOT NULL,"
-            + COLUMN_REPOSITORY_TYPE + " INTEGER," + COLUMN_ACTIVATION + " TEXT);";
+            + COLUMN_USERNAME + " TEXT NOT NULL," + COLUMN_PASSWORD + " TEXT," + COLUMN_REPOSITORY_ID + " TEXT NOT NULL,"
+            + COLUMN_REPOSITORY_TYPE + " INTEGER," + COLUMN_ACTIVATION + " TEXT," + COLUMN_ACCESS_TOKEN + " TEXT," + COLUMN_REFRESH_TOKEN + " TEXT);";
 
     private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
 
@@ -87,7 +95,7 @@ public class AccountSchema
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        if (newVersion == 1)
+        if (newVersion <= 2)
         {
             db.execSQL(QUERY_TABLE_DROP);
             onCreate(context, db);

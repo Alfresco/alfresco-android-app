@@ -72,7 +72,9 @@ public class ActivitiesFragment extends ActivityStreamFragment
 
         //Inconsistency between cloud and on premise.
         String identifier = item.getData(CloudConstant.NODEREF_VALUE);
-        if (identifier == null) identifier = item.getData(CloudConstant.OBJECTID_VALUE);
+        if (identifier == null){
+            identifier = item.getData(CloudConstant.OBJECTID_VALUE);
+        }
         
         if (identifier != null)
         {

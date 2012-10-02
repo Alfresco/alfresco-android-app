@@ -22,6 +22,8 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 public class IntentIntegrator extends PublicIntent
 {
     public static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
+    
+    public static final String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
     public static final String CATEGORY_REFRESH_ALL = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL";
     public static final String CATEGORY_REFRESH_DELETE = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE";
     public static final String CATEGORY_REFRESH_OTHERS = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS";
