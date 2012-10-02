@@ -96,7 +96,7 @@ public class NodeActions implements ActionMode.Callback
         menu.clear();
         if (node.isDocument())
         {
-           DetailsFragment.getMenu(SessionUtils.getsession(activity), menu, node);
+           DetailsFragment.getMenu(SessionUtils.getsession(activity), activity, menu, node);
         } else {
             ChildrenBrowserFragment.getMenu(SessionUtils.getsession(activity), menu, (Folder) node, true);
         }

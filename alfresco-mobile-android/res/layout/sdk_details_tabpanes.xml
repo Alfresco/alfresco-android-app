@@ -2,7 +2,8 @@
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+         >
 
         <TableLayout
             android:id="@+id/default_server"
@@ -82,25 +83,9 @@
                         android:layout_weight="1"
                         android:contentDescription="@string/action_like"
                         android:src="@drawable/ic_unlike" />
-
-                    <ImageButton
-                        android:id="@+id/display_favorites"
-                        android:layout_width="0dip"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/action_favorite"
-                        android:src="@drawable/ic_menu_star" />
-
-                    <ImageButton
-                        android:id="@+id/share"
-                        android:layout_width="0dip"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/action_share"
-                        android:src="@drawable/ic_menu_share" />
                 </LinearLayout>
             </TableRow>
         </TableLayout>
 
-        <include layout="@layout/app_details_extra" android:layout_width="fill_parent" android:layout_height="wrap_content"/>
+        <include layout="@layout/app_details_extra" android:layout_width="fill_parent" android:layout_height="fill_parent"/>
     </LinearLayout>

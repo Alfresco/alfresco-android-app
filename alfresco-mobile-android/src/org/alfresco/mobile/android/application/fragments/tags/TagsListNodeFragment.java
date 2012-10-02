@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.tags;
 
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.tag.TagsNodeFragment;
 
@@ -53,6 +54,8 @@ public class TagsListNodeFragment extends TagsNodeFragment
     @Override
     public void onStart()
     {
+        DisplayUtils.setTitleFragmentPlace(getActivity(), "Tags : " + node.getName());
+        getActivity().invalidateOptionsMenu();
         super.onStart();
     }
 

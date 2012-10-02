@@ -29,7 +29,7 @@
 
             <TextView
                 android:id="@+id/left_pane_title"
-                style="@style/top_bar"
+                style="@style/sectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone" />
@@ -48,7 +48,6 @@
         android:id="@+id/slide_pane"
         android:layout_width="300dip"
         android:layout_height="fill_parent"
-        android:background="@drawable/black_bar"
         android:clickable="false"
         android:focusable="false"
         android:orientation="vertical"

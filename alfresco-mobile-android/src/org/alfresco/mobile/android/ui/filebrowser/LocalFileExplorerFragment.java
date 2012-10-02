@@ -114,7 +114,7 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
 
         if (adapter == null)
         {
-            adapter = new LocalFileExplorerAdapter(getActivity(), R.layout.sdk_list_item, new ArrayList<File>(0),
+            adapter = new LocalFileExplorerAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<File>(0),
                     selectedItems);
         }
 

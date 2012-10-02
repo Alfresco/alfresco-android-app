@@ -43,7 +43,7 @@ public class DatabaseManager
 
     private static final String DATABASE_NAME = "AlfrescoMobileDataBase";
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     private final GenericDbHelper dbHelper;
 
