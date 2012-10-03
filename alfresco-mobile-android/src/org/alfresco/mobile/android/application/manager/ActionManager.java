@@ -17,10 +17,17 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.manager;
 
+import java.io.File;
+import java.util.List;
+
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 
 public class ActionManager extends org.alfresco.mobile.android.ui.manager.ActionManager
@@ -47,4 +54,29 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         actionRefresh(f, refreshCategory, type, null);
     }
 
+    public static boolean launchPDF(Context c, String pdfFile)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setDataAndType(Uri.fromFile(new File(pdfFile)), "application/pdf");
+        
+        PackageManager pm = c.getPackageManager();
+        List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+        if (activities.size() > 0) 
+        {
+            c.startActivity(intent);
+        }
+        else
+        {            
+            return false;
+        }
+        
+        return true;
+    }
+
+    public static void getAdobeReader(Context c)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=com.adobe.reader"));
+        c.startActivity(intent);
+    }
 }
