@@ -145,5 +145,6 @@ Please provides information about your server (Cloud, onpremise, version number.
 ]]></string>
 
 <string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
+<string name="send_email">Send email</string>
     
 </resources>
