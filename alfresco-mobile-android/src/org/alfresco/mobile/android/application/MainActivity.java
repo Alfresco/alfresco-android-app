@@ -65,12 +65,14 @@ import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.PhotoCapture;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -634,11 +636,11 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 String newFile;
                 try
                 {
-                    newFile = writeAsset("gettingstarted.pdf");
-                    
+                    newFile = IOUtils.writeAsset(this, "gettingstarted.pdf");
                     if (newFile.length() > 0)
                     {
-                        launchPDF(newFile);
+                        if (!ActionManager.launchPDF(this, newFile))
+                            showDialog (GET_PDF_VIEWER);
                     }
                 }
                 catch (IOException e)
@@ -1209,7 +1211,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 
             case GET_PDF_VIEWER:
                 dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name)
-                        .setMessage("You need a PDF viewer to display this document.  Do you want to get one now?")
+                        .setMessage(R.string.get_pdf_viewer)
                         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
                         {
                             public void onClick(DialogInterface dialog, int id)
@@ -1221,7 +1223,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                         {
                             public void onClick(DialogInterface dialog, int id)
                             {
-                                getAdobeReader();
+                                ActionManager.getAdobeReader(MainActivity.this);
                                 dialog.dismiss();
                             }
                         })
@@ -1230,80 +1232,5 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         }
         // TODO Auto-generated method stub
         return super.onCreateDialog(id);
-    }
-    
-    boolean launchPDF(String pdfFile)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(pdfFile)), "application/pdf");
-        
-        PackageManager pm = getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
-        if (activities.size() > 0) 
-        {
-            startActivity(intent);
-        }
-        else
-        {
-            showDialog(GET_PDF_VIEWER);            
-            return false;
-        }
-        
-        return true;
-    }
-
-    void getAdobeReader()
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("market://details?id=com.adobe.reader"));
-        startActivity(intent);
-    }
-    
-    String writeAsset (String assetFilename) throws IOException
-    {
-        String newFilename = "";
-        
-        if (Environment.getExternalStorageState().equals (Environment.MEDIA_MOUNTED))
-        {
-            newFilename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) + File.separator + assetFilename;
-            BufferedInputStream bis = null;
-            BufferedOutputStream bos = null;
-            
-            try
-            {
-                InputStream is = getAssets().open(assetFilename);
-                OutputStream os = new FileOutputStream(newFilename);
-                
-                bis = new BufferedInputStream(is);
-                bos = new BufferedOutputStream(os);
-                byte[] buf = new byte[1024];
-        
-                int n = 0;
-                int o = 0;
-                while ((n = bis.read(buf, o, buf.length)) > 0) 
-                {
-                    bos.write(buf, 0, n);
-                }
-            }
-            catch (IOException e)
-            {
-                newFilename = "";
-            }
-    
-            if (bis != null)
-            {
-                bis.close();
-            }
-            if (bos != null)
-            {
-                bos.close();
-            }
-        }
-        else
-        {
-            Toast.makeText(this, "SD Card is not available", Toast.LENGTH_LONG).show();
-        }
-        
-        return newFilename;
     }
 }
