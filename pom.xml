@@ -113,7 +113,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<maven.compile.source>1.6</maven.compile.source>
 		<maven.compile.target>1.6</maven.compile.target>
-		<android.version.number>14</android.version.number>
+		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
 		<chemistry.opencmis.version>0.8.0-SNAPSHOT</chemistry.opencmis.version>
 		<alfresco.opencmis.version>0.4-ANDROID</alfresco.opencmis.version>
