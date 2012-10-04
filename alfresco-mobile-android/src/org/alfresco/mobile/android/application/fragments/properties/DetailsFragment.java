@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback;
+import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback.DownloadAction;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
@@ -247,7 +248,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         lcb.setImageButton(ba);
         lcb.execute(false);
 
-       /* ba = (ImageButton) v.findViewById(R.id.share);
+        ba = (ImageButton) v.findViewById(R.id.action_share);
         ba.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -255,7 +256,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 share();
             }
-        });*/
+        });
 
         return v;
     }
@@ -283,15 +284,38 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     // ///////////////////////////////////////////////////////////////////////////
     public void share()
     {
-        // TODO Share Link OR Content
-        ActionManager.actionShareLink(this, ((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
-                .getDocumentFolderService()).getDownloadUrl((Document) node));
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.app_name);
+        builder.setMessage(R.string.link_or_attach);
+        builder.setPositiveButton(R.string.full_attachment, new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int item)
+            {
+                DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
+                dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node, DownloadAction.ACTION_EMAIL));
+                dlt.execute();
+                
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
+        {
+            public void onClick(DialogInterface dialog, int item)
+            {
+                ActionManager.actionShareLink(DetailsFragment.this, ((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
+                        .getDocumentFolderService()).getDownloadUrl((Document) node));
+                
+                dialog.dismiss();
+            }
+        });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     public void openin()
     {
         DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
-        dlt.setDl(new DownloadTaskCallback(this, (Document) node));
+        dlt.setDl(new DownloadTaskCallback(this, (Document) node, DownloadAction.ACTION_OPEN));
         dlt.execute();
     }
 

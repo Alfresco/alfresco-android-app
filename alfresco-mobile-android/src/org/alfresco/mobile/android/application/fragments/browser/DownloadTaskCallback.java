@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
@@ -30,10 +31,12 @@ import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
+import android.net.Uri;
 
 public class DownloadTaskCallback implements DownloadTaskListener
 {
-
+    public enum DownloadAction { ACTION_OPEN, ACTION_EMAIL, ACTION_UNDEFINED};
+    
     private Activity activity;
 
     private Fragment fragment;
@@ -44,8 +47,12 @@ public class DownloadTaskCallback implements DownloadTaskListener
 
     private long totalSize;
 
-    public DownloadTaskCallback(Fragment fragment, Document doc)
+    private DownloadAction action = DownloadAction.ACTION_UNDEFINED;
+    
+    
+    public DownloadTaskCallback(Fragment fragment, Document doc, DownloadAction action)
     {
+        this.action = action;
         this.activity = fragment.getActivity();
         this.fragment = fragment;
         this.doc = doc;
@@ -84,9 +91,23 @@ public class DownloadTaskCallback implements DownloadTaskListener
 
         if (results != null && results.getFile() != null)
         {
-            MessengerManager.showToast(activity, activity.getText(R.string.download_complete) + results.getFileName());
-            ActionManager.openIn(fragment, results.getFile(), doc.getContentStreamMimeType(),
-                    PublicIntent.REQUESTCODE_SAVE_BACK);
+            switch (action)
+            {
+                case ACTION_OPEN:
+                    MessengerManager.showToast(activity, activity.getText(R.string.download_complete) + results.getFileName());
+                    ActionManager.openIn(fragment, results.getFile(), doc.getContentStreamMimeType(),
+                            PublicIntent.REQUESTCODE_SAVE_BACK);
+                    break;
+                    
+                case ACTION_EMAIL:
+                    EmailUtils.createMailWithAttachment(activity, activity.getString(R.string.email_subject),
+                                                        activity.getString(R.string.email_content), Uri.fromFile(results.getFile()));
+                    break;
+                    
+                case ACTION_UNDEFINED:
+                    break;
+            }
+            
         }
         else
         {
