@@ -142,8 +142,9 @@
 Please provides information about your server (Cloud, onpremise, version number...) and phone or tablet type used.<br/></p> 
 <p>For other feedbacks please email any member of the mobile Team.</p>
 <p>Thank you for using Alfresco Mobile.</p> 
-]]>
-    </string>
-    
+]]></string>
+
+<string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
+<string name="send_email">Send email</string>
     
 </resources>
