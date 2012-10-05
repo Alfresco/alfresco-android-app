@@ -81,7 +81,7 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
                     }
                 });
         return new CloudSignupLoader(activity, firstName, lastName, emailAddress, password, activity.getText(
-                R.string.apigee_key).toString());
+                R.string.signup_key).toString());
     }
 
     @Override
