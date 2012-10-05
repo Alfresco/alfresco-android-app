@@ -27,7 +27,7 @@ import android.net.Uri;
 
 public class EmailUtils
 {
-    static boolean createMailWithAttachment(Context c, String subject, String content, Uri attachment)
+    public static boolean createMailWithAttachment(Context c, String subject, String content, Uri attachment)
     {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.putExtra(Intent.EXTRA_SUBJECT, subject);
