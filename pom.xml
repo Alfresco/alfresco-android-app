@@ -299,9 +299,9 @@
 
 	<repositories>
 		<repository>
-			<id>alfresco-internals</id>
-			<name>Alfresco Internal Repositories</name>
-			<url>https://artifacts.alfresco.com/nexus/content/groups/internal/</url>
+			<id>artifacts.alfresco.com</id>
+			<name>Alfresco Maven Repository</name>
+			<url>http://artifacts.alfresco.com/nexus/content/repositories/releases</url>
 		</repository>
 		<repository>
 			<id>apache-repository</id>
