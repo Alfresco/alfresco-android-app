@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
@@ -34,11 +35,13 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback.DownloadAction;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
@@ -72,6 +75,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -302,8 +306,42 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                ActionManager.actionShareLink(DetailsFragment.this, ((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
-                        .getDocumentFolderService()).getDownloadUrl((Document) node));
+                MainActivity activity = ((MainActivity) getActivity());             
+                Folder parentFolder = ((ChildrenBrowserFragment) activity.getFragment(ChildrenBrowserFragment.TAG)).getParent();
+                
+                if (parentFolder != null)
+                {
+                    String path = parentFolder.getPropertyValue("cmis:path");   
+                    if (path.length() > 0)
+                    {
+                        if (path.startsWith("/Sites/"))
+                        {
+                            String sub1 = path.substring(7);    //Get past the '/sites/'                          
+                            int idx = sub1.indexOf('/');        //Find end of site name
+                            if (idx == -1)
+                            {
+                                idx = sub1.length();
+                            }
+                            
+                            String siteName = sub1.substring(0, idx);
+                            String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
+                            String fullPath = "https://my.alfresco.com/share/alfresco.com/page/site/" + siteName + "/document-details?nodeRef=workspace://SpacesStore/" + nodeID;
+                            ActionManager.actionShareLink(DetailsFragment.this, fullPath);
+                        }
+                        else
+                        {
+                            Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
+                        }
+                    }
+                    else
+                    {
+                        Log.i(getString(R.string.app_name), "Site path not as expected: no parent path");
+                    }
+                }
+                else
+                {
+                    Log.i(getString(R.string.app_name), "Site path not as expected: No parent folder");
+                }
                 
                 dialog.dismiss();
             }
