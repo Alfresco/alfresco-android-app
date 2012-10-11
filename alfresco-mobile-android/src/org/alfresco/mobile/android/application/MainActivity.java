@@ -1127,7 +1127,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     // UTILS
     // ///////////////////////////////////////////
 
-    private Fragment getFragment(String tag)
+    public Fragment getFragment(String tag)
     {
         return getFragmentManager().findFragmentByTag(tag);
     }

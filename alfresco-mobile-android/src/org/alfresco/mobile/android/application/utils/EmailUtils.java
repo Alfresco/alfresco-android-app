@@ -20,10 +20,12 @@
 package org.alfresco.mobile.android.application.utils;
 
 import org.alfresco.mobile.android.application.R;
+import org.apache.chemistry.opencmis.client.bindings.spi.atompub.objects.HtmlDoc;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.Html;
 
 public class EmailUtils
 {
@@ -35,6 +37,17 @@ public class EmailUtils
         i.putExtra(Intent.EXTRA_STREAM, attachment);
         i.setType("text/plain");
         c.startActivity(Intent.createChooser(i, c.getString(R.string.send_email)));
+        
+        return true;    
+    }
+    
+    public static boolean createMailWithLink(Context c, String subject, String content, Uri link)
+    {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+        i.putExtra(Intent.EXTRA_TEXT, content);
+        i.setType("text/plain");
+        c.startActivity(Intent.createChooser(i, String.format(c.getString(R.string.send_email), link.toString())));
         
         return true;    
     }
