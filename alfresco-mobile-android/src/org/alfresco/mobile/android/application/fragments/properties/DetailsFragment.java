@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
@@ -288,66 +289,77 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     // ///////////////////////////////////////////////////////////////////////////
     public void share()
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.app_name);
-        builder.setMessage(R.string.link_or_attach);
-        builder.setPositiveButton(R.string.full_attachment, new DialogInterface.OnClickListener()
+        boolean cloud = (alfSession instanceof CloudSession);
+        
+        if (!cloud)
         {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
-                dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node, DownloadAction.ACTION_EMAIL));
-                dlt.execute();
-                
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
+            //Only sharing as attachment is allowed when we're not on a cloud account
+            DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
+            dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node, DownloadAction.ACTION_EMAIL));
+            dlt.execute();
+        }
+        else
         {
-            public void onClick(DialogInterface dialog, int item)
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(R.string.app_name);
+            builder.setMessage(R.string.link_or_attach);
+            
+            builder.setPositiveButton(R.string.full_attachment, new DialogInterface.OnClickListener()
             {
-                MainActivity activity = ((MainActivity) getActivity());             
-                Folder parentFolder = ((ChildrenBrowserFragment) activity.getFragment(ChildrenBrowserFragment.TAG)).getParent();
-                
-                if (parentFolder != null)
+                public void onClick(DialogInterface dialog, int item)
                 {
-                    String path = parentFolder.getPropertyValue("cmis:path");   
-                    if (path.length() > 0)
+                    DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
+                    dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node, DownloadAction.ACTION_EMAIL));
+                    dlt.execute();
+                    
+                    dialog.dismiss();
+                }
+            });
+            builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int item)
+                {
+                    MainActivity activity = ((MainActivity) getActivity());             
+                    Folder parentFolder = ((ChildrenBrowserFragment) activity.getFragment(ChildrenBrowserFragment.TAG)).getParent();
+                    if (parentFolder != null)
                     {
-                        if (path.startsWith("/Sites/"))
+                        String path = parentFolder.getPropertyValue("cmis:path");   
+                        if (path.length() > 0)
                         {
-                            String sub1 = path.substring(7);    //Get past the '/sites/'                          
-                            int idx = sub1.indexOf('/');        //Find end of site name
-                            if (idx == -1)
+                            if (path.startsWith("/Sites/"))
                             {
-                                idx = sub1.length();
+                                String sub1 = path.substring(7);    //Get past the '/Sites/'                          
+                                int idx = sub1.indexOf('/');        //Find end of site name
+                                if (idx == -1)
+                                {
+                                    idx = sub1.length();
+                                }
+                                String siteName = sub1.substring(0, idx);
+                                String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
+                                String fullPath = String.format(getString(R.string.cloud_share_url), siteName, nodeID);
+                                ActionManager.actionShareLink(DetailsFragment.this, fullPath);
                             }
-                            
-                            String siteName = sub1.substring(0, idx);
-                            String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                            String fullPath = "https://my.alfresco.com/share/alfresco.com/page/site/" + siteName + "/document-details?nodeRef=workspace://SpacesStore/" + nodeID;
-                            ActionManager.actionShareLink(DetailsFragment.this, fullPath);
+                            else
+                            {
+                                Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
+                            }
                         }
                         else
                         {
-                            Log.i(getString(R.string.app_name), "Site path not as expected: no /sites/");
+                            Log.i(getString(R.string.app_name), "Site path not as expected: no parent path");
                         }
                     }
                     else
                     {
-                        Log.i(getString(R.string.app_name), "Site path not as expected: no parent path");
+                        Log.i(getString(R.string.app_name), "Site path not as expected: No parent folder");
                     }
+                    
+                    dialog.dismiss();
                 }
-                else
-                {
-                    Log.i(getString(R.string.app_name), "Site path not as expected: No parent folder");
-                }
-                
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+            });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     public void openin()
