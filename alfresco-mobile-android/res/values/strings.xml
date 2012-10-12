@@ -152,5 +152,6 @@ Please provides information about your server (Cloud, onpremise, version number.
 <string name="link_to_repo">Clickable link</string>
 <string name="email_subject">Shared item from an Alfresco repository</string>
 <string name="email_content">I would like to share this item with you from an Alfresco repository\n(Please see attachment)\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
-
+<string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
+<string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 </resources>
