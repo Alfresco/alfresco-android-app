@@ -205,7 +205,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                 {
                     user = ((CloudSessionLoader) loader).getUser();
                 }
-                id = serverDao.insert("Alfresco Cloud", OAuthConstant.CLOUD_URL, user.getIdentifier(), null, session
+                id = serverDao.insert("Alfresco Cloud", OAuthConstant.PUBLIC_API_HOSTNAME, user.getIdentifier(), null, session
                         .getRepositoryInfo().getIdentifier(), Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD), data
                         .getAccessToken(), data.getRefreshToken());
             }

@@ -444,6 +444,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
 
         }
+
+        @Override
+        public void onExeceptionDuringUpdate(Exception arg0)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     };
 
     private OnNodeUpdateListener listener = new OnNodeUpdateListener()
@@ -463,6 +470,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         @Override
         public void beforeUpdate(Node node)
         {
+        }
+
+        @Override
+        public void onExeceptionDuringUpdate(Exception arg0)
+        {
+            // TODO Auto-generated method stub
+            
         }
     };
 

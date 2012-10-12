@@ -82,7 +82,8 @@ public class CommentsFragment extends CommentFragment
                     CommentCreateLoaderCallback c = new CommentCreateLoaderCallback(alfSession, getActivity(), node,
                             commentText.getText().toString());
                     c.setOnCommentCreateListener(createListener);
-                    c.start();
+                    getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
+                    getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
                 }
                 else
                 {

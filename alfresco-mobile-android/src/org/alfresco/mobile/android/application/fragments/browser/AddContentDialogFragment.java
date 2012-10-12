@@ -107,6 +107,13 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             // TODO Auto-generated method stub
 
         }
+
+        @Override
+        public void onExeceptionDuringCreation(Exception arg0)
+        {
+            // TODO Auto-generated method stub
+            
+        }
     };
 
 }

@@ -236,6 +236,13 @@ public class ChildrenBrowserFragment extends NavigationFragment
                 // TODO Auto-generated method stub
 
             }
+
+            @Override
+            public void onExeceptionDuringCreation(Exception arg0)
+            {
+                // TODO Auto-generated method stub
+                
+            }
         });
 
         newFragment.show(ft, AddContentDialogFragment.TAG);
@@ -276,6 +283,12 @@ public class ChildrenBrowserFragment extends NavigationFragment
                             }
                         });
 
+            }
+
+            @Override
+            public void onExeceptionDuringCreation(Exception arg0)
+            {
+                mProgressDialog.dismiss();
             }
         });
 

@@ -19,7 +19,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/white" >
+    android:background="@color/grey_dark" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -30,70 +30,83 @@
         android:orientation="vertical" >
 
         <TextView
-            style="@style/sectionHeader"
+            style="@style/slidingmenu_sectionHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/menu_alfresco" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_browse_activities"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/mime_activities"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_activities" />
+            android:text="@string/menu_browse_activities"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_browse_root"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/mime_folder"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_root" />
+            android:text="@string/menu_browse_root"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_browse_my_sites"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/mime_site"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_all_sites" />
+            android:text="@string/menu_browse_all_sites"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_search"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/ic_search"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_search" />
+            android:text="@string/menu_search"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_download"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/ic_download"
             android:onClick="showMainMenuFragment"
-            android:text="@string/download" />
+            android:text="@string/download"
+            android:background="@android:color/transparent" />
 
         <TextView
-            style="@style/sectionHeader"
+            style="@style/slidingmenu_sectionHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/menu_accounts" />
+            android:text="@string/menu_accounts"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_account_manage"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_account_manage" />
+            android:text="@string/menu_account_manage"
+            android:background="@android:color/transparent" />
 
         <!-- <Button
             android:id="@+id/menu_settings"
@@ -104,28 +117,32 @@
             android:onClick="showMainMenuFragment"       		android:text="@string/menu_settings" /> -->
 
         <TextView
-            style="@style/sectionHeader"
+            style="@style/slidingmenu_sectionHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/menu_more" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_help"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/ic_help"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_help" />
+            android:text="@string/menu_help"
+            android:background="@android:color/transparent" />
 
         <Button
+            style="@style/slidingmenu_actionitem"
             android:id="@+id/menu_about"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:drawableLeft="@drawable/ic_empty"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_about" />
+            android:text="@string/menu_about"
+            android:background="@android:color/transparent" />
     </LinearLayout>
 
 </ScrollView>
