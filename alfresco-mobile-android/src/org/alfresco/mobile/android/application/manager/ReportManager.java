@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class ReportManager
@@ -43,7 +44,7 @@ public class ReportManager
             
             //Use reflection to retrieve Hockeyapp class an execute.
             Class<?> class1 = Class.forName(CRASHMANAGER_CLASS);
-            Method method = class1.getMethod(METHOD_REGISTER, Activity.class, String.class);
+            Method method = class1.getMethod(METHOD_REGISTER, Context.class, String.class);
             method.invoke(null, context, appKey);
         }
         catch (Exception e)

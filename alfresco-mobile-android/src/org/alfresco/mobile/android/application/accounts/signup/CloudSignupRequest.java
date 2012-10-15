@@ -79,7 +79,7 @@ public class CloudSignupRequest
     public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
             String apiKey)
     {
-        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(OAuthConstant.CLOUD_URL));
+        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(OAuthConstant.PUBLIC_API_HOSTNAME));
 
         // prepare json data
         JSONObject jo = new JSONObject();
@@ -121,7 +121,7 @@ public class CloudSignupRequest
 
     public static boolean checkAccount(CloudSignupRequest signupRequest)
     {
-        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.CLOUD_URL));
+        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.PUBLIC_API_HOSTNAME));
 
         Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, null);
         if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)

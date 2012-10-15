@@ -173,6 +173,12 @@ public class NodeActions implements ActionMode.Callback
                     {
                         
                     }
+
+                    @Override
+                    public void onExeceptionDuringDeletion(Exception arg0)
+                    {
+                        // TODO Auto-generated method stub
+                    }
                 });
                 activity.getLoaderManager().restartLoader(NodeDeleteLoader.ID, null, up);
                 activity.getLoaderManager().getLoader(NodeDeleteLoader.ID).forceLoad();

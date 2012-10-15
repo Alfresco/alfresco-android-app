@@ -27,7 +27,11 @@
     <color name="actionbar_grey_top">#A4A4A4</color>
     <color name="actionbar_grey_bottom">#757575</color>
     <color name="emphasis">#31b6e7</color>
-
+    <color name="grey_dark">#3F4241</color>
+    <color name="grey_light">#8C8E8D</color>
+    <color name="grey_text">#818282</color>
+    <color name="grey_underline">#535554</color>
+    
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
@@ -74,6 +78,20 @@
         <item name="android:textAllCaps">true</item>
         <item name="android:paddingLeft">5dip</item>
         <item name="android:textColor">@color/emphasis</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="slidingmenu_sectionHeader" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:drawableBottom">@drawable/grey_section_header</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:textColor">@color/grey_text</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+     <style name="slidingmenu_actionitem" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:drawableBottom">@drawable/actionitem_section_header</item>
+        <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
     

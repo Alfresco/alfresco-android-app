@@ -100,7 +100,7 @@ public class DownloadTaskCallback implements DownloadTaskListener
                     break;
                     
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(activity, activity.getString(R.string.email_subject),
+                    EmailUtils.createMailWithAttachment(activity, results.getFileName(),
                                                         activity.getString(R.string.email_content), Uri.fromFile(results.getFile()));
                     break;
                     
