@@ -20,8 +20,6 @@
 package org.alfresco.mobile.android.application.utils;
 
 import org.alfresco.mobile.android.application.R;
-import org.apache.chemistry.opencmis.client.bindings.spi.atompub.objects.HtmlDoc;
-
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -33,11 +31,10 @@ public class EmailUtils
     {
         Intent i = new Intent(Intent.ACTION_SEND);
         i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, content);
+        i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
         i.putExtra(Intent.EXTRA_STREAM, attachment);
         i.setType("text/plain");
         c.startActivity(Intent.createChooser(i, c.getString(R.string.send_email)));
-        
         return true;    
     }
     
