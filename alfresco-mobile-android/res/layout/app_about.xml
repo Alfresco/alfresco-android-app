@@ -75,6 +75,14 @@
             android:layout_weight="0.1"
             android:textSize="@dimen/about_text_size" />
     </LinearLayout>
+    
+     <Button
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:drawableLeft="@drawable/mime_activities"
+            android:onClick="error"
+            android:text="Test : Send crash report" />
 
 </LinearLayout>
 </ScrollView>

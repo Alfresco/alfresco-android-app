@@ -92,6 +92,13 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
                         IntentIntegrator.NODE_TYPE);
                 ((MainActivity) getActivity()).setCurrentNode(node);
             }
+
+            @Override
+            public void onExeceptionDuringUpdate(Exception arg0)
+            {
+                // TODO Auto-generated method stub
+                getDialog().dismiss();
+            }
         };
 
         return v;

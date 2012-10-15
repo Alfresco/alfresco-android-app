@@ -82,6 +82,7 @@
     <string name="menu_more">More</string>
     <string name="menu_accounts">Accounts</string>
     <string name="menu_alfresco">My Alfresco</string>
+    <string name="menu_view">Views</string>
     <string name="menu_account_manage">Manage</string>
     <string name="menu_help">Help</string>
     
@@ -149,8 +150,7 @@ Please provides information about your server (Cloud, onpremise, version number.
 <string name="link_or_attach">Do you want to share this as an attachment, or a clickable link?</string>
 <string name="full_attachment">Attachment</string>
 <string name="link_to_repo">Clickable link</string>
-<string name="email_subject">Shared item from an Alfresco repository</string>
-<string name="email_content">I would like to share this item with you from an Alfresco repository\n(Please see attachment)\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
+<string name="email_content"> <![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
 <string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
 <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 </resources>
