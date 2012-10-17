@@ -133,6 +133,18 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        
+        <!--
+        REINSTATE FOR WIDGET
+        <receiver android:name="org.alfresco.mobile.android.widget.ActivityWidget" android:label="@string/app_name">
+          <intent-filter>
+              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+          </intent-filter>
+          <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget" />
+     	</receiver>
+     	-->
+     	  
+     	  
     </application>
 
 </manifest>
