@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/AppWidget"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:background="@drawable/widgetgradient" android:layout_marginBottom="10dip" android:layout_marginLeft="5dip" android:layout_marginRight="5dip" android:layout_marginTop="10dip">
+
+	<TextView
+	    android:id="@+id/QuoteText"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_above="@+id/Expand"
+	    android:layout_alignParentBottom="true"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignTop="@+id/Summary"
+	    android:padding="10dip"
+	    android:text="Loading..."
+	    android:textColor="#FF444444"
+	    android:textSize="22dip" >
+
+</TextView>
+
+	<TextView
+	    android:id="@+id/Summary"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignParentLeft="true"
+	    android:layout_alignParentRight="true"
+	    android:layout_alignParentTop="true"
+	    android:gravity="center"
+	    android:textColor="#5577dd"
+	    android:textSize="16dip"
+	    android:textStyle="bold"
+	    android:visibility="invisible" >
+</TextView>
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentBottom="true" android:layout_alignParentRight="true" android:id="@+id/Expand" android:textStyle="bold" android:textColor="#FFFFFFFF" android:textSize="16dip" android:text="Tap to expand" android:visibility="gone"></TextView>
+
+	<ImageView
+	    android:id="@+id/imageView1"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:layout_alignParentLeft="false"
+	    android:layout_centerHorizontal="true"
+	    android:layout_centerVertical="true"
+	    android:alpha="0.2"
+	    android:scaleType="centerInside"
+	    android:src="@drawable/alflogo" />
+
+	<StackView
+	    android:id="@+id/stackView1"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    android:layout_alignLeft="@+id/QuoteText"
+	    android:layout_below="@+id/Summary"
+	    android:layout_marginLeft="41dp"
+	    android:layout_marginTop="26dp" >
+	</StackView>
+
+</RelativeLayout>
