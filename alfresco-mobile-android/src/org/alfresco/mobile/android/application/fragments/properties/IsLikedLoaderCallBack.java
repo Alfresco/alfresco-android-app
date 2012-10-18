@@ -31,12 +31,13 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<Boolean>>
 {
     private Node node;
 
-    private ImageButton likeButton;
+    private ImageView likeButton;
 
     public IsLikedLoaderCallBack(AlfrescoSession session, Activity context, Node node)
     {
@@ -75,7 +76,7 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
 
     }
 
-    public void setImageButton(ImageButton mi)
+    public void setImageButton(ImageView mi)
     {
         this.likeButton = mi;
     }

@@ -195,7 +195,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         // BUTTONS
-        Button b = (Button) v.findViewById(R.id.action_openin);
+        ImageView b = (ImageView) v.findViewById(R.id.action_openin);
         if (node.isDocument() && ((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
                 && ((Document) node).getContentStreamLength() > 0)
         {
@@ -232,7 +232,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
          * b.setVisibility(View.GONE); }
          */
 
-        ImageButton ba = (ImageButton) v.findViewById(R.id.like);
+        ImageView ba = (ImageView) v.findViewById(R.id.like);
         if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
             ba.setOnClickListener(new OnClickListener()
@@ -253,7 +253,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         lcb.setImageButton(ba);
         lcb.execute(false);
 
-        ba = (ImageButton) v.findViewById(R.id.action_share);
+        ba = (ImageView) v.findViewById(R.id.action_share);
         ba.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -565,7 +565,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void like(View v)
     {
         IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
-        lcb.setImageButton((ImageButton) v.findViewById(R.id.like));
+        lcb.setImageButton((ImageView) v.findViewById(R.id.like));
         lcb.execute(true);
     }
     
