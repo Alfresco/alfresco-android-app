@@ -113,6 +113,15 @@ public class CommentsFragment extends CommentFragment
             reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
         }
+
+        @Override
+        public void onExeceptionDuringCreation(Exception e)
+        {
+            MessengerManager.showLongToast(getActivity(), e.getMessage());
+            bAdd.setEnabled(true);
+            reload(bundle, loaderId, callback);
+            getLoaderManager().destroyLoader(CommentCreateLoader.ID);
+        }
     };
 
     @Override
