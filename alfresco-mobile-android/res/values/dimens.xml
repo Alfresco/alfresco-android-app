@@ -38,5 +38,7 @@
     <dimen name="properties_padding">5dip</dimen>
     <dimen name="properties_icon_padding">20dip</dimen>
     <dimen name="properties_details_padding">20dip</dimen>
+    <dimen name="properties_details_icon_size">140dip</dimen>
+    <dimen name="properties_small_screen_extra_padding">30dip</dimen>
     
 </resources>
