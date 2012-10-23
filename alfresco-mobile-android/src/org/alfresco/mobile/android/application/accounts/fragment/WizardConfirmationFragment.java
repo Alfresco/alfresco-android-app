@@ -51,6 +51,7 @@ public class WizardConfirmationFragment extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         if (getDialog() != null){
             getDialog().setTitle(R.string.sign_up_cloud);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
@@ -75,13 +76,5 @@ public class WizardConfirmationFragment extends DialogFragment
         });
         
         return v;
-    }
-
-    private View findViewByIdInternal(int id){
-        if (getDialog() != null){
-            return getDialog().findViewById(id);
-        } else {
-            return getActivity().findViewById(id);
-        }
     }
 }

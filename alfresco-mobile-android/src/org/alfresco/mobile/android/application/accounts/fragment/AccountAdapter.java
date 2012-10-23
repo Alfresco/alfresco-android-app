@@ -35,8 +35,8 @@ public class AccountAdapter extends ArrayAdapter<Account>
     protected Activity context;
 
     protected Account item;
-    protected int textViewResourceId;
 
+    protected int textViewResourceId;
 
     public AccountAdapter(Activity context, int textViewResourceId, List<Account> listItems)
     {
@@ -45,7 +45,6 @@ public class AccountAdapter extends ArrayAdapter<Account>
         this.textViewResourceId = textViewResourceId;
 
     }
-
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
@@ -69,17 +68,31 @@ public class AccountAdapter extends ArrayAdapter<Account>
             v.topText.setText(item.getDescription());
             updateControlIcon(v, item);
             if (item.getActivation() != null)
+            {
                 v.bottomText.setText(context.getText(R.string.sign_up_cloud_awaiting_email));
+            }
             else
+            {
                 v.bottomText.setText(item.getUsername());
+            }
         }
     }
 
     protected void updateControlIcon(GenericViewHolder vh, Account item)
     {
         int iconId = R.drawable.ic_onpremise;
-        if (item.getTypeId() == Account.TYPE_ALFRESCO_CLOUD){
-            iconId = R.drawable.ic_cloud;
+        switch ((int) item.getTypeId())
+        {
+            case Account.TYPE_ALFRESCO_TEST_BASIC:
+            case Account.TYPE_ALFRESCO_TEST_OAUTH:
+                iconId = R.drawable.ic_cloud_alf;
+                break;
+            case Account.TYPE_ALFRESCO_CLOUD:
+                iconId = R.drawable.ic_cloud;
+                break;
+            default:
+                iconId = R.drawable.ic_onpremise;
+                break;
         }
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(iconId));
     }

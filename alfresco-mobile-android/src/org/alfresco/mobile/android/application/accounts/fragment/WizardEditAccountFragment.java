@@ -130,7 +130,7 @@ public class WizardEditAccountFragment extends DialogFragment
         
         return v;
     }
-
+    
     private String url = null, host = null, username = null, password = null, servicedocument = null,
             description = null;
 
@@ -197,6 +197,7 @@ public class WizardEditAccountFragment extends DialogFragment
     {
         ActionManager.actionRefresh(WizardEditAccountFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                 IntentIntegrator.ACCOUNT_TYPE);
+        getActivity().finish();
     }
 
     private View findViewByIdInternal(int id)

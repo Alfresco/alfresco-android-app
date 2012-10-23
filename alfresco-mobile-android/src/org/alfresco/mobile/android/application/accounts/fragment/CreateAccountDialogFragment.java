@@ -21,7 +21,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
+import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -104,7 +104,7 @@ public class CreateAccountDialogFragment extends DialogFragment
             public void onClick(View v)
             {
                 flip.setDisplayedChild(1);
-            }
+           }
         });
 
         step1 = (Button) v.findViewById(R.id.alfresco_cloud);
@@ -194,7 +194,7 @@ public class CreateAccountDialogFragment extends DialogFragment
 
         sw.setChecked(true);
         portForm.setText("443");
-
+        
         return v;
     }
 
@@ -231,9 +231,7 @@ public class CreateAccountDialogFragment extends DialogFragment
         // Check values
         if (cloudAccountType)
         {
-            url = LoginLoaderCallback.ALFRESCO_CLOUD_URL;
-            // TODO uncomment
-            // host = CloudConstant.CLOUD_URL;
+            url = OAuthConstant.PUBLIC_API_HOSTNAME;
         }
         else
         {
