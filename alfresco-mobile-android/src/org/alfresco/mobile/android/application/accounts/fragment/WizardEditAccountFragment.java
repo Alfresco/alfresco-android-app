@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.graphics.Color;
@@ -37,12 +36,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.Switch;
 
-@TargetApi(14)
 public class WizardEditAccountFragment extends DialogFragment
 {
     public static final String TAG = "EditAccountFragment";
@@ -78,22 +77,6 @@ public class WizardEditAccountFragment extends DialogFragment
 
         View v = inflater.inflate(R.layout.sdkapp_wizard_account_step2, container, false);
 
-        v.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-        Button advanced = (Button) v.findViewById(R.id.advanced);
-        advanced.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                View vt = (View) findViewByIdInternal(R.id.advanced_settings);
-                if (vt.getVisibility() == View.VISIBLE)
-                    vt.setVisibility(View.GONE);
-                else
-                    vt.setVisibility(View.VISIBLE);
-            }
-        });
-
         Button step2 = (Button) v.findViewById(R.id.next);
         step2.setOnClickListener(new OnClickListener()
         {
@@ -104,7 +87,7 @@ public class WizardEditAccountFragment extends DialogFragment
             }
         });
         
-        final Switch sw = (Switch) v.findViewById(R.id.repository_https);
+        final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
         {
@@ -170,7 +153,7 @@ public class WizardEditAccountFragment extends DialogFragment
             return;
         }
 
-        Switch sw = (Switch) findViewByIdInternal(R.id.repository_https);
+        CheckBox sw = (CheckBox) findViewByIdInternal(R.id.repository_https);
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 

@@ -33,6 +33,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 public class WizardOAuthAppFragment extends OAuthFragment
 {
@@ -83,6 +84,14 @@ public class WizardOAuthAppFragment extends OAuthFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (getDialog() != null){
+            getDialog().setTitle("Enter your credential");
+            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        } else {
+            getActivity().getActionBar().show();
+            getActivity().setTitle("Enter your credential");
+        }
+        
         View v = super.onCreateView(inflater, container, savedInstanceState);
 
         setOnOAuthAccessTokenListener(new OnOAuthAccessTokenListener()
@@ -126,5 +135,12 @@ public class WizardOAuthAppFragment extends OAuthFragment
         LoaderManager lm = getLoaderManager();
         lm.restartLoader(SessionLoader.ID, null, call);
         lm.getLoader(SessionLoader.ID).forceLoad();
+    }
+    
+    @Override
+    public void onStart()
+    {
+        getActivity().invalidateOptionsMenu();
+        super.onStart();
     }
 }

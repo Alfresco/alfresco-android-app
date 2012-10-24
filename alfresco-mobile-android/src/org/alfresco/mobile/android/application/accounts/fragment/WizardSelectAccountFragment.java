@@ -46,9 +46,10 @@ public class WizardSelectAccountFragment extends DialogFragment
         if (getDialog() != null){
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }
+        getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -62,8 +63,6 @@ public class WizardSelectAccountFragment extends DialogFragment
         
 
         View v = inflater.inflate(R.layout.sdkapp_wizard_account_step1, container, false);
-        
-        v.setBackgroundColor(Color.parseColor("#FFFFFF"));
         
         Button step1 = (Button) v.findViewById(R.id.alfresco_server);
         step1.setOnClickListener(new OnClickListener()

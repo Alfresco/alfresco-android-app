@@ -37,7 +37,7 @@
             android:stretchColumns="1" >
 
             <TableRow
-                android:id="@+id/tableRow2"
+                android:id="@+id/repository_username_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
@@ -56,7 +56,7 @@
             </TableRow>
 
             <TableRow
-                android:id="@+id/tableRow3"
+                android:id="@+id/repository_password_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
@@ -110,15 +110,35 @@
                     android:inputType="text" >
                 </EditText>
             </TableRow>
+            
+             <TableRow
+                android:id="@+id/repository_https_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/account_https" />
+
+                <CheckBox
+                    android:id="@+id/repository_https"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    />
+
+            </TableRow>
         </TableLayout>
 
-        <Button
+          <TextView
             android:id="@+id/advanced"
-            android:layout_width="wrap_content"
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:drawableRight="@drawable/ic_menu_more"
-            android:text="@string/account_advanced" />
+            android:text="@string/account_advanced"/>
 
         <TableLayout
             android:id="@+id/advanced_settings"
@@ -126,25 +146,7 @@
             android:layout_height="wrap_content"
             android:shrinkColumns="1"
             android:stretchColumns="1"
-            android:visibility="gone" >
-
-            <TableRow
-                android:id="@+id/tableRow2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_https" />
-
-                <Switch
-                    android:id="@+id/repository_https"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    tools:ignore="NewApi" />
-            </TableRow>
+            >
 
             <TableRow
                 android:id="@+id/tableRow3"

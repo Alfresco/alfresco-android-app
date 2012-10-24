@@ -36,7 +36,9 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.CreateAccountDialogFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.WizardEditAccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.WizardOAuthAppFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.WizardSelectAccountFragment;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -46,7 +48,6 @@ import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFr
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
-import org.alfresco.mobile.android.application.fragments.help.HelpFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
@@ -74,7 +75,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.DialogInterface;
@@ -170,7 +170,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         }
         else
         {
-            clearScreen();
             if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
             {
                 displayAccounts();
@@ -356,27 +355,21 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             else if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
             {
                 // case phone
-                if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) return;
+                if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) { return; }
 
-                if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
+                if (SessionUtils.getAccount(this) != null)
+                {
+                    currentAccount = SessionUtils.getAccount(this);
+                }
                 createSwitchAccount(currentAccount);
                 if (currentNode.isDocument())
+                {
                     addPropertiesFragment(currentNode);
+                }
                 else
+                {
                     addNavigationFragment((Folder) currentNode);
-            }
-            else if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && "org.alfresco.mobile.android".equals(intent.getData().getScheme()))
-            {
-                FragmentTransaction ft = getFragmentManager().beginTransaction();
-                Fragment prev = getFragmentManager().findFragmentByTag(SignupCloudDialogFragment.TAG);
-                if (prev != null) ft.remove(prev);
-                prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
-                if (prev != null) ft.remove(prev);
-
-                // Create and show the dialog.
-                SignupCloudDialogFragment newFragment = new SignupCloudDialogFragment();
-                newFragment.show(ft, SignupCloudDialogFragment.TAG);
+                }
             }
             else if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
             {
@@ -384,14 +377,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 {
                     if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
                     {
-                        if (((AccountFragment) getFragment(AccountFragment.TAG)) != null)
+                        getFragmentManager().popBackStack(AccountDetailsFragment.TAG,
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        if (getFragment(AccountFragment.TAG) != null)
                         {
                             ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                            FragmentDisplayer.removeFragment(this, AccountDetailsFragment.TAG);
                         }
-                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
                         getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
                         getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
+                        clearScreen();
                     }
                     else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
                     {
@@ -408,17 +402,20 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 {
                     if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
                     {
-                        clearCentralPane();
-                        clearScreen();
-                        if (((AccountFragment) getFragment(AccountFragment.TAG)) != null)
+                        getFragmentManager().popBackStack(WizardSelectAccountFragment.TAG,
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                        if (getFragment(AccountFragment.TAG) != null)
                         {
                             ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                            FragmentDisplayer.removeFragment(this, AccountDetailsFragment.TAG);
                         }
-                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+
                         getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
                         getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
-                    } else {
+                        clearScreen();
+                    }
+                    else
+                    {
                         if (getFragment(ChildrenBrowserFragment.TAG) != null)
                         {
                             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
@@ -429,7 +426,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                             backstack = true;
                             getFragmentManager().popBackStack();
                         }
-                        addPropertiesFragment(currentNode, backstack);  
+                        addPropertiesFragment(currentNode, backstack);
                     }
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
@@ -619,23 +616,23 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             case R.id.menu_about:
                 showAbout();
                 break;
-                
+
             case R.id.menu_help:
                 String newFile;
                 try
                 {
+                    //FIXME Write asset everytime I click ?
                     newFile = IOUtils.writeAsset(this, "gettingstarted.pdf");
                     if (newFile.length() > 0)
                     {
-                        if (!ActionManager.launchPDF(this, newFile))
-                            showDialog (GET_PDF_VIEWER);
+                        if (!ActionManager.launchPDF(this, newFile)) showDialog(GET_PDF_VIEWER);
                     }
                 }
                 catch (IOException e)
                 {
                 }
                 break;
-                
+
             default:
                 break;
         }
@@ -643,7 +640,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public void showMainMenuFragment(View v)
     {
-        clearScreen();
         DisplayUtils.hideLeftTitlePane(this);
         doMainMenuAction(v.getId());
         toggleSlideMenu();
@@ -754,21 +750,16 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         frag.setSession(SessionUtils.getsession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG,
                 true);
-        DisplayUtils.getMainPane(this).setBackgroundResource(android.R.color.background_light);
     }
 
     public void showAbout()
     {
+        if (getFragment(AboutFragment.TAG) != null){
+            getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
         Fragment f = new AboutFragment();
         FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
-        DisplayUtils.switchSingleOrTwo(this, true);
-    }
-
-    public void showHelp()
-    {
-        Fragment f = new HelpFragment();
-        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), HelpFragment.TAG, true);
-        DisplayUtils.switchSingleOrTwo(this, true);
+        DisplayUtils.switchSingleOrTwo(this, false);
     }
 
     public void displayMainMenu()
@@ -797,20 +788,13 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     public int getFragmentPlace(boolean right)
     {
         int id = R.id.left_pane_body;
-        /*
-         * if (right && DisplayUtils.hasRightPane(this)) id =
-         * R.id.right_pane_body;
-         */
         if (DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
         return id;
     }
 
     public int getFragmentPlaceId()
     {
-        /*
-         * if (DisplayUtils.hasRightPane(this)) { return
-         * DisplayUtils.getRightFragmentId(this); } else
-         */if (DisplayUtils.hasCentralPane(this))
+        if (DisplayUtils.hasCentralPane(this))
         {
             return DisplayUtils.getCentralFragmentId(this);
         }
@@ -822,12 +806,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public void clearScreen()
     {
-        /*
-         * if (DisplayUtils.hasRightPane(this)) {
-         * FragmentDisplayer.removeFragment(this,
-         * DisplayUtils.getRightFragmentId(this));
-         * DisplayUtils.hide(DisplayUtils.getRightPane(this)); }
-         */
         if (DisplayUtils.hasCentralPane(this))
         {
             FragmentDisplayer.removeFragment(this, DisplayUtils.getCentralFragmentId(this));
@@ -836,13 +814,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         if (DisplayUtils.hasLeftPane(this))
         {
             DisplayUtils.show(DisplayUtils.getLeftPane(this));
-            // FragmentDisplayer.removeFragment(this,
-            // DisplayUtils.getLeftFragmentId(this));
-            // DisplayUtils.getLeftPane(this).setBackgroundResource(android.R.color.transparent);
         }
     }
 
-    public void clearCentralPane()
+    private void clearCentralPane()
     {
         FragmentDisplayer.removeFragment(this, stackCentral);
         stackCentral.clear();
@@ -904,10 +879,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
         MenuItem mi;
 
-        if (isVisible(AccountFragment.TAG)) ((AccountFragment) getFragment(AccountFragment.TAG)).getMenu(menu);
-
         if (isVisible(AccountDetailsFragment.TAG))
+        {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
+        }
+        else if (isVisible(AccountFragment.TAG) && !isVisible(WizardSelectAccountFragment.TAG)
+                && !isVisible(WizardEditAccountFragment.TAG) && !isVisible(WizardOAuthAppFragment.TAG))
+        {
+            ((AccountFragment) getFragment(AccountFragment.TAG)).getMenu(menu);
+        }
 
         else if (isVisible(DetailsFragment.TAG))
         {
@@ -1096,8 +1076,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             {
                 DisplayUtils.getLeftPane(this).setVisibility(View.VISIBLE);
                 DisplayUtils.getCentralPane(this).setVisibility(View.GONE);
-                FragmentDisplayer.remove(this,
-                        getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(this)), false);
+                
+                //Special case : if Activities Fragment
+                if (getFragment(ActivitiesFragment.TAG) == null && getFragment(ChildrenBrowserFragment.TAG) == null){
+                    getFragmentManager().popBackStack();
+                } else {
+                    FragmentDisplayer.remove(this,
+                            getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(this)), false);
+                }
             }
         }
         else
@@ -1164,8 +1150,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     public static final int NETWORK_PROBLEM = 600;
 
     public static final int GET_PDF_VIEWER = 700;
-    
-    
+
     @Override
     protected Dialog onCreateDialog(int id)
     {
@@ -1196,26 +1181,23 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                         }).create();
                 dialog.show();
                 break;
-                
+
             case GET_PDF_VIEWER:
-                dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name)
-                        .setMessage(R.string.get_pdf_viewer)
+                dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(R.string.get_pdf_viewer)
                         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
                         {
                             public void onClick(DialogInterface dialog, int id)
                             {
                                 dialog.dismiss();
                             }
-                        })
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+                        }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
                         {
                             public void onClick(DialogInterface dialog, int id)
                             {
                                 ActionManager.getAdobeReader(MainActivity.this);
                                 dialog.dismiss();
                             }
-                        })
-                        .create();
+                        }).create();
                 dialog.show();
         }
         // TODO Auto-generated method stub

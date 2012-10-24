@@ -83,7 +83,6 @@ public class ActivitiesFragment extends ActivityStreamFragment
             lm.restartLoader(NodeLoader.ID, null, call);
             lm.getLoader(NodeLoader.ID).forceLoad();
         }
-
-        super.onListItemClick(l, v, position, id);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 }

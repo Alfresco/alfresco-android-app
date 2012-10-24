@@ -21,7 +21,8 @@
     android:layout_height="fill_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:minWidth="600dp" >
+    android:minWidth="600dp"
+    android:background="@android:color/background_light"  >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
