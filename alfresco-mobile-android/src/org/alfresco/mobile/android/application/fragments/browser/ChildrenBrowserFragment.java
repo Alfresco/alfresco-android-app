@@ -102,7 +102,10 @@ public class ChildrenBrowserFragment extends NavigationFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getsession(getActivity());
-        if (RepositoryVersionHelper.isAlfrescoProduct(alfSession)) setActivateThumbnail(true);
+        if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
+        {
+            setActivateThumbnail(true);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -241,7 +244,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
             public void onExeceptionDuringCreation(Exception arg0)
             {
                 // TODO Auto-generated method stub
-                
+
             }
         });
 

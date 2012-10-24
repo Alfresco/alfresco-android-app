@@ -22,24 +22,29 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.fragment.SessionSettingsHelper;
 import org.alfresco.mobile.android.application.utils.UrlFinder;
 
-import android.content.Context;
+import android.app.Activity;
 import android.util.Log;
 
 /**
@@ -66,18 +71,16 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
     private String uri;
 
-    private Map<String, Serializable> settings;
-
     private Account selectAccount;
 
-    public NodeLoader(Context context, List<Account> accounts, String url)
+    public NodeLoader(Activity context, List<Account> accounts, String url)
     {
         super(context);
         this.accounts = accounts;
         this.uri = url;
     }
-    
-    public NodeLoader(Context context, AlfrescoSession session, String url)
+
+    public NodeLoader(Activity context, AlfrescoSession session, String url)
     {
         super(context);
         this.session = session;
@@ -92,9 +95,10 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         String identifier = uri;
         try
         {
-            if (session == null){
+            if (session == null)
+            {
                 // Detect url
-                URL  tmpurl = findUrl(uri);
+                URL tmpurl = findUrl(uri);
 
                 // Find if account can match url
                 findAccount(tmpurl);
@@ -105,9 +109,14 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 // Find Identifier
                 identifier = findIdentifier(tmpurl);
             }
-           
+
             // Retrieve Node
             n = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(identifier);
+
+            if (n.isDocument())
+            {
+                n = session.getServiceRegistry().getVersionService().getVersions((Document) n).get(0);
+            }
 
             if (n.isDocument()) try
             {
@@ -115,7 +124,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             }
             catch (Exception e)
             {
-                Log.d("NodeLoader", e.toString());
+                Log.d("NodeLoader", Log.getStackTraceString(e));
             }
         }
         catch (Exception e)
@@ -140,29 +149,41 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         return identifier;
     }
 
+    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
+
     private void findSession(URL tmpurl)
     {
-        String url = selectAccount.getUrl();
-        if (url.startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
+        // TODO Better support of Cloud Session
+        SessionSettingsHelper settingsHelper = new SessionSettingsHelper(getContext(), selectAccount);
+        Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
+        if (settingsHelper.isCloud())
         {
-            if (settings == null) settings = new HashMap<String, Serializable>();
-            if (!settings.containsKey(LoginLoaderCallback.BASE_URL)) settings.put(LoginLoaderCallback.BASE_URL, url);
-            settings.put(LoginLoaderCallback.USER, selectAccount.getUsername());
-            settings.put(LoginLoaderCallback.PASSWORD, selectAccount.getPassword());
-            session = CloudSession.connect(null, settings);
+            settings.putAll(settingsHelper.prepareCloudSettings(true, false));
+            session = CloudSession.connect(settingsHelper.getData(), settings);
         }
         else
         {
-            session = RepositorySession.connect(selectAccount.getUrl(), selectAccount.getUsername(),
-                    selectAccount.getPassword(), settings);
+            session = RepositorySession.connect(settingsHelper.getBaseUrl(), settingsHelper.getUsername(),
+                    settingsHelper.getPassword(), settings);
         }
 
-        if (session == null)
-            throw new AlfrescoServiceException("Unable to connect to the appropriate server : " + tmpurl);
+        if (session == null) { throw new AlfrescoServiceException("Unable to connect to the appropriate server : "
+                + tmpurl); }
     }
 
-    private void findAccount(URL tmpurl) throws MalformedURLException
+    private final static String MY_ALFRESCO_HOSTNAME = "my.alfresco.com";
+    private final static String API_ALFRESCO_HOSTNAME = "api.alfresco.com";
+
+    
+    private void findAccount(URL searchedURL) throws MalformedURLException
     {
+        URL tmpurl = searchedURL;
+        if (tmpurl.getHost().equals(MY_ALFRESCO_HOSTNAME))
+        {
+            tmpurl = new URL(tmpurl.toString().replace(MY_ALFRESCO_HOSTNAME, API_ALFRESCO_HOSTNAME));
+        }
+
+        List<Account> matchAccount = new ArrayList<Account>();
         boolean match = false;
         URL accountUrl = null;
         for (Account account : accounts)
@@ -170,10 +191,30 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             accountUrl = new URL(account.getUrl());
             if (tmpurl.getHost().equals(accountUrl.getHost()))
             {
-                selectAccount = account;
-                match = true;
+                matchAccount.add(account);
             }
         }
+
+        if (matchAccount.size() == 1)
+        {
+            match = true;
+            selectAccount = matchAccount.get(0);
+        }
+        else if (matchAccount.size() > 1)
+        {
+            match = true;
+            selectAccount = matchAccount.get(0);
+            // Cloud Account : check network
+            for (Account account : matchAccount)
+            {
+                if (tmpurl.getPath().contains(account.getRepositoryId()))
+                {
+                    selectAccount = account;
+                    break;
+                }
+            }
+        }
+
         if (!match) throw new AlfrescoServiceException("No account match this url : " + tmpurl);
     }
 

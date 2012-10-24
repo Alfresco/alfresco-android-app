@@ -20,13 +20,18 @@ package org.alfresco.mobile.android.application.accounts.signup;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,7 +61,8 @@ public class SignupCloudDialogFragment extends DialogFragment
     @Override
     public void onStart()
     {
-        if (getDialog() != null){
+        if (getDialog() != null)
+        {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
         }
         super.onStart();
@@ -65,14 +71,17 @@ public class SignupCloudDialogFragment extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (getDialog() != null){
+        setRetainInstance(true);
+        if (getDialog() != null)
+        {
             getDialog().setTitle(R.string.sign_up_cloud);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
-        } else {
+        }
+        else
+        {
             getActivity().getActionBar().show();
             getActivity().setTitle(R.string.sign_up_cloud);
         }
-        
 
         View v = inflater.inflate(R.layout.app_cloud_signup, container, false);
 
@@ -147,17 +156,22 @@ public class SignupCloudDialogFragment extends DialogFragment
 
         return true;
     }
-    
-    public void displayAccounts(){
+
+    public void displayAccounts()
+    {
         Intent i = new Intent(getActivity(), MainActivity.class);
         i.setAction(IntentIntegrator.ACTION_CHECK_SIGNUP);
         getActivity().startActivity(i);
     }
-    
-    private View findViewByIdInternal(int id){
-        if (getDialog() != null){
+
+    private View findViewByIdInternal(int id)
+    {
+        if (getDialog() != null)
+        {
             return getDialog().findViewById(id);
-        } else {
+        }
+        else
+        {
             return getActivity().findViewById(id);
         }
     }

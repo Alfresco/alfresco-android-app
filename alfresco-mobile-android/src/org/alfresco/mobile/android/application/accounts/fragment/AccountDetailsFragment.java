@@ -316,7 +316,6 @@ public class AccountDetailsFragment extends BaseFragment
     {
         initValues(vRoot, true);
 
-        // TODO Auto-generated method stub
         Button b = (Button) vRoot.findViewById(R.id.validate_account);
         b.setVisibility(View.VISIBLE);
         b.setOnClickListener(new OnClickListener()
@@ -326,7 +325,7 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 retrieveFormValues(v);
                 if (accountDao.update(acc.getId(), description, url, username, password, acc.getRepositoryId(),
-                        Integer.valueOf(Account.TYPE_ALFRESCO_CMIS), null, null, null))
+                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken()))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                     initValues(vRoot, false);

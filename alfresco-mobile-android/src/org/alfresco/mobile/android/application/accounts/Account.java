@@ -26,6 +26,8 @@ public class Account implements Serializable
 
     public static final int TYPE_ALFRESCO_CMIS = 2;
     public static final int TYPE_ALFRESCO_CLOUD = 4;
+    public static final int TYPE_ALFRESCO_TEST_BASIC = 10;
+    public static final int TYPE_ALFRESCO_TEST_OAUTH = 11;
     
     private static final long serialVersionUID = 1L;
 
