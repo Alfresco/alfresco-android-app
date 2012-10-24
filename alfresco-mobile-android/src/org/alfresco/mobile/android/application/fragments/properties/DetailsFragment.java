@@ -18,10 +18,8 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
@@ -29,7 +27,6 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -58,7 +55,6 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListen
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.manager.PropertyManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -75,7 +71,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -83,8 +78,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -213,24 +206,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             b.setVisibility(View.GONE);
         }
 
-        /*
-         * b = (Button) v.findViewById(R.id.display_comments); if
-         * (node.getProperty("fm:commentCount") != null &&
-         * node.getProperty("fm:commentCount").getValue() != null) {
-         * b.setText(b.getText() + " (" +
-         * node.getProperty("fm:commentCount").getValue().toString() + ") "); }
-         * if (alfSession.getServiceRegistry().getCommentService() != null) {
-         * b.setOnClickListener(new OnClickListener() {
-         * @Override public void onClick(View v) { ((MainActivity)
-         * getActivity()).addComments(node); } }); } else {
-         * b.setVisibility(View.GONE); } b = (Button)
-         * v.findViewById(R.id.display_all_versions); if (((DocumentImpl)
-         * node).hasAllowableAction(Action.CAN_GET_ALL_VERSIONS.value())) {
-         * b.setOnClickListener(new OnClickListener() {
-         * @Override public void onClick(View v) { ((MainActivity)
-         * getActivity()).addVersions((Document) node); } }); } else {
-         * b.setVisibility(View.GONE); }
-         */
 
         ImageView ba = (ImageView) v.findViewById(R.id.like);
         if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())

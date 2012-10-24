@@ -17,39 +17,27 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.Serializable;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Properties;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
-import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -57,18 +45,9 @@ import android.content.Loader;
 import android.os.Bundle;
 
 @TargetApi(11)
-public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<AlfrescoSession>>
+public class AccountLoaderCallback extends AbstractSessionCallback
 {
-
-    private Activity activity;
-
-    private String baseUrl;
-
     private URL url;
-
-    private String username;
-
-    private String password;
 
     private ProgressDialog mProgressDialog;
 
@@ -79,8 +58,6 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
     private int attempt = 0;
 
     private String description;
-
-    private OAuthData data;
 
     public AccountLoaderCallback(Activity activity, Fragment fr, String url, String username, String password,
             String description)
@@ -126,56 +103,7 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                     }
                 });
 
-        // Default settings for Alfresco Application
-        HashMap<String, Serializable> settings = new HashMap<String, Serializable>(2);
-        settings.put(SessionParameter.CONNECT_TIMEOUT, "10000");
-        settings.put(SessionParameter.READ_TIMEOUT, "60000");
-        settings.put(AlfrescoSession.EXTRACT_METADATA, true);
-        settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
-        settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(activity, "AlfrescoMobile"));
-
-        if (data != null)
-        {
-            return new CloudSessionLoader(activity, data, settings);
-        }
-        // TODO REMOVE ALL BEFORE RELEASE!!
-        // Specific for Test Instance server
-        else if (baseUrl != null && baseUrl.toString().startsWith(LoginLoaderCallback.ALFRESCO_CLOUD_URL))
-        {
-            // TODO Remove it when public
-            String tmpurl = "http://devapis.alfresco.com/alfresco/a";
-
-            // Check Properties available inside the device
-            if (LoginLoaderCallback.ENABLE_CONFIG_FILE)
-            {
-                File f = new File(LoginLoaderCallback.CLOUD_CONFIG_PATH);
-                if (f.exists() && LoginLoaderCallback.ENABLE_CONFIG_FILE)
-                {
-                    Properties prop = new Properties();
-                    try
-                    {
-                        // load a properties file
-                        prop.load(new FileInputStream(f));
-                        tmpurl = prop.getProperty("url");
-                    }
-                    catch (IOException ex)
-                    {
-                        throw new AlfrescoServiceException(ErrorCodeRegistry.PARSING_GENERIC, "Error with config files");
-                    }
-                }
-            }
-
-            settings.put(LoginLoaderCallback.CLOUD_BASIC_AUTH, true);
-            settings.put(LoginLoaderCallback.BASE_URL, tmpurl);
-            settings.put(LoginLoaderCallback.USER, username);
-            settings.put(LoginLoaderCallback.PASSWORD, password);
-
-            return new CloudSessionLoader(activity, null, settings);
-        }
-        else
-        {
-            return new SessionLoader(activity, baseUrl, username, password, settings);
-        }
+        return getSessionLoader(activity, baseUrl, username, password, data, false, true);
     }
 
     @Override
@@ -189,14 +117,21 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
             long id = -1L;
             if (data == null)
             {
-                id = serverDao.insert(
-                        description,
-                        baseUrl,
-                        username,
-                        password,
-                        session.getRepositoryInfo().getIdentifier(),
-                        (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD) : Integer
-                                .valueOf(Account.TYPE_ALFRESCO_CMIS), null, null);
+                int type = Integer.valueOf(Account.TYPE_ALFRESCO_CMIS);
+                if (session instanceof CloudSession
+                        && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
+                {
+                    type = (data != null) ? Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH) : Integer
+                            .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
+                }
+                else
+                {
+                    type = (session instanceof CloudSession) ? Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD) : Integer
+                            .valueOf(Account.TYPE_ALFRESCO_CMIS);
+                }
+
+                id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
+                        .getIdentifier(), type, null, null);
             }
             else
             {
@@ -205,9 +140,18 @@ public class AccountLoaderCallback implements LoaderCallbacks<LoaderResult<Alfre
                 {
                     user = ((CloudSessionLoader) loader).getUser();
                 }
-                id = serverDao.insert("Alfresco Cloud", OAuthConstant.PUBLIC_API_HOSTNAME, user.getIdentifier(), null, session
-                        .getRepositoryInfo().getIdentifier(), Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD), data
-                        .getAccessToken(), data.getRefreshToken());
+                
+                int type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
+                if (session instanceof CloudSession
+                        && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
+                {
+                    type = (data != null) ? Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH) : Integer
+                            .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
+                }
+                
+                id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null,
+                        session.getRepositoryInfo().getIdentifier(), type,
+                        ((CloudSession)session).getOAuthData().getAccessToken(), ((CloudSession)session).getOAuthData().getRefreshToken());
             }
 
             SessionUtils.setAccount(activity, serverDao.findById(id));

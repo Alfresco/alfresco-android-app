@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
@@ -43,17 +42,49 @@ public class WizardOAuthAppFragment extends OAuthFragment
 
     public static WizardOAuthAppFragment newInstance()
     {
-        WizardOAuthAppFragment bf = new WizardOAuthAppFragment();
+        WizardOAuthAppFragment bf = getOAuthFragment();
         Bundle b = createBundleArgs(R.layout.sdkapp_wizard_account_step2_cloud);
         bf.setArguments(b);
         return bf;
     }
-    
+
+    public WizardOAuthAppFragment()
+    {
+    }
+
+    public WizardOAuthAppFragment(String oauthUrl, String apikey, String apiSecret)
+    {
+        super(oauthUrl, apikey, apiSecret);
+    }
+
+    public static WizardOAuthAppFragment getOAuthFragment()
+    {
+        String oauthUrl = null, apikey = null, apisecret = null;
+        Bundle b = SessionSettingsHelper.getOAuthSettings();
+        if (b != null)
+        {
+            oauthUrl = b.getString(SessionSettingsHelper.OAUTH_URL);
+            apikey = b.getString(SessionSettingsHelper.OAUTH_API_KEY);
+            apisecret = b.getString(SessionSettingsHelper.OAUTH_API_SECRET);
+        }
+
+        WizardOAuthAppFragment oauthFragment = null;
+        if (oauthUrl == null || oauthUrl.isEmpty())
+        {
+            oauthFragment = new WizardOAuthAppFragment();
+        }
+        else
+        {
+            oauthFragment = new WizardOAuthAppFragment(oauthUrl, apikey, apisecret);
+        }
+        return oauthFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        
+
         setOnOAuthAccessTokenListener(new OnOAuthAccessTokenListener()
         {
 
@@ -85,7 +116,7 @@ public class WizardOAuthAppFragment extends OAuthFragment
                 load(result);
             }
         });
-        
+
         return v;
     }
 
