@@ -36,9 +36,10 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardEditAccountFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardOAuthAppFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardSelectAccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountLoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -276,7 +277,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             if (currentAccount.getActivation() == null && hasNetwork())
             {
                 // Load First Account by default
-                LoginLoaderCallback call = new LoginLoaderCallback(this, currentAccount);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, currentAccount);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -292,6 +293,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         }
         SessionUtils.setAccount(this, currentAccount);
         createSwitchAccount(currentAccount);
+        invalidateOptionsMenu();
     }
 
     @Override
@@ -326,14 +328,42 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             Boolean backstack = false;
 
             // Intent after session loading
+            //TODO add extra params to define precisely backstack.
             if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
             {
-                if (fragmentQueue != -1) doMainMenuAction(fragmentQueue);
+                //Remove OAuthFragment 
+                if (getFragment(AccountOAuthFragment.TAG) != null){
+                    getFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+                
+                //Used for launching last pressed action button from main menu
+                if (fragmentQueue != -1)
+                {
+                    doMainMenuAction(fragmentQueue);
+                }
                 fragmentQueue = -1;
                 setProgressBarIndeterminateVisibility(false);
+                
+                return;
             }
-            else if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
+            //Intent for USER AUTHENTICATION
+            if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction())){
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(accounts.get((int)intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE)));
+                FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
+                        AccountOAuthFragment.TAG, true);
+                return;
+            }
+            
+            //Intent for CLOUD SIGN UP
+            if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
+            {
+                FragmentDisplayer.removeFragment(this, SignupCloudDialogFragment.TAG);
+                displayAccounts();
+                return;
+            }
+
+            if (Intent.ACTION_VIEW.equals(intent.getAction()) && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
             {
                 if (intent.getExtras().containsKey(IntentIntegrator.EXTRA_NODE))
                 {
@@ -346,11 +376,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 {
 
                 }
-            }
-            else if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
-            {
-                FragmentDisplayer.removeFragment(this, SignupCloudDialogFragment.TAG);
-                displayAccounts();
             }
             else if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
             {
@@ -402,7 +427,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 {
                     if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
                     {
-                        getFragmentManager().popBackStack(WizardSelectAccountFragment.TAG,
+                        getFragmentManager().popBackStack(AccountTypesFragment.TAG,
                                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
                         if (getFragment(AccountFragment.TAG) != null)
@@ -412,7 +437,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
                         getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
                         getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
-                        clearScreen();
                     }
                     else
                     {
@@ -528,7 +552,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             setProgressBarIndeterminateVisibility(true);
             currentAccount = acc;
             SessionUtils.setsession(this, null);
-            LoginLoaderCallback call = new LoginLoaderCallback(MainActivity.this, acc);
+            AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(MainActivity.this, acc);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(SessionLoader.ID, null, call);
             lm.getLoader(SessionLoader.ID).forceLoad();
@@ -621,7 +645,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 String newFile;
                 try
                 {
-                    //FIXME Write asset everytime I click ?
+                    // FIXME Write asset everytime I click ?
                     newFile = IOUtils.writeAsset(this, "gettingstarted.pdf");
                     if (newFile.length() > 0)
                     {
@@ -717,7 +741,6 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         BaseFragment frag = DetailsFragment.newInstance(n);
         frag.setSession(SessionUtils.getsession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, forceBackStack);
-        DisplayUtils.getMainPane(this).setBackgroundResource(android.R.color.background_light);
     }
 
     public void addPropertiesFragment(Node n)
@@ -746,15 +769,22 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
 
     public void addAccountDetails(long id)
     {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(AccountFragment.TAG);
+        }
         BaseFragment frag = AccountDetailsFragment.newInstance(id);
         frag.setSession(SessionUtils.getsession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG,
-                true);
+                b);
     }
 
     public void showAbout()
     {
-        if (getFragment(AboutFragment.TAG) != null){
+        if (getFragment(AboutFragment.TAG) != null)
+        {
             getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         Fragment f = new AboutFragment();
@@ -883,8 +913,8 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
         }
-        else if (isVisible(AccountFragment.TAG) && !isVisible(WizardSelectAccountFragment.TAG)
-                && !isVisible(WizardEditAccountFragment.TAG) && !isVisible(WizardOAuthAppFragment.TAG))
+         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
+                && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
             ((AccountFragment) getFragment(AccountFragment.TAG)).getMenu(menu);
         }
@@ -1076,11 +1106,14 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
             {
                 DisplayUtils.getLeftPane(this).setVisibility(View.VISIBLE);
                 DisplayUtils.getCentralPane(this).setVisibility(View.GONE);
-                
-                //Special case : if Activities Fragment
-                if (getFragment(ActivitiesFragment.TAG) == null && getFragment(ChildrenBrowserFragment.TAG) == null){
+
+                // Special case : if Activities Fragment
+                if (getFragment(ActivitiesFragment.TAG) == null && getFragment(ChildrenBrowserFragment.TAG) == null)
+                {
                     getFragmentManager().popBackStack();
-                } else {
+                }
+                else
+                {
                     FragmentDisplayer.remove(this,
                             getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(this)), false);
                 }

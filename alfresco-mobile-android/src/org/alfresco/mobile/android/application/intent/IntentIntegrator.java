@@ -22,7 +22,7 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 public class IntentIntegrator extends PublicIntent
 {
     public static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
-    
+
     public static final String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
     public static final String CATEGORY_REFRESH_ALL = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL";
     public static final String CATEGORY_REFRESH_DELETE = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE";
@@ -32,9 +32,12 @@ public class IntentIntegrator extends PublicIntent
     public static final String ACCOUNT_TYPE = "org.alfresco.mobile.android/object.account";
     public static final String FILE_TYPE = "org.alfresco.mobile.android/object.file";
 
-
     public static final String ACTION_LOAD_SESSION_FINISH = "org.alfresco.mobile.android.intent.ACTION_LOAD_SESSION_FINISH";
     public static final String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
-    public static final String ACTION_DISPLAY_NODE = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_NODE";;
+    public static final String ACTION_DISPLAY_NODE = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_NODE";
+    
+    public static final String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
+    public static final String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
+
 
 }

@@ -22,20 +22,19 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 
 import android.app.DialogFragment;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 
-public class WizardSelectAccountFragment extends DialogFragment
+public class AccountTypesFragment extends DialogFragment
 {
-    public static final String TAG = "SelectAccountFragment";
+    public static final String TAG = "AccountTypesFragment";
 
-    public WizardSelectAccountFragment()
+    public AccountTypesFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
@@ -62,7 +61,7 @@ public class WizardSelectAccountFragment extends DialogFragment
         }
         
 
-        View v = inflater.inflate(R.layout.sdkapp_wizard_account_step1, container, false);
+        View v = inflater.inflate(R.layout.app_wizard_account_step1, container, false);
         
         Button step1 = (Button) v.findViewById(R.id.alfresco_server);
         step1.setOnClickListener(new OnClickListener()
@@ -70,9 +69,9 @@ public class WizardSelectAccountFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                WizardEditAccountFragment newFragment = new WizardEditAccountFragment();
+                AccountEditFragment newFragment = new AccountEditFragment();
                 FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                        WizardEditAccountFragment.TAG, true);
+                        AccountEditFragment.TAG, true);
             }
         });
 
@@ -82,9 +81,9 @@ public class WizardSelectAccountFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                WizardOAuthAppFragment newFragment = WizardOAuthAppFragment.newInstance();
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
                 FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                        WizardOAuthAppFragment.TAG, true);
+                        AccountOAuthFragment.TAG, true);
             }
         });
         return v;

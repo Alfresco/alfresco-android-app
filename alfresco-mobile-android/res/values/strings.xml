@@ -14,7 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources>
 
@@ -43,6 +43,7 @@
     <string name="account_hostname">Hostname</string>
     <string name="account_description">Description</string>
     <string name="account_advanced">Advanced</string>
+    <string name="account_authentication">Account Authentication</string>
     <string name="account_https">HTTPS</string>
     <string name="account_port">Port</string>
     <string name="account_servicedocument">Service URL</string>
@@ -56,12 +57,21 @@
     <string name="account_wizard_donee">Done.</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP -->
-    <string name="account_wizard_step1">Step 1 of 3</string>
+    <string name="account_wizard_step1">Step 1 of 2</string>
     <string name="account_wizard_step1_description">Select Account</string>
-    <string name="account_wizard_step2">Step 2 of 3</string>
+    <string name="account_wizard_step2">Step 2 of 2</string>
     <string name="account_wizard_step2_description">Account Information</string>
-    <string name="account_wizard_step3">Step 3 of 3</string>
-    <string name="account_wizard_step3_description">All Done</string>
+    
+    <!-- MAIN MENU -->
+    <string name="wait_title">Please wait</string>
+    <string name="wait_message">Contacting your server...</string>
+    
+    <!-- SESSION ERROR -->
+    <string name="error_session_creation">An error occured during the session creation : </string>
+    <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
+    <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
+    <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
+    
 
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
@@ -86,6 +96,7 @@
     <string name="menu_account_manage">Manage</string>
     <string name="menu_help">Help</string>
     
+
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
     <string name="cloud_signup_lastname">Last Name</string>
@@ -105,13 +116,14 @@
     <string name="cloud_signup_resend">Resend Email</string>
     <string name="cloud_signup_resend_successfull">Successfully Resent Email</string>
     <string name="cloud_signup_resend_body">Not receiving our email? Please check you entered the email address correctly and remember to look in your spam folders</string>
-    
-    
+
+	<!-- AUTHENTICATION -->
+	<string name="cloud_authentication">Authentication</string>
+
     <!-- NETWORK -->
-   <string name="error_network_title">No Network.</string>
-   <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
-    
-    
+    <string name="error_network_title">No Network.</string>
+    <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
+
     <!-- OTHER -->
     <string name="error_retrieve_likes">Could not retrieve Like/Unlike tag for this document.</string>
     <string name="previous">Previous</string>
@@ -119,13 +131,13 @@
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
-    
-    
-   <!-- About Message -->
+
+    <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
-   <!-- BuildNumber Bamboo -->
+    <!-- BuildNumber Bamboo -->
     <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
-    <string name="about_description">        <![CDATA[
+    <string name="about_description">
+<![CDATA[
 <p>Alfresco Mobile connects to Alfresco Enterprise (3.4 and above), Alfresco Team, and Alfresco Cloud* and provides access to your corporate documents on the go.</p> 
 
 <p>Alfresco Mobile connects to your Alfresco repository using your Alfresco log-in credentials (over HTTP or HTTPS), and manages user access based on their permissions.</p> 
@@ -134,23 +146,25 @@
     <string name="dialog_wait">Please wait</string>
     <string name="contact_server_progress">Contacting your server&#8230;</string>
     <string name="validation_creadentials">Validation of your credentials&#8230;</string>
-    
+
     <!-- Help Message -->
-    <string name="help_message">        <![CDATA[
+    <string name="help_message">
+<![CDATA[
 <p>As early user, please help us to improve this application.</p> 
 <p>Everytime your app crash, please send the error report. Just re-open the app, a popup message will appear and just click "Send". It\'s not necessary to open an issue for this situtation.</p> 
 <p>Functional issues (app doesn\'t crash and <b>NOT UI AT THIS STAGE</b>) can be reported via <a href="https://issues.alfresco.com/jira/browse/MOBILE">Jira</a> <b>(Project Mobile, Version Android 1.0)</b>.
 Please provides information about your server (Cloud, onpremise, version number...) and phone or tablet type used.<br/></p> 
 <p>For other feedbacks please email any member of the mobile Team.</p>
 <p>Thank you for using Alfresco Mobile.</p> 
-]]></string>
+]]>
+    </string>
+    <string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
+    <string name="send_email">Share attachment</string>
+    <string name="link_or_attach">Do you want to share this as an attachment, or a clickable link?</string>
+    <string name="full_attachment">Attachment</string>
+    <string name="link_to_repo">Clickable link</string>
+    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
+    <string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
+    <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
-<string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
-<string name="send_email">Share attachment</string>
-<string name="link_or_attach">Do you want to share this as an attachment, or a clickable link?</string>
-<string name="full_attachment">Attachment</string>
-<string name="link_to_repo">Clickable link</string>
-<string name="email_content"> <![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
-<string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
-<string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 </resources>

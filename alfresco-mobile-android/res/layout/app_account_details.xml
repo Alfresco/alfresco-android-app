@@ -28,7 +28,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <include layout="@layout/sdkapp_account_form" />
+        <include layout="@layout/app_account_form" />
 
         <Button
             android:id="@+id/browse_document"

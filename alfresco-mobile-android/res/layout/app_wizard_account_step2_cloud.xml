@@ -22,11 +22,10 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:minWidth="600dp"
+    android:fillViewport="true"
     android:background="@android:color/background_light"  >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_margin="15dip"
@@ -34,11 +33,18 @@
         android:gravity="top"
         android:orientation="vertical" >
 
-    <include layout="@layout/sdkapp_wizard_account_step2_header" />
+    <include layout="@layout/app_wizard_account_step2_header" />
 
+      <include
+        android:layout_height="fill_parent"
+        android:layout_width="fill_parent"
+        layout="@layout/app_waiting" />
+    
     <include
         android:layout_height="wrap_content"
         layout="@layout/sdk_oauth" />
+    
+   
 
 </LinearLayout>
 </ScrollView>

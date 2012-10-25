@@ -51,12 +51,7 @@ public class Account implements Serializable
 
     private String refreshToken;
 
-
     protected Context context;
-
-    public Account(Context context)
-    {
-    }
 
     public Account(long id, String description, String url, String username, String password, String repositoryId,
             long typeId, String activation, String accessToken, String refreshToken)
@@ -73,16 +68,6 @@ public class Account implements Serializable
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
 
-    }
-
-    public static int getTypeAlfrescoCmis()
-    {
-        return TYPE_ALFRESCO_CMIS;
-    }
-
-    public static int getTypeAlfrescoCloud()
-    {
-        return TYPE_ALFRESCO_CLOUD;
     }
 
     public String getAccessToken()

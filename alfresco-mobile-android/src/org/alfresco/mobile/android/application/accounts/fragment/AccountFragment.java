@@ -100,9 +100,9 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
 
     public void add()
     {
-        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                WizardSelectAccountFragment.TAG, true);
+                AccountTypesFragment.TAG, true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

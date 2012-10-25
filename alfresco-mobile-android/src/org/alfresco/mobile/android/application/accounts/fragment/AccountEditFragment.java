@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,13 +39,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.Switch;
 
-public class WizardEditAccountFragment extends DialogFragment
+public class AccountEditFragment extends DialogFragment
 {
-    public static final String TAG = "EditAccountFragment";
+    public static final String TAG = "AccountEditFragment";
 
-    public WizardEditAccountFragment()
+    public AccountEditFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
@@ -66,16 +64,16 @@ public class WizardEditAccountFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            getDialog().setTitle("Account Information");
+            getDialog().setTitle(R.string.account_authentication);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
         }
         else
         {
             getActivity().getActionBar().show();
-            getActivity().setTitle("Account Information");
+            getActivity().setTitle(R.string.account_authentication);
         }
 
-        View v = inflater.inflate(R.layout.sdkapp_wizard_account_step2, container, false);
+        View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
 
         Button step2 = (Button) v.findViewById(R.id.next);
         step2.setOnClickListener(new OnClickListener()
@@ -125,7 +123,7 @@ public class WizardEditAccountFragment extends DialogFragment
     {
         retrieveFormValues();
         // Create Session
-        AccountLoaderCallback call = new AccountLoaderCallback(getActivity(), this, url, username, password,
+        AccountCreationLoaderCallback call = new AccountCreationLoaderCallback(getActivity(), this, url, username, password,
                 description);
         LoaderManager lm = getLoaderManager();
         lm.restartLoader(SessionLoader.ID, null, call);
@@ -149,7 +147,7 @@ public class WizardEditAccountFragment extends DialogFragment
             host = form_value.getText().toString();
         else
         {
-            MessengerManager.showToast(getActivity(), "URL error");
+            MessengerManager.showToast(getActivity(), R.string.error_signin_form);
             return;
         }
 
@@ -169,7 +167,7 @@ public class WizardEditAccountFragment extends DialogFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), "URL error");
+            MessengerManager.showToast(getActivity(), R.string.error_signin_form);
             return;
         }
 
@@ -178,7 +176,7 @@ public class WizardEditAccountFragment extends DialogFragment
 
     public void validateAccount()
     {
-        ActionManager.actionRefresh(WizardEditAccountFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
+        ActionManager.actionRefresh(AccountEditFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                 IntentIntegrator.ACCOUNT_TYPE);
         getActivity().finish();
     }

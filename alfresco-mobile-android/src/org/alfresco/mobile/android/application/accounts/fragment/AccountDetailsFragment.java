@@ -22,7 +22,6 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -106,7 +105,7 @@ public class AccountDetailsFragment extends BaseFragment
 
         if (acc.getActivation() == null)
         {
-            vRoot = inflater.inflate(R.layout.sdkapp_account_details, container, false);
+            vRoot = inflater.inflate(R.layout.app_account_details, container, false);
             initValues(vRoot, false);
         }
         else
@@ -132,7 +131,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 // Load First Account by default
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -193,14 +192,13 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 SessionUtils.setsession(getActivity(), null);
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getActivity().getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
+                //TODO Remove this indication ?
                 MessengerManager.showToast(getActivity(), "Load : " + acc.getUrl());
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                // getActivity().getActionBar().selectTab(getActivity().getActionBar().getTabAt(1));
-                // Log.d("Load Account", getActivity() + " : " + acc);
                 ((MainActivity) view.getContext()).createSwitchAccount(acc);
             }
         });
@@ -413,6 +411,13 @@ public class AccountDetailsFragment extends BaseFragment
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+    
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        getActivity().invalidateOptionsMenu();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

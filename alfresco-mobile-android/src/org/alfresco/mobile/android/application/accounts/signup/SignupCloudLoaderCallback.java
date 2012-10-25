@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.SessionSettingsHelper;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -93,7 +93,7 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             // TODO replace
             
-            serverDao.insert(description, SessionSettingsHelper.getSignUpHostname(), emailAddress, password, "",
+            serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
                     Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
                     request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null);
             mProgressDialog.dismiss();
