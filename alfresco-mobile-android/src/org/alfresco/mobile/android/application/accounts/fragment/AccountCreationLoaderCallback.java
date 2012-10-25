@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -43,10 +44,13 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 
 @TargetApi(11)
-public class AccountLoaderCallback extends AbstractSessionCallback
+public class AccountCreationLoaderCallback extends AbstractSessionCallback
 {
+    private static final String TAG = "AccountCreationLoaderCallback";
+
     private URL url;
 
     private ProgressDialog mProgressDialog;
@@ -59,7 +63,10 @@ public class AccountLoaderCallback extends AbstractSessionCallback
 
     private String description;
 
-    public AccountLoaderCallback(Activity activity, Fragment fr, String url, String username, String password,
+    /**
+     * Case Basic Auth
+     */
+    public AccountCreationLoaderCallback(Activity activity, Fragment fr, String url, String username, String password,
             String description)
     {
         this.activity = activity;
@@ -70,7 +77,10 @@ public class AccountLoaderCallback extends AbstractSessionCallback
         this.fr = fr;
     }
 
-    public AccountLoaderCallback(Activity activity, Fragment fr, OAuthData data)
+    /**
+     * Case OAuth
+     */
+    public AccountCreationLoaderCallback(Activity activity, Fragment fr, OAuthData data)
     {
         this.activity = activity;
         this.fr = fr;
@@ -87,14 +97,14 @@ public class AccountLoaderCallback extends AbstractSessionCallback
             if (args.getString(ARGUMENT_URL) == null)
             {
                 mProgressDialog.dismiss();
-                MessengerManager.showToast(activity, "Check Your Informations");
+                MessengerManager.showToast(activity, R.string.error_signin_form_mandatory);
                 return null;
             }
             return new SessionLoader(activity, args.getString(ARGUMENT_URL), username, password);
         }
 
-        mProgressDialog = ProgressDialog.show(activity, "Please wait", "Contacting your server...", true, true,
-                new OnCancelListener()
+        mProgressDialog = ProgressDialog.show(activity, getText(R.string.wait_title), getText(R.string.wait_message),
+                true, true, new OnCancelListener()
                 {
                     @Override
                     public void onCancel(DialogInterface dialog)
@@ -140,7 +150,7 @@ public class AccountLoaderCallback extends AbstractSessionCallback
                 {
                     user = ((CloudSessionLoader) loader).getUser();
                 }
-                
+
                 int type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
                 if (session instanceof CloudSession
                         && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
@@ -148,10 +158,12 @@ public class AccountLoaderCallback extends AbstractSessionCallback
                     type = (data != null) ? Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH) : Integer
                             .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
-                
-                id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null,
-                        session.getRepositoryInfo().getIdentifier(), type,
-                        ((CloudSession)session).getOAuthData().getAccessToken(), ((CloudSession)session).getOAuthData().getRefreshToken());
+
+                // TODO Enable refreshtoken instead of fake value.
+                id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null, session
+                        .getRepositoryInfo().getIdentifier(), type, ((CloudSession) session).getOAuthData()
+                        .getAccessToken(), ((CloudSessionLoader) loader).getOAuthData().getRefreshToken()
+                        );
             }
 
             SessionUtils.setAccount(activity, serverDao.findById(id));
@@ -176,7 +188,9 @@ public class AccountLoaderCallback extends AbstractSessionCallback
             else
             {
                 mProgressDialog.dismiss();
-                MessengerManager.showToast(activity, "Check Your Informations");
+                MessengerManager
+                        .showToast(activity, getText(R.string.error_session_creation) + results.getException().getMessage());
+                Log.e(TAG, Log.getStackTraceString(results.getException()));
             }
         }
     }

@@ -54,6 +54,4 @@ public class MainMenuFragment extends Fragment
         DisplayUtils.hideLeftTitlePane(getActivity());
         ((MainActivity) getActivity()).clearScreen();
     }
-    
-    
 }

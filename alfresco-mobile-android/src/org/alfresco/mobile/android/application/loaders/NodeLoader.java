@@ -28,8 +28,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -37,11 +35,9 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.fragment.SessionSettingsHelper;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.alfresco.mobile.android.application.utils.UrlFinder;
 
 import android.app.Activity;
@@ -149,16 +145,14 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         return identifier;
     }
 
-    private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
-
     private void findSession(URL tmpurl)
     {
         // TODO Better support of Cloud Session
-        SessionSettingsHelper settingsHelper = new SessionSettingsHelper(getContext(), selectAccount);
+        AccountSettingsHelper settingsHelper = new AccountSettingsHelper(getContext(), selectAccount);
         Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
         if (settingsHelper.isCloud())
         {
-            settings.putAll(settingsHelper.prepareCloudSettings(true, false));
+            settings.putAll(settingsHelper.prepareCloudSettings(false));
             session = CloudSession.connect(settingsHelper.getData(), settings);
         }
         else

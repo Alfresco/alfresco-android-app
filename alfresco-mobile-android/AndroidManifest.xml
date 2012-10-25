@@ -60,6 +60,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            
+            <!-- Internal : Used for refresh UI component -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
 
@@ -73,6 +75,16 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.node" />
                 <data android:mimeType="org.alfresco.mobile.android/object.file" />
             </intent-filter>
+            
+            <!-- Internal : Used for displaying User Authentication Form -->
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
+                <data android:mimeType="org.alfresco.mobile.android/object.account" />
+            </intent-filter>
+            
+            
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 

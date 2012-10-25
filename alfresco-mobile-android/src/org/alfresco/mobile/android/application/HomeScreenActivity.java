@@ -21,13 +21,10 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardConfirmationFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardSelectAccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.ActionManager;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -67,16 +64,9 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
 
     public void launch(View v)
     {
-        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                WizardSelectAccountFragment.TAG, true);
-    }
-
-    public void validateServer()
-    {
-        WizardConfirmationFragment newFragment = new WizardConfirmationFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                WizardConfirmationFragment.TAG, false);
+                AccountTypesFragment.TAG, true);
     }
 
     @Override
@@ -98,18 +88,6 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         {
             getActionBar().show();
             findViewById(R.id.left_pane).setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    protected void onNewIntent(Intent intent)
-    {
-        super.onNewIntent(intent);
-        if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction())
-                && intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH)
-                && IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
-        {
-            validateServer();
         }
     }
 

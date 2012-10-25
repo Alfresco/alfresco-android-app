@@ -43,7 +43,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;
 
-public class SessionSettingsHelper
+public class AccountSettingsHelper
 {
 
     public static final boolean ENABLE_CONFIG_FILE = true;
@@ -83,14 +83,22 @@ public class SessionSettingsHelper
 
     private boolean doesRequestNewToken = true;
 
-    public SessionSettingsHelper(Context context, Account acc)
+    public AccountSettingsHelper(Context context, Account acc)
     {
         this.context = context;
         this.acc = acc;
         prepareData();
     }
+    
+    public AccountSettingsHelper(Context context, Account acc, OAuthData data)
+    {
+        this.context = context;
+        this.acc = acc;
+        prepareData();
+        this.data = data;
+    }
 
-    public SessionSettingsHelper(Activity activity, String baseUrl, String username, String password, OAuthData data)
+    public AccountSettingsHelper(Activity activity, String baseUrl, String username, String password, OAuthData data)
     {
         super();
         this.context = activity;
@@ -222,7 +230,7 @@ public class SessionSettingsHelper
         return settings;
     }
 
-    public Map<String, Serializable> prepareCloudSettings(boolean requestNewToken, boolean createAccount)
+    public Map<String, Serializable> prepareCloudSettings(boolean createAccount)
     {
         HashMap<String, Serializable> settings = new HashMap<String, Serializable>();
         // Specific for Test Instance server

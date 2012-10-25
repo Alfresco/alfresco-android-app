@@ -124,7 +124,9 @@ public class ChildrenBrowserFragment extends NavigationFragment
         Node item = (Node) l.getItemAtPosition(position);
 
         Boolean hideDetails = false;
-        if (!selectedItems.isEmpty()) hideDetails = selectedItems.get(0).equals(item);
+        if (!selectedItems.isEmpty()){
+            hideDetails = selectedItems.get(0).equals(item);
+        }
 
         selectedItems.clear();
         selectedItems.add(item);
