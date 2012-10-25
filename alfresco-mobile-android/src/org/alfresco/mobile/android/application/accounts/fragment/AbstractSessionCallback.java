@@ -42,36 +42,50 @@ public abstract class AbstractSessionCallback implements LoaderCallbacks<LoaderR
 
     protected OAuthData data;
 
-    public Loader<LoaderResult<AlfrescoSession>> getSessionLoader(SessionSettingsHelper settingsHelper){
+    /**
+     * For logging Purpose
+     * 
+     * @param settingsHelper
+     * @return
+     */
+    public Loader<LoaderResult<AlfrescoSession>> getSessionLoader(AccountSettingsHelper settingsHelper)
+    {
         Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
         if (settingsHelper.isCloud())
         {
-            settings.putAll(settingsHelper.prepareCloudSettings(true, false));
-            return new CloudSessionLoader(settingsHelper.getContext(), settingsHelper.getData(), settings, settingsHelper.getNewToken());
+            settings.putAll(settingsHelper.prepareCloudSettings(false));
+            return new CloudSessionLoader(settingsHelper.getContext(), settingsHelper.getData(), settings,
+                    settingsHelper.getNewToken());
         }
         else
         {
-            return new SessionLoader(settingsHelper.getContext(), settingsHelper.getBaseUrl(), settingsHelper.getUsername(), settingsHelper.getPassword(), settings);
+            return new SessionLoader(settingsHelper.getContext(), settingsHelper.getBaseUrl(),
+                    settingsHelper.getUsername(), settingsHelper.getPassword(), settings);
         }
     }
-    
+
     public Loader<LoaderResult<AlfrescoSession>> getSessionLoader(Activity activity, String baseUrl, String username,
             String password, OAuthData data, boolean requestNewToken, boolean createAccount)
     {
         // Default settings for Alfresco Application
-        SessionSettingsHelper settingsHelper = new SessionSettingsHelper(activity, baseUrl, username, password, data);
+        AccountSettingsHelper settingsHelper = new AccountSettingsHelper(activity, baseUrl, username, password, data);
         Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
 
         // Specific for Test Instance server
         if (settingsHelper.isCloud())
         {
-            settings.putAll(settingsHelper.prepareCloudSettings(requestNewToken, createAccount));
+            settings.putAll(settingsHelper.prepareCloudSettings(createAccount));
             return new CloudSessionLoader(activity, data, settings, settingsHelper.getNewToken());
         }
         else
         {
             return new SessionLoader(activity, baseUrl, username, password, settings);
         }
+    }
+
+    protected String getText(int id)
+    {
+        return activity.getText(id).toString();
     }
 
 }

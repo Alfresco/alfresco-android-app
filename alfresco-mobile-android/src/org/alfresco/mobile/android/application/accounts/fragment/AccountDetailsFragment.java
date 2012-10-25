@@ -22,7 +22,6 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -51,8 +50,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 
 @TargetApi(14)
@@ -104,7 +105,7 @@ public class AccountDetailsFragment extends BaseFragment
 
         if (acc.getActivation() == null)
         {
-            vRoot = inflater.inflate(R.layout.sdkapp_account_details, container, false);
+            vRoot = inflater.inflate(R.layout.app_account_details, container, false);
             initValues(vRoot, false);
         }
         else
@@ -130,7 +131,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View view)
             {
                 // Load First Account by default
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
@@ -165,47 +166,39 @@ public class AccountDetailsFragment extends BaseFragment
             return;
         }
 
-        // TODO Replace by Official one.
         if (acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
         {
             v.findViewById(R.id.advanced).setVisibility(View.GONE);
             v.findViewById(R.id.advanced_settings).setVisibility(View.GONE);
+            v.findViewById(R.id.repository_https_group).setVisibility(View.GONE);
             v.findViewById(R.id.repository_hostname_group).setVisibility(View.GONE);
+            v.findViewById(R.id.repository_username_group).setVisibility(View.GONE);
+            v.findViewById(R.id.repository_password_group).setVisibility(View.GONE);
+        }
+        else if (acc.getTypeId() == Account.TYPE_ALFRESCO_TEST_BASIC
+                || acc.getTypeId() == Account.TYPE_ALFRESCO_TEST_OAUTH)
+        {
+            v.findViewById(R.id.repository_password_group).setVisibility(View.GONE);
         }
         else
         {
             v.findViewById(R.id.advanced_settings).setVisibility(View.VISIBLE);
         }
 
-        Button advanced = (Button) v.findViewById(R.id.advanced);
-        advanced.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                View vte = (View) v.findViewById(R.id.advanced_settings);
-                if (vte.getVisibility() == View.VISIBLE)
-                    vte.setVisibility(View.GONE);
-                else
-                    vte.setVisibility(View.VISIBLE);
-            }
-        });
-
-        advanced = (Button) v.findViewById(R.id.browse_document);
+        Button advanced = (Button) v.findViewById(R.id.browse_document);
         advanced.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
                 SessionUtils.setsession(getActivity(), null);
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getActivity().getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
+                //TODO Remove this indication ?
                 MessengerManager.showToast(getActivity(), "Load : " + acc.getUrl());
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                // getActivity().getActionBar().selectTab(getActivity().getActionBar().getTabAt(1));
-                // Log.d("Load Account", getActivity() + " : " + acc);
                 ((MainActivity) view.getContext()).createSwitchAccount(acc);
             }
         });
@@ -227,9 +220,29 @@ public class AccountDetailsFragment extends BaseFragment
         form_value.setText(acc.getPassword());
         form_value.setEnabled(isEditable);
 
-        Switch sw = (Switch) v.findViewById(R.id.repository_https);
+        // TODO Switch widget ?
+        final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
         sw.setChecked(url.getProtocol().equals("https"));
         sw.setEnabled(isEditable);
+        final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
+        sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
+        {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (sw.isChecked() == false
+                        && (portForm.getText().toString() == null || portForm.getText().toString().equals("443")))
+                {
+                    portForm.setText("80");
+                }
+                else if (sw.isChecked() == true
+                        && (portForm.getText().toString() == null || portForm.getText().toString().equals("80")))
+                {
+                    portForm.setText("443");
+                }
+            }
+        });
 
         form_value = (EditText) v.findViewById(R.id.repository_port);
         if (url.getPort() != -1)
@@ -271,7 +284,7 @@ public class AccountDetailsFragment extends BaseFragment
         form_value = (EditText) vRoot.findViewById(R.id.repository_password);
         password = form_value.getText().toString();
 
-        Switch sw = (Switch) vRoot.findViewById(R.id.repository_https);
+        CheckBox sw = (CheckBox) vRoot.findViewById(R.id.repository_https);
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
@@ -376,8 +389,10 @@ public class AccountDetailsFragment extends BaseFragment
                 }
 
                 if (!accountDao.findAll().isEmpty())
+                {
                     ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
                             IntentIntegrator.ACCOUNT_TYPE);
+                }
                 else
                 {
                     getActivity().finish();
@@ -396,6 +411,13 @@ public class AccountDetailsFragment extends BaseFragment
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+    
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        getActivity().invalidateOptionsMenu();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

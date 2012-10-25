@@ -100,20 +100,9 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
 
     public void add()
     {
-        /*FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        CreateAccountDialogFragment newFragment = new CreateAccountDialogFragment();
-        newFragment.show(ft, CreateAccountDialogFragment.TAG);*/
-        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                WizardSelectAccountFragment.TAG, true);
+                AccountTypesFragment.TAG, true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
