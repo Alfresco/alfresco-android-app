@@ -21,6 +21,7 @@
     <dimen name="properties_toptext_size">18sp</dimen>
     <dimen name="properties_bottomtext_size">12sp</dimen>
     <dimen name="properties_marginleft">6dip</dimen>
+    <dimen name="accountname_size">20sp</dimen>
 
     <!-- HOME SCREEN -->
     <dimen name="home_title_size">24sp</dimen>
@@ -40,5 +41,6 @@
     <dimen name="properties_details_padding">20dip</dimen>
     <dimen name="properties_details_icon_size">140dip</dimen>
     <dimen name="properties_small_screen_extra_padding">30dip</dimen>
+    <dimen name="accountlist_padding">15dip</dimen>
     
 </resources>

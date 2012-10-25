@@ -489,6 +489,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
     {
         LayoutInflater layoutInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         View v = layoutInflater.inflate(R.layout.sdkapp_list_quickaccount, null);
+        
+        v.setVisibility(View.INVISIBLE);
+        
+        /*
         ((TextView) v.findViewById(R.id.toptext)).setText(account.getDescription() + "  ");
         ((TextView) v.findViewById(R.id.bottomtext)).setText(account.getUsername() + "  ");
 
@@ -502,6 +506,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         });
         getActionBar().setCustomView(v);
         getActionBar().show();
+        */
     }
 
     public void showPopup(View v)
@@ -598,10 +603,10 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         ChildrenBrowserFragment.TAG, true);
                 break;
-            case R.id.menu_account_manage:
-                FragmentDisplayer
-                        .replaceFragment(this, DisplayUtils.getLeftFragmentId(this), AccountFragment.TAG, true);
-                break;
+            //case R.id.menu_account_manage:
+            //    FragmentDisplayer
+            //            .replaceFragment(this, DisplayUtils.getLeftFragmentId(this), AccountFragment.TAG, true);
+            //    break;
             case R.id.menu_browse_activities:
                 if (!checkSession(R.id.menu_browse_activities)) return;
                 frag = ActivitiesFragment.newInstance();

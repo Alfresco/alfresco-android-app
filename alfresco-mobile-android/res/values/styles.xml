@@ -27,6 +27,7 @@
     <color name="actionbar_grey_top">#A4A4A4</color>
     <color name="actionbar_grey_bottom">#757575</color>
     <color name="emphasis">#31b6e7</color>
+    <color name="grey_darker">#2F3231</color>
     <color name="grey_dark">#3F4241</color>
     <color name="grey_light">#8C8E8D</color>
     <color name="grey_text">#818282</color>

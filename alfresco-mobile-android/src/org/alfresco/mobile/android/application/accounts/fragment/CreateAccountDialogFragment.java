@@ -94,8 +94,8 @@ public class CreateAccountDialogFragment extends DialogFragment
         View v = inflater.inflate(R.layout.sdkapp_wizard_account, container, false);
 
         flip = (ViewFlipper) v.findViewById(R.id.account_wizard);
-        flip.setInAnimation(getActivity(), R.anim.anim_slide_in_right);
-        flip.setOutAnimation(getActivity(), R.anim.anim_slide_out_left);
+        flip.setInAnimation(getActivity(), R.anim.anim_slide_out_left);
+        flip.setOutAnimation(getActivity(), R.anim.anim_slide_in_right);
 
         Button step1 = (Button) v.findViewById(R.id.alfresco_server);
         step1.setOnClickListener(new OnClickListener()
