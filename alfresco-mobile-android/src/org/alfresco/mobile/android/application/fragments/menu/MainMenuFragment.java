@@ -53,5 +53,14 @@ public class MainMenuFragment extends Fragment
         getActivity().invalidateOptionsMenu();
         DisplayUtils.hideLeftTitlePane(getActivity());
         ((MainActivity) getActivity()).clearScreen();
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+    
+    
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
