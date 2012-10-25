@@ -152,7 +152,6 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                             .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
 
-                // TODO Enable refreshtoken instead of fake value.
                 id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null, session
                         .getRepositoryInfo().getIdentifier(), type, ((CloudSession) session).getOAuthData()
                         .getAccessToken(), ((CloudSessionLoader) loader).getOAuthData().getRefreshToken());
