@@ -369,6 +369,15 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
                 return;
             }
 
+            // INTENT for validation cloud
+            if (Intent.ACTION_VIEW.equals(intent.getAction())
+                    && intent.getCategories().contains(Intent.CATEGORY_BROWSABLE)
+                    && intent.getData().getHost().equals("activate-cloud-account"))
+            {
+                MessengerManager.showLongToast(this, "Activate Account !");
+                return;
+            }
+
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
             {
                 if (intent.getExtras().containsKey(IntentIntegrator.EXTRA_NODE))
@@ -677,7 +686,7 @@ public class MainActivity extends Activity implements LoaderCallbacks<List<Accou
         doMainMenuAction(v.getId());
     }
 
-    //FIXME TO REMOVE after session indicator implementation
+    // FIXME TO REMOVE after session indicator implementation
     private boolean checkSession(int actionMainMenuId)
     {
         if (!hasNetwork())

@@ -14,7 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
@@ -43,24 +43,26 @@
         <activity
             android:name="org.alfresco.mobile.android.application.HomeScreenActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            >
+            android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:launchMode="singleInstance"
+            android:uiOptions="splitActionBarWhenNarrow" 
+            android:multiprocess="false"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
+
             <!-- Internal : Used for refresh UI component -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
@@ -75,16 +77,27 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.node" />
                 <data android:mimeType="org.alfresco.mobile.android/object.file" />
             </intent-filter>
-            
+
             <!-- Internal : Used for displaying User Authentication Form -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
+
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
-            
-            
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                
+                <data
+                    android:scheme="alfresco"
+                    android:host="activate-cloud-account"
+                     />
+            </intent-filter>
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -119,6 +132,7 @@
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:scheme="https" />
                 <data android:host="my.alfresco.com" />
             </intent-filter>
@@ -135,7 +149,7 @@
               <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
           </intent-filter>
           <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget" />
-     	</receiver>
+     	</receiver>
         -->
 
     </application>

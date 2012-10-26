@@ -28,6 +28,8 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudLoaderCallback;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -130,11 +132,16 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                // Load First Account by default
+                
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                        AccountOAuthFragment.TAG, true);
+                
+                /* Load First Account by default
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();
+                lm.getLoader(SessionLoader.ID).forceLoad();*/
             }
         });
 

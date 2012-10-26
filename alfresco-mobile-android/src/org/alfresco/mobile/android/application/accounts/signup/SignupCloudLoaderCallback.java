@@ -92,18 +92,26 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
         {
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             // TODO replace
-            
-            serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
+
+            if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
                     Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
-                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null);
-            mProgressDialog.dismiss();
-            ((SignupCloudDialogFragment) fr).displayAccounts();
+                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null) != -1)
+            {
+                mProgressDialog.dismiss();
+                ((SignupCloudDialogFragment) fr).displayAccounts();
+            }
+            else
+            {
+                MessengerManager.showLongToast(activity, "Error during insert.");
+            }
+
         }
         else if (request != null && fr instanceof AccountDetailsFragment)
         {
             mProgressDialog.dismiss();
             activity.showDialog(MainActivity.CLOUD_RESEND_EMAIL);
-        }  else if (results.hasException())
+        }
+        else if (results.hasException())
         {
             mProgressDialog.dismiss();
             MessengerManager.showLongToast(activity, results.getException().getMessage());
