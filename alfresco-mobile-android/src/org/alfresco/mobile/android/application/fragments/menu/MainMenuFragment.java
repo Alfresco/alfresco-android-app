@@ -21,11 +21,11 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.application.LoginLoaderCallback;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountLoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -186,7 +186,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<A
             {
                 SessionUtils.setsession(getActivity(), null);
                 
-                LoginLoaderCallback call = new LoginLoaderCallback(getActivity(), acc);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
                 lm.getLoader(SessionLoader.ID).forceLoad();
