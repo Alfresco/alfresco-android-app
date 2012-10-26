@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
@@ -45,6 +47,8 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListen
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -52,12 +56,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.SpinnerAdapter;
 
 @TargetApi(11)
 public class ChildrenBrowserFragment extends NavigationFragment
@@ -114,8 +118,28 @@ public class ChildrenBrowserFragment extends NavigationFragment
     {
         DisplayUtils.setLeftTitle(getActivity(), title);
         getActivity().invalidateOptionsMenu();
-        Log.d(TAG, "onStart");
         super.onStart();
+        
+        if (parentFolder != null){
+            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            
+            List<String> path = new ArrayList<String>(0);
+            path.add("/");
+            path.add("alfresco");
+            SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, path);
+            
+            OnNavigationListener mOnNavigationListener = new OnNavigationListener() {
+
+                @Override
+                public boolean onNavigationItemSelected(int itemPosition, long itemId)
+                {
+                    return false;
+                }
+                
+            };
+            
+            getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+        }
     }
 
     @Override
@@ -329,7 +353,6 @@ public class ChildrenBrowserFragment extends NavigationFragment
         }
 
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
-        // TODO Permissions !
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
