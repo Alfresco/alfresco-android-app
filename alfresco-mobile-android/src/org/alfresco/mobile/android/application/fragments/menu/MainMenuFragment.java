@@ -113,7 +113,17 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<A
         Account currentAccount = SessionUtils.getAccount(getActivity());
         for (int i = 0;  i < results.size();  i++)
         {
-            adapter.add(results.get(i).getDescription());
+            String desc = results.get(i).getDescription();
+            
+            if (desc.length() > 0)
+            {
+                adapter.add(desc);
+            }
+            else
+            {
+                adapter.add(results.get(i).getUsername());
+            }
+                
             
             if (results.get(i).getId() == currentAccount.getId())
             {
@@ -121,7 +131,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<A
             }
         }
         
-        adapter.add("Manage accounts...");
+        adapter.add(getString(R.string.manage_accounts));
         
         Spinner s = (Spinner)view.findViewById(R.id.accounts_spinner);
         s.setAdapter(adapter);
