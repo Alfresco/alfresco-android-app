@@ -99,6 +99,7 @@
     <string name="menu_view">Views</string>
     <string name="menu_account_manage">Manage</string>
     <string name="menu_help">Help</string>
+    <string name="menu_resources">Resources</string>
     
 
     <!-- CLOUD SIGNUP -->
@@ -160,6 +161,7 @@
 Please provides information about your server (Cloud, onpremise, version number...) and phone or tablet type used.<br/></p> 
 <p>For other feedbacks please email any member of the mobile Team.</p>
 <p>Thank you for using Alfresco Mobile.</p> 
+
 ]]>
     </string>
     <string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
@@ -170,5 +172,6 @@ Please provides information about your server (Cloud, onpremise, version number.
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
     <string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
+	<string name="manage_accounts">Manage accounts...</string>
 
 </resources>
