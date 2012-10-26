@@ -2,8 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/background_light"
-    >
+    android:background="@android:color/background_light" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -24,9 +23,9 @@
                 android:layout_height="wrap_content" >
 
                 <LinearLayout
-                    android:layout_width="140dip"
-                    android:layout_height="140dip"
-                    android:background="#eeeeee"
+                    android:layout_width="@dimen/properties_details_icon_size"
+                    android:layout_height="@dimen/properties_details_icon_size"
+                    android:background="@color/grey_lighter"
                     android:orientation="vertical" >
 
                     <ImageView
@@ -41,7 +40,7 @@
                         android:src="@drawable/mime_file" />
                 </LinearLayout>
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/group_summary"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -49,36 +48,49 @@
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/properties_details_padding" >
 
-                    <TextView
-                        android:id="@+id/title"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
+                    <ScrollView
+                        android:id="@+id/scrollView1"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Green Grass.JPG" />
+                        android:layout_above="@+id/tools_group"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true" >
 
-                    <TextView
-                        android:id="@+id/details"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="G419 days ago - 142Kb, version 1.0" />
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical" >
 
-                    <TextView
-                        android:id="@+id/description"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dip"
-                        android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf" />
+                            <TextView
+                                android:id="@+id/title"
+                                style="@style/list_item_toptext"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Green Grass.JPG" />
+
+                            <TextView
+                                android:id="@+id/details"
+                                style="@style/list_item_bottomtext"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="G419 days ago - 142Kb, version 1.0" />
+
+                            <TextView
+                                android:id="@+id/description"
+                                style="@style/list_item_bottomtext"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dip"
+                                android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf" />
+                        </LinearLayout>
+                    </ScrollView>
 
                     <LinearLayout
-                        android:id="@+id/group_actions"
-                        android:layout_width="match_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1"
-                        android:gravity="bottom"
-                        android:orientation="horizontal"
-                        android:paddingTop="@dimen/properties_icon_padding" >
+                        android:id="@+id/tools_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/scrollView1"
+                        android:layout_alignParentBottom="true" >
 
                         <ImageView
                             android:id="@+id/action_openin"
@@ -87,13 +99,6 @@
                             android:layout_weight="0"
                             android:paddingRight="@dimen/button_padding"
                             android:src="@drawable/ic_download" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0"
-                            android:orientation="vertical" >
-                        </LinearLayout>
 
                         <ImageView
                             android:id="@+id/like"
@@ -113,7 +118,7 @@
                             android:paddingRight="@dimen/button_padding"
                             android:src="@drawable/ic_share" />
                     </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
             </TableRow>
 
             <TableRow
@@ -121,7 +126,7 @@
                 android:layout_height="wrap_content" >
             </TableRow>
         </TableLayout>
-
+
         <LinearLayout
             android:id="@+id/metadata"
             android:layout_width="match_parent"
@@ -129,9 +134,7 @@
             android:layout_marginBottom="15dip"
             android:orientation="vertical"
             android:padding="@dimen/properties_details_padding" >
-
         </LinearLayout>
-
     </LinearLayout>
 
 </ScrollView>
