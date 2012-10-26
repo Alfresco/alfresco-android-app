@@ -41,7 +41,9 @@
     <string name="account_username">Username</string>
     <string name="account_password">Password</string>
     <string name="account_hostname">Hostname</string>
+    <string name="account_hostname_hint">www.example.com (Required)</string>
     <string name="account_description">Description</string>
+    <string name="account_description_hint">Alfresco Server (Optional)</string>
     <string name="account_advanced">Advanced</string>
     <string name="account_authentication">Account Authentication</string>
     <string name="account_https">HTTPS</string>
@@ -50,6 +52,8 @@
     <string name="account_wizard_step2_title">Account Authentication Information</string>
     <string name="account_verify">Verifying Account Information...</string>
     <string name="email_hint">example@acme.com</string>
+    <string name="account_url">URL (hostname + service url)</string>
+
 
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
     <string name="account_wizard_alldone">All Done !</string>

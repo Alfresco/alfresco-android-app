@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import java.net.URL;
-
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
@@ -38,7 +36,6 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -51,15 +48,11 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
 {
     private static final String TAG = "AccountCreationLoaderCallback";
 
-    private URL url;
-
     private ProgressDialog mProgressDialog;
 
     private Fragment fr;
 
     private static final String ARGUMENT_URL = "agumentUrl";
-
-    private int attempt = 0;
 
     private String description;
 
@@ -162,8 +155,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                 // TODO Enable refreshtoken instead of fake value.
                 id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null, session
                         .getRepositoryInfo().getIdentifier(), type, ((CloudSession) session).getOAuthData()
-                        .getAccessToken(), ((CloudSessionLoader) loader).getOAuthData().getRefreshToken()
-                        );
+                        .getAccessToken(), ((CloudSessionLoader) loader).getOAuthData().getRefreshToken());
             }
 
             SessionUtils.setAccount(activity, serverDao.findById(id));
@@ -176,22 +168,11 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         }
         else
         {
-            LoaderManager lm = activity.getLoaderManager();
-            Bundle b = new Bundle();
-            String s = getNextURl();
-            if (s != null)
-            {
-                b.putString(ARGUMENT_URL, s);
-                lm.restartLoader(SessionLoader.ID, b, this);
-                lm.getLoader(SessionLoader.ID).forceLoad();
-            }
-            else
-            {
-                mProgressDialog.dismiss();
-                MessengerManager
-                        .showToast(activity, getText(R.string.error_session_creation) + results.getException().getMessage());
-                Log.e(TAG, Log.getStackTraceString(results.getException()));
-            }
+            mProgressDialog.dismiss();
+            //TODO Remove getMessage exception ?
+            MessengerManager.showLongToast(activity, getText(R.string.error_session_creation)
+                    + results.getException().getMessage());
+            Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
     }
 
@@ -200,41 +181,4 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     {
         mProgressDialog.dismiss();
     }
-
-    private String getNextURl()
-    {
-        String newUrl = null;
-        try
-        {
-            switch (attempt)
-            {
-                case 0:
-                    url = new URL(baseUrl);
-                    newUrl = new URL("https", url.getHost(), 443, url.getPath()).toString();
-                    attempt++;
-                    break;
-
-                case 1:
-                    url = new URL(baseUrl);
-                    newUrl = new URL("http", url.getHost(), 8080, url.getPath()).toString();
-                    attempt++;
-                    break;
-
-                case 2:
-                    url = new URL(baseUrl);
-                    newUrl = new URL(url.getProtocol(), url.getHost(), url.getPath()).toString();
-                    attempt++;
-                    break;
-
-                default:
-                    break;
-            }
-        }
-        catch (Exception e)
-        {
-            // TODO: handle exception
-        }
-        return newUrl;
-    }
-
 }

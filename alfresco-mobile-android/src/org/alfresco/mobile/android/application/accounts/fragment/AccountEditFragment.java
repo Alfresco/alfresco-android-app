@@ -84,7 +84,7 @@ public class AccountEditFragment extends DialogFragment
                 validateServer(v);
             }
         });
-        
+
         final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
@@ -105,13 +105,13 @@ public class AccountEditFragment extends DialogFragment
                 }
             }
         });
-        
+
         sw.setChecked(true);
         portForm.setText("443");
-        
+
         return v;
     }
-    
+
     private String url = null, host = null, username = null, password = null, servicedocument = null,
             description = null;
 
@@ -121,20 +121,31 @@ public class AccountEditFragment extends DialogFragment
 
     private void validateServer(View v)
     {
-        retrieveFormValues();
-        // Create Session
-        AccountCreationLoaderCallback call = new AccountCreationLoaderCallback(getActivity(), this, url, username, password,
-                description);
-        LoaderManager lm = getLoaderManager();
-        lm.restartLoader(SessionLoader.ID, null, call);
-        lm.getLoader(SessionLoader.ID).forceLoad();
+        if (retrieveFormValues())
+        {
+            // Create Session
+            AccountCreationLoaderCallback call = new AccountCreationLoaderCallback(getActivity(), this, url, username,
+                    password, description);
+            LoaderManager lm = getLoaderManager();
+            lm.restartLoader(SessionLoader.ID, null, call);
+            lm.getLoader(SessionLoader.ID).forceLoad();
+        }
     }
 
-    private void retrieveFormValues()
+    private boolean retrieveFormValues()
     {
 
         EditText form_value = (EditText) findViewByIdInternal(R.id.repository_username);
-        username = form_value.getText().toString();
+        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
+            username = form_value.getText().toString();
+        }
+        else
+        {
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_username));
+            return false;
+        }
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_description);
         description = form_value.getText().toString();
@@ -144,11 +155,14 @@ public class AccountEditFragment extends DialogFragment
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_hostname);
         if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
             host = form_value.getText().toString();
+        }
         else
         {
-            MessengerManager.showToast(getActivity(), R.string.error_signin_form);
-            return;
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_hostname));
+            return false;
         }
 
         CheckBox sw = (CheckBox) findViewByIdInternal(R.id.repository_https);
@@ -167,11 +181,14 @@ public class AccountEditFragment extends DialogFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), R.string.error_signin_form);
-            return;
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_url));
+            return false;
         }
 
         url = u.toString();
+
+        return true;
     }
 
     public void validateAccount()
