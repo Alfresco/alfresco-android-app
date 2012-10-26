@@ -19,7 +19,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="center_horizontal" >
+    android:gravity="center_horizontal"
+    android:background="@android:color/background_light" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -27,7 +28,7 @@
         android:layout_height="fill_parent"
         android:orientation="vertical" >
 
-        <include layout="@layout/sdkapp_account_form" />
+        <include layout="@layout/app_account_form" />
 
         <Button
             android:id="@+id/browse_document"

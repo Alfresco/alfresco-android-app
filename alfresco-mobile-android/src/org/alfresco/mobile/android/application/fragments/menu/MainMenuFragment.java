@@ -165,6 +165,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<A
             // DisplayUtils.getLeftPane(this).setBackgroundResource(android.R.color.transparent);
         }
     }
+
     
     public void displayMainMenu()
     {

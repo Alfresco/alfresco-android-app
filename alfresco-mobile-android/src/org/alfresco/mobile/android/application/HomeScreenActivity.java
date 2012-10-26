@@ -21,12 +21,10 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardConfirmationFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.WizardSelectAccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
 import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -49,9 +47,12 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         findViewById(R.id.left_pane).setVisibility(View.GONE);
         getActionBar().hide();
 
-        HomeScreenFragment newFragment = new HomeScreenFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                HomeScreenFragment.TAG, false);
+        if (getFragmentManager().findFragmentByTag(HomeScreenFragment.TAG) == null)
+        {
+            HomeScreenFragment newFragment = new HomeScreenFragment();
+            FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                    HomeScreenFragment.TAG, false);
+        }
     }
 
     public void cloud(View v)
@@ -63,16 +64,9 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
 
     public void launch(View v)
     {
-        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                WizardSelectAccountFragment.TAG, true);
-    }
-
-    public void validateServer()
-    {
-        WizardConfirmationFragment newFragment = new WizardConfirmationFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                WizardConfirmationFragment.TAG, false);
+                AccountTypesFragment.TAG, true);
     }
 
     @Override
@@ -88,6 +82,7 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         {
             Intent i = new Intent(this, MainActivity.class);
             this.startActivity(i);
+            finish();
         }
         else
         {
@@ -97,27 +92,9 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
     }
 
     @Override
-    protected void onNewIntent(Intent intent)
-    {
-        super.onNewIntent(intent);
-        if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction())
-                && intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH)
-                && IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
-        {
-            validateServer();
-        }
-    }
-
-    @Override
     public void onLoaderReset(Loader<List<Account>> arg0)
     {
         // TODO Auto-generated method stub
 
-    }
-
-    @Override
-    public void onBackPressed()
-    {
-        super.onBackPressed();
     }
 }

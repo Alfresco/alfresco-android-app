@@ -14,11 +14,11 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="5"
+    android:versionCode="6"
     android:versionName="1.0.0" >
 
     <uses-sdk
@@ -44,10 +44,9 @@
             android:name="org.alfresco.mobile.android.application.HomeScreenActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"
-            android:noHistory="true" >
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -61,6 +60,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            
+            <!-- Internal : Used for refresh UI component -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
 
@@ -74,6 +75,16 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.node" />
                 <data android:mimeType="org.alfresco.mobile.android/object.file" />
             </intent-filter>
+            
+            <!-- Internal : Used for displaying User Authentication Form -->
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
+                <data android:mimeType="org.alfresco.mobile.android/object.account" />
+            </intent-filter>
+            
+            
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -82,25 +93,12 @@
                 <data android:scheme="org.alfresco.mobile.android" />
             </intent-filter>
 
-            <!-- Filter URL that matches CLOUD API -->
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <data android:scheme="http" />
-                <data android:host="devapis.alfresco.com" />
-            </intent-filter>
-
             <!-- Filter URL that matches alfresco service -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data
-                    android:host="devapis.alfresco.com"
-                    android:scheme="http" />
                 <data
                     android:host="my.alfresco.com"
                     android:scheme="https" />
@@ -121,11 +119,7 @@
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="devapis.alfresco.com" />
-                <data android:host="ts.alfresco.com" />
                 <data android:host="my.alfresco.com" />
             </intent-filter>
 
@@ -133,7 +127,7 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-        
+
         <!--
         REINSTATE FOR WIDGET
         <receiver android:name="org.alfresco.mobile.android.widget.ActivityWidget" android:label="@string/app_name">
@@ -141,10 +135,9 @@
               <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
           </intent-filter>
           <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget" />
-     	</receiver>
-     	-->
-     	  
-     	  
+     	</receiver>
+        -->
+
     </application>
 
 </manifest>

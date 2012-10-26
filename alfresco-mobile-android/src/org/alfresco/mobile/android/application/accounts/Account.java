@@ -26,6 +26,8 @@ public class Account implements Serializable
 
     public static final int TYPE_ALFRESCO_CMIS = 2;
     public static final int TYPE_ALFRESCO_CLOUD = 4;
+    public static final int TYPE_ALFRESCO_TEST_BASIC = 10;
+    public static final int TYPE_ALFRESCO_TEST_OAUTH = 11;
     
     private static final long serialVersionUID = 1L;
 
@@ -49,12 +51,7 @@ public class Account implements Serializable
 
     private String refreshToken;
 
-
     protected Context context;
-
-    public Account(Context context)
-    {
-    }
 
     public Account(long id, String description, String url, String username, String password, String repositoryId,
             long typeId, String activation, String accessToken, String refreshToken)
@@ -71,16 +68,6 @@ public class Account implements Serializable
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
 
-    }
-
-    public static int getTypeAlfrescoCmis()
-    {
-        return TYPE_ALFRESCO_CMIS;
-    }
-
-    public static int getTypeAlfrescoCloud()
-    {
-        return TYPE_ALFRESCO_CLOUD;
     }
 
     public String getAccessToken()

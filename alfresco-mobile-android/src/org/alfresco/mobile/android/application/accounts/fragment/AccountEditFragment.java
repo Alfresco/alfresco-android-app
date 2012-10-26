@@ -26,10 +26,8 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.annotation.TargetApi;
 import android.app.DialogFragment;
 import android.app.LoaderManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,17 +35,16 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.Switch;
 
-@TargetApi(14)
-public class WizardEditAccountFragment extends DialogFragment
+public class AccountEditFragment extends DialogFragment
 {
-    public static final String TAG = "EditAccountFragment";
+    public static final String TAG = "AccountEditFragment";
 
-    public WizardEditAccountFragment()
+    public AccountEditFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
@@ -67,32 +64,16 @@ public class WizardEditAccountFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            getDialog().setTitle("Account Information");
+            getDialog().setTitle(R.string.account_authentication);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
         }
         else
         {
             getActivity().getActionBar().show();
-            getActivity().setTitle("Account Information");
+            getActivity().setTitle(R.string.account_authentication);
         }
 
-        View v = inflater.inflate(R.layout.sdkapp_wizard_account_step2, container, false);
-
-        v.setBackgroundColor(Color.parseColor("#FFFFFF"));
-
-        Button advanced = (Button) v.findViewById(R.id.advanced);
-        advanced.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                View vt = (View) findViewByIdInternal(R.id.advanced_settings);
-                if (vt.getVisibility() == View.VISIBLE)
-                    vt.setVisibility(View.GONE);
-                else
-                    vt.setVisibility(View.VISIBLE);
-            }
-        });
+        View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
 
         Button step2 = (Button) v.findViewById(R.id.next);
         step2.setOnClickListener(new OnClickListener()
@@ -103,8 +84,8 @@ public class WizardEditAccountFragment extends DialogFragment
                 validateServer(v);
             }
         });
-        
-        final Switch sw = (Switch) v.findViewById(R.id.repository_https);
+
+        final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
         {
@@ -124,10 +105,10 @@ public class WizardEditAccountFragment extends DialogFragment
                 }
             }
         });
-        
+
         sw.setChecked(true);
         portForm.setText("443");
-        
+
         return v;
     }
 
@@ -140,20 +121,31 @@ public class WizardEditAccountFragment extends DialogFragment
 
     private void validateServer(View v)
     {
-        retrieveFormValues();
-        // Create Session
-        AccountLoaderCallback call = new AccountLoaderCallback(getActivity(), this, url, username, password,
-                description);
-        LoaderManager lm = getLoaderManager();
-        lm.restartLoader(SessionLoader.ID, null, call);
-        lm.getLoader(SessionLoader.ID).forceLoad();
+        if (retrieveFormValues())
+        {
+            // Create Session
+            AccountCreationLoaderCallback call = new AccountCreationLoaderCallback(getActivity(), this, url, username,
+                    password, description);
+            LoaderManager lm = getLoaderManager();
+            lm.restartLoader(SessionLoader.ID, null, call);
+            lm.getLoader(SessionLoader.ID).forceLoad();
+        }
     }
 
-    private void retrieveFormValues()
+    private boolean retrieveFormValues()
     {
 
         EditText form_value = (EditText) findViewByIdInternal(R.id.repository_username);
-        username = form_value.getText().toString();
+        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
+            username = form_value.getText().toString();
+        }
+        else
+        {
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_username));
+            return false;
+        }
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_description);
         description = form_value.getText().toString();
@@ -163,14 +155,17 @@ public class WizardEditAccountFragment extends DialogFragment
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_hostname);
         if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
             host = form_value.getText().toString();
+        }
         else
         {
-            MessengerManager.showToast(getActivity(), "URL error");
-            return;
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_hostname));
+            return false;
         }
 
-        Switch sw = (Switch) findViewByIdInternal(R.id.repository_https);
+        CheckBox sw = (CheckBox) findViewByIdInternal(R.id.repository_https);
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
@@ -186,17 +181,21 @@ public class WizardEditAccountFragment extends DialogFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), "URL error");
-            return;
+            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
+                    + getText(R.string.account_url));
+            return false;
         }
 
         url = u.toString();
+
+        return true;
     }
 
     public void validateAccount()
     {
-        ActionManager.actionRefresh(WizardEditAccountFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
+        ActionManager.actionRefresh(AccountEditFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                 IntentIntegrator.ACCOUNT_TYPE);
+        getActivity().finish();
     }
 
     private View findViewByIdInternal(int id)

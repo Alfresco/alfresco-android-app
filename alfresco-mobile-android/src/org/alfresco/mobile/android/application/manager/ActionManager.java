@@ -20,8 +20,10 @@ package org.alfresco.mobile.android.application.manager;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -44,8 +46,14 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         Intent i = new Intent(IntentIntegrator.ACTION_REFRESH);
         i.addCategory(refreshCategory);
-        if (type != null && type.length() > 0) i.setType(type);
-        if (bundle != null) i.putExtra(REFRESH_EXTRA, bundle);
+        if (type != null && type.length() > 0)
+        {
+            i.setType(type);
+        }
+        if (bundle != null)
+        {
+            i.putExtra(REFRESH_EXTRA, bundle);
+        }
         f.startActivity(i);
     }
 
@@ -54,22 +62,34 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         actionRefresh(f, refreshCategory, type, null);
     }
 
+    public static void actionRequestUserAuthentication(Activity activity, Account account)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_USER_AUTHENTICATION);
+        i.addCategory(IntentIntegrator.CATEGORY_OAUTH);
+        i.setType(IntentIntegrator.ACCOUNT_TYPE);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.ACCOUNT_TYPE, account.getId());
+        }
+        activity.startActivity(i);
+    }
+
     public static boolean launchPDF(Context c, String pdfFile)
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File(pdfFile)), "application/pdf");
-        
+
         PackageManager pm = c.getPackageManager();
         List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
-        if (activities.size() > 0) 
+        if (activities.size() > 0)
         {
             c.startActivity(intent);
         }
         else
-        {            
+        {
             return false;
         }
-        
+
         return true;
     }
 

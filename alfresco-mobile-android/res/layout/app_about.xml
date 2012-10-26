@@ -40,7 +40,7 @@
             android:layout_gravity="center"
             android:layout_margin="20dip"
             android:scaleType="fitCenter"
-            android:src="@drawable/about_logo_black" />
+            android:src="@drawable/alfresco_logo_large" />
     </LinearLayout>
 
     <LinearLayout

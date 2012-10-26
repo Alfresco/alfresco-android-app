@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -30,11 +30,11 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 
-public class WizardConfirmationFragment extends DialogFragment
+public class AccountTypesFragment extends DialogFragment
 {
-    public static final String TAG = "ConfirmationFragment";
+    public static final String TAG = "AccountTypesFragment";
 
-    public WizardConfirmationFragment()
+    public AccountTypesFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
@@ -43,45 +43,49 @@ public class WizardConfirmationFragment extends DialogFragment
     public void onStart()
     {
         if (getDialog() != null){
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }
+        getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (getDialog() != null){
-            getDialog().setTitle(R.string.sign_up_cloud);
+            getDialog().setTitle("Select Account");
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
         } else {
             getActivity().getActionBar().show();
-            getActivity().setTitle(R.string.sign_up_cloud);
+            getActivity().setTitle("Select Account");
         }
         
 
-        View v = inflater.inflate(R.layout.app_cloud_signup, container, false);
-
-        Button done = (Button) v.findViewById(R.id.done);
-        done.setOnClickListener(new OnClickListener()
+        View v = inflater.inflate(R.layout.app_wizard_account_step1, container, false);
+        
+        Button step1 = (Button) v.findViewById(R.id.alfresco_server);
+        step1.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                dismiss();
-                ActionManager.actionRefresh(WizardConfirmationFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                        IntentIntegrator.ACCOUNT_TYPE);
+                AccountEditFragment newFragment = new AccountEditFragment();
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                        AccountEditFragment.TAG, true);
             }
         });
-        
-        return v;
-    }
 
-    private View findViewByIdInternal(int id){
-        if (getDialog() != null){
-            return getDialog().findViewById(id);
-        } else {
-            return getActivity().findViewById(id);
-        }
+        step1 = (Button) v.findViewById(R.id.alfresco_cloud);
+        step1.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                        AccountOAuthFragment.TAG, true);
+            }
+        });
+        return v;
     }
 }

@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -31,10 +30,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
@@ -104,20 +100,9 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
 
     public void add()
     {
-        /*FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateAccountDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        CreateAccountDialogFragment newFragment = new CreateAccountDialogFragment();
-        newFragment.show(ft, CreateAccountDialogFragment.TAG);*/
-        WizardSelectAccountFragment newFragment = new WizardSelectAccountFragment();
+        AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                WizardSelectAccountFragment.TAG, true);
+                AccountTypesFragment.TAG, true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

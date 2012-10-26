@@ -36,6 +36,7 @@ public class HomeScreenFragment extends DialogFragment
     @Override
     public void onStart()
     {
+        setRetainInstance(true);
         if (getDialog() != null){
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }

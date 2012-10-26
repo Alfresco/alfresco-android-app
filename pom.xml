@@ -82,6 +82,13 @@
 			</roles>
 		</developer>
 		<developer>
+			<name>Luke Jagger</name>
+			<id>ljagger</id>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
 			<name>Gavin Cornwell</name>
 			<id>gc</id>
 			<roles>
