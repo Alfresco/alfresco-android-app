@@ -20,7 +20,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="#ddd" >
+                android:background="@color/grey_lighter" >
 
             </TabWidget>
         </HorizontalScrollView>

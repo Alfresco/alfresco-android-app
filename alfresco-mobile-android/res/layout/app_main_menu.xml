@@ -16,116 +16,183 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/white" >
+    android:background="@color/grey_dark"
+    android:orientation="vertical" >
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
+        android:id="@+id/accounts_label"
+        style="@style/sectionHeader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:gravity="top"
-        android:orientation="vertical" >
+        android:layout_marginLeft="@dimen/properties_padding"
+        android:layout_marginRight="@dimen/properties_padding"
+        android:drawableBottom="@drawable/grey_section_header"
+        android:paddingTop="@dimen/properties_padding"
+        android:text="@string/menu_accounts"
+        android:textColor="@color/grey_light"
+        android:visibility="visible" />
 
-        <TextView
-            style="@style/sectionHeader"
+    <Spinner
+        android:id="@+id/accounts_spinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accounts_label"
+        android:textColor="@android:color/white" />
+
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/accounts_spinner" >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/LinearLayout1"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_alfresco" />
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
 
-        <Button
-            android:id="@+id/menu_browse_activities"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_activities"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_activities" />
+            <TextView
+                android:id="@+id/TextView1"
+                style="@style/sectionHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/properties_padding"
+                android:layout_marginRight="@dimen/properties_padding"
+                android:drawableBottom="@drawable/grey_section_header"
+                android:paddingTop="@dimen/properties_padding"
+                android:text="@string/menu_view"
+                android:textColor="@color/grey_light"
+                android:visibility="visible" />
 
-        <Button
-            android:id="@+id/menu_browse_root"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_folder"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_root" />
+            <Button
+                android:id="@+id/menu_browse_activities"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/mime_activities"
+                android:gravity="left|center_vertical"
+                
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_browse_activities"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/menu_browse_my_sites"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_site"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_all_sites" />
+            <Button
+                android:id="@+id/menu_browse_root"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_refresh"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_browse_root"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/menu_search"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_search"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_search" />
+            <Button
+                android:id="@+id/menu_browse_my_sites"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_refresh"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_browse_all_sites"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/menu_download"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_download"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/download" />
+            <Button
+                android:id="@+id/menu_search"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_search"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_search"
+                android:textColor="@android:color/white" />
 
-        <TextView
-            style="@style/sectionHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_accounts" />
+            <Button
+                android:id="@+id/menu_download"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_download"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_downloads"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/menu_account_manage"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_login"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_account_manage" />
+            <Button
+                android:id="@+id/menu_browse_tags"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/mime_file"
+                android:onClick="showMainMenuFragment"
+                android:text="@string/menu_browse_tags"
+                android:textColor="@android:color/white"
+                android:visibility="gone" />
 
-        <!-- <Button
-            android:id="@+id/menu_settings"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_settings"
-            android:onClick="showMainMenuFragment"       		android:text="@string/menu_settings" /> -->
+            <TextView
+                android:id="@+id/TextView01"
+                style="@style/sectionHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/properties_padding"
+                android:layout_marginRight="@dimen/properties_padding"
+                android:drawableBottom="@drawable/grey_section_header"
+                android:paddingTop="@dimen/button_padding"
+                android:text="@string/menu_resources"
+                android:textColor="@color/grey_light"
+                android:visibility="visible" />
 
-        <TextView
-            style="@style/sectionHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/menu_more" />
+            <Button
+                android:id="@+id/menu_help"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_help"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_help"
+                android:textColor="@android:color/white" />
 
-        <Button
-            android:id="@+id/menu_help"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_help"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_help" />
+            <Button
+                android:id="@+id/menu_about"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@android:color/transparent"
+                android:drawableRight="@drawable/ic_empty"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:paddingLeft="@dimen/button_padding"
+                android:paddingRight="@dimen/button_padding"
+                android:text="@string/menu_about"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+    </ScrollView>
 
-        <Button
-            android:id="@+id/menu_about"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="3dip"
-            android:drawableLeft="@drawable/ic_empty"
-            android:onClick="showMainMenuFragment"
-            android:text="@string/menu_about" />
-    </LinearLayout>
-
-</ScrollView>
+</RelativeLayout>

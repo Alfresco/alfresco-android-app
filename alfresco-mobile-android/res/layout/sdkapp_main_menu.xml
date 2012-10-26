@@ -18,8 +18,9 @@
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
-
+    android:layout_height="fill_parent"
+    android:background="@color/grey_dark" >
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
@@ -27,51 +28,79 @@
         android:layout_gravity="top"
         android:gravity="top"
         android:orientation="vertical" >
-
+
+        <ExpandableListView
+            android:id="@+id/expandableListView1"
+            
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawSelectorOnTop="false"
+		android:textColor="@android:color/white" />
+
         <Button
             android:id="@+id/menu_browse_root"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_folder"
+            android:background="@android:color/transparent"
+            android:drawableRight="@drawable/ic_menu_star"
+            android:gravity="left|center_vertical"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_root" />
-
+            android:paddingLeft="@dimen/button_padding"
+            android:paddingRight="@dimen/button_padding"
+            android:text="@string/menu_browse_root"
+            android:textColor="@android:color/white" />
+
         <Button
             android:id="@+id/menu_browse_all_sites"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_site"
+            android:background="@android:color/transparent"
+            android:drawableRight="@drawable/ic_menu_star"
+            android:gravity="left|center_vertical"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_all_sites" />
-
+            android:paddingLeft="@dimen/button_padding"
+            android:paddingRight="@dimen/button_padding"
+            android:text="@string/menu_browse_all_sites"
+            android:textColor="@android:color/white" />
+
         <Button
             android:id="@+id/menu_browse_my_sites"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_site"
+            android:background="@android:color/transparent"
+            android:drawableRight="@drawable/ic_menu_star"
+            android:gravity="left|center_vertical"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_my_sites" />
-
+            android:paddingLeft="@dimen/button_padding"
+            android:paddingRight="@dimen/button_padding"
+            android:text="@string/menu_browse_my_sites"
+            android:textColor="@android:color/white" />
+
         <Button
             android:id="@+id/menu_browse_favorite_sites"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_site"
+            android:background="@android:color/transparent"
+            android:drawableRight="@drawable/ic_menu_star"
+            android:gravity="left|center_vertical"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_favorite_sites" />
+            android:paddingLeft="@dimen/button_padding"
+            android:paddingRight="@dimen/button_padding"
+            android:text="@string/menu_browse_favorite_sites"
+            android:textColor="@android:color/white" />
 
         <Button
             android:id="@+id/menu_browse_tags"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_file"
+            android:drawableRight ="@drawable/mime_file"
             android:onClick="showMainMenuFragment"
-            android:text="@string/menu_browse_tags"
+            android:text="@string/menu_browse_tags" android:textColor="@android:color/white" android:background="@android:color/transparent"
             android:visibility="gone" />
     </LinearLayout>
 
