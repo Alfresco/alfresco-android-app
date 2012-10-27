@@ -69,7 +69,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
     {
         if (adapter == null)
-            adapter = new AccountAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
+            adapter = new AccountDetailsAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
 
         PagingResult<Account> pagingResultFiles = new PagingResultImpl<Account>(results, false, results.size());
         displayPagingData(pagingResultFiles, loaderId, callback);

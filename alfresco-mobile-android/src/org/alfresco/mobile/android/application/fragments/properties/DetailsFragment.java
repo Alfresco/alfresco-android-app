@@ -118,7 +118,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -126,7 +126,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(false);
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         View v = inflater.inflate(R.layout.sdk_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
@@ -372,7 +372,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         Uri.fromFile(StorageManager.getDownloadFile(getActivity(), alfSession.getBaseUrl(),
                                 alfSession.getPersonIdentifier(), node.getName())));
 
-        AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getsession(getActivity()))
+        AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(getActivity()))
                 .getAuthenticationProvider();
         Map<String, List<String>> httpHeaders = auth.getHTTPHeaders();
         if (httpHeaders != null)
@@ -571,7 +571,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD,
                         R.string.action_share);
-                mi.setIcon(R.drawable.ic_download);
+                mi.setIcon(R.drawable.ic_download_dark);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 

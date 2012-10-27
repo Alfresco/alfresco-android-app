@@ -22,7 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
-import org.alfresco.mobile.android.application.accounts.signup.SignupCloudDialogFragment;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 
@@ -43,7 +43,6 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
         getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
-        getLoaderManager().getLoader(AccountsLoader.ID).forceLoad();
         findViewById(R.id.left_pane).setVisibility(View.GONE);
         getActionBar().hide();
 
@@ -57,9 +56,9 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
 
     public void cloud(View v)
     {
-        SignupCloudDialogFragment newFragment = new SignupCloudDialogFragment();
+        CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
         FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                SignupCloudDialogFragment.TAG, true);
+                CloudSignupDialogFragment.TAG, true);
     }
 
     public void launch(View v)

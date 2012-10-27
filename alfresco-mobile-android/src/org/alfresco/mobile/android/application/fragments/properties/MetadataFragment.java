@@ -67,7 +67,7 @@ public class MetadataFragment extends BaseFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(false);
     }
@@ -76,7 +76,7 @@ public class MetadataFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (container == null) { return null; }
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         node = (Node) getArguments().get(ARGUMENT_NODE);
         
         ScrollView sv = new ScrollView(getActivity());

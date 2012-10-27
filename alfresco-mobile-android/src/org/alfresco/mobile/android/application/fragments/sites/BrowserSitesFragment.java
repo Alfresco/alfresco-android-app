@@ -33,7 +33,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -86,7 +86,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onTabChanged(String tabId)
     {
-        if (SessionUtils.getsession(getActivity()) == null) { return; }
+        if (SessionUtils.getSession(getActivity()) == null) { return; }
         Bundle b = getListingBundle();
         if (MY_SITES.equals(tabId))
         {

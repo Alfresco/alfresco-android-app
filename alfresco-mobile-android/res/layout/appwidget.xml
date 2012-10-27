@@ -46,7 +46,7 @@
 	    android:layout_centerVertical="true"
 	    android:alpha="0.2"
 	    android:scaleType="centerInside"
-	    android:src="@drawable/alflogo" />
+	    android:src="@drawable/bg_alfresco_logo_light" />
 
 	<StackView
 	    android:id="@+id/stackView1"

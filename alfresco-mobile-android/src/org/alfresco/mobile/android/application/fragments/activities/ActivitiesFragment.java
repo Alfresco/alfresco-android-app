@@ -53,7 +53,7 @@ public class ActivitiesFragment extends ActivityStreamFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -81,7 +81,6 @@ public class ActivitiesFragment extends ActivityStreamFragment
             NodeLoaderCallback call = new NodeLoaderCallback(getActivity(), alfSession, identifier);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
-            lm.getLoader(NodeLoader.ID).forceLoad();
         }
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }

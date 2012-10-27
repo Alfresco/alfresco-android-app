@@ -198,7 +198,6 @@ public class AccountOAuthFragment extends OAuthFragment
         }
         LoaderManager lm = getLoaderManager();
         lm.restartLoader(SessionLoader.ID, null, call);
-        lm.getLoader(SessionLoader.ID).forceLoad();
     }
 
     @Override

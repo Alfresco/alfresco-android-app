@@ -19,127 +19,107 @@ package org.alfresco.mobile.android.application.fragments.menu;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountLoginLoaderCallback;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountAdapter;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.LoaderManager;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<Account>>, OnItemSelectedListener
+public class MainMenuFragment extends Fragment implements OnItemSelectedListener
 {
     private View view = null;
-    private ArrayAdapter<String> adapter = null;
-    private int loaderId;
-    private LoaderCallbacks<?> callback;
-    List<Account> results = null;
-    
+
+    private AccountAdapter adapter = null;
+
+    private List<Account> accounts;
+
+    private int accountIndex = 0;
+
     public static final String TAG = "MainMenuFragment";
 
-    
+    public static final String SLIDING_TAG = "SlidingMenuFragment";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null) { return null; }
+        if (container == null)
+        {
+            view = inflater.inflate(R.layout.app_main_menu, container, false);
+        }
         view = inflater.inflate(R.layout.app_main_menu, container, false);
-        
+
         return view;
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
     }
-    
+
     @Override
     public void onStart()
     {
         super.onStart();
         
-        getActivity().invalidateOptionsMenu();
         DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().invalidateOptionsMenu();
         ((MainActivity) getActivity()).clearScreen();
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-        loaderId = AccountsLoader.ID;
-        callback = this;
-        
-        getLoaderManager().restartLoader(loaderId, getArguments(), callback);
-        getLoaderManager().getLoader(loaderId).forceLoad();
+        accounts = ((MainActivity) getActivity()).getAccounts();
+        refreshAccounts();
     }
 
-    @Override
-    public Loader<List<Account>> onCreateLoader(int id, Bundle args)
+    public void setAccounts(List<Account> accounts)
     {
-        return new AccountsLoader(getActivity());
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
-    {
-        this.results = results;
-        
-        if (adapter  == null)
+        this.accounts = accounts;
+        if (isAdded())
         {
-            //adapter = new AccountAdapter(getActivity(), R.layout.account_list_row, new ArrayList<Account>(0));
-            adapter = new ArrayAdapter<String>(getActivity(), R.layout.account_list_row, R.id.toptext);
+            refreshAccounts();
+        }
+    }
+
+    public void refreshAccounts()
+    {
+        if (accounts == null) { return; }
+
+        if (adapter == null)
+        {
+            adapter = new AccountAdapter(getActivity(), R.layout.app_account_list_row, accounts);
         }
         else
         {
-            adapter.clear();
+            adapter.refreshData(accounts);
         }
-        
-        int currentAccountIdx = 0;
-        Account currentAccount = SessionUtils.getAccount(getActivity());
-        for (int i = 0;  i < results.size();  i++)
-        {
-            String desc = results.get(i).getDescription();
-            
-            if (desc.length() > 0)
-            {
-                adapter.add(desc);
-            }
-            else
-            {
-                adapter.add(results.get(i).getUsername());
-            }
-                
-            
-            if (results.get(i).getId() == currentAccount.getId())
-            {
-                currentAccountIdx = i;
-            }
-        }
-        
-        adapter.add(getString(R.string.manage_accounts));
-        
-        Spinner s = (Spinner)view.findViewById(R.id.accounts_spinner);
+
+        Spinner s = (Spinner) view.findViewById(R.id.accounts_spinner);
         s.setAdapter(adapter);
-        s.setSelection(currentAccountIdx);
         s.setOnItemSelectedListener(this);
+
+        Account currentAccount = SessionUtils.getAccount(getActivity());
+        for (int i = 0; i < accounts.size(); i++)
+        {
+            if (currentAccount != null && accounts.get(i).getId() == currentAccount.getId())
+            {
+                accountIndex = i;
+                break;
+            }
+        }
+        s.setSelection(accountIndex);
     }
-    
-    
+
     @Override
     public void onPause()
     {
@@ -148,69 +128,38 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<List<A
     }
 
     @Override
-    public void onLoaderReset(Loader<List<Account>> arg0)
-    {
-    }
-
-    public void clearScreen()
-    {
-        /*
-         * if (DisplayUtils.hasRightPane(this)) {
-         * FragmentDisplayer.removeFragment(this,
-         * DisplayUtils.getRightFragmentId(this));
-         * DisplayUtils.hide(DisplayUtils.getRightPane(this)); }
-         */
-        if (DisplayUtils.hasCentralPane(getActivity()))
-        {
-            FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
-            DisplayUtils.getCentralPane(getActivity()).setBackgroundResource(R.drawable.background_grey_alfresco);
-        }
-        if (DisplayUtils.hasLeftPane(getActivity()))
-        {
-            DisplayUtils.show(DisplayUtils.getLeftPane(getActivity()));
-            // FragmentDisplayer.removeFragment(this,
-            // DisplayUtils.getLeftFragmentId(this));
-            // DisplayUtils.getLeftPane(this).setBackgroundResource(android.R.color.transparent);
-        }
-    }
-
-    
-    public void displayMainMenu()
-    {
-        Fragment f = new MainMenuFragment();
-        FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()), MainMenuFragment.TAG, false);
-        //hideSlideMenu();
-    }
-    
-    @Override
     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
     {
-        if (position < results.size())
+        if (position < accounts.size())
         {
-            Account acc = results.get(position);
-            AlfrescoSession sesh = SessionUtils.getsession(getActivity());
-            
-            if (sesh != null && (!acc.getUrl().equals(sesh.getBaseUrl()) || !acc.getUsername().equals(sesh.getPersonIdentifier())))
+            Account selectedAccount = accounts.get(position);
+            Account currentAccount = SessionUtils.getAccount(getActivity());
+            if (currentAccount != null && selectedAccount != null && currentAccount.getId() != selectedAccount.getId())
             {
+                hideSlidingMenu(true);
                 SessionUtils.setsession(getActivity(), null);
-                
-                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
-                LoaderManager lm = getLoaderManager();
-                lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();
-                clearScreen();
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                displayMainMenu();
-                
-                SessionUtils.setAccount(getActivity(), acc);
-            } 
+                SessionUtils.setAccount(getActivity(), selectedAccount);
+                accountIndex = position;
+                ((MainActivity) getActivity()).loadAccount(selectedAccount);
+            }
         }
-        else
+        else if (position == accounts.size())
         {
-            //Manage accounts item selected...
-            
-            Fragment f = new AccountFragment();
-            FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()), AccountFragment.TAG, true);
+            // Manage accounts item selected...
+            ((MainActivity) getActivity()).displayAccounts();
+            hideSlidingMenu(false);
+        }
+    }
+
+    private void hideSlidingMenu(boolean goHome)
+    {
+        if (SLIDING_TAG.equals(getTag()))
+        {
+            ((MainActivity) getActivity()).toggleSlideMenu();
+            if (goHome) {
+                getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                ((MainActivity) getActivity()).clearScreen();
+            }
         }
     }
 

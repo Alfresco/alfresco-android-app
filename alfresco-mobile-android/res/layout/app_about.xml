@@ -80,7 +80,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
-            android:drawableLeft="@drawable/mime_activities"
+            android:drawableLeft="@drawable/ic_activities_light"
             android:onClick="error"
             android:text="Test : Send crash report" />
 

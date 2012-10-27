@@ -105,7 +105,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
         {
             setActivateThumbnail(true);
@@ -328,7 +328,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
     {
         if (parentFolder == null)
         {
-            parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
+            parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
         }
         super.refresh();
     }

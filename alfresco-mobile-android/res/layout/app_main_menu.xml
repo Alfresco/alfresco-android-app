@@ -16,71 +16,68 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
+
+   <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fillViewport="true"
+         >
+        
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@color/grey_dark"
+    android:background="@drawable/bg_gradient"
     android:orientation="vertical" >
 
     <TextView
         android:id="@+id/accounts_label"
-        style="@style/sectionHeader"
+        style="@style/slidingmenu_sectionHeader"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:text="@string/menu_accounts"
         android:layout_marginLeft="@dimen/properties_padding"
         android:layout_marginRight="@dimen/properties_padding"
-        android:drawableBottom="@drawable/grey_section_header"
-        android:paddingTop="@dimen/properties_padding"
-        android:text="@string/menu_accounts"
-        android:textColor="@color/grey_light"
-        android:visibility="visible" />
+         />
 
     <Spinner
         android:id="@+id/accounts_spinner"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/accounts_label"
-        android:textColor="@android:color/white" />
-
-    <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_below="@+id/accounts_spinner" >
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="@dimen/properties_padding"
+        android:layout_marginRight="@dimen/properties_padding"
+        android:popupBackground="@color/sliding_account_background" />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/LinearLayout1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:layout_below="@+id/accounts_spinner"
+                    android:layout_marginLeft="@dimen/properties_padding"
+        android:layout_marginRight="@dimen/properties_padding" >
 
             <TextView
                 android:id="@+id/TextView1"
-                style="@style/sectionHeader"
+                style="@style/slidingmenu_sectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/properties_padding"
-                android:layout_marginRight="@dimen/properties_padding"
-                android:drawableBottom="@drawable/grey_section_header"
-                android:paddingTop="@dimen/properties_padding"
                 android:text="@string/menu_view"
-                android:textColor="@color/grey_light"
-                android:visibility="visible" />
+                 />
 
             <Button
                 android:id="@+id/menu_browse_activities"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/mime_activities"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_activities_light"
                 android:gravity="left|center_vertical"
                 
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_browse_activities"
                 android:textColor="@android:color/white" />
 
@@ -88,13 +85,10 @@
                 android:id="@+id/menu_browse_root"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_refresh"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_repository_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_browse_root"
                 android:textColor="@android:color/white" />
 
@@ -103,12 +97,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_refresh"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_all_sites_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_browse_all_sites"
                 android:textColor="@android:color/white" />
 
@@ -117,12 +109,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_search"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_search_off"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_search"
                 android:textColor="@android:color/white" />
 
@@ -131,12 +121,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_download"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_download_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_downloads"
                 android:textColor="@android:color/white" />
 
@@ -145,7 +133,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
+                android:background="@drawable/btn_default_holo_light"
                 android:drawableRight="@drawable/mime_file"
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_browse_tags"
@@ -170,12 +158,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
+                android:background="@drawable/btn_default_holo_light"
                 android:drawableRight="@drawable/ic_help"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_help"
                 android:textColor="@android:color/white" />
 
@@ -184,15 +170,13 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@android:color/transparent"
-                android:drawableRight="@drawable/ic_empty"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_about_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:paddingLeft="@dimen/button_padding"
-                android:paddingRight="@dimen/button_padding"
                 android:text="@string/menu_about"
                 android:textColor="@android:color/white" />
         </LinearLayout>
-    </ScrollView>
 
 </RelativeLayout>
+    </ScrollView>

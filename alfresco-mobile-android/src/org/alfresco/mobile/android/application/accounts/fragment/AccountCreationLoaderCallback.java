@@ -173,6 +173,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                     + results.getException().getMessage());
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
+        activity.getLoaderManager().destroyLoader(loader.getId());
     }
 
     @Override

@@ -22,12 +22,11 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
-import org.alfresco.mobile.android.application.accounts.signup.SignupCloudLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -151,11 +150,10 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                SignupCloudLoaderCallback call = new SignupCloudLoaderCallback(getActivity(),
+                CloudSignupLoaderCallback call = new CloudSignupLoaderCallback(getActivity(),
                         AccountDetailsFragment.this, null, null, acc.getUsername(), null, null);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(CloudSignupLoader.ID, null, call);
-                lm.getLoader(CloudSignupLoader.ID).forceLoad();
             }
         });
     }
@@ -202,11 +200,9 @@ public class AccountDetailsFragment extends BaseFragment
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getActivity().getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();
                 //TODO Remove this indication ?
                 MessengerManager.showToast(getActivity(), "Load : " + acc.getUrl());
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                ((MainActivity) view.getContext()).createSwitchAccount(acc);
             }
         });
 

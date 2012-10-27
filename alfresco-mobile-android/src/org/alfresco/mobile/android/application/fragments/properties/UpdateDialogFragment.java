@@ -53,14 +53,14 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         View v = super.onCreateView(inflater, container, savedInstanceState);
 
         onUpdateListener = new OnNodeUpdateListener()

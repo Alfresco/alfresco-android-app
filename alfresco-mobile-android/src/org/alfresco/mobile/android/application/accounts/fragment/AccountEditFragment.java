@@ -128,7 +128,6 @@ public class AccountEditFragment extends DialogFragment
                     password, description);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(SessionLoader.ID, null, call);
-            lm.getLoader(SessionLoader.ID).forceLoad();
         }
     }
 

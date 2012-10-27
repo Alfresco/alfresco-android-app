@@ -47,7 +47,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 {
 
     private static final String TAG = "AccountLoginLoaderCallback";
-    
+
     private Account acc;
 
     private ProgressDialog mProgressDialog;
@@ -70,8 +70,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     {
         if (data != null)
         {
-            mProgressDialog = ProgressDialog.show(activity, getText(R.string.wait_title), getText(R.string.wait_message), true, true,
-                    new OnCancelListener()
+            mProgressDialog = ProgressDialog.show(activity, getText(R.string.wait_title),
+                    getText(R.string.wait_message), true, true, new OnCancelListener()
                     {
                         @Override
                         public void onCancel(DialogInterface dialog)
@@ -103,13 +103,19 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 case Account.TYPE_ALFRESCO_CLOUD:
                     AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity)
                             .getWriteDb());
-                    accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
+                    if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
                             acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
                             ((CloudSessionLoader) loader).getOAuthData().getAccessToken(),
-                            ((CloudSessionLoader) loader).getOAuthData().getRefreshToken());
+                            ((CloudSessionLoader) loader).getOAuthData().getRefreshToken()))
+                    {
+                        SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
+                    } else {
+                        MessengerManager.showLongToast(activity, "Error during token update");
+                    }
                     break;
             }
 
+            activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());
             Intent i = new Intent(activity, MainActivity.class);
             i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);

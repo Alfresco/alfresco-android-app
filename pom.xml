@@ -313,7 +313,7 @@
 		<repository>
 			<id>artifacts.alfresco.com</id>
 			<name>Alfresco Maven Repository</name>
-			<url>http://artifacts.alfresco.com/nexus/content/groups/public</url>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
 		</repository>
 	</repositories>
 

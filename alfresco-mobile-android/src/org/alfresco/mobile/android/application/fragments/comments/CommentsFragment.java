@@ -83,7 +83,6 @@ public class CommentsFragment extends CommentFragment
                             commentText.getText().toString());
                     c.setOnCommentCreateListener(createListener);
                     getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
-                    getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
                 }
                 else
                 {
@@ -127,7 +126,7 @@ public class CommentsFragment extends CommentFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
     }

@@ -77,7 +77,7 @@ public class AccountDAO extends DAO<Account>
                         AccountSchema.COLUMN_USERNAME, AccountSchema.COLUMN_PASSWORD,
                         AccountSchema.COLUMN_REPOSITORY_ID, AccountSchema.COLUMN_REPOSITORY_TYPE,
                         AccountSchema.COLUMN_ACTIVATION, AccountSchema.COLUMN_ACCESS_TOKEN,
-                        AccountSchema.COLUMN_REFRESH_TOKEN }, null, null, null, null, null);
+                        AccountSchema.COLUMN_REFRESH_TOKEN }, null, null, null, null, AccountSchema.COLUMN_ID + " ASC" );
         return cursorToAccounts(c);
     }
 

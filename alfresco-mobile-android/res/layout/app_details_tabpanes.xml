@@ -3,7 +3,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:padding="@dimen/properties_padding" >
+    android:padding="@dimen/properties_padding"
+    android:background="@android:color/background_light" >
 
     <TableLayout
         android:id="@+id/default_server"
@@ -94,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="0"
                         android:paddingRight="@dimen/button_padding"
-                        android:src="@drawable/ic_download" />
+                        android:src="@drawable/ic_download_dark" />
 
                     <ImageView
                         android:id="@+id/like"

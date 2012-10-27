@@ -48,7 +48,7 @@ public class KeywordSearch extends org.alfresco.mobile.android.ui.search.SearchF
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         setActivateThumbnail(false);
         View v = inflater.inflate(R.layout.sdkapp_search, container, false);
         
