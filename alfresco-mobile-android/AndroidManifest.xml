@@ -53,9 +53,8 @@
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
-            android:multiprocess="false"
             >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

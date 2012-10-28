@@ -793,7 +793,7 @@ public class MainActivity extends Activity
             return true;
         }
 
-        return false;
+        return true;
     }
 
     private boolean isVisible(String tag)
@@ -935,7 +935,6 @@ public class MainActivity extends Activity
                 // app icon in action bar clicked; go home
                 toggleSlideMenu();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }

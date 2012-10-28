@@ -24,10 +24,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
@@ -56,6 +59,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -113,6 +117,15 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         super.onActivityCreated(savedInstanceState);
     }
+    
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+        ListView listView = (ListView) view.findViewById(R.id.listView);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setClickable(true);
+    }
 
     @Override
     public void onStart()
@@ -152,7 +165,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (!selectedItems.isEmpty()){
             hideDetails = selectedItems.get(0).equals(item);
         }
-
+        l.setItemChecked(position, true);
+        
         selectedItems.clear();
         selectedItems.add(item);
         if (nActions != null)
@@ -160,22 +174,17 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             selectedItems.clear();
             selectedItems.add(item);
             nActions.addNode(selectedItems.get(0));
-            refreshListView();
             ((MainActivity) getActivity()).addPropertiesFragment(item);
             return;
         }
-        else
-        {
-            // startSelection(v, (Node) l.getItemAtPosition(position));
-        }
 
-        super.onListItemClick(l, v, position, id);
 
         if (hideDetails)
         {
-            ((MainActivity) getActivity()).clearScreen();
+            if (DisplayUtils.hasCentralPane(getActivity())){
+                ((MainActivity) getActivity()).clearScreen();
+            }
             selectedItems.clear();
-            refreshListView();
         }
         else
         {
@@ -188,11 +197,36 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             {
                 // Show properties
                 ((MainActivity) getActivity()).addPropertiesFragment(item);
-                refreshListView();
                 DisplayUtils.switchSingleOrTwo(getActivity(), true);
             }
         }
     }
+    
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
+    {
+        if (loader instanceof NodeChildrenLoader)
+        {
+            parentFolder = ((NodeChildrenLoader) loader).getParentFolder();
+        }
+
+        if (adapter == null)
+        {
+            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
+                    selectedItems);
+        }
+        
+        if (results.hasException())
+        {
+            onLoaderException(results.getException());
+        }
+        else
+        {
+            displayPagingData(results.getData(), loaderId, callback);
+        }
+        ((NodeAdapter) adapter).setActivateThumbnail(true);
+    }
+    
 
     private NodeActions nActions;
 
@@ -378,6 +412,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
                     R.string.action_upload);
+
         }
 
         if (extended && parentFolder != null && permission.canEdit())
