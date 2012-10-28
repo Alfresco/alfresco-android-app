@@ -171,20 +171,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, null, null, false);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC, R.drawable.ic_location,
-                    new OnClickListener()
-                    {
-                        @Override
-                        public void onClick(View v)
-                        {
-                            ActionManager.actionShowMap(DetailsFragment.this, node.getName(),
-                                    node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(), node
-                                            .getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
-                        }
-                    });
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF, null, null);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO, null, null);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
         }
 
         // BUTTONS
@@ -205,12 +195,32 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
+        
+        b = (ImageView) v.findViewById(R.id.action_geolocation);
+        if (node.isDocument() && node.hasAspect(ContentModel.ASPECT_GEOGRAPHIC))
+        {
+            b.setVisibility(View.VISIBLE);
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    ActionManager.actionShowMap(DetailsFragment.this, node.getName(),
+                            node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
+                            node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
 
 
-        ImageView ba = (ImageView) v.findViewById(R.id.like);
+        b = (ImageView) v.findViewById(R.id.like);
         if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
-            ba.setOnClickListener(new OnClickListener()
+            b.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View v)
@@ -221,15 +231,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
         else
         {
-            ba.setVisibility(View.GONE);
+            b.setVisibility(View.GONE);
         }
 
         IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
-        lcb.setImageButton(ba);
+        lcb.setImageButton(b);
         lcb.execute(false);
 
-        ba = (ImageView) v.findViewById(R.id.action_share);
-        ba.setOnClickListener(new OnClickListener()
+        b = (ImageView) v.findViewById(R.id.action_share);
+        b.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)

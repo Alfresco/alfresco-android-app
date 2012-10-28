@@ -76,7 +76,10 @@
     <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
     <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
     
-
+    <!-- DETAILS-->
+    <string name="geolocation">Geolocation</string>
+    
+    
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
     <string name="required">Required</string>

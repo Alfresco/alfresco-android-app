@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.PropertyManager;
@@ -34,10 +33,8 @@ import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -88,54 +85,29 @@ public class MetadataFragment extends BaseFragment
         v.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         v.setGravity(Gravity.CENTER);
         
-        //View v = inflater.inflate(R.layout.sdk_property_title, container, false);
-
         // ASPECTS
         ViewGroup parent = (ViewGroup) v;
         
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, null, null, false);
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC, R.drawable.ic_location,
-                new OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        ActionManager.actionShowMap(MetadataFragment.this, node.getName(),
-                                node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
-                                node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
-                    }
-                });
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF, null, null);
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO, null, null);
+        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false);
+        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
+        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
+        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
         
         sv.addView(v);
         
         return sv;
     }
     
-    protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
-            Integer iconId, OnClickListener clikListener, boolean check)
+    protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect, boolean check)
     {
         if (!check || node.hasAspect(aspect))
         {
             View v = null;
             TextView tv = null;
-            Button b = null;
 
             ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.sdk_property_title, null);
             tv = (TextView) grouprootview.findViewById(R.id.title);
             tv.setText(PropertyManager.getAspectLabel(aspect));
-
-            b = (Button) grouprootview.findViewById(R.id.title_action);
-            if (iconId != null)
-            {
-                b.setCompoundDrawablesWithIntrinsicBounds(null, getResources().getDrawable(iconId), null, null);
-                b.setOnClickListener(clikListener);
-            }
-            else
-            {
-                b.setVisibility(View.GONE);
-            }
 
             ViewGroup groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
             for (Entry<String, Integer> map : PropertyManager.getPropertyLabel(aspect).entrySet())
@@ -162,10 +134,9 @@ public class MetadataFragment extends BaseFragment
         }
     }
 
-    protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
-            Integer iconId, OnClickListener clikListener)
+    protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect)
     {
-        createAspectPanel(inflater, parentview, node, aspect, iconId, clikListener, true);
+        createAspectPanel(inflater, parentview, node, aspect, true);
     }
 }
 

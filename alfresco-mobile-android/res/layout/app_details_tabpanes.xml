@@ -114,6 +114,16 @@
                         android:contentDescription="@string/action_like"
                         android:paddingRight="@dimen/button_padding"
                         android:src="@drawable/ic_share" />
+                    
+                     <ImageView
+                            android:id="@+id/action_geolocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:contentDescription="@string/geolocation"
+                            android:paddingRight="@dimen/button_padding"
+                            android:src="@drawable/ic_location"
+                            android:visibility="gone" />
                 </LinearLayout>
 
             </RelativeLayout>
