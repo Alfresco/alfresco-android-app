@@ -127,7 +127,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         setRetainInstance(false);
         alfSession = SessionUtils.getSession(getActivity());
-        View v = inflater.inflate(R.layout.sdk_details, container, false);
+        View v = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         renditionManager = new RenditionManager(getActivity(), alfSession);

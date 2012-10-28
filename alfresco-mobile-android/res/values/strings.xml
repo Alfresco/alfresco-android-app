@@ -101,6 +101,10 @@
     <string name="menu_help">Help</string>
     <string name="menu_resources">Resources</string>
     
+    <!-- ACCOUNTS -->
+    <string name="accounts_manage">Accounts</string>
+    <string name="accounts_details">Details</string>
+    
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
@@ -113,7 +117,7 @@
     <string name="cloud_signup_hint">By tapping Sign Up, you are agreeing to the Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">Terms of Service</a> and <a href="http://www.alfresco.com/privacy">Privacy Policy</a>.</string>
     <string name="sign_up_cloud">Sign-up for Alfresco Cloud</string>
     <string name="sign_up_cloud_email_verification">Account waiting for email verification</string>
-    <string name="sign_up_cloud_email_verification_line1">You\'ve sign-up for Alfresco in the clous using the email address:</string>
+    <string name="sign_up_cloud_email_verification_line1">You\'ve sign-up for Alfresco in the cloud using the email address:</string>
     <string name="sign_up_cloud_email_verification_line2">Please check your email. We\'ve sent you a link that you\'ll need to use to complete the registration.</string>
     <string name="sign_up_cloud_email_having_trouble">Having trouble activating ?</string>
     <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your account.</string>
@@ -170,7 +174,6 @@ Please provides information about your server (Cloud, onpremise, version number.
     <string name="full_attachment">Attachment</string>
     <string name="link_to_repo">Clickable link</string>
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
-    <string name="email_content_link">I would like to share this link with you from an Alfresco repository\n%s\n\nGet Alfresco Mobile at:\nhttp://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application</string>
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 	<string name="manage_accounts">Manage accounts...</string>
 

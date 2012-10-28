@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
@@ -162,13 +163,17 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             if (fr != null)
             {
                 ActionManager.actionRefresh(fr, IntentIntegrator.CATEGORY_REFRESH_ALL, IntentIntegrator.ACCOUNT_TYPE);
+                if (fr.getActivity() instanceof HomeScreenActivity)
+                {
+                    fr.getActivity().finish();
+                }
             }
             mProgressDialog.dismiss();
         }
         else
         {
             mProgressDialog.dismiss();
-            //TODO Remove getMessage exception ?
+            // TODO Remove getMessage exception ?
             MessengerManager.showLongToast(activity, getText(R.string.error_session_creation)
                     + results.getException().getMessage());
             Log.e(TAG, Log.getStackTraceString(results.getException()));

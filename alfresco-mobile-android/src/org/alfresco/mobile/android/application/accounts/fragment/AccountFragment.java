@@ -54,6 +54,8 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     @Override
     public void onStart()
     {
+        DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().setTitle(R.string.accounts_manage);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }

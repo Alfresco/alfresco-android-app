@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialog
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.KeywordSearch;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
@@ -117,7 +118,7 @@ public class MainActivity extends Activity
 
         // Loading progress
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.sdk_main);
+        setContentView(R.layout.app_main);
 
         // Load Accounts
         getLoaderManager().initLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
@@ -209,18 +210,6 @@ public class MainActivity extends Activity
     }
 
     @Override
-    protected void onStart()
-    {
-        super.onStart();
-
-        /*
-         * if (currentAccount != null) { createSwitchAccount(currentAccount); }
-         * else if (accounts != null) { currentAccount = accounts.get(0);
-         * createSwitchAccount(currentAccount); }
-         */
-    }
-
-    @Override
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
@@ -246,8 +235,8 @@ public class MainActivity extends Activity
                     doMainMenuAction(fragmentQueue);
                 }
                 fragmentQueue = -1;
-                
-                //reload account
+
+                // reload account
                 getLoaderManager().restartLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
 
                 return;
@@ -423,12 +412,20 @@ public class MainActivity extends Activity
     // ///////////////////////////////////////////
     // SWITCH ACCOUNT
     // ///////////////////////////////////////////
-    public void loadAccount(Account account){
+    public void loadAccount(Account account)
+    {
+        //TODO Remove this indication ?
+        MessengerManager.showToast(this, "Load : " + account.getDescription());
+        setProgressBarIndeterminateVisibility(true);
+
+        SessionUtils.setsession(this, null);
+        SessionUtils.setAccount(this, account);
         AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
-        LoaderManager lm = getLoaderManager();
-        lm.restartLoader(SessionLoader.ID, null, call);
+        getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+        
+        //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
-    
+
     // ///////////////////////////////////////////
     // SLIDE MENU
     // ///////////////////////////////////////////
@@ -443,7 +440,8 @@ public class MainActivity extends Activity
         else
         {
             MainMenuFragment slidefragment = (MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG);
-            if (slidefragment != null){
+            if (slidefragment != null)
+            {
                 slidefragment.setAccounts(accounts);
             }
             showSlideMenu();
@@ -728,19 +726,6 @@ public class MainActivity extends Activity
         try
         {
             ActionBar bar = getActionBar();
-
-            // Create Quick Account Icon.
-            /*
-             * LinearLayout l1 = new LinearLayout(this);
-             * l1.setOrientation(LinearLayout.VERTICAL); int value = (int)
-             * TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, (float)
-             * 50, getResources() .getDisplayMetrics()); l1.setLayoutParams(new
-             * LayoutParams(value, LayoutParams.MATCH_PARENT));
-             * l1.setGravity(Gravity.CENTER); l1.setOnClickListener(new
-             * OnClickListener() {
-             * @Override public void onClick(View v) { showPopup(v); } });
-             */
-
             bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
 
             if (DisplayUtils.hasCentralPane(this))
@@ -769,34 +754,46 @@ public class MainActivity extends Activity
         super.onCreateOptionsMenu(menu);
 
         MenuItem mi;
-
+        
+        if (isVisible(ActivitiesFragment.TAG))
+        {
+            ((ActivitiesFragment) getFragment(ActivitiesFragment.TAG)).getMenu(menu);
+        }
+        
         if (isVisible(AccountDetailsFragment.TAG))
         {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
+            return true;
         }
+        
         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
             ((AccountFragment) getFragment(AccountFragment.TAG)).getMenu(menu);
+            return true;
         }
 
-        else if (isVisible(DetailsFragment.TAG))
+        if (isVisible(DetailsFragment.TAG))
         {
             ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
+            return true;
         }
-        else if (isVisible(KeywordSearch.TAG))
+
+        if (isVisible(KeywordSearch.TAG))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_OPTION, Menu.FIRST + MenuActionItem.MENU_SEARCH_OPTION,
                     R.string.search_option);
-            // mi.setIcon(R.drawable.ic_menu_find_holo_dark);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-        else if (isVisible(ChildrenBrowserFragment.TAG))
-        {
-            ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
+            return true;
         }
 
-        return true;
+        if (isVisible(ChildrenBrowserFragment.TAG))
+        {
+            ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isVisible(String tag)
@@ -884,7 +881,7 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_REFRESH:
-                ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
+                ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this))).refresh();
                 return true;
 
             case MenuActionItem.MENU_SHARE:

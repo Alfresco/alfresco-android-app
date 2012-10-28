@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -64,7 +65,7 @@ import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
 @TargetApi(11)
-public class ChildrenBrowserFragment extends NavigationFragment
+public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment
 {
 
     public static final String TAG = "ChildrenNavigationFragment";

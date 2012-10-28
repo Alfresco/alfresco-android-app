@@ -19,7 +19,10 @@ package org.alfresco.mobile.android.application.fragments.activities;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
+import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -28,10 +31,12 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
 import android.app.LoaderManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class ActivitiesFragment extends ActivityStreamFragment
+public class ActivitiesFragment extends ActivityStreamFragment implements RefreshFragment
 {
 
     public static final String TAG = "ActivitiesFragment";
@@ -61,6 +66,7 @@ public class ActivitiesFragment extends ActivityStreamFragment
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().setTitle(R.string.menu_browse_activities);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -70,12 +76,13 @@ public class ActivitiesFragment extends ActivityStreamFragment
     {
         ActivityEntry item = (ActivityEntry) l.getItemAtPosition(position);
 
-        //Inconsistency between cloud and on premise.
+        // Inconsistency between cloud and on premise.
         String identifier = item.getData(CloudConstant.NODEREF_VALUE);
-        if (identifier == null){
+        if (identifier == null)
+        {
             identifier = item.getData(CloudConstant.OBJECTID_VALUE);
         }
-        
+
         if (identifier != null)
         {
             NodeLoaderCallback call = new NodeLoaderCallback(getActivity(), alfSession, identifier);
@@ -83,5 +90,22 @@ public class ActivitiesFragment extends ActivityStreamFragment
             lm.restartLoader(NodeLoader.ID, null, call);
         }
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // MENU
+    // //////////////////////////////////////////////////////////////////////
+    public void getMenu(Menu menu)
+    {
+        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
+                R.string.action_refresh);
+        mi.setIcon(R.drawable.ic_refresh);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+
+    @Override
+    public void refresh()
+    {
+        refresh(loaderId, callback);
     }
 }

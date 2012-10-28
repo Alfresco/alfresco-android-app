@@ -156,6 +156,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             }
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
+        activity.setProgressBarIndeterminateVisibility(false);
     }
 
     private void manageException(LoaderResult<AlfrescoSession> results)

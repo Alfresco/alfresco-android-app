@@ -63,12 +63,5 @@
             android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:background="@color/emphasis" />
-
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/actionbar_grey_bottom" />
     </LinearLayout>
-
 </LinearLayout>

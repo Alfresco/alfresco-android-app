@@ -37,6 +37,9 @@
     <item name="weight_right_panel" format="float" type="dimen">0.3</item>
     <dimen name="sliding_panel">300dip</dimen>
     
+    <!-- ACCOUNT WIZARD -->
+    <dimen name="wizard_main_margin">5dip</dimen>
+    
     <dimen name="button_padding">25dip</dimen>
     <dimen name="properties_padding">5dip</dimen>
     <dimen name="properties_icon_padding">20dip</dimen>
