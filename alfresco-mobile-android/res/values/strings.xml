@@ -78,7 +78,10 @@
     
     <!-- DETAILS-->
     <string name="geolocation">Geolocation</string>
+    <string name="action_version">Versions</string>
     
+    <!-- DOWNLOAD -->
+    <string name="empty_download">No Document</string>
     
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>

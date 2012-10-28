@@ -39,21 +39,26 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.MetadataFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -65,6 +70,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
@@ -110,6 +116,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
         if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
         {
@@ -117,7 +124,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         super.onActivityCreated(savedInstanceState);
     }
-    
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState)
     {
@@ -125,33 +132,52 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setClickable(true);
+
+       /* BaseFragment frag = (BaseFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
+        if (frag != null)
+        {
+            FragmentDisplayer.detachFragment(getActivity(), DetailsFragment.TAG);
+            // FragmentDisplayer.detachFragment(getActivity(),
+            // MetadataFragment.TAG);
+
+            // FragmentDisplayer.loadFragment(getActivity(), frag,
+            // DisplayUtils.getFragmentPlace(getActivity()),
+            // DetailsFragment.TAG);
+            // getFragmentManager().popBackStack(DetailsFragment.TAG,
+            // FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        if (selectedItems != null && !selectedItems.isEmpty())
+        {
+            ((MainActivity) getActivity()).addPropertiesFragment(selectedItems.get(0));
+        }*/
     }
 
     @Override
     public void onStart()
     {
         DisplayUtils.setLeftTitle(getActivity(), title);
-        getActivity().invalidateOptionsMenu();
         super.onStart();
-        
-        if (parentFolder != null){
+
+        if (parentFolder != null)
+        {
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            
+
             List<String> path = new ArrayList<String>(0);
             path.add("/");
             path.add("alfresco");
             SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, path);
-            
-            OnNavigationListener mOnNavigationListener = new OnNavigationListener() {
+
+            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            {
 
                 @Override
                 public boolean onNavigationItemSelected(int itemPosition, long itemId)
                 {
                     return false;
                 }
-                
+
             };
-            
+
             getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
         }
     }
@@ -162,13 +188,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         Node item = (Node) l.getItemAtPosition(position);
 
         Boolean hideDetails = false;
-        if (!selectedItems.isEmpty()){
+        if (!selectedItems.isEmpty())
+        {
             hideDetails = selectedItems.get(0).equals(item);
         }
         l.setItemChecked(position, true);
-        
+
         selectedItems.clear();
-        selectedItems.add(item);
+        
         if (nActions != null)
         {
             selectedItems.clear();
@@ -177,12 +204,17 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             ((MainActivity) getActivity()).addPropertiesFragment(item);
             return;
         }
-
+        
+        if (item.isDocument()){
+            selectedItems.add(item);
+        }
 
         if (hideDetails)
         {
-            if (DisplayUtils.hasCentralPane(getActivity())){
-                ((MainActivity) getActivity()).clearScreen();
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+                FragmentDisplayer.removeFragment(getActivity(), android.R.id.tabcontent);
             }
             selectedItems.clear();
         }
@@ -201,7 +233,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             }
         }
     }
-    
+
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
     {
@@ -215,7 +247,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems);
         }
-        
+
         if (results.hasException())
         {
             onLoaderException(results.getException());
@@ -225,14 +257,15 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             displayPagingData(results.getData(), loaderId, callback);
         }
         ((NodeAdapter) adapter).setActivateThumbnail(true);
+        getActivity().invalidateOptionsMenu();
     }
-    
 
     private NodeActions nActions;
 
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         Node n = (Node) l.getItemAtPosition(position);
+        l.setItemChecked(position, true);
         boolean b = startSelection(v, n);
         ((MainActivity) getActivity()).addPropertiesFragment(n);
         return b;
@@ -250,13 +283,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             public void onFinish()
             {
                 nActions = null;
-                selectedItems.clear();
-                refreshListView();
             }
         });
         getActivity().startActionMode(nActions);
-        v.setSelected(true);
-        v.findViewById(R.id.choose).setVisibility(View.VISIBLE);
+        selectedItems.clear();
         selectedItems.add(item);
         return true;
     }

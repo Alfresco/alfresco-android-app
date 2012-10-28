@@ -33,9 +33,11 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class AccountFragment extends BaseListFragment implements LoaderCallbacks<List<Account>>
@@ -50,6 +52,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         emptyListMessageId = R.string.empty_accounts;
         checkSession = false;
     }
+
 
     @Override
     public void onStart()
@@ -86,6 +89,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        l.setItemChecked(position, true);
+        l.setSelection(position);
+        v.setSelected(true);
+
         ((MainActivity) getActivity()).addAccountDetails(((Account) l.getItemAtPosition(position)).getId());
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }

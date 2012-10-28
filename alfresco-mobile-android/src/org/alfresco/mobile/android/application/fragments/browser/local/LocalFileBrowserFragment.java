@@ -47,7 +47,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     {
         loaderId = NodeChildrenLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.empty_comment;
+        emptyListMessageId = R.string.empty_download;
         initLoader = false;
         checkSession = false;
     }

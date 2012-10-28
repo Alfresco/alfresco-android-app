@@ -66,13 +66,13 @@ public class MetadataFragment extends BaseFragment
     {
         alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
-        setRetainInstance(false);
     }
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null) { return null; }
+        setRetainInstance(false);
+        container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         node = (Node) getArguments().get(ARGUMENT_NODE);
         

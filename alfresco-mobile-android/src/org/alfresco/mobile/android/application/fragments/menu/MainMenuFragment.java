@@ -73,12 +73,15 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
     public void onStart()
     {
         super.onStart();
-        
+
         DisplayUtils.hideLeftTitlePane(getActivity());
         getActivity().setTitle(R.string.app_name);
 
         getActivity().invalidateOptionsMenu();
-        ((MainActivity) getActivity()).clearScreen();
+        if (isAdded() && TAG.equals(getTag()))
+        {
+            ((MainActivity) getActivity()).clearScreen();
+        }
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         accounts = ((MainActivity) getActivity()).getAccounts();
         refreshAccounts();
@@ -157,7 +160,8 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         if (SLIDING_TAG.equals(getTag()))
         {
             ((MainActivity) getActivity()).toggleSlideMenu();
-            if (goHome) {
+            if (goHome)
+            {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 ((MainActivity) getActivity()).clearScreen();
             }
