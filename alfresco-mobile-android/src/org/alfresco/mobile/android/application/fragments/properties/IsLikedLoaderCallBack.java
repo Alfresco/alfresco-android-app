@@ -90,8 +90,9 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         Bundle b = new Bundle();
         b.putBoolean(IS_CREATE, isCreate);
 
-        if (getLoaderManager().getLoader(id) == null) getLoaderManager().initLoader(id, b, this);
+        if (getLoaderManager().getLoader(id) == null){
+            getLoaderManager().initLoader(id, b, this);
+        }
         getLoaderManager().restartLoader(id, b, this);
-        getLoaderManager().getLoader(id).forceLoad();
     }
 }

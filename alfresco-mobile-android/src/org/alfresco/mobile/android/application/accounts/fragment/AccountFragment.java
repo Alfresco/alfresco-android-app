@@ -33,9 +33,11 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class AccountFragment extends BaseListFragment implements LoaderCallbacks<List<Account>>
@@ -51,9 +53,12 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         checkSession = false;
     }
 
+
     @Override
     public void onStart()
     {
+        DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().setTitle(R.string.accounts_manage);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -69,7 +74,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
     {
         if (adapter == null)
-            adapter = new AccountAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
+            adapter = new AccountDetailsAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
 
         PagingResult<Account> pagingResultFiles = new PagingResultImpl<Account>(results, false, results.size());
         displayPagingData(pagingResultFiles, loaderId, callback);
@@ -84,6 +89,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        l.setItemChecked(position, true);
+        l.setSelection(position);
+        v.setSelected(true);
+
         ((MainActivity) getActivity()).addAccountDetails(((Account) l.getItemAtPosition(position)).getId());
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }

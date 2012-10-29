@@ -33,7 +33,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -56,7 +56,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
         super.onStart();
         mTabHost.setCurrentTabByTag(MY_SITES);
         getActivity().invalidateOptionsMenu();
-        DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().setTitle(R.string.menu_browse_all_sites);
     }
 
     private static final String ALL_SITES = "All";
@@ -86,7 +86,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onTabChanged(String tabId)
     {
-        if (SessionUtils.getsession(getActivity()) == null) { return; }
+        if (SessionUtils.getSession(getActivity()) == null) { return; }
         Bundle b = getListingBundle();
         if (MY_SITES.equals(tabId))
         {

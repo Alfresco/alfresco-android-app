@@ -19,13 +19,18 @@ package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
@@ -34,6 +39,8 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -43,29 +50,37 @@ import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.SpinnerAdapter;
 
 @TargetApi(11)
-public class ChildrenBrowserFragment extends NavigationFragment
+public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment
 {
 
     public static final String TAG = "ChildrenNavigationFragment";
 
     private ProgressDialog mProgressDialog;
+
+    private boolean shortcutAlreadyVisible = false;
 
     public ChildrenBrowserFragment()
     {
@@ -101,22 +116,108 @@ public class ChildrenBrowserFragment extends NavigationFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        setRetainInstance(true);
+        alfSession = SessionUtils.getSession(getActivity());
         if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
         {
             setActivateThumbnail(true);
         }
         super.onActivityCreated(savedInstanceState);
     }
-
+    
     @Override
     public void onStart()
     {
-        DisplayUtils.setLeftTitle(getActivity(), title);
-        getActivity().invalidateOptionsMenu();
-        Log.d(TAG, "onStart");
         super.onStart();
+        if (shortcutAlreadyVisible ){
+            displayPathShortcut();
+        }
     }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        
+        ListView listView = (ListView) v.findViewById(R.id.listView);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setClickable(true);
+        
+        return v;
+    }
+
+    @Override
+    public void onPause()
+    {
+        getActivity().invalidateOptionsMenu();
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        super.onPause();
+    }
+    
+    private void displayPathShortcut(){
+        // /QUICK PATH
+        if (parentFolder != null)
+        {
+            //
+            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+
+            String pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
+
+            String[] path = pathValue.split("/");
+            if (path.length == 0)
+            {
+                path = new String[] { "/" };
+            }
+            
+
+            List<String> listFolder = new ArrayList<String>(path.length);
+            for (int i = path.length - 1; i > -1; i--)
+            {
+                pathValue = path[i];
+                
+                if (pathValue.isEmpty())
+                {
+                    pathValue = "/";
+                }
+                listFolder.add(pathValue);
+            }
+            
+            if (((MainActivity) getActivity()).isDisplayFromSite() != null && listFolder.size() > 3){
+                for (int i = 0; i < 3; i++)
+                {
+                    listFolder.remove(listFolder.size()-1); 
+                }
+                listFolder.add(listFolder.size()-1, ((MainActivity) getActivity()).isDisplayFromSite().getTitle());
+                listFolder.remove(listFolder.size()-1); 
+            }
+
+            SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                    listFolder);
+
+            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            {
+
+                @Override
+                public boolean onNavigationItemSelected(int itemPosition, long itemId)
+                {
+                    for (int i = 0; i < itemPosition; i++)
+                    {
+                        getFragmentManager().popBackStack();
+                    }
+                    return true;
+                }
+
+            };
+
+            getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+            
+            shortcutAlreadyVisible = true; 
+        }
+    }
+    
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
@@ -124,33 +225,36 @@ public class ChildrenBrowserFragment extends NavigationFragment
         Node item = (Node) l.getItemAtPosition(position);
 
         Boolean hideDetails = false;
-        if (!selectedItems.isEmpty()){
+        if (!selectedItems.isEmpty())
+        {
             hideDetails = selectedItems.get(0).equals(item);
         }
+        l.setItemChecked(position, true);
 
         selectedItems.clear();
-        selectedItems.add(item);
+
         if (nActions != null)
         {
             selectedItems.clear();
             selectedItems.add(item);
             nActions.addNode(selectedItems.get(0));
-            refreshListView();
             ((MainActivity) getActivity()).addPropertiesFragment(item);
             return;
         }
-        else
-        {
-            // startSelection(v, (Node) l.getItemAtPosition(position));
-        }
 
-        super.onListItemClick(l, v, position, id);
+        if (item.isDocument())
+        {
+            selectedItems.add(item);
+        }
 
         if (hideDetails)
         {
-            ((MainActivity) getActivity()).clearScreen();
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+                FragmentDisplayer.removeFragment(getActivity(), android.R.id.tabcontent);
+            }
             selectedItems.clear();
-            refreshListView();
         }
         else
         {
@@ -163,10 +267,36 @@ public class ChildrenBrowserFragment extends NavigationFragment
             {
                 // Show properties
                 ((MainActivity) getActivity()).addPropertiesFragment(item);
-                refreshListView();
                 DisplayUtils.switchSingleOrTwo(getActivity(), true);
             }
         }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
+    {
+        if (loader instanceof NodeChildrenLoader)
+        {
+            parentFolder = ((NodeChildrenLoader) loader).getParentFolder();
+        }
+
+        if (adapter == null)
+        {
+            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
+                    selectedItems);
+        }
+
+        if (results.hasException())
+        {
+            onLoaderException(results.getException());
+        }
+        else
+        {
+            displayPagingData(results.getData(), loaderId, callback);
+        }
+        ((NodeAdapter) adapter).setActivateThumbnail(true);
+        getActivity().invalidateOptionsMenu();
+        displayPathShortcut();
     }
 
     private NodeActions nActions;
@@ -174,6 +304,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         Node n = (Node) l.getItemAtPosition(position);
+        l.setItemChecked(position, true);
         boolean b = startSelection(v, n);
         ((MainActivity) getActivity()).addPropertiesFragment(n);
         return b;
@@ -191,13 +322,10 @@ public class ChildrenBrowserFragment extends NavigationFragment
             public void onFinish()
             {
                 nActions = null;
-                selectedItems.clear();
-                refreshListView();
             }
         });
         getActivity().startActionMode(nActions);
-        v.setSelected(true);
-        v.findViewById(R.id.choose).setVisibility(View.VISIBLE);
+        selectedItems.clear();
         selectedItems.add(item);
         return true;
     }
@@ -304,7 +432,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
     {
         if (parentFolder == null)
         {
-            parentFolder = SessionUtils.getsession(getActivity()).getRootFolder();
+            parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
         }
         super.refresh();
     }
@@ -329,7 +457,6 @@ public class ChildrenBrowserFragment extends NavigationFragment
         }
 
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
-        // TODO Permissions !
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
@@ -354,6 +481,7 @@ public class ChildrenBrowserFragment extends NavigationFragment
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
                     R.string.action_upload);
+
         }
 
         if (extended && parentFolder != null && permission.canEdit())

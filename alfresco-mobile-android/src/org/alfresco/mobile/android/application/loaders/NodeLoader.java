@@ -95,15 +95,15 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             {
                 // Detect url
                 URL tmpurl = findUrl(uri);
+                
+                // Find Identifier
+                identifier = findIdentifier(tmpurl);
 
                 // Find if account can match url
                 findAccount(tmpurl);
 
                 // Create Session
                 findSession(tmpurl);
-
-                // Find Identifier
-                identifier = findIdentifier(tmpurl);
             }
 
             // Retrieve Node
@@ -139,9 +139,12 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
     private String findIdentifier(URL tmpurl) throws UnsupportedEncodingException
     {
         String identifier = UrlFinder.getIdentifier(URLDecoder.decode(tmpurl.toString(), "UTF-8"));
-        if (session instanceof CloudSession) identifier = NodeRefUtils.getVersionIdentifier(identifier);
+        if (session instanceof CloudSession)
+        {
+            identifier = NodeRefUtils.getVersionIdentifier(identifier);
+        }
         Log.d("Identifier", identifier);
-        if (identifier == null) throw new AlfrescoServiceException("Unable to find a correct identifier : " + tmpurl);
+        if (identifier == null) { throw new AlfrescoServiceException("Unable to find a correct identifier : " + tmpurl); }
         return identifier;
     }
 
@@ -166,9 +169,9 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
     }
 
     private final static String MY_ALFRESCO_HOSTNAME = "my.alfresco.com";
+
     private final static String API_ALFRESCO_HOSTNAME = "api.alfresco.com";
 
-    
     private void findAccount(URL searchedURL) throws MalformedURLException
     {
         URL tmpurl = searchedURL;

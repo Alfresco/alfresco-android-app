@@ -27,7 +27,7 @@ import android.content.Context;
 
 public class SessionUtils {
 
-	public static AlfrescoSession getsession(Context c) {
+	public static AlfrescoSession getSession(Context c) {
 		return ((AlfrescoApplication) c.getApplicationContext()).getRepositorySession();
 	}
 
@@ -52,7 +52,7 @@ public class SessionUtils {
     }
 
 	private static DatabaseManager initDataBaseManager(Activity c) {
-        if (getsession(c) != null) {
+        if (getSession(c) != null) {
             ((AlfrescoApplication) c.getApplicationContext()).setDatabaseManager(new DatabaseManager(c.getApplicationContext()));
         } else {
             return null;

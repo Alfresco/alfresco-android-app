@@ -74,6 +74,7 @@ public class AccountEditFragment extends DialogFragment
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
+        
 
         Button step2 = (Button) v.findViewById(R.id.next);
         step2.setOnClickListener(new OnClickListener()
@@ -128,7 +129,6 @@ public class AccountEditFragment extends DialogFragment
                     password, description);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(SessionLoader.ID, null, call);
-            lm.getLoader(SessionLoader.ID).forceLoad();
         }
     }
 

@@ -18,7 +18,7 @@
 
 -->
 <resources>
-    <item name="sdk_main" type="layout">@layout/app_main_two_panes</item>
-    <item name="sdk_details" type="layout">@layout/sdk_details_tabpanes</item>
+    <item name="app_main" type="layout">@layout/app_main_two_panes</item>
+    <item name="app_details" type="layout">@layout/app_details_tabpanes</item>
     <bool name="tablet_middle">false</bool>
 </resources>

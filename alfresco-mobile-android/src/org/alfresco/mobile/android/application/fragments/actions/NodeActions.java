@@ -96,9 +96,9 @@ public class NodeActions implements ActionMode.Callback
         menu.clear();
         if (node.isDocument())
         {
-           DetailsFragment.getMenu(SessionUtils.getsession(activity), activity, menu, node);
+           DetailsFragment.getMenu(SessionUtils.getSession(activity), activity, menu, node);
         } else {
-            ChildrenBrowserFragment.getMenu(SessionUtils.getsession(activity), menu, (Folder) node, true);
+            ChildrenBrowserFragment.getMenu(SessionUtils.getSession(activity), menu, (Folder) node, true);
         }
     }
 
@@ -156,7 +156,7 @@ public class NodeActions implements ActionMode.Callback
             public void onClick(DialogInterface dialog, int item)
             {
                 Log.d("Delete Node", node.getName());
-                DeleteLoaderCallback up = new DeleteLoaderCallback(SessionUtils.getsession(activity), activity, node);
+                DeleteLoaderCallback up = new DeleteLoaderCallback(SessionUtils.getSession(activity), activity, node);
                 up.setOnDeleteListener(new OnNodeDeleteListener()
                 {
                     @Override
@@ -181,7 +181,6 @@ public class NodeActions implements ActionMode.Callback
                     }
                 });
                 activity.getLoaderManager().restartLoader(NodeDeleteLoader.ID, null, up);
-                activity.getLoaderManager().getLoader(NodeDeleteLoader.ID).forceLoad();
                 dialog.dismiss();
             }
         });

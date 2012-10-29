@@ -20,14 +20,15 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
-import org.alfresco.mobile.android.application.accounts.signup.SignupCloudLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -35,7 +36,6 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
@@ -56,7 +56,6 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
-@TargetApi(14)
 public class AccountDetailsFragment extends BaseFragment
 {
 
@@ -130,11 +129,16 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                // Load First Account by default
+                
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                        AccountOAuthFragment.TAG, true);
+                
+                /* Load First Account by default
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();
+                lm.getLoader(SessionLoader.ID).forceLoad();*/
             }
         });
 
@@ -144,11 +148,10 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                SignupCloudLoaderCallback call = new SignupCloudLoaderCallback(getActivity(),
+                CloudSignupLoaderCallback call = new CloudSignupLoaderCallback(getActivity(),
                         AccountDetailsFragment.this, null, null, acc.getUsername(), null, null);
                 LoaderManager lm = getLoaderManager();
                 lm.restartLoader(CloudSignupLoader.ID, null, call);
-                lm.getLoader(CloudSignupLoader.ID).forceLoad();
             }
         });
     }
@@ -166,6 +169,8 @@ public class AccountDetailsFragment extends BaseFragment
             return;
         }
 
+        v.findViewById(R.id.account_authentication).setVisibility(View.VISIBLE);
+        
         if (acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
         {
             v.findViewById(R.id.advanced).setVisibility(View.GONE);
@@ -191,15 +196,8 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                SessionUtils.setsession(getActivity(), null);
-                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
-                LoaderManager lm = getActivity().getLoaderManager();
-                lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();
-                //TODO Remove this indication ?
-                MessengerManager.showToast(getActivity(), "Load : " + acc.getUrl());
+                ((MainActivity) getActivity()).loadAccount(acc);
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                ((MainActivity) view.getContext()).createSwitchAccount(acc);
             }
         });
 
@@ -317,10 +315,13 @@ public class AccountDetailsFragment extends BaseFragment
     @Override
     public void onStart()
     {
+        DisplayUtils.hideLeftTitlePane(getActivity());
+        if (!DisplayUtils.hasCentralPane(getActivity())){
+            getActivity().setTitle(getText(R.string.accounts_details) + " : " + acc.getDescription());
+        }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////

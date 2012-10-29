@@ -18,8 +18,8 @@
 
 -->
 <resources>
-    <item name="sdk_main" type="layout">@layout/app_main_onepane</item>
-    <item name="sdk_details" type="layout">@layout/sdk_details_onepanel</item>
+    <item name="app_main" type="layout">@layout/app_main_one_pane</item>
+    <item name="app_details" type="layout">@layout/app_details_onepanel</item>
     <bool name="tablet_middle">true</bool>
     
 </resources>

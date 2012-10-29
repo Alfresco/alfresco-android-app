@@ -58,7 +58,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
         setOnCreateListener(nodeCreateListener);
     }
@@ -66,7 +66,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getsession(getActivity());
+        alfSession = SessionUtils.getSession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
