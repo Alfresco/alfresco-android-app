@@ -41,7 +41,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class SignupCloudDialogFragment extends DialogFragment
+public class CloudSignupDialogFragment extends DialogFragment
 {
     public static final String TAG = "SignupCloudDialogFragment";
 
@@ -53,7 +53,7 @@ public class SignupCloudDialogFragment extends DialogFragment
 
     private String password;
 
-    public SignupCloudDialogFragment()
+    public CloudSignupDialogFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
@@ -104,11 +104,10 @@ public class SignupCloudDialogFragment extends DialogFragment
     {
         if (retrieveFormValues())
         {
-            SignupCloudLoaderCallback call = new SignupCloudLoaderCallback(getActivity(), this, firstName, lastName,
+            CloudSignupLoaderCallback call = new CloudSignupLoaderCallback(getActivity(), this, firstName, lastName,
                     emailAddress, password, "Alfresco Cloud");
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(CloudSignupLoader.ID, null, call);
-            lm.getLoader(CloudSignupLoader.ID).forceLoad();
         }
     }
 

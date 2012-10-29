@@ -26,6 +26,10 @@ import android.widget.TextView;
 
 public abstract class DisplayUtils
 {
+    
+    // ///////////////////////////////////////////
+    // TITLE
+    // ///////////////////////////////////////////
     public static void setTitleFragmentPlace(Activity a, int title)
     {
         getTitleFragmentPlace(a).setVisibility(View.VISIBLE);
@@ -94,10 +98,6 @@ public abstract class DisplayUtils
         return getCentralPane(a) != null;
     }
 
-    /*
-     * public static boolean hasRightPane(Activity a) { return getRightPane(a)
-     * != null; }
-     */
 
     // ///////////////////////////////////////////
     // RETRIEVE FRAGMENT IDS
@@ -111,11 +111,6 @@ public abstract class DisplayUtils
     {
         return R.id.central_pane_body;
     }
-
-    /*
-     * public static int getRightFragmentId(Activity a) { return
-     * R.id.right_pane_body; }
-     */
 
     public static int getMainPaneId(Activity a)
     {
@@ -136,11 +131,6 @@ public abstract class DisplayUtils
         return a.findViewById(R.id.central_pane);
     }
 
-    /*
-     * public static View getRightPane(Activity a) { return
-     * a.findViewById(R.id.right_pane); }
-     */
-
     public static View getMainPane(Activity a)
     {
         if (hasCentralPane(a)) return getCentralPane(a);
@@ -159,11 +149,6 @@ public abstract class DisplayUtils
     {
         v.setVisibility(View.VISIBLE);
     }
-
-    /*
-     * public static void hideExceptMain(Activity a) { if (hasRightPane(a))
-     * hide(getRightPane(a)); if (hasCentralPane(a)) hide(getLeftPane(a)); }
-     */
 
     // ///////////////////////////////////////////
     // SHOW / HIDE 2 OR SINGLE PANE

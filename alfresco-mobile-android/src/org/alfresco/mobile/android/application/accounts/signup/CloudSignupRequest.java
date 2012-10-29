@@ -13,6 +13,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
@@ -79,7 +80,7 @@ public class CloudSignupRequest
     public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
             String apiKey)
     {
-        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(OAuthConstant.PUBLIC_API_HOSTNAME));
+        UrlBuilder url = new UrlBuilder(getCloudSignupUrl(AccountSettingsHelper.getSignUpHostname()));
 
         // prepare json data
         JSONObject jo = new JSONObject();

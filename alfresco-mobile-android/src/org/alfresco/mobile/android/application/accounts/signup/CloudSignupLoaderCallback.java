@@ -36,7 +36,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
 import android.os.Bundle;
 
-public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<CloudSignupRequest>>
+public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<CloudSignupRequest>>
 {
 
     private Activity activity;
@@ -55,7 +55,7 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
 
     private Fragment fr;
 
-    public SignupCloudLoaderCallback(Activity activity, Fragment fr, String firstName, String lastName,
+    public CloudSignupLoaderCallback(Activity activity, Fragment fr, String firstName, String lastName,
             String emailAddress, String password, String description)
     {
         this.activity = activity;
@@ -88,22 +88,30 @@ public class SignupCloudLoaderCallback implements LoaderCallbacks<LoaderResult<C
     public void onLoadFinished(Loader<LoaderResult<CloudSignupRequest>> arg0, LoaderResult<CloudSignupRequest> results)
     {
         CloudSignupRequest request = results.getData();
-        if (request != null && fr instanceof SignupCloudDialogFragment)
+        if (request != null && fr instanceof CloudSignupDialogFragment)
         {
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             // TODO replace
-            
-            serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
+
+            if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
                     Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
-                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null);
-            mProgressDialog.dismiss();
-            ((SignupCloudDialogFragment) fr).displayAccounts();
+                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null) != -1)
+            {
+                mProgressDialog.dismiss();
+                ((CloudSignupDialogFragment) fr).displayAccounts();
+            }
+            else
+            {
+                MessengerManager.showLongToast(activity, "Error during insert.");
+            }
+
         }
         else if (request != null && fr instanceof AccountDetailsFragment)
         {
             mProgressDialog.dismiss();
             activity.showDialog(MainActivity.CLOUD_RESEND_EMAIL);
-        }  else if (results.hasException())
+        }
+        else if (results.hasException())
         {
             mProgressDialog.dismiss();
             MessengerManager.showLongToast(activity, results.getException().getMessage());

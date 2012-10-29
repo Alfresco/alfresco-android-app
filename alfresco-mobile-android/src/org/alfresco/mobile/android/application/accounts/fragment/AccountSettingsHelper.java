@@ -112,7 +112,7 @@ public class AccountSettingsHelper
     {
         String url = OAuthConstant.PUBLIC_API_HOSTNAME;
         Bundle b = getOAuthSettings();
-        if (b != null)
+        if (b != null && b.getString(OAUTH_URL) != null)
         {
             url = b.getString(OAUTH_URL);
         }

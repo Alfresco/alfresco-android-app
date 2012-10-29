@@ -219,7 +219,6 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         b.putInt(OAuthAccessTokenLoader.PARAM_OPERATION, OAuthAccessTokenLoader.OPERATION_ACCESS_TOKEN);
         b.putString(OAuthAccessTokenLoader.PARAM_CODE, code);
         lm.restartLoader(OAuthAccessTokenLoader.ID, b, this);
-        lm.getLoader(OAuthAccessTokenLoader.ID).forceLoad();
     }
 
     @Override

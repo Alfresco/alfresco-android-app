@@ -47,7 +47,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     {
         loaderId = NodeChildrenLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.empty_comment;
+        emptyListMessageId = R.string.empty_download;
         initLoader = false;
         checkSession = false;
     }
@@ -94,9 +94,8 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     @Override
     public void onStart()
     {
-        DisplayUtils.setLeftTitle(getActivity(), title);
+        getActivity().setTitle(title);
         getActivity().invalidateOptionsMenu();
-        Log.d(TAG, "onStart");
         super.onStart();
     }
 

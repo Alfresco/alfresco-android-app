@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFr
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
+import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 
 import android.app.Fragment;
 import android.util.Log;

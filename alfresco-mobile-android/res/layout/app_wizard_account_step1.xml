@@ -28,7 +28,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="15dip"
+        android:layout_margin="@dimen/wizard_main_margin"
         android:layout_gravity="top"
         android:gravity="top"
         android:orientation="vertical" >
@@ -71,15 +71,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
             android:layout_weight="1"
             android:background="@color/actionbar_grey_bottom" />
 
-        <View
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/actionbar_grey_bottom" />
     </LinearLayout>
 
     <Button

@@ -22,5 +22,4 @@ public class ConnectivityUtils
         if (wifiInfo != null && wifiInfo.isConnectedOrConnecting()) { return true; }
         return false;
     }
-
 }

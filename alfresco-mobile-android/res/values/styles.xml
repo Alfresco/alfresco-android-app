@@ -33,6 +33,10 @@
     <color name="grey_text">#818282</color>
     <color name="grey_underline">#535554</color>
     
+    <color name="sliding_grey_dark">#494F57</color>
+    <color name="sliding_grey_darker">#3B4148</color>
+    <color name="sliding_account_background">#282828</color>
+    
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
@@ -86,6 +90,7 @@
         <item name="android:drawableBottom">@drawable/grey_section_header</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingTop">@dimen/properties_padding</item>
         <item name="android:textColor">@color/grey_text</item>
         <item name="android:textSize">14sp</item>
     </style>
