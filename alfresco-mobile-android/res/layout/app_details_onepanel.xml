@@ -98,7 +98,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="0"
                             android:paddingRight="@dimen/button_padding"
-                            android:src="@drawable/ic_download_dark" />
+                            android:src="@drawable/ic_open_dark" />
 
                         <ImageView
                             android:id="@+id/like"

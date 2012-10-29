@@ -65,7 +65,6 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     @Override
     public void onStart()
     {
-        DisplayUtils.hideLeftTitlePane(getActivity());
         getActivity().setTitle(R.string.menu_browse_activities);
         getActivity().invalidateOptionsMenu();
         super.onStart();

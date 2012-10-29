@@ -43,22 +43,19 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
-import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.fragments.properties.MetadataFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -66,11 +63,12 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
@@ -81,6 +79,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public static final String TAG = "ChildrenNavigationFragment";
 
     private ProgressDialog mProgressDialog;
+
+    private boolean shortcutAlreadyVisible = false;
 
     public ChildrenBrowserFragment()
     {
@@ -124,48 +124,77 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         super.onActivityCreated(savedInstanceState);
     }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState)
-    {
-        super.onViewCreated(view, savedInstanceState);
-        ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listView.setClickable(true);
-
-       /* BaseFragment frag = (BaseFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-        if (frag != null)
-        {
-            FragmentDisplayer.detachFragment(getActivity(), DetailsFragment.TAG);
-            // FragmentDisplayer.detachFragment(getActivity(),
-            // MetadataFragment.TAG);
-
-            // FragmentDisplayer.loadFragment(getActivity(), frag,
-            // DisplayUtils.getFragmentPlace(getActivity()),
-            // DetailsFragment.TAG);
-            // getFragmentManager().popBackStack(DetailsFragment.TAG,
-            // FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        if (selectedItems != null && !selectedItems.isEmpty())
-        {
-            ((MainActivity) getActivity()).addPropertiesFragment(selectedItems.get(0));
-        }*/
-    }
-
+    
     @Override
     public void onStart()
     {
-        DisplayUtils.setLeftTitle(getActivity(), title);
         super.onStart();
+        if (shortcutAlreadyVisible ){
+            displayPathShortcut();
+        }
+    }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = super.onCreateView(inflater, container, savedInstanceState);
+        
+        ListView listView = (ListView) v.findViewById(R.id.listView);
+        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        listView.setClickable(true);
+        
+        return v;
+    }
 
+    @Override
+    public void onPause()
+    {
+        getActivity().invalidateOptionsMenu();
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        super.onPause();
+    }
+    
+    private void displayPathShortcut(){
+        // /QUICK PATH
         if (parentFolder != null)
         {
+            //
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
 
-            List<String> path = new ArrayList<String>(0);
-            path.add("/");
-            path.add("alfresco");
-            SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item, path);
+            String pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
+
+            String[] path = pathValue.split("/");
+            if (path.length == 0)
+            {
+                path = new String[] { "/" };
+            }
+            
+
+            List<String> listFolder = new ArrayList<String>(path.length);
+            for (int i = path.length - 1; i > -1; i--)
+            {
+                pathValue = path[i];
+                
+                if (pathValue.isEmpty())
+                {
+                    pathValue = "/";
+                }
+                listFolder.add(pathValue);
+            }
+            
+            if (((MainActivity) getActivity()).isDisplayFromSite() != null && listFolder.size() > 3){
+                for (int i = 0; i < 3; i++)
+                {
+                    listFolder.remove(listFolder.size()-1); 
+                }
+                listFolder.add(listFolder.size()-1, ((MainActivity) getActivity()).isDisplayFromSite().getTitle());
+                listFolder.remove(listFolder.size()-1); 
+            }
+
+            SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
+                    listFolder);
 
             OnNavigationListener mOnNavigationListener = new OnNavigationListener()
             {
@@ -173,14 +202,22 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                 @Override
                 public boolean onNavigationItemSelected(int itemPosition, long itemId)
                 {
-                    return false;
+                    for (int i = 0; i < itemPosition; i++)
+                    {
+                        getFragmentManager().popBackStack();
+                    }
+                    return true;
                 }
 
             };
 
             getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+            
+            shortcutAlreadyVisible = true; 
         }
     }
+    
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
@@ -195,7 +232,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         l.setItemChecked(position, true);
 
         selectedItems.clear();
-        
+
         if (nActions != null)
         {
             selectedItems.clear();
@@ -204,8 +241,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             ((MainActivity) getActivity()).addPropertiesFragment(item);
             return;
         }
-        
-        if (item.isDocument()){
+
+        if (item.isDocument())
+        {
             selectedItems.add(item);
         }
 
@@ -258,6 +296,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         ((NodeAdapter) adapter).setActivateThumbnail(true);
         getActivity().invalidateOptionsMenu();
+        displayPathShortcut();
     }
 
     private NodeActions nActions;

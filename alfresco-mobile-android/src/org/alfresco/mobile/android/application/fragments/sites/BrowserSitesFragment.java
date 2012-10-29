@@ -56,7 +56,7 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
         super.onStart();
         mTabHost.setCurrentTabByTag(MY_SITES);
         getActivity().invalidateOptionsMenu();
-        DisplayUtils.hideLeftTitlePane(getActivity());
+        getActivity().setTitle(R.string.menu_browse_all_sites);
     }
 
     private static final String ALL_SITES = "All";

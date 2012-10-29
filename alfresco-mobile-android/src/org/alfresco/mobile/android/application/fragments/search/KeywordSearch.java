@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments;
+package org.alfresco.mobile.android.application.fragments.search;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;

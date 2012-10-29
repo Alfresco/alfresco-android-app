@@ -94,9 +94,8 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     @Override
     public void onStart()
     {
-        DisplayUtils.setLeftTitle(getActivity(), title);
+        getActivity().setTitle(title);
         getActivity().invalidateOptionsMenu();
-        Log.d(TAG, "onStart");
         super.onStart();
     }
 

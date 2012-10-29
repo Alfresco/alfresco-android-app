@@ -41,7 +41,6 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoaderC
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
@@ -50,6 +49,7 @@ import org.alfresco.mobile.android.application.fragments.browser.local.LocalFile
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -73,7 +73,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -106,10 +105,13 @@ public class MainActivity extends Activity
 
     private List<Account> accounts;
 
+    private Site displayFromSite = null;
+
+    private AccountsLoaderCallback loadercallback;
+
     // ///////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////
-
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -120,8 +122,13 @@ public class MainActivity extends Activity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
+        setProgressBarIndeterminateVisibility(false);
         // Load Accounts
-        getLoaderManager().initLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
+        if (loadercallback == null)
+        {
+            loadercallback = new AccountsLoaderCallback(this);
+        }
+        getLoaderManager().initLoader(AccountsLoader.ID, null, loadercallback);
 
         if (savedInstanceState != null)
         {
@@ -237,7 +244,7 @@ public class MainActivity extends Activity
                 fragmentQueue = -1;
 
                 // reload account
-                getLoaderManager().restartLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
+                getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
 
                 return;
             }
@@ -248,10 +255,14 @@ public class MainActivity extends Activity
                 {
                     if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
                     {
-                        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
-                        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
-                                AccountOAuthFragment.TAG, true);
-                        break;
+                        if (getFragment(AccountOAuthFragment.TAG) == null
+                                || getFragment(AccountOAuthFragment.TAG).isAdded())
+                        {
+                            AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
+                            FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
+                                    AccountOAuthFragment.TAG, true);
+                            break;
+                        }
                     }
                 }
                 return;
@@ -318,7 +329,7 @@ public class MainActivity extends Activity
                         {
                             ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
                         }
-                        getLoaderManager().restartLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
+                        getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
                         clearScreen();
                     }
                     else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
@@ -414,16 +425,13 @@ public class MainActivity extends Activity
     // ///////////////////////////////////////////
     public void loadAccount(Account account)
     {
-        //TODO Remove this indication ?
+        // TODO Remove this indication ?
         MessengerManager.showToast(this, "Load : " + account.getDescription());
         setProgressBarIndeterminateVisibility(true);
-
         SessionUtils.setsession(this, null);
         SessionUtils.setAccount(this, account);
         AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
         getLoaderManager().restartLoader(SessionLoader.ID, null, call);
-        
-        //getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     // ///////////////////////////////////////////
@@ -481,6 +489,7 @@ public class MainActivity extends Activity
                 break;
             case R.id.menu_browse_root:
                 if (!checkSession(R.id.menu_browse_root)) { return; }
+                setDisplayFromSite(null);
                 frag = ChildrenBrowserFragment.newInstance(getSession().getRootFolder());
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
@@ -582,6 +591,7 @@ public class MainActivity extends Activity
     {
         clearScreen();
         clearCentralPane();
+        setDisplayFromSite(s);
         BaseFragment frag = ChildrenBrowserFragment.newInstance(s);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
@@ -754,18 +764,24 @@ public class MainActivity extends Activity
         super.onCreateOptionsMenu(menu);
 
         MenuItem mi;
-        
+
+        // Display Title except for specific fragment
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            getActionBar().setDisplayShowTitleEnabled(true);
+        }
+
         if (isVisible(ActivitiesFragment.TAG))
         {
             ((ActivitiesFragment) getFragment(ActivitiesFragment.TAG)).getMenu(menu);
         }
-        
+
         if (isVisible(AccountDetailsFragment.TAG))
         {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
@@ -789,6 +805,7 @@ public class MainActivity extends Activity
 
         if (isVisible(ChildrenBrowserFragment.TAG))
         {
+            getActionBar().setDisplayShowTitleEnabled(false);
             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
             return true;
         }
@@ -881,7 +898,8 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_REFRESH:
-                ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this))).refresh();
+                ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
+                        .refresh();
                 return true;
 
             case MenuActionItem.MENU_SHARE:
@@ -1013,7 +1031,7 @@ public class MainActivity extends Activity
 
     public void refreshAccount()
     {
-        getLoaderManager().restartLoader(AccountsLoader.ID, null, new AccountsLoaderCallback(this));
+        getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
     }
 
     private boolean hasNetwork()
@@ -1096,5 +1114,15 @@ public class MainActivity extends Activity
     public List<Account> getAccounts()
     {
         return accounts;
+    }
+
+    public Site isDisplayFromSite()
+    {
+        return displayFromSite;
+    }
+
+    public void setDisplayFromSite(Site site)
+    {
+        this.displayFromSite = site;
     }
 }

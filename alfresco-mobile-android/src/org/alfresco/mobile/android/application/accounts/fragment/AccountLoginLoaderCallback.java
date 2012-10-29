@@ -39,6 +39,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.DialogInterface.OnCancelListener;
+import android.content.Loader.OnLoadCanceledListener;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -68,6 +69,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     @Override
     public Loader<LoaderResult<AlfrescoSession>> onCreateLoader(final int id, Bundle args)
     {
+
+        Loader<LoaderResult<AlfrescoSession>> loader = null;
         if (data != null)
         {
             mProgressDialog = ProgressDialog.show(activity, getText(R.string.wait_title),
@@ -79,12 +82,13 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                             activity.getLoaderManager().destroyLoader(id);
                         }
                     });
-            return getSessionLoader(new AccountSettingsHelper(activity, acc, data));
+            loader = getSessionLoader(new AccountSettingsHelper(activity, acc, data));
         }
         else
         {
-            return getSessionLoader(new AccountSettingsHelper(activity, acc));
+            loader = getSessionLoader(new AccountSettingsHelper(activity, acc));
         }
+        return loader;
     }
 
     @Override
@@ -96,24 +100,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         }
         if (!results.hasException())
         {
-
-            switch ((int) acc.getTypeId())
-            {
-                case Account.TYPE_ALFRESCO_TEST_OAUTH:
-                case Account.TYPE_ALFRESCO_CLOUD:
-                    AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity)
-                            .getWriteDb());
-                    if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
-                            acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
-                            ((CloudSessionLoader) loader).getOAuthData().getAccessToken(),
-                            ((CloudSessionLoader) loader).getOAuthData().getRefreshToken()))
-                    {
-                        SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
-                    } else {
-                        MessengerManager.showLongToast(activity, "Error during token update");
-                    }
-                    break;
-            }
+            saveNewOauthData(loader);
 
             activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());
@@ -166,11 +153,36 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> loader)
     {
+        saveNewOauthData(loader);
+
         if (mProgressDialog != null)
         {
             mProgressDialog.dismiss();
+        }
+    }
+
+    private void saveNewOauthData(Loader<LoaderResult<AlfrescoSession>> loader)
+    {
+        Log.d(TAG, loader.toString());
+        switch ((int) acc.getTypeId())
+        {
+            case Account.TYPE_ALFRESCO_TEST_OAUTH:
+            case Account.TYPE_ALFRESCO_CLOUD:
+                AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
+                if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
+                        .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
+                        ((CloudSessionLoader) loader).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
+                                .getOAuthData().getRefreshToken()))
+                {
+                    SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
+                }
+                else
+                {
+                    MessengerManager.showLongToast(activity, "Error during token update");
+                }
+                break;
         }
     }
 

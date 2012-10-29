@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -89,24 +90,27 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                     .setAccounts(results);
         }
 
-        Account currentAccount = null;
-        if (SessionUtils.getSession(activity) == null)
+        //First creation of session.
+        Account currentAccount = SessionUtils.getAccount(activity);
+        if (currentAccount == null)
         {
             currentAccount = results.get(0);
-            if (currentAccount.getActivation() == null && ConnectivityUtils.hasInternetAvailable(activity))
+            if (SessionUtils.getSession(activity) == null && currentAccount.getActivation() == null
+                    && ConnectivityUtils.hasInternetAvailable(activity))
             {
                 activity.loadAccount(currentAccount);
             }
-        }
-        else
-        {
-            currentAccount = SessionUtils.getAccount(activity);
-            if (currentAccount == null)
-            {
-                currentAccount = results.get(0);
+            SessionUtils.setAccount(activity, currentAccount);
+        } else {
+            //Case of config changes to retrieve the sessionLoader and continue the work.
+            if (SessionUtils.getSession(activity) == null && activity.getLoaderManager().getLoader(SessionLoader.ID) != null){
+                activity.setProgressBarIndeterminateVisibility(true);
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
+                activity.getLoaderManager().initLoader(SessionLoader.ID, null, call);
             }
+            
         }
-        SessionUtils.setAccount(activity, currentAccount);
+
         activity.invalidateOptionsMenu();
 
     }

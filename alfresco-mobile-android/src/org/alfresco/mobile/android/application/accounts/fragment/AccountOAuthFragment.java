@@ -20,7 +20,9 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
@@ -127,7 +129,17 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void failedRequestAccessToken(Exception e)
             {
-                mProgressDialog.dismiss();
+                if (mProgressDialog != null)
+                {
+                    mProgressDialog.dismiss();
+                }
+                
+                if (DisplayUtils.hasCentralPane(getActivity())){
+                    ((MainActivity)getActivity()).clearScreen();
+                } else {
+                    getActivity().getFragmentManager().popBackStack();
+                }
+                
                 MessengerManager.showLongToast(getActivity(), e.getMessage());
             }
 
