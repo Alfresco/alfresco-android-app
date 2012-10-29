@@ -105,7 +105,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void refresh()
     {
         reload(bundle, loaderId, callback);
-        ((MainActivity) getActivity()).refreshAccount();
+        ((MainActivity) getActivity()).refreshAccounts();
     }
 
     public void add()

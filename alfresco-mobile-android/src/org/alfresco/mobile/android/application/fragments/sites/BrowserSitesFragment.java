@@ -5,7 +5,6 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
@@ -23,6 +22,11 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     public static final String TAG = "BrowserSitesFragment";
 
     private TabHost mTabHost;
+    
+    public BrowserSitesFragment()
+    {
+        super();
+    }
 
     public static BrowserSitesFragment newInstance()
     {
@@ -53,10 +57,10 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onStart()
     {
-        super.onStart();
         mTabHost.setCurrentTabByTag(MY_SITES);
         getActivity().invalidateOptionsMenu();
         getActivity().setTitle(R.string.menu_browse_all_sites);
+        super.onStart();
     }
 
     private static final String ALL_SITES = "All";

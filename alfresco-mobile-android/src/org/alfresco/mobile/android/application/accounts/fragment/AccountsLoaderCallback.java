@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -90,25 +91,31 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                     .setAccounts(results);
         }
 
-        //First creation of session.
+        // First creation of session.
         Account currentAccount = SessionUtils.getAccount(activity);
         if (currentAccount == null)
         {
-            currentAccount = results.get(0);
+
+            currentAccount = AccountsPreferences.getDefaultAccount(activity, results);
             if (SessionUtils.getSession(activity) == null && currentAccount.getActivation() == null
                     && ConnectivityUtils.hasInternetAvailable(activity))
             {
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
-        } else {
-            //Case of config changes to retrieve the sessionLoader and continue the work.
-            if (SessionUtils.getSession(activity) == null && activity.getLoaderManager().getLoader(SessionLoader.ID) != null){
+        }
+        else
+        {
+            // Case of config changes to retrieve the sessionLoader and continue
+            // the work.
+            if (SessionUtils.getSession(activity) == null
+                    && activity.getLoaderManager().getLoader(SessionLoader.ID) != null)
+            {
                 activity.setProgressBarIndeterminateVisibility(true);
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
                 activity.getLoaderManager().initLoader(SessionLoader.ID, null, call);
             }
-            
+
         }
 
         activity.invalidateOptionsMenu();

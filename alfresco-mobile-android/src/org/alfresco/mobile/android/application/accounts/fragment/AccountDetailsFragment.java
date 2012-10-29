@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -41,6 +42,7 @@ import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -75,6 +77,8 @@ public class AccountDetailsFragment extends BaseFragment
     private AccountDAO accountDao;
 
     private View vRoot;
+
+    private long defaultId;
 
     public AccountDetailsFragment()
     {
@@ -129,16 +133,9 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                
                 AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                        AccountOAuthFragment.TAG, true);
-                
-                /* Load First Account by default
-                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
-                LoaderManager lm = getLoaderManager();
-                lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();*/
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
             }
         });
 
@@ -170,7 +167,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
 
         v.findViewById(R.id.account_authentication).setVisibility(View.VISIBLE);
-        
+
         if (acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
         {
             v.findViewById(R.id.advanced).setVisibility(View.GONE);
@@ -198,6 +195,49 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 ((MainActivity) getActivity()).loadAccount(acc);
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+        });
+
+        final SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+        defaultId = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
+
+        advanced = (Button) v.findViewById(R.id.default_account);
+
+        if (defaultId == acc.getId())
+        {
+            advanced.setText("Unmark as default account");
+        }
+        else
+        {
+            advanced.setText("Mark as default account");
+        }
+        advanced.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                SharedPreferences.Editor editor = settings.edit();
+
+                if (defaultId == acc.getId())
+                {
+                    editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
+                    defaultId = -1;
+                }
+                else
+                {
+                    editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
+                    defaultId = acc.getId();
+                }
+                editor.commit();
+
+                if (defaultId == acc.getId())
+                {
+                    ((Button) view).setText("Unmark as default account");
+                }
+                else
+                {
+                    ((Button) view).setText("Mark as default account");
+                }
             }
         });
 
@@ -316,12 +356,14 @@ public class AccountDetailsFragment extends BaseFragment
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
-        if (!DisplayUtils.hasCentralPane(getActivity())){
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
             getActivity().setTitle(getText(R.string.accounts_details) + " : " + acc.getDescription());
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -413,7 +455,7 @@ public class AccountDetailsFragment extends BaseFragment
         alert.show();
 
     }
-    
+
     @Override
     public void onDetach()
     {

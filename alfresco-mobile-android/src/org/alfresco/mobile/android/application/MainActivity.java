@@ -73,6 +73,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -109,6 +110,8 @@ public class MainActivity extends Activity
 
     private AccountsLoaderCallback loadercallback;
 
+    private ProgressDialog waitingDialog;
+
     // ///////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////
@@ -128,11 +131,21 @@ public class MainActivity extends Activity
         {
             loadercallback = new AccountsLoaderCallback(this);
         }
-        getLoaderManager().initLoader(AccountsLoader.ID, null, loadercallback);
+        refreshAccounts();
 
         if (savedInstanceState != null)
         {
             currentAccount = (Account) savedInstanceState.getSerializable("account");
+            if (savedInstanceState.getBoolean("waiting_dialog"))
+            {
+                displayWaitingDialog();
+                savedInstanceState.remove("waiting_dialog");
+            }
+            if (savedInstanceState.containsKey("fragmentQueue"))
+            {
+                fragmentQueue = savedInstanceState.getInt("fragmentQueue");
+                savedInstanceState.remove("fragmentQueue");
+            }
 
             audioCapture = (AudioCapture) savedInstanceState.getSerializable("audioCap");
             if (audioCapture != null)
@@ -159,6 +172,7 @@ public class MainActivity extends Activity
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
             }
+
         }
         else
         {
@@ -184,6 +198,16 @@ public class MainActivity extends Activity
     {
         super.onResume();
         checkForCrashes();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        if (waitingDialog != null)
+        {
+            waitingDialog.dismiss();
+        }
+        super.onPause();
     }
 
     // ///////////////////////////////////////////
@@ -226,14 +250,23 @@ public class MainActivity extends Activity
             Boolean backstack = false;
 
             // Intent after session loading
-            // TODO add extra params to define precisely backstack.
             if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
             {
-                // Remove OAuthFragment
+
+                setProgressBarIndeterminateVisibility(false);
+
+                // Remove OAuthFragment if one
                 if (getFragment(AccountOAuthFragment.TAG) != null)
                 {
                     getFragmentManager().popBackStack(AccountOAuthFragment.TAG,
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+                // if click on menu, hide the dialog
+                if (waitingDialog != null)
+                {
+                    waitingDialog.dismiss();
+                    waitingDialog = null;
                 }
 
                 // Used for launching last pressed action button from main menu
@@ -244,13 +277,20 @@ public class MainActivity extends Activity
                 fragmentQueue = -1;
 
                 // reload account
-                getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
+                refreshAccounts();
 
                 return;
             }
             // Intent for USER AUTHENTICATION
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
+                // if click on menu, hide the dialog
+                if (waitingDialog != null)
+                {
+                    waitingDialog.dismiss();
+                    waitingDialog = null;
+                }
+
                 for (Account account : accounts)
                 {
                     if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
@@ -329,7 +369,7 @@ public class MainActivity extends Activity
                         {
                             ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
                         }
-                        getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
+                        refreshAccounts();
                         clearScreen();
                     }
                     else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
@@ -418,6 +458,11 @@ public class MainActivity extends Activity
         {
             outState.putSerializable("photoCap", photoCapture);
         }
+        if (waitingDialog != null)
+        {
+            outState.putBoolean("waiting_dialog", true);
+        }
+        outState.putInt("fragmentQueue", fragmentQueue);
     }
 
     // ///////////////////////////////////////////
@@ -479,10 +524,17 @@ public class MainActivity extends Activity
     {
         BaseFragment frag = null;
         currentAccount = SessionUtils.getAccount(this);
+
+        View slideMenu = findViewById(R.id.slide_pane);
+        if (slideMenu.getVisibility() == View.VISIBLE)
+        {
+            hideSlideMenu();
+        }
+
         switch (id)
         {
             case R.id.menu_browse_my_sites:
-                if (!checkSession(R.id.menu_browse_favorite_sites)) { return; }
+                if (!checkSession(R.id.menu_browse_my_sites)) { return; }
                 frag = BrowserSitesFragment.newInstance();
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         BrowserSitesFragment.TAG, true);
@@ -543,11 +595,12 @@ public class MainActivity extends Activity
         doMainMenuAction(v.getId());
     }
 
-    // FIXME TO REMOVE after session indicator implementation
     private boolean checkSession(int actionMainMenuId)
     {
         if (!hasNetwork())
+        {
             return false;
+        }
         else if (SessionUtils.getAccount(this) != null && SessionUtils.getAccount(this).getActivation() != null)
         {
             MessengerManager.showToast(this, "Your account is not activated. Please check manage account screen.");
@@ -556,12 +609,18 @@ public class MainActivity extends Activity
         }
         else if (SessionUtils.getSession(this) == null)
         {
-            MessengerManager.showToast(this, "Session is loading... Automatic refresh when connecting...");
+            displayWaitingDialog();
             fragmentQueue = actionMainMenuId;
             return false;
         }
 
         return true;
+    }
+
+    private void displayWaitingDialog()
+    {
+        waitingDialog = ProgressDialog.show(this, getText(R.string.wait_title), getText(R.string.wait_message), true,
+                true);
     }
 
     // ///////////////////////////////////////////
@@ -1029,7 +1088,7 @@ public class MainActivity extends Activity
         this.currentNode = currentNode;
     }
 
-    public void refreshAccount()
+    public void refreshAccounts()
     {
         getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
     }

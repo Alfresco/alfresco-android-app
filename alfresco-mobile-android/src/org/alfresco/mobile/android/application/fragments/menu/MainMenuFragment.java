@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountAdapter;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Fragment;
@@ -100,7 +101,7 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
     {
         if (accounts == null) { return; }
 
-        if (adapter == null)
+         if (adapter == null)
         {
             adapter = new AccountAdapter(getActivity(), R.layout.app_account_list_row, accounts);
         }
@@ -114,14 +115,26 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         s.setOnItemSelectedListener(this);
 
         Account currentAccount = SessionUtils.getAccount(getActivity());
-        for (int i = 0; i < accounts.size(); i++)
+        if (currentAccount == null)
         {
-            if (currentAccount != null && accounts.get(i).getId() == currentAccount.getId())
+            currentAccount = AccountsPreferences.getDefaultAccount(getActivity(), accounts);
+        }
+        if (currentAccount == null)
+        {
+            accountIndex = 0;
+        }
+        else
+        {
+            for (int i = 0; i < accounts.size(); i++)
             {
-                accountIndex = i;
-                break;
+                if (currentAccount != null && accounts.get(i).getId() == currentAccount.getId())
+                {
+                    accountIndex = i;
+                    break;
+                }
             }
         }
+
         s.setSelection(accountIndex);
     }
 

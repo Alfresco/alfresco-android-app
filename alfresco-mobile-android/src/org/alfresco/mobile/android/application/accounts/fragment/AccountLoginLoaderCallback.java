@@ -36,10 +36,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.DialogInterface.OnCancelListener;
-import android.content.Loader.OnLoadCanceledListener;
 import android.os.Bundle;
 import android.util.Log;
 
