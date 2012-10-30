@@ -63,6 +63,28 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             return;
         }
 
+        // INTENT for CLOUD VALIDATION
+        boolean signup = false;
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())
+                && getIntent().getCategories().contains(Intent.CATEGORY_BROWSABLE)
+                && getIntent().getData().getHost().equals("activate-cloud-account"))
+        {
+            for (Account account : results)
+            {
+                if (account.getActivation() != null
+                        && account.getActivation().contains(getIntent().getData().getEncodedPath().substring(1).replace("%24", "$")))
+                {
+                    SessionUtils.setAccount(activity, account);
+                    signup = true;
+                    break;
+                }
+            }
+            if (!signup){
+                MessengerManager.showLongToast(activity, "Unable to find an account to activate.");
+            }
+        }
+        else
+
         // VIEW INTENT
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())
@@ -81,7 +103,7 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             NodeLoaderCallback call = new NodeLoaderCallback(activity, results, url);
             LoaderManager lm = activity.getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
-            return;
+            // return;
         }
 
         activity.setAccounts(results);
@@ -103,13 +125,15 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
+        } else if(signup){
+            activity.loadAccount(currentAccount);
         }
         else
         {
             // Case of config changes to retrieve the sessionLoader and continue
             // the work.
             if (SessionUtils.getSession(activity) == null
-                    && activity.getLoaderManager().getLoader(SessionLoader.ID) != null)
+                    && (activity.getLoaderManager().getLoader(SessionLoader.ID) != null || signup))
             {
                 activity.setProgressBarIndeterminateVisibility(true);
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
@@ -117,9 +141,7 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             }
 
         }
-
         activity.invalidateOptionsMenu();
-
     }
 
     private Intent getIntent()

@@ -31,11 +31,12 @@ import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
@@ -45,6 +46,7 @@ public class CommentsFragment extends CommentFragment
     public static final String TAG = "CommentsFragment";
 
     private EditText commentText;
+
     private ImageButton bAdd;
 
     public CommentsFragment()
@@ -73,6 +75,7 @@ public class CommentsFragment extends CommentFragment
 
         commentText = (EditText) v.findViewById(R.id.comment_value);
         bAdd = (ImageButton) v.findViewById(R.id.send_comment);
+        bAdd.setEnabled(false);
 
         bAdd.setOnClickListener(new OnClickListener()
         {
@@ -93,9 +96,32 @@ public class CommentsFragment extends CommentFragment
             }
         });
 
+        commentText.addTextChangedListener(new TextWatcher()
+        {
+            public void afterTextChanged(Editable s)
+            {
+                if (commentText.getText().length() > 0)
+                {
+                    bAdd.setEnabled(true);
+                }
+                else
+                {
+                    bAdd.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+        });
+
         return v;
     }
-    
+
     private OnCommentCreateListener createListener = new OnCommentCreateListener()
     {
         @Override
@@ -136,7 +162,8 @@ public class CommentsFragment extends CommentFragment
     @Override
     public void onStart()
     {
-        if (!DisplayUtils.hasCentralPane(getActivity())){
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
             getActivity().setTitle(getString(R.string.document_comments_header));
         }
         getActivity().invalidateOptionsMenu();

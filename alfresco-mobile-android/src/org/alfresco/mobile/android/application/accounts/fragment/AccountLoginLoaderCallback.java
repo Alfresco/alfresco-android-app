@@ -29,8 +29,10 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.annotation.TargetApi;
@@ -40,6 +42,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -101,6 +104,11 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         if (!results.hasException())
         {
             saveNewOauthData(loader);
+            
+            //Save latest position as default future one
+            final SharedPreferences settings = activity.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
 
             activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());
@@ -134,6 +142,15 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                         {
                             manageException(results);
                         }
+                    }
+                    
+                    if (results.getException() instanceof CmisConnectionException)
+                    {
+                        CmisConnectionException ex = ((CmisConnectionException) results.getException());
+                        if (ex.getMessage().contains("No authentication challenges found"))
+                        {
+                            manageException(results);
+                        }  
                     }
                     break;
                 case Account.TYPE_ALFRESCO_TEST_BASIC:

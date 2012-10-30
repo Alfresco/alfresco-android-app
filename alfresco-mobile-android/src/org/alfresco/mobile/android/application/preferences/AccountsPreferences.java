@@ -33,6 +33,11 @@ public class AccountsPreferences
                 break;
             }
         }
+        if (currentAccount == null)
+        {
+            currentAccount = accounts.get(0);
+        }
+
         return currentAccount;
     }
 

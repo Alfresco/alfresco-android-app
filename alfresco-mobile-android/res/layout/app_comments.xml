@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"
             android:text="@string/action_add"
             android:src="@drawable/ic_send"
+            android:background="@drawable/btn_simple"
             />
     
     </LinearLayout>

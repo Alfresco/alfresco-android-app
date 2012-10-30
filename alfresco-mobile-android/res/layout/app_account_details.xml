@@ -36,13 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:text="Browse Documents" />
-        
-         <Button
-            android:id="@+id/default_account"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Default Account" />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

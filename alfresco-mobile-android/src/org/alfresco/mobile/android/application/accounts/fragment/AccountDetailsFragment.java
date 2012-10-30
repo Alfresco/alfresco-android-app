@@ -198,49 +198,6 @@ public class AccountDetailsFragment extends BaseFragment
             }
         });
 
-        final SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
-        defaultId = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
-
-        advanced = (Button) v.findViewById(R.id.default_account);
-
-        if (defaultId == acc.getId())
-        {
-            advanced.setText("Unmark as default account");
-        }
-        else
-        {
-            advanced.setText("Mark as default account");
-        }
-        advanced.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                SharedPreferences.Editor editor = settings.edit();
-
-                if (defaultId == acc.getId())
-                {
-                    editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
-                    defaultId = -1;
-                }
-                else
-                {
-                    editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
-                    defaultId = acc.getId();
-                }
-                editor.commit();
-
-                if (defaultId == acc.getId())
-                {
-                    ((Button) view).setText("Unmark as default account");
-                }
-                else
-                {
-                    ((Button) view).setText("Mark as default account");
-                }
-            }
-        });
-
         // Init values
         EditText form_value = (EditText) v.findViewById(R.id.repository_hostname);
         form_value.setText(url.getHost());

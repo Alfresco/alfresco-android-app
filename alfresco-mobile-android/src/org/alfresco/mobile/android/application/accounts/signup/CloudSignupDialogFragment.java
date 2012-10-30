@@ -138,7 +138,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         String confirm = form_value.getText().toString();
 
-        if (!confirm.equals(password) && password.length() <= 6 && confirm.length() <= 6)
+        if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password))
         {
             MessengerManager.showToast(getActivity(), "Password error");
             return false;

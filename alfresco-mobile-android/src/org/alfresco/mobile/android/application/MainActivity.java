@@ -182,18 +182,16 @@ public class MainActivity extends Activity
         }
         else
         {
-            if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
-            {
-                displayAccounts();
-            }
-            else
-            {
                 displayMainMenu();
-            }
         }
 
         initActionBar();
         checkForUpdates();
+        
+        if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
+        {
+            displayAccounts();
+        }
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
