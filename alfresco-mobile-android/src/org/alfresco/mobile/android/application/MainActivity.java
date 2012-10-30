@@ -141,7 +141,7 @@ public class MainActivity extends Activity
             {
                 displayFromSite = (Site) savedInstanceState.getSerializable("displayFromSite");
             }
-            
+
             if (savedInstanceState.containsKey("importParent"))
             {
                 importParent = (Folder) savedInstanceState.getSerializable("importParent");
@@ -182,12 +182,12 @@ public class MainActivity extends Activity
         }
         else
         {
-                displayMainMenu();
+            displayMainMenu();
         }
 
         initActionBar();
         checkForUpdates();
-        
+
         if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
         {
             displayAccounts();
@@ -273,7 +273,7 @@ public class MainActivity extends Activity
 
                 return;
             }
-            
+
             // Intent for USER AUTHENTICATION
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
@@ -299,7 +299,7 @@ public class MainActivity extends Activity
                 }
                 return;
             }
-            
+
             // Intent for CLOUD SIGN UP
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
@@ -308,28 +308,17 @@ public class MainActivity extends Activity
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
-              
+
                 MessengerManager.showLongToast(this, e.getMessage());
-                
+
                 return;
             }
-            
 
             // Intent for CLOUD SIGN UP
             if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
             {
                 FragmentDisplayer.removeFragment(this, CloudSignupDialogFragment.TAG);
                 displayAccounts();
-                return;
-            }
-
-            // INTENT for CLOUD VALIDATION
-            if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && intent.getCategories().contains(Intent.CATEGORY_BROWSABLE)
-                    && intent.getData().getHost().equals("activate-cloud-account"))
-            {
-                //TODO IMPLEMENT
-                MessengerManager.showLongToast(this, "Activate Account !");
                 return;
             }
 
@@ -345,8 +334,8 @@ public class MainActivity extends Activity
                 }
                 return;
             }
-            
-            //DISPLAY NODE based on URL
+
+            // DISPLAY NODE based on URL
             if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
             {
                 // case phone
@@ -366,15 +355,24 @@ public class MainActivity extends Activity
                 }
                 return;
             }
-            
-            
+
+            if (Intent.ACTION_VIEW.equals(intent.getAction())
+                    && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
+                    && IntentIntegrator.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))
+            {
+                getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
+                FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getFragmentPlace(this),
+                        CloudSignupDialogFragment.TAG, true);
+            }
+
             if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
             {
                 if (getFragment(WaitingDialogFragment.TAG) != null)
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
-                
+
                 if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_OTHERS))
                 {
                     if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
@@ -422,7 +420,9 @@ public class MainActivity extends Activity
                             backstack = true;
                             getFragmentManager().popBackStackImmediate(DetailsFragment.TAG,
                                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        } else {
+                        }
+                        else
+                        {
                             FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
                         }
                         addPropertiesFragment(currentNode, backstack);
@@ -482,8 +482,9 @@ public class MainActivity extends Activity
         {
             outState.putSerializable("displayFromSite", displayFromSite);
         }
-        
-        if (importParent != null){
+
+        if (importParent != null)
+        {
             outState.putParcelable("importParent", importParent);
         }
     }
@@ -1195,13 +1196,13 @@ public class MainActivity extends Activity
         return displayFromSite;
     }
 
-    //For dropdown view in childrenbrowser
+    // For dropdown view in childrenbrowser
     public void setDisplayFromSite(Site site)
     {
         this.displayFromSite = site;
     }
-    
-    //For Creating file in childrenbrowser
+
+    // For Creating file in childrenbrowser
     public Folder getImportParent()
     {
         return importParent;

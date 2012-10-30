@@ -34,7 +34,9 @@
     <string name="account_wizard_alfresco_server_description">Connect to an alfresco Server</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
     <string name="account_wizard_alfresco_cloud_description">Access your Alfresco online account</string>
-    <string name="account_wizard_alfresco_help">New to Alfresco ? <a href="org.alfresco.mobile.android://sign_up_cloud">Sign Up</a> for a free account</string>
+    <string name="account_wizard_alfresco_help">New to Alfresco ? <a href="alfresco://sign_up_cloud/">Sign Up</a> for a free account</string>
+    <string name="account_wizard_alfresco_help_inside_app">New to Alfresco ? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
+    
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
     <string name="action_add_account">Add</string>

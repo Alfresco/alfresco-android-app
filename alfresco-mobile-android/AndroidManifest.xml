@@ -49,6 +49,15 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            
+             <!-- Internal : Sign up cloud -->
+             <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data android:scheme="alfresco"  android:host="sign_up_cloud" />
+            </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity
@@ -61,7 +70,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
+            
             <!-- Internal : Used for refresh UI component -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
@@ -92,6 +101,8 @@
 
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
+            
+            <!-- Internal : Used for Cloud activation-->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 
@@ -103,32 +114,28 @@
                     android:host="activate-cloud-account"
                      />
             </intent-filter>
-            <intent-filter>
+            
+            <!-- Internal : Sign up cloud -->
+            <!-- Internal : Sign up cloud -->
+             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="org.alfresco.mobile.android" />
+                <data android:scheme="alfresco"  android:host="sign_up_cloud_i" />
             </intent-filter>
 
             <!-- Filter URL that matches alfresco service -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <action android:name="android.intent.action.VIEW" />
-
                 <data
                     android:host="my.alfresco.com"
                     android:scheme="https" />
-                <data
-                    android:host="activate-cloud-account"
-                    android:scheme="alfresco" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data android:mimeType="text/plain" />
             </intent-filter>
 

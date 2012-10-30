@@ -21,6 +21,11 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 
 public class IntentIntegrator extends PublicIntent
 {
+    public static final String ALFRESCO_SCHEME_SHORT = "alfresco";
+    public static final String CLOUD_SIGNUP = "sign_up_cloud";
+    public static final String CLOUD_SIGNUP_I = "sign_up_cloud_i";
+
+    
     public static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
 
     public static final String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
