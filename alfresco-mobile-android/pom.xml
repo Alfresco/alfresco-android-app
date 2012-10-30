@@ -54,7 +54,7 @@
 
 	<profiles>
 		<profile>
-			<id>beta-release</id>
+			<id>android-beta-release</id>
 			<build>
 				<resources>
 					<resource>
