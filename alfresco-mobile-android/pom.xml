@@ -65,6 +65,14 @@
 							<include>**/*.*</include>
 						</includes>
 					</resource>
+					<resource>
+						<directory>${bamboo_android_keys.directory}</directory>
+						<targetPath>${project.build.directory}/filtered-res/values</targetPath>
+						<filtering>true</filtering>
+						<includes>
+							<include>bamboo_android_keys.xml</include>
+						</includes>
+					</resource>
 				</resources>
 				<finalName>${project.artifactId}</finalName>
 				<plugins>
