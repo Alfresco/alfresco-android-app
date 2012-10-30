@@ -68,6 +68,14 @@ public class ProgressNotification extends Activity
                 {
                     // notificationManager.cancel((int) progressItem.id);
                     inProgressObjects.remove(name);
+                    progressItem.notification.contentView.setTextViewText(R.id.status_text, ctxt.getText(R.string.download_complete));
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
+                            false);
+                    if (AndroidVersion.isICSOrAbove())
+                    {
+                        tmpNotification = createNotification(ctxt, params, dataSize);
+                    }
+                    notificationManager.notify((int) progressItem.id, tmpNotification);
                 }
 
                 return true;
@@ -111,15 +119,20 @@ public class ProgressNotification extends Activity
     private static Notification createNotification(Context c, Bundle params, int value)
     {
         Notification notification = null;
-        
+
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
-        builder.setContentTitle("Upload");
+        builder.setContentTitle(c.getText(R.string.upload_in_progress));
         builder.setContentText(params.getString("name"));
+        builder.setAutoCancel(false);
+        if (params.getInt("dataSize") == value){
+            builder.setContentTitle(c.getText(R.string.upload_complete));
+            builder.setAutoCancel(true);
+        }
         builder.setNumber(0);
         builder.setTicker(params.getString("name"));
         builder.setSmallIcon(R.drawable.ic_alfresco);
-        builder.setAutoCancel(false);
+        
 
         if (AndroidVersion.isICSOrAbove())
         {
@@ -130,7 +143,9 @@ public class ProgressNotification extends Activity
         {
             builder.setPriority(0);
             notification = builder.build();
-        } else {
+        }
+        else
+        {
             notification = builder.getNotification();
         }
 
@@ -150,7 +165,7 @@ public class ProgressNotification extends Activity
 
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
-        builder.setContentTitle("Upload " + params.getString("name"));
+        builder.setContentTitle(c.getText(R.string.upload) + params.getString("name"));
         builder.setContentText(params.getString("name"));
         builder.setNumber(0);
         builder.setTicker(params.getString("name"));
@@ -175,7 +190,9 @@ public class ProgressNotification extends Activity
         {
             builder.setPriority(0);
             notification = builder.build();
-        } else {
+        }
+        else
+        {
             notification = builder.getNotification();
         }
         // builder.setDeleteIntent(pendingIntent);

@@ -39,5 +39,7 @@ public class IntentIntegrator extends PublicIntent
     public static final String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
     public static final String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
 
+    public static final String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
+    public static final String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
 
 }

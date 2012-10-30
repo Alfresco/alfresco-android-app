@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.View;
 import android.widget.LinearLayout;
 
 /**

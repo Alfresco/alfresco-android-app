@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
@@ -57,11 +58,14 @@ public class VersionFragment extends VersionsFragment
         Node n = (Node) l.getItemAtPosition(position);
         ((MainActivity) getActivity()).addPropertiesFragment(n, true);
     }
-    
+
     @Override
     public void onStart()
     {
-        DisplayUtils.setTitleFragmentPlace(getActivity(), "Versions : " + node.getName());
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            getActivity().setTitle(getString(R.string.document_version_header) + " : " + node.getName());
+        }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }

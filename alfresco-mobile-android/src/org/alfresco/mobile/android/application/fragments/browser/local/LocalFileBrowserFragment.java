@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.R;
@@ -34,7 +33,6 @@ import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -94,7 +92,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     @Override
     public void onStart()
     {
-        getActivity().setTitle(title);
+        getActivity().setTitle(R.string.menu_downloads);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }

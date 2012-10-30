@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -35,9 +34,10 @@ import android.net.Uri;
 
 public class DownloadTaskCallback implements DownloadTaskListener
 {
-    public enum DownloadAction { ACTION_OPEN, ACTION_EMAIL, ACTION_UNDEFINED};
-    
-    private Activity activity;
+    public enum DownloadAction
+    {
+        ACTION_OPEN, ACTION_EMAIL, ACTION_UNDEFINED
+    };
 
     private Fragment fragment;
 
@@ -48,12 +48,10 @@ public class DownloadTaskCallback implements DownloadTaskListener
     private long totalSize;
 
     private DownloadAction action = DownloadAction.ACTION_UNDEFINED;
-    
-    
+
     public DownloadTaskCallback(Fragment fragment, Document doc, DownloadAction action)
     {
         this.action = action;
-        this.activity = fragment.getActivity();
         this.fragment = fragment;
         this.doc = doc;
         totalSize = doc.getContentStreamLength();
@@ -62,23 +60,7 @@ public class DownloadTaskCallback implements DownloadTaskListener
     @Override
     public void onPreExecute()
     {
-        progressDialog = new ProgressDialog(activity);
-        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        progressDialog.setMessage(this.activity.getText(R.string.download));
-        progressDialog.setOnCancelListener(new OnCancelListener()
-        {
-            @Override
-            public void onCancel(DialogInterface dialog)
-            {
-                dialog.dismiss();
-            }
-        });
-        progressDialog.setCancelable(true);
-        progressDialog.setTitle(this.activity.getText(R.string.download) + " : " + doc.getName());
-        progressDialog.setMessage(this.activity.getText(R.string.download_progress));
-        progressDialog.setProgress(0);
-        progressDialog.setMax(100);
-        progressDialog.show();
+        createProgressBar();
     }
 
     @Override
@@ -94,24 +76,26 @@ public class DownloadTaskCallback implements DownloadTaskListener
             switch (action)
             {
                 case ACTION_OPEN:
-                    MessengerManager.showToast(activity, activity.getText(R.string.download_complete) + results.getFileName());
+                    MessengerManager.showToast(fragment.getActivity(),
+                            fragment.getActivity().getText(R.string.download_complete) + results.getFileName());
                     ActionManager.openIn(fragment, results.getFile(), doc.getContentStreamMimeType(),
                             PublicIntent.REQUESTCODE_SAVE_BACK);
                     break;
-                    
+
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(activity, results.getFileName(),
-                                                        activity.getString(R.string.email_content), Uri.fromFile(results.getFile()));
+                    EmailUtils.createMailWithAttachment(fragment.getActivity(), results.getFileName(), fragment
+                            .getActivity().getString(R.string.email_content), Uri.fromFile(results.getFile()));
                     break;
-                    
+
                 case ACTION_UNDEFINED:
                     break;
             }
-            
+
         }
         else
         {
-            MessengerManager.showToast(activity, activity.getText(R.string.download_complete_error).toString());
+            MessengerManager.showToast(fragment.getActivity(),
+                    fragment.getActivity().getText(R.string.download_complete_error).toString());
         }
     }
 
@@ -119,7 +103,38 @@ public class DownloadTaskCallback implements DownloadTaskListener
     public void onProgressUpdate(Integer... values)
     {
         int percent = Math.round(((float) values[0] / totalSize) * 100);
-        progressDialog.setProgress(percent);
+
+        if (progressDialog == null)
+        {
+            createProgressBar();
+        }
+        else
+        {
+            progressDialog.setProgress(percent);
+        }
     }
 
+    private void createProgressBar(){
+        progressDialog = new ProgressDialog(fragment.getActivity());
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progressDialog.setMessage(fragment.getActivity().getText(R.string.download));
+        progressDialog.setOnCancelListener(new OnCancelListener()
+        {
+            @Override
+            public void onCancel(DialogInterface dialog)
+            {
+                dialog.dismiss();
+            }
+        });
+        progressDialog.setCancelable(true);
+        progressDialog.setTitle(fragment.getActivity().getText(R.string.download) + " : " + doc.getName());
+        progressDialog.setMessage(fragment.getActivity().getText(R.string.download_progress));
+        progressDialog.setProgress(0);
+        progressDialog.setMax(100);
+        progressDialog.show();
+    }
+    
+    public ProgressDialog getProgressDialog (){
+        return progressDialog;
+    }
 }

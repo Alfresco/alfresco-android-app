@@ -33,17 +33,17 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class AccountFragment extends BaseListFragment implements LoaderCallbacks<List<Account>>
 {
 
     public static final String TAG = "AccountFragment";
+    
+    protected List<Account> selectedAccounts = new ArrayList<Account>(1);
 
     public AccountFragment()
     {
@@ -52,7 +52,6 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         emptyListMessageId = R.string.empty_accounts;
         checkSession = false;
     }
-
 
     @Override
     public void onStart()
@@ -74,8 +73,9 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
     {
         if (adapter == null)
-            adapter = new AccountDetailsAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0));
-
+        {
+            adapter = new AccountDetailsAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Account>(0), selectedAccounts);
+        }
         PagingResult<Account> pagingResultFiles = new PagingResultImpl<Account>(results, false, results.size());
         displayPagingData(pagingResultFiles, loaderId, callback);
     }
@@ -89,13 +89,31 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        Account item = (Account) l.getItemAtPosition(position);
+        
+        Boolean hideDetails = false;
+        if (!selectedAccounts.isEmpty())
+        {
+            hideDetails = selectedAccounts.get(0).equals(item);
+            selectedAccounts.clear();
+        }
         l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         l.setItemChecked(position, true);
         l.setSelection(position);
         v.setSelected(true);
-
-        ((MainActivity) getActivity()).addAccountDetails(((Account) l.getItemAtPosition(position)).getId());
-        DisplayUtils.switchSingleOrTwo(getActivity(), true);
+        selectedAccounts.add(item);
+        
+        if (hideDetails)
+        {
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+            }
+            selectedAccounts.clear();
+        } else{
+            ((MainActivity) getActivity()).addAccountDetails(item.getId());
+            DisplayUtils.switchSingleOrTwo(getActivity(), true);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

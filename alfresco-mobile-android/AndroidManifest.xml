@@ -77,6 +77,12 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.file" />
             </intent-filter>
 
+              <!-- Internal : Used for displaying Errors-->
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            
             <!-- Internal : Used for displaying User Authentication Form -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />

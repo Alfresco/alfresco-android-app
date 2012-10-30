@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialog
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
@@ -71,9 +72,9 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -110,7 +111,7 @@ public class MainActivity extends Activity
 
     private AccountsLoaderCallback loadercallback;
 
-    private ProgressDialog waitingDialog;
+    private Folder importParent;
 
     // ///////////////////////////////////////////
     // INIT
@@ -136,11 +137,16 @@ public class MainActivity extends Activity
         if (savedInstanceState != null)
         {
             currentAccount = (Account) savedInstanceState.getSerializable("account");
-            if (savedInstanceState.getBoolean("waiting_dialog"))
+            if (savedInstanceState.containsKey("displayFromSite"))
             {
-                displayWaitingDialog();
-                savedInstanceState.remove("waiting_dialog");
+                displayFromSite = (Site) savedInstanceState.getSerializable("displayFromSite");
             }
+            
+            if (savedInstanceState.containsKey("importParent"))
+            {
+                importParent = (Folder) savedInstanceState.getSerializable("importParent");
+            }
+
             if (savedInstanceState.containsKey("fragmentQueue"))
             {
                 fragmentQueue = savedInstanceState.getInt("fragmentQueue");
@@ -200,16 +206,6 @@ public class MainActivity extends Activity
         checkForCrashes();
     }
 
-    @Override
-    protected void onPause()
-    {
-        if (waitingDialog != null)
-        {
-            waitingDialog.dismiss();
-        }
-        super.onPause();
-    }
-
     // ///////////////////////////////////////////
     // HockeyApp Integration
     // ///////////////////////////////////////////
@@ -262,11 +258,9 @@ public class MainActivity extends Activity
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
-                // if click on menu, hide the dialog
-                if (waitingDialog != null)
+                if (getFragment(WaitingDialogFragment.TAG) != null)
                 {
-                    waitingDialog.dismiss();
-                    waitingDialog = null;
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
                 // Used for launching last pressed action button from main menu
@@ -281,14 +275,14 @@ public class MainActivity extends Activity
 
                 return;
             }
+            
             // Intent for USER AUTHENTICATION
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
                 // if click on menu, hide the dialog
-                if (waitingDialog != null)
+                if (getFragment(WaitingDialogFragment.TAG) != null)
                 {
-                    waitingDialog.dismiss();
-                    waitingDialog = null;
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
                 for (Account account : accounts)
@@ -307,6 +301,21 @@ public class MainActivity extends Activity
                 }
                 return;
             }
+            
+            // Intent for CLOUD SIGN UP
+            if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
+            {
+                if (getFragment(WaitingDialogFragment.TAG) != null)
+                {
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
+              
+                MessengerManager.showLongToast(this, e.getMessage());
+                
+                return;
+            }
+            
 
             // Intent for CLOUD SIGN UP
             if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
@@ -316,15 +325,17 @@ public class MainActivity extends Activity
                 return;
             }
 
-            // INTENT for validation cloud
+            // INTENT for CLOUD VALIDATION
             if (Intent.ACTION_VIEW.equals(intent.getAction())
                     && intent.getCategories().contains(Intent.CATEGORY_BROWSABLE)
                     && intent.getData().getHost().equals("activate-cloud-account"))
             {
+                //TODO IMPLEMENT
                 MessengerManager.showLongToast(this, "Activate Account !");
                 return;
             }
 
+            //
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && IntentIntegrator.NODE_TYPE.equals(intent.getType()))
             {
                 if (intent.getExtras().containsKey(IntentIntegrator.EXTRA_NODE))
@@ -334,12 +345,11 @@ public class MainActivity extends Activity
                     frag.setSession(SessionUtils.getSession(this));
                     FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, false);
                 }
-                else
-                {
-
-                }
+                return;
             }
-            else if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
+            
+            //DISPLAY NODE based on URL
+            if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
             {
                 // case phone
                 if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) { return; }
@@ -356,9 +366,17 @@ public class MainActivity extends Activity
                 {
                     addNavigationFragment((Folder) currentNode);
                 }
+                return;
             }
-            else if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
+            
+            
+            if (IntentIntegrator.ACTION_REFRESH.equals(intent.getAction()))
             {
+                if (getFragment(WaitingDialogFragment.TAG) != null)
+                {
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+                
                 if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_OTHERS))
                 {
                     if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
@@ -401,11 +419,13 @@ public class MainActivity extends Activity
                         {
                             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                         }
-                        FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
                         if (!DisplayUtils.hasCentralPane(this))
                         {
                             backstack = true;
-                            getFragmentManager().popBackStack();
+                            getFragmentManager().popBackStackImmediate(DetailsFragment.TAG,
+                                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        } else {
+                            FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
                         }
                         addPropertiesFragment(currentNode, backstack);
                     }
@@ -458,11 +478,16 @@ public class MainActivity extends Activity
         {
             outState.putSerializable("photoCap", photoCapture);
         }
-        if (waitingDialog != null)
-        {
-            outState.putBoolean("waiting_dialog", true);
-        }
         outState.putInt("fragmentQueue", fragmentQueue);
+
+        if (displayFromSite != null)
+        {
+            outState.putSerializable("displayFromSite", displayFromSite);
+        }
+        
+        if (importParent != null){
+            outState.putParcelable("importParent", importParent);
+        }
     }
 
     // ///////////////////////////////////////////
@@ -619,8 +644,7 @@ public class MainActivity extends Activity
 
     private void displayWaitingDialog()
     {
-        waitingDialog = ProgressDialog.show(this, getText(R.string.wait_title), getText(R.string.wait_message), true,
-                true);
+        new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////
@@ -676,6 +700,7 @@ public class MainActivity extends Activity
         BaseFragment frag = DetailsFragment.newInstance(n);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, forceBackStack);
+        clearCentralPane();
     }
 
     public void addPropertiesFragment(Node n)
@@ -947,15 +972,15 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_UPLOAD:
+                importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
+                Log.d(TAG, importParent.getName());
                 ActionManager.actionPickFile(getFragment(ChildrenBrowserFragment.TAG),
                         IntentIntegrator.REQUESTCODE_FILEPICKER);
                 return true;
 
             case MenuActionItem.MENU_DELETE_FOLDER:
-                // ((DetailsFragment)
-                // getFragment(DetailsFragment.TAG)).delete();
+                ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).delete();
                 return true;
-
             case MenuActionItem.MENU_REFRESH:
                 ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
                         .refresh();
@@ -991,14 +1016,6 @@ public class MainActivity extends Activity
 
             case MenuActionItem.MENU_SEARCH_OPTION:
                 MessengerManager.showToast(this, "Display Search Parameters like isExact...");
-                return true;
-
-            case MenuActionItem.ACCOUNT_ID:
-                // getActionBar().addTab(getActionBar().newTab().setText("Accounts").setTag(AccountFragment.TAG).setTabListener(new
-                // TabListener<AccountFragment>(this, AccountFragment.TAG)));
-                // FragmentDisplayer.replaceFragment(this, R.id.left_pane_body,
-                // AccountFragment.TAG, false);
-                // clearCentralPane();
                 return true;
             case MenuActionItem.PARAMETER_ID:
                 MessengerManager.showToast(this, "Parameter");
@@ -1180,8 +1197,15 @@ public class MainActivity extends Activity
         return displayFromSite;
     }
 
+    //For dropdown view in childrenbrowser
     public void setDisplayFromSite(Site site)
     {
         this.displayFromSite = site;
+    }
+    
+    //For Creating file in childrenbrowser
+    public Folder getImportParent()
+    {
+        return importParent;
     }
 }

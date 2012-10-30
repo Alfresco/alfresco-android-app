@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.asynchronous.DocumentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -41,15 +40,17 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
-import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
@@ -58,8 +59,6 @@ import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
@@ -78,9 +77,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     public static final String TAG = "ChildrenNavigationFragment";
 
-    private ProgressDialog mProgressDialog;
-
     private boolean shortcutAlreadyVisible = false;
+
+    private Folder importFolder;
 
     public ChildrenBrowserFragment()
     {
@@ -116,6 +115,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+
         setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
         if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
@@ -124,25 +124,37 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         super.onActivityCreated(savedInstanceState);
     }
-    
+
     @Override
     public void onStart()
     {
         super.onStart();
-        if (shortcutAlreadyVisible ){
+        if (shortcutAlreadyVisible)
+        {
             displayPathShortcut();
         }
     }
-    
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (tmpFile != null)
+        {
+            importFolder = ((MainActivity) getActivity()).getImportParent();
+            createFile(tmpFile);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        
+
         ListView listView = (ListView) v.findViewById(R.id.listView);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setClickable(true);
-        
+
         return v;
     }
 
@@ -150,12 +162,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void onPause()
     {
         getActivity().invalidateOptionsMenu();
+        getActivity().setTitle(R.string.app_name);
         getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         super.onPause();
     }
-    
-    private void displayPathShortcut(){
+
+    private void displayPathShortcut()
+    {
         // /QUICK PATH
         if (parentFolder != null)
         {
@@ -170,27 +184,27 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             {
                 path = new String[] { "/" };
             }
-            
 
             List<String> listFolder = new ArrayList<String>(path.length);
             for (int i = path.length - 1; i > -1; i--)
             {
                 pathValue = path[i];
-                
+
                 if (pathValue.isEmpty())
                 {
                     pathValue = "/";
                 }
                 listFolder.add(pathValue);
             }
-            
-            if (((MainActivity) getActivity()).isDisplayFromSite() != null && listFolder.size() > 3){
+
+            if (((MainActivity) getActivity()).isDisplayFromSite() != null && listFolder.size() > 3)
+            {
                 for (int i = 0; i < 3; i++)
                 {
-                    listFolder.remove(listFolder.size()-1); 
+                    listFolder.remove(listFolder.size() - 1);
                 }
-                listFolder.add(listFolder.size()-1, ((MainActivity) getActivity()).isDisplayFromSite().getTitle());
-                listFolder.remove(listFolder.size()-1); 
+                listFolder.add(listFolder.size() - 1, ((MainActivity) getActivity()).isDisplayFromSite().getTitle());
+                listFolder.remove(listFolder.size() - 1);
             }
 
             SpinnerAdapter adapter = new PathAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
@@ -212,12 +226,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             };
 
             getActivity().getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-            
-            shortcutAlreadyVisible = true; 
+
+            shortcutAlreadyVisible = true;
         }
     }
-    
-
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
@@ -278,6 +290,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (loader instanceof NodeChildrenLoader)
         {
             parentFolder = ((NodeChildrenLoader) loader).getParentFolder();
+            importFolder = parentFolder;
         }
 
         if (adapter == null)
@@ -300,6 +313,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     }
 
     private NodeActions nActions;
+
+    private File tmpFile;
 
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
@@ -338,7 +353,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         if (requestCode == PublicIntent.REQUESTCODE_FILEPICKER && data != null && data.getData() != null)
         {
-            createFile(new File(ActionManager.getPath(getActivity(), data.getData())));
+            tmpFile = new File(ActionManager.getPath(getActivity(), data.getData()));
         }
     }
 
@@ -353,7 +368,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(parentFolder, f);
+        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f);
 
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
@@ -379,6 +394,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         });
 
         newFragment.show(ft, AddContentDialogFragment.TAG);
+        tmpFile = null;
     }
 
     public void createFolder()
@@ -399,29 +415,20 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             @Override
             public void afterContentCreation(Node node)
             {
-                mProgressDialog.dismiss();
-                refresh();
+                ActionManager.actionRefresh(ChildrenBrowserFragment.this, IntentIntegrator.CATEGORY_REFRESH,
+                        IntentIntegrator.CATEGORY_REFRESH_OTHERS);
             }
 
             @Override
             public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
-                mProgressDialog = ProgressDialog.show(getActivity(), "Please wait", "Contacting your server...", true,
-                        true, new OnCancelListener()
-                        {
-                            @Override
-                            public void onCancel(DialogInterface dialog)
-                            {
-                                getActivity().getLoaderManager().destroyLoader(DocumentCreateLoader.ID);
-                            }
-                        });
-
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
             }
 
             @Override
-            public void onExeceptionDuringCreation(Exception arg0)
+            public void onExeceptionDuringCreation(Exception e)
             {
-                mProgressDialog.dismiss();
+                ActionManager.actionDisplayError(ChildrenBrowserFragment.this, e);
             }
         });
 
@@ -435,6 +442,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
         }
         super.refresh();
+    }
+
+    public void delete()
+    {
+        if (!selectedItems.isEmpty() && selectedItems.size() == 1)
+        {
+            NodeActions.delete(getActivity(), this, selectedItems.get(0));
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -522,6 +537,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             nActions.finish();
         }
         super.onStop();
+    }
+
+    public Folder getImportFolder()
+    {
+        return importFolder;
     }
 
 }

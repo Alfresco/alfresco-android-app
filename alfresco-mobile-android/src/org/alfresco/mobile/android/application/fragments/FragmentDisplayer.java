@@ -29,7 +29,7 @@ import android.app.FragmentTransaction;
 @TargetApi(13)
 public class FragmentDisplayer
 {
-
+    
     public static void loadFragment(Activity a, Integer viewId, String tag)
     {
         if (a.getFragmentManager().findFragmentByTag(tag) == null)

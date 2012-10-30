@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -135,9 +136,23 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                         }
                     }
                     break;
+                case Account.TYPE_ALFRESCO_TEST_BASIC:
+                case Account.TYPE_ALFRESCO_CMIS:
+                    if (results.getException() instanceof AlfrescoSessionException)
+                    {
+                        AlfrescoSessionException ex = ((AlfrescoSessionException) results.getException());
+                        if (ex.getCause().getClass().equals(CmisUnauthorizedException.class) || ex.getErrorCode() == 100)
+                        {
+                                MessengerManager.showLongToast(activity, getText(R.string.error_session_unauthorized));
+                        }
+                    }
+                    break;
                 default:
                     MessengerManager.showLongToast(activity, getText(R.string.error_session_creation)
                             + results.getException().getMessage());
+                    Intent i = new Intent(activity, MainActivity.class);
+                    i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                    activity.startActivity(i);
                     break;
             }
             Log.e(TAG, Log.getStackTraceString(results.getException()));

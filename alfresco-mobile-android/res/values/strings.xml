@@ -73,12 +73,16 @@
     <!-- SESSION ERROR -->
     <string name="error_session_creation">An error occured during the session creation : </string>
     <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
+    <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings.</string>
     <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
     <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
     
     <!-- DETAILS-->
     <string name="geolocation">Geolocation</string>
     <string name="action_version">Versions</string>
+    <string name="document_comments_header">Comments</string>
+    <string name="document_tags_header">Tags</string>
+    <string name="document_version_header">Version</string>
     
     <!-- DOWNLOAD -->
     <string name="empty_download">No Document</string>
@@ -86,6 +90,10 @@
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
     <string name="required">Required</string>
+    
+    <!-- LOCAL FIlE-->
+    <string name="action_rename">Rename</string>
+    <string name="action_rename_desc">New name for</string>
 
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repository</string>
@@ -110,6 +118,9 @@
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Accounts</string>
     <string name="accounts_details">Details</string>
+    
+    <!-- PROPERTIES -->
+    <string name="details">Details</string>
     
 
     <!-- CLOUD SIGNUP -->
@@ -139,6 +150,12 @@
     <string name="error_network_title">No Network.</string>
     <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
 
+    <!-- NOTIFICATION -->
+    <string name="upload">Upload </string>
+    <string name="upload_complete">Upload Complete.</string>
+    <string name="upload_in_progress">Upload in progress.</string>
+    
+    
     <!-- OTHER -->
     <string name="error_retrieve_likes">Could not retrieve Like/Unlike tag for this document.</string>
     <string name="previous">Previous</string>
