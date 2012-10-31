@@ -122,8 +122,9 @@ public class MetadataFragment extends BaseFragment
                     tv = (TextView) v.findViewById(R.id.propertyValue);
                     if (PropertyType.DATETIME.equals(node.getProperty(map.getKey()).getType()))
                     {
-                        tv.setText(DateFormat.getTimeFormat(getActivity()).format(
-                                ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()));
+                        tv.setText(DateFormat.getMediumDateFormat(getActivity()).format(
+                                ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()) + " " + DateFormat.getTimeFormat(getActivity()).format(
+                                        ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()));
                     }
                     else
                     {
