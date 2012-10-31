@@ -104,6 +104,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private File getDownloadFile()
     {
+        if (SessionUtils.getAccount(getActivity()) == null){
+            return null;
+        }
+        
         File folder = StorageManager.getDownloadFolder(getActivity(), SessionUtils.getAccount(getActivity()).getUrl()
                 + "", SessionUtils.getAccount(getActivity()).getUsername());
         File tmpFile = new File(folder, doc.getName());

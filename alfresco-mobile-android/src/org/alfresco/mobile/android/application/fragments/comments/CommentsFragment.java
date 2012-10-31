@@ -88,6 +88,7 @@ public class CommentsFragment extends CommentFragment
                             commentText.getText().toString());
                     c.setOnCommentCreateListener(createListener);
                     getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
+                    getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
                 }
                 else
                 {

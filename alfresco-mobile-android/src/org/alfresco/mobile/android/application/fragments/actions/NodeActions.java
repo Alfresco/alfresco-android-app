@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -211,6 +212,8 @@ public class NodeActions implements ActionMode.Callback
                     }
                 });
                 activity.getLoaderManager().restartLoader(NodeDeleteLoader.ID, null, up);
+                activity.getLoaderManager().getLoader(NodeDeleteLoader.ID).forceLoad();
+
                 dialog.dismiss();
             }
         });

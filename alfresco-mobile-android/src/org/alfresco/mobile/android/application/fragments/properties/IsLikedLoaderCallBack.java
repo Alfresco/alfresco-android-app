@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -94,5 +95,7 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
             getLoaderManager().initLoader(id, b, this);
         }
         getLoaderManager().restartLoader(id, b, this);
+        getLoaderManager().getLoader(id).forceLoad();
+
     }
 }

@@ -103,6 +103,7 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             NodeLoaderCallback call = new NodeLoaderCallback(activity, results, url);
             LoaderManager lm = activity.getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
+            lm.getLoader(NodeLoader.ID).forceLoad();
             // return;
         }
 
