@@ -114,11 +114,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(true);
+
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         View v = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
+        if (node == null) { return null; }
+
         renditionManager = new RenditionManager(getActivity(), alfSession);
 
         // Header
@@ -249,7 +252,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onStart()
     {
-        getActivity().setTitle(R.string.details);
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            getActivity().setTitle(R.string.details);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        }
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
         if (mTabHost != null) mTabHost.setCurrentTabByTag(TAB_METADATA);
@@ -530,6 +537,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         MenuItem mi;
 
+        if (node == null) { return; }
+
         if (node.isDocument())
         {
             if (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
@@ -573,10 +582,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             mi.setIcon(R.drawable.ic_comment);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST
-                    + MenuActionItem.MENU_VERSION_HISTORY, R.string.action_versions);
-            mi.setIcon(R.drawable.ic_menu_recent_history);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            if (node.isDocument())
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST
+                        + MenuActionItem.MENU_VERSION_HISTORY, R.string.action_versions);
+                mi.setIcon(R.drawable.ic_menu_recent_history);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
 
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS,
                     R.string.action_tags);

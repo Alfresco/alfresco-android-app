@@ -21,29 +21,30 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.search.SearchFragment;
 
+import android.app.ActionBar;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
-public class KeywordSearch extends org.alfresco.mobile.android.ui.search.SearchFragment
+public class KeywordSearch extends SearchFragment
 {
 
     public static final String TAG = "SearchFragment";
 
-    
     public static KeywordSearch newInstance(String keywords)
     {
         KeywordSearch ssf = new KeywordSearch();
         ssf.setArguments(createBundleArgs(keywords));
         return ssf;
     }
-    
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -51,28 +52,35 @@ public class KeywordSearch extends org.alfresco.mobile.android.ui.search.SearchF
         alfSession = SessionUtils.getSession(getActivity());
         setActivateThumbnail(false);
         View v = inflater.inflate(R.layout.sdkapp_search, container, false);
-        
-        init(v, R.string.empty_child);
-        
-        final EditText searchForm = (EditText) v.findViewById(R.id.search_query);
-        Button launch = (Button) v.findViewById(R.id.search_global);
 
-        launch.setOnClickListener(new OnClickListener()
+        init(v, R.string.empty_child);
+
+        final EditText searchForm = (EditText) v.findViewById(R.id.search_query);
+        searchForm.setImeActionLabel(getString(R.string.action_search), KeyEvent.KEYCODE_ENTER);
+
+        searchForm.setOnKeyListener(new OnKeyListener()
         {
-            @Override
-            public void onClick(View v)
+            public boolean onKey(View v, int keyCode, KeyEvent event)
             {
-                if (searchForm.getText().length() > 0)
+                // If the event is a key-down event on the "enter" button
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
                 {
-                   search(searchForm.getText().toString(), true, false);
+                    if (searchForm.getText().length() > 0)
+                    {
+                        search(searchForm.getText().toString(), true, false);
+                    }
+                    else
+                    {
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.search_form_hint));
+                    }
+                    return true;
                 }
+                return false;
             }
         });
-
         return v;
     }
-    
-    
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -84,5 +92,20 @@ public class KeywordSearch extends org.alfresco.mobile.android.ui.search.SearchF
             ((MainActivity) getActivity()).addPropertiesFragment(n);
         }
     }
-    
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        getActivity().setTitle(R.string.action_search);
+    }
+
+    public void onPause()
+    {
+        getActivity().invalidateOptionsMenu();
+        super.onPause();
+    }
+
 }

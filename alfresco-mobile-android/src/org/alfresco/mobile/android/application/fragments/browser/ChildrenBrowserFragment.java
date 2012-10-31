@@ -58,7 +58,6 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
@@ -144,6 +143,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             importFolder = ((MainActivity) getActivity()).getImportParent();
             createFile(tmpFile);
         }
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        getActivity().setTitle(R.string.app_name);
     }
 
     @Override
@@ -174,9 +176,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (parentFolder != null)
         {
             //
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-
             String pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
 
             String[] path = pathValue.split("/");
@@ -415,8 +414,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             @Override
             public void afterContentCreation(Node node)
             {
-                ActionManager.actionRefresh(ChildrenBrowserFragment.this, IntentIntegrator.CATEGORY_REFRESH,
-                        IntentIntegrator.CATEGORY_REFRESH_OTHERS);
+                ActionManager.actionRefresh(ChildrenBrowserFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
+                        IntentIntegrator.NODE_TYPE);
             }
 
             @Override
@@ -464,12 +463,12 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         MenuItem mi;
 
-        if (!extended && parentFolder != null)
+        /*if (!extended && parentFolder != null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH, Menu.FIRST, R.string.action_search);
             mi.setIcon(R.drawable.ic_search);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
+        }*/
 
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 

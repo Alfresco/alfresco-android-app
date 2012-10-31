@@ -35,12 +35,12 @@ import org.alfresco.mobile.android.application.fragments.properties.DetailsFragm
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

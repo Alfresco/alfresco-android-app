@@ -846,8 +846,6 @@ public class MainActivity extends Activity
     {
         super.onCreateOptionsMenu(menu);
 
-        MenuItem mi;
-
         // Display Title except for specific fragment
         if (DisplayUtils.hasCentralPane(this))
         {
@@ -875,14 +873,6 @@ public class MainActivity extends Activity
         if (isVisible(DetailsFragment.TAG))
         {
             ((DetailsFragment) getFragment(DetailsFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
-        if (isVisible(KeywordSearch.TAG))
-        {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_OPTION, Menu.FIRST + MenuActionItem.MENU_SEARCH_OPTION,
-                    R.string.search_option);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             return true;
         }
 

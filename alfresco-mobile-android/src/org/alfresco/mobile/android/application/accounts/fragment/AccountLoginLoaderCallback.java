@@ -109,6 +109,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             final SharedPreferences settings = activity.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
             SharedPreferences.Editor editor = settings.edit();
             editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
+            editor.commit();
 
             activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());

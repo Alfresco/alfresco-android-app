@@ -8,13 +8,13 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.app.Dialog;
 import android.app.DialogFragment;

@@ -89,6 +89,9 @@
     <!-- DOWNLOAD -->
     <string name="empty_download">No Document</string>
     
+    <!-- SEARCH -->
+    <string name="search_form_hint">Enter your search term</string>
+    
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
     <string name="required">Required</string>
