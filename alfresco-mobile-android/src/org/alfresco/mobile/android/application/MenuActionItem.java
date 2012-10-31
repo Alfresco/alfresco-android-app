@@ -36,7 +36,7 @@ public class MenuActionItem
 
     public static final int MENU_REFRESH = 40;
     
-    public static final int MENU_DELETE_FOLDER = 50;
+    public static final int MENU_DELETE_FOLDER = 191;
 
     
     // ///////////////////////////////////////////

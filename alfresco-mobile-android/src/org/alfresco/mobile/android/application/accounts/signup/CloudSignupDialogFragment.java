@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.accounts.signup;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -108,6 +109,7 @@ public class CloudSignupDialogFragment extends DialogFragment
                     emailAddress, password, "Alfresco Cloud");
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(CloudSignupLoader.ID, null, call);
+            lm.getLoader(CloudSignupLoader.ID).forceLoad();
         }
     }
 
@@ -138,7 +140,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         String confirm = form_value.getText().toString();
 
-        if (!confirm.equals(password) && password.length() <= 6 && confirm.length() <= 6)
+        if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password))
         {
             MessengerManager.showToast(getActivity(), "Password error");
             return false;

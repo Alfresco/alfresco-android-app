@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -62,6 +63,28 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             return;
         }
 
+        // INTENT for CLOUD VALIDATION
+        boolean signup = false;
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction())
+                && getIntent().getCategories().contains(Intent.CATEGORY_BROWSABLE)
+                && getIntent().getData().getHost().equals("activate-cloud-account"))
+        {
+            for (Account account : results)
+            {
+                if (account.getActivation() != null
+                        && account.getActivation().contains(getIntent().getData().getEncodedPath().substring(1).replace("%24", "$")))
+                {
+                    SessionUtils.setAccount(activity, account);
+                    signup = true;
+                    break;
+                }
+            }
+            if (!signup){
+                MessengerManager.showLongToast(activity, "Unable to find an account to activate.");
+            }
+        }
+        else
+
         // VIEW INTENT
         if (Intent.ACTION_VIEW.equals(getIntent().getAction())
                 || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())
@@ -80,7 +103,8 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             NodeLoaderCallback call = new NodeLoaderCallback(activity, results, url);
             LoaderManager lm = activity.getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
-            return;
+            lm.getLoader(NodeLoader.ID).forceLoad();
+            // return;
         }
 
         activity.setAccounts(results);
@@ -90,29 +114,35 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                     .setAccounts(results);
         }
 
-        //First creation of session.
+        // First creation of session.
         Account currentAccount = SessionUtils.getAccount(activity);
         if (currentAccount == null)
         {
-            currentAccount = results.get(0);
+
+            currentAccount = AccountsPreferences.getDefaultAccount(activity, results);
             if (SessionUtils.getSession(activity) == null && currentAccount.getActivation() == null
                     && ConnectivityUtils.hasInternetAvailable(activity))
             {
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
-        } else {
-            //Case of config changes to retrieve the sessionLoader and continue the work.
-            if (SessionUtils.getSession(activity) == null && activity.getLoaderManager().getLoader(SessionLoader.ID) != null){
+        } else if(signup){
+            activity.loadAccount(currentAccount);
+        }
+        else
+        {
+            // Case of config changes to retrieve the sessionLoader and continue
+            // the work.
+            if (SessionUtils.getSession(activity) == null
+                    && (activity.getLoaderManager().getLoader(SessionLoader.ID) != null || signup))
+            {
                 activity.setProgressBarIndeterminateVisibility(true);
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
                 activity.getLoaderManager().initLoader(SessionLoader.ID, null, call);
             }
-            
+
         }
-
         activity.invalidateOptionsMenu();
-
     }
 
     private Intent getIntent()

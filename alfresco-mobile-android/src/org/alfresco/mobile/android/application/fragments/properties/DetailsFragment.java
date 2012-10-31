@@ -18,30 +18,24 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
-import java.util.List;
-import java.util.Map;
 
-import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
-import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback;
-import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskCallback.DownloadAction;
+import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
@@ -56,22 +50,15 @@ import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.app.FragmentManager;
-import android.app.DownloadManager.Request;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -126,13 +113,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        Log.d(TAG, "IsAdded :" + isAdded() + " IsDetached " + isDetached());
         setRetainInstance(true);
+
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         View v = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
+        if (node == null) { return null; }
+
         renditionManager = new RenditionManager(getActivity(), alfSession);
 
         // Header
@@ -241,14 +230,21 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         lcb.execute(false);
 
         b = (ImageView) v.findViewById(R.id.action_share);
-        b.setOnClickListener(new OnClickListener()
+        if (node.isDocument())
         {
-            @Override
-            public void onClick(View v)
+            b.setOnClickListener(new OnClickListener()
             {
-                share();
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    share();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
 
         return v;
     }
@@ -256,18 +252,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onStart()
     {
-        DisplayUtils.setTitleFragmentPlace(getActivity(), "Properties");
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            getActivity().setTitle(R.string.details);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        }
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
         if (mTabHost != null) mTabHost.setCurrentTabByTag(TAB_METADATA);
         super.onStart();
-    }
-
-    @Override
-    public void onPause()
-    {
-        FragmentDisplayer.removeFragment(getActivity(), android.R.id.tabcontent);
-        super.onPause();
     }
 
     @Override
@@ -283,15 +276,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     // ///////////////////////////////////////////////////////////////////////////
     public void share()
     {
+        if (node.isFolder()) return;
+
         boolean cloud = (alfSession instanceof CloudSession);
 
         if (!cloud)
         {
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
-            DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
-            dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node, DownloadAction.ACTION_EMAIL));
-            dlt.execute();
+            Bundle b = new Bundle();
+            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
+            DialogFragment frag = new DownloadDialogFragment();
+            frag.setArguments(b);
+            frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
         }
         else
         {
@@ -303,12 +301,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
-                    dlt.setDl(new DownloadTaskCallback(DetailsFragment.this, (Document) node,
-                            DownloadAction.ACTION_EMAIL));
-                    dlt.execute();
-
-                    dialog.dismiss();
+                    // TODO Change it !
+                    Bundle b = new Bundle();
+                    b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+                    b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
+                    DialogFragment frag = new DownloadDialogFragment();
+                    frag.setArguments(b);
+                    frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
                 }
             });
             builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
@@ -363,63 +362,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void openin()
     {
-        DownloadTask dlt = new DownloadTask(alfSession, (Document) node, getDownloadFile());
-        dlt.setDl(new DownloadTaskCallback(this, (Document) node, DownloadAction.ACTION_OPEN));
-        dlt.execute();
-    }
-
-    private File getDownloadFile()
-    {
-        // File folder =
-        // Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-        File folder = StorageManager.getDownloadFolder(getActivity(), alfSession.getBaseUrl(),
-                alfSession.getPersonIdentifier());
-        return new File(folder, node.getName());
+        Bundle b = new Bundle();
+        b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+        b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
+        DialogFragment frag = new DownloadDialogFragment();
+        frag.setArguments(b);
+        frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
     }
 
     public void download()
     {
-        Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) alfSession.getServiceRegistry()
-                .getDocumentFolderService()).getDownloadUrl((Document) node));
-
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
-
-        DownloadManager manager = (DownloadManager) getActivity().getSystemService(Activity.DOWNLOAD_SERVICE);
-
-        Request request = new DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false)
-                .setTitle(node.getName())
-                .setDescription(node.getDescription())
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE)
-                .setDestinationUri(
-                        Uri.fromFile(StorageManager.getDownloadFile(getActivity(), alfSession.getBaseUrl(),
-                                alfSession.getPersonIdentifier(), node.getName())));
-
-        AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(getActivity()))
-                .getAuthenticationProvider();
-        Map<String, List<String>> httpHeaders = auth.getHTTPHeaders();
-        if (httpHeaders != null)
-        {
-            for (Map.Entry<String, List<String>> header : httpHeaders.entrySet())
-            {
-                if (header.getValue() != null)
-                {
-                    for (String value : header.getValue())
-                        request.addRequestHeader(header.getKey(), value);
-                }
-            }
-        }
-
-        manager.enqueue(request);
+        NodeActions.download(getActivity(), node);
     }
 
     public void update()
-    {
-        ActionManager.actionPickFile(this, PublicIntent.REQUESTCODE_FILEPICKER);
-    }
-
-    public void rename()
     {
         ActionManager.actionPickFile(this, PublicIntent.REQUESTCODE_FILEPICKER);
     }
@@ -430,7 +386,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         switch (requestCode)
         {
             case PublicIntent.REQUESTCODE_SAVE_BACK:
-                if (getDownloadFile().length() != ((Document) node).getContentStreamLength())
+                final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
+                if (dlFile.length() != ((Document) node).getContentStreamLength())
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -442,7 +399,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         public void onClick(DialogInterface dialog, int item)
                         {
                             UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(),
-                                    (Document) node, getDownloadFile());
+                                    (Document) node, dlFile);
                             up.setOnUpdateListener(saveBackListener);
                             getLoaderManager().initLoader(NodeUpdateLoader.ID, null, up);
                             getLoaderManager().getLoader(NodeUpdateLoader.ID).forceLoad();
@@ -488,22 +445,38 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             refreshThumbnail(node);
         }
 
+      
+        boolean hasWaiting = false;
+        
         @Override
         public void beforeUpdate(Node node)
         {
-
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            }
+            hasWaiting = true;
         }
 
         @Override
-        public void onExeceptionDuringUpdate(Exception arg0)
+        public void onExeceptionDuringUpdate(Exception e)
         {
-            // TODO Auto-generated method stub
-
+            ActionManager.actionDisplayError(DetailsFragment.this, e);
         }
     };
 
     private OnNodeUpdateListener listener = new OnNodeUpdateListener()
     {
+        public boolean hasWaiting = false;
+
+        @Override
+        public void beforeUpdate(Node node)
+        {
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            }
+            hasWaiting = true;
+        }
+        
 
         @Override
         public void afterUpdate(Node node)
@@ -517,15 +490,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         @Override
-        public void beforeUpdate(Node node)
+        public void onExeceptionDuringUpdate(Exception e)
         {
-        }
-
-        @Override
-        public void onExeceptionDuringUpdate(Exception arg0)
-        {
-            // TODO Auto-generated method stub
-
+            ActionManager.actionDisplayError(DetailsFragment.this, e);
         }
     };
 
@@ -548,17 +515,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void edit()
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(node);
-        newFragment.show(ft, UpdateDialogFragment.TAG);
+        NodeActions.edit(getActivity(), node);
     }
 
     public void like(View v)
@@ -590,6 +547,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public static void getMenu(AlfrescoSession session, Activity activity, Menu menu, Node node)
     {
         MenuItem mi;
+
+        if (node == null) { return; }
 
         if (node.isDocument())
         {
@@ -634,10 +593,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             mi.setIcon(R.drawable.ic_comment);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST
-                    + MenuActionItem.MENU_VERSION_HISTORY, R.string.action_versions);
-            mi.setIcon(R.drawable.ic_menu_recent_history);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            if (node.isDocument())
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST
+                        + MenuActionItem.MENU_VERSION_HISTORY, R.string.action_versions);
+                mi.setIcon(R.drawable.ic_menu_recent_history);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
 
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS,
                     R.string.action_tags);
@@ -671,7 +633,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         mTabHost.setup(); // you must call this before adding your tabs!
         mTabHost.setOnTabChangedListener(this);
 
-       
         mTabHost.addTab(newTab(TAB_METADATA, R.string.metadata, android.R.id.tabcontent));
         if (node.isDocument())
         {
@@ -725,21 +686,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void addMetadata(Node n)
     {
-        /*Log.d(TAG, "ADD METADATA " + getFragmentManager());
-        int layoutid = android.R.id.tabcontent;
-        BaseFragment frag = (BaseFragment) getFragmentManager().findFragmentByTag(MetadataFragment.TAG);
-        if (frag != null)
-        {
-            FragmentDisplayer.loadFragment(getActivity(), frag, layoutid, MetadataFragment.TAG);
-            // getFragmentManager().popBackStack(MetadataFragment.TAG,
-            // FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else
-        {
-            frag = MetadataFragment.newInstance(n);
-            frag.setSession(alfSession);
-            FragmentDisplayer.replaceFragment(getActivity(), frag, layoutid, MetadataFragment.TAG, false);
-        }*/
         int layoutid = android.R.id.tabcontent;
         BaseFragment frag = MetadataFragment.newInstance(n);
         frag.setSession(alfSession);

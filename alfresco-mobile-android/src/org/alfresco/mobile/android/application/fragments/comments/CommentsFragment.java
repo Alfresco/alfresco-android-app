@@ -22,6 +22,7 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.comment.CommentFragment;
@@ -30,12 +31,14 @@ import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 public class CommentsFragment extends CommentFragment
 {
@@ -43,7 +46,8 @@ public class CommentsFragment extends CommentFragment
     public static final String TAG = "CommentsFragment";
 
     private EditText commentText;
-    private Button bAdd;
+
+    private ImageButton bAdd;
 
     public CommentsFragment()
     {
@@ -65,12 +69,13 @@ public class CommentsFragment extends CommentFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.sdk_comments, container, false);
+        View v = inflater.inflate(R.layout.app_comments, container, false);
 
         init(v, R.string.empty_comment);
 
         commentText = (EditText) v.findViewById(R.id.comment_value);
-        bAdd = (Button) v.findViewById(R.id.send_comment);
+        bAdd = (ImageButton) v.findViewById(R.id.send_comment);
+        bAdd.setEnabled(false);
 
         bAdd.setOnClickListener(new OnClickListener()
         {
@@ -83,6 +88,7 @@ public class CommentsFragment extends CommentFragment
                             commentText.getText().toString());
                     c.setOnCommentCreateListener(createListener);
                     getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
+                    getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
                 }
                 else
                 {
@@ -91,9 +97,32 @@ public class CommentsFragment extends CommentFragment
             }
         });
 
+        commentText.addTextChangedListener(new TextWatcher()
+        {
+            public void afterTextChanged(Editable s)
+            {
+                if (commentText.getText().length() > 0)
+                {
+                    bAdd.setEnabled(true);
+                }
+                else
+                {
+                    bAdd.setEnabled(false);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+        });
+
         return v;
     }
-    
+
     private OnCommentCreateListener createListener = new OnCommentCreateListener()
     {
         @Override
@@ -134,7 +163,10 @@ public class CommentsFragment extends CommentFragment
     @Override
     public void onStart()
     {
-        //FragmentUtils.setTitleFragmentPlace(getActivity(), "Comments : " + node.getName());
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            getActivity().setTitle(getString(R.string.document_comments_header));
+        }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }

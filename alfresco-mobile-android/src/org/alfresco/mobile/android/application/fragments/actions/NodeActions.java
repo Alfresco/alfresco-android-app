@@ -17,16 +17,26 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.actions;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
+import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
@@ -36,9 +46,14 @@ import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListen
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
+import android.app.DownloadManager.Request;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -71,18 +86,32 @@ public class NodeActions implements ActionMode.Callback
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item)
     {
+        Boolean b = false;
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_UPDATE:
+                update(activity.getFragmentManager().findFragmentByTag(DetailsFragment.TAG));
+                b = true;
+                break;
+            case MenuActionItem.MENU_DOWNLOAD:
+                download(activity, nodes.get(0));
+                b = true;
+                break;
+            case MenuActionItem.MENU_EDIT:
+                edit(activity, nodes.get(0));
+                b = true;
+                break;
             case MenuActionItem.MENU_DELETE:
-                Log.d("Delete Node", nodes.get(0).getName());
+            case MenuActionItem.MENU_DELETE_FOLDER:
                 delete(activity, fragment, nodes.get(0));
-                mode.finish();
-                nodes.clear();
-                return true;
+                b = true;
+                break;
             default:
                 break;
         }
-        return false;
+        mode.finish();
+        nodes.clear();
+        return b;
     }
 
     @Override
@@ -96,8 +125,10 @@ public class NodeActions implements ActionMode.Callback
         menu.clear();
         if (node.isDocument())
         {
-           DetailsFragment.getMenu(SessionUtils.getSession(activity), activity, menu, node);
-        } else {
+            DetailsFragment.getMenu(SessionUtils.getSession(activity), activity, menu, node);
+        }
+        else
+        {
             ChildrenBrowserFragment.getMenu(SessionUtils.getSession(activity), menu, (Folder) node, true);
         }
     }
@@ -171,7 +202,7 @@ public class NodeActions implements ActionMode.Callback
                     @Override
                     public void beforeDelete(Node arg0)
                     {
-                        
+
                     }
 
                     @Override
@@ -181,6 +212,8 @@ public class NodeActions implements ActionMode.Callback
                     }
                 });
                 activity.getLoaderManager().restartLoader(NodeDeleteLoader.ID, null, up);
+                activity.getLoaderManager().getLoader(NodeDeleteLoader.ID).forceLoad();
+
                 dialog.dismiss();
             }
         });
@@ -193,6 +226,68 @@ public class NodeActions implements ActionMode.Callback
         });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    public static void edit(final Activity activity, final Node node)
+    {
+        FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
+        Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
+        if (prev != null)
+        {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(node);
+        newFragment.show(ft, UpdateDialogFragment.TAG);
+    }
+    
+    public static void update(Fragment f){
+        ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
+    }
+
+    public static void download(final Activity activity, final Node node)
+    {
+        Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) SessionUtils.getSession(activity).getServiceRegistry()
+                .getDocumentFolderService()).getDownloadUrl((Document) node));
+
+        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
+
+        DownloadManager manager = (DownloadManager) activity.getSystemService(Activity.DOWNLOAD_SERVICE);
+
+        Request request = new DownloadManager.Request(uri)
+                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
+                .setAllowedOverRoaming(false).setVisibleInDownloadsUi(false).setTitle(node.getName())
+                .setDescription(node.getDescription())
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setDestinationUri(Uri.fromFile(getDownloadFile(activity, node)));
+
+        AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(activity))
+                .getAuthenticationProvider();
+        Map<String, List<String>> httpHeaders = auth.getHTTPHeaders();
+        if (httpHeaders != null)
+        {
+            for (Map.Entry<String, List<String>> header : httpHeaders.entrySet())
+            {
+                if (header.getValue() != null)
+                {
+                    for (String value : header.getValue())
+                    {
+                        request.addRequestHeader(header.getKey(), value);
+                    }
+                }
+            }
+        }
+
+        manager.enqueue(request);
+    }
+
+    public static File getDownloadFile(final Activity activity, final Node node)
+    {
+        File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl() + "",
+                SessionUtils.getAccount(activity).getUsername());
+        return new File(folder, node.getName());
     }
 
 }

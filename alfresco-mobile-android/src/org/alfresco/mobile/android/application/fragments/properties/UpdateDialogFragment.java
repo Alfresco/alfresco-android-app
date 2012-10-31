@@ -19,26 +19,26 @@ package org.alfresco.mobile.android.application.fragments.properties;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 public class UpdateDialogFragment extends UpdateNodeDialogFragment
 {
     
     public static final String TAG = "UpdateDialogFragment";
     
-    private ProgressDialog mProgressDialog;
-
     public UpdateDialogFragment()
     {
     }
@@ -62,60 +62,44 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     {
         alfSession = SessionUtils.getSession(getActivity());
         View v = super.onCreateView(inflater, container, savedInstanceState);
+        
+        Node node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
+        if (node != null && node.isFolder())
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
+        }
 
         onUpdateListener = new OnNodeUpdateListener()
         {
+            public boolean hasWaiting = false;
 
             @Override
             public void beforeUpdate(Node node)
             {
-                /*mProgressDialog = ProgressDialog.show(getActivity(), "Update in Progress", "Contacting your server...", true,
-                        true, new OnCancelListener()
-                        {
-                            @Override
-                            public void onCancel(DialogInterface dialog)
-                            {
-                                if (getActivity() != null
-                                        && getActivity().getLoaderManager().getLoader(UpdateNodeLoader.ID) != null)
-                                {
-                                    getActivity().getLoaderManager().destroyLoader(UpdateNodeLoader.ID);
-                                }
-                            }
-                        });*/
+                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                }
+                hasWaiting = true;
             }
 
             @Override
             public void afterUpdate(Node node)
             {
-                getDialog().dismiss();
                 ActionManager.actionRefresh(UpdateDialogFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                         IntentIntegrator.NODE_TYPE);
                 ((MainActivity) getActivity()).setCurrentNode(node);
+                getDialog().dismiss();
             }
 
             @Override
-            public void onExeceptionDuringUpdate(Exception arg0)
+            public void onExeceptionDuringUpdate(Exception e)
             {
-                // TODO Auto-generated method stub
+                ActionManager.actionDisplayError(UpdateDialogFragment.this, e);
+                Log.e(TAG, Log.getStackTraceString(e));
                 getDialog().dismiss();
             }
         };
 
         return v;
     }
-
-    @Override
-    public void onDestroy()
-    {
-        if (mProgressDialog != null) mProgressDialog.dismiss();
-        super.onDestroy();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        if (mProgressDialog != null) mProgressDialog.dismiss();
-        super.onDismiss(dialog);
-    }
-    
 }

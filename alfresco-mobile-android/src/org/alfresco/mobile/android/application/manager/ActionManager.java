@@ -37,6 +37,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
 
     public static final String REFRESH_EXTRA = "refreshExtra";
 
+
     /**
      * Allow to pick file with other apps.
      * 
@@ -60,6 +61,14 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     public static void actionRefresh(Fragment f, String refreshCategory, String type)
     {
         actionRefresh(f, refreshCategory, type, null);
+    }
+    
+    public static void actionDisplayError(Fragment f, Exception e)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_ERROR);
+        Bundle b = new Bundle();
+        b.putSerializable(IntentIntegrator.DISPLAY_ERROR_DATA, e);
+        f.startActivity(i);
     }
 
     public static void actionRequestUserAuthentication(Activity activity, Account account)

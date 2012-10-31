@@ -71,8 +71,10 @@ public class MetadataFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(false);
-        container.setVisibility(View.VISIBLE);
+        setRetainInstance(true);
+        if (container != null){
+            container.setVisibility(View.VISIBLE);
+        }
         alfSession = SessionUtils.getSession(getActivity());
         node = (Node) getArguments().get(ARGUMENT_NODE);
         
@@ -120,8 +122,9 @@ public class MetadataFragment extends BaseFragment
                     tv = (TextView) v.findViewById(R.id.propertyValue);
                     if (PropertyType.DATETIME.equals(node.getProperty(map.getKey()).getType()))
                     {
-                        tv.setText(DateFormat.getTimeFormat(getActivity()).format(
-                                ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()));
+                        tv.setText(DateFormat.getMediumDateFormat(getActivity()).format(
+                                ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()) + " " + DateFormat.getTimeFormat(getActivity()).format(
+                                        ((GregorianCalendar) node.getProperty(map.getKey()).getValue()).getTime()));
                     }
                     else
                     {

@@ -124,7 +124,7 @@ public abstract class AlphabeticNodeAdapter extends BaseListAdapter<Node, Generi
             if (convertView == null) 
             {
                 holder = new ViewHolder();
-                convertView = mInflater.inflate(R.layout.list_header, null);
+                convertView = mInflater.inflate(R.layout.app_list_header, null);
                 holder.textView = (TextView)convertView.findViewById(R.id.list_header_title);
                 convertView.setTag(holder);
             }

@@ -22,24 +22,25 @@
     android:orientation="vertical"
     android:visibility="visible" >
 
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dip" >
+
+        <ImageView 
+            android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_search"
+    />
+    
     <EditText
         android:id="@+id/search_query"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter search term" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/search_global"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:text="Repository" />
+        android:hint="@string/search_form_hint"
+        android:inputType="text"
+         />
     </LinearLayout>
 
     <LinearLayout
@@ -52,11 +53,4 @@
         android:layout_height="wrap_content"
          android:layout_weight="1"
         layout="@layout/sdk_list" />
-
-    <include
-        android:id="@+id/bottom"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/sdkapp_bottom" />
-
 </LinearLayout>
