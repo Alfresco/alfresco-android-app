@@ -150,8 +150,8 @@ public class FileActions implements ActionMode.Callback
     public static void edit(final Activity activity, final Fragment f, final File file)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.action_edit);
-        builder.setMessage(activity.getResources().getString(R.string.action_delete_desc) + " " + file.getName());
+        builder.setTitle(R.string.action_rename);
+        builder.setMessage(activity.getResources().getString(R.string.action_rename_desc) + " " + file.getName());
         // Set an EditText view to get user input   
         final EditText input = new EditText(activity); 
         builder.setView(input);

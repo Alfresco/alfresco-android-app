@@ -25,8 +25,10 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFra
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.Activity;
+import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
@@ -94,6 +96,20 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
     public void onLoaderReset(Loader<List<Account>> arg0)
     {
         // TODO Auto-generated method stub
+    }
 
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        super.onNewIntent(intent);
+
+        if (intent.getAction() != null && intent.getData() != null && Intent.ACTION_VIEW.equals(intent.getAction())
+                && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
+                && IntentIntegrator.CLOUD_SIGNUP.equals(intent.getData().getHost()))
+        {
+            getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            cloud(null);
+        }
     }
 }

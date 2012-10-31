@@ -71,7 +71,7 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         }
         else
         {
-            ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(null);
+            ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
         }
     }
 

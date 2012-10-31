@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
+import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.application.MenuActionItem;
@@ -87,6 +88,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
             NodeLoaderCallback call = new NodeLoaderCallback(getActivity(), alfSession, identifier);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
+            lm.getLoader(NodeLoader.ID).forceLoad();
         }
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }

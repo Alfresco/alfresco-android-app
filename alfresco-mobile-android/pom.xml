@@ -54,7 +54,7 @@
 
 	<profiles>
 		<profile>
-			<id>beta-release</id>
+			<id>android-beta-release</id>
 			<build>
 				<resources>
 					<resource>
@@ -63,6 +63,14 @@
 						<targetPath>${project.build.directory}/filtered-res</targetPath>
 						<includes>
 							<include>**/*.*</include>
+						</includes>
+					</resource>
+					<resource>
+						<directory>${bamboo_android_keys.directory}</directory>
+						<targetPath>${project.build.directory}/filtered-res/values</targetPath>
+						<filtering>true</filtering>
+						<includes>
+							<include>bamboo_android_keys.xml</include>
 						</includes>
 					</resource>
 				</resources>

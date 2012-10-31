@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -129,6 +130,7 @@ public class AccountEditFragment extends DialogFragment
                     password, description);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(SessionLoader.ID, null, call);
+            lm.getLoader(SessionLoader.ID).forceLoad();
         }
     }
 

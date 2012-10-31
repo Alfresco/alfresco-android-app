@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -41,6 +42,7 @@ import android.app.FragmentManager;
 import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -75,6 +77,8 @@ public class AccountDetailsFragment extends BaseFragment
     private AccountDAO accountDao;
 
     private View vRoot;
+
+    private long defaultId;
 
     public AccountDetailsFragment()
     {
@@ -129,16 +133,9 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                
                 AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                        AccountOAuthFragment.TAG, true);
-                
-                /* Load First Account by default
-                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), acc);
-                LoaderManager lm = getLoaderManager();
-                lm.restartLoader(SessionLoader.ID, null, call);
-                lm.getLoader(SessionLoader.ID).forceLoad();*/
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
             }
         });
 
@@ -170,7 +167,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
 
         v.findViewById(R.id.account_authentication).setVisibility(View.VISIBLE);
-        
+
         if (acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
         {
             v.findViewById(R.id.advanced).setVisibility(View.GONE);
@@ -316,12 +313,14 @@ public class AccountDetailsFragment extends BaseFragment
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
-        if (!DisplayUtils.hasCentralPane(getActivity())){
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
             getActivity().setTitle(getText(R.string.accounts_details) + " : " + acc.getDescription());
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -413,7 +412,7 @@ public class AccountDetailsFragment extends BaseFragment
         alert.show();
 
     }
-    
+
     @Override
     public void onDetach()
     {

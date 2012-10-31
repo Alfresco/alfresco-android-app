@@ -17,20 +17,19 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import org.alfresco.mobile.android.api.asynchronous.OAuthAccessTokenLoader;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
+import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnCancelListener;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -133,34 +132,28 @@ public class AccountOAuthFragment extends OAuthFragment
                 {
                     mProgressDialog.dismiss();
                 }
-                
-                if (DisplayUtils.hasCentralPane(getActivity())){
-                    ((MainActivity)getActivity()).clearScreen();
-                } else {
+
+                if (DisplayUtils.hasCentralPane(getActivity()))
+                {
+                    ((MainActivity) getActivity()).clearScreen();
+                }
+                else
+                {
                     getActivity().getFragmentManager().popBackStack();
                 }
-                
+
                 MessengerManager.showLongToast(getActivity(), e.getMessage());
             }
 
             @Override
             public void beforeRequestAccessToken(Bundle b)
             {
-                mProgressDialog = ProgressDialog.show(getActivity(), getText(R.string.dialog_wait),
-                        getText(R.string.validation_creadentials), true, true, new OnCancelListener()
-                        {
-                            @Override
-                            public void onCancel(DialogInterface dialog)
-                            {
-                                getLoaderManager().destroyLoader(OAuthAccessTokenLoader.ID);
-                            }
-                        });
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
             }
 
             @Override
             public void afterRequestAccessToken(OAuthData result)
             {
-                mProgressDialog.dismiss();
                 load(result);
             }
         });

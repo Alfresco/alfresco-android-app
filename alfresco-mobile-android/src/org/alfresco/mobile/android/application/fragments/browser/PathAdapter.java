@@ -67,12 +67,17 @@ public class PathAdapter extends ArrayAdapter<String>
 
     private String getLabel(Account account)
     {
-        String label = account.getDescription();
-        if (label == null || label.isEmpty())
+        String label = "";
+        if (account != null)
         {
-            label = account.getUsername();
+            label = account.getDescription();
+            if (label == null || label.isEmpty())
+            {
+                label = account.getUsername();
+            }
         }
         return label;
+
     }
 
 }

@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.utils.AdapterUtils;
@@ -28,6 +29,7 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 
 public class AccountDetailsAdapter extends ArrayAdapter<Account>
 {
@@ -36,14 +38,17 @@ public class AccountDetailsAdapter extends ArrayAdapter<Account>
 
     protected Account item;
 
+    private List<Account> selectedItems;
+
     protected int textViewResourceId;
 
-    public AccountDetailsAdapter(Activity context, int textViewResourceId, List<Account> listItems)
+    public AccountDetailsAdapter(Activity context, int textViewResourceId, List<Account> listItems,
+            List<Account> selectedItems)
     {
         super(context, textViewResourceId, listItems);
         this.context = context;
         this.textViewResourceId = textViewResourceId;
-
+        this.selectedItems = selectedItems;
     }
 
     @Override
@@ -75,6 +80,17 @@ public class AccountDetailsAdapter extends ArrayAdapter<Account>
             {
                 v.bottomText.setText(item.getUsername());
             }
+
+            if (selectedItems != null && selectedItems.contains(item))
+            {
+                ((LinearLayout) v.icon.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(
+                        R.drawable.list_longpressed_holo));
+            }
+            else
+            {
+                ((LinearLayout) v.icon.getParent()).setBackgroundDrawable(null);
+            }
+
         }
     }
 
