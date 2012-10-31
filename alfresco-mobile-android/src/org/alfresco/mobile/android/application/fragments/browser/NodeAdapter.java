@@ -22,8 +22,8 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.ui.R;
-import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -39,7 +39,7 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
+public class NodeAdapter extends AlphabeticNodeAdapter
 {
     private List<Node> selectedItems;
 
