@@ -445,10 +445,16 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             refreshThumbnail(node);
         }
 
+      
+        boolean hasWaiting = false;
+        
         @Override
         public void beforeUpdate(Node node)
         {
-            new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            }
+            hasWaiting = true;
         }
 
         @Override
@@ -460,6 +466,17 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private OnNodeUpdateListener listener = new OnNodeUpdateListener()
     {
+        public boolean hasWaiting = false;
+
+        @Override
+        public void beforeUpdate(Node node)
+        {
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+            }
+            hasWaiting = true;
+        }
+        
 
         @Override
         public void afterUpdate(Node node)
@@ -470,12 +487,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             MessengerManager.showToast(getActivity(),
                     node.getName() + " " + getResources().getString(R.string.action_update_sucess));
             refreshThumbnail(node);
-        }
-
-        @Override
-        public void beforeUpdate(Node node)
-        {
-            new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
         }
 
         @Override

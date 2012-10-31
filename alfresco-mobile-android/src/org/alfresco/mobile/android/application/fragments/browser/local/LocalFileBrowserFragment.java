@@ -115,21 +115,6 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // ACTION BAR ITEM
-    // //////////////////////////////////////////////////////////////////////
-
-    /*public void refresh(){
-        Bundle b = getArguments();
-        if (b == null)
-        {
-            Account acc = ((MainActivity) getActivity()).getAccount();
-            b = createBundleArgs(StorageManager.getDownloadFolder(getActivity(), acc.getUrl(), acc.getUsername()));
-        }
-        getLoaderManager().restartLoader(LocalFileExplorerLoader.ID, b, this);
-        getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
-    }*/
-    
-    // //////////////////////////////////////////////////////////////////////
     // MENU
     // //////////////////////////////////////////////////////////////////////
     private FileActions nActions;

@@ -71,11 +71,15 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
 
         onUpdateListener = new OnNodeUpdateListener()
         {
+            public boolean hasWaiting = false;
 
             @Override
             public void beforeUpdate(Node node)
             {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                }
+                hasWaiting = true;
             }
 
             @Override

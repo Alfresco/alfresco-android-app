@@ -124,15 +124,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         super.onActivityCreated(savedInstanceState);
     }
 
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-        if (shortcutAlreadyVisible)
-        {
-            displayPathShortcut();
-        }
-    }
 
     @Override
     public void onResume()
@@ -143,9 +134,12 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             importFolder = ((MainActivity) getActivity()).getImportParent();
             createFile(tmpFile);
         }
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         getActivity().setTitle(R.string.app_name);
+        if (shortcutAlreadyVisible)
+        {
+            displayPathShortcut();
+        }
     }
 
     @Override
@@ -176,6 +170,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (parentFolder != null)
         {
             //
+            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
 
             String[] path = pathValue.split("/");
@@ -418,10 +413,15 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         IntentIntegrator.NODE_TYPE);
             }
 
+            public boolean hasWaiting = false;
+
             @Override
             public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                }
+                hasWaiting = true;
             }
 
             @Override
@@ -462,13 +462,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public static void getMenu(AlfrescoSession session, Menu menu, Folder parentFolder, boolean extended)
     {
         MenuItem mi;
-
-        /*if (!extended && parentFolder != null)
-        {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH, Menu.FIRST, R.string.action_search);
-            mi.setIcon(R.drawable.ic_search);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }*/
 
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 

@@ -20,4 +20,14 @@ public class WaitingDialogFragment extends DialogFragment
         dialog.setCancelable(false);
         return dialog;
     }
+    
+    @Override
+    public void onDestroyView()
+    {
+        if (getDialog() != null && getRetainInstance())
+        {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
 }
