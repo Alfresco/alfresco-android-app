@@ -14,26 +14,25 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:layout_gravity="center"
-    android:orientation="vertical" >
+    android:clickable="false"
+    android:orientation="vertical" android:padding="5dip">
 
-    <TextView
-        android:id="@+id/toptext"
-        style="@style/list_item_bottomtext"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Hello world.txt" />
-
-    <TextView
-        android:id="@+id/bottomtext"
-        style="@style/list_item_toptext"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="20 days ago" />
-
+	<TextView
+	    xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:id="@+id/list_header_title"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:clickable="false"
+	    android:drawableBottom="@drawable/section_header"
+	    android:paddingBottom="2dip"
+	    android:paddingLeft="5dip"
+	    android:paddingTop="2dip"
+	    android:text="@string/app_name"
+	    android:textColor="@color/emphasis" />
+	    
 </LinearLayout>

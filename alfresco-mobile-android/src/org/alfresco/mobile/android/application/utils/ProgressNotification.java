@@ -97,7 +97,7 @@ public class ProgressNotification extends Activity
 
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.download_progress);
+        setContentView(R.layout.app_download_progress);
 
         try
         {
@@ -179,7 +179,7 @@ public class ProgressNotification extends Activity
         }
         else
         {
-            RemoteViews remote = new RemoteViews(c.getPackageName(), R.layout.download_progress);
+            RemoteViews remote = new RemoteViews(c.getPackageName(), R.layout.app_download_progress);
             remote.setImageViewResource(R.id.status_icon, R.drawable.ic_alfresco);
             remote.setTextViewText(R.id.status_text, params.getString("name"));
             remote.setProgressBar(R.id.status_progress, params.getInt("dataSize"), 0, false);

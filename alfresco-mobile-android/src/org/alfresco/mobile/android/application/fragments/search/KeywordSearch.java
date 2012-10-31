@@ -51,7 +51,7 @@ public class KeywordSearch extends SearchFragment
     {
         alfSession = SessionUtils.getSession(getActivity());
         setActivateThumbnail(false);
-        View v = inflater.inflate(R.layout.sdkapp_search, container, false);
+        View v = inflater.inflate(R.layout.app_search, container, false);
 
         init(v, R.string.empty_child);
 

@@ -151,6 +151,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         listView.setClickable(true);
 
+        listView.setDivider(null);
+        listView.setDividerHeight(0);
+        
         return v;
     }
 
