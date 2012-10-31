@@ -20,6 +20,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="horizontal"
+    android:paddingBottom="10dip"
     >
 
     <LinearLayout
@@ -47,8 +48,8 @@
     <ImageView
         android:id="@+id/icon"
         style="@style/list_item_icon"
-        android:layout_width="50dip"
-        android:layout_height="50dip"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
         android:layout_marginRight="@dimen/button_padding"
         android:contentDescription="@string/thumbnail_description"
         android:src="@drawable/mime_file" />
