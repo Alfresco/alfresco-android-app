@@ -248,7 +248,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             return;
         }
 
-        if (item.isDocument())
+        if (item.isDocument() && DisplayUtils.hasCentralPane(getActivity()))
         {
             selectedItems.add(item);
         }
