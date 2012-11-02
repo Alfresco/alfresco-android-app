@@ -278,9 +278,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (node.isFolder()) return;
 
+        final MainActivity activity = ((MainActivity) getActivity());
         boolean cloud = (alfSession instanceof CloudSession);
-
-        if (!cloud)
+        
+        //TODO Add a mechanism at SDK to store parent in each node, so that we can share links to documents
+        //at all levels, rather than just from browser itself.
+        boolean canShareLink = (activity.getFragment(ChildrenBrowserFragment.TAG) != null); 
+        
+        if (!cloud || !canShareLink)
         {
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
@@ -314,7 +319,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    MainActivity activity = ((MainActivity) getActivity());
                     Folder parentFolder = ((ChildrenBrowserFragment) activity.getFragment(ChildrenBrowserFragment.TAG))
                             .getParent();
                     if (parentFolder != null)
