@@ -5,6 +5,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
@@ -117,5 +118,12 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     {
         Site s = (Site) l.getItemAtPosition(position);
         ((MainActivity) getActivity()).addNavigationFragment(s);
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 }

@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
@@ -123,36 +124,9 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             {
                 case Account.TYPE_ALFRESCO_TEST_OAUTH:
                 case Account.TYPE_ALFRESCO_CLOUD:
-
-                    // FIXME Wrong SDK Error
-                    // Manage Cloud Session Error
-                    if (results.getException() instanceof AlfrescoSessionException)
-                    {
-                        // Case CmisConnexionException ==> Token expired
-                        AlfrescoSessionException ex = ((AlfrescoSessionException) results.getException());
-                        if (ex.getMessage().contains("No authentication challenges found") || ex.getErrorCode() == 100)
-                        {
-                            manageException(results);
-                        }
-                    }
-
-                    if (results.getException() instanceof AlfrescoServiceException)
-                    {
-                        AlfrescoServiceException ex = ((AlfrescoServiceException) results.getException());
-                        if (ex.getErrorCode() == 104)
-                        {
-                            manageException(results);
-                        }
-                    }
                     
-                    if (results.getException() instanceof CmisConnectionException)
-                    {
-                        CmisConnectionException ex = ((CmisConnectionException) results.getException());
-                        if (ex.getMessage().contains("No authentication challenges found"))
-                        {
-                            manageException(results);
-                        }  
-                    }
+                    CloudExceptionUtils.handleCloudException(activity, results.getException(), true);
+
                     break;
                 case Account.TYPE_ALFRESCO_TEST_BASIC:
                 case Account.TYPE_ALFRESCO_CMIS:
@@ -166,8 +140,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     }
                     break;
                 default:
-                    MessengerManager.showLongToast(activity, getText(R.string.error_session_creation)
-                            + results.getException().getMessage());
+                    MessengerManager.showLongToast(activity, getText(R.string.error_session_creation));
                     Intent i = new Intent(activity, MainActivity.class);
                     i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
                     activity.startActivity(i);
@@ -176,12 +149,6 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
         activity.setProgressBarIndeterminateVisibility(false);
-    }
-
-    private void manageException(LoaderResult<AlfrescoSession> results)
-    {
-        MessengerManager.showLongToast(activity, getText(R.string.error_session_expired));
-        ActionManager.actionRequestUserAuthentication(activity, acc);
     }
 
     @Override
@@ -212,7 +179,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 }
                 else
                 {
-                    MessengerManager.showLongToast(activity, "Error during token update");
+                    MessengerManager.showLongToast(activity, activity.getString(R.string.error_refresh_token));
                 }
                 break;
         }

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.utils;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.AlfrescoApplication;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
@@ -33,6 +34,10 @@ public class SessionUtils {
 
 	public static void setsession(Context c, AlfrescoSession s) {
 		((AlfrescoApplication) c.getApplicationContext()).setRepositorySession(s);
+	}
+	
+	public static boolean isCloudSession(Context c) {
+	    return getSession(c) instanceof CloudSession;
 	}
 	
 	public static Account getAccount(Context c) {

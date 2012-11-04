@@ -17,11 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
-import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
@@ -74,6 +74,10 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
+        //TODO DELETE BEFORE RELEASE !
+        //OAuthData data = ((CloudSessionImpl)SessionUtils.getSession(getActivity())).getOAuthData();
+        //((CloudSessionImpl)SessionUtils.getSession(getActivity())).setOAuthData(new OAuth2DataImpl(data.getApiKey(),data.getApiSecret(), "-1", data.getRefreshToken()));
+        
         ActivityEntry item = (ActivityEntry) l.getItemAtPosition(position);
 
         // Inconsistency between cloud and on premise.
@@ -108,5 +112,12 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public void refresh()
     {
         refresh(loaderId, callback);
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 }

@@ -45,6 +45,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -162,7 +163,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), "URL error");
+            MessengerManager.showToast(getActivity(), R.string.error_account_url);
             return;
         }
 
@@ -266,7 +267,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
         else
         {
-            MessengerManager.showToast(getActivity(), "URL error");
+            MessengerManager.showToast(getActivity(), R.string.error_account_url);
             return;
         }
 
@@ -345,10 +346,6 @@ public class AccountDetailsFragment extends BaseFragment
                     vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                     vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
-                }
-                else
-                {
-                    MessengerManager.showToast(getActivity(), "Error During Update");
                 }
             }
         });

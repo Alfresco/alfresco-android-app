@@ -24,6 +24,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -109,10 +110,9 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         }
 
         @Override
-        public void onExeceptionDuringCreation(Exception arg0)
+        public void onExeceptionDuringCreation(Exception e)
         {
-            // TODO Auto-generated method stub
-            
+            CloudExceptionUtils.handleCloudException(getActivity(), e, false);
         }
     };
 }

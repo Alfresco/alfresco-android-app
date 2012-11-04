@@ -99,8 +99,8 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
             i.setAction(IntentIntegrator.ACTION_DISPLAY_NODE);
             activity.startActivity(i);
         } else {
-            AlertDialog dialog = new AlertDialog.Builder(activity).setTitle("Unable to open this url.")
-                    .setMessage(results.getException().getMessage()).setCancelable(false)
+            AlertDialog dialog = new AlertDialog.Builder(activity).setTitle(R.string.error_unable_url)
+                    .setCancelable(false)
                     .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int id)

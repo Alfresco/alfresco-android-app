@@ -35,9 +35,12 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 
 public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<CloudSignupRequest>>
 {
+
+    private static final String TAG = "CloudSignupLoaderCallback";
 
     private Activity activity;
 
@@ -91,18 +94,12 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
         if (request != null && fr instanceof CloudSignupDialogFragment)
         {
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            // TODO replace
-
             if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
                     Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
                     request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null) != -1)
             {
                 mProgressDialog.dismiss();
                 ((CloudSignupDialogFragment) fr).displayAccounts();
-            }
-            else
-            {
-                MessengerManager.showLongToast(activity, "Error during insert.");
             }
 
         }
@@ -114,7 +111,8 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
         else if (results.hasException())
         {
             mProgressDialog.dismiss();
-            MessengerManager.showLongToast(activity, results.getException().getMessage());
+            Log.e(TAG, Log.getStackTraceString(results.getException()));
+            MessengerManager.showLongToast(activity, activity.getString(R.string.error_general));
         }
     }
 
