@@ -69,10 +69,6 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         {
             ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
-        else
-        {
-            ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.list_divider));
-        }
     }
 
     private String createContentBottomText(Context context, Node node)
