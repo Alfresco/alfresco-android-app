@@ -60,10 +60,11 @@
             </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
-        <activity
+        <activity 
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
+            android:windowSoftInputMode="adjustPan"
             >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
