@@ -54,6 +54,98 @@
 
 	<profiles>
 		<profile>
+			<id>android-release</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/res</directory>
+						<filtering>true</filtering>
+						<targetPath>${project.build.directory}/filtered-res</targetPath>
+						<includes>
+							<include>**/*.*</include>
+						</includes>
+					</resource>
+					<resource>
+						<directory>${bamboo_android_keys.directory}</directory>
+						<targetPath>${project.build.directory}/filtered-res/values</targetPath>
+						<filtering>true</filtering>
+						<includes>
+							<include>bamboo_android_keys.xml</include>
+						</includes>
+					</resource>
+				</resources>
+				<finalName>${project.artifactId}</finalName>
+				<plugins>
+					<plugin>
+						<artifactId>maven-resources-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<goals>
+									<goal>resources</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-jarsigner-plugin</artifactId>
+						<version>1.2</version>
+						<executions>
+							<execution>
+								<id>signing</id>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+								<phase>package</phase>
+								<inherited>true</inherited>
+								<configuration>
+									<archiveDirectory></archiveDirectory>
+									<includes>
+										<include>target/*.apk</include>
+									</includes>
+									<keystore>${android_keystore}</keystore>
+									<storepass>${android_keystore_storepass}</storepass>
+									<keypass>${android_keystore_keypass}</keypass>
+									<alias>${android_keystore_alias}</alias>
+									<arguments>
+										<argument>-sigalg</argument>
+										<argument>MD5withRSA</argument>
+										<argument>-digestalg</argument>
+										<argument>SHA1</argument>
+									</arguments>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
+						<artifactId>android-maven-plugin</artifactId>
+						<configuration>
+							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
+							<sign>
+								<debug>false</debug>
+							</sign>
+							<zipalign>
+								<skip>false</skip>
+								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-official.apk</outputApk>
+							</zipalign>
+						</configuration>
+						<executions>
+							<execution>
+								<id>alignApk</id>
+								<phase>install</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>android-beta-release</id>
 			<build>
 				<resources>
@@ -87,37 +179,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<!-- <plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-jarsigner-plugin</artifactId>
-						<version>1.2</version>
-						<executions>
-							<execution>
-								<id>signing</id>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-								<phase>package</phase>
-								<inherited>true</inherited>
-								<configuration>
-									<archiveDirectory></archiveDirectory>
-									<includes>
-										<include>target/*.apk</include>
-									</includes>
-									<keystore>${keystore_path}</keystore>
-									<storepass>${storepass}</storepass>
-									<keypass>${keypass}</keypass>
-									<alias>${alias}</alias>
-									<arguments>
-										<argument>-sigalg</argument>
-										<argument>MD5withRSA</argument>
-										<argument>-digestalg</argument>
-										<argument>SHA1</argument>
-									</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin> -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
@@ -127,10 +188,20 @@
 								<debug>true</debug>
 							</sign>
 							<zipalign>
+								<skip>false</skip>
 								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-aligned.apk</outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-dev.apk</outputApk>
 							</zipalign>
 						</configuration>
+						<executions>
+							<execution>
+								<id>alignApk</id>
+								<phase>install</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>

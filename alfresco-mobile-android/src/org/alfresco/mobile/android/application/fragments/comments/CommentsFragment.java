@@ -22,6 +22,7 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
@@ -33,6 +34,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -145,7 +147,8 @@ public class CommentsFragment extends CommentFragment
         @Override
         public void onExeceptionDuringCreation(Exception e)
         {
-            MessengerManager.showLongToast(getActivity(), e.getMessage());
+            Log.e(TAG, Log.getStackTraceString(e));
+            MessengerManager.showLongToast(getActivity(), getActivity().getString(R.string.error_general));
             bAdd.setEnabled(true);
             reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
@@ -169,5 +172,12 @@ public class CommentsFragment extends CommentFragment
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 }

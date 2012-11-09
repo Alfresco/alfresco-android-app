@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.fragments.versions;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
@@ -68,5 +69,12 @@ public class VersionFragment extends VersionsFragment
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 }

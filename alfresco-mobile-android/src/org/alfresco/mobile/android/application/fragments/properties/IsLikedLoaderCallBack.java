@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -31,11 +30,13 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
-import android.widget.ImageButton;
+import android.util.Log;
 import android.widget.ImageView;
 
 public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<Boolean>>
 {
+    private static final String TAG = "IsLikedLoaderCallBack";
+
     private Node node;
 
     private ImageView likeButton;
@@ -64,11 +65,18 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
     public void onLoadFinished(Loader<LoaderResult<Boolean>> arg0, LoaderResult<Boolean> isLiked)
     {
         if (isLiked.getData() == null)
+        {
+            Log.e(TAG, Log.getStackTraceString(isLiked.getException()));
             MessengerManager.showToast(context, R.string.error_retrieve_likes);
+        }
         else if (isLiked.getData())
+        {
             likeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+        }
         else
+        {
             likeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unlike));
+        }
     }
 
     @Override
@@ -91,7 +99,8 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         Bundle b = new Bundle();
         b.putBoolean(IS_CREATE, isCreate);
 
-        if (getLoaderManager().getLoader(id) == null){
+        if (getLoaderManager().getLoader(id) == null)
+        {
             getLoaderManager().initLoader(id, b, this);
         }
         getLoaderManager().restartLoader(id, b, this);
