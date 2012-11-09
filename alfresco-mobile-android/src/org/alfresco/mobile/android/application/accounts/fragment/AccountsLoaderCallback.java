@@ -22,6 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
@@ -80,7 +81,7 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 }
             }
             if (!signup){
-                MessengerManager.showLongToast(activity, "Unable to find an account to activate.");
+                MessengerManager.showLongToast(activity, activity.getString(R.string.error_signup_account_confirmation));
             }
         }
         else

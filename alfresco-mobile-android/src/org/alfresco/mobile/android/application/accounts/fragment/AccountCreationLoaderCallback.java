@@ -173,9 +173,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         else
         {
             mProgressDialog.dismiss();
-            // TODO Remove getMessage exception ?
-            MessengerManager.showLongToast(activity, getText(R.string.error_session_creation)
-                    + results.getException().getMessage());
+            MessengerManager.showLongToast(activity, getText(R.string.error_session_creation));
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
         activity.getLoaderManager().destroyLoader(loader.getId());

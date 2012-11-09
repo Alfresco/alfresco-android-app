@@ -99,7 +99,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
-
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH" />
+                
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
             

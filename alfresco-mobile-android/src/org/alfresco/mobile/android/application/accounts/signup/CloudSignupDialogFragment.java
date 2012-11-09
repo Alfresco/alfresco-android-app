@@ -121,7 +121,7 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (firstName.length() == 0)
         {
-            MessengerManager.showToast(getActivity(), "Password error");
+            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_firstname));
             return false;
         }
 
@@ -130,7 +130,7 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (lastName.length() == 0)
         {
-            MessengerManager.showToast(getActivity(), "Password error");
+            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_lastname));
             return false;
         }
 
@@ -142,7 +142,7 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password))
         {
-            MessengerManager.showToast(getActivity(), "Password error");
+            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_password));
             return false;
         }
 
@@ -151,7 +151,7 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (emailAddress.length() == 0)
         {
-            MessengerManager.showToast(getActivity(), "Email error");
+            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_email));
             return false;
         }
 

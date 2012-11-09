@@ -82,6 +82,18 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
         activity.startActivity(i);
     }
+    
+    public static void actionRequestAuthentication(Activity activity, Account account)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_USER_AUTHENTICATION);
+        i.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
+        i.setType(IntentIntegrator.ACCOUNT_TYPE);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.ACCOUNT_TYPE, account.getId());
+        }
+        activity.startActivity(i);
+    }
 
     public static boolean launchPDF(Context c, String pdfFile)
     {

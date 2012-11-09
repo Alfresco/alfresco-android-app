@@ -55,7 +55,8 @@
     <string name="account_verify">Verifying Account Information...</string>
     <string name="email_hint">example@acme.com</string>
     <string name="account_url">URL (hostname + service url)</string>
-
+    <string name="error_account_form">Please check : </string>
+    
 
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
     <string name="account_wizard_alldone">All Done !</string>
@@ -68,16 +69,30 @@
     <string name="account_wizard_step2">Step 2 of 2</string>
     <string name="account_wizard_step2_description">Account Information</string>
     
+    <!-- ACCOUNTS -->
+    <string name="account_not_activated">Your account is not activated. Please check manage account screen.</string>
+    <string name="account_loading">Loading : </string>
+    
+    
     <!-- MAIN MENU -->
     <string name="wait_title">Please wait</string>
     <string name="wait_message">Contacting your server...</string>
     
     <!-- SESSION ERROR -->
-    <string name="error_session_creation">An error occured during the session creation : </string>
+    <string name="error_session_creation">An error occured during the session creation. Please retry again.</string>
     <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
+    <string name="error_session_refresh">Refreshing session.</string>
     <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings.</string>
     <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
     <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
+    
+    <!-- MESSAGE ERROR -->
+    <string name="error_refresh_token">Error during authentication</string>
+    <string name="error_unable_url">Unable to open this url : </string>
+    <string name="error_general">An error occured during the operation. Please retry again.</string>
+    <string name="error_account_url">Url seems to be non valid. Please check your information.</string>
+    <string name="error_signup_account_confirmation">Unable to find an account to activate.</string>
+    
     
     <!-- DETAILS-->
     <string name="geolocation">Geolocation</string>
