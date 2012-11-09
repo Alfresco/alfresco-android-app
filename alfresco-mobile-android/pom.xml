@@ -188,11 +188,20 @@
 								<debug>true</debug>
 							</sign>
 							<zipalign>
-							    <skip>false</skip>
+								<skip>false</skip>
 								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
 								<outputApk>${project.build.directory}/${project.artifactId}-dev.apk</outputApk>
 							</zipalign>
 						</configuration>
+						<executions>
+							<execution>
+								<id>alignApk</id>
+								<phase>install</phase>
+								<goals>
+									<goal>zipalign</goal>
+								</goals>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
