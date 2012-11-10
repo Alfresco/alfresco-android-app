@@ -69,6 +69,8 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     
     private OnOAuthWebViewListener onOAuthWebViewListener;
 
+    private boolean isLoaded;
+
     public OAuthFragment()
     {
     }
@@ -137,24 +139,8 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
             public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 // check for our custom callback protocol
-                if (url.startsWith(getText(R.string.oauth_callback).toString()))
-                {
-                    // authorization complete hide webview for now & retrieve
-                    // the acces token
-                    code = OAuthHelper.retrieveCode(url);
-                    if (code != null)
-                    {
-                        retrieveAccessToken(code);
-                    }
-                    else
-                    {
-                        if (onOAuthAccessTokenListener != null)
-                        {
-                            onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
-                                    ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
-                                            .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
-                        }
-                    }
+                if (!isLoaded){
+                    onCodeUrl(url);
                     return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
@@ -164,6 +150,9 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
                 super.onPageStarted(view, url, favicon);
+                if (!isLoaded){
+                    onCodeUrl(url);
+                }
                 if (onOAuthWebViewListener != null)
                 {
                     onOAuthWebViewListener.onPageStarted(webview, url, favicon);
@@ -198,6 +187,31 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
         webview.loadUrl(helper.getAuthorizationUrl(apiKey, callback, scope));
 
         return v;
+    }
+    
+    private void onCodeUrl(String url){
+     // check for our custom callback protocol
+        if (url.startsWith(getText(R.string.oauth_callback).toString()))
+        {
+            isLoaded = true;
+            
+            // authorization complete hide webview for now & retrieve
+            // the acces token
+            code = OAuthHelper.retrieveCode(url);
+            if (code != null)
+            {
+                retrieveAccessToken(code);
+            }
+            else
+            {
+                if (onOAuthAccessTokenListener != null)
+                {
+                    onOAuthAccessTokenListener.failedRequestAccessToken(new AlfrescoSessionException(
+                            ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID, Messagesl18n
+                                    .getString("ErrorCodeRegistry.SESSION_AUTH_CODE_INVALID")));
+                }
+            }
+        }
     }
 
     @Override

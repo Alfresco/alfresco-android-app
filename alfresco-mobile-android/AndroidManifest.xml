@@ -65,6 +65,7 @@
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
             android:windowSoftInputMode="adjustPan"
+             android:logo="@drawable/ic_alfresco"
             >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
