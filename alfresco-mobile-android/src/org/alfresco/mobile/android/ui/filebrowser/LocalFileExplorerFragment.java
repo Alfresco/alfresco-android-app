@@ -30,6 +30,10 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 
 public abstract class LocalFileExplorerFragment extends BaseListFragment implements LoaderCallbacks<List<File>>
 {
@@ -40,7 +44,15 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
 
     public static final String ARGUMENT_FOLDERPATH = "folderPath";
 
+    public static final String MODE = "mode";
+
+    public static final int MODE_LISTING = 1;
+
+    public static final int MODE_PICK_FILE = 2;
+
     protected List<File> selectedItems = new ArrayList<File>(1);
+
+    private int titleId;
 
     public LocalFileExplorerFragment()
     {
@@ -68,10 +80,46 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = inflater.inflate(R.layout.sdk_list, container, false);
+
+        init(v, emptyListMessageId);
+
+        Bundle b = getArguments();
+        if (b.getInt(MODE) == MODE_LISTING)
+        {
+            titleId = R.string.menu_downloads;
+        }
+        else if (b.getInt(MODE) == MODE_PICK_FILE)
+        {
+            titleId = R.string.upload_pick_document;
+        }
+
+        if (getDialog() != null)
+        {
+            getDialog().setTitle(titleId);
+            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        }
+        else
+        {
+            getActivity().getActionBar().show();
+            getActivity().setTitle(titleId);
+        }
+
+        return v;
+    }
+
+    protected int getMode()
+    {
+        Bundle b = getArguments();
+        return b.getInt(MODE);
+    }
+
+    @Override
     public Loader<List<File>> onCreateLoader(int id, Bundle ba)
     {
-
-        if (!hasmore)
+        if (!hasmore && lv != null)
         {
             setListShown(false);
         }

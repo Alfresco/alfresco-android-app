@@ -136,6 +136,12 @@
     <string name="menu_help">Help</string>
     <string name="menu_resources">Resources</string>
     
+    <!-- UPLOAD -->
+    <string name="upload_pick_document">Choose a document...</string>
+    <string name="upload_from">Upload file from...</string>
+    <string name="upload_download_folder">Download folder</string>
+    <string name="upload_third_application">Another application</string>
+    
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Accounts</string>
     <string name="accounts_details">Details</string>
