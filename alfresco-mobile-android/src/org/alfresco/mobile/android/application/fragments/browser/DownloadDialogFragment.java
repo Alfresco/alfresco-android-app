@@ -7,6 +7,7 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskLis
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
@@ -107,10 +108,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         if (SessionUtils.getAccount(getActivity()) == null){
             return null;
         }
-        
-        File folder = StorageManager.getDownloadFolder(getActivity(), SessionUtils.getAccount(getActivity()).getUrl()
-                + "", SessionUtils.getAccount(getActivity()).getUsername());
-        File tmpFile = new File(folder, doc.getName());
+        File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
         IOUtils.ensureOrCreatePathAndFile(tmpFile);
         return tmpFile;
     }

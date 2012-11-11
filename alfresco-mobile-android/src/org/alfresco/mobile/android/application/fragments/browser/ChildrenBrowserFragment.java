@@ -467,6 +467,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         MenuItem mi;
 
+        if (parentFolder == null){
+            return;
+        }
+        
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 
         if (!extended && parentFolder != null && permission.canAddChildren())

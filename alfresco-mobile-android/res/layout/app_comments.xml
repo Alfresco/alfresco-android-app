@@ -35,7 +35,9 @@
             android:hint="@string/comment_add_hint"
             android:inputType="text"
             android:layout_weight="1"
-            android:maxLines="2" />
+            android:maxLines="2"
+            android:imeOptions="actionSend"
+            />
 
         <ImageButton
             android:id="@+id/send_comment"

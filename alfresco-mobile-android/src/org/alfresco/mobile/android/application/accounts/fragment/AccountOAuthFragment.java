@@ -150,7 +150,10 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void beforeRequestAccessToken(Bundle b)
             {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+                {
+                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                }
             }
 
             @Override

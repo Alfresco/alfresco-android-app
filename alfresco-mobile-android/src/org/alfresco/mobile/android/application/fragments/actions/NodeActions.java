@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
 import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -47,9 +46,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.DownloadManager.Request;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.app.DownloadManager.Request;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -242,8 +241,9 @@ public class NodeActions implements ActionMode.Callback
         UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(node);
         newFragment.show(ft, UpdateDialogFragment.TAG);
     }
-    
-    public static void update(Fragment f){
+
+    public static void update(Fragment f)
+    {
         ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
     }
 
@@ -251,6 +251,11 @@ public class NodeActions implements ActionMode.Callback
     {
         Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) SessionUtils.getSession(activity).getServiceRegistry()
                 .getDocumentFolderService()).getDownloadUrl((Document) node));
+        
+        File dlFile = getDownloadFile(activity, node);
+        if (dlFile == null){
+            return;
+        }
 
         Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
 
@@ -261,7 +266,7 @@ public class NodeActions implements ActionMode.Callback
                 .setAllowedOverRoaming(false).setVisibleInDownloadsUi(false).setTitle(node.getName())
                 .setDescription(node.getDescription())
                 .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setDestinationUri(Uri.fromFile(getDownloadFile(activity, node)));
+                .setDestinationUri(Uri.fromFile(dlFile));
 
         AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(activity))
                 .getAuthenticationProvider();
@@ -285,9 +290,13 @@ public class NodeActions implements ActionMode.Callback
 
     public static File getDownloadFile(final Activity activity, final Node node)
     {
-        File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl() + "",
-                SessionUtils.getAccount(activity).getUsername());
-        return new File(folder, node.getName());
+        if (activity != null && node != null)
+        {
+            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl() + "",
+                    SessionUtils.getAccount(activity).getUsername());
+            return new File(folder, node.getName());
+        }
+        return null;
     }
 
 }
