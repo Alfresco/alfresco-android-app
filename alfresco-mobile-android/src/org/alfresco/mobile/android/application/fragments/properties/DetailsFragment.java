@@ -211,6 +211,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         b = (ImageView) v.findViewById(R.id.like);
         if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
+            IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
+            lcb.setImageButton(b);
+            lcb.execute(false);
+            
             b.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -224,10 +228,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-
-        IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
-        lcb.setImageButton(b);
-        lcb.execute(false);
+       
 
         b = (ImageView) v.findViewById(R.id.action_share);
         if (node.isDocument())
@@ -402,11 +403,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(),
-                                    (Document) node, dlFile);
-                            up.setOnUpdateListener(saveBackListener);
-                            getLoaderManager().initLoader(NodeUpdateLoader.ID, null, up);
-                            getLoaderManager().getLoader(NodeUpdateLoader.ID).forceLoad();
+                            UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, dlFile);
+                            up.setOnUpdateListener(listener);
+                            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+                            getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
                             dialog.dismiss();
                         }
                     });
@@ -425,10 +425,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 if (data != null && data.getData() != null)
                 {
                     File f = new File(ActionManager.getPath(getActivity(), data.getData()));
-                    UpdateLoaderCallback up = new UpdateLoaderCallback(alfSession, getActivity(), (Document) node, f);
+                    UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
                     up.setOnUpdateListener(listener);
-                    getLoaderManager().initLoader(NodeUpdateLoader.ID, null, up);
-                    getLoaderManager().getLoader(NodeUpdateLoader.ID).forceLoad();
+                    getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+                    getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
                 }
                 break;
             default:

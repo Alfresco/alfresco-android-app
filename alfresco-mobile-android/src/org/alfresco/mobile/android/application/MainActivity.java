@@ -50,6 +50,7 @@ import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
@@ -84,10 +85,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
+import android.widget.PopupMenu;
 
 @TargetApi(11)
 public class MainActivity extends Activity
@@ -975,9 +978,8 @@ public class MainActivity extends Activity
 
             case MenuActionItem.MENU_UPLOAD:
                 importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
-                Log.d(TAG, importParent.getName());
-                ActionManager.actionPickFile(getFragment(ChildrenBrowserFragment.TAG),
-                        IntentIntegrator.REQUESTCODE_FILEPICKER);
+                UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
+                dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
                 return true;
 
             case MenuActionItem.MENU_DELETE_FOLDER:

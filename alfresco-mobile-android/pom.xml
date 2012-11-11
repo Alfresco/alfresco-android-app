@@ -74,7 +74,7 @@
 						</includes>
 					</resource>
 				</resources>
-				<finalName>${project.artifactId}</finalName>
+				<finalName>${project.artifactId}-${project.version}</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -128,8 +128,8 @@
 							</sign>
 							<zipalign>
 								<skip>false</skip>
-								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-official.apk</outputApk>
+								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}.apk</outputApk>
 							</zipalign>
 						</configuration>
 						<executions>
@@ -166,7 +166,7 @@
 						</includes>
 					</resource>
 				</resources>
-				<finalName>${project.artifactId}</finalName>
+				<finalName>${project.artifactId}-${project.version}</finalName>
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -189,7 +189,7 @@
 							</sign>
 							<zipalign>
 								<skip>false</skip>
-								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
+								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
 								<outputApk>${project.build.directory}/${project.artifactId}-dev.apk</outputApk>
 							</zipalign>
 						</configuration>

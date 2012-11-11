@@ -20,19 +20,14 @@ package org.alfresco.mobile.android.application.accounts.signup;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
-import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Html;
-import android.text.SpannableStringBuilder;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
-import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,6 +49,8 @@ public class CloudSignupDialogFragment extends DialogFragment
 
     private String password;
 
+    private Button signup;
+
     public CloudSignupDialogFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
@@ -66,6 +63,18 @@ public class CloudSignupDialogFragment extends DialogFragment
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
         }
+        
+        initForm();
+        
+        if (retrieveFormValues())
+        {
+            signup.setEnabled(true);
+        }
+        else
+        {
+            signup.setEnabled(false);
+        }
+        
         super.onStart();
     }
 
@@ -89,7 +98,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         TextView t2 = (TextView) v.findViewById(R.id.cloud_signup_hint);
         t2.setMovementMethod(LinkMovementMethod.getInstance());
 
-        Button signup = (Button) v.findViewById(R.id.cloud_signup_action);
+        signup = (Button) v.findViewById(R.id.cloud_signup_action);
         signup.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -98,8 +107,10 @@ public class CloudSignupDialogFragment extends DialogFragment
                 signup(v);
             }
         });
+
         return v;
     }
+    
 
     public void signup(View v)
     {
@@ -121,7 +132,6 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (firstName.length() == 0)
         {
-            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_firstname));
             return false;
         }
 
@@ -130,33 +140,68 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         if (lastName.length() == 0)
         {
-            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_lastname));
             return false;
         }
 
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         password = form_value.getText().toString();
 
-        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
+        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
         String confirm = form_value.getText().toString();
 
         if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password))
         {
-            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_password));
             return false;
         }
 
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
         emailAddress = form_value.getText().toString();
 
-        if (emailAddress.length() == 0)
-        {
-            MessengerManager.showToast(getActivity(), getString(R.string.error_account_form) + " " + getString(R.string.cloud_signup_email));
+        if (emailAddress.length() == 0 || !emailAddress.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")){
             return false;
         }
 
         return true;
     }
+    
+    private void initForm()
+    {
+        int[] ids = new int[]{R.id.cloud_signup_firstname, R.id.cloud_signup_lastname, R.id.cloud_signup_password, R.id.cloud_signup_confirm,R.id.cloud_signup_email};
+        EditText form_value = null;
+        for (int i = 0; i < ids.length; i++)
+        {
+            form_value = (EditText) findViewByIdInternal(ids[i]);
+            form_value.addTextChangedListener(watcher);
+        }
+    }
+
+    private TextWatcher watcher = new TextWatcher()
+    {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+            if (retrieveFormValues())
+            {
+                signup.setEnabled(true);
+            } else {
+                signup.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s)
+        {
+            
+        }
+    };
 
     public void displayAccounts()
     {

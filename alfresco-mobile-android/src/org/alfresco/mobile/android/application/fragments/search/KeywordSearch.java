@@ -30,9 +30,12 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnKeyListener;
+import android.view.inputmethod.EditorInfo;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class KeywordSearch extends SearchFragment
 {
@@ -56,14 +59,15 @@ public class KeywordSearch extends SearchFragment
         init(v, R.string.empty_child);
 
         final EditText searchForm = (EditText) v.findViewById(R.id.search_query);
-        searchForm.setImeActionLabel(getString(R.string.action_search), KeyEvent.KEYCODE_ENTER);
+        searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
-        searchForm.setOnKeyListener(new OnKeyListener()
+        searchForm.setOnEditorActionListener(new OnEditorActionListener()
         {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                // If the event is a key-down event on the "enter" button
-                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER))
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
                 {
                     if (searchForm.getText().length() > 0)
                     {
@@ -78,6 +82,7 @@ public class KeywordSearch extends SearchFragment
                 return false;
             }
         });
+
         return v;
     }
 

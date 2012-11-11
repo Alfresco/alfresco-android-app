@@ -35,12 +35,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class CommentsFragment extends CommentFragment
 {
@@ -71,6 +75,7 @@ public class CommentsFragment extends CommentFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         View v = inflater.inflate(R.layout.app_comments, container, false);
 
         init(v, R.string.empty_comment);
@@ -84,18 +89,7 @@ public class CommentsFragment extends CommentFragment
             @Override
             public void onClick(View v)
             {
-                if (commentText.getText().length() > 0)
-                {
-                    CommentCreateLoaderCallback c = new CommentCreateLoaderCallback(alfSession, getActivity(), node,
-                            commentText.getText().toString());
-                    c.setOnCommentCreateListener(createListener);
-                    getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
-                    getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
-                }
-                else
-                {
-                    MessengerManager.showToast(getActivity(), R.string.empty_comment);
-                }
+                addcomment();
             }
         });
 
@@ -103,14 +97,7 @@ public class CommentsFragment extends CommentFragment
         {
             public void afterTextChanged(Editable s)
             {
-                if (commentText.getText().length() > 0)
-                {
-                    bAdd.setEnabled(true);
-                }
-                else
-                {
-                    bAdd.setEnabled(false);
-                }
+                activateSend();
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -121,8 +108,50 @@ public class CommentsFragment extends CommentFragment
             {
             }
         });
+        
+        commentText.setImeOptions(EditorInfo.IME_ACTION_SEND);
+        commentText.setOnEditorActionListener(new OnEditorActionListener()
+        {
+            
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN) && ((actionId == EditorInfo.IME_ACTION_SEND) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                {  
+                    addcomment();
+                    return true;
+                }
+                return false;
+            }
+        });
 
         return v;
+    }
+    
+    private void activateSend(){
+        if (commentText.getText().length() > 0)
+        {
+            bAdd.setEnabled(true);
+        }
+        else
+        {
+            bAdd.setEnabled(false);
+        }
+    }
+    
+    private void addcomment(){
+        if (commentText.getText().length() > 0)
+        {
+            CommentCreateLoaderCallback c = new CommentCreateLoaderCallback(alfSession, getActivity(), node,
+                    commentText.getText().toString());
+            c.setOnCommentCreateListener(createListener);
+            getLoaderManager().restartLoader(CommentCreateLoader.ID, null, c);
+            getLoaderManager().getLoader(CommentCreateLoader.ID).forceLoad();
+        }
+        else
+        {
+            MessengerManager.showToast(getActivity(), R.string.empty_comment);
+        }
     }
 
     private OnCommentCreateListener createListener = new OnCommentCreateListener()
@@ -152,6 +181,8 @@ public class CommentsFragment extends CommentFragment
             bAdd.setEnabled(true);
             reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
+            activateSend();
+            commentText.setEnabled(true);
         }
     };
 
