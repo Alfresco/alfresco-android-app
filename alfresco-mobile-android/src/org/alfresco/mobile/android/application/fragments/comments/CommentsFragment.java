@@ -39,7 +39,6 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -76,6 +75,7 @@ public class CommentsFragment extends CommentFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         View v = inflater.inflate(R.layout.app_comments, container, false);
 
         init(v, R.string.empty_comment);

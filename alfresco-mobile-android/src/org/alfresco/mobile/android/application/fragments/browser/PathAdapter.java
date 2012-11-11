@@ -56,7 +56,7 @@ public class PathAdapter extends ArrayAdapter<String>
             v = vi.inflate(R.layout.app_path_shortcut, null);
         }
         item = getItem(position);
-        if (item != null)
+        if (item != null && v != null)
         {
             ((TextView) v.findViewById(R.id.toptext)).setText(getLabel(account) + "  ");
             ((TextView) v.findViewById(R.id.bottomtext)).setText(getItem(position) + "  ");

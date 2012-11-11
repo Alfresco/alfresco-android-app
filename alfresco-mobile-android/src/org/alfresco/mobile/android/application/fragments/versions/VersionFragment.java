@@ -26,7 +26,9 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class VersionFragment extends VersionsFragment
@@ -45,6 +47,16 @@ public class VersionFragment extends VersionsFragment
         return bf;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        setRetainInstance(true);
+        if (container != null){
+            container.setVisibility(View.VISIBLE);
+        }
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
