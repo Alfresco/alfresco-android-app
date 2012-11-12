@@ -60,6 +60,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.Loader;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -153,6 +154,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         listView.setDivider(null);
         listView.setDividerHeight(0);
+        
+        listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
         
         return v;
     }
