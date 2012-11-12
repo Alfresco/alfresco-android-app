@@ -32,6 +32,7 @@ import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -142,13 +143,17 @@ public class AccountOAuthFragment extends OAuthFragment
                     getActivity().getFragmentManager().popBackStack();
                 }
 
-                MessengerManager.showLongToast(getActivity(), e.getMessage());
+                Log.e(TAG, Log.getStackTraceString(e));
+                MessengerManager.showLongToast(getActivity(), getActivity().getString(R.string.error_general));
             }
 
             @Override
             public void beforeRequestAccessToken(Bundle b)
             {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+                {
+                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                }
             }
 
             @Override

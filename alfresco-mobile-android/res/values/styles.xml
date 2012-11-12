@@ -14,11 +14,12 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
+   limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="alfrescotheme" parent="android:Theme.Holo.Light">
+       <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
     </style>
 
     <!-- =============================================================== -->
@@ -32,11 +33,10 @@
     <color name="grey_light">#8C8E8D</color>
     <color name="grey_text">#818282</color>
     <color name="grey_underline">#535554</color>
-    
     <color name="sliding_grey_dark">#494F57</color>
     <color name="sliding_grey_darker">#3B4148</color>
     <color name="sliding_account_background">#282828</color>
-    
+
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
@@ -77,7 +77,7 @@
         <item name="android:ellipsize">marquee</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
     </style>
-    
+
     <style name="sectionHeader" parent="android:Widget.Holo.Light.TextView">
         <item name="android:drawableBottom">@drawable/section_header</item>
         <item name="android:textAllCaps">true</item>
@@ -85,7 +85,7 @@
         <item name="android:textColor">@color/emphasis</item>
         <item name="android:textSize">14sp</item>
     </style>
-    
+
     <style name="slidingmenu_sectionHeader" parent="android:Widget.Holo.Light.TextView">
         <item name="android:drawableBottom">@drawable/grey_section_header</item>
         <item name="android:textAllCaps">true</item>
@@ -94,12 +94,17 @@
         <item name="android:textColor">@color/grey_text</item>
         <item name="android:textSize">14sp</item>
     </style>
-    
-     <style name="slidingmenu_actionitem" parent="android:Widget.Holo.Light.TextView">
+
+    <style name="slidingmenu_actionitem" parent="android:Widget.Holo.Light.TextView">
         <item name="android:drawableBottom">@drawable/actionitem_section_header</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
-     <color name="grey_lighter">#eeeeee</color>
+
+    <color name="grey_lighter">#eeeeee</color>
     
+    <style name="alfrescotheme_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
+    	<item name="android:background">@drawable/ab_stacked_transparent_light_holo</item>
+	</style>
+
 </resources>

@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -469,6 +470,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         MenuItem mi;
 
+        if (parentFolder == null){
+            return;
+        }
+        
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 
         if (!extended && parentFolder != null && permission.canAddChildren())
@@ -540,6 +545,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public Folder getImportFolder()
     {
         return importFolder;
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
 }

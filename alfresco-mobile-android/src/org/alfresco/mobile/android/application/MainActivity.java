@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
@@ -38,7 +39,10 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFra
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
+import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -46,6 +50,7 @@ import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
@@ -80,10 +85,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
+import android.widget.PopupMenu;
 
 @TargetApi(11)
 public class MainActivity extends Activity
@@ -287,13 +294,20 @@ public class MainActivity extends Activity
                 {
                     if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
                     {
-                        if (getFragment(AccountOAuthFragment.TAG) == null
-                                || getFragment(AccountOAuthFragment.TAG).isAdded())
+                        if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH_REFRESH))
                         {
-                            AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
-                            FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
-                                    AccountOAuthFragment.TAG, true);
-                            break;
+                            getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,  new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
+                        }
+                        else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH))
+                        {
+                            if (getFragment(AccountOAuthFragment.TAG) == null
+                                    || getFragment(AccountOAuthFragment.TAG).isAdded())
+                            {
+                                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
+                                FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
+                                        AccountOAuthFragment.TAG, true);
+                                break;
+                            }
                         }
                     }
                 }
@@ -309,7 +323,9 @@ public class MainActivity extends Activity
                 }
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
 
-                MessengerManager.showLongToast(this, e.getMessage());
+                MessengerManager.showLongToast(this, getString(R.string.error_general));
+                
+                CloudExceptionUtils.handleCloudException(this, e, false);
 
                 return;
             }
@@ -495,7 +511,7 @@ public class MainActivity extends Activity
     public void loadAccount(Account account)
     {
         // TODO Remove this indication ?
-        MessengerManager.showToast(this, "Load : " + account.getDescription());
+        MessengerManager.showToast(this, getString(R.string.account_loading) + account.getDescription());
         setProgressBarIndeterminateVisibility(true);
         SessionUtils.setsession(this, null);
         SessionUtils.setAccount(this, account);
@@ -627,7 +643,7 @@ public class MainActivity extends Activity
         }
         else if (SessionUtils.getAccount(this) != null && SessionUtils.getAccount(this).getActivation() != null)
         {
-            MessengerManager.showToast(this, "Your account is not activated. Please check manage account screen.");
+            MessengerManager.showToast(this, R.string.account_not_activated);
             fragmentQueue = actionMainMenuId;
             return false;
         }
@@ -962,9 +978,8 @@ public class MainActivity extends Activity
 
             case MenuActionItem.MENU_UPLOAD:
                 importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
-                Log.d(TAG, importParent.getName());
-                ActionManager.actionPickFile(getFragment(ChildrenBrowserFragment.TAG),
-                        IntentIntegrator.REQUESTCODE_FILEPICKER);
+                UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
+                dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
                 return true;
 
             case MenuActionItem.MENU_DELETE_FOLDER:
@@ -1002,18 +1017,10 @@ public class MainActivity extends Activity
             case MenuActionItem.MENU_DELETE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).delete();
                 return true;
-
-            case MenuActionItem.MENU_SEARCH_OPTION:
-                MessengerManager.showToast(this, "Display Search Parameters like isExact...");
-                return true;
-            case MenuActionItem.PARAMETER_ID:
-                MessengerManager.showToast(this, "Parameter");
-                return true;
             case MenuActionItem.ABOUT_ID:
                 showAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
                 return true;
-
             case android.R.id.home:
                 // app icon in action bar clicked; go home
                 toggleSlideMenu();

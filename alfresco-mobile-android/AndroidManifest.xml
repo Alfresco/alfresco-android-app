@@ -18,7 +18,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="7"
+    android:versionCode="8"
     android:versionName="1.0.0" >
 
     <uses-sdk
@@ -28,12 +28,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.NFC" />
 
     <application
         android:name=".AlfrescoApplication"
         android:configChanges="orientation|keyboardHidden"
-        android:icon="@drawable/ic_alfresco"
+        android:icon="@drawable/ic_alfresco_logo"
+        android:logo="@drawable/ic_alfresco"
         android:label="@string/app_name"
         android:theme="@style/alfrescotheme" >
 
@@ -65,6 +65,7 @@
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
             android:windowSoftInputMode="adjustPan"
+             android:logo="@drawable/ic_alfresco"
             >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -99,7 +100,8 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
-
+                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH" />
+                
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
             
@@ -117,7 +119,6 @@
             </intent-filter>
             
             <!-- Internal : Sign up cloud -->
-            <!-- Internal : Sign up cloud -->
              <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -134,36 +135,11 @@
                     android:host="my.alfresco.com"
                     android:scheme="https" />
             </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
-
-            <!-- Filter NFC URL -->
-            <intent-filter>
-                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="https" />
-                <data android:host="my.alfresco.com" />
-            </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
-
-        <!--
-        REINSTATE FOR WIDGET
-        <receiver android:name="org.alfresco.mobile.android.widget.ActivityWidget" android:label="@string/app_name">
-          <intent-filter>
-              <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-          </intent-filter>
-          <meta-data android:name="android.appwidget.provider" android:resource="@xml/appwidget" />
-     	</receiver>
-        -->
 
     </application>
 

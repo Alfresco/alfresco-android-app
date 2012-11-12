@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.tags;
 
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
@@ -47,7 +48,7 @@ public class TagsListNodeFragment extends TagsNodeFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(false);
+        setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
@@ -61,7 +62,13 @@ public class TagsListNodeFragment extends TagsNodeFragment
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
+    }
    
 }
 

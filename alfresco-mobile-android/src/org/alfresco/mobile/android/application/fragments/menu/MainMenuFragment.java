@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
@@ -86,6 +87,8 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         accounts = ((MainActivity) getActivity()).getAccounts();
         refreshAccounts();
+        
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
 
     public void setAccounts(List<Account> accounts)

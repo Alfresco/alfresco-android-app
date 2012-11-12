@@ -48,18 +48,11 @@
         android:orientation="horizontal" >
 
         <Button
-            android:id="@+id/previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="@string/previous" />
-
-        <Button
             android:id="@+id/next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
-            android:text="@string/next" />
+            android:text="@string/account_validate" />
     </LinearLayout>
 
 </LinearLayout>

@@ -19,13 +19,16 @@ package org.alfresco.mobile.android.application.fragments.versions;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ListView;
 
 public class VersionFragment extends VersionsFragment
@@ -44,6 +47,16 @@ public class VersionFragment extends VersionsFragment
         return bf;
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        setRetainInstance(true);
+        if (container != null){
+            container.setVisibility(View.VISIBLE);
+        }
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -68,5 +81,12 @@ public class VersionFragment extends VersionsFragment
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 }

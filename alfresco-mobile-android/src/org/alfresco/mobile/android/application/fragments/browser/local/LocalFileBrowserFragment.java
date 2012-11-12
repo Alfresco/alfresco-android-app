@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.R;
@@ -34,11 +35,11 @@ import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.ListView;
 
 public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 {
-
     public static final String TAG = "LocalFileNavigationFragment";
 
     public LocalFileBrowserFragment()
@@ -52,15 +53,20 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 
     public static LocalFileBrowserFragment newInstance(File folder)
     {
-        return newInstance(folder, null);
+        return newInstance(folder, null, MODE_LISTING);
+    }
+
+    public static LocalFileBrowserFragment newInstance(File folder, int displayMode)
+    {
+        return newInstance(folder, null, displayMode);
     }
 
     public static LocalFileBrowserFragment newInstance(String folderPath)
     {
-        return newInstance(null, folderPath);
+        return newInstance(null, folderPath, MODE_LISTING);
     }
 
-    public static LocalFileBrowserFragment newInstance(File parentFolder, String pathFolder)
+    public static LocalFileBrowserFragment newInstance(File parentFolder, String pathFolder, int displayMode)
     {
         LocalFileBrowserFragment bf = new LocalFileBrowserFragment();
         ListingContext lc = new ListingContext();
@@ -68,6 +74,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         lc.setIsSortAscending(true);
         Bundle b = new Bundle(createBundleArgs(lc, LOAD_AUTO));
         b.putAll(createBundleArgs(parentFolder, pathFolder));
+        b.putInt(MODE, displayMode);
         bf.setArguments(b);
         return bf;
     }
@@ -92,7 +99,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     @Override
     public void onStart()
     {
-        getActivity().setTitle(R.string.menu_downloads);
+        getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -102,15 +109,32 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     {
         super.onListItemClick(l, v, position, id);
         File file = (File) l.getItemAtPosition(position);
-        if (file.isDirectory())
+
+        if (getMode() == MODE_LISTING)
         {
-            // Browse
-            ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+            if (file.isDirectory())
+            {
+                // Browse
+                ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+            }
+            else
+            {
+                // Show properties
+                ActionManager.actionView(getActivity(), file, MimeTypeManager.getMIMEType(file.getName()));
+            }
         }
-        else
+        else if (getMode() == MODE_PICK_FILE)
         {
-            // Show properties
-            ActionManager.actionView(getActivity(), file, MimeTypeManager.getMIMEType(file.getName()));
+            if (file.isFile() && getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG) != null)
+            {
+                ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG))
+                        .createFile(file);
+            }
+        }
+        
+        if (getDialog() != null)
+        {
+            dismiss();
         }
     }
 
