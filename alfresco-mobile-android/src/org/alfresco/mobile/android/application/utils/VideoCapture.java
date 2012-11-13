@@ -56,10 +56,11 @@ public class VideoCapture extends DeviceCapture
 			{
 				Intent intent = new Intent (MediaStore.ACTION_VIDEO_CAPTURE);
 				
-				payload = new File (Environment.getExternalStorageDirectory(), "AndroidVideoCapture.mp4");
+				payload = new File (Environment.getExternalStorageDirectory(), createFilename("", "mp4"));
 				
 				intent.putExtra (MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload) );
-				intent.putExtra (MediaStore.EXTRA_VIDEO_QUALITY, 1);
+				intent.putExtra (MediaStore.EXTRA_VIDEO_QUALITY, 0);
+				intent.putExtra (MediaStore.EXTRA_SIZE_LIMIT, 1000000);
 				
 				parentActivity.startActivityForResult (intent, getRequestCode() );
 			}

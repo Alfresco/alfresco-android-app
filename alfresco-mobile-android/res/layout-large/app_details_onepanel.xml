@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/properties_padding"
     android:background="@android:color/background_light" >
 
     <LinearLayout
@@ -19,21 +17,6 @@
             android:padding="@dimen/properties_details_padding"
             android:shrinkColumns="1"
             android:stretchColumns="1" >
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/title"
-                    style="@style/list_item_toptext"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_margin="0dp"
-                    android:text="Green Grass.JPG" />
-
-            </TableRow>
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -69,6 +52,7 @@
                         android:id="@+id/scrollView1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_above="@+id/tools_group"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentTop="true" >
 
@@ -76,6 +60,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="vertical" >
+
+                            <TextView
+                                android:id="@+id/title"
+                                style="@style/list_item_toptext"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Green Grass.JPG" />
 
                             <TextView
                                 android:id="@+id/details"
@@ -93,59 +84,68 @@
                                 android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf" />
                         </LinearLayout>
                     </ScrollView>
+
+                    <LinearLayout
+                        android:id="@+id/tools_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignLeft="@+id/scrollView1"
+                        android:layout_alignParentBottom="true" >
+
+                        <ImageView
+                            android:id="@+id/action_openin"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:paddingRight="@dimen/button_padding"
+                            android:src="@drawable/ic_open_dark" />
+
+                        <ImageView
+                            android:id="@+id/like"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:contentDescription="@string/action_like"
+                            android:paddingRight="@dimen/button_padding"
+                            android:src="@drawable/ic_unlike" />
+
+                        <ImageView
+                            android:id="@+id/action_share"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:contentDescription="@string/action_like"
+                            android:paddingRight="@dimen/button_padding"
+                            android:src="@drawable/ic_share" />
+                        
+                        <ImageView
+                            android:id="@+id/action_geolocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0"
+                            android:contentDescription="@string/geolocation"
+                            android:paddingRight="@dimen/button_padding"
+                            android:src="@drawable/ic_location"
+                            android:visibility="gone" />
+                        
+                    </LinearLayout>
                 </RelativeLayout>
             </TableRow>
 
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" >
+            </TableRow>
         </TableLayout>
 
         <LinearLayout
-            android:id="@+id/tools_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/properties_details_padding" >
-
-            <ImageView
-                android:id="@+id/action_openin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingRight="@dimen/button_padding"
-                android:src="@drawable/ic_open_dark" />
-
-            <ImageView
-                android:id="@+id/like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:contentDescription="@string/action_like"
-                android:paddingRight="@dimen/button_padding"
-                android:src="@drawable/ic_unlike" />
-
-            <ImageView
-                android:id="@+id/action_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:contentDescription="@string/action_like"
-                android:paddingRight="@dimen/button_padding"
-                android:src="@drawable/ic_share" />
-
-            <ImageView
-                android:id="@+id/action_geolocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:contentDescription="@string/geolocation"
-                android:paddingRight="@dimen/button_padding"
-                android:src="@drawable/ic_location"
-                android:visibility="gone" />
+            android:id="@+id/metadata"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="15dip"
+            android:orientation="vertical"
+            android:padding="@dimen/properties_details_padding" >
         </LinearLayout>
     </LinearLayout>
 
-    <include
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/properties_details_padding"
-        layout="@layout/app_details_extra" />
-
-</LinearLayout>
+</ScrollView>
