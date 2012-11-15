@@ -56,7 +56,7 @@ public class PhotoCapture extends DeviceCapture
 			{
 				Intent intent = new Intent (MediaStore.ACTION_IMAGE_CAPTURE);
 				
-				payload = new File (Environment.getExternalStorageDirectory(), "AndroidPhotoCapture.jpg");
+				payload = new File (Environment.getExternalStorageDirectory(), createFilename("", "jpg"));
 				
 				intent.putExtra (MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload) );
 				

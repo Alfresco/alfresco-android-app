@@ -83,8 +83,7 @@ public class AudioCapture extends DeviceCapture
 		{
 			String filePath 	= 	getAudioFilePathFromUri (savedUri);
 			String newFilePath 	= 	Environment.getExternalStorageDirectory().getPath() +
-									"/AndroidSoundCapture." + 
-									filePath.substring(filePath.lastIndexOf(".")+1);
+			                        createFilename("", filePath.substring(filePath.lastIndexOf(".")+1)); 								
 									
 	        copyFile (filePath, newFilePath);
 	        
