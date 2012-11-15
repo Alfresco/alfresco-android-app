@@ -196,6 +196,10 @@ public class AccountOAuthFragment extends OAuthFragment
 
     public void load(OAuthData oauthData)
     {
+        if (oauthData == null){
+            return;
+        }
+
         AbstractSessionCallback call = null;
         if (getArguments().containsKey(PARAM_ACCOUNT))
         {
