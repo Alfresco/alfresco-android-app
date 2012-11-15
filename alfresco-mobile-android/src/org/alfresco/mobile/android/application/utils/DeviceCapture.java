@@ -21,6 +21,8 @@ package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.fragments.browser.AddContentDialogFragment;
@@ -105,6 +107,13 @@ public abstract class DeviceCapture implements Serializable
 	public int getRequestCode ()
 	{
 		return Math.abs(getClass().hashCode());
+	}
+	
+	protected String createFilename (String prefix, String extension)
+	{
+	    String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+	    
+	    return prefix + timeStamp + "." + extension;
 	}
 }
 
