@@ -99,7 +99,8 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     @Override
     public void onStart()
     {
-        if ( getDialog() != null){
+        if (getDialog() != null)
+        {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }
         getActivity().invalidateOptionsMenu();
@@ -133,7 +134,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                         .createFile(file);
             }
         }
-        
+
         if (getDialog() != null)
         {
             dismiss();
