@@ -290,7 +290,7 @@ public class NodeActions implements ActionMode.Callback
 
     public static File getDownloadFile(final Activity activity, final Node node)
     {
-        if (activity != null && node != null)
+        if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
             File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl() + "",
                     SessionUtils.getAccount(activity).getUsername());

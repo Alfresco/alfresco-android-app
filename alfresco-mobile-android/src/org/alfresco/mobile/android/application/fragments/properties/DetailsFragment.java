@@ -209,12 +209,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         b = (ImageView) v.findViewById(R.id.like);
-        if (alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        if (alfSession != null && alfSession.getRepositoryInfo() != null
+                && alfSession.getRepositoryInfo().getCapabilities() != null
+                && alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
             IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
             lcb.setImageButton(b);
             lcb.execute(false);
-            
+
             b.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -228,7 +230,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-       
 
         b = (ImageView) v.findViewById(R.id.action_share);
         if (node.isDocument())
@@ -281,11 +282,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         final MainActivity activity = ((MainActivity) getActivity());
         boolean cloud = (alfSession instanceof CloudSession);
-        
-        //TODO Add a mechanism at SDK to store parent in each node, so that we can share links to documents
-        //at all levels, rather than just from browser itself.
-        boolean canShareLink = (activity.getFragment(ChildrenBrowserFragment.TAG) != null); 
-        
+
+        // TODO Add a mechanism at SDK to store parent in each node, so that we
+        // can share links to documents
+        // at all levels, rather than just from browser itself.
+        boolean canShareLink = (activity.getFragment(ChildrenBrowserFragment.TAG) != null);
+
         if (!cloud || !canShareLink)
         {
             // Only sharing as attachment is allowed when we're not on a cloud
@@ -403,7 +405,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, dlFile);
+                            UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
+                                    (Document) node, dlFile);
                             up.setOnUpdateListener(listener);
                             getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
                             getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
@@ -449,13 +452,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             refreshThumbnail(node);
         }
 
-      
         boolean hasWaiting = false;
-        
+
         @Override
         public void beforeUpdate(Node node)
         {
-            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+            {
                 new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
             }
             hasWaiting = true;
@@ -475,12 +478,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         @Override
         public void beforeUpdate(Node node)
         {
-            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+            {
                 new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
             }
             hasWaiting = true;
         }
-        
 
         @Override
         public void afterUpdate(Node node)

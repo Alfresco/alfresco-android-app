@@ -44,13 +44,12 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
     private Activity activity;
 
     private AlfrescoSession session;
-    
+
     private List<Account> accounts;
 
     private String url;
 
     private ProgressDialog mProgressDialog;
-
 
     public NodeLoaderCallback(Activity activity, List<Account> accounts, String url)
     {
@@ -58,7 +57,7 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
         this.accounts = accounts;
         this.url = url;
     }
-    
+
     public NodeLoaderCallback(Activity activity, AlfrescoSession session, String url)
     {
         this.activity = activity;
@@ -69,9 +68,9 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
     @Override
     public Loader<LoaderResult<Node>> onCreateLoader(final int id, Bundle args)
     {
-        
-        mProgressDialog = ProgressDialog.show(activity, "Please wait", "Searching & Loading information...", true,
-                true, new OnCancelListener()
+
+        mProgressDialog = ProgressDialog.show(activity, activity.getText(R.string.wait_title),
+                activity.getText(R.string.wait_message), true, true, new OnCancelListener()
                 {
                     @Override
                     public void onCancel(DialogInterface dialog)
@@ -80,7 +79,7 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
                         dialog.dismiss();
                     }
                 });
-        
+
         if (session != null)
             return new NodeLoader(activity, session, url);
         else
@@ -91,17 +90,25 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
     public void onLoadFinished(Loader<LoaderResult<Node>> loader, LoaderResult<Node> results)
     {
         mProgressDialog.dismiss();
-        if (!results.hasException() && results.getData() != null){
-            SessionUtils.setsession(activity, ((NodeLoader)loader).getSession());
-            SessionUtils.setAccount(activity, ((NodeLoader)loader).getAccount());
+        if (!results.hasException() && results.getData() != null)
+        {
+            if (((NodeLoader) loader).getSession() != null)
+            {
+                SessionUtils.setsession(activity, ((NodeLoader) loader).getSession());
+            }
+            if (((NodeLoader) loader).getAccount() != null)
+            {
+                SessionUtils.setAccount(activity, ((NodeLoader) loader).getAccount());
+            }
             ((MainActivity) activity).setCurrentNode(results.getData());
             Intent i = new Intent(activity, MainActivity.class);
             i.setAction(IntentIntegrator.ACTION_DISPLAY_NODE);
             activity.startActivity(i);
-        } else {
+        }
+        else
+        {
             AlertDialog dialog = new AlertDialog.Builder(activity).setTitle(R.string.error_unable_url)
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
+                    .setCancelable(false).setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int id)
                         {
