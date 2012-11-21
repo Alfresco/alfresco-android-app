@@ -68,6 +68,8 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         if (selectedItems != null && selectedItems.contains(item))
         {
             ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+        } else {
+            ((LinearLayout)vh.choose.getParent()).setBackgroundDrawable(null);
         }
     }
 

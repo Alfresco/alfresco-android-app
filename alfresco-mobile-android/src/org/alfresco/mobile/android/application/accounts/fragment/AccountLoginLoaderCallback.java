@@ -105,18 +105,21 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         if (!results.hasException())
         {
             saveNewOauthData(loader);
-            
-            //Save latest position as default future one
-            final SharedPreferences settings = activity.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
-            editor.commit();
 
-            activity.getLoaderManager().destroyLoader(loader.getId());
-            SessionUtils.setsession(activity, results.getData());
-            Intent i = new Intent(activity, MainActivity.class);
-            i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
-            activity.startActivity(i);
+            // Save latest position as default future one
+            final SharedPreferences settings = activity.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            if (settings != null)
+            {
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
+                editor.commit();
+
+                activity.getLoaderManager().destroyLoader(loader.getId());
+                SessionUtils.setsession(activity, results.getData());
+                Intent i = new Intent(activity, MainActivity.class);
+                i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                activity.startActivity(i);
+            }
         }
         else
         {
@@ -124,7 +127,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             {
                 case Account.TYPE_ALFRESCO_TEST_OAUTH:
                 case Account.TYPE_ALFRESCO_CLOUD:
-                    
+
                     CloudExceptionUtils.handleCloudException(activity, results.getException(), true);
 
                     break;
@@ -133,9 +136,10 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     if (results.getException() instanceof AlfrescoSessionException)
                     {
                         AlfrescoSessionException ex = ((AlfrescoSessionException) results.getException());
-                        if (ex.getCause().getClass().equals(CmisUnauthorizedException.class) || ex.getErrorCode() == 100)
+                        if (ex.getCause().getClass().equals(CmisUnauthorizedException.class)
+                                || ex.getErrorCode() == 100)
                         {
-                                MessengerManager.showLongToast(activity, getText(R.string.error_session_unauthorized));
+                            MessengerManager.showLongToast(activity, getText(R.string.error_session_unauthorized));
                         }
                     }
                     break;

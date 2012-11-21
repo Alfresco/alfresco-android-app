@@ -28,7 +28,7 @@ public class CloudExceptionUtils
         if (exception instanceof AlfrescoServiceException)
         {
             AlfrescoServiceException ex = ((AlfrescoServiceException) exception);
-            if (ex.getErrorCode() == 104 || ex.getMessage().contains("No authentication challenges found"))
+            if (ex != null && (ex.getErrorCode() == 104 || ex.getMessage().contains("No authentication challenges found")))
             {
                 manageException(activity, forceRefresh);
             }
