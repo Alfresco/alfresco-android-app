@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 @TargetApi(11)
 @SuppressLint("UseSparseArrays")
@@ -64,13 +65,12 @@ public class ProgressNotification extends Activity
 
                 notificationManager.notify((int) progressItem.id, tmpNotification);
 
-                if (progressItem.currentProgress >= dataSize - incrementBy)
+                if (progressItem.currentProgress >= dataSize - incrementBy - 1)
                 {
                     // notificationManager.cancel((int) progressItem.id);
                     inProgressObjects.remove(name);
                     progressItem.notification.contentView.setTextViewText(R.id.status_text, ctxt.getText(R.string.download_complete));
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
-                            false);
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, dataSize);
