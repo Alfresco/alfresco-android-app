@@ -311,6 +311,11 @@
 			<url>https://repository.apache.org/content/groups/public/</url>
 		</repository>
 		<repository>
+			<id>public-snapshots.artifacts.alfresco.com</id>
+			<name>Alfresco Maven Repository</name>
+			<url>https://artifacts.alfresco.com/nexus/content/groups/public-snapshots</url>
+		</repository>
+		<repository>
 			<id>artifacts.alfresco.com</id>
 			<name>Alfresco Maven Repository</name>
 			<url>https://artifacts.alfresco.com/nexus/content/groups/public</url>
@@ -436,43 +441,4 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
-
-	<profiles>
-		<profile>
-			<id>jira</id>
-			<properties>
-				<jira.username>${env.USER}</jira.username>
-				<jira.password>your-jira-password</jira.password>
-			</properties>
-			<reporting>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-changes-plugin</artifactId>
-						<version>2.7.1</version>
-						<configuration>
-							<aggregated>true</aggregated>
-							<filter>project=MOBSDK&amp;component=Android</filter>
-							<columnNames>Type,Key,Summary,Assignee,Status,Resolution,Fix
-								Version</columnNames>
-							<sortColumnNames>Type,Key DESC</sortColumnNames>
-							<jiraUser>${jira.username}</jiraUser>
-							<jiraPassword>${jira.password}</jiraPassword>
-							<configuration>
-								<reportSets>
-									<reportSet>
-										<reports>
-											<report>jira-report</report>
-										</reports>
-									</reportSet>
-								</reportSets>
-							</configuration>
-						</configuration>
-					</plugin>
-				</plugins>
-
-			</reporting>
-		</profile>
-	</profiles>
 </project>
