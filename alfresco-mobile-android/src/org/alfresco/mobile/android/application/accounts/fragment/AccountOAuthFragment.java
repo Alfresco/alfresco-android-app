@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
-import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
