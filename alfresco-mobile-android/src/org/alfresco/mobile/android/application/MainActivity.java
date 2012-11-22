@@ -610,7 +610,7 @@ public class MainActivity extends Activity
                 try
                 {
                     // FIXME Write asset everytime I click ?
-                    newFile = IOUtils.writeAsset(this, "gettingstarted.pdf");
+                    newFile = IOUtils.writeAsset(this, getString(R.string.help_setup_guide));
                     if (newFile.length() > 0)
                     {
                         if (!ActionManager.launchPDF(this, newFile))

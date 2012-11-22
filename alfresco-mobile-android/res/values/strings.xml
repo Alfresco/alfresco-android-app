@@ -190,6 +190,9 @@
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
+    
+    <!-- HELP -->
+    <string name="help_setup_guide">Alfresco_Mobile_Android_App_Setup_Guide.pdf</string>
 
     <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
