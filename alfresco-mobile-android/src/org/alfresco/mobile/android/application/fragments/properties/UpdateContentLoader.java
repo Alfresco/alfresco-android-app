@@ -39,97 +39,105 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
-{
+public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>> {
 
-    /** Unique NodeUpdateLoader identifier. */
-    public static final int ID = UpdateContentLoader.class.hashCode();
+	/** Unique NodeUpdateLoader identifier. */
+	public static final int ID = UpdateContentLoader.class.hashCode();
 
-    private static final String TAG = "UpdateContentLoader";
+	private static final String TAG = "UpdateContentLoader";
 
-    /** Binary Content of the future document. */
-    private ContentFile contentFile;
+	/** Binary Content of the future document. */
+	private ContentFile contentFile;
 
-    /** Node object to update. */
-    private Node node;
+	/** Node object to update. */
+	private Node node;
 
-    /**
-     * Update an existing document with current parameters (Content and/or
-     * properties)
-     * 
-     * @param context : Android Context
-     * @param session : Repository Session
-     * @param document : Document object to update
-     * @param properties : (Optional) list of property values that must be
-     *            applied
-     * @param contentFile : (Optional) ContentFile that contains data stream or
-     *            file
-     */
-    public UpdateContentLoader(Context context, AlfrescoSession session, Document document, ContentFile contentFile)
-    {
-        super(context);
-        this.session = session;
-        this.node = document;
-        this.contentFile = contentFile;
-    }
+	/**
+	 * Update an existing document with current parameters (Content and/or
+	 * properties)
+	 * 
+	 * @param context
+	 *            : Android Context
+	 * @param session
+	 *            : Repository Session
+	 * @param document
+	 *            : Document object to update
+	 * @param properties
+	 *            : (Optional) list of property values that must be applied
+	 * @param contentFile
+	 *            : (Optional) ContentFile that contains data stream or file
+	 */
+	public UpdateContentLoader(Context context, AlfrescoSession session,
+			Document document, ContentFile contentFile) {
+		super(context);
+		this.session = session;
+		this.node = document;
+		this.contentFile = contentFile;
+	}
 
-    @Override
-    public LoaderResult<Node> loadInBackground()
-    {
-        LoaderResult<Node> result = new LoaderResult<Node>();
-        Node resultNode = null;
+	@Override
+	public LoaderResult<Node> loadInBackground() {
+		LoaderResult<Node> result = new LoaderResult<Node>();
+		Node resultNode = null;
 
-        try
-        {
-            if (contentFile != null)
-            {
-                Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
-                AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(node.getIdentifier());
-                
-                String idpwc = cmisDoc.getVersionSeriesCheckedOutId();
-                
-                if (idpwc == null){
-                    idpwc = cmisDoc.checkOut().getId();
-                }
+		try {
+			if (contentFile != null) {
+				Session cmisSession = ((AbstractAlfrescoSessionImpl) session)
+						.getCmisSession();
+				AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession
+						.getObject(node.getIdentifier());
 
-                org.apache.chemistry.opencmis.client.api.Document cmisDocpwc = null;
-                try
-                {
-                    cmisDocpwc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(idpwc);
-                }
-                catch (Exception e)
-                {
-                    Log.e(TAG, Log.getStackTraceString(e));
-                    cmisDocpwc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession.getObject(idpwc);
-                }
+				String idpwc = cmisDoc.getVersionSeriesCheckedOutId();
 
-                ContentStream c = cmisSession.getObjectFactory().createContentStream(contentFile.getFileName(),
-                        contentFile.getLength(), contentFile.getMimeType(),
-                        IOUtils.getContentFileInputStream(contentFile));
+				try {
+					if (idpwc == null) {
+						idpwc = cmisDoc.checkOut().getId();
+					}
+				} catch (Exception e) {
+					if (idpwc == null) {
+						idpwc = cmisDoc.checkOut().getId();
+					}
+				}
 
-                ObjectId iddoc = cmisDocpwc.checkIn(false, null, c, "");
-                cmisDoc = (AlfrescoDocument) cmisSession.getObject(iddoc);
-                cmisDoc = (AlfrescoDocument) cmisDoc.getObjectOfLatestVersion(false);
+				org.apache.chemistry.opencmis.client.api.Document cmisDocpwc = null;
+				try {
+					cmisDocpwc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession
+							.getObject(idpwc);
+				} catch (Exception e) {
+					Log.e(TAG, Log.getStackTraceString(e));
+					cmisDocpwc = (org.apache.chemistry.opencmis.client.api.Document) cmisSession
+							.getObject(idpwc);
+				}
 
-                resultNode = (Document) session.getServiceRegistry().getDocumentFolderService()
-                        .getNodeByIdentifier(cmisDoc.getId());
+				ContentStream c = cmisSession.getObjectFactory()
+						.createContentStream(contentFile.getFileName(),
+								contentFile.getLength(),
+								contentFile.getMimeType(),
+								IOUtils.getContentFileInputStream(contentFile));
 
-                /*
-                 * resultNode =
-                 * session.getServiceRegistry().getDocumentFolderService()
-                 * .updateContent(document, contentFile);
-                 */
-            }
+				ObjectId iddoc = cmisDocpwc.checkIn(false, null, c, "");
+				cmisDoc = (AlfrescoDocument) cmisSession.getObject(iddoc);
+				cmisDoc = (AlfrescoDocument) cmisDoc
+						.getObjectOfLatestVersion(false);
 
-        }
-        catch (Exception e)
-        {
-            result.setException(e);
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
+				resultNode = (Document) session.getServiceRegistry()
+						.getDocumentFolderService()
+						.getNodeByIdentifier(cmisDoc.getId());
 
-        result.setData(resultNode);
+				/*
+				 * resultNode =
+				 * session.getServiceRegistry().getDocumentFolderService()
+				 * .updateContent(document, contentFile);
+				 */
+			}
 
-        return result;
-    }
+		} catch (Exception e) {
+			result.setException(e);
+			Log.e(TAG, Log.getStackTraceString(e));
+		}
+
+		result.setData(resultNode);
+
+		return result;
+	}
 }

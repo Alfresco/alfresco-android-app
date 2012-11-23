@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
+import java.util.Date;
 
-import org.alfresco.mobile.android.api.asynchronous.NodeUpdateLoader;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -44,7 +44,6 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.R;
-import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -82,8 +81,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public static final String ARGUMENT_NODE = "node";
 
     protected RenditionManager renditionManager;
+    
+    protected Date downloadDateTime;
 
-    public DetailsFragment()
+	public DetailsFragment()
     {
     }
 
@@ -394,7 +395,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             case PublicIntent.REQUESTCODE_SAVE_BACK:
                 final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
-                if (dlFile.length() != ((Document) node).getContentStreamLength())
+                
+                long datetime = dlFile.lastModified();
+                Date d = new Date(datetime);
+                
+                boolean modified = d.after(downloadDateTime);
+                
+                if (modified && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -722,4 +729,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         addTags(d, android.R.id.tabcontent, false);
     }
+    
+    public void setDownloadDateTime(Date downloadDateTime) {
+		this.downloadDateTime = downloadDateTime;
+	}
 }
