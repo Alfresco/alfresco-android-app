@@ -64,7 +64,7 @@
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
              android:logo="@drawable/ic_alfresco"
             >
             <intent-filter>
