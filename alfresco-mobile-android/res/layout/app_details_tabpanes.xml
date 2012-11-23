@@ -112,7 +112,13 @@
                 android:paddingRight="@dimen/button_padding"
                 android:src="@drawable/ic_open_dark" />
 
-            <ImageView
+             <FrameLayout 
+                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+                
+                 <ImageView
                 android:id="@+id/like"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,7 +126,17 @@
                 android:contentDescription="@string/action_like"
                 android:paddingRight="@dimen/button_padding"
                 android:src="@drawable/ic_unlike" />
-
+            
+            <ProgressBar
+			    android:id="@android:id/progress"
+			    style="?android:attr/progressBarStyleSmall"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_gravity="left|center_vertical"
+			/>
+               
+            </FrameLayout>
+            
             <ImageView
                 android:id="@+id/action_share"
                 android:layout_width="wrap_content"

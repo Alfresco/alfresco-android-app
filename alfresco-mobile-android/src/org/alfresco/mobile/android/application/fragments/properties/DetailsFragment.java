@@ -81,10 +81,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public static final String ARGUMENT_NODE = "node";
 
     protected RenditionManager renditionManager;
-    
+
     protected Date downloadDateTime;
 
-	public DetailsFragment()
+    public DetailsFragment()
     {
     }
 
@@ -137,7 +137,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (node.isDocument())
         {
             iconId = MimeTypeManager.getIcon(node.getName());
-            renditionManager.display(iv, node, iconId);
+            if (((Document) node).isLatestVersion())
+            {
+                renditionManager.display(iv, node, iconId);
+            }
+            else
+            {
+                iv.setImageResource(iconId);
+            }
         }
         else
         {
@@ -216,6 +223,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
             lcb.setImageButton(b);
+            lcb.setProgressView(v.findViewById(R.id.like_progress));
             lcb.execute(false);
 
             b.setOnClickListener(new OnClickListener()
@@ -332,9 +340,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         {
                             if (path.startsWith("/Sites/"))
                             {
-                                String sub1 = path.substring(7); // Get past the
+                                String sub1 = path.substring(7); // Get
+                                                                 // past
+                                                                 // the
                                                                  // '/Sites/'
-                                int idx = sub1.indexOf('/'); // Find end of site
+                                int idx = sub1.indexOf('/'); // Find end
+                                                             // of
+                                                             // site
                                                              // name
                                 if (idx == -1)
                                 {
@@ -395,13 +407,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             case PublicIntent.REQUESTCODE_SAVE_BACK:
                 final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
-                
+
                 long datetime = dlFile.lastModified();
                 Date d = new Date(datetime);
-                
+
                 boolean modified = d.after(downloadDateTime);
-                
-                if (modified && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+
+                if (modified
+                        && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -536,6 +549,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
         lcb.setImageButton((ImageView) v.findViewById(R.id.like));
+        lcb.setProgressView(((ViewGroup) v.getParent()).findViewById(R.id.like_progress));
         lcb.execute(true);
     }
 
@@ -729,8 +743,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         addTags(d, android.R.id.tabcontent, false);
     }
-    
-    public void setDownloadDateTime(Date downloadDateTime) {
-		this.downloadDateTime = downloadDateTime;
-	}
+
+    public void setDownloadDateTime(Date downloadDateTime)
+    {
+        this.downloadDateTime = downloadDateTime;
+    }
 }

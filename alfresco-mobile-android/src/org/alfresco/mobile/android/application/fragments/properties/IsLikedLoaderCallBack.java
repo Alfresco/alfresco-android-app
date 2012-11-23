@@ -31,6 +31,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderCallbacks<LoaderResult<Boolean>>
@@ -40,6 +41,8 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
     private Node node;
 
     private ImageView likeButton;
+
+    private View progressView;
 
     public IsLikedLoaderCallBack(AlfrescoSession session, Activity context, Node node)
     {
@@ -53,17 +56,28 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
     public Loader<LoaderResult<Boolean>> onCreateLoader(int id, Bundle args)
     {
         boolean isCreate = false;
-        if (args != null) isCreate = args.getBoolean(IS_CREATE);
+        if (args != null)
+        {
+            isCreate = args.getBoolean(IS_CREATE);
+        }
 
         if (!isCreate)
+        {
             return new IsLikedLoader(context, session, node);
+        }
         else
+        {
             return new LikeLoader(context, session, node);
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<Boolean>> arg0, LoaderResult<Boolean> isLiked)
     {
+        if (progressView != null)
+        {
+            progressView.setVisibility(View.GONE);
+        }
         if (isLiked.getData() == null)
         {
             Log.e(TAG, Log.getStackTraceString(isLiked.getException()));
@@ -90,11 +104,21 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         this.likeButton = mi;
     }
 
+    public void setProgressView(View v)
+    {
+        this.progressView = v;
+    }
+
     private static final String IS_CREATE = "isCreate";
 
     public void execute(boolean isCreate)
     {
         int id = (isCreate) ? LikeLoader.ID : IsLikedLoader.ID;
+
+        if (progressView != null)
+        {
+            progressView.setVisibility(View.VISIBLE);
+        }
 
         Bundle b = new Bundle();
         b.putBoolean(IS_CREATE, isCreate);
