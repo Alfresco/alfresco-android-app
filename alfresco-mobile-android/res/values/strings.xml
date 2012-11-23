@@ -151,6 +151,7 @@
     
     <!-- PROPERTIES -->
     <string name="details">Details</string>
+    <string name="metadata">Properties</string>
     
 
     <!-- CLOUD SIGNUP -->
