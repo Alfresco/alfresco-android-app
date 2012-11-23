@@ -24,11 +24,13 @@ import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,6 +46,8 @@ public class AccountEditFragment extends DialogFragment
 {
     public static final String TAG = "AccountEditFragment";
 
+    private Button validate;
+
     public AccountEditFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
@@ -56,6 +60,18 @@ public class AccountEditFragment extends DialogFragment
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }
+
+        initForm();
+
+        if (retrieveFormValues())
+        {
+            validate.setEnabled(true);
+        }
+        else
+        {
+            validate.setEnabled(false);
+        }
+
         super.onStart();
     }
 
@@ -74,10 +90,9 @@ public class AccountEditFragment extends DialogFragment
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
-        
 
-        Button step2 = (Button) v.findViewById(R.id.next);
-        step2.setOnClickListener(new OnClickListener()
+        validate = (Button) v.findViewById(R.id.next);
+        validate.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -94,13 +109,15 @@ public class AccountEditFragment extends DialogFragment
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
+                Log.d(TAG, portForm.getText().toString());
+                
                 if (sw.isChecked() == false
-                        && (portForm.getText().toString() == null || portForm.getText().toString().equals("443")))
+                        && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("443")))
                 {
                     portForm.setText("80");
                 }
                 else if (sw.isChecked() == true
-                        && (portForm.getText().toString() == null || portForm.getText().toString().equals("80")))
+                        && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("80")))
                 {
                     portForm.setText("443");
                 }
@@ -133,6 +150,47 @@ public class AccountEditFragment extends DialogFragment
         }
     }
 
+    private void initForm()
+    {
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_port };
+        EditText form_value = null;
+        for (int i = 0; i < ids.length; i++)
+        {
+            form_value = (EditText) findViewByIdInternal(ids[i]);
+            form_value.addTextChangedListener(watcher);
+        }
+    }
+
+    private TextWatcher watcher = new TextWatcher()
+    {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+            if (retrieveFormValues())
+            {
+                validate.setEnabled(true);
+            }
+            else
+            {
+                validate.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s)
+        {
+
+        }
+    };
+
     private boolean retrieveFormValues()
     {
 
@@ -143,8 +201,6 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
-            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
-                    + getText(R.string.account_username));
             return false;
         }
 
@@ -161,8 +217,6 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
-            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
-                    + getText(R.string.account_hostname));
             return false;
         }
 
@@ -171,7 +225,12 @@ public class AccountEditFragment extends DialogFragment
         String protocol = https ? "https" : "http";
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_port);
-        port = Integer.parseInt(form_value.getText().toString());
+        if (form_value.getText().length() > 0)
+        {
+            port = Integer.parseInt(form_value.getText().toString());
+        } else {
+            port = (protocol.equals("https")) ? 443 : 80;
+        }
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
         servicedocument = form_value.getText().toString();
@@ -182,8 +241,6 @@ public class AccountEditFragment extends DialogFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), getText(R.string.error_signin_form) + " : "
-                    + getText(R.string.account_url));
             return false;
         }
 
