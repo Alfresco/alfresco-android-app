@@ -169,6 +169,11 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
             ((MainActivity) getActivity()).displayAccounts();
             hideSlidingMenu(false);
         }
+        else if (position == accounts.size() + 1)
+        {
+            ((MainActivity) getActivity()).displayNetworks();
+            hideSlidingMenu(false);
+        }
     }
 
     private void hideSlidingMenu(boolean goHome)

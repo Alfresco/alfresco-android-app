@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFra
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFragment;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
@@ -777,6 +778,12 @@ public class MainActivity extends Activity
     {
         Fragment f = new AccountFragment();
         FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), AccountFragment.TAG, true);
+    }
+    
+    public void displayNetworks()
+    {
+        Fragment f = new CloudNetworksFragment();
+        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG, true);
     }
 
     // ///////////////////////////////////////////

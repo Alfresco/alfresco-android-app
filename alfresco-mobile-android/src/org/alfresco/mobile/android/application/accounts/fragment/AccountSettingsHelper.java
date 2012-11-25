@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
@@ -82,6 +83,8 @@ public class AccountSettingsHelper
     private boolean isCloud = false;
 
     private boolean doesRequestNewToken = true;
+
+    private String repositoryId;
 
     public AccountSettingsHelper(Context context, Account acc)
     {
@@ -204,6 +207,7 @@ public class AccountSettingsHelper
                 baseUrl = acc.getUrl();
                 data = new OAuth2DataImpl(getText(R.string.oauth_api_key), getText(R.string.oauth_api_secret),
                         acc.getAccessToken(), acc.getRefreshToken());
+                repositoryId = acc.getRepositoryId();
                 break;
 
             case Account.TYPE_ALFRESCO_TEST_BASIC:
@@ -275,6 +279,10 @@ public class AccountSettingsHelper
             else if (oauthUrl != null && !oauthUrl.isEmpty())
             {
                 settings.put(BASE_URL, ((createAccount) ? oauthUrl : baseUrl));
+            }
+            
+            if (repositoryId != null && !repositoryId.isEmpty()){
+                settings.put(CloudSession.CLOUD_NETWORK_ID, repositoryId);
             }
         }
         return settings;
