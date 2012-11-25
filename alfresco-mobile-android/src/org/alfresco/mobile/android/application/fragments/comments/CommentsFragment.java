@@ -38,6 +38,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
@@ -197,12 +198,20 @@ public class CommentsFragment extends CommentFragment
     @Override
     public void onStart()
     {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
             getActivity().setTitle(getString(R.string.document_comments_header));
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
+    }
+    
+    @Override
+    public void onPause()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        super.onPause();
     }
     
     @Override

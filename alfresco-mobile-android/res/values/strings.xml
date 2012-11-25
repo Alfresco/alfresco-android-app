@@ -74,6 +74,9 @@
     <string name="account_not_activated">Your account is not activated. Please check manage account screen.</string>
     <string name="account_loading">Loading : </string>
     
+    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_onpremise">Alfresco Server</string>
+    
     
     <!-- MAIN MENU -->
     <string name="wait_title">Please wait</string>
@@ -148,7 +151,13 @@
     
     <!-- PROPERTIES -->
     <string name="details">Details</string>
+    <string name="metadata">Properties</string>
     
+    <!-- NETWORKS -->
+    <string name="cloud_networks">Networks</string>
+    <string name="cloud_networks_empty">No Networks available</string>
+    <string name="manage_accounts">Manage accounts...</string>
+    <string name="cloud_networks_switch">Switch networks...</string>
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
@@ -176,7 +185,7 @@
     <!-- NETWORK -->
     <string name="error_network_title">No Network.</string>
     <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
-
+	
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
@@ -190,6 +199,9 @@
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
+    
+    <!-- HELP -->
+    <string name="help_setup_guide">Alfresco_Mobile_Android_App_Setup_Guide.pdf</string>
 
     <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
@@ -216,6 +228,5 @@
     <string name="link_to_repo">Clickable link</string>
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
-	<string name="manage_accounts">Manage accounts...</string>
 
 </resources>

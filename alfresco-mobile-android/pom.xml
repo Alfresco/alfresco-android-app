@@ -35,10 +35,20 @@
 
 	<dependencies>
 		<dependency>
+			 <groupId>org.apache.chemistry.opencmis</groupId>
+			 <artifactId>chemistry-opencmis-android-client</artifactId>
+			 <version>0.8.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk</groupId>
 			<artifactId>alfresco-mobile-android-ui-library</artifactId>
-			<!-- POSSIBLE REVERT TO 1.0 -->
-			<version>1.0.1-SNAPSHOT</version>
+			<version>1.0</version>
 			<type>apklib</type>
 		</dependency>
 		<dependency>

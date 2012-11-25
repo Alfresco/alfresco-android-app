@@ -119,4 +119,8 @@ public class Account implements Serializable
     {
         return activation;
     }
+    
+    public void setRepositoryId(String repositoryId){
+        this.repositoryId = repositoryId;
+    }
 }

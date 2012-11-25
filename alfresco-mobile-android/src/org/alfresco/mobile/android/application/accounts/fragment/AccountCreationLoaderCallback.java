@@ -134,6 +134,8 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                             .valueOf(Account.TYPE_ALFRESCO_CMIS);
                 }
 
+                description = (description != null && !description.isEmpty()) ? description : activity.getString(R.string.account_default_onpremise);
+                
                 id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
                         .getIdentifier(), type, null, null);
             }
@@ -153,7 +155,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                             .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
 
-                id = serverDao.insert("Alfresco Cloud", session.getBaseUrl(), user.getIdentifier(), null, session
+                id = serverDao.insert(activity.getString(R.string.account_default_cloud), session.getBaseUrl(), user.getIdentifier(), null, session
                         .getRepositoryInfo().getIdentifier(), type, ((CloudSession) session).getOAuthData()
                         .getAccessToken(), ((CloudSessionLoader) loader).getOAuthData().getRefreshToken());
             }
