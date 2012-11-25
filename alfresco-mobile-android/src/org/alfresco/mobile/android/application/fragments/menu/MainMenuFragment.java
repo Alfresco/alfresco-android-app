@@ -161,6 +161,7 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
                 accountIndex = position;
                 ((MainActivity) getActivity()).loadAccount(selectedAccount);
                 getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                refreshAccounts();
             }
         }
         else if (position == accounts.size())

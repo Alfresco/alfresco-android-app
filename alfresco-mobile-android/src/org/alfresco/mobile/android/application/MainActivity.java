@@ -782,8 +782,10 @@ public class MainActivity extends Activity
     
     public void displayNetworks()
     {
-        Fragment f = new CloudNetworksFragment();
-        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG, true);
+        if (getSession() != null && getSession() instanceof CloudSession){
+            Fragment f = new CloudNetworksFragment();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG, true);
+        }
     }
 
     // ///////////////////////////////////////////
