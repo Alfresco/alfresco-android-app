@@ -9,12 +9,14 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 
 import android.app.Activity;
+import android.util.Log;
 
 public class CloudExceptionUtils
 {
 
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
+        Log.d("CloudExceptionUtils", Log.getStackTraceString(exception));
         if (exception instanceof AlfrescoSessionException)
         {
             // Case CmisConnexionException ==> Token expired
@@ -28,7 +30,7 @@ public class CloudExceptionUtils
         if (exception instanceof AlfrescoServiceException)
         {
             AlfrescoServiceException ex = ((AlfrescoServiceException) exception);
-            if (ex != null && (ex.getErrorCode() == 104 || ex.getMessage().contains("No authentication challenges found")))
+            if (ex != null && (ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains("No authentication challenges found"))))
             {
                 manageException(activity, forceRefresh);
             }

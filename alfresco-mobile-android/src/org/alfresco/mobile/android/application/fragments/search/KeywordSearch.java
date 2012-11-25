@@ -26,12 +26,12 @@ import org.alfresco.mobile.android.ui.search.SearchFragment;
 
 import android.app.ActionBar;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnKeyListener;
-import android.view.inputmethod.EditorInfo;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -112,5 +112,12 @@ public class KeywordSearch extends SearchFragment
         getActivity().invalidateOptionsMenu();
         super.onPause();
     }
-
+    
+    public void onLoaderException(Exception e)
+    {
+        Log.e(TAG, Log.getStackTraceString(e));
+        MessengerManager.showToast(getActivity(), R.string.error_general);
+        setListShown(true);
+        lv.setEmptyView(ev);
+    }
 }

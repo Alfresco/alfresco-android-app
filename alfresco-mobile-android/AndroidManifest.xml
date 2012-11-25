@@ -22,7 +22,7 @@
     android:versionName="1.0.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -64,7 +64,7 @@
             android:name=".MainActivity"
             android:launchMode="singleTop"
             android:uiOptions="splitActionBarWhenNarrow" 
-            android:windowSoftInputMode="adjustPan"
+            android:windowSoftInputMode="adjustResize"
              android:logo="@drawable/ic_alfresco"
             >
             <intent-filter>

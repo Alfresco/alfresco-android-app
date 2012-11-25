@@ -1,6 +1,7 @@
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
+import java.util.Date;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
@@ -19,6 +20,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -147,8 +149,14 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
                             + contentFile.getFileName());
-                    ActionManager.openIn(getFragmentManager().findFragmentByTag(DetailsFragment.TAG),
-                            contentFile.getFile(), doc.getContentStreamMimeType(), PublicIntent.REQUESTCODE_SAVE_BACK);
+                    
+                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
+                    if (detailsFragment != null){
+    	                long datetime = contentFile.getFile().lastModified();
+                    	detailsFragment.setDownloadDateTime(new Date(datetime));
+                    	ActionManager.openIn(detailsFragment,
+                                 contentFile.getFile(), doc.getContentStreamMimeType(), PublicIntent.REQUESTCODE_SAVE_BACK);
+                    }
                     break;
 
                 case ACTION_EMAIL:
