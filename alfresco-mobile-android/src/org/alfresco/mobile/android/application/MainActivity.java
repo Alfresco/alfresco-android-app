@@ -460,20 +460,11 @@ public class MainActivity extends Activity
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
                 {
                     ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                    if (intent.getExtras() != null && intent.getExtras().getBundle(ActionManager.REFRESH_EXTRA) != null
-                            && currentNode != null)
+                    if (!DisplayUtils.hasCentralPane(this))
                     {
-                        clearScreen();
-                    }
-                    else
-                    {
+                        getFragmentManager().popBackStack();
+                    } else {
                         FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                        if (!DisplayUtils.hasCentralPane(this))
-                        {
-                            backstack = true;
-                            getFragmentManager().popBackStack();
-                        }
-                        addPropertiesFragment(currentNode, backstack);
                     }
                 }
             }
