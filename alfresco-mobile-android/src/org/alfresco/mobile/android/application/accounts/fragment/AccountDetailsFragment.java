@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoadeCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -42,6 +44,8 @@ import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -102,6 +106,8 @@ public class AccountDetailsFragment extends BaseFragment
         accountDao = new AccountDAO(getActivity(), SessionUtils.getDataBaseManager(getActivity()).getWriteDb());
         acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
 
+        if (acc == null) { return null; }
+
         if (acc.getActivation() == null)
         {
             vRoot = inflater.inflate(R.layout.app_account_details, container, false);
@@ -129,9 +135,10 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
-                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+                CloudSignupStatusLoadeCallback call = new CloudSignupStatusLoadeCallback(getActivity(),
+                        AccountDetailsFragment.this, acc);
+                LoaderManager lm = getLoaderManager();
+                lm.restartLoader(CloudSignupStatusLoader.ID, null, call);
             }
         });
 
@@ -252,7 +259,7 @@ public class AccountDetailsFragment extends BaseFragment
 
     }
 
-    private void retrieveFormValues(View v)
+    private boolean retrieveFormValues()
     {
         // Check values
         EditText form_value = (EditText) vRoot.findViewById(R.id.repository_hostname);
@@ -262,12 +269,18 @@ public class AccountDetailsFragment extends BaseFragment
         }
         else
         {
-            MessengerManager.showToast(getActivity(), R.string.error_account_url);
-            return;
+            return false;
         }
 
         form_value = (EditText) vRoot.findViewById(R.id.repository_username);
-        username = form_value.getText().toString();
+        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
+            username = form_value.getText().toString();
+        }
+        else
+        {
+            return false;
+        }
 
         form_value = (EditText) vRoot.findViewById(R.id.repository_description);
         description = form_value.getText().toString();
@@ -291,11 +304,13 @@ public class AccountDetailsFragment extends BaseFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerManager.showToast(getActivity(), "URL error");
-            return;
+            return false;
         }
 
         url = u.toString();
+
+        return true;
+
     }
 
     @Override
@@ -317,6 +332,49 @@ public class AccountDetailsFragment extends BaseFragment
         super.onStart();
     }
 
+    private void initForm()
+    {
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_port };
+        EditText form_value = null;
+        for (int i = 0; i < ids.length; i++)
+        {
+            form_value = (EditText) vRoot.findViewById(ids[i]);
+            form_value.addTextChangedListener(watcher);
+        }
+    }
+
+    private TextWatcher watcher = new TextWatcher()
+    {
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count)
+        {
+            if (retrieveFormValues())
+            {
+                validate.setEnabled(true);
+            }
+            else
+            {
+                validate.setEnabled(false);
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after)
+        {
+            // TODO Auto-generated method stub
+
+        }
+
+        @Override
+        public void afterTextChanged(Editable s)
+        {
+
+        }
+    };
+
+    private Button validate;
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -324,15 +382,16 @@ public class AccountDetailsFragment extends BaseFragment
     public void edit()
     {
         initValues(vRoot, true);
+        initForm();
 
-        Button b = (Button) vRoot.findViewById(R.id.validate_account);
-        b.setVisibility(View.VISIBLE);
-        b.setOnClickListener(new OnClickListener()
+        validate = (Button) vRoot.findViewById(R.id.validate_account);
+        validate.setVisibility(View.VISIBLE);
+        validate.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                retrieveFormValues(v);
+                // retrieveFormValues(v);
                 if (accountDao.update(acc.getId(), description, url, username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken()))
                 {
@@ -345,7 +404,7 @@ public class AccountDetailsFragment extends BaseFragment
             }
         });
 
-        b = (Button) vRoot.findViewById(R.id.cancel_account);
+        Button b = (Button) vRoot.findViewById(R.id.cancel_account);
         b.setVisibility(View.VISIBLE);
         b.setOnClickListener(new OnClickListener()
         {
@@ -403,6 +462,13 @@ public class AccountDetailsFragment extends BaseFragment
         AlertDialog alert = builder.create();
         alert.show();
 
+    }
+
+    public void displayOAuthFragment()
+    {
+        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+        FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                AccountOAuthFragment.TAG, true);
     }
 
     @Override

@@ -58,6 +58,12 @@
 
                 <data android:scheme="alfresco"  android:host="sign_up_cloud" />
             </intent-filter>
+            
+            <!-- Internal : Used for displaying Errors-->
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
         <activity 
