@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.manager;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
@@ -36,7 +37,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
 {
 
     public static final String REFRESH_EXTRA = "refreshExtra";
-
+    
 
     /**
      * Allow to pick file with other apps.
@@ -62,12 +63,19 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         actionRefresh(f, refreshCategory, type, null);
     }
-    
+
     public static void actionDisplayError(Fragment f, Exception e)
     {
-        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_ERROR);
-        Bundle b = new Bundle();
-        b.putSerializable(IntentIntegrator.DISPLAY_ERROR_DATA, e);
+        String intentId = IntentIntegrator.ACTION_DISPLAY_ERROR;
+        if (f.getActivity() instanceof HomeScreenActivity)
+        {
+            intentId = IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN;
+        }
+        Intent i = new Intent(intentId);
+        if (e != null)
+        {
+            i.putExtra(IntentIntegrator.DISPLAY_ERROR_DATA, e);
+        }
         f.startActivity(i);
     }
 
@@ -82,7 +90,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
         activity.startActivity(i);
     }
-    
+
     public static void actionRequestAuthentication(Activity activity, Account account)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_USER_AUTHENTICATION);

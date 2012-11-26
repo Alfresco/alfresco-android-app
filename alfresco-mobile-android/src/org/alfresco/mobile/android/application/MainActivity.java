@@ -315,7 +315,6 @@ public class MainActivity extends Activity
                 return;
             }
 
-            // Intent for CLOUD SIGN UP
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
                 if (getFragment(WaitingDialogFragment.TAG) != null)
