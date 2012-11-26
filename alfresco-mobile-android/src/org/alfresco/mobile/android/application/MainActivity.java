@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -315,6 +316,7 @@ public class MainActivity extends Activity
                 return;
             }
 
+            //Intent for Display Errors
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
                 if (getFragment(WaitingDialogFragment.TAG) != null)
@@ -336,6 +338,16 @@ public class MainActivity extends Activity
                 FragmentDisplayer.removeFragment(this, CloudSignupDialogFragment.TAG);
                 displayAccounts();
                 return;
+            }
+            
+            if (Intent.ACTION_VIEW.equals(intent.getAction())
+                    && intent.getData() != null && intent.getData().getHost().equals("activate-cloud-account"))
+            {
+                
+               if (getFragment(AccountDetailsFragment.TAG) != null){
+                   ((AccountDetailsFragment)getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
+                   return;
+               }
             }
 
             //
@@ -372,6 +384,7 @@ public class MainActivity extends Activity
                 return;
             }
 
+            //Intent for display Sign up Dialog
             if (Intent.ACTION_VIEW.equals(intent.getAction())
                     && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                     && IntentIntegrator.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))

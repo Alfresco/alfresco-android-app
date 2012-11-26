@@ -13,6 +13,7 @@ import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
 import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
@@ -45,6 +46,17 @@ public class CloudSignupRequest
     private Boolean isActivated;
 
     private Boolean isPreRegistered;
+    
+    private static final String ACCOUNT_KEY = "?key=";
+    
+    public CloudSignupRequest(){
+    }
+    
+    public CloudSignupRequest(Account acc){
+        this.identifier= acc.getActivation().substring(0, acc.getActivation().indexOf(ACCOUNT_KEY));
+        this.registrationKey= acc.getActivation().substring(acc.getActivation().indexOf(ACCOUNT_KEY) + ACCOUNT_KEY.length(), acc.getActivation().length());
+        this.emailAdress = acc.getUsername();
+    }
 
     public static CloudSignupRequest parsePublicAPIJson(Map<String, Object> json)
     {
@@ -120,11 +132,16 @@ public class CloudSignupRequest
         }
     }
 
-    public static boolean checkAccount(CloudSignupRequest signupRequest)
+    public static boolean checkAccount(CloudSignupRequest signupRequest, String apiKey)
     {
         UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.PUBLIC_API_HOSTNAME));
+        
+        Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
+        List<String> headers = new ArrayList<String>();
+        headers.add(apiKey);
+        fixedHeaders.put("key", headers);
 
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, null);
+        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, fixedHeaders);
         if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
         {
             return true;

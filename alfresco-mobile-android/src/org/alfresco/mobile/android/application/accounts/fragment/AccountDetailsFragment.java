@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoadeCallback;
+import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -133,9 +135,9 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
-                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+                CloudSignupStatusLoadeCallback call = new CloudSignupStatusLoadeCallback(getActivity(), AccountDetailsFragment.this, acc);
+                LoaderManager lm = getLoaderManager();
+                lm.restartLoader(CloudSignupStatusLoader.ID, null, call);
             }
         });
 
@@ -409,6 +411,12 @@ public class AccountDetailsFragment extends BaseFragment
 
     }
 
+    public void displayOAuthFragment(){
+        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+        FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+    }
+    
     @Override
     public void onDetach()
     {
