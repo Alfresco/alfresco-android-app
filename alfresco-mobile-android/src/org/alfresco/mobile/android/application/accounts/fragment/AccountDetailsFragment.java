@@ -102,6 +102,10 @@ public class AccountDetailsFragment extends BaseFragment
         accountDao = new AccountDAO(getActivity(), SessionUtils.getDataBaseManager(getActivity()).getWriteDb());
         acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
 
+        if (acc == null){
+            return null;
+        }
+        
         if (acc.getActivation() == null)
         {
             vRoot = inflater.inflate(R.layout.app_account_details, container, false);
