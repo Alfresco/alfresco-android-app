@@ -73,13 +73,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/account_password" />
-
+
                 <EditText
                     android:id="@+id/repository_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/optional"
+                    android:hint="@string/required"
                     android:inputType="textPassword" >
+
                 </EditText>
             </TableRow>
 
