@@ -17,8 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
+import java.util.ArrayList;
+
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
@@ -31,6 +35,7 @@ import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
 import android.app.LoaderManager;
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -70,14 +75,34 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
+    
+    
+    @SuppressWarnings("rawtypes")
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<ActivityEntry>>> arg0,
+            LoaderResult<PagingResult<ActivityEntry>> results)
+    {
+        if (adapter == null)
+        {
+            adapter = new ActivityEventAdapterFix(getActivity(), alfSession, R.layout.sdk_list_row,
+                    new ArrayList<ActivityEntry>(0));
+            ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
+        }
+        
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
+        {
+            displayPagingData(results.getData(), loaderId, callback);
+        }
+    }
+    
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        //TODO DELETE BEFORE RELEASE !
-        //OAuthData data = ((CloudSessionImpl)SessionUtils.getSession(getActivity())).getOAuthData();
-        //((CloudSessionImpl)SessionUtils.getSession(getActivity())).setOAuthData(new OAuth2DataImpl(data.getApiKey(),data.getApiSecret(), "-1", data.getRefreshToken()));
-        
         ActivityEntry item = (ActivityEntry) l.getItemAtPosition(position);
 
         // Inconsistency between cloud and on premise.
