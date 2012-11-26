@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
@@ -195,7 +196,9 @@ public class AccountOAuthFragment extends OAuthFragment
 
     public void load(OAuthData oauthData)
     {
-        if (oauthData == null){
+        if (oauthData == null)
+        {
+            ActionManager.actionDisplayError(this, null);
             return;
         }
 

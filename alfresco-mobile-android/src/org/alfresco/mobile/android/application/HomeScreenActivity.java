@@ -20,14 +20,19 @@ package org.alfresco.mobile.android.application;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
+import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
@@ -101,8 +106,25 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
     @Override
     protected void onNewIntent(Intent intent)
     {
-        // TODO Auto-generated method stub
         super.onNewIntent(intent);
+        
+        //Use if OAuth process goes wrong
+        if (IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN.equals(intent.getAction()))
+        {
+            if (getFragment(WaitingDialogFragment.TAG) != null)
+            {
+                ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+            }
+            
+            if (intent.getExtras() != null){
+                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
+                CloudExceptionUtils.handleCloudException(this, e, false);
+            }
+            MessengerManager.showLongToast(this, getString(R.string.error_general));
+            getFragmentManager().popBackStack();
+
+            return;
+        }
 
         if (intent.getAction() != null && intent.getData() != null && Intent.ACTION_VIEW.equals(intent.getAction())
                 && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
@@ -111,5 +133,10 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
             getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             cloud(null);
         }
+    }
+    
+    public Fragment getFragment(String tag)
+    {
+        return getFragmentManager().findFragmentByTag(tag);
     }
 }

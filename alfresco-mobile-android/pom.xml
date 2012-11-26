@@ -35,9 +35,9 @@
 
 	<dependencies>
 		<dependency>
-			 <groupId>org.apache.chemistry.opencmis</groupId>
-			 <artifactId>chemistry-opencmis-android-client</artifactId>
-			 <version>0.8.0-SNAPSHOT</version>
+			<groupId>org.apache.chemistry.opencmis</groupId>
+			<artifactId>chemistry-opencmis-android-client</artifactId>
+			<version>0.8.0-SNAPSHOT</version>
 			<exclusions>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -58,6 +58,11 @@
 		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>annotations</artifactId>
+		</dependency>
+		<dependency> 
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId> 
+			<scope>provided</scope> 
 		</dependency>
 	</dependencies>
 
@@ -106,24 +111,21 @@
 								<id>signing</id>
 								<goals>
 									<goal>sign</goal>
+									<goal>verify</goal>
 								</goals>
 								<phase>package</phase>
 								<inherited>true</inherited>
 								<configuration>
-									<archiveDirectory></archiveDirectory>
+									<removeExistingSignatures>true</removeExistingSignatures>
+									<archiveDirectory />
 									<includes>
-										<include>target/*.apk</include>
+										<include>${project.build.directory}/${project.artifactId}-${project.version}.apk</include>
 									</includes>
 									<keystore>${android_keystore}</keystore>
+									<alias>${android_keystore_alias}</alias>
 									<storepass>${android_keystore_storepass}</storepass>
 									<keypass>${android_keystore_keypass}</keypass>
-									<alias>${android_keystore_alias}</alias>
-									<arguments>
-										<argument>-sigalg</argument>
-										<argument>MD5withRSA</argument>
-										<argument>-digestalg</argument>
-										<argument>SHA1</argument>
-									</arguments>
+									<verbose>true</verbose>
 								</configuration>
 							</execution>
 						</executions>
@@ -131,6 +133,7 @@
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
+						<inherited>true</inherited>
 						<configuration>
 							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
 							<sign>
@@ -138,8 +141,9 @@
 							</sign>
 							<zipalign>
 								<skip>false</skip>
+								<verbose>true</verbose>
 								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}.apk</outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-signed-aligned.apk </outputApk>
 							</zipalign>
 						</configuration>
 						<executions>
@@ -195,7 +199,7 @@
 						<configuration>
 							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
 							<sign>
-								<debug>true</debug>
+								<debug>both</debug>
 							</sign>
 							<zipalign>
 								<skip>false</skip>
