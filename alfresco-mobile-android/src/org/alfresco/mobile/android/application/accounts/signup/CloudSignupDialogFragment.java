@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.signup;
 
@@ -64,9 +64,9 @@ public class CloudSignupDialogFragment extends DialogFragment
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_cloud);
         }
-        
+
         initForm();
-        
+
         if (retrieveFormValues())
         {
             signup.setEnabled(true);
@@ -75,7 +75,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         {
             signup.setEnabled(false);
         }
-        
+
         super.onStart();
     }
 
@@ -111,7 +111,6 @@ public class CloudSignupDialogFragment extends DialogFragment
 
         return v;
     }
-    
 
     public void signup(View v)
     {
@@ -131,18 +130,12 @@ public class CloudSignupDialogFragment extends DialogFragment
         EditText form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_firstname);
         firstName = form_value.getText().toString();
 
-        if (firstName.length() == 0)
-        {
-            return false;
-        }
+        if (firstName.length() == 0) { return false; }
 
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_lastname);
         lastName = form_value.getText().toString();
 
-        if (lastName.length() == 0)
-        {
-            return false;
-        }
+        if (lastName.length() == 0) { return false; }
 
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
         password = form_value.getText().toString();
@@ -150,24 +143,20 @@ public class CloudSignupDialogFragment extends DialogFragment
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
         String confirm = form_value.getText().toString();
 
-        if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password))
-        {
-            return false;
-        }
+        if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password)) { return false; }
 
         form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
         emailAddress = form_value.getText().toString();
 
-        if (emailAddress.length() == 0 || !emailAddress.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")){
-            return false;
-        }
+        if (emailAddress.length() == 0 || !emailAddress.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) { return false; }
 
         return true;
     }
-    
+
     private void initForm()
     {
-        int[] ids = new int[]{R.id.cloud_signup_firstname, R.id.cloud_signup_lastname, R.id.cloud_signup_password, R.id.cloud_signup_confirm,R.id.cloud_signup_email};
+        int[] ids = new int[] { R.id.cloud_signup_firstname, R.id.cloud_signup_lastname, R.id.cloud_signup_password,
+                R.id.cloud_signup_confirm, R.id.cloud_signup_email };
         EditText form_value = null;
         for (int i = 0; i < ids.length; i++)
         {
@@ -185,7 +174,9 @@ public class CloudSignupDialogFragment extends DialogFragment
             if (retrieveFormValues())
             {
                 signup.setEnabled(true);
-            } else {
+            }
+            else
+            {
                 signup.setEnabled(false);
             }
         }
@@ -200,7 +191,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         @Override
         public void afterTextChanged(Editable s)
         {
-            
+
         }
     };
 
@@ -209,7 +200,8 @@ public class CloudSignupDialogFragment extends DialogFragment
         Intent i = new Intent(getActivity(), MainActivity.class);
         i.setAction(IntentIntegrator.ACTION_CHECK_SIGNUP);
         getActivity().startActivity(i);
-        if (getActivity() instanceof HomeScreenActivity){
+        if (getActivity() instanceof HomeScreenActivity)
+        {
             getActivity().finish();
         }
     }

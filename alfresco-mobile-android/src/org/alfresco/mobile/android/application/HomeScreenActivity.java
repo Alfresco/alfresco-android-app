@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
@@ -107,16 +107,17 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-        
-        //Use if OAuth process goes wrong
+
+        // Use if OAuth process goes wrong
         if (IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN.equals(intent.getAction()))
         {
             if (getFragment(WaitingDialogFragment.TAG) != null)
             {
                 ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
             }
-            
-            if (intent.getExtras() != null){
+
+            if (intent.getExtras() != null)
+            {
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
                 CloudExceptionUtils.handleCloudException(this, e, false);
             }
@@ -134,7 +135,7 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
             cloud(null);
         }
     }
-    
+
     public Fragment getFragment(String tag)
     {
         return getFragmentManager().findFragmentByTag(tag);

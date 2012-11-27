@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments;
 
@@ -29,7 +29,7 @@ import android.app.FragmentTransaction;
 @TargetApi(13)
 public class FragmentDisplayer
 {
-    
+
     public static void loadFragment(Activity a, Integer viewId, String tag)
     {
         if (a.getFragmentManager().findFragmentByTag(tag) == null)
@@ -89,9 +89,9 @@ public class FragmentDisplayer
         }
         t2.commit();
     }
-    
-    
-    public static void hide(Activity a, String tag){
+
+    public static void hide(Activity a, String tag)
+    {
         Fragment fr = a.getFragmentManager().findFragmentByTag(tag);
         if (fr != null && fr.isAdded())
         {
@@ -101,8 +101,9 @@ public class FragmentDisplayer
             t2.commit();
         }
     }
-    
-    public static void remove(Activity a, Fragment fr){
+
+    public static void remove(Activity a, Fragment fr)
+    {
         if (fr != null && fr.isAdded())
         {
             FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
@@ -111,13 +112,15 @@ public class FragmentDisplayer
             t2.commit();
         }
     }
-    
-    public static void remove(Activity a, Fragment fr, boolean backStack){
+
+    public static void remove(Activity a, Fragment fr, boolean backStack)
+    {
         if (fr != null && fr.isAdded())
         {
             FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
             t2.remove(fr);
-            if (backStack){
+            if (backStack)
+            {
                 t2.addToBackStack(null);
             }
             t2.commit();
