@@ -22,7 +22,7 @@
 
 	<groupId>org.alfresco.mobile.android.apps</groupId>
 	<artifactId>alfresco-mobile-android-apps</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android APPS (Parent)</name>
