@@ -1,27 +1,25 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
-
-
 
 /**
  * ContentFile represents an abstract way to share file between the client
@@ -32,13 +30,15 @@ import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 public class ContentFileProgressImpl extends ContentFileImpl
 {
     private static final long serialVersionUID = 1L;
-   
+
     private int amountCopied = 0;
+
     private int segment = 0;
+
     private int currentSegment = 0;
+
     private String newFilename = null;
-    
-    
+
     public ContentFileProgressImpl()
     {
         super();
@@ -52,7 +52,7 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public ContentFileProgressImpl(File f)
     {
         super(f);
-        
+
         segment = (int) (f.length() / 10);
     }
 
@@ -67,34 +67,33 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public ContentFileProgressImpl(File f, String filename, String mimetype)
     {
         super(f, filename, mimetype);
-        
+
         segment = (int) (f.length() / 10);
     }
-    
-    
+
     @Override
     public void fileReadCallback(int nBytes)
     {
         amountCopied += nBytes;
-        
+
         if (amountCopied / segment > currentSegment)
         {
             ++currentSegment;
-            ProgressNotification.updateProgress (getFileName());
+            ProgressNotification.updateProgress(getFileName());
         }
     }
 
     @Override
     public void fileWriteCallback(int nBytes)
     {
-        ProgressNotification.updateProgress (getFileName());
+        ProgressNotification.updateProgress(getFileName());
     }
-    
-    public void setFilename (String name)
+
+    public void setFilename(String name)
     {
         newFilename = name;
     }
-    
+
     @Override
     public String getFileName()
     {

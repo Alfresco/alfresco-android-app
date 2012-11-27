@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
@@ -43,7 +43,6 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -87,12 +86,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
-import android.widget.PopupMenu;
 
 @TargetApi(11)
 public class MainActivity extends Activity
@@ -298,7 +295,8 @@ public class MainActivity extends Activity
                     {
                         if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH_REFRESH))
                         {
-                            getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,  new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
+                            getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,
+                                    new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
                         }
                         else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH))
                         {
@@ -316,7 +314,7 @@ public class MainActivity extends Activity
                 return;
             }
 
-            //Intent for Display Errors
+            // Intent for Display Errors
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
                 if (getFragment(WaitingDialogFragment.TAG) != null)
@@ -326,7 +324,7 @@ public class MainActivity extends Activity
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
 
                 MessengerManager.showLongToast(this, getString(R.string.error_general));
-                
+
                 CloudExceptionUtils.handleCloudException(this, e, false);
 
                 return;
@@ -339,15 +337,16 @@ public class MainActivity extends Activity
                 displayAccounts();
                 return;
             }
-            
-            if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && intent.getData() != null && intent.getData().getHost().equals("activate-cloud-account"))
+
+            if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
+                    && intent.getData().getHost().equals("activate-cloud-account"))
             {
-                
-               if (getFragment(AccountDetailsFragment.TAG) != null){
-                   ((AccountDetailsFragment)getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
-                   return;
-               }
+
+                if (getFragment(AccountDetailsFragment.TAG) != null)
+                {
+                    ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
+                    return;
+                }
             }
 
             //
@@ -384,7 +383,7 @@ public class MainActivity extends Activity
                 return;
             }
 
-            //Intent for display Sign up Dialog
+            // Intent for display Sign up Dialog
             if (Intent.ACTION_VIEW.equals(intent.getAction())
                     && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                     && IntentIntegrator.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))
@@ -463,7 +462,9 @@ public class MainActivity extends Activity
                     if (!DisplayUtils.hasCentralPane(this))
                     {
                         getFragmentManager().popBackStack();
-                    } else {
+                    }
+                    else
+                    {
                         FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
                     }
                 }
@@ -782,12 +783,14 @@ public class MainActivity extends Activity
         Fragment f = new AccountFragment();
         FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), AccountFragment.TAG, true);
     }
-    
+
     public void displayNetworks()
     {
-        if (getSession() != null && getSession() instanceof CloudSession){
+        if (getSession() != null && getSession() instanceof CloudSession)
+        {
             Fragment f = new CloudNetworksFragment();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG, true);
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG,
+                    true);
         }
     }
 

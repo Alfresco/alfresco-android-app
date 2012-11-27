@@ -1,35 +1,20 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- ******************************************************************************/
-/*
- * Copyright (C) 2010 Florian Maul & Jean Marie PASCAL
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
 import android.content.Context;
@@ -67,24 +52,24 @@ public class AccountSchema
     public static final String COLUMN_REPOSITORY_TYPE = "repositoryTypeId";
 
     public static final int COLUMN_REPOSITORY_TYPE_ID = 6;
-    
+
     public static final String COLUMN_ACTIVATION = "activation";
 
     public static final int COLUMN_ACTIVATION_ID = 7;
-    
+
     public static final String COLUMN_ACCESS_TOKEN = "accessToken";
 
     public static final int COLUMN_ACCESS_TOKEN_ID = 8;
-    
+
     public static final String COLUMN_REFRESH_TOKEN = "refreshToken";
 
     public static final int COLUMN_REFRESH_TOKEN_ID = 9;
 
-
     private static final String QUERY_TABLE_CREATE = "create table " + TABLENAME + " (" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_NAME + " TEXT NOT NULL," + COLUMN_URL + " TEXT NOT NULL,"
-            + COLUMN_USERNAME + " TEXT NOT NULL," + COLUMN_PASSWORD + " TEXT," + COLUMN_REPOSITORY_ID + " TEXT NOT NULL,"
-            + COLUMN_REPOSITORY_TYPE + " INTEGER," + COLUMN_ACTIVATION + " TEXT," + COLUMN_ACCESS_TOKEN + " TEXT," + COLUMN_REFRESH_TOKEN + " TEXT);";
+            + COLUMN_USERNAME + " TEXT NOT NULL," + COLUMN_PASSWORD + " TEXT," + COLUMN_REPOSITORY_ID
+            + " TEXT NOT NULL," + COLUMN_REPOSITORY_TYPE + " INTEGER," + COLUMN_ACTIVATION + " TEXT,"
+            + COLUMN_ACCESS_TOKEN + " TEXT," + COLUMN_REFRESH_TOKEN + " TEXT);";
 
     private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
 

@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.comments;
 
@@ -22,10 +22,10 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.CommentService;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.comment.CommentFragment;
 import org.alfresco.mobile.android.ui.comment.actions.CommentCreateLoaderCallback;
 import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
@@ -38,9 +38,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -109,16 +109,17 @@ public class CommentsFragment extends CommentFragment
             {
             }
         });
-        
+
         commentText.setImeOptions(EditorInfo.IME_ACTION_SEND);
         commentText.setOnEditorActionListener(new OnEditorActionListener()
         {
-            
+
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
-                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN) && ((actionId == EditorInfo.IME_ACTION_SEND) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
-                {  
+                if (event != null && (event.getAction() == KeyEvent.ACTION_DOWN)
+                        && ((actionId == EditorInfo.IME_ACTION_SEND) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                {
                     addcomment();
                     return true;
                 }
@@ -128,8 +129,9 @@ public class CommentsFragment extends CommentFragment
 
         return v;
     }
-    
-    private void activateSend(){
+
+    private void activateSend()
+    {
         if (commentText.getText().length() > 0)
         {
             bAdd.setEnabled(true);
@@ -139,8 +141,9 @@ public class CommentsFragment extends CommentFragment
             bAdd.setEnabled(false);
         }
     }
-    
-    private void addcomment(){
+
+    private void addcomment()
+    {
         if (commentText.getText().length() > 0)
         {
             CommentCreateLoaderCallback c = new CommentCreateLoaderCallback(alfSession, getActivity(), node,
@@ -206,14 +209,14 @@ public class CommentsFragment extends CommentFragment
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-    
+
     @Override
     public void onPause()
     {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
         super.onPause();
     }
-    
+
     @Override
     public void onLoaderException(Exception e)
     {

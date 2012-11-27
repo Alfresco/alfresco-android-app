@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.signup;
 
 import java.io.OutputStream;
@@ -46,15 +63,18 @@ public class CloudSignupRequest
     private Boolean isActivated;
 
     private Boolean isPreRegistered;
-    
+
     private static final String ACCOUNT_KEY = "?key=";
-    
-    public CloudSignupRequest(){
+
+    public CloudSignupRequest()
+    {
     }
-    
-    public CloudSignupRequest(Account acc){
-        this.identifier= acc.getActivation().substring(0, acc.getActivation().indexOf(ACCOUNT_KEY));
-        this.registrationKey= acc.getActivation().substring(acc.getActivation().indexOf(ACCOUNT_KEY) + ACCOUNT_KEY.length(), acc.getActivation().length());
+
+    public CloudSignupRequest(Account acc)
+    {
+        this.identifier = acc.getActivation().substring(0, acc.getActivation().indexOf(ACCOUNT_KEY));
+        this.registrationKey = acc.getActivation().substring(
+                acc.getActivation().indexOf(ACCOUNT_KEY) + ACCOUNT_KEY.length(), acc.getActivation().length());
         this.emailAdress = acc.getUsername();
     }
 
@@ -100,14 +120,14 @@ public class CloudSignupRequest
         jo.put(CloudConstant.CLOUD_FIRSTNAME_VALUE, firstName);
         jo.put(CloudConstant.CLOUD_LASTNAME_VALUE, lastName);
         jo.put(CloudConstant.CLOUD_PASSWORD_VALUE, password);
-        //jo.put(CloudConstant.CLOUD_KEY, apiKey);
+        // jo.put(CloudConstant.CLOUD_KEY, apiKey);
         jo.put(CloudConstant.CLOUD_SOURCE_VALUE, "mobile-android");
 
         Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
         List<String> headers = new ArrayList<String>();
         headers.add(apiKey);
         fixedHeaders.put("key", headers);
-        
+
         final JsonDataWriter formData = new JsonDataWriter(jo);
 
         // send and parse
@@ -135,7 +155,7 @@ public class CloudSignupRequest
     public static boolean checkAccount(CloudSignupRequest signupRequest, String apiKey)
     {
         UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.PUBLIC_API_HOSTNAME));
-        
+
         Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
         List<String> headers = new ArrayList<String>();
         headers.add(apiKey);
@@ -164,8 +184,9 @@ public class CloudSignupRequest
     // //////////////////////////////////////////////////////////////////////////////
 
     private static final String CLOUD_SIGNUP = "/alfresco/a/-default-/internal/cloud/accounts/signupqueue";
-    
-    //private static final String CLOUD_SIGNUP = "/internal/cloud/accounts/signupqueue";
+
+    // private static final String CLOUD_SIGNUP =
+    // "/internal/cloud/accounts/signupqueue";
 
     private static final String VARIABLE_ACCOUNTID = "{accountid}";
 
