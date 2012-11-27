@@ -608,7 +608,7 @@ public class MainActivity extends Activity
                         currentAccount.getUsername()));
                 break;
             case R.id.menu_about:
-                showAbout();
+                displayAbout();
                 break;
             case R.id.menu_help:
                 String newFile;
@@ -760,15 +760,16 @@ public class MainActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG, b);
     }
 
-    public void showAbout()
+    public void displayAbout()
     {
         if (getFragment(AboutFragment.TAG) != null)
         {
             getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            Fragment f = new AboutFragment();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
         }
-        Fragment f = new AboutFragment();
-        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
-        DisplayUtils.switchSingleOrTwo(this, false);
+        //DisplayUtils.switchSingleOrTwo(this, false);
     }
 
     public void displayMainMenu()
@@ -1033,7 +1034,7 @@ public class MainActivity extends Activity
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).delete();
                 return true;
             case MenuActionItem.ABOUT_ID:
-                showAbout();
+                displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
                 return true;
             case android.R.id.home:

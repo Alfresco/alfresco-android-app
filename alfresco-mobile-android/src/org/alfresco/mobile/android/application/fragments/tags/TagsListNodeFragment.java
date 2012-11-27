@@ -48,7 +48,7 @@ public class TagsListNodeFragment extends TagsNodeFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(true);
+        setRetainInstance(false);
         alfSession = SessionUtils.getSession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
