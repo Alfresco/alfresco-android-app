@@ -84,6 +84,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     protected Date downloadDateTime;
 
+    protected Integer tabSelected = null;
+    protected Integer tabSelection = null;
+
     public DetailsFragment()
     {
     }
@@ -114,7 +117,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(true);
+        setRetainInstance(false);
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
@@ -164,7 +167,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         // TAB
-
+        if (savedInstanceState != null){
+            tabSelection = savedInstanceState.getInt("TAB");
+            savedInstanceState.remove("TAB");
+        }
+        
         mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
         setupTabs();
 
@@ -176,6 +183,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
         }
+        Log.d(TAG, "END TAB");
 
         // BUTTONS
         ImageView b = (ImageView) v.findViewById(R.id.action_openin);
@@ -270,7 +278,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
-        if (mTabHost != null) mTabHost.setCurrentTabByTag(TAB_METADATA);
         super.onStart();
     }
 
@@ -645,6 +652,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         return node;
     }
+    
+    
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putInt("TAB", tabSelected);
+    }
 
     private static final String TAB_METADATA = "Metadata";
 
@@ -668,7 +683,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
         mTabHost.addTab(newTab(TAB_COMMENTS, R.string.action_comments, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_TAGS, R.string.action_tags, android.R.id.tabcontent));
-
+        
+        if (tabSelection != null){
+            if (tabSelection == 0) return;
+            int index = (node.isDocument()) ? tabSelection : tabSelection -1 ;
+            mTabHost.setCurrentTab(index);
+        }
     }
 
     private TabSpec newTab(String tag, int labelId, int tabContentId)
@@ -684,18 +704,22 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (TAB_METADATA.equals(tabId))
         {
+            tabSelected = 0;
             addMetadata(node);
         }
         else if (TAB_COMMENTS.equals(tabId))
         {
+            tabSelected = 2;
             addComments(node);
         }
         else if (TAB_HISTORY.equals(tabId) && node.isDocument())
         {
+            tabSelected = 1;
             addVersions((Document) node);
         }
         else if (TAB_TAGS.equals(tabId))
         {
+            tabSelected = 3;
             addTags(node);
         }
     }
