@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
