@@ -24,7 +24,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
-import org.alfresco.mobile.android.ui.R;
+
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
@@ -34,6 +34,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import org.alfresco.mobile.android.application.R;
+
 
 public abstract class LocalFileExplorerFragment extends BaseListFragment implements LoaderCallbacks<List<File>>
 {

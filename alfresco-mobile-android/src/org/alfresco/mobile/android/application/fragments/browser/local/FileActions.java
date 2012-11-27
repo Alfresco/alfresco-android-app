@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

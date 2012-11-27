@@ -22,7 +22,7 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 

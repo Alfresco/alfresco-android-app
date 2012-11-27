@@ -48,7 +48,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;

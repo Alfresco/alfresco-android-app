@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
