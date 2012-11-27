@@ -60,6 +60,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
         setOnCreateListener(nodeCreateListener);
@@ -100,7 +101,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
                 ProgressNotification
                         .createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
             }
-
+            getDialog().dismiss();
         }
 
         @Override
@@ -116,6 +117,17 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             CloudExceptionUtils.handleCloudException(getActivity(), e, false);
         }
     };
+
+    
+    @Override
+    public void onDestroyView()
+    {
+        if (getDialog() != null && getRetainInstance())
+        {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
 
     @Override
     public void onDismiss(DialogInterface dialog)
