@@ -41,7 +41,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class DownloadTask extends org.alfresco.mobile.android.api.asynchronous.DownloadTask
+public class DownloadTaskFix extends org.alfresco.mobile.android.api.asynchronous.DownloadTask
 {
 
     private static final String TAG = "DownloadTask";
@@ -60,7 +60,7 @@ public class DownloadTask extends org.alfresco.mobile.android.api.asynchronous.D
 
     private DownloadTaskListener dl;
 
-    public DownloadTask(AlfrescoSession session, Document document, File destFile)
+    public DownloadTaskFix(AlfrescoSession session, Document document, File destFile)
     {
         super(session, document, destFile);
         this.session = session;
