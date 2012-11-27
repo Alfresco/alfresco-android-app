@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,4 +116,10 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             CloudExceptionUtils.handleCloudException(getActivity(), e, false);
         }
     };
+    
+    @Override
+    public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+    }
 }
