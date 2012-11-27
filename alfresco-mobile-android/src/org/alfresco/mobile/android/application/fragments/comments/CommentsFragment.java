@@ -76,7 +76,7 @@ public class CommentsFragment extends CommentFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(true);
+        setRetainInstance(false);
         View v = inflater.inflate(R.layout.app_comments, container, false);
 
         init(v, R.string.empty_comment);

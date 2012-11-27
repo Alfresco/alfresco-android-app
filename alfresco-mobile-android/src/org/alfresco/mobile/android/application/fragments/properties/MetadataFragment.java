@@ -71,7 +71,7 @@ public class MetadataFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(true);
+        setRetainInstance(false);
         if (container != null)
         {
             container.setVisibility(View.VISIBLE);

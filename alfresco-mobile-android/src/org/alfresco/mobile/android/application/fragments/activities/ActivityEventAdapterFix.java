@@ -97,6 +97,7 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
     private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)
     {
         String type = item.getType();
+        String tmp = null;
 
         if (type.startsWith(PREFIX_FILE))
         {
@@ -108,13 +109,21 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
         }
         else if (type.startsWith(PREFIX_USER))
         {
-            renditionManager.display(vh.icon, getData(item, CloudConstant.MEMEBERUSERNAME_VALUE),
-                    getFileDrawableId(item));
+            tmp = getData(item, CloudConstant.MEMEBERUSERNAME_VALUE);
+            if (tmp.isEmpty())
+            {
+                tmp = null;
+            }
+            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
-            renditionManager.display(vh.icon, getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE),
-                    getFileDrawableId(item));
+            tmp = getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE);
+            if (tmp.isEmpty())
+            {
+                tmp = null;
+            }
+            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
         }
         else
         {
