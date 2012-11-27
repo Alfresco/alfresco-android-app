@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.utils.AdapterUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 

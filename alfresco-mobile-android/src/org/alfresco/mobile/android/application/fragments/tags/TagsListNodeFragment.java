@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.tag.TagsNodeFragment;
 
 import android.os.Bundle;

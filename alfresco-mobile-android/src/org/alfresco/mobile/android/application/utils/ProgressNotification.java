@@ -2,7 +2,7 @@ package org.alfresco.mobile.android.application.utils;
 
 import java.util.HashMap;
 
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
