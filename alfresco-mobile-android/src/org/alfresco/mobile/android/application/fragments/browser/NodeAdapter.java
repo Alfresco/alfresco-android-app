@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;

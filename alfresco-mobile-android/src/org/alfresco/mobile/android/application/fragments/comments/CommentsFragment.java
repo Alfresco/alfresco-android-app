@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.comment.CommentFragment;
 import org.alfresco.mobile.android.ui.comment.actions.CommentCreateLoaderCallback;
 import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
