@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
 import java.util.HashMap;
@@ -16,7 +33,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 @TargetApi(11)
 @SuppressLint("UseSparseArrays")
@@ -69,8 +85,10 @@ public class ProgressNotification extends Activity
                 {
                     // notificationManager.cancel((int) progressItem.id);
                     inProgressObjects.remove(name);
-                    progressItem.notification.contentView.setTextViewText(R.id.status_text, ctxt.getText(R.string.download_complete));
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
+                    progressItem.notification.contentView.setTextViewText(R.id.status_text,
+                            ctxt.getText(R.string.download_complete));
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
+                            false);
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, dataSize);
@@ -125,14 +143,14 @@ public class ProgressNotification extends Activity
         builder.setContentTitle(c.getText(R.string.upload_in_progress));
         builder.setContentText(params.getString("name"));
         builder.setAutoCancel(false);
-        if (params.getInt("dataSize") == value){
+        if (params.getInt("dataSize") == value)
+        {
             builder.setContentTitle(c.getText(R.string.upload_complete));
             builder.setAutoCancel(true);
         }
         builder.setNumber(0);
         builder.setTicker(params.getString("name"));
         builder.setSmallIcon(R.drawable.ic_alfresco);
-        
 
         if (AndroidVersion.isICSOrAbove())
         {

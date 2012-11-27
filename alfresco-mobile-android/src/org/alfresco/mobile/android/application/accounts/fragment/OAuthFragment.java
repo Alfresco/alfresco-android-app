@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
@@ -66,7 +66,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 
     private OnOAuthAccessTokenListener onOAuthAccessTokenListener;
-    
+
     private OnOAuthWebViewListener onOAuthWebViewListener;
 
     private boolean isLoaded;
@@ -139,18 +139,20 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
             public boolean shouldOverrideUrlLoading(WebView view, String url)
             {
                 // check for our custom callback protocol
-                if (!isLoaded){
+                if (!isLoaded)
+                {
                     onCodeUrl(url);
                     return true;
                 }
                 return super.shouldOverrideUrlLoading(view, url);
             }
-            
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
                 super.onPageStarted(view, url, favicon);
-                if (!isLoaded){
+                if (!isLoaded)
+                {
                     onCodeUrl(url);
                 }
                 if (onOAuthWebViewListener != null)
@@ -158,7 +160,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                     onOAuthWebViewListener.onPageStarted(webview, url, favicon);
                 }
             }
-            
+
             @Override
             public void onPageFinished(WebView view, String url)
             {
@@ -168,7 +170,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                     onOAuthWebViewListener.onPageFinished(webview, url);
                 }
             }
-            
+
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
             {
@@ -178,7 +180,7 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
                     onOAuthWebViewListener.onReceivedError(webview, errorCode, description, failingUrl);
                 }
             }
-            
+
         });
 
         OAuthHelper helper = new OAuthHelper(baseOAuthUrl);
@@ -188,13 +190,14 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
 
         return v;
     }
-    
-    private void onCodeUrl(String url){
-     // check for our custom callback protocol
+
+    private void onCodeUrl(String url)
+    {
+        // check for our custom callback protocol
         if (url.startsWith(getText(R.string.oauth_callback).toString()))
         {
             isLoaded = true;
-            
+
             // authorization complete hide webview for now & retrieve
             // the acces token
             code = OAuthHelper.retrieveCode(url);
@@ -284,17 +287,17 @@ public abstract class OAuthFragment extends DialogFragment implements LoaderCall
     {
         this.onOAuthAccessTokenListener = onOAuthAccessTokenListener;
     }
-    
+
     public void setOnOAuthWebViewListener(OnOAuthWebViewListener onOAuthWebViewListener)
     {
         this.onOAuthWebViewListener = onOAuthWebViewListener;
     }
-    
+
     public interface OnOAuthWebViewListener
     {
 
         void onPageStarted(WebView view, String url, Bitmap favicon);
-        
+
         void onPageFinished(WebView view, String url);
 
         void onReceivedError(WebView view, int errorCode, String description, String failingUrl);

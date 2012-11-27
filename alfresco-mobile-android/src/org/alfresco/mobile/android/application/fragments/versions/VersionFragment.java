@@ -1,28 +1,28 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.versions;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
@@ -51,12 +51,13 @@ public class VersionFragment extends VersionsFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(true);
-        if (container != null){
+        if (container != null)
+        {
             container.setVisibility(View.VISIBLE);
         }
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -82,7 +83,7 @@ public class VersionFragment extends VersionsFragment
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
-    
+
     @Override
     public void onLoaderException(Exception e)
     {

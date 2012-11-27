@@ -1,23 +1,22 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.networks;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     public static final String TAG = "CloudNetworksFragment";
 
     public static final String ARGUMENT_CLOUDSESSION = "CloudSession";
-    
+
     protected CloudSession session;
 
     public CloudNetworksFragment()
@@ -63,7 +62,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
     }
-    
+
     @Override
     public Loader<LoaderResult<List<CloudNetwork>>> onCreateLoader(int id, Bundle args)
     {
@@ -85,7 +84,8 @@ public class CloudNetworksFragment extends BaseListFragment implements
         }
         else
         {
-            PagingResult<CloudNetwork> pagingResultFiles = new PagingResultImpl<CloudNetwork>(results.getData(), false, results.getData().size());
+            PagingResult<CloudNetwork> pagingResultFiles = new PagingResultImpl<CloudNetwork>(results.getData(), false,
+                    results.getData().size());
             displayPagingData(pagingResultFiles, loaderId, callback);
         }
     }
@@ -95,7 +95,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     {
         // TODO Auto-generated method stub
     }
-    
+
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {

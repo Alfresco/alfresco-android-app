@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -48,7 +49,6 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
@@ -61,7 +61,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.Loader;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -126,7 +125,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         super.onActivityCreated(savedInstanceState);
     }
 
-
     @Override
     public void onResume()
     {
@@ -155,9 +153,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         listView.setDivider(null);
         listView.setDividerHeight(0);
-        
+
         listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
-        
+
         return v;
     }
 
@@ -425,7 +423,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             @Override
             public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
             {
-                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null){
+                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+                {
                     new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
                 }
                 hasWaiting = true;
@@ -470,10 +469,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         MenuItem mi;
 
-        if (parentFolder == null){
-            return;
-        }
-        
+        if (parentFolder == null) { return; }
+
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
 
         if (!extended && parentFolder != null && permission.canAddChildren())
@@ -546,7 +543,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         return importFolder;
     }
-    
+
     @Override
     public void onLoaderException(Exception e)
     {

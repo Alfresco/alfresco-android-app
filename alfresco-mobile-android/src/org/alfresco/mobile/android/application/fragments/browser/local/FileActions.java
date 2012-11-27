@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser.local;
 
@@ -21,9 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 
 import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -88,19 +88,18 @@ public class FileActions implements ActionMode.Callback
     private void getMenu(Menu menu, File File)
     {
         menu.clear();
-        
+
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                R.string.action_edit);
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.action_edit);
         mi.setIcon(R.drawable.ic_edit);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
+
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
                 R.string.action_delete);
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
+
     }
 
     @Override
@@ -152,8 +151,8 @@ public class FileActions implements ActionMode.Callback
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.action_rename);
         builder.setMessage(activity.getResources().getString(R.string.action_rename_desc) + " " + file.getName());
-        // Set an EditText view to get user input   
-        final EditText input = new EditText(activity); 
+        // Set an EditText view to get user input
+        final EditText input = new EditText(activity);
         builder.setView(input);
 
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
@@ -162,7 +161,8 @@ public class FileActions implements ActionMode.Callback
             {
                 String value = input.getText().toString();
                 file.renameTo(new File(file.getParent(), value));
-                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE, null);
+                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE,
+                        null);
                 dialog.dismiss();
             }
         });
@@ -176,8 +176,7 @@ public class FileActions implements ActionMode.Callback
         AlertDialog alert = builder.create();
         alert.show();
     }
-    
-    
+
     public static void delete(final Activity activity, final Fragment f, final File file)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
@@ -189,7 +188,8 @@ public class FileActions implements ActionMode.Callback
             {
                 Log.d("Delete File", file.getName());
                 file.delete();
-                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE, null);
+                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE,
+                        null);
                 dialog.dismiss();
             }
         });

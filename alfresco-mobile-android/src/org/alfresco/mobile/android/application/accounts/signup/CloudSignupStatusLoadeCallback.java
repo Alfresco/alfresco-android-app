@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.signup;
 
@@ -42,7 +42,6 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
 
     private Activity activity;
 
-
     private ProgressDialog mProgressDialog;
 
     private Fragment fr;
@@ -53,7 +52,8 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
     {
         this.activity = activity;
         this.fr = fr;
-        if (acc != null){
+        if (acc != null)
+        {
             this.request = new CloudSignupRequest(acc);
         }
     }
@@ -70,8 +70,7 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
                         activity.getLoaderManager().destroyLoader(id);
                     }
                 });
-        return new CloudSignupStatusLoader(activity, request, activity.getString(
-                R.string.signup_key));
+        return new CloudSignupStatusLoader(activity, request, activity.getString(R.string.signup_key));
     }
 
     @Override
@@ -83,10 +82,14 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
             MessengerManager.showLongToast(activity, activity.getString(R.string.error_general));
-        } else if (request){
+        }
+        else if (request)
+        {
             fr.getLoaderManager().destroyLoader(CloudSignupStatusLoader.ID);
             validateAccount();
-        } else {
+        }
+        else
+        {
             MessengerManager.showLongToast(activity, activity.getString(R.string.account_not_activated_description));
         }
     }
@@ -96,9 +99,11 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
     {
         mProgressDialog.dismiss();
     }
-    
-    private void validateAccount(){
-        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(IntentIntegrator.ALFRESCO_SCHEME_SHORT +"://activate-cloud-account/"+ request.getIdentifier()));
+
+    private void validateAccount()
+    {
+        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(IntentIntegrator.ALFRESCO_SCHEME_SHORT
+                + "://activate-cloud-account/" + request.getIdentifier()));
         fr.startActivity(i);
     }
 }

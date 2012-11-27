@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +60,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+        setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
         super.onActivityCreated(savedInstanceState);
         setOnCreateListener(nodeCreateListener);
@@ -99,7 +101,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
                 ProgressNotification
                         .createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
             }
-
+            getDialog().dismiss();
         }
 
         @Override
@@ -115,4 +117,21 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             CloudExceptionUtils.handleCloudException(getActivity(), e, false);
         }
     };
+
+    
+    @Override
+    public void onDestroyView()
+    {
+        if (getDialog() != null && getRetainInstance())
+        {
+            getDialog().setDismissMessage(null);
+        }
+        super.onDestroyView();
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog)
+    {
+        super.onDismiss(dialog);
+    }
 }

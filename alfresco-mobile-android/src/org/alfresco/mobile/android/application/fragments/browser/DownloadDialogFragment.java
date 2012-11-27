@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
@@ -8,19 +25,17 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskLis
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -107,9 +122,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private File getDownloadFile()
     {
-        if (SessionUtils.getAccount(getActivity()) == null){
-            return null;
-        }
+        if (SessionUtils.getAccount(getActivity()) == null) { return null; }
         File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
         IOUtils.ensureOrCreatePathAndFile(tmpFile);
         return tmpFile;
@@ -149,13 +162,15 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
                             + contentFile.getFileName());
-                    
-                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-                    if (detailsFragment != null){
-    	                long datetime = contentFile.getFile().lastModified();
-                    	detailsFragment.setDownloadDateTime(new Date(datetime));
-                    	ActionManager.openIn(detailsFragment,
-                                 contentFile.getFile(), doc.getContentStreamMimeType(), PublicIntent.REQUESTCODE_SAVE_BACK);
+
+                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
+                            DetailsFragment.TAG);
+                    if (detailsFragment != null)
+                    {
+                        long datetime = contentFile.getFile().lastModified();
+                        detailsFragment.setDownloadDateTime(new Date(datetime));
+                        ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                PublicIntent.REQUESTCODE_SAVE_BACK);
                     }
                     break;
 

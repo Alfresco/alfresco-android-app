@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
@@ -38,8 +38,8 @@ import android.view.View;
 
 //TODO Move to UI Library 
 /**
- * Provides access to activity entries and displays them
- * as a view based on GenericViewHolder.
+ * Provides access to activity entries and displays them as a view based on
+ * GenericViewHolder.
  * 
  * @author Jean Marie Pascal
  */
@@ -108,12 +108,12 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
         }
         else if (type.startsWith(PREFIX_USER))
         {
-            renditionManager.display(vh.icon, getData(item,CloudConstant.MEMEBERUSERNAME_VALUE),
+            renditionManager.display(vh.icon, getData(item, CloudConstant.MEMEBERUSERNAME_VALUE),
                     getFileDrawableId(item));
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
-            renditionManager.display(vh.icon, getData(item,CloudConstant.FOLLOWERUSERNAME_VALUE),
+            renditionManager.display(vh.icon, getData(item, CloudConstant.FOLLOWERUSERNAME_VALUE),
                     getFileDrawableId(item));
         }
         else
@@ -129,7 +129,7 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
 
         if (s.startsWith(PREFIX_FILE))
         {
-            drawable = MimeTypeManager.getIcon(getData(item,OnPremiseConstant.TITLE_VALUE));
+            drawable = MimeTypeManager.getIcon(getData(item, OnPremiseConstant.TITLE_VALUE));
         }
         else
         {
@@ -210,21 +210,19 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
 
             if (s.contains(PARAM_CUSTOM))
             {
-                s = s.replace(PARAM_CUSTOM, getData(item,OnPremiseConstant.ROLE_VALUE));
-                s = s.replace(PARAM_USER_PROFILE, "<b>" + getData(item,OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
-                        + getData(item,OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_CUSTOM, getData(item, OnPremiseConstant.ROLE_VALUE));
+                s = s.replace(PARAM_USER_PROFILE, "<b>" + getData(item, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
             }
             else
             {
-                s = s.replace(
-                        PARAM_USER_PROFILE,
-                        "<b>" + getData(item,OnPremiseConstant.FIRSTNAME_VALUE) + " "
-                                + getData(item,OnPremiseConstant.LASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_USER_PROFILE, "<b>" + getData(item, OnPremiseConstant.FIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.LASTNAME_VALUE) + "</b>");
             }
 
             if (s.contains(PARAM_TITLE))
             {
-                s = s.replace(PARAM_TITLE, "<b>" + getData(item,OnPremiseConstant.TITLE_VALUE) + "</b>");
+                s = s.replace(PARAM_TITLE, "<b>" + getData(item, OnPremiseConstant.TITLE_VALUE) + "</b>");
             }
 
             if (s.contains(PARAM_SITE_LINK))
@@ -234,13 +232,13 @@ public class ActivityEventAdapterFix extends org.alfresco.mobile.android.ui.acti
 
             if (s.contains(PARAM_STATUS))
             {
-                s = s.replace(PARAM_STATUS, getData(item,OnPremiseConstant.STATUS_VALUE));
+                s = s.replace(PARAM_STATUS, getData(item, OnPremiseConstant.STATUS_VALUE));
             }
 
             if (s.contains(PARAM_SUBSCRIBER))
             {
-                s = s.replace(PARAM_SUBSCRIBER, "<b>" + getData(item,OnPremiseConstant.USERFIRSTNAME_VALUE) + " "
-                        + getData(item,OnPremiseConstant.USERLASTNAME_VALUE) + "</b>");
+                s = s.replace(PARAM_SUBSCRIBER, "<b>" + getData(item, OnPremiseConstant.USERFIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.USERLASTNAME_VALUE) + "</b>");
             }
         }
         return s;

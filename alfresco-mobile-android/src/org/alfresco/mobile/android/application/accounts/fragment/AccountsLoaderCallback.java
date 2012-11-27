@@ -1,19 +1,19 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
@@ -73,15 +73,18 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             for (Account account : results)
             {
                 if (account.getActivation() != null
-                        && account.getActivation().contains(getIntent().getData().getEncodedPath().substring(1).replace("%24", "$")))
+                        && account.getActivation().contains(
+                                getIntent().getData().getEncodedPath().substring(1).replace("%24", "$")))
                 {
                     SessionUtils.setAccount(activity, account);
                     signup = true;
                     break;
                 }
             }
-            if (!signup){
-                MessengerManager.showLongToast(activity, activity.getString(R.string.error_signup_account_confirmation));
+            if (!signup)
+            {
+                MessengerManager
+                        .showLongToast(activity, activity.getString(R.string.error_signup_account_confirmation));
             }
         }
         else
@@ -127,7 +130,9 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
-        } else if(signup){
+        }
+        else if (signup)
+        {
             activity.loadAccount(currentAccount);
         }
         else

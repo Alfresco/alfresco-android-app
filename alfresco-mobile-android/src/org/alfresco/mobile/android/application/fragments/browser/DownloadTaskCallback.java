@@ -1,28 +1,28 @@
 /*******************************************************************************
  * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
- * This file is part of the Alfresco Mobile SDK.
+ * This file is part of Alfresco Mobile for Android.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
  * 
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -114,7 +114,8 @@ public class DownloadTaskCallback implements DownloadTaskListener
         }
     }
 
-    private void createProgressBar(){
+    private void createProgressBar()
+    {
         progressDialog = new ProgressDialog(fragment.getActivity());
         progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         progressDialog.setMessage(fragment.getActivity().getText(R.string.download));
@@ -133,8 +134,9 @@ public class DownloadTaskCallback implements DownloadTaskListener
         progressDialog.setMax(100);
         progressDialog.show();
     }
-    
-    public ProgressDialog getProgressDialog (){
+
+    public ProgressDialog getProgressDialog()
+    {
         return progressDialog;
     }
 }
