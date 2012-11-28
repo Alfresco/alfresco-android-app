@@ -293,7 +293,14 @@ public class AccountDetailsFragment extends BaseFragment
         String protocol = https ? "https" : "http";
 
         form_value = (EditText) vRoot.findViewById(R.id.repository_port);
-        port = Integer.parseInt(form_value.getText().toString());
+        if (form_value.getText().length() > 0)
+        {
+            port = Integer.parseInt(form_value.getText().toString());
+        }
+        else
+        {
+            port = (protocol.equals("https")) ? 443 : 80;
+        }
 
         form_value = (EditText) vRoot.findViewById(R.id.repository_servicedocument);
         servicedocument = form_value.getText().toString();
