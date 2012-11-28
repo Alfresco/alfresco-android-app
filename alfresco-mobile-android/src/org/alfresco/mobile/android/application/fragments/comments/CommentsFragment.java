@@ -207,6 +207,12 @@ public class CommentsFragment extends CommentFragment
             getActivity().setTitle(getString(R.string.document_comments_header));
         }
         getActivity().invalidateOptionsMenu();
+        
+        if (!alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit()){
+            commentText.setVisibility(View.GONE);
+            bAdd.setVisibility(View.GONE);
+        }
+        
         super.onStart();
     }
 
