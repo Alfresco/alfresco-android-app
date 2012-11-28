@@ -35,7 +35,8 @@
         android:icon="@drawable/ic_alfresco_logo"
         android:logo="@drawable/ic_alfresco"
         android:label="@string/app_name"
-        android:theme="@style/alfrescotheme" >
+        android:theme="@style/alfrescotheme"
+        android:hardwareAccelerated="true" >
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->
