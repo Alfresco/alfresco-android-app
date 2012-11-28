@@ -78,7 +78,7 @@
                     android:id="@+id/repository_password"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/optional"
+                    android:hint="@string/required"
                     android:inputType="textPassword" >
                 </EditText>
             </TableRow>
@@ -173,7 +173,7 @@
                     android:id="@+id/repository_port"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/required"
+                    android:hint="@string/optional"
                     android:inputType="number"
                     android:text="80" >
                 </EditText>
@@ -192,7 +192,7 @@
                     android:id="@+id/repository_servicedocument"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="@string/required"
+                    android:hint="@string/optional"
                     android:inputType="text"
                     android:text="/alfresco" >
                 </EditText>
