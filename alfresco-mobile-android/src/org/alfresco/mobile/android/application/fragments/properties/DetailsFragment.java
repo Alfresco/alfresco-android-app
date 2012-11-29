@@ -658,7 +658,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        outState.putInt("TAB", tabSelected);
+        if (tabSelected != null){
+            outState.putInt("TAB", tabSelected);
+        }
     }
 
     private static final String TAB_METADATA = "Metadata";
