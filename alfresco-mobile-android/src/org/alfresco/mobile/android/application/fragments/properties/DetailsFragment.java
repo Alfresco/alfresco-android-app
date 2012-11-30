@@ -246,6 +246,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         else
         {
             b.setVisibility(View.GONE);
+            if (v.findViewById(R.id.like_progress) != null){
+                v.findViewById(R.id.like_progress).setVisibility(View.GONE);
+            }
         }
 
         b = (ImageView) v.findViewById(R.id.action_share);
