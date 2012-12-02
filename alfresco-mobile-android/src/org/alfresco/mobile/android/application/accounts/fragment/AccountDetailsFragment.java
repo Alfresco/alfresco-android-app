@@ -398,7 +398,7 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
-                // retrieveFormValues(v);
+                retrieveFormValues();
                 if (accountDao.update(acc.getId(), description, url, username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken()))
                 {

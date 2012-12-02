@@ -26,8 +26,8 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.R;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
