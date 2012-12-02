@@ -21,9 +21,9 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 

@@ -22,10 +22,10 @@ import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.os.Bundle;
 import android.util.Log;
