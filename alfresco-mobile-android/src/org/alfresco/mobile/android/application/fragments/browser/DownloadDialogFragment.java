@@ -20,12 +20,13 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import java.io.File;
 import java.util.Date;
 
+import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
+import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
-import org.alfresco.mobile.android.application.fragments.browser.DownloadTaskFix.DownloadTaskListener;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -61,7 +62,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private long totalSize;
 
-    private DownloadTaskFix dlt;
+    private DownloadTask dlt;
 
     private ContentFile contentFile;
 
@@ -107,7 +108,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         if (dlt == null)
         {
             totalSize = doc.getContentStreamLength();
-            dlt = new DownloadTaskFix(SessionUtils.getSession(getActivity()), doc, getDownloadFile());
+            dlt = new DownloadTask(SessionUtils.getSession(getActivity()), doc, getDownloadFile());
             dlt.setDl(this);
             dlt.execute();
         }
