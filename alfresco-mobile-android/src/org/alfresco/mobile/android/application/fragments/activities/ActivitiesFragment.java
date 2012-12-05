@@ -76,28 +76,6 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
         super.onStart();
     }
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<ActivityEntry>>> arg0,
-            LoaderResult<PagingResult<ActivityEntry>> results)
-    {
-        if (adapter == null)
-        {
-            adapter = new ActivityEventAdapterFix(getActivity(), alfSession, R.layout.sdk_list_row,
-                    new ArrayList<ActivityEntry>(0));
-            ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
-        }
-
-        if (checkException(results))
-        {
-            onLoaderException(results.getException());
-        }
-        else
-        {
-            displayPagingData(results.getData(), loaderId, callback);
-        }
-    }
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
