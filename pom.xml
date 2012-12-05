@@ -22,7 +22,7 @@
 
 	<groupId>org.alfresco.mobile.android.apps</groupId>
 	<artifactId>alfresco-mobile-android-apps</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android APPS (Parent)</name>
@@ -131,8 +131,7 @@
 		<maven.compile.target>1.6</maven.compile.target>
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
-		<chemistry.opencmis.version>0.8.0-SNAPSHOT</chemistry.opencmis.version>
-		<alfresco.opencmis.version>0.4-ANDROID</alfresco.opencmis.version>
+		<alfresco.sdk.version>1.0.1-SNAPSHOT</alfresco.sdk.version>
 		<site.basedir>${project.parent.basedir}</site.basedir>
 		<junit.version>4.10</junit.version>
 	</properties>
