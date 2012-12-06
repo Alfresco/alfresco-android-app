@@ -37,11 +37,12 @@ public abstract class DeviceCapture implements Serializable
 
     private Folder repositoryFolder = null;
 
-    transient private Context context = null;
+    transient protected Context context = null;
 
     transient protected Activity parentActivity = null;
 
     protected File payload = null;
+    protected String MIMEType = null;
 
     abstract public boolean hasDevice();
 
@@ -85,8 +86,17 @@ public abstract class DeviceCapture implements Serializable
 
         ft.addToBackStack(null);
 
-        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload);
-
+        AddContentDialogFragment newFragment;
+        
+        if (MIMEType != null)
+        {
+            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, MIMEType);
+        }
+        else
+        {
+            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload);
+        }
+        
         newFragment.show(ft, AddContentDialogFragment.TAG);
     }
 
