@@ -25,6 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -41,6 +43,9 @@ public class AudioCapture extends DeviceCapture
     public AudioCapture(Activity parent, Folder folder)
     {
         super(parent, folder);
+        
+        //Default MIME type if it cannot be retrieved from Uri later.
+        MIMEType = "audio/3gpp";
     }
 
     @Override
@@ -61,6 +66,7 @@ public class AudioCapture extends DeviceCapture
             }
             catch (Exception e)
             {
+                MessengerManager.showLongToast(context, context.getString (R.string.no_voice_recorder));
                 e.printStackTrace();
                 return false;
             }
@@ -79,8 +85,8 @@ public class AudioCapture extends DeviceCapture
         try
         {
             String filePath = getAudioFilePathFromUri(savedUri);
-            String newFilePath = Environment.getExternalStorageDirectory().getPath() + "/"
-                    + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
+            String fileType = getAudioFileTypeFromUri(savedUri);
+            String newFilePath = Environment.getExternalStorageDirectory().getPath() + "/" + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
 
             copyFile(filePath, newFilePath);
 
@@ -88,9 +94,15 @@ public class AudioCapture extends DeviceCapture
             (new File(filePath)).delete();
 
             payload = new File(newFilePath);
+            
+            if (!fileType.isEmpty())
+            {
+                MIMEType = fileType;
+            }
         }
         catch (IOException e)
         {
+            MessengerManager.showLongToast(context, context.getString (R.string.cannot_capture));
             e.printStackTrace();
         }
     }
@@ -98,9 +110,32 @@ public class AudioCapture extends DeviceCapture
     private String getAudioFilePathFromUri(Uri uri)
     {
         Cursor cursor = parentActivity.getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-        return cursor.getString(index);
+        if (cursor != null)
+        {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+            
+            return (index != -1 ? cursor.getString(index) : "");
+        }
+        else
+        {
+            return "";
+        }
+    }
+    
+    private String getAudioFileTypeFromUri(Uri uri)
+    {
+        Cursor cursor = parentActivity.getContentResolver().query(uri, null, null, null, null);
+        if (cursor != null)
+        {
+            cursor.moveToFirst();
+            int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.MIME_TYPE);
+            return (index != -1 ? cursor.getString(index) : "");
+        }
+        else
+        {
+            return "";
+        }
     }
 
     private void copyFile(String fileName, String newFileName) throws IOException

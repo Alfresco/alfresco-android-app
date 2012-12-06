@@ -233,5 +233,6 @@
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
     <string name="no_voice_recorder">You do not have a voice recorder on this device</string>
+    <string name="cannot_capture">Cannot complete the capturing of this information</string>
     
 </resources>
