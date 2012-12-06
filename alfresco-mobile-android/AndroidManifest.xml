@@ -22,7 +22,7 @@
     android:versionName="1.0.1" >
 
     <uses-sdk
-        android:minSdkVersion="14"
+        android:minSdkVersion="11"
         android:targetSdkVersion="16" />
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -63,6 +63,7 @@
             <!-- Internal : Used for displaying Errors-->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN" />
+                <action android:name="org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -98,6 +99,7 @@
               <!-- Internal : Used for displaying Errors-->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR" />
+                <action android:name="org.alfresco.mobile.android.intent.DISPLAY_DIALOG" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
             

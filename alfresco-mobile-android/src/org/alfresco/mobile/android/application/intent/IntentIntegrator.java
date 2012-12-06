@@ -61,4 +61,7 @@ public class IntentIntegrator extends PublicIntent
 
     public static final String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
 
+    public static final String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG";
+    
+    public static final String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
 }

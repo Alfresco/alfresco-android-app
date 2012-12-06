@@ -104,7 +104,7 @@ public class CloudSignupRequest
         return request;
     }
 
-    private static final int SESSION_SIGNUP_ERROR = 104;
+    public static final int SESSION_SIGNUP_ERROR = 100000;
 
     // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
 

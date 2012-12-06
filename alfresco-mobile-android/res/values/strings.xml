@@ -181,7 +181,10 @@
     <string name="cloud_signup_resend">Resend Email</string>
     <string name="cloud_signup_resend_successfull">Successfully Resent Email</string>
     <string name="cloud_signup_resend_body">Not receiving our email? Please check you entered the email address correctly and remember to look in your spam folders</string>
-
+    <string name="cloud_signup_error_email">Alfresco requires you to use your company email address so you can be added to your company collaboration network.</string>
+    <string name="cloud_signup_error_email_title">Alfresco in the Cloud : Sign Up.</string>
+    
+    
 	<!-- AUTHENTICATION -->
 	<string name="cloud_authentication">Authentication</string>
 

@@ -47,6 +47,7 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
@@ -327,6 +328,13 @@ public class MainActivity extends Activity
 
                 CloudExceptionUtils.handleCloudException(this, e, false);
 
+                return;
+            }
+            
+            // Intent for Display Dialog
+            if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
+            {
+                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(), SimpleAlertDialogFragment.TAG);
                 return;
             }
 
@@ -1126,7 +1134,11 @@ public class MainActivity extends Activity
     {
         if (!ConnectivityUtils.hasInternetAvailable(this))
         {
-            showDialog(NETWORK_PROBLEM);
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_network_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_network_details);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(this, b);
             return false;
         }
         else
@@ -1134,10 +1146,6 @@ public class MainActivity extends Activity
             return true;
         }
     }
-
-    public static final int CLOUD_RESEND_EMAIL = 500;
-
-    public static final int NETWORK_PROBLEM = 600;
 
     public static final int GET_PDF_VIEWER = 700;
 
@@ -1147,31 +1155,6 @@ public class MainActivity extends Activity
         AlertDialog dialog = null;
         switch (id)
         {
-            case CLOUD_RESEND_EMAIL:
-                dialog = new AlertDialog.Builder(this).setTitle(R.string.cloud_signup_resend_successfull)
-                        .setMessage(R.string.cloud_signup_resend_body).setCancelable(false)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                dialog.show();
-                break;
-            case NETWORK_PROBLEM:
-                dialog = new AlertDialog.Builder(this).setTitle(R.string.error_network_title)
-                        .setMessage(R.string.error_network_details).setCancelable(false)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                dialog.show();
-                break;
-
             case GET_PDF_VIEWER:
                 dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(R.string.get_pdf_viewer)
                         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
