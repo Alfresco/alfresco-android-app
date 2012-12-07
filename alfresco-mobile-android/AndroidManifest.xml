@@ -136,15 +136,6 @@
                 <data android:scheme="alfresco"  android:host="sign_up_cloud_i" />
             </intent-filter>
 
-            <!-- Filter URL that matches alfresco service -->
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-                <action android:name="android.intent.action.VIEW" />
-                <data
-                    android:host="my.alfresco.com"
-                    android:scheme="https" />
-            </intent-filter>
-
             <meta-data
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
