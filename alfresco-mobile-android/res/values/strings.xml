@@ -89,6 +89,7 @@
     <string name="error_session_creation">An error occured during the session creation. Please retry again.</string>
     <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
+    <string name="error_session_unauthorized_title">Unauthorized.</string>
     <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings.</string>
     <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
     <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>

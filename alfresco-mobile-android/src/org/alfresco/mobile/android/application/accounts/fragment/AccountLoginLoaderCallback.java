@@ -27,7 +27,9 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -136,7 +138,15 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                         if (ex.getCause().getClass().equals(CmisUnauthorizedException.class)
                                 || ex.getErrorCode() == 100)
                         {
-                            MessengerManager.showLongToast(activity, getText(R.string.error_session_unauthorized));
+                            Bundle b = new Bundle();
+                            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
+                            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
+                            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                            ActionManager.actionDisplayDialog(activity, b);
+                            if (activity instanceof MainActivity)
+                            {
+                                ((MainActivity) activity).setSessionState(MainActivity.SESSION_UNAUTHORIZED);
+                            }
                         }
                     }
                     break;

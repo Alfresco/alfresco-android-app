@@ -119,6 +119,13 @@ public class MainActivity extends Activity
     private AccountsLoaderCallback loadercallback;
 
     private Folder importParent;
+    
+    private int sessionState = 0;
+    
+    public static final int SESSION_LOADING = 0;
+    public static final int SESSION_ACTIVE = 1;
+    public static final int SESSION_UNAUTHORIZED = 2;
+            
 
     // ///////////////////////////////////////////
     // INIT
@@ -253,7 +260,7 @@ public class MainActivity extends Activity
             // Intent after session loading
             if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
             {
-
+                setSessionState(SESSION_ACTIVE);
                 setProgressBarIndeterminateVisibility(false);
 
                 // Remove OAuthFragment if one
@@ -648,9 +655,20 @@ public class MainActivity extends Activity
         doMainMenuAction(v.getId());
     }
 
+    public void setSessionState(int state){
+        sessionState = state;
+    }
+    
     private boolean checkSession(int actionMainMenuId)
     {
-        if (!hasNetwork())
+        if (sessionState == SESSION_UNAUTHORIZED){
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(this, b);
+            return false;
+        } else  if (!hasNetwork())
         {
             return false;
         }
