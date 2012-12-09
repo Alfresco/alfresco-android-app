@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
+import java.net.UnknownHostException;
+
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
@@ -29,10 +31,13 @@ import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -176,8 +181,27 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         }
         else
         {
+            Exception e = results.getException();
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+
+            if (e.getCause() instanceof CmisUnauthorizedException)
+            {
+                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
+            }
+            else if (e.getCause() instanceof CmisConnectionException
+                    && e.getCause().getCause() instanceof UnknownHostException)
+            {
+                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_hostname);
+            }
+            else
+            {
+                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_creation);
+            }
+
             mProgressDialog.dismiss();
-            MessengerManager.showLongToast(activity, getText(R.string.error_session_creation));
+            ActionManager.actionDisplayDialog(activity, b);
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
         activity.getLoaderManager().destroyLoader(loader.getId());
