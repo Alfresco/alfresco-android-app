@@ -86,11 +86,14 @@
     <string name="wait_message">Contacting your server...</string>
     
     <!-- SESSION ERROR -->
-    <string name="error_session_creation">An error occured during the session creation. Please retry again.</string>
+    <string name="error_session_creation_title">Save Account</string>
+    <string name="error_session_creation">Failure to authenticate. Check your account settings.</string>
+    <string name="error_session_hostname">Your hostname setting seems to be wrong. Check your account settings.</string>
+    <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings (Username/Password).</string>
+    <string name="error_session_unauthorized_title">Unauthorized.</string>
+    
     <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
-    <string name="error_session_unauthorized_title">Unauthorized.</string>
-    <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings.</string>
     <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
     <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
     
@@ -197,6 +200,9 @@
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
     <string name="upload_in_progress">Upload in progress.</string>
+    
+    <string name="error_unable_open_file_title">Failed to open the document.</string>
+    <string name="error_unable_open_file">This file format is not supported. You need to install a third party application to read it.</string>
     
     
     <!-- OTHER -->
