@@ -47,6 +47,7 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
@@ -118,6 +119,13 @@ public class MainActivity extends Activity
     private AccountsLoaderCallback loadercallback;
 
     private Folder importParent;
+    
+    private int sessionState = 0;
+    
+    public static final int SESSION_LOADING = 0;
+    public static final int SESSION_ACTIVE = 1;
+    public static final int SESSION_UNAUTHORIZED = 2;
+            
 
     // ///////////////////////////////////////////
     // INIT
@@ -252,7 +260,7 @@ public class MainActivity extends Activity
             // Intent after session loading
             if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
             {
-
+                setSessionState(SESSION_ACTIVE);
                 setProgressBarIndeterminateVisibility(false);
 
                 // Remove OAuthFragment if one
@@ -327,6 +335,13 @@ public class MainActivity extends Activity
 
                 CloudExceptionUtils.handleCloudException(this, e, false);
 
+                return;
+            }
+            
+            // Intent for Display Dialog
+            if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
+            {
+                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(), SimpleAlertDialogFragment.TAG);
                 return;
             }
 
@@ -640,9 +655,20 @@ public class MainActivity extends Activity
         doMainMenuAction(v.getId());
     }
 
+    public void setSessionState(int state){
+        sessionState = state;
+    }
+    
     private boolean checkSession(int actionMainMenuId)
     {
-        if (!hasNetwork())
+        if (sessionState == SESSION_UNAUTHORIZED){
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(this, b);
+            return false;
+        } else  if (!hasNetwork())
         {
             return false;
         }
@@ -1126,7 +1152,11 @@ public class MainActivity extends Activity
     {
         if (!ConnectivityUtils.hasInternetAvailable(this))
         {
-            showDialog(NETWORK_PROBLEM);
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_network_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_network_details);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(this, b);
             return false;
         }
         else
@@ -1134,10 +1164,6 @@ public class MainActivity extends Activity
             return true;
         }
     }
-
-    public static final int CLOUD_RESEND_EMAIL = 500;
-
-    public static final int NETWORK_PROBLEM = 600;
 
     public static final int GET_PDF_VIEWER = 700;
 
@@ -1147,31 +1173,6 @@ public class MainActivity extends Activity
         AlertDialog dialog = null;
         switch (id)
         {
-            case CLOUD_RESEND_EMAIL:
-                dialog = new AlertDialog.Builder(this).setTitle(R.string.cloud_signup_resend_successfull)
-                        .setMessage(R.string.cloud_signup_resend_body).setCancelable(false)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                dialog.show();
-                break;
-            case NETWORK_PROBLEM:
-                dialog = new AlertDialog.Builder(this).setTitle(R.string.error_network_title)
-                        .setMessage(R.string.error_network_details).setCancelable(false)
-                        .setPositiveButton(R.string.action_ok, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int id)
-                            {
-                                dialog.dismiss();
-                            }
-                        }).create();
-                dialog.show();
-                break;
-
             case GET_PDF_VIEWER:
                 dialog = new AlertDialog.Builder(this).setTitle(R.string.app_name).setMessage(R.string.get_pdf_viewer)
                         .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()

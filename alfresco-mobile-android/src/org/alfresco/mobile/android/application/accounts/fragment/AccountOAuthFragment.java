@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
+import org.alfresco.mobile.android.ui.oauth.OAuthFragment.OnOAuthWebViewListener;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
 import android.app.LoaderManager;

@@ -76,28 +76,6 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
         super.onStart();
     }
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<ActivityEntry>>> arg0,
-            LoaderResult<PagingResult<ActivityEntry>> results)
-    {
-        if (adapter == null)
-        {
-            adapter = new ActivityEventAdapterFix(getActivity(), alfSession, R.layout.sdk_list_row,
-                    new ArrayList<ActivityEntry>(0));
-            ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
-        }
-
-        if (checkException(results))
-        {
-            onLoaderException(results.getException());
-        }
-        else
-        {
-            displayPagingData(results.getData(), loaderId, callback);
-        }
-    }
-
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -126,7 +104,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public void getMenu(Menu menu)
     {
         MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.action_refresh);
+                R.string.refresh);
         mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }

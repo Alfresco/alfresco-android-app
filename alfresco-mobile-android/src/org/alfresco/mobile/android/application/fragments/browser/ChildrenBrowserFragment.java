@@ -476,7 +476,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST + MenuActionItem.MENU_CREATE_FOLDER,
-                    R.string.action_create_folder);
+                    R.string.folder_create);
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -484,25 +484,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
             SubMenu devCaptureMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.action_upload);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
             devCaptureMenu.setIcon(android.R.drawable.ic_menu_add);
             devCaptureMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.action_photo);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.take_photo);
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.action_video);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.make_video);
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.action_audio);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
             devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                    R.string.action_upload);
+                    R.string.content_upload);
 
         }
 
         if (extended && parentFolder != null && permission.canEdit())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                    R.string.action_edit);
+                    R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -510,7 +510,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (extended && parentFolder != null && permission.canDelete())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE_FOLDER, Menu.FIRST + MenuActionItem.MENU_DELETE_FOLDER,
-                    R.string.action_delete);
+                    R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -518,7 +518,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (!extended && parentFolder != null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                    R.string.action_refresh);
+                    R.string.refresh);
             mi.setIcon(R.drawable.ic_refresh);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }

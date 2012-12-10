@@ -30,15 +30,16 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
 
@@ -179,8 +180,8 @@ public class NodeActions implements ActionMode.Callback
     public static void delete(final Activity activity, final Fragment f, final Node node)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.action_delete);
-        builder.setMessage(activity.getResources().getString(R.string.action_delete_desc) + " " + node.getName());
+        builder.setTitle(R.string.delete);
+        builder.setMessage(activity.getResources().getString(R.string.delete_description) + " " + node.getName());
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)
@@ -263,8 +264,13 @@ public class NodeActions implements ActionMode.Callback
                 .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
                 .setAllowedOverRoaming(false).setVisibleInDownloadsUi(false).setTitle(node.getName())
                 .setDescription(node.getDescription())
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
                 .setDestinationUri(Uri.fromFile(dlFile));
+        
+        if (AndroidVersion.isICSOrAbove()){
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+        } else {
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION);
+        }
 
         AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(activity))
                 .getAuthenticationProvider();

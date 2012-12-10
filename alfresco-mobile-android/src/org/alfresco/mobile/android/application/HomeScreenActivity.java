@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialog
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -133,6 +134,13 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         {
             getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             cloud(null);
+        }
+        
+        // Intent for Display Dialog
+        if (IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN.equals(intent.getAction()))
+        {
+            SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(), SimpleAlertDialogFragment.TAG);
+            return;
         }
     }
 
