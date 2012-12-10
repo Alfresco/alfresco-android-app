@@ -18,12 +18,16 @@
 package org.alfresco.mobile.android.application.accounts.signup;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -106,13 +110,31 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
         else if (request != null && fr instanceof AccountDetailsFragment)
         {
             mProgressDialog.dismiss();
-            activity.showDialog(MainActivity.CLOUD_RESEND_EMAIL);
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.cloud_signup_resend_successfull);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.cloud_signup_resend_body);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(fr, b);
         }
         else if (results.hasException())
         {
+            Exception e = results.getException();
+            int errorMessageId = R.string.error_general;
+
+            if (e instanceof AlfrescoServiceException
+                    && ((AlfrescoServiceException) e).getErrorCode() == CloudSignupRequest.SESSION_SIGNUP_ERROR
+                    && ((AlfrescoServiceException) e).getMessage().contains("Invalid Email Address"))
+            {
+                errorMessageId = R.string.cloud_signup_error_email;
+            }
+
             mProgressDialog.dismiss();
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-            MessengerManager.showLongToast(activity, activity.getString(R.string.error_general));
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.cloud_signup_error_email_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, errorMessageId);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(fr, b);
         }
     }
 

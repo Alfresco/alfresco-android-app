@@ -91,12 +91,12 @@ public class FileActions implements ActionMode.Callback
 
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.action_edit);
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
         mi.setIcon(R.drawable.ic_edit);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                R.string.action_delete);
+                R.string.delete);
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
@@ -180,8 +180,8 @@ public class FileActions implements ActionMode.Callback
     public static void delete(final Activity activity, final Fragment f, final File file)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-        builder.setTitle(R.string.action_delete);
-        builder.setMessage(activity.getResources().getString(R.string.action_delete_desc) + " " + file.getName());
+        builder.setTitle(R.string.delete);
+        builder.setMessage(activity.getResources().getString(R.string.delete_description) + " " + file.getName());
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)

@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.HomeScreenActivity;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
@@ -54,6 +55,38 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         if (bundle != null)
         {
             i.putExtra(REFRESH_EXTRA, bundle);
+        }
+        f.startActivity(i);
+    }
+
+    public static void actionDisplayDialog(Activity activity, Bundle bundle)
+    {
+        String IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
+        if (activity instanceof HomeScreenActivity)
+        {
+            IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
+        }
+
+        Intent i = new Intent(IntentId);
+        if (bundle != null)
+        {
+            i.putExtras(bundle);
+        }
+        activity.startActivity(i);
+    }
+
+    public static void actionDisplayDialog(Fragment f, Bundle bundle)
+    {
+        String IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
+        if (f.getActivity() instanceof HomeScreenActivity)
+        {
+            IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
+        }
+
+        Intent i = new Intent(IntentId);
+        if (bundle != null)
+        {
+            i.putExtras(bundle);
         }
         f.startActivity(i);
     }

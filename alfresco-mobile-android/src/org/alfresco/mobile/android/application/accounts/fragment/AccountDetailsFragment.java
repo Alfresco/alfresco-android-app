@@ -432,8 +432,8 @@ public class AccountDetailsFragment extends BaseFragment
     {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.action_delete);
-        builder.setMessage(getResources().getString(R.string.action_delete_desc) + " " + acc.getDescription());
+        builder.setTitle(R.string.delete);
+        builder.setMessage(getResources().getString(R.string.delete_description) + " " + acc.getDescription());
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)
@@ -496,13 +496,13 @@ public class AccountDetailsFragment extends BaseFragment
         if (acc.getActivation() == null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_EDIT, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
-                    R.string.action_edit);
+                    R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_DELETE, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
-                R.string.action_delete);
+                R.string.delete);
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }

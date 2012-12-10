@@ -25,14 +25,18 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
+import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -123,7 +127,19 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
             else
             {
                 // Show properties
-                ActionManager.actionView(getActivity(), file, MimeTypeManager.getMIMEType(file.getName()));
+                ActionManager.actionView(getActivity(), file, MimeTypeManager.getMIMEType(file.getName()),
+                        new ActionManagerListener()
+                        {
+                            @Override
+                            public void onActivityNotFoundException(ActivityNotFoundException e)
+                            {
+                                Bundle b = new Bundle();
+                                b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_unable_open_file_title);
+                                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_unable_open_file);
+                                b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                                ActionManager.actionDisplayDialog(getActivity(), b);
+                            }
+                        });
             }
         }
         else if (getMode() == MODE_PICK_FILE)

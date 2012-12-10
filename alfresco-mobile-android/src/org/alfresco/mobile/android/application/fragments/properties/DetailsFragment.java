@@ -85,6 +85,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     protected Date downloadDateTime;
 
     protected Integer tabSelected = null;
+
     protected Integer tabSelection = null;
 
     public DetailsFragment()
@@ -167,11 +168,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         // TAB
-        if (savedInstanceState != null){
+        if (savedInstanceState != null)
+        {
             tabSelection = savedInstanceState.getInt("TAB");
             savedInstanceState.remove("TAB");
         }
-        
+
         mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
         setupTabs();
 
@@ -246,7 +248,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         else
         {
             b.setVisibility(View.GONE);
-            if (v.findViewById(R.id.like_progress) != null){
+            if (v.findViewById(R.id.like_progress) != null)
+            {
                 v.findViewById(R.id.like_progress).setVisibility(View.GONE);
             }
         }
@@ -428,9 +431,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(R.string.action_save_back);
+                    builder.setTitle(R.string.save_back);
                     builder.setMessage(node.getName() + " "
-                            + getResources().getString(R.string.action_save_back_description));
+                            + getResources().getString(R.string.save_back_description));
                     builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)
@@ -478,7 +481,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                     PublicIntent.NODE_TYPE);
             MessengerManager.showToast(getActivity(),
-                    node.getName() + " " + getResources().getString(R.string.action_save_back_sucess));
+                    node.getName() + " " + getResources().getString(R.string.save_back_sucess));
             refreshThumbnail(node);
         }
 
@@ -522,7 +525,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                     PublicIntent.NODE_TYPE);
             MessengerManager.showToast(getActivity(),
-                    node.getName() + " " + getResources().getString(R.string.action_update_sucess));
+                    node.getName() + " " + getResources().getString(R.string.update_sucess));
             refreshThumbnail(node);
         }
 
@@ -590,19 +593,19 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (node.isDocument())
         {
-            if (((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
-                    && ((Document) node).getContentStreamLength() > 0)
+            if (((Document) node).getContentStreamLength() > 0)
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD,
-                        R.string.action_share);
+                        R.string.share);
                 mi.setIcon(R.drawable.ic_download_dark);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            if (((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
+            if (((Document) node).isLatestVersion()
+                    && ((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPDATE, Menu.FIRST + MenuActionItem.MENU_UPDATE,
-                        R.string.action_upload);
+                        R.string.upload);
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
@@ -611,7 +614,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                    R.string.action_edit);
+                    R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -619,7 +622,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canDelete())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                    R.string.action_delete);
+                    R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -627,20 +630,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (!DisplayUtils.hasCentralPane(activity))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMMENT, Menu.FIRST + MenuActionItem.MENU_COMMENT,
-                    R.string.action_comments);
+                    R.string.comments);
             mi.setIcon(R.drawable.ic_comment);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             if (node.isDocument())
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_VERSION_HISTORY, Menu.FIRST
-                        + MenuActionItem.MENU_VERSION_HISTORY, R.string.action_versions);
+                        + MenuActionItem.MENU_VERSION_HISTORY, R.string.version_history);
                 mi.setIcon(R.drawable.ic_menu_recent_history);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS,
-                    R.string.action_tags);
+                    R.string.tags);
             mi.setIcon(R.drawable.mime_tags);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -655,13 +658,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         return node;
     }
-    
-    
+
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-        if (tabSelected != null){
+        if (tabSelected != null)
+        {
             outState.putInt("TAB", tabSelected);
         }
     }
@@ -686,12 +689,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             mTabHost.addTab(newTab(TAB_HISTORY, R.string.action_version, android.R.id.tabcontent));
         }
-        mTabHost.addTab(newTab(TAB_COMMENTS, R.string.action_comments, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(TAB_TAGS, R.string.action_tags, android.R.id.tabcontent));
-        
-        if (tabSelection != null){
+        mTabHost.addTab(newTab(TAB_COMMENTS, R.string.comments, android.R.id.tabcontent));
+        mTabHost.addTab(newTab(TAB_TAGS, R.string.tags, android.R.id.tabcontent));
+
+        if (tabSelection != null)
+        {
             if (tabSelection == 0) return;
-            int index = (node.isDocument()) ? tabSelection : tabSelection -1 ;
+            int index = (node.isDocument()) ? tabSelection : tabSelection - 1;
             mTabHost.setCurrentTab(index);
         }
     }

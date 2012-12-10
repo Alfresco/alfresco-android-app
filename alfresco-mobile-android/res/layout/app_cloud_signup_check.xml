@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:onClick="signup"
-            android:text="@string/action_refresh" />
+            android:text="@string/refresh" />
         
          <Button
             android:id="@+id/cloud_signup_resend"
