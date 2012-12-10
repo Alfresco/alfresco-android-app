@@ -464,10 +464,6 @@ public class MainActivity extends Activity
                             getFragmentManager().popBackStackImmediate(DetailsFragment.TAG,
                                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         }
-                        else
-                        {
-                            FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                        }
                         addPropertiesFragment(currentNode, backstack);
                     }
                 }
