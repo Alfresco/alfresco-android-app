@@ -105,7 +105,7 @@ public class KeywordSearch extends SearchFragment
         super.onResume();
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().setTitle(R.string.action_search);
+        getActivity().setTitle(R.string.search);
     }
 
     public void onPause()

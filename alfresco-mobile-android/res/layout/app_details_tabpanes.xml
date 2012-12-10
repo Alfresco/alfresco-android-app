@@ -71,7 +71,7 @@
                         android:layout_height="fill_parent"
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/properties_padding"
-                        android:contentDescription="@string/thumbnail_description"
+                        android:contentDescription="@string/thumbnail"
                         android:scaleType="center"
                         android:src="@drawable/mime_file" />
                 </LinearLayout>
@@ -142,7 +142,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:contentDescription="@string/action_like"
+                android:contentDescription="@string/like"
                 android:paddingRight="@dimen/button_padding"
                 android:src="@drawable/ic_unlike" />
             
@@ -161,7 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:contentDescription="@string/action_like"
+                android:contentDescription="@string/like"
                 android:paddingRight="@dimen/button_padding"
                 android:src="@drawable/ic_share" />
 

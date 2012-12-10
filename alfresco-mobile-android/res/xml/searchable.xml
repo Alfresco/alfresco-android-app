@@ -18,7 +18,7 @@
 -->
 <searchable xmlns:android="http://schemas.android.com/apk/res/android"
     android:includeInGlobalSearch="false"
-    android:label="@string/action_search"
+    android:label="@string/search"
     android:voiceLanguageModel="free_form"
     android:voiceSearchMode="showVoiceSearchButton|launchRecognizer"
     android:hint="Search inside this folder" >

@@ -186,7 +186,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         else
         {
-            MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete_error)
+            MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_error)
                     .toString());
         }
         dismiss();

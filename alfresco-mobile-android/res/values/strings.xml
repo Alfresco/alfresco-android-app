@@ -242,4 +242,12 @@
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
+    <!-- Delete -->
+    <string name="delete_description">Are you sure you want to delete this item :</string>
+    
+    <!-- Save Back -->
+    <string name="save_back_description"> has been modified. Do you want to upload this new version ?</string>
+    <string name="save_back_sucess"> has been uploaded successfully.</string>
+    <string name="update_sucess"> has been updated successfully.</string>
+    
 </resources>

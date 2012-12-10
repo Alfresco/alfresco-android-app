@@ -104,7 +104,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public void getMenu(Menu menu)
     {
         MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.action_refresh);
+                R.string.refresh);
         mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
