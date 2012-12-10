@@ -250,4 +250,8 @@
     <string name="save_back_sucess"> has been uploaded successfully.</string>
     <string name="update_sucess"> has been updated successfully.</string>
     
+    <string name="no_voice_recorder">You do not have a voice recorder on this device</string>
+    <string name="cannot_capture">Cannot complete the capturing of this information</string>
+    
+    
 </resources>

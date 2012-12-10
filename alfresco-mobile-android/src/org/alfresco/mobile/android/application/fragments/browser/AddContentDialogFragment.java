@@ -43,6 +43,13 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     {
     }
 
+    public static AddContentDialogFragment newInstance(Folder folder, File f, String MIMEType)
+    {
+        AddContentDialogFragment adf = new AddContentDialogFragment();
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType)));
+        return adf;
+    }
+    
     public static AddContentDialogFragment newInstance(Folder folder, File f)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
