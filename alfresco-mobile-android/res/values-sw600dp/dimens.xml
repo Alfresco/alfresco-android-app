@@ -23,5 +23,7 @@
     
     <!-- ACCOUNT WIZARD -->
     <dimen name="wizard_main_margin">15dip</dimen>
+    <dimen name="properties_details_padding">10dip</dimen>
+    
     
 </resources>

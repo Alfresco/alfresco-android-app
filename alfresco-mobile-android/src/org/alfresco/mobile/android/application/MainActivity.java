@@ -904,12 +904,6 @@ public class MainActivity extends Activity
     {
         super.onCreateOptionsMenu(menu);
 
-        // Display Title except for specific fragment
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            getActionBar().setDisplayShowTitleEnabled(true);
-        }
-
         if (isVisible(ActivitiesFragment.TAG))
         {
             ((ActivitiesFragment) getFragment(ActivitiesFragment.TAG)).getMenu(menu);

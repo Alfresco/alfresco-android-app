@@ -277,13 +277,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onStart()
     {
+        ((MainActivity) getActivity()).setCurrentNode(node);
+        getActivity().invalidateOptionsMenu();
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
             getActivity().setTitle(R.string.details);
             getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        } else {
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
-        ((MainActivity) getActivity()).setCurrentNode(node);
-        getActivity().invalidateOptionsMenu();
         super.onStart();
     }
 
@@ -424,7 +426,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 long datetime = dlFile.lastModified();
                 Date d = new Date(datetime);
 
-                boolean modified = d.after(downloadDateTime);
+                boolean modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
                 if (modified
                         && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())

@@ -20,6 +20,7 @@
     
     <style name="alfrescotheme" parent="android:Theme.Holo.Light">
     	<item name="android:tabWidgetStyle">@style/alfrescotheme.TabWidget</item>
+    	<item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
 	</style>
     
     <style name="alfrescotheme.TabWidget" parent="android:Widget.Holo.TabWidget">
