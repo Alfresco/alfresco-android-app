@@ -562,6 +562,7 @@ public class MainActivity extends Activity
         View slideMenu = findViewById(R.id.slide_pane);
         slideMenu.setVisibility(View.GONE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_out_to_left));
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private boolean isSlideMenuVisible()
@@ -574,6 +575,7 @@ public class MainActivity extends Activity
         View slideMenu = findViewById(R.id.slide_pane);
         slideMenu.setVisibility(View.VISIBLE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_in_from_left));
+        getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void doMainMenuAction(int id)
