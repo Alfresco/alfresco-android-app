@@ -149,6 +149,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 iv.setImageResource(iconId);
             }
+            
+            iv.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
         }
         else
         {
