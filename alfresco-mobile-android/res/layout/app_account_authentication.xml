@@ -20,33 +20,33 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="center"
+    android:background="@android:color/background_light"
     android:gravity="center"
-    android:minWidth="600dp"
-    android:background="@android:color/background_light"  >
+    android:minWidth="600dp" >
 
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="15dip"
         android:layout_gravity="top"
+        android:layout_margin="15dip"
         android:gravity="top"
         android:orientation="vertical" >
 
-    <TextView
+        <TextView
             android:id="@+id/advanced"
             style="@style/sectionHeader"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/cloud_authentication"/>
+            android:text="@string/cloud_authentication" />
 
-    <include
-        android:layout_height="fill_parent"
-        android:layout_width="fill_parent"
-        layout="@layout/app_waiting" />
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            layout="@layout/app_waiting" />
 
-    <include
-        android:layout_height="wrap_content"
-        layout="@layout/sdk_oauth" />
+        <include
+            android:layout_height="wrap_content"
+            layout="@layout/sdk_oauth" />
+    </LinearLayout>
 
-</LinearLayout>
 </ScrollView>

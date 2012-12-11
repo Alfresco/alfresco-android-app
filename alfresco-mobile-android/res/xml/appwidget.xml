@@ -16,8 +16,9 @@
   limitations under the License.
 -->
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:minWidth="294dip"
+    android:initialLayout="@layout/appwidget"
     android:minHeight="146dip"
-    android:updatePeriodMillis="7200000"
-    android:initialLayout="@layout/appwidget">
+    android:minWidth="294dip"
+    android:updatePeriodMillis="7200000" >
+
 </appwidget-provider>

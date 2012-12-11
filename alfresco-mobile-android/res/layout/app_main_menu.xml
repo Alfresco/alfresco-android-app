@@ -16,57 +16,54 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-   <ScrollView
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:fillViewport="true"
-         >
-        
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/RelativeLayout1"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/bg_gradient"
-    android:orientation="vertical" >
+    android:fillViewport="true" >
 
-    <TextView
-        android:id="@+id/accounts_label"
-        style="@style/slidingmenu_sectionHeader"
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/RelativeLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/menu_accounts"
-        android:layout_marginLeft="@dimen/properties_padding"
-        android:layout_marginRight="@dimen/properties_padding"
-         />
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg_gradient"
+        android:orientation="vertical" >
 
-    <Spinner
-        android:id="@+id/accounts_spinner"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/accounts_label"
-        android:textColor="@android:color/white"
-        android:layout_marginLeft="@dimen/properties_padding"
-        android:layout_marginRight="@dimen/properties_padding"
-        android:popupBackground="@color/sliding_account_background" />
+        <TextView
+            android:id="@+id/accounts_label"
+            style="@style/slidingmenu_sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:text="@string/menu_accounts" />
+
+        <Spinner
+            android:id="@+id/accounts_spinner"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/accounts_label"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:popupBackground="@color/sliding_account_background"
+            android:textColor="@android:color/white" />
 
         <LinearLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/LinearLayout1"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="vertical"
             android:layout_below="@+id/accounts_spinner"
-                    android:layout_marginLeft="@dimen/properties_padding"
-        android:layout_marginRight="@dimen/properties_padding" >
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/TextView1"
                 style="@style/slidingmenu_sectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/menu_view"
-                 />
+                android:text="@string/menu_view" />
 
             <Button
                 android:id="@+id/menu_browse_activities"
@@ -75,7 +72,6 @@
                 android:background="@drawable/btn_default_holo_light"
                 android:drawableRight="@drawable/ic_activities_light"
                 android:gravity="left|center_vertical"
-                
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_browse_activities"
                 android:textColor="@android:color/white" />
@@ -176,6 +172,6 @@
                 android:text="@string/menu_about"
                 android:textColor="@android:color/white" />
         </LinearLayout>
+    </RelativeLayout>
 
-</RelativeLayout>
-    </ScrollView>
+</ScrollView>

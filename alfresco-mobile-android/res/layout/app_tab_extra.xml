@@ -36,8 +36,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:minWidth="100dip"
-                 >
+                android:minWidth="100dip" >
             </TabWidget>
         </HorizontalScrollView>
 
@@ -46,9 +45,11 @@
             android:layout_width="0dip"
             android:layout_height="0dip" >
         </FrameLayout>
-        
-        <include layout="@layout/sdk_list" android:layout_width="fill_parent"
-            android:layout_height="fill_parent"/>
+
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            layout="@layout/sdk_list" />
     </LinearLayout>
 
 </TabHost>

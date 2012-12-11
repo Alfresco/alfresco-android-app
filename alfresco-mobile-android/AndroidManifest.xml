@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
@@ -32,11 +32,11 @@
     <application
         android:name=".AlfrescoApplication"
         android:configChanges="orientation|keyboardHidden"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/ic_alfresco_logo"
-        android:logo="@drawable/ic_alfresco"
         android:label="@string/app_name"
-        android:theme="@style/alfrescotheme"
-        android:hardwareAccelerated="true" >
+        android:logo="@drawable/ic_alfresco"
+        android:theme="@style/alfrescotheme" >
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->
@@ -50,37 +50,39 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
-             <!-- Internal : Sign up cloud -->
-             <intent-filter>
+
+            <!-- Internal : Sign up cloud -->
+            <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="alfresco"  android:host="sign_up_cloud" />
+                <data
+                    android:host="sign_up_cloud"
+                    android:scheme="alfresco" />
             </intent-filter>
-            
-            <!-- Internal : Used for displaying Errors-->
+
+            <!-- Internal : Used for displaying Errors -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN" />
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name="net.hockeyapp.android.UpdateActivity" />
-        <activity 
+        <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
-            android:uiOptions="splitActionBarWhenNarrow" 
-            android:windowSoftInputMode="adjustResize"
-             android:logo="@drawable/ic_alfresco"
-            >
+            android:logo="@drawable/ic_alfresco"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
+
             <!-- Internal : Used for refresh UI component -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
@@ -96,13 +98,14 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.file" />
             </intent-filter>
 
-              <!-- Internal : Used for displaying Errors-->
+            <!-- Internal : Used for displaying Errors -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR" />
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_DIALOG" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
+
             <!-- Internal : Used for displaying User Authentication Form -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />
@@ -110,30 +113,31 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
                 <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH" />
-                
+
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
-            
-            <!-- Internal : Used for Cloud activation-->
+
+            <!-- Internal : Used for Cloud activation -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                
+
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
-                
+
                 <data
-                    android:scheme="alfresco"
                     android:host="activate-cloud-account"
-                     />
+                    android:scheme="alfresco" />
             </intent-filter>
-            
+
             <!-- Internal : Sign up cloud -->
-             <intent-filter>
+            <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <action android:name="android.intent.action.VIEW" />
 
-                <data android:scheme="alfresco"  android:host="sign_up_cloud_i" />
+                <data
+                    android:host="sign_up_cloud_i"
+                    android:scheme="alfresco" />
             </intent-filter>
 
             <meta-data
@@ -141,8 +145,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <service android:name=".ProgressNotification"/>
-        
+        <service android:name=".ProgressNotification" />
     </application>
 
 </manifest>

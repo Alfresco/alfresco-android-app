@@ -64,4 +64,5 @@
             android:layout_weight="1"
             android:background="@color/emphasis" />
     </LinearLayout>
+
 </LinearLayout>

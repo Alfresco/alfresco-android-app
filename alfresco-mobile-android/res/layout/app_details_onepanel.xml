@@ -25,19 +25,18 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        
-           <TextView
-                           android:paddingLeft="@dimen/properties_details_padding"
-                           android:paddingRight="@dimen/properties_details_padding"
-                           android:paddingTop="@dimen/properties_details_padding"
-                    android:id="@+id/title"
-                    style="@style/list_item_toptext"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_margin="0dp"
-                    android:text="Green Grasssd fgsdf gdsf gds fgds fg.JPG"
-                    />
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/list_item_toptext"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="0dp"
+            android:paddingLeft="@dimen/properties_details_padding"
+            android:paddingRight="@dimen/properties_details_padding"
+            android:paddingTop="@dimen/properties_details_padding"
+            android:text="Green Grasssd fgsdf gdsf gds fgds fg.JPG" />
 
         <TableLayout
             android:id="@+id/default_server"
@@ -78,7 +77,6 @@
                     android:orientation="vertical"
                     android:paddingLeft="@dimen/properties_details_padding" >
 
-
                     <ScrollView
                         android:id="@+id/scrollView1"
                         android:layout_width="match_parent"
@@ -111,7 +109,6 @@
             </TableRow>
         </TableLayout>
 
-
         <LinearLayout
             android:id="@+id/tools_group"
             android:layout_width="wrap_content"
@@ -126,31 +123,26 @@
                 android:paddingRight="@dimen/button_padding"
                 android:src="@drawable/ic_open_dark" />
 
-            <FrameLayout 
-                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                >
-                
-                 <ImageView
-                android:id="@+id/like"
+            <FrameLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:contentDescription="@string/like"
-                android:paddingRight="@dimen/button_padding"
-                android:src="@drawable/ic_unlike" />
-            
-            <ProgressBar
-			    android:id="@+id/like_progress"
-			    style="?android:attr/progressBarStyleSmall"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			/>
-               
+                android:gravity="center" >
+
+                <ImageView
+                    android:id="@+id/like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:contentDescription="@string/like"
+                    android:paddingRight="@dimen/button_padding"
+                    android:src="@drawable/ic_unlike" />
+
+                <ProgressBar
+                    android:id="@+id/like_progress"
+                    style="?android:attr/progressBarStyleSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </FrameLayout>
-            
-           
 
             <ImageView
                 android:id="@+id/action_share"
