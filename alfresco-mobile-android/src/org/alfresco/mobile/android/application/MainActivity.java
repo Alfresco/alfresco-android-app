@@ -95,6 +95,8 @@ import android.view.animation.AnimationUtils;
 public class MainActivity extends Activity
 {
 
+    public static Activity activity = null;
+    
     private static final String TAG = "MainActivity";
 
     private Stack<String> stackCentral = new Stack<String>();
@@ -126,6 +128,8 @@ public class MainActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        activity = this;
+        
         super.onCreate(savedInstanceState);
 
         // Loading progress
