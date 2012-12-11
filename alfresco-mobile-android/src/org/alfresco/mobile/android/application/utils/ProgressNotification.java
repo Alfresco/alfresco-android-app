@@ -19,7 +19,11 @@ package org.alfresco.mobile.android.application.utils;
 
 import java.util.HashMap;
 
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -28,33 +32,46 @@ import android.app.Notification;
 import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 @TargetApi(11)
 @SuppressLint("UseSparseArrays")
-public class ProgressNotification extends Activity
+public class ProgressNotification extends Service
 {
+    static Notification notification = null;
+    static Activity parent = null;
     static Context ctxt = null;
-
+    static Handler handler = null;
     static HashMap<String, progressItem> inProgressObjects = new HashMap<String, progressItem>();
-
+    static progressItem newItem = null;
     private static String TAG = "ProgressNotification";
 
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        // TODO Auto-generated method stub
+        return null;
+    }
+    
+    
     static boolean updateProgress(String name)
     {
         return updateProgress(name, null);
     }
 
+    
     static synchronized boolean updateProgress(String name, Integer incrementBy)
     {
         if (ctxt != null)
         {
-            NotificationManager notificationManager = (NotificationManager) ctxt
-                    .getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) ctxt.getSystemService(Context.NOTIFICATION_SERVICE);
 
             progressItem progressItem = inProgressObjects.get(name);
 
@@ -85,15 +102,32 @@ public class ProgressNotification extends Activity
                 {
                     // notificationManager.cancel((int) progressItem.id);
                     inProgressObjects.remove(name);
-                    progressItem.notification.contentView.setTextViewText(R.id.status_text,
-                            ctxt.getText(R.string.download_complete));
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
-                            false);
+                    
+                    progressItem.notification.contentView.setTextViewText(R.id.status_text, ctxt.getText(R.string.download_complete));
+                    
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
+                    
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, dataSize);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
+                    
+                    //Ensure we do this in the UI thread.
+                    handler.post(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            MessengerManager.showLongToast(ctxt, ctxt.getString(R.string.upload_complete));
+                            
+                            //Refresh the main interface for newly uploaded file
+                            ((RefreshFragment) parent.getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(parent))).refresh();
+                        }
+                    });
+                    
+                    if (inProgressObjects.size() == 0)
+                        ctxt.stopService(new Intent (ctxt, ProgressNotification.class));
                 }
 
                 return true;
@@ -103,36 +137,26 @@ public class ProgressNotification extends Activity
         return false;
     }
 
+    
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    @Deprecated
+    public void onStart(Intent intent, int startId)
     {
-        // Implemented as an Activity so that we can display a full screen or
-        // dialog based progress as well if we wish.
-        // The current implementation simply initiates the Notification with
-        // progress in, then finish()es. We could easily however
-        // expand this class to show a dialog of progress that shows initially
-        // for a few seconds then disappears leaving the notification ongoing.
-
-        super.onCreate(savedInstanceState);
-
-        setContentView(R.layout.app_download_progress);
-
-        try
+        if (inProgressObjects.size() > 0  &&  newItem != null)
         {
-            createProgressNotification(this, getIntent().getExtras(), ProgressNotification.class);
+            ctxt = this;
+            parent = MainActivity.activity;
+            handler = new Handler();
+            
+            MessengerManager.showLongToast(this, getString(R.string.upload_in_progress));
+            
+            startForeground((int)newItem.id, newItem.notification);
         }
-        catch (Exception e)
-        {
-            // Someone didn't set the bundle up correctly before calling.
-            finish();
-            return;
-        }
-
-        // Remove this if we want the activity displayed with progress of its
-        // own.
-        finish();
+        
+        super.onStart(intent, startId);
     }
 
+    
     @TargetApi(16)
     private static Notification createNotification(Context c, Bundle params, int value)
     {
@@ -170,12 +194,13 @@ public class ProgressNotification extends Activity
         return notification;
     }
 
+    
     @TargetApi(16)
     public static void createProgressNotification(Context c, Bundle params, Class clickActivity)
     {
         ctxt = c;
-
-        Notification notification;
+        parent = MainActivity.activity;
+        
         long notificationID = System.currentTimeMillis();
 
         Intent intent = new Intent(c, clickActivity);
@@ -215,13 +240,15 @@ public class ProgressNotification extends Activity
         }
         // builder.setDeleteIntent(pendingIntent);
 
-        progressItem newItem = new progressItem(notificationID, notification, params);
+        newItem = new progressItem(notificationID, notification, params);
         inProgressObjects.put(params.getString("name"), newItem);
 
-        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify((int) notificationID,
-                notification);
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify((int) notificationID, notification);
+        
+        c.startService(new Intent (c, ProgressNotification.class).putExtras(params));
     }
-
+    
+    
     static class progressItem
     {
         progressItem(long id, Notification notification, Bundle bundle)
