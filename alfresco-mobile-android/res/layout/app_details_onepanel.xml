@@ -25,6 +25,19 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
+        
+           <TextView
+                           android:paddingLeft="@dimen/properties_details_padding"
+                           android:paddingRight="@dimen/properties_details_padding"
+                           android:paddingTop="@dimen/properties_details_padding"
+                    android:id="@+id/title"
+                    style="@style/list_item_toptext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:text="Green Grasssd fgsdf gdsf gds fgds fg.JPG"
+                    />
 
         <TableLayout
             android:id="@+id/default_server"
@@ -34,22 +47,6 @@
             android:padding="@dimen/properties_details_padding"
             android:shrinkColumns="1"
             android:stretchColumns="1" >
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content" >
-
-
-                <TextView
-                    android:id="@+id/title"
-                    style="@style/list_item_toptext"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:layout_margin="0dp"
-                    android:text="Green Grass.JPG" />
-
-            </TableRow>
 
             <TableRow
                 android:layout_width="fill_parent"

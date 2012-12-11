@@ -91,7 +91,7 @@
 
                         <TextView
                             android:id="@+id/description"
-                            style="@style/list_item_bottomtext"
+                            style="@style/description"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dip"
