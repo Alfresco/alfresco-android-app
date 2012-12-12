@@ -145,7 +145,10 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
     public void onPause()
     {
         super.onPause();
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (!isVisible() && TAG.equals(getTag()))
+        {
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
     }
 
     @Override

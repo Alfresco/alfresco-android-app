@@ -34,4 +34,5 @@
                 android:startColor="@android:color/background_light" />
         </shape>
     </item>
+
 </layer-list>

@@ -20,11 +20,11 @@
     android:id="@+id/left_pane"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:gravity="center"
     android:layout_gravity="center"
-    android:visibility="visible"
-    android:background="@android:color/white" >
+    android:background="@android:color/white"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible" >
 
     <LinearLayout
         android:id="@+id/left_pane_body"

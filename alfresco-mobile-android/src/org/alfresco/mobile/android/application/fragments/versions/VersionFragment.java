@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.versions;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
@@ -69,8 +70,12 @@ public class VersionFragment extends VersionsFragment
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         super.onListItemClick(l, v, position, id);
-        Node n = (Node) l.getItemAtPosition(position);
-        ((MainActivity) getActivity()).addPropertiesFragment(n, true);
+        Document versionedDoc = (Document) l.getItemAtPosition(position);
+        if (versionedDoc.getVersionLabel() != null
+                && !versionedDoc.getVersionLabel().equals(((Document) node).getVersionLabel()))
+        {
+            ((MainActivity) getActivity()).addPropertiesFragment(versionedDoc, true);
+        }
     }
 
     @Override

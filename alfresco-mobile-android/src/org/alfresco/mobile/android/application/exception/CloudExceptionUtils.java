@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.exception;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -36,11 +37,20 @@ public class CloudExceptionUtils
         Log.d("CloudExceptionUtils", Log.getStackTraceString(exception));
         if (exception instanceof AlfrescoSessionException)
         {
-            // Case CmisConnexionException ==> Token expired
             AlfrescoSessionException ex = ((AlfrescoSessionException) exception);
-            if (ex.getMessage().contains("No authentication challenges found") || ex.getErrorCode() == 100)
+            switch (ex.getErrorCode())
             {
-                manageException(activity, forceRefresh);
+                case ErrorCodeRegistry.SESSION_API_KEYS_INVALID:
+                case ErrorCodeRegistry.SESSION_REFRESH_TOKEN_EXPIRED:
+                    manageException(activity, forceRefresh);
+                    return;
+                default:
+                    if (ex.getMessage().contains("No authentication challenges found") || ex.getErrorCode() == 100)
+                    {
+                        manageException(activity, forceRefresh);
+                        return;
+                    }
+                    break;
             }
         }
 
@@ -52,6 +62,7 @@ public class CloudExceptionUtils
                             "No authentication challenges found"))))
             {
                 manageException(activity, forceRefresh);
+                return;
             }
         }
 
@@ -61,6 +72,7 @@ public class CloudExceptionUtils
             if (ex.getMessage().contains("No authentication challenges found"))
             {
                 manageException(activity, forceRefresh);
+                return;
             }
         }
     }

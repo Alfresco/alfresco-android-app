@@ -130,9 +130,21 @@ public class FragmentDisplayer
     public static void removeFragment(Activity a, String tag)
     {
         Fragment fr = a.getFragmentManager().findFragmentByTag(tag);
-        if (fr != null && fr.isVisible())
+        try
         {
+            if (fr != null && fr.isVisible())
+            {
+                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
+                t2.remove(fr);
+                t2.commit();
+            }
+        }
+        catch (Exception e)
+        {
+            // Specific use case in Honeycomb. Sometimes the fragment has not
+            // been added and we must force the add.
             FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
+            t2.add(fr, fr.getTag());
             t2.remove(fr);
             t2.commit();
         }
@@ -141,25 +153,37 @@ public class FragmentDisplayer
     public static void removeFragment(Activity a, int id)
     {
         Fragment fr = a.getFragmentManager().findFragmentById(id);
-        if (fr != null && fr.isAdded())
+        try
         {
+            if (fr != null && fr.isAdded())
+            {
+                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
+                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
+                {
+                    // t2.setCustomAnimations(R.anim.slide_in_right,//
+                    // R.anim.slide_out_left);
+                }
+                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                {
+                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                {
+                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+                            R.anim.slide_out_right);
+                }
+                t2.remove(fr);
+                t2.commit();
+            }
+        }
+        catch (Exception e)
+        {
+            // Specific use case in Honeycomb. Sometimes the fragment has not
+            // been added and we must force the add.
             FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                    && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-            {
-                // t2.setCustomAnimations(R.anim.slide_in_right,//
-                // R.anim.slide_out_left);
-            }
-            else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                    && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            {
-                t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-            else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            {
-                t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                        R.anim.slide_out_right);
-            }
+            t2.add(fr, fr.getTag());
             t2.remove(fr);
             t2.commit();
         }
@@ -178,29 +202,41 @@ public class FragmentDisplayer
         }
         else
         {
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                    && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
+            try
             {
-                // t2.setCustomAnimations(R.anim.slide_in_right,//
-                // R.anim.slide_out_left);
+                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
+                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
+                {
+                    // t2.setCustomAnimations(R.anim.slide_in_right,//
+                    // R.anim.slide_out_left);
+                }
+                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                {
+                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                {
+                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+                            R.anim.slide_out_right);
+                }
+                t2.replace(viewId, f, tag);
+                if (backStack)
+                {
+                    t2.addToBackStack(tag);
+                }
+                t2.commit();
             }
-            else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                    && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            catch (Exception e)
             {
-                t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
+                // Specific use case in Honeycomb. Sometimes the fragment has
+                // not been added and we must force the add.
+                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
+                t2.add(f, f.getTag());
+                t2.remove(f);
+                t2.commit();
             }
-            else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-            {
-                t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                        R.anim.slide_out_right);
-            }
-            t2.replace(viewId, f, tag);
-            if (backStack)
-            {
-                t2.addToBackStack(tag);
-            }
-            t2.commit();
         }
     }
 }
