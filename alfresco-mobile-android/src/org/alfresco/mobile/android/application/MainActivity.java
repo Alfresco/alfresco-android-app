@@ -468,10 +468,6 @@ public class MainActivity extends Activity
                             getFragmentManager().popBackStackImmediate(DetailsFragment.TAG,
                                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         }
-                        else
-                        {
-                            FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                        }
                         addPropertiesFragment(currentNode, backstack);
                     }
                 }
@@ -570,6 +566,7 @@ public class MainActivity extends Activity
         View slideMenu = findViewById(R.id.slide_pane);
         slideMenu.setVisibility(View.GONE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_out_to_left));
+        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     private boolean isSlideMenuVisible()
@@ -582,6 +579,7 @@ public class MainActivity extends Activity
         View slideMenu = findViewById(R.id.slide_pane);
         slideMenu.setVisibility(View.VISIBLE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_in_from_left));
+        getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     private void doMainMenuAction(int id)
@@ -907,12 +905,6 @@ public class MainActivity extends Activity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         super.onCreateOptionsMenu(menu);
-
-        // Display Title except for specific fragment
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            getActionBar().setDisplayShowTitleEnabled(true);
-        }
 
         if (isVisible(ActivitiesFragment.TAG))
         {

@@ -19,9 +19,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:background="@android:color/background_light"
     android:gravity="center_horizontal"
-    android:minWidth="600dp"
-    android:background="@android:color/background_light" >
+    android:minWidth="600dp" >
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -89,8 +89,8 @@
             android:layout_gravity="right"
             android:onClick="signup"
             android:text="@string/refresh" />
-        
-         <Button
+
+        <Button
             android:id="@+id/cloud_signup_resend"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

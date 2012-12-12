@@ -17,11 +17,10 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/master_pane"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-        android:id="@+id/master_pane"
     android:gravity="center" >
-
 
     <LinearLayout
         android:id="@+id/left_pane_body"
@@ -46,9 +45,9 @@
             android:layout_marginTop="15dip"
             android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_cloud"
+            android:onClick="cloud"
             android:text="@string/home_sign_cloud"
-            android:textSize="@dimen/home_button_size"
-            android:onClick="cloud" />
+            android:textSize="@dimen/home_button_size" />
 
         <TextView
             android:layout_width="match_parent"
@@ -64,8 +63,8 @@
             android:layout_marginTop="15dip"
             android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_login"
-            android:text="@string/home_account"
-            android:onClick="launch" />
+            android:onClick="launch"
+            android:text="@string/home_account" />
 
         <TextView
             android:layout_width="match_parent"

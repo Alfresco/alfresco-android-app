@@ -19,7 +19,7 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="alfrescotheme" parent="android:Theme.Holo.Light">
-       <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
+        <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
     </style>
 
     <!-- =============================================================== -->
@@ -54,7 +54,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">2</item>
-        <item name="android:ellipsize">marquee</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
     </style>
@@ -64,9 +64,13 @@
         <item name="android:layout_gravity">bottom|center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">3</item>
-        <item name="android:ellipsize">marquee</item>
-        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/browse_bottomtext_size</item>
+    </style>
+
+    <style name="description" parent="list_item_bottomtext">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="list_item_activities">
@@ -74,7 +78,7 @@
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">3</item>
-        <item name="android:ellipsize">marquee</item>
+        <item name="android:ellipsize">end</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
     </style>
 
@@ -102,9 +106,9 @@
     </style>
 
     <color name="grey_lighter">#eeeeee</color>
-    
+
     <style name="alfrescotheme_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
-    	<item name="android:background">@drawable/ab_stacked_transparent_light_holo</item>
-	</style>
+        <item name="android:background">@drawable/ab_stacked_transparent_light_holo</item>
+    </style>
 
 </resources>
