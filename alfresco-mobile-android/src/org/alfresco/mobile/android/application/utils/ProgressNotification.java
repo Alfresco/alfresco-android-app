@@ -45,14 +45,15 @@ import android.widget.RemoteViews;
 @SuppressLint("UseSparseArrays")
 public class ProgressNotification extends Service
 {
-    static Notification notification = null;
-    static Activity parent = null;
-    static Context ctxt = null;
-    static Handler handler = null;
-    static HashMap<String, progressItem> inProgressObjects = new HashMap<String, progressItem>();
-    static progressItem newItem = null;
-    private static String TAG = "ProgressNotification";
+    static private Notification notification = null;
+    static private Activity parent = null;
+    static private Context ctxt = null;
+    static private Handler handler = null;
+    static private HashMap<String, progressItem> inProgressObjects = null;
+    static private progressItem newItem = null;
+    static private String TAG = "ProgressNotification";
 
+    
     @Override
     public IBinder onBind(Intent intent)
     {
@@ -69,7 +70,7 @@ public class ProgressNotification extends Service
     
     static synchronized boolean updateProgress(String name, Integer incrementBy)
     {
-        if (ctxt != null)
+        if (ctxt != null  &&  inProgressObjects != null  &&   parent != null)
         {
             NotificationManager notificationManager = (NotificationManager) ctxt.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -125,9 +126,6 @@ public class ProgressNotification extends Service
                             ((RefreshFragment) parent.getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(parent))).refresh();
                         }
                     });
-                    
-                    if (inProgressObjects.size() == 0)
-                        ctxt.stopService(new Intent (ctxt, ProgressNotification.class));
                 }
 
                 return true;
@@ -143,7 +141,11 @@ public class ProgressNotification extends Service
     public void onStart(Intent intent, int startId)
     {
         if (inProgressObjects.size() > 0  &&  newItem != null)
+<<<<<<< HEAD
         {
+=======
+        {
+>>>>>>> Fixing a crash in the progressNotification code.
             ctxt = this;
             parent = MainActivity.activity;
             handler = new Handler();
@@ -201,6 +203,11 @@ public class ProgressNotification extends Service
         ctxt = c;
         parent = MainActivity.activity;
         
+        if (inProgressObjects == null)
+        {
+            inProgressObjects = new HashMap<String, progressItem>();
+        }
+            
         long notificationID = System.currentTimeMillis();
 
         Intent intent = new Intent(c, clickActivity);
