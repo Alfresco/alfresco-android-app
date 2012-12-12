@@ -141,11 +141,7 @@ public class ProgressNotification extends Service
     public void onStart(Intent intent, int startId)
     {
         if (inProgressObjects.size() > 0  &&  newItem != null)
-<<<<<<< HEAD
         {
-=======
-        {
->>>>>>> Fixing a crash in the progressNotification code.
             ctxt = this;
             parent = MainActivity.activity;
             handler = new Handler();
