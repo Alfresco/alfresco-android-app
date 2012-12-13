@@ -145,7 +145,7 @@
                 android:resource="@xml/searchable" />
         </activity>
 
-        <service android:name=".ProgressNotification" />
+        <service android:name=".utils.ProgressNotification" />
     </application>
 
 </manifest>

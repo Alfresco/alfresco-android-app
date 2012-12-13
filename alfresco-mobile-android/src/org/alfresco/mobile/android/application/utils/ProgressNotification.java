@@ -46,33 +46,37 @@ import android.widget.RemoteViews;
 public class ProgressNotification extends Service
 {
     static private Notification notification = null;
+
     static private Activity parent = null;
+
     static private Context ctxt = null;
+
     static private Handler handler = null;
+
     static private HashMap<String, progressItem> inProgressObjects = null;
+
     static private progressItem newItem = null;
+
     static private String TAG = "ProgressNotification";
 
-    
     @Override
     public IBinder onBind(Intent intent)
     {
         // TODO Auto-generated method stub
         return null;
     }
-    
-    
+
     static boolean updateProgress(String name)
     {
         return updateProgress(name, null);
     }
 
-    
     static synchronized boolean updateProgress(String name, Integer incrementBy)
     {
-        if (ctxt != null  &&  inProgressObjects != null  &&   parent != null)
+        if (ctxt != null && inProgressObjects != null && parent != null)
         {
-            NotificationManager notificationManager = (NotificationManager) ctxt.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) ctxt
+                    .getSystemService(Context.NOTIFICATION_SERVICE);
 
             progressItem progressItem = inProgressObjects.get(name);
 
@@ -103,27 +107,31 @@ public class ProgressNotification extends Service
                 {
                     // notificationManager.cancel((int) progressItem.id);
                     inProgressObjects.remove(name);
-                    
-                    progressItem.notification.contentView.setTextViewText(R.id.status_text, ctxt.getText(R.string.download_complete));
-                    
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
-                    
+
+                    progressItem.notification.contentView.setTextViewText(R.id.status_text,
+                            ctxt.getText(R.string.download_complete));
+
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
+                            false);
+
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, dataSize);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
-                    
-                    //Ensure we do this in the UI thread.
+
+                    // Ensure we do this in the UI thread.
                     handler.post(new Runnable()
                     {
                         @Override
                         public void run()
                         {
                             MessengerManager.showLongToast(ctxt, ctxt.getString(R.string.upload_complete));
-                            
-                            //Refresh the main interface for newly uploaded file
-                            ((RefreshFragment) parent.getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(parent))).refresh();
+
+                            // Refresh the main interface for newly uploaded
+                            // file
+                            ((RefreshFragment) parent.getFragmentManager().findFragmentById(
+                                    DisplayUtils.getLeftFragmentId(parent))).refresh();
                         }
                     });
                 }
@@ -135,26 +143,24 @@ public class ProgressNotification extends Service
         return false;
     }
 
-    
     @Override
     @Deprecated
     public void onStart(Intent intent, int startId)
     {
-        if (inProgressObjects.size() > 0  &&  newItem != null)
+        if (inProgressObjects.size() > 0 && newItem != null)
         {
             ctxt = this;
             parent = MainActivity.activity;
             handler = new Handler();
-            
+
             MessengerManager.showLongToast(this, getString(R.string.upload_in_progress));
-            
-            startForeground((int)newItem.id, newItem.notification);
+
+            startForeground((int) newItem.id, newItem.notification);
         }
-        
+
         super.onStart(intent, startId);
     }
 
-    
     @TargetApi(16)
     private static Notification createNotification(Context c, Bundle params, int value)
     {
@@ -192,18 +198,17 @@ public class ProgressNotification extends Service
         return notification;
     }
 
-    
     @TargetApi(16)
     public static void createProgressNotification(Context c, Bundle params, Class clickActivity)
     {
         ctxt = c;
         parent = MainActivity.activity;
-        
+
         if (inProgressObjects == null)
         {
             inProgressObjects = new HashMap<String, progressItem>();
         }
-            
+
         long notificationID = System.currentTimeMillis();
 
         Intent intent = new Intent(c, clickActivity);
@@ -246,12 +251,12 @@ public class ProgressNotification extends Service
         newItem = new progressItem(notificationID, notification, params);
         inProgressObjects.put(params.getString("name"), newItem);
 
-        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify((int) notificationID, notification);
-        
-        c.startService(new Intent (c, ProgressNotification.class).putExtras(params));
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify((int) notificationID,
+                notification);
+
+        c.startService(new Intent(c, ProgressNotification.class).putExtras(params));
     }
-    
-    
+
     static class progressItem
     {
         progressItem(long id, Notification notification, Bundle bundle)
