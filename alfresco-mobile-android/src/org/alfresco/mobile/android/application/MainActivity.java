@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -97,7 +98,7 @@ public class MainActivity extends Activity
 {
 
     public static Activity activity = null;
-    
+
     private static final String TAG = "MainActivity";
 
     private Stack<String> stackCentral = new Stack<String>();
@@ -121,13 +122,14 @@ public class MainActivity extends Activity
     private AccountsLoaderCallback loadercallback;
 
     private Folder importParent;
-    
+
     private int sessionState = 0;
-    
+
     public static final int SESSION_LOADING = 0;
+
     public static final int SESSION_ACTIVE = 1;
+
     public static final int SESSION_UNAUTHORIZED = 2;
-            
 
     // ///////////////////////////////////////////
     // INIT
@@ -137,7 +139,7 @@ public class MainActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         activity = this;
-        
+
         super.onCreate(savedInstanceState);
 
         // Loading progress
@@ -335,17 +337,24 @@ public class MainActivity extends Activity
                 }
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
 
-                MessengerManager.showLongToast(this, getString(R.string.error_general));
+                String errorMessage = getString(R.string.error_general);
+                if (e instanceof AlfrescoAppException && ((AlfrescoAppException) e).isDisplayMessage())
+                {
+                    errorMessage = e.getMessage();
+                }
+
+                MessengerManager.showLongToast(this, errorMessage);
 
                 CloudExceptionUtils.handleCloudException(this, e, false);
 
                 return;
             }
-            
+
             // Intent for Display Dialog
             if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
             {
-                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(), SimpleAlertDialogFragment.TAG);
+                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(),
+                        SimpleAlertDialogFragment.TAG);
                 return;
             }
 
@@ -657,20 +666,23 @@ public class MainActivity extends Activity
         doMainMenuAction(v.getId());
     }
 
-    public void setSessionState(int state){
+    public void setSessionState(int state)
+    {
         sessionState = state;
     }
-    
+
     private boolean checkSession(int actionMainMenuId)
     {
-        if (sessionState == SESSION_UNAUTHORIZED){
+        if (sessionState == SESSION_UNAUTHORIZED)
+        {
             Bundle b = new Bundle();
             b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
             b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
             b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
             ActionManager.actionDisplayDialog(this, b);
             return false;
-        } else  if (!hasNetwork())
+        }
+        else if (!hasNetwork())
         {
             return false;
         }
@@ -793,11 +805,13 @@ public class MainActivity extends Activity
         if (getFragment(AboutFragment.TAG) != null)
         {
             getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        } else {
+        }
+        else
+        {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
         }
-        //DisplayUtils.switchSingleOrTwo(this, false);
+        // DisplayUtils.switchSingleOrTwo(this, false);
     }
 
     public void displayMainMenu()

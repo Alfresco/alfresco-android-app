@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
@@ -149,7 +150,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 iv.setImageResource(iconId);
             }
-            
+
             iv.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -292,7 +293,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             getActivity().setTitle(R.string.details);
             getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        } else {
+        }
+        else
+        {
             getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         super.onStart();
@@ -443,8 +446,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.save_back);
-                    builder.setMessage(node.getName() + " "
-                            + getResources().getString(R.string.save_back_description));
+                    builder.setMessage(node.getName() + " " + getResources().getString(R.string.save_back_description));
                     builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)
@@ -471,11 +473,24 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             case PublicIntent.REQUESTCODE_FILEPICKER:
                 if (data != null && data.getData() != null)
                 {
-                    File f = new File(ActionManager.getPath(getActivity(), data.getData()));
-                    UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
-                    up.setOnUpdateListener(listener);
-                    getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                    getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
+                    String tmpPath = ActionManager.getPath(getActivity(), data.getData());
+                    if (tmpPath != null)
+                    {
+                        File f = new File(ActionManager.getPath(getActivity(), data.getData()));
+                        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
+                                (Document) node, f);
+                        up.setOnUpdateListener(listener);
+                        getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+                        getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
+                    }
+                    else
+                    {
+                        // Error case : Unable to find the file path associated
+                        // to user pick.
+                        // Sample : Picasa image case
+                        ActionManager.actionDisplayError(DetailsFragment.this, new AlfrescoAppException(
+                                getString(R.string.error_unknown_filepath), true));
+                    }
                 }
                 break;
             default:
@@ -624,8 +639,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                    R.string.edit);
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -653,8 +667,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS,
-                    R.string.tags);
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TAGS, Menu.FIRST + MenuActionItem.MENU_TAGS, R.string.tags);
             mi.setIcon(R.drawable.mime_tags);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
