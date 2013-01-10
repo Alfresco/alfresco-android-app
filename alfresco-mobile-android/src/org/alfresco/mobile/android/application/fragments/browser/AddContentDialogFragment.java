@@ -24,12 +24,16 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -114,8 +118,14 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         @Override
         public void afterContentCreation(Node arg0)
         {
-            // TODO Auto-generated method stub
+            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+            
+            MessengerManager.showLongToast(getActivity(), getString(R.string.upload_complete) );
 
+            // Refresh the main interface for newly uploaded file
+            ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()))).refresh();
+            
+            ProgressNotification.updateProgress (f.getFile().getName(), -1);
         }
 
         @Override
