@@ -541,11 +541,18 @@ public class MainActivity extends Activity
     {
         // TODO Remove this indication ?
         MessengerManager.showToast(this, getString(R.string.account_loading) + account.getDescription());
-        setProgressBarIndeterminateVisibility(true);
         SessionUtils.setsession(this, null);
         SessionUtils.setAccount(this, account);
-        AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
-        getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+        if (account.getActivation() != null)
+        {
+            MessengerManager.showLongToast(this, getString(R.string.account_not_activated));
+        }
+        else
+        {
+            setProgressBarIndeterminateVisibility(true);
+            AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
+            getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+        }
     }
 
     // ///////////////////////////////////////////
@@ -689,7 +696,6 @@ public class MainActivity extends Activity
         else if (SessionUtils.getAccount(this) != null && SessionUtils.getAccount(this).getActivation() != null)
         {
             MessengerManager.showToast(this, R.string.account_not_activated);
-            fragmentQueue = actionMainMenuId;
             return false;
         }
         else if (SessionUtils.getSession(this) == null)
