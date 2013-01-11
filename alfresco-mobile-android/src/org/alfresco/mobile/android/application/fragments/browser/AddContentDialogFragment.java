@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.ui.documentfolder.actions.CreateDocumentDialo
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -86,7 +87,8 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
 
     OnNodeCreateListener nodeCreateListener = new OnNodeCreateListener()
     {
-
+        Folder parentFolder=null;
+        
         @Override
         public void beforeContentCreation(Folder parentFolder, String name, Map<String, Serializable> props,
                 ContentFile contentFile)
@@ -109,23 +111,46 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
                 progressBundle.putInt("dataSize", (int) f.getFile().length());
                 progressBundle.putInt("dataIncrement", (int) (f.getFile().length() / 10));
 
-                ProgressNotification
-                        .createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
+                ProgressNotification.createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
+                
+                this.parentFolder = parentFolder;
             }
-            getDialog().dismiss();
         }
 
         @Override
-        public void afterContentCreation(Node arg0)
+        public void afterContentCreation(Node node)
         {
-            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            
-            MessengerManager.showLongToast(getActivity(), getString(R.string.upload_complete) );
-
-            // Refresh the main interface for newly uploaded file
-            ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()))).refresh();
-            
-            ProgressNotification.updateProgress (f.getFile().getName(), -1);
+            Bundle args = getArguments();
+            if (args != null)
+            {
+                //Ensure UI is updated with status.
+                MessengerManager.showLongToast(getActivity(), getString(R.string.upload_complete) );
+                ContentFile f = (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE);
+                if (f != null)
+                {
+                   ProgressNotification.updateProgress (f.getFile().getName(), -1);
+                }  
+                   
+                //If we can/need to refresh the panels, do that now...
+                Boolean needRefresh = true;
+                Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
+                if (lf != null  &&  lf.getTag().compareTo(ChildrenBrowserFragment.TAG) == 0)
+                {
+                    Folder parentFolder = ((ChildrenBrowserFragment)lf).getParent();
+                    
+                    needRefresh = !(this.parentFolder != null  &&  parentFolder != this.parentFolder);
+                }
+                    
+                // Refresh the main interface for newly uploaded file
+                if (needRefresh)
+                {
+                    RefreshFragment rf = ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity())));
+                    if (rf != null)
+                    {
+                        rf.refresh();
+                    }
+                }
+            }
         }
 
         @Override
