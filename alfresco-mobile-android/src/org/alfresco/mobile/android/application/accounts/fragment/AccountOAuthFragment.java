@@ -187,7 +187,7 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
             {
-                // waiting.setVisibility(View.VISIBLE);
+                 waiting.setVisibility(View.VISIBLE);
             }
 
         });

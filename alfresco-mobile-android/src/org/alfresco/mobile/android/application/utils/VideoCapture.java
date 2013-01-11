@@ -57,7 +57,7 @@ public class VideoCapture extends DeviceCapture
 
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
                 intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1000000);
+                intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 1000000L);
 
                 parentActivity.startActivityForResult(intent, getRequestCode());
             }
