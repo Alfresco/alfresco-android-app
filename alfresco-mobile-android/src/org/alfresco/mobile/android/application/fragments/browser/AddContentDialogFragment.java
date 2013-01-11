@@ -132,22 +132,17 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
                 }  
                    
                 //If we can/need to refresh the panels, do that now...
-                Boolean needRefresh = true;
                 Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
                 if (lf != null  &&  lf.getTag().compareTo(ChildrenBrowserFragment.TAG) == 0)
                 {
                     Folder parentFolder = ((ChildrenBrowserFragment)lf).getParent();
                     
-                    needRefresh = !(this.parentFolder != null  &&  parentFolder != this.parentFolder);
-                }
-                    
-                // Refresh the main interface for newly uploaded file
-                if (needRefresh)
-                {
-                    RefreshFragment rf = ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity())));
-                    if (rf != null)
+                    if (parentFolder == this.parentFolder)
                     {
-                        rf.refresh();
+                        if (lf != null  &&  lf instanceof RefreshFragment)
+                        {
+                            ((RefreshFragment)lf).refresh();
+                        }
                     }
                 }
             }
