@@ -66,12 +66,12 @@ public class ProgressNotification extends Service
         return null;
     }
 
-    static boolean updateProgress(String name)
+    static public boolean updateProgress(String name)
     {
         return updateProgress(name, null);
     }
 
-    static synchronized boolean updateProgress(String name, Integer incrementBy)
+    static public synchronized boolean updateProgress(String name, Integer incrementBy)
     {
         if (ctxt != null && inProgressObjects != null && parent != null)
         {
@@ -82,67 +82,56 @@ public class ProgressNotification extends Service
 
             if (progressItem != null)
             {
+                Notification tmpNotification = progressItem.notification;
                 Bundle params = progressItem.bundle;
                 int dataSize = params.getInt("dataSize");
 
-                if (incrementBy == null)
+                if (incrementBy != null  &&  incrementBy == -1)
                 {
-                    incrementBy = Integer.valueOf(params.getInt("dataIncrement"));
-                }
-                Log.d(TAG, progressItem.currentProgress + "");
-
-                progressItem.currentProgress += incrementBy;
-                progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize,
-                        progressItem.currentProgress, false);
-
-                Notification tmpNotification = progressItem.notification;
-                if (AndroidVersion.isICSOrAbove())
-                {
-                    tmpNotification = createNotification(ctxt, params, progressItem.currentProgress);
-                }
-
-                notificationManager.notify((int) progressItem.id, tmpNotification);
-
-                if (progressItem.currentProgress >= dataSize - incrementBy - 1)
-                {
-                    // notificationManager.cancel((int) progressItem.id);
-                    inProgressObjects.remove(name);
-
                     progressItem.notification.contentView.setTextViewText(R.id.status_text,
                             ctxt.getText(R.string.download_complete));
-
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize,
-                            false);
-
+                    
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
+                    
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, dataSize);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
-
-                    // Ensure we do this in the UI thread.
-                    handler.post(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            MessengerManager.showLongToast(ctxt, ctxt.getString(R.string.upload_complete));
-
-                            // Refresh the main interface for newly uploaded
-                            // file
-                            ((RefreshFragment) parent.getFragmentManager().findFragmentById(
-                                    DisplayUtils.getLeftFragmentId(parent))).refresh();
-                        }
-                    });
                 }
-
+                else
+                {
+                    if (incrementBy == null)
+                    {
+                        incrementBy = Integer.valueOf(params.getInt("dataIncrement"));
+                    }
+                    Log.d(TAG, progressItem.currentProgress + "");
+    
+                    progressItem.currentProgress += incrementBy;
+                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize,
+                            progressItem.currentProgress, false);
+    
+                    
+                    if (AndroidVersion.isICSOrAbove())
+                    {
+                        tmpNotification = createNotification(ctxt, params, progressItem.currentProgress);
+                    }
+    
+                    notificationManager.notify((int) progressItem.id, tmpNotification);
+    
+                    if (progressItem.currentProgress >= dataSize - incrementBy - 1)
+                    {
+                        //This is now done in the completion code when this method is called with a -1 for datasize.
+                    }
+                }
+                
                 return true;
             }
         }
 
         return false;
     }
-
+    
     @Override
     @Deprecated
     public void onStart(Intent intent, int startId)
