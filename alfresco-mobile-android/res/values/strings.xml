@@ -97,6 +97,7 @@
     <string name="error_general">An error occured during the operation. Please retry again.</string>
     <string name="error_account_url">Url seems to be non valid. Please check your information.</string>
     <string name="error_signup_account_confirmation">Unable to find an account to activate.</string>
+    <string name="error_unknown_filepath">We are unable to find the ressource. It\'s maybe not available in your device.</string>
 
     <!-- DETAILS -->
     <string name="geolocation">Geolocation</string>

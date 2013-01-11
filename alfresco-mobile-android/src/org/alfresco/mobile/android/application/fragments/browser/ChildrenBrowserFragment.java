@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -352,7 +353,19 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         if (requestCode == PublicIntent.REQUESTCODE_FILEPICKER && data != null && data.getData() != null)
         {
-            tmpFile = new File(ActionManager.getPath(getActivity(), data.getData()));
+            String tmpPath = ActionManager.getPath(getActivity(), data.getData());
+            if (tmpPath != null)
+            {
+                tmpFile = new File(tmpPath);
+            }
+            else
+            {
+                // Error case : Unable to find the file path associated to user
+                // pick.
+                // Sample : Picasa image case
+                ActionManager.actionDisplayError(ChildrenBrowserFragment.this, new AlfrescoAppException(
+                        getString(R.string.error_unknown_filepath), true));
+            }
         }
     }
 
@@ -501,8 +514,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (extended && parentFolder != null && permission.canEdit())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                    R.string.edit);
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
