@@ -377,33 +377,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         // Create and show the dialog.
         AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f);
-
-        newFragment.setOnCreateListener(new OnNodeCreateListener()
-        {
-            @Override
-            public void afterContentCreation(Node node)
-            {
-                refresh();
-            }
-
-            @Override
-            public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
-            {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onExeceptionDuringCreation(Exception arg0)
-            {
-                // TODO Auto-generated method stub
-
-            }
-        });
 
         newFragment.show(ft, AddContentDialogFragment.TAG);
         tmpFile = null;
