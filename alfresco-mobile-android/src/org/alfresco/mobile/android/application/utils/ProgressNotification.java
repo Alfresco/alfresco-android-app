@@ -21,8 +21,6 @@ import java.util.HashMap;
 
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.SuppressLint;
@@ -36,28 +34,38 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.widget.RemoteViews;
 
+/**
+ * Responsible to display notification during content upload.
+ */
 @TargetApi(11)
 @SuppressLint("UseSparseArrays")
 public class ProgressNotification extends Service
 {
-    static private Notification notification = null;
+    public static final int FLAG_UPLOAD_COMPLETED = -1;
 
-    static private Activity parent = null;
+    private static final int FLAG_UPLOAD_PROCESSING = -2;
 
-    static private Context ctxt = null;
+    private static Notification notification = null;
 
-    static private Handler handler = null;
+    private static Activity parent = null;
 
-    static private HashMap<String, progressItem> inProgressObjects = null;
+    private static Context ctxt = null;
 
-    static private progressItem newItem = null;
+    private static HashMap<String, progressItem> inProgressObjects = null;
 
-    static private String TAG = "ProgressNotification";
+    private static progressItem newItem = null;
+
+    private static String TAG = "ProgressNotification";
+
+    public static String PARAM_DATA_SIZE = "dataSize";
+
+    public static String PARAM_DATA_INCREMENT = "dataIncrement";
+
+    public static String PARAM_DATA_NAME = "name";
 
     @Override
     public IBinder onBind(Intent intent)
@@ -84,70 +92,89 @@ public class ProgressNotification extends Service
             {
                 Notification tmpNotification = progressItem.notification;
                 Bundle params = progressItem.bundle;
-                int dataSize = params.getInt("dataSize");
+                int dataSize = params.getInt(PARAM_DATA_SIZE);
 
-                if (incrementBy != null  &&  incrementBy == -1)
+                // UPLOAD PROCESS IS FINISHED : Notification Upload Complete<
+                if (incrementBy != null && incrementBy == FLAG_UPLOAD_COMPLETED)
                 {
-                    progressItem.notification.contentView.setTextViewText(R.id.status_text,
-                            ctxt.getText(R.string.download_complete));
-                    
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
-                    
                     if (AndroidVersion.isICSOrAbove())
                     {
-                        tmpNotification = createNotification(ctxt, params, dataSize);
+                        tmpNotification = createNotification(ctxt, params, FLAG_UPLOAD_COMPLETED);
+                    }
+                    else
+                    {
+                        tmpNotification.contentView.setTextViewText(R.id.status_text,
+                                ctxt.getText(R.string.download_complete));
+                        tmpNotification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
+
+                    // Stop Service
+                    inProgressObjects.remove(name);
+
+                    if (inProgressObjects.isEmpty())
+                    {
+                        parent.stopService(new Intent(parent, ProgressNotification.class).putExtras(params));
+                    }
                 }
                 else
                 {
+                    // HTTP Data transfert in progress : Notification in
+                    // progress.
                     if (incrementBy == null)
                     {
-                        incrementBy = Integer.valueOf(params.getInt("dataIncrement"));
+                        incrementBy = Integer.valueOf(params.getInt(PARAM_DATA_INCREMENT));
                     }
                     Log.d(TAG, progressItem.currentProgress + "");
-    
+
                     progressItem.currentProgress += incrementBy;
-                    progressItem.notification.contentView.setProgressBar(R.id.status_progress, dataSize,
-                            progressItem.currentProgress, false);
-    
-                    
+
                     if (AndroidVersion.isICSOrAbove())
                     {
                         tmpNotification = createNotification(ctxt, params, progressItem.currentProgress);
                     }
-    
+                    else
+                    {
+                        tmpNotification.contentView.setProgressBar(R.id.status_progress, dataSize,
+                                progressItem.currentProgress, false);
+                    }
+
                     notificationManager.notify((int) progressItem.id, tmpNotification);
-    
+
                     if (progressItem.currentProgress >= dataSize - incrementBy - 1)
                     {
-                        //This is now done in the completion code when this method is called with a -1 for datasize.
+                        // Data Transfert Complete : Notification processing...
+                        if (AndroidVersion.isICSOrAbove())
+                        {
+                            tmpNotification = createNotification(ctxt, params, FLAG_UPLOAD_PROCESSING);
+                        }
+                        else
+                        {
+                            tmpNotification.contentView.setTextViewText(R.id.status_text,
+                                    ctxt.getText(R.string.action_processing));
+                            tmpNotification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
+                        }
+                        notificationManager.notify((int) progressItem.id, tmpNotification);
                     }
                 }
-                
                 return true;
             }
         }
 
         return false;
     }
-    
+
     @Override
-    @Deprecated
-    public void onStart(Intent intent, int startId)
+    public void onCreate()
     {
-        if (inProgressObjects.size() > 0 && newItem != null)
+        if (inProgressObjects != null && inProgressObjects.size() > 0 && newItem != null)
         {
             ctxt = this;
             parent = MainActivity.activity;
-            handler = new Handler();
 
             MessengerManager.showLongToast(this, getString(R.string.upload_in_progress));
-
-            startForeground((int) newItem.id, newItem.notification);
         }
-
-        super.onStart(intent, startId);
+        super.onCreate();
     }
 
     @TargetApi(16)
@@ -157,21 +184,39 @@ public class ProgressNotification extends Service
 
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
-        builder.setContentTitle(c.getText(R.string.upload_in_progress));
-        builder.setContentText(params.getString("name"));
-        builder.setAutoCancel(false);
-        if (params.getInt("dataSize") == value)
+        builder.setContentText(params.getString(PARAM_DATA_NAME));
+        if (FLAG_UPLOAD_COMPLETED == value)
         {
             builder.setContentTitle(c.getText(R.string.upload_complete));
+            builder.setTicker(c.getString(R.string.upload_complete) + " " + params.getString(PARAM_DATA_NAME));
             builder.setAutoCancel(true);
         }
+        else if (FLAG_UPLOAD_PROCESSING == value)
+        {
+            builder.setContentTitle(c.getText(R.string.action_processing));
+        }
+        else
+        {
+            builder.setContentTitle(c.getText(R.string.upload_in_progress));
+            builder.setTicker(params.getString(PARAM_DATA_NAME));
+        }
         builder.setNumber(0);
-        builder.setTicker(params.getString("name"));
         builder.setSmallIcon(R.drawable.ic_alfresco);
 
         if (AndroidVersion.isICSOrAbove())
         {
-            builder.setProgress(params.getInt("dataSize"), value, false);
+            if (FLAG_UPLOAD_COMPLETED == value)
+            {
+                builder.setProgress(0, 0, false);
+            }
+            else if (FLAG_UPLOAD_PROCESSING == value)
+            {
+                builder.setProgress(0, 0, true);
+            }
+            else
+            {
+                builder.setProgress(params.getInt(PARAM_DATA_SIZE), value, false);
+            }
         }
 
         if (AndroidVersion.isJBOrAbove())
@@ -183,6 +228,8 @@ public class ProgressNotification extends Service
         {
             notification = builder.getNotification();
         }
+
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
         return notification;
     }
@@ -205,24 +252,24 @@ public class ProgressNotification extends Service
 
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
-        builder.setContentTitle(c.getText(R.string.upload) + params.getString("name"));
-        builder.setContentText(params.getString("name"));
+        builder.setContentTitle(c.getString(R.string.upload) + " " + params.getString(PARAM_DATA_NAME));
+        builder.setContentText(params.getString(PARAM_DATA_NAME));
         builder.setNumber(0);
-        builder.setTicker(params.getString("name"));
+        // builder.setTicker(c.getString(R.string.upload) +
+        // params.getString(PARAM_DATA_NAME));
         builder.setSmallIcon(R.drawable.ic_alfresco);
         builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(false);
 
         if (AndroidVersion.isICSOrAbove())
         {
-            builder.setProgress(params.getInt("dataSize"), 0, false);
+            builder.setProgress(params.getInt(PARAM_DATA_SIZE), 0, false);
         }
         else
         {
             RemoteViews remote = new RemoteViews(c.getPackageName(), R.layout.app_download_progress);
             remote.setImageViewResource(R.id.status_icon, R.drawable.ic_alfresco);
-            remote.setTextViewText(R.id.status_text, params.getString("name"));
-            remote.setProgressBar(R.id.status_progress, params.getInt("dataSize"), 0, false);
+            remote.setTextViewText(R.id.status_text, params.getString(PARAM_DATA_NAME));
+            remote.setProgressBar(R.id.status_progress, params.getInt(PARAM_DATA_SIZE), 0, false);
             builder.setContent(remote);
         }
 
@@ -235,10 +282,13 @@ public class ProgressNotification extends Service
         {
             notification = builder.getNotification();
         }
-        // builder.setDeleteIntent(pendingIntent);
+
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        notification.flags |= Notification.FLAG_ONLY_ALERT_ONCE;
 
         newItem = new progressItem(notificationID, notification, params);
-        inProgressObjects.put(params.getString("name"), newItem);
+        inProgressObjects.put(params.getString(PARAM_DATA_NAME), newItem);
 
         ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify((int) notificationID,
                 notification);
