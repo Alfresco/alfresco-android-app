@@ -56,6 +56,7 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -453,9 +454,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         {
                             UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
                                     (Document) node, dlFile);
-                            up.setOnUpdateListener(listener);
-                            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                            getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
+                            up.setOnUpdateListener(updateListener);
+                            if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
+                            {
+                                getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+                            }
+                            else
+                            {
+                                getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
+                            }
                             dialog.dismiss();
                         }
                     });
@@ -479,9 +486,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         File f = new File(ActionManager.getPath(getActivity(), data.getData()));
                         UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
                                 (Document) node, f);
-                        up.setOnUpdateListener(listener);
-                        getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                        getLoaderManager().getLoader(UpdateContentLoader.ID).forceLoad();
+                        up.setOnUpdateListener(updateListener);
+                        if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
+                        {
+                            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+                        }
+                        else
+                        {
+                            getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
+                        }
                     }
                     else
                     {
@@ -498,39 +511,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
     }
 
-    private OnNodeUpdateListener saveBackListener = new OnNodeUpdateListener()
-    {
-        @Override
-        public void afterUpdate(Node node)
-        {
-            ((MainActivity) getActivity()).setCurrentNode(node);
-            ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                    PublicIntent.NODE_TYPE);
-            MessengerManager.showToast(getActivity(),
-                    node.getName() + " " + getResources().getString(R.string.save_back_sucess));
-            refreshThumbnail(node);
-        }
-
-        boolean hasWaiting = false;
-
-        @Override
-        public void beforeUpdate(Node node)
-        {
-            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
-            {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
-            }
-            hasWaiting = true;
-        }
-
-        @Override
-        public void onExeceptionDuringUpdate(Exception e)
-        {
-            ActionManager.actionDisplayError(DetailsFragment.this, e);
-        }
-    };
-
-    private OnNodeUpdateListener listener = new OnNodeUpdateListener()
+    private OnNodeUpdateListener updateListener = new OnNodeUpdateListener()
     {
         public boolean hasWaiting = false;
 
@@ -547,12 +528,23 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         @Override
         public void afterUpdate(Node node)
         {
-            ((MainActivity) getActivity()).setCurrentNode(node);
-            ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                    PublicIntent.NODE_TYPE);
-            MessengerManager.showToast(getActivity(),
-                    node.getName() + " " + getResources().getString(R.string.update_sucess));
-            refreshThumbnail(node);
+
+            DetailsFragment lf = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
+            if (lf != null)
+            {
+                Node n = (Node) lf.getArguments().get(ARGUMENT_NODE);
+                if (n != null
+                        && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
+                                NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
+                {
+                    ((MainActivity) getActivity()).setCurrentNode(node);
+                    ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
+                            PublicIntent.NODE_TYPE);
+                    MessengerManager.showToast(getActivity(),
+                            node.getName() + " " + getResources().getString(R.string.update_sucess));
+                    refreshThumbnail(node);
+                }
+            }
         }
 
         @Override
