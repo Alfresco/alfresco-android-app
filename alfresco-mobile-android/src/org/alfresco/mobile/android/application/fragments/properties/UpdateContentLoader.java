@@ -97,9 +97,18 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 }
                 catch (Exception e)
                 {
+                    Log.e(TAG, Log.getStackTraceString(e));
                     if (idpwc == null)
                     {
-                        idpwc = cmisDoc.checkOut().getId();
+                        try
+                        {
+                            idpwc = cmisDoc.checkOut().getId();
+                        }
+                        catch (Exception ee)
+                        {
+                            Log.e(TAG, Log.getStackTraceString(ee));
+                            throw ee;
+                        }
                     }
                 }
 
@@ -124,14 +133,7 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
                 resultNode = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
-
-                /*
-                 * resultNode =
-                 * session.getServiceRegistry().getDocumentFolderService()
-                 * .updateContent(document, contentFile);
-                 */
             }
-
         }
         catch (Exception e)
         {

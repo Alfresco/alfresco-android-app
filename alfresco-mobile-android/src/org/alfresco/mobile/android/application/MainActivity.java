@@ -406,7 +406,10 @@ public class MainActivity extends Activity
                 }
                 else
                 {
-                    addNavigationFragment((Folder) currentNode);
+                    // Uncomment this part to enable quick access to specific
+                    // folder.
+                    // NB : Issue can occurs with top quick navigation dropdown.
+                    // addNavigationFragment((Folder) currentNode);
                 }
                 return;
             }

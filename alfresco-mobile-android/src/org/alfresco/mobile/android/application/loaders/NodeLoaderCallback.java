@@ -81,9 +81,13 @@ public class NodeLoaderCallback implements LoaderCallbacks<LoaderResult<Node>>
                 });
 
         if (session != null)
+        {
             return new NodeLoader(activity, session, url);
+        }
         else
+        {
             return new NodeLoader(activity, accounts, url);
+        }
     }
 
     @Override
