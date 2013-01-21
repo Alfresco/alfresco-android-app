@@ -229,7 +229,7 @@
     <string name="full_attachment">Attachment</string>
     <string name="link_to_repo">Clickable link</string>
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
-    <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/alfresco.com/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
+    <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
     <!-- Delete -->
     <string name="delete_description">Are you sure you want to delete this item :</string>

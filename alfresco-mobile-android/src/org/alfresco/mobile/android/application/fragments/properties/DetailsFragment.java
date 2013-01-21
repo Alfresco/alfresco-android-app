@@ -382,7 +382,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                                 }
                                 String siteName = sub1.substring(0, idx);
                                 String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                                String fullPath = String.format(getString(R.string.cloud_share_url), siteName, nodeID);
+                                String fullPath = String.format(getString(R.string.cloud_share_url), ((CloudSession)alfSession).getNetwork().getIdentifier(), siteName, nodeID);
                                 ActionManager.actionShareLink(DetailsFragment.this, fullPath);
                             }
                             else
