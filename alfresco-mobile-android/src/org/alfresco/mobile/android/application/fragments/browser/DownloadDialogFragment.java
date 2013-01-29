@@ -25,22 +25,28 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskLis
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 public class DownloadDialogFragment extends DialogFragment implements DownloadTaskListener
 {
@@ -56,7 +62,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final String TAG = "DownloadDialogFragment";
 
-    private ProgressDialog dialog;
+    private Dialog dialog;
 
     private Document doc;
 
@@ -96,21 +102,40 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             action = getArguments().getInt(ARGUMENT_ACTION);
         }
 
-        dialog = new ProgressDialog(getActivity());
-        dialog.setTitle(getString(R.string.download) + " : " + doc.getName());
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        dialog.setMessage(getString(R.string.download_progress));
-        dialog.setIndeterminate(false);
-        dialog.setCancelable(true);
-        dialog.setProgress(0);
-        dialog.setMax(100);
-
+        ProgressDialog progress = new ProgressDialog(getActivity());
+        progress.setTitle(getString(R.string.download) + " : " + doc.getName());
+        progress.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        progress.setMessage(getString(R.string.download_progress));
+        progress.setIndeterminate(false);
+        progress.setCancelable(true);
+        progress.setProgress(0);
+        progress.setMax(100);
+        dialog = progress;
+        
         if (dlt == null)
         {
-            totalSize = doc.getContentStreamLength();
-            dlt = new DownloadTask(SessionUtils.getSession(getActivity()), doc, getDownloadFile());
-            dlt.setDl(this);
-            dlt.execute();
+            File dlFile = getDownloadFile();
+            
+            if (dlFile != null)
+            {
+                totalSize = doc.getContentStreamLength();
+                dlt = new DownloadTask(SessionUtils.getSession(getActivity()), doc, dlFile);
+                dlt.setDl(this);
+                dlt.execute();
+            }
+            else
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setTitle(R.string.app_name);
+                builder.setMessage(R.string.sdinaccessible);
+                builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
+                {
+                    public void onClick(DialogInterface dialog, int item)
+                    {
+                    }
+                });
+                dialog = builder.create();
+            }
         }
         else
         {
@@ -124,7 +149,11 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     {
         if (SessionUtils.getAccount(getActivity()) == null) { return null; }
         File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
-        IOUtils.ensureOrCreatePathAndFile(tmpFile);
+        if (tmpFile != null)
+        {
+            IOUtils.ensureOrCreatePathAndFile(tmpFile);
+        }
+        
         return tmpFile;
     }
 
@@ -137,7 +166,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     public void onProgressUpdate(Integer... values)
     {
         int percent = Math.round(((float) values[0] / totalSize) * 100);
-        dialog.setProgress(percent);
+        ((ProgressDialog)dialog).setProgress(percent);
     }
 
     @Override

@@ -29,11 +29,11 @@ import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragme
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
 import android.content.ActivityNotFoundException;
@@ -41,6 +41,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 {
@@ -92,12 +93,28 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         if (b == null)
         {
             Account acc = ((MainActivity) getActivity()).getAccount();
-            b = createBundleArgs(StorageManager.getDownloadFolder(getActivity(), acc.getUrl(), acc.getUsername()));
+            if (acc != null)
+            {
+                File folder = StorageManager.getDownloadFolder(getActivity(), acc.getUrl(), acc.getUsername());
+                if (folder != null)
+                {
+                    b = createBundleArgs(folder);
+                    
+                    getLoaderManager().initLoader(LocalFileExplorerLoader.ID, b, this);
+                    getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
+                    
+                    return;
+                }
+                else
+                {
+                    MessengerManager.showLongToast(getActivity(), getString(R.string.sdinaccessible));
+                }
+            }
         }
-
-        getLoaderManager().initLoader(LocalFileExplorerLoader.ID, b, this);
-        getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
-
+        else
+            return; //Already have a bundle.
+        
+        MessengerManager.showLongToast(getActivity(), getString(R.string.loginfirst));
     }
 
     @Override
