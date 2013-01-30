@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

@@ -26,6 +26,7 @@ import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -35,6 +36,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 public class AudioCapture extends DeviceCapture
 {
@@ -84,20 +86,28 @@ public class AudioCapture extends DeviceCapture
 
         try
         {
-            String filePath = getAudioFilePathFromUri(savedUri);
-            String fileType = getAudioFileTypeFromUri(savedUri);
-            String newFilePath = Environment.getExternalStorageDirectory().getPath() + "/" + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
-
-            copyFile(filePath, newFilePath);
-
-            parentActivity.getContentResolver().delete(savedUri, null, null);
-            (new File(filePath)).delete();
-
-            payload = new File(newFilePath);
-            
-            if (!fileType.isEmpty())
+            File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());          
+            if (folder != null)
             {
-                MIMEType = fileType;
+                String filePath = getAudioFilePathFromUri(savedUri);
+                String fileType = getAudioFileTypeFromUri(savedUri);
+                String newFilePath = folder.getPath() + "/" + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
+    
+                copyFile(filePath, newFilePath);
+    
+                parentActivity.getContentResolver().delete(savedUri, null, null);
+                (new File(filePath)).delete();
+    
+                payload = new File(newFilePath);
+                
+                if (!fileType.isEmpty())
+                {
+                    MIMEType = fileType;
+                }
+            }
+            else
+            {
+                MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
             }
         }
         catch (IOException e)

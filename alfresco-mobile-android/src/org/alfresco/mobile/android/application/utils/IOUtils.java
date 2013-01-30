@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.alfresco.mobile.android.application.manager.StorageManager;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -34,10 +36,10 @@ public class IOUtils
     {
         String newFilename = "";
 
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED))
+        File folder = StorageManager.getAssetFolder(c, SessionUtils.getAccount(c).getUrl(), SessionUtils.getAccount(c).getUsername());
+        if (folder != null)
         {
-            newFilename = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-                    + File.separator + assetFilename;
+            newFilename = folder.getPath() + File.separator + assetFilename;
             BufferedInputStream bis = null;
             BufferedOutputStream bos = null;
 

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="Preferences">
+
+  <PreferenceCategory
+     android:title="Settings">
+
+     <CheckBoxPreference
+       android:key="allowuntrusted"
+       android:title="Allow untrusted servers"
+       android:summary="Allow connection to servers with untrusted SSL certificates"
+       android:defaultValue="false"
+       />
+    <CheckBoxPreference
+       android:key="privatefolders"
+       android:title="Encrypt documents"
+       android:summary="Encrypt all downloaded content (corporate customers)"
+       android:defaultValue="false"
+       />
+    
+	<EditTextPreference
+		android:key="pin"
+		android:inputType="numberPassword"
+		android:title="PIN number"
+		android:summary="PIN number for opening the Alfresco app (corporate customers)" />
+    
+  </PreferenceCategory>
+
+   <PreferenceCategory
+     android:title="Links">
+    
+  <Preference
+    android:key="web"
+    android:title="Alfresco on the web"
+    android:summary="Open Alfresco web page">
+
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:data="http://www.alfresco.com/" />
+
+  </Preference>
+  
+  <Preference
+    android:key="rate"
+    android:title="Rate our app"
+    android:summary="Rate this app on Google Play">
+
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:data="market://details?id=org.alfresco.mobile.android.application" />
+
+  </Preference>
+  
+  <Preference
+    android:key="like"
+    android:title="Like on Facebook"
+    android:summary="Like Alfresco on Facebook">
+
+    <intent
+      android:action="android.intent.action.VIEW"
+      android:data="http://www.alfresco.com/socialmedia/android" />
+
+  </Preference>
+  
+ </PreferenceCategory>
+   
+</PreferenceScreen>

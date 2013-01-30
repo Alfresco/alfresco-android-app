@@ -20,6 +20,9 @@ package org.alfresco.mobile.android.application.utils;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 public class PhotoCapture extends DeviceCapture
 {
@@ -53,11 +57,19 @@ public class PhotoCapture extends DeviceCapture
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                payload = new File(Environment.getExternalStorageDirectory(), createFilename("", "jpg"));
-
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
-
-                parentActivity.startActivityForResult(intent, getRequestCode());
+                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
+                if (folder != null)
+                {
+                    payload = new File(folder.getPath(), createFilename("", "jpg"));
+    
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
+    
+                    parentActivity.startActivityForResult(intent, getRequestCode());
+                }
+                else
+                {
+                    MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+                }
             }
             catch (Exception e)
             {
