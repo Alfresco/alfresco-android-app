@@ -18,9 +18,9 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="alfrescotheme" parent="android:Theme.Holo.Light">
+   <style name="alfrescotheme" parent="android:Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
-    </style>
+    </style> 
 
     <!-- =============================================================== -->
     <!-- COLOR -->
