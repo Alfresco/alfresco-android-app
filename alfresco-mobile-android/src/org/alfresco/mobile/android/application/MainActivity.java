@@ -73,7 +73,8 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -92,6 +93,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
 
 @TargetApi(11)
 public class MainActivity extends Activity
@@ -639,10 +641,26 @@ public class MainActivity extends Activity
                 FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_download:
-                if (currentAccount == null) { return; }
-                addLocalFileNavigationFragment(StorageManager.getDownloadFolder(this, currentAccount.getUrl(),
-                        currentAccount.getUsername()));
+                if (currentAccount == null)
+                {
+                    MessengerManager.showLongToast(this, getString(R.string.loginfirst));
+                }
+                else
+                {
+                    File folder = StorageManager.getDownloadFolder(this, currentAccount.getUrl(), currentAccount.getUsername());
+                    if (folder != null)
+                    {
+                        addLocalFileNavigationFragment(folder);
+                    }
+                    else
+                    {
+                        MessengerManager.showLongToast(this, getString(R.string.sdinaccessible));
+                    }
+                }
                 break;
+            case R.id.menu_prefs:
+                startActivity(new Intent(this, Prefs.class));
+                break;                
             case R.id.menu_about:
                 displayAbout();
                 break;

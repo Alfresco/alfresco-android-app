@@ -20,6 +20,9 @@ package org.alfresco.mobile.android.application.utils;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -27,6 +30,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.widget.Toast;
 
 public class VideoCapture extends DeviceCapture
 {
@@ -51,16 +55,24 @@ public class VideoCapture extends DeviceCapture
         {
             try
             {
-                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
-                payload = new File(Environment.getExternalStorageDirectory(), createFilename("", "mp4"));
-
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                //Represents a limit of 300Mb
-                intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 314572800L);
-
-                parentActivity.startActivityForResult(intent, getRequestCode());
+                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());          
+                if (folder != null)
+                {
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+    
+                    payload = new File(folder.getPath(), createFilename("", "mp4"));
+    
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+                    //Represents a limit of 300Mb
+                    intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 314572800L);
+    
+                    parentActivity.startActivityForResult(intent, getRequestCode());
+                }
+                else
+                {
+                    MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+                }
             }
             catch (Exception e)
             {
