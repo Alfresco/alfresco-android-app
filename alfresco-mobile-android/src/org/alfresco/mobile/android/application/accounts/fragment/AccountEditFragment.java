@@ -152,7 +152,7 @@ public class AccountEditFragment extends DialogFragment
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_port };
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
         EditText form_value = null;
         for (int i = 0; i < ids.length; i++)
         {
@@ -208,7 +208,14 @@ public class AccountEditFragment extends DialogFragment
         description = form_value.getText().toString();
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_password);
-        password = form_value.getText().toString();
+        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
+            password = form_value.getText().toString();
+        }
+        else
+        {
+            return false;
+        }
 
         form_value = (EditText) findViewByIdInternal(R.id.repository_hostname);
         if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
