@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -58,6 +59,7 @@ import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback
@@ -254,9 +256,11 @@ public class NodeActions implements ActionMode.Callback
                 .getDocumentFolderService()).getDownloadUrl((Document) node));
 
         File dlFile = getDownloadFile(activity, node);
-        if (dlFile == null) { return; }
-
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).mkdirs();
+        if (dlFile == null)
+        {
+            MessengerManager.showLongToast(activity, activity.getString(R.string.sdinaccessible));
+            return; 
+        }
 
         DownloadManager manager = (DownloadManager) activity.getSystemService(Activity.DOWNLOAD_SERVICE);
 
@@ -296,10 +300,13 @@ public class NodeActions implements ActionMode.Callback
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl() + "",
-                    SessionUtils.getAccount(activity).getUsername());
-            return new File(folder, node.getName());
+            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl(), SessionUtils.getAccount(activity).getUsername());
+            if (folder != null)
+            {
+                return new File(folder, node.getName());
+            }
         }
+        
         return null;
     }
 

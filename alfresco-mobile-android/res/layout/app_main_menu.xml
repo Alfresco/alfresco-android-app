@@ -149,6 +149,18 @@
                 android:visibility="visible" />
 
             <Button
+                android:id="@+id/menu_prefs"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@drawable/btn_default_holo_light"
+                android:drawableRight="@drawable/ic_settings_light"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:text="@string/menu_prefs"
+                android:textColor="@android:color/white" />
+
+            <Button
                 android:id="@+id/menu_help"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -171,6 +183,7 @@
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_about"
                 android:textColor="@android:color/white" />
+
         </LinearLayout>
     </RelativeLayout>
 

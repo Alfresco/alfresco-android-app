@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
+import java.io.File;
 import java.net.UnknownHostException;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
@@ -38,6 +39,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -46,8 +48,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
+
 
 @TargetApi(11)
 public class AccountCreationLoaderCallback extends AbstractSessionCallback
@@ -118,6 +123,8 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     @Override
     public void onLoadFinished(Loader<LoaderResult<AlfrescoSession>> loader, LoaderResult<AlfrescoSession> results)
     {
+        int type;
+        
         AlfrescoSession session = results.getData();
         if (session != null)
         {
@@ -126,12 +133,13 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             long id = -1L;
             if (data == null)
             {
-                int type = Integer.valueOf(Account.TYPE_ALFRESCO_CMIS);
+                //Non OAuth login
+                
+                type = Integer.valueOf(Account.TYPE_ALFRESCO_CMIS);
                 if (session instanceof CloudSession
                         && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
                 {
-                    type = (data != null) ? Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH) : Integer
-                            .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
+                    type = Integer.valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
                 else
                 {
@@ -147,13 +155,15 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             }
             else
             {
+                //OAuth login
+                
                 Person user = null;
                 if (loader instanceof CloudSessionLoader)
                 {
                     user = ((CloudSessionLoader) loader).getUser();
                 }
 
-                int type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
+                type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
                 if (session instanceof CloudSession
                         && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
                 {
@@ -165,6 +175,24 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                         .getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type,
                         ((CloudSession) session).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
                                 .getOAuthData().getRefreshToken());
+            }
+
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+            if (type == Account.TYPE_ALFRESCO_CLOUD)
+            {
+                if (((CloudSession)session).getNetwork().isPaidNetwork())
+                {
+                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                }
+            }
+            else
+            {
+                String edition = session.getRepositoryInfo().getEdition();
+                
+                if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE)  ||  edition.equals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN) )
+                {
+                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                }
             }
 
             SessionUtils.setAccount(activity, serverDao.findById(id));
