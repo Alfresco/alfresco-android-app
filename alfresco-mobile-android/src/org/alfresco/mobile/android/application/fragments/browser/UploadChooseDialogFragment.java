@@ -37,22 +37,39 @@ import android.os.Bundle;
 public class UploadChooseDialogFragment extends DialogFragment
 {
     public static final String TAG = "UploadChooseDialogFragment";
+    
+    private Account currentAccount;
+
+    private String fragmentTag;
+
 
     public static UploadChooseDialogFragment newInstance(Account currentAccount)
     {
         UploadChooseDialogFragment fragment = new UploadChooseDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable("account", currentAccount);
+        args.putSerializable("fragmentTag", ChildrenBrowserFragment.TAG);
+        fragment.setArguments(args);
+        return fragment;
+    }
+    
+    public static UploadChooseDialogFragment newInstance(Account currentAccount, String fragmentTag)
+    {
+        UploadChooseDialogFragment fragment = new UploadChooseDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("account", currentAccount);
+        args.putSerializable("fragmentTag", fragmentTag);
         fragment.setArguments(args);
         return fragment;
     }
 
-    private Account currentAccount;
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
 
         currentAccount = (Account) getArguments().get("account");
+        fragmentTag = (String) getArguments().get("fragmentTag");
+
 
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.upload_from)
                 .setPositiveButton(R.string.upload_download_folder, new DialogInterface.OnClickListener()
@@ -63,7 +80,7 @@ public class UploadChooseDialogFragment extends DialogFragment
                                 currentAccount.getUsername());
 
                         BaseFragment frag = LocalFileBrowserFragment.newInstance(f,
-                                LocalFileBrowserFragment.MODE_PICK_FILE);
+                                LocalFileBrowserFragment.MODE_PICK_FILE, fragmentTag);
                         frag.setSession(SessionUtils.getSession(getActivity()));
                         frag.show(getFragmentManager(), LocalFileBrowserFragment.TAG);
                     }
@@ -72,7 +89,7 @@ public class UploadChooseDialogFragment extends DialogFragment
                     public void onClick(DialogInterface dialog, int whichButton)
                     {
                         ActionManager.actionPickFile(getFragmentManager()
-                                .findFragmentByTag(ChildrenBrowserFragment.TAG),
+                                .findFragmentByTag(fragmentTag),
                                 IntentIntegrator.REQUESTCODE_FILEPICKER);
                     }
                 }).create();

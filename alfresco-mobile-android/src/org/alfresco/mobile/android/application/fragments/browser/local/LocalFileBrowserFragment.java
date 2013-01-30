@@ -20,31 +20,42 @@ package org.alfresco.mobile.android.application.fragments.browser.local;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.manager.StorageManager;
-import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
 import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ListView;
 
 public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 {
-    public static final String TAG = "LocalFileNavigationFragment";
+    public static final String TAG = "LocalFileBrowserFragment";
+
+    public static final String FRAGMENT_TAG = "fragmentTag";
 
     public LocalFileBrowserFragment()
     {
@@ -57,20 +68,26 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 
     public static LocalFileBrowserFragment newInstance(File folder)
     {
-        return newInstance(folder, null, MODE_LISTING);
+        return newInstance(folder, null, MODE_LISTING, null);
     }
 
     public static LocalFileBrowserFragment newInstance(File folder, int displayMode)
     {
-        return newInstance(folder, null, displayMode);
+        return newInstance(folder, null, displayMode, null);
+    }
+
+    public static BaseFragment newInstance(File folder, int displayMode, String fragmentTag)
+    {
+        return newInstance(folder, null, displayMode, fragmentTag);
     }
 
     public static LocalFileBrowserFragment newInstance(String folderPath)
     {
-        return newInstance(null, folderPath, MODE_LISTING);
+        return newInstance(null, folderPath, MODE_LISTING, null);
     }
 
-    public static LocalFileBrowserFragment newInstance(File parentFolder, String pathFolder, int displayMode)
+    public static LocalFileBrowserFragment newInstance(File parentFolder, String pathFolder, int displayMode,
+            String fragmentTag)
     {
         LocalFileBrowserFragment bf = new LocalFileBrowserFragment();
         ListingContext lc = new ListingContext();
@@ -79,6 +96,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         Bundle b = new Bundle(createBundleArgs(lc, LOAD_AUTO));
         b.putAll(createBundleArgs(parentFolder, pathFolder));
         b.putInt(MODE, displayMode);
+        b.putString(FRAGMENT_TAG, fragmentTag);
         bf.setArguments(b);
         return bf;
     }
@@ -144,10 +162,19 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         }
         else if (getMode() == MODE_PICK_FILE)
         {
-            if (file.isFile() && getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG) != null)
+            if (file.isFile() && getArguments().getString(FRAGMENT_TAG) != null)
             {
-                ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG))
-                        .createFile(file);
+                String fragmentTag = getArguments().getString(FRAGMENT_TAG);
+
+                if (ChildrenBrowserFragment.TAG.equals(fragmentTag))
+                {
+                    ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG))
+                            .createFile(file);
+                }
+                else if (DetailsFragment.TAG.equals(fragmentTag))
+                {
+                    ((DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG)).update(file);
+                }
             }
         }
 
@@ -158,7 +185,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // MENU
+    // ACTION MODE
     // //////////////////////////////////////////////////////////////////////
     private FileActions nActions;
 
@@ -185,6 +212,31 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         return true;
     };
 
+    // //////////////////////////////////////////////////////////////////////
+    // MENU
+    // //////////////////////////////////////////////////////////////////////
+    public void getMenu(Menu menu)
+    {
+        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
+                + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
+        mi.setIcon(android.R.drawable.ic_menu_add);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (requestCode)
+        {
+            case PublicIntent.REQUESTCODE_CREATE:
+                refresh();
+                break;
+            default:
+                break;
+        }
+    }
+    
     @Override
     public void onStop()
     {
@@ -194,4 +246,5 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         }
         super.onStop();
     }
+
 }

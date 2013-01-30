@@ -42,8 +42,8 @@
                 <LinearLayout
                     android:layout_width="@dimen/properties_details_icon_size"
                     android:layout_height="@dimen/properties_details_icon_size"
-                    android:background="@color/grey_lighter"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:gravity="center" >
 
                     <ImageView
                         android:id="@+id/icon"
@@ -53,7 +53,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="@dimen/properties_padding"
                         android:contentDescription="@string/thumbnail"
-                        android:scaleType="center"
+                        android:scaleType="centerInside"
                         android:src="@drawable/mime_file" />
                 </LinearLayout>
 
