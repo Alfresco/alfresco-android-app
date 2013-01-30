@@ -74,6 +74,7 @@ import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;

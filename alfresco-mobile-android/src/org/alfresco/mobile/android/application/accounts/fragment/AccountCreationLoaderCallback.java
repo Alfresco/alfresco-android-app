@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -51,6 +52,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
 
 @TargetApi(11)
 public class AccountCreationLoaderCallback extends AbstractSessionCallback
@@ -187,7 +189,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             {
                 String edition = session.getRepositoryInfo().getEdition();
                 
-                if (edition.compareToIgnoreCase("enterprise") == 0  ||  edition.compareToIgnoreCase("unknown") == 0)
+                if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE)  ||  edition.equals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN) )
                 {
                     prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
                 }

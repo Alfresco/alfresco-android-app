@@ -30,6 +30,7 @@
      android:title="Links">
     
   <Preference
+    android:key="web"
     android:title="Alfresco on the web"
     android:summary="Open Alfresco web page">
 
@@ -40,6 +41,7 @@
   </Preference>
   
   <Preference
+    android:key="rate"
     android:title="Rate our app"
     android:summary="Rate this app on Google Play">
 
@@ -50,6 +52,7 @@
   </Preference>
   
   <Preference
+    android:key="like"
     android:title="Like on Facebook"
     android:summary="Like Alfresco on Facebook">
 

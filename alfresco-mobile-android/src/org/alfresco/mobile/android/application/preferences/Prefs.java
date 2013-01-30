@@ -1,6 +1,9 @@
-package org.alfresco.mobile.android.application;
+package org.alfresco.mobile.android.application.preferences;
 
 import java.io.File;
+
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.R.layout;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,11 +22,27 @@ public class Prefs extends PreferenceActivity
         
         addPreferencesFromResource(R.layout.prefs);
         
+        PreferenceScreen preferenceScreen = getPreferenceScreen();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
+        Preference pref = preferenceScreen.findPreference("allowuntrusted");
+        pref.setSelectable(false);
+        pref.setEnabled(false);              
+        
+        pref = preferenceScreen.findPreference("web");
+        pref.setSelectable(false);
+        pref.setEnabled(false);   
+        
+        pref = preferenceScreen.findPreference("rate");
+        pref.setSelectable(false);
+        pref.setEnabled(false);   
+        
+        pref = preferenceScreen.findPreference("like");
+        pref.setSelectable(false);
+        pref.setEnabled(false);      
+        
         if (isDeviceRooted()  ||  prefs.getBoolean("HasAccessedPaidServices", false) == false)
         {   
-            PreferenceScreen preferenceScreen = getPreferenceScreen();
-            
             Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
             if (privateFoldersPref != null)
             {

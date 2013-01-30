@@ -147,7 +147,7 @@
 
         <service android:name=".utils.ProgressNotification" />
         
-        <activity android:name=".Prefs" android:label="@string/app_name"/>
+        <activity android:name=".preferences.Prefs" android:label="@string/app_name"/>
         
     </application>
 
