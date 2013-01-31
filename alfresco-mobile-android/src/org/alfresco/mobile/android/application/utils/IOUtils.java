@@ -142,30 +142,33 @@ public class IOUtils
                 File sourceFile = file[i];
                 File destFile = new File(destFolder + File.separator + file[i].getName());
                 
-                if (sourceFile.isFile())
+                if (!sourceFile.isHidden())
                 {
-                    if (additionalFolder != null  &&  additionalFolder.length() > 0)
+                    if (sourceFile.isFile())
                     {
-                        destFile = createFolder (destFile.getParentFile(), additionalFolder);
-                        destFile = new File(destFile, file[i].getName());
+                        if (additionalFolder != null  &&  additionalFolder.length() > 0)
+                        {
+                            destFile = createFolder (destFile.getParentFile(), additionalFolder);
+                            destFile = new File(destFile, file[i].getName());
+                        }
+                        
+                        result = copyFile (sourceFile.getPath(), destFile.getPath() );
+                    }
+                    else
+                    {
+                        if (sourceFile.isDirectory()  &&  recursive  &&
+                           !sourceFile.getName().equals(".")  &&  !sourceFile.getName().equals("..") )
+                        {
+                            result = transferFilesUnderNewStructure (sourceFile.getPath(), destFile.getPath(), additionalFolder, move, recursive);
+                        }
                     }
                     
-                    result = copyFile (sourceFile.getPath(), destFile.getPath() );
+                    if (!result)
+                        break;
+                    
+                    if (move)
+                        sourceFile.delete();
                 }
-                else
-                {
-                    if (sourceFile.isDirectory()  &&  recursive  &&
-                       !sourceFile.getName().equals(".")  &&  !sourceFile.getName().equals("..") )
-                    {
-                        result = transferFilesUnderNewStructure (sourceFile.getPath(), destFile.getPath(), additionalFolder, move, recursive);
-                    }
-                }
-                
-                if (!result)
-                    break;
-                
-                if (move)
-                    sourceFile.delete();
             }
             
             return result;

@@ -87,8 +87,10 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -220,12 +222,23 @@ public class MainActivity extends Activity
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
         
-        //Transfer downloads for this account to new folder structure if they haven't been already.
-        File oldDownloads = StorageManager.getOldDownloadFolder (this);
-        File newDownloads = StorageManager.getPrivateFolder (this, "", "", "");
-        if (oldDownloads != null  &&  newDownloads != null  &&  IOUtils.isFolderEmpty(oldDownloads) == false)
+        //Transfer downloads to new folder structure if they haven't been already.
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!prefs.getBoolean("filesmigrated", false))
         {
-            IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.dlDir, true, true);
+            File oldDownloads = StorageManager.getOldDownloadFolder (this);
+            File newDownloads = StorageManager.getPrivateFolder (this, "", "", "");
+            
+            if (IOUtils.isFolderEmpty(oldDownloads) == false)
+            {
+                if (oldDownloads != null  &&  newDownloads != null)
+                {
+                    IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.dlDir, true, true);
+                    prefs.edit().putBoolean("filesmigrated", true).commit();
+                }
+            }
+            else
+                prefs.edit().putBoolean("filesmigrated", true).commit();
         }
     }
 
