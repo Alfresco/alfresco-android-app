@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -44,12 +44,12 @@ import org.alfresco.mobile.android.application.fragments.versions.VersionFragmen
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -137,66 +137,60 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
 
         // Preview
-        ImageView iv = (ImageView) v.findViewById(R.id.icon);
-        int iconId = R.drawable.mime_folder;
-        if (node.isDocument())
+        if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            iconId = MimeTypeManager.getIcon(node.getName());
-            if (((Document) node).isLatestVersion())
+            ImageView iv = (ImageView) v.findViewById(R.id.icon);
+            int iconId = R.drawable.mime_folder;
+            if (node.isDocument())
             {
-                //iv.setImageResource(iconId);
-                if (v.findViewById(R.id.preview) != null){
-                    renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId, 200);
-                    iv.setVisibility(View.GONE);
-                } else {
-                    //renditionManager.display(iv, node, iconId);
-                    renditionManager.preview(iv, node, iconId, 150);
+                iconId = MimeTypeManager.getLargeIcon(node.getName());
+                if (((Document) node).isLatestVersion())
+                {
+                    // iv.setImageResource(iconId);
+                    if (v.findViewById(R.id.preview) != null)
+                    {
+                        renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId,
+                                DisplayUtils.getWidth(getActivity()));
+                        iv.setVisibility(View.GONE);
+                    }
+                    else
+                    {
+                        // renditionManager.display(iv, node, iconId);
+                        renditionManager.preview(iv, node, iconId, 150);
+                    }
+                    // v.findViewById(R.id.preview_group).setVisibility(View.GONE);
                 }
-                //v.findViewById(R.id.preview_group).setVisibility(View.GONE);
+                else
+                {
+                    iv.setImageResource(iconId);
+                }
+
+                iv.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
             }
             else
             {
                 iv.setImageResource(iconId);
             }
-
-            iv.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    openin();
-                }
-            });
-        }
-        else
-        {
-            iv.setImageResource(iconId);
         }
 
         // Description
         tv = (TextView) v.findViewById(R.id.description);
-        if (node.getDescription() != null && node.getDescription().length() > 0)
+        if (node.getDescription() != null && node.getDescription().length() > 0
+                && v.findViewById(R.id.description_group) != null)
         {
-            if (v.findViewById(R.id.description_group) != null)
-            {
-                v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                tv.setVisibility(View.VISIBLE);
-            }
+            v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
         }
-        else
+        else if (v.findViewById(R.id.description_group) != null)
         {
-            if (v.findViewById(R.id.description_group) != null)
-            {
-                v.findViewById(R.id.description_group).setVisibility(View.GONE);
-            }
-            else
-            {
-                tv.setVisibility(View.GONE);
-            }
+            v.findViewById(R.id.description_group).setVisibility(View.GONE);
         }
 
         // TAB
@@ -521,10 +515,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 break;
         }
     }
-    
-    public void update(File f){
-        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
-                (Document) node, f);
+
+    public void update(File f)
+    {
+        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
         up.setOnUpdateListener(updateListener);
         if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
         {
@@ -700,6 +694,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         return node;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // TAB MENU
+    // ///////////////////////////////////////////////////////////////////////////
+
     @Override
     public void onSaveInstanceState(Bundle outState)
     {
@@ -709,6 +707,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             outState.putInt("TAB", tabSelected);
         }
     }
+
+    private static final String TAB_PREVIEW = "Preview";
 
     private static final String TAB_METADATA = "Metadata";
 
@@ -725,6 +725,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         mTabHost.setup(); // you must call this before adding your tabs!
         mTabHost.setOnTabChangedListener(this);
 
+        if (node.isDocument())
+        {
+            mTabHost.addTab(newTab(TAB_PREVIEW, R.string.preview, android.R.id.tabcontent));
+        }
         mTabHost.addTab(newTab(TAB_METADATA, R.string.metadata, android.R.id.tabcontent));
         if (node.isDocument())
         {
@@ -754,24 +758,41 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (TAB_METADATA.equals(tabId))
         {
-            tabSelected = 0;
+            tabSelected = 1;
             addMetadata(node);
         }
         else if (TAB_COMMENTS.equals(tabId))
         {
-            tabSelected = 2;
+            tabSelected = 3;
             addComments(node);
         }
         else if (TAB_HISTORY.equals(tabId) && node.isDocument())
         {
-            tabSelected = 1;
+            tabSelected = 2;
             addVersions((Document) node);
         }
         else if (TAB_TAGS.equals(tabId))
         {
-            tabSelected = 3;
+            tabSelected = 4;
             addTags(node);
         }
+        else if (TAB_PREVIEW.equals(tabId))
+        {
+            tabSelected = 0;
+            addPreview(node);
+        }
+    }
+
+    public void addPreview(Node n)
+    {
+        addPreview(n, android.R.id.tabcontent, false);
+    }
+
+    public void addPreview(Node n, int layoutId, boolean backstack)
+    {
+        BaseFragment frag = PreviewFragment.newInstance(n);
+        frag.setSession(alfSession);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, PreviewFragment.TAG, backstack);
     }
 
     public void addComments(Node n, int layoutId, boolean backstack)
