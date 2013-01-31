@@ -87,6 +87,7 @@ import android.app.FragmentManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -217,6 +218,14 @@ public class MainActivity extends Activity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
+        
+        //Transfer downloads for this account to new folder structure if they haven't been already.
+        File oldDownloads = StorageManager.getOldDownloadFolder (this);
+        File newDownloads = StorageManager.getPrivateFolder (this, "", "", "");
+        if (oldDownloads != null  &&  newDownloads != null  &&  IOUtils.isFolderEmpty(oldDownloads) == false)
+        {
+            IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.dlDir, true, true);
+        }
     }
 
     @Override
