@@ -202,6 +202,10 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     // //////////////////////////////////////////////////////////////////////
     private FileActions nActions;
 
+    private File createFile;
+
+    private long lastModifiedDate;
+
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
@@ -242,7 +246,17 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         switch (requestCode)
         {
             case PublicIntent.REQUESTCODE_CREATE:
-                refresh();
+                if (createFile != null)
+                {
+                    if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
+                    {
+                        refresh();
+                    }
+                    else
+                    {
+                        createFile.delete();
+                    }
+                }
                 break;
             default:
                 break;
@@ -257,6 +271,12 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
             nActions.finish();
         }
         super.onStop();
+    }
+
+    public void setCreateFile(File newFile)
+    {
+        this.createFile = newFile;
+        this.lastModifiedDate = newFile.lastModified();
     }
 
 }
