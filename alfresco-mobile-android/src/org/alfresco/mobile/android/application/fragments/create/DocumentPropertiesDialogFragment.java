@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
-import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.PARAM_EDITOR;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_ACCOUNT;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
+import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.PARAM_EDITOR;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +55,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 /**
- * This Fragment is responsible to prompt user for property (limited at the name) associated to the document.<br/>
+ * This Fragment is responsible to prompt user for property (limited at the
+ * name) associated to the document.<br/>
  * 
  * @author Jean Marie Pascal
  */
@@ -90,7 +91,8 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         final Button validate = (Button) v.findViewById(R.id.create_document);
         final Button cancel = (Button) v.findViewById(R.id.cancel);
 
-        //This Listener is responsible to enable or not the validate button and error message.
+        // This Listener is responsible to enable or not the validate button and
+        // error message.
         textName.addTextChangedListener(new TextWatcher()
         {
             public void afterTextChanged(Editable s)
@@ -143,7 +145,8 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 {
                     try
                     {
-                        //If there's a template we create the file based on this template.
+                        // If there's a template we create the file based on
+                        // this template.
                         if (documentType.templatePath != null)
                         {
                             AssetManager assetManager = getActivity().getAssets();
@@ -160,7 +163,8 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                     }
                 }
 
-                //We create the Intent based on informations we grab previously.
+                // We create the Intent based on informations we grab
+                // previously.
                 Intent intent = new Intent(Intent.ACTION_VIEW);
                 Uri data = Uri.fromFile(newFile);
                 intent.setDataAndType(data, documentType.mimetype);
@@ -171,16 +175,19 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 {
                     ChildrenBrowserFragment childFragment = (ChildrenBrowserFragment) getFragmentManager()
                             .findFragmentByTag(ChildrenBrowserFragment.TAG);
-                    if (childFragment != null)
+                    LocalFileBrowserFragment localFragment = (LocalFileBrowserFragment) getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG);
+                    if (childFragment != null && childFragment.isVisible())
                     {
-                        //During Creation on a specific folder.
+                        // During Creation on a specific folder.
                         childFragment.setCreateFile(newFile);
                         childFragment.startActivityForResult(intent, IntentIntegrator.REQUESTCODE_CREATE);
                     }
-                    else if (getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG) != null)
+                    else if (localFragment != null && localFragment.isVisible())
                     {
-                        //During Creation inside the download folder.
-                        getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG).startActivityForResult(intent, IntentIntegrator.REQUESTCODE_CREATE);
+                        // During Creation inside the download folder.
+                        getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG).startActivityForResult(
+                                intent, IntentIntegrator.REQUESTCODE_CREATE);
+                        localFragment.setCreateFile(newFile);
                     }
                 }
                 catch (ActivityNotFoundException e)
