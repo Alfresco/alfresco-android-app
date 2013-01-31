@@ -56,7 +56,6 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -145,7 +144,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             iconId = MimeTypeManager.getIcon(node.getName());
             if (((Document) node).isLatestVersion())
             {
-                renditionManager.display(iv, node, iconId);
+                //iv.setImageResource(iconId);
+                if (v.findViewById(R.id.preview) != null){
+                    renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId, 200);
+                    iv.setVisibility(View.GONE);
+                } else {
+                    //renditionManager.display(iv, node, iconId);
+                    renditionManager.preview(iv, node, iconId, 150);
+                }
+                //v.findViewById(R.id.preview_group).setVisibility(View.GONE);
             }
             else
             {
@@ -170,12 +177,26 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv = (TextView) v.findViewById(R.id.description);
         if (node.getDescription() != null && node.getDescription().length() > 0)
         {
-            tv.setVisibility(View.VISIBLE);
+            if (v.findViewById(R.id.description_group) != null)
+            {
+                v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                tv.setVisibility(View.VISIBLE);
+            }
             tv.setText(node.getDescription());
         }
         else
         {
-            tv.setVisibility(View.GONE);
+            if (v.findViewById(R.id.description_group) != null)
+            {
+                v.findViewById(R.id.description_group).setVisibility(View.GONE);
+            }
+            else
+            {
+                tv.setVisibility(View.GONE);
+            }
         }
 
         // TAB
@@ -196,7 +217,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
         }
-        Log.d(TAG, "END TAB");
 
         // BUTTONS
         ImageView b = (ImageView) v.findViewById(R.id.action_openin);
@@ -382,7 +402,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                                 }
                                 String siteName = sub1.substring(0, idx);
                                 String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                                String fullPath = String.format(getString(R.string.cloud_share_url), ((CloudSession)alfSession).getNetwork().getIdentifier(), siteName, nodeID);
+                                String fullPath = String.format(getString(R.string.cloud_share_url),
+                                        ((CloudSession) alfSession).getNetwork().getIdentifier(), siteName, nodeID);
                                 ActionManager.actionShareLink(DetailsFragment.this, fullPath);
                             }
                             else
@@ -483,18 +504,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     String tmpPath = ActionManager.getPath(getActivity(), data.getData());
                     if (tmpPath != null)
                     {
-                        File f = new File(ActionManager.getPath(getActivity(), data.getData()));
-                        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
-                                (Document) node, f);
-                        up.setOnUpdateListener(updateListener);
-                        if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
-                        {
-                            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                        }
-                        else
-                        {
-                            getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
-                        }
+                        File f = new File(tmpPath);
+                        update(f);
                     }
                     else
                     {
@@ -508,6 +519,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 break;
             default:
                 break;
+        }
+    }
+    
+    public void update(File f){
+        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
+                (Document) node, f);
+        up.setOnUpdateListener(updateListener);
+        if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
+        {
+            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
+        }
+        else
+        {
+            getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
         }
     }
 

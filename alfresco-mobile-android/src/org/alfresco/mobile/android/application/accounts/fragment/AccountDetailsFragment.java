@@ -286,7 +286,14 @@ public class AccountDetailsFragment extends BaseFragment
         description = form_value.getText().toString();
 
         form_value = (EditText) vRoot.findViewById(R.id.repository_password);
-        password = form_value.getText().toString();
+        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        {
+            password = form_value.getText().toString();
+        }
+        else
+        {
+            return false;
+        }
 
         CheckBox sw = (CheckBox) vRoot.findViewById(R.id.repository_https);
         https = sw.isChecked();
@@ -341,7 +348,7 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_port };
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
         EditText form_value = null;
         for (int i = 0; i < ids.length; i++)
         {

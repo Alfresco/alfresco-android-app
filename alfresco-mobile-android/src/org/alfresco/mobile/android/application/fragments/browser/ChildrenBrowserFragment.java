@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+0 * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -77,11 +77,13 @@ import android.widget.SpinnerAdapter;
 public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment
 {
 
-    public static final String TAG = "ChildrenNavigationFragment";
+    public static final String TAG = "ChildrenBrowserFragment";
 
     private boolean shortcutAlreadyVisible = false;
 
     private Folder importFolder;
+
+    private File createFile;
 
     public ChildrenBrowserFragment()
     {
@@ -117,10 +119,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-
         setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
-        if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
+        if (alfSession == null)
+        {
+
+        }
+        else if (RepositoryVersionHelper.isAlfrescoProduct(alfSession))
         {
             setActivateThumbnail(true);
         }
@@ -352,21 +357,35 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PublicIntent.REQUESTCODE_FILEPICKER && data != null && data.getData() != null)
+        switch (requestCode)
         {
-            String tmpPath = ActionManager.getPath(getActivity(), data.getData());
-            if (tmpPath != null)
-            {
-                tmpFile = new File(tmpPath);
-            }
-            else
-            {
-                // Error case : Unable to find the file path associated to user
-                // pick.
-                // Sample : Picasa image case
-                ActionManager.actionDisplayError(ChildrenBrowserFragment.this, new AlfrescoAppException(
-                        getString(R.string.error_unknown_filepath), true));
-            }
+            case PublicIntent.REQUESTCODE_FILEPICKER:
+                if (data != null && data.getData() != null)
+                {
+                    String tmpPath = ActionManager.getPath(getActivity(), data.getData());
+                    if (tmpPath != null)
+                    {
+                        tmpFile = new File(tmpPath);
+                    }
+                    else
+                    {
+                        // Error case : Unable to find the file path associated
+                        // to user pick.
+                        // Sample : Picasa image case
+                        ActionManager.actionDisplayError(ChildrenBrowserFragment.this, new AlfrescoAppException(
+                                getString(R.string.error_unknown_filepath), true));
+                    }
+                }
+                break;
+            case PublicIntent.REQUESTCODE_CREATE:
+                if (createFile.length() > 0)
+                {
+                    tmpFile = createFile;
+                    createFile = null;
+                }
+                break;
+            default:
+                break;
         }
     }
 
@@ -447,6 +466,12 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
     }
 
+    public void createDocument()
+    {
+        // TODO Auto-generated method stub
+
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // MENU
     // //////////////////////////////////////////////////////////////////////
@@ -473,23 +498,26 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {
-            SubMenu devCaptureMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
+            SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
-            devCaptureMenu.setIcon(android.R.drawable.ic_menu_add);
-            devCaptureMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            createMenu.setIcon(android.R.drawable.ic_menu_add);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
+                    + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
+
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.take_photo);
 
             if (AndroidVersion.isICSOrAbove())
             {
-                devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
+                createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
                         + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.make_video);
             }
 
-            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
-            devCaptureMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
                     R.string.content_upload);
 
         }
@@ -543,6 +571,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         setListShown(true);
         CloudExceptionUtils.handleCloudException(getActivity(), e, false);
+    }
+
+    public void setCreateFile(File newFile)
+    {
+        this.createFile = newFile;
     }
 
 }

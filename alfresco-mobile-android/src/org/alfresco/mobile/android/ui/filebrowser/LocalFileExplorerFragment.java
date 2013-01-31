@@ -45,7 +45,7 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
     public static final String ARGUMENT_FOLDERPATH = "folderPath";
 
     public static final String MODE = "mode";
-
+    
     public static final int MODE_LISTING = 1;
 
     public static final int MODE_PICK_FILE = 2;
