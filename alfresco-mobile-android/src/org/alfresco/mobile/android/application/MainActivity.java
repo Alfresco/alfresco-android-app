@@ -233,7 +233,7 @@ public class MainActivity extends Activity
             {
                 if (oldDownloads != null  &&  newDownloads != null)
                 {
-                    IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.dlDir, true, true);
+                    IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.DLDIR, true, true);
                     prefs.edit().putBoolean("filesmigrated", true).commit();
                 }
             }

@@ -34,10 +34,9 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 {
     private static final String TAG = "StorageManager";
     
-    public static final String tempDir = "Capture";     
-    public static final String dlDir = "Download";    
-    public static final String assetDir = "Assets";    
-    public static final String syncDir = "Sync";  
+    public static final String TEMPDIR = "Capture";     
+    public static final String DLDIR = "Download";    
+    public static final String ASSETDIR = "Assets";    
     
     
     private static boolean isExternalStorageAccessible()
@@ -47,27 +46,22 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     public static File getDownloadFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, dlDir, urlValue, username);
+        return getPrivateFolder (context, DLDIR, urlValue, username);
     }
     
     public static File getTempFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, tempDir, urlValue, username);
+        return getPrivateFolder (context, TEMPDIR, urlValue, username);
     }
     
     public static File getCaptureFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, tempDir, urlValue, username);
+        return getPrivateFolder (context, TEMPDIR, urlValue, username);
     }
     
     public static File getAssetFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, assetDir, null, null);
-    }
-    
-    public static File getSyncFolder(Context context, String urlValue, String username)
-    {
-        return getPrivateFolder (context, syncDir, urlValue, username);
+        return getPrivateFolder (context, ASSETDIR, null, null);
     }
     
     public static File getPrivateFolder(Context context, String requestedFolder, String urlValue, String username)
