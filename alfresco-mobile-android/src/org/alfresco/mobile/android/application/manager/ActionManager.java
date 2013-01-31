@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -158,6 +159,37 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse("market://details?id=com.adobe.reader"));
+        c.startActivity(intent);
+    }
+
+    /**
+     * Open Play Store application or its web version if no play store available.
+     * @param c : Android Context
+     */
+    public static void actionDisplayPlayStore(Context c)
+    {
+        // Retrieve list of application that understand market Intent
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("market://details?id=org.alfresco.mobile.android.application"));
+        final PackageManager mgr = c.getPackageManager();
+        List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
+
+        // By default we redirect to the webbrowser version of play store.
+        intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://play.google.com/"));
+
+        for (ResolveInfo resolveInfo : list)
+        {
+            // If we find something related to android we open the application
+            // version of play store.
+            if (resolveInfo.activityInfo.applicationInfo.packageName.contains("android"))
+            {
+                intent.setComponent(new ComponentName(resolveInfo.activityInfo.applicationInfo.packageName,
+                        resolveInfo.activityInfo.name));
+                intent.setData(Uri.parse("market://"));
+                break;
+            }
+        }
         c.startActivity(intent);
     }
 }

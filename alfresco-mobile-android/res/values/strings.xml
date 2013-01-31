@@ -244,7 +244,29 @@
     
     <!-- Upload -->
     <string name="action_processing">Processing...</string>
-
+    
+    <!-- Create Document -->
+    <string name="open_play_store">Open Google Play Store</string>
+    
+    <string name="create_document">Create Document</string>
+    <string name="create_document_title">Create&#8230;</string>
+    <string name="create_document_word">Word Document</string>
+    <string name="create_document_powerpoint">Powerpoint Presentation</string>
+    <string name="create_document_excel">Excel Spreadsheet</string>
+    <string name="create_document_text">Text Document</string>
+    <string name="create_document_name_hint">Type the document name here</string>
+    <string name="create_document_filename_error">This filename is already in use.</string>
+    
+    <string name="document_word_extension">.docx</string>
+    <string name="document_powerpoint_extension">.pptx</string>
+    <string name="document_excel_extension">.xlsx</string>
+    <string name="document_text_extension">.txt</string>
+        
+    <string name="create_document_editor_title">Complete action using</string>
+    <string name="create_document_editor_not_available">No application available</string>
+    <string name="create_document_editor_not_available_description">It seems your device doesn\'t have any application to create this document type.</string>
+    
+    
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
     
