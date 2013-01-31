@@ -30,8 +30,8 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -63,7 +63,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 {
 
     /** Public Fragment TAG. */
-    public static final String TAG = "FilePropertiesDialogFragment";
+    public static final String TAG = "DocumentPropertiesDialogFragment";
 
     public static DocumentPropertiesDialogFragment newInstance(Bundle bundle)
     {

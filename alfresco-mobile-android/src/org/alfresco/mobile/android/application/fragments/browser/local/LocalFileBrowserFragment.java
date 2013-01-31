@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.browser.local.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
@@ -38,7 +39,6 @@ import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;

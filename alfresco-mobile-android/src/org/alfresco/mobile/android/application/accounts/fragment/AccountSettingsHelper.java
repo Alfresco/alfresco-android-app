@@ -36,7 +36,7 @@ import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImp
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.ui.manager.StorageManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.app.Activity;
