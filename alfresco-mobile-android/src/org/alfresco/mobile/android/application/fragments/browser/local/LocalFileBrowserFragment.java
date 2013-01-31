@@ -114,22 +114,21 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                 if (folder != null)
                 {
                     b = createBundleArgs(folder);
-                    
-                    getLoaderManager().initLoader(LocalFileExplorerLoader.ID, b, this);
-                    getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
-                    
-                    return;
                 }
                 else
                 {
                     MessengerManager.showLongToast(getActivity(), getString(R.string.sdinaccessible));
+                    return;
                 }
             }
+            else
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.loginfirst));
+                return;
+            }
         }
-        else
-            return; //Already have a bundle.
-        
-        MessengerManager.showLongToast(getActivity(), getString(R.string.loginfirst));
+        getLoaderManager().initLoader(LocalFileExplorerLoader.ID, b, this);
+        getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
     }
 
     @Override
@@ -237,7 +236,6 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
 
-    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -250,7 +248,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                 break;
         }
     }
-    
+
     @Override
     public void onStop()
     {
