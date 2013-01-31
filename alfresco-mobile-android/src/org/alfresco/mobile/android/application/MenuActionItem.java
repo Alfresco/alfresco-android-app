@@ -27,6 +27,8 @@ public class MenuActionItem
 
     public static final int MENU_SEARCH_OPTION = 11;
 
+    public static final int MENU_CREATE_DOCUMENT = 19;
+    
     public static final int MENU_CREATE_FOLDER = 20;
 
     public static final int MENU_UPLOAD = 30;

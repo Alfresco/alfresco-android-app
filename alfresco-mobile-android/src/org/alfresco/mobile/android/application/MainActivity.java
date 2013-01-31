@@ -56,6 +56,7 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
@@ -956,6 +957,11 @@ public class MainActivity extends Activity
     {
         super.onCreateOptionsMenu(menu);
 
+        if (isVisible(LocalFileBrowserFragment.TAG))
+        {
+            ((LocalFileBrowserFragment) getFragment(LocalFileBrowserFragment.TAG)).getMenu(menu);
+        }
+
         if (isVisible(ActivitiesFragment.TAG))
         {
             ((ActivitiesFragment) getFragment(ActivitiesFragment.TAG)).getMenu(menu);
@@ -1064,12 +1070,21 @@ public class MainActivity extends Activity
                 ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).createFolder();
                 return true;
 
+            case MenuActionItem.MENU_CREATE_DOCUMENT:
+                if (getFragment(ChildrenBrowserFragment.TAG) != null)
+                {
+                    importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG))
+                            .getImportFolder();
+                }
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount);
+                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
+                return true;
+
             case MenuActionItem.MENU_UPLOAD:
                 importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
                 UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
                 dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
                 return true;
-
             case MenuActionItem.MENU_DELETE_FOLDER:
                 ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).delete();
                 return true;
@@ -1088,7 +1103,10 @@ public class MainActivity extends Activity
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).download();
                 return true;
             case MenuActionItem.MENU_UPDATE:
-                ((DetailsFragment) getFragment(DetailsFragment.TAG)).update();
+                importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
+                UploadChooseDialogFragment dialogu = UploadChooseDialogFragment.newInstance(currentAccount,
+                        DetailsFragment.TAG);
+                dialogu.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
                 return true;
             case MenuActionItem.MENU_EDIT:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).edit();
