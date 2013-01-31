@@ -85,6 +85,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     private File createFile;
 
+    private long lastModifiedDate;
+
     public ChildrenBrowserFragment()
     {
     }
@@ -378,10 +380,17 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                 }
                 break;
             case PublicIntent.REQUESTCODE_CREATE:
-                if (createFile.length() > 0)
+                if (createFile != null)
                 {
-                    tmpFile = createFile;
-                    createFile = null;
+                    if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
+                    {
+                        tmpFile = createFile;
+                        createFile = null;
+                    }
+                    else
+                    {
+                        createFile.delete();
+                    }
                 }
                 break;
             default:
@@ -576,6 +585,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void setCreateFile(File newFile)
     {
         this.createFile = newFile;
+        this.lastModifiedDate = newFile.lastModified();
     }
 
 }
