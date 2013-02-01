@@ -1,5 +1,5 @@
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -40,12 +40,23 @@
     <!-- ACCOUNT WIZARD -->
     <dimen name="wizard_main_margin">5dip</dimen>
     <dimen name="button_padding">25dip</dimen>
-    <dimen name="properties_padding">5dip</dimen>
-    <dimen name="properties_icon_padding">20dip</dimen>
-    <dimen name="properties_details_padding">15dip</dimen>
-    <dimen name="properties_details_padding_bottom">2dip</dimen>
-    <dimen name="properties_details_icon_size">140dip</dimen>
-    <dimen name="properties_small_screen_extra_padding">30dip</dimen>
     <dimen name="accountlist_padding">15dip</dimen>
+
+    <!-- MAIN MENU DETAILS -->
+    <dimen name="properties_padding">5dip</dimen>
+
+    <!-- FRAGMENT DETAILS -->
+    <dimen name="properties_details_padding">15dip</dimen>
+    <dimen name="properties_details_icon_size">140dip</dimen>
+    <dimen name="properties_actions_margin">14dip</dimen>
+
+    <!-- PREVIEW IMAGE -->
+    <integer name="width_320">150</integer>
+    <integer name="width_480">200</integer>
+    <integer name="width_600">300</integer>
+    <integer name="width_720">350</integer>
+    <integer name="width_1000">400</integer>
+    <integer name="width_max">500</integer>
+
 
 </resources>

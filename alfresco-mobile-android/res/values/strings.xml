@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -154,6 +154,7 @@
     <!-- PROPERTIES -->
     <string name="details">Details</string>
     <string name="metadata">Properties</string>
+    <string name="preview">Preview</string>
 
     <!-- NETWORKS -->
     <string name="cloud_networks">Networks</string>

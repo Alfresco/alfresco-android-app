@@ -14,8 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
+  limitations under the License.
+-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -74,7 +74,8 @@
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/thumbnail"
                     android:scaleType="centerInside"
-                    android:src="@drawable/mime_file" />
+                    android:src="@drawable/mime_file"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -152,41 +153,10 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/description_group"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingBottom="@dimen/properties_details_padding"
-            android:paddingLeft="@dimen/properties_details_padding"
-            android:paddingRight="@dimen/properties_details_padding" >
-
-            <TextView
-                android:id="@+id/description_title"
-                style="@style/sectionHeader"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Description" />
-
-            <TextView
-                android:id="@+id/description"
-                style="@style/list_item_bottomtext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:maxLines="1000"
-                android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/metadata"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="15dip"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/properties_details_padding"
-            android:paddingRight="@dimen/properties_details_padding" >
-        </LinearLayout>
+        <include
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            layout="@layout/app_properties" />
     </LinearLayout>
 
 </ScrollView>
