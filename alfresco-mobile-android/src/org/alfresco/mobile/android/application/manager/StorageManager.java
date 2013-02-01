@@ -18,11 +18,6 @@
 package org.alfresco.mobile.android.application.manager;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -32,60 +27,44 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import org.alfresco.mobile.android.application.utils.IOUtils;
+
 
 public class StorageManager extends org.alfresco.mobile.android.ui.manager.StorageManager
 {
     private static final String TAG = "StorageManager";
     
-    private static final String tempDir = "Capture";     
-    private static final String dlDir = "Download";    
-    private static final String assetDir = "Assets";    
-    private static final String syncDir = "Sync";  
+    public static final String TEMPDIR = "Capture";     
+    public static final String DLDIR = "Download";    
+    public static final String ASSETDIR = "Assets";    
     
     
     private static boolean isExternalStorageAccessible()
     {
         return (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED) == 0);
     }
-    
-    protected static File createFolder(File f, String extendedPath)
-    {
-        File tmpFolder = null;
-        tmpFolder = new File(f, extendedPath);
-        if (!tmpFolder.exists())
-        {
-            tmpFolder.mkdirs();
-        }
-
-        return tmpFolder;
-    }
 
     public static File getDownloadFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, dlDir, urlValue, username);
+        return getPrivateFolder (context, DLDIR, urlValue, username);
     }
     
     public static File getTempFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, tempDir, urlValue, username);
+        return getPrivateFolder (context, TEMPDIR, urlValue, username);
     }
     
     public static File getCaptureFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, tempDir, urlValue, username);
+        return getPrivateFolder (context, TEMPDIR, urlValue, username);
     }
     
     public static File getAssetFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, assetDir, null, null);
+        return getPrivateFolder (context, ASSETDIR, null, null);
     }
     
-    public static File getSyncFolder(Context context, String urlValue, String username)
-    {
-        return getPrivateFolder (context, syncDir, urlValue, username);
-    }
-    
-    private static File getPrivateFolder(Context context, String requestedFolder, String urlValue, String username)
+    public static File getPrivateFolder(Context context, String requestedFolder, String urlValue, String username)
     {
         File folder = null;
         try
@@ -96,9 +75,9 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
                 folder = context.getExternalFilesDir(null);
                 
                 if (urlValue != null && urlValue.length() > 0 && username != null && username.length() > 0)
-                    folder = createFolder(folder, getAccountFolder(urlValue, username) + File.separator + requestedFolder);
+                    folder = IOUtils.createFolder(folder, getAccountFolder(urlValue, username) + File.separator + requestedFolder);
                 else
-                    folder = createFolder(folder, requestedFolder);
+                    folder = IOUtils.createFolder(folder, requestedFolder);
             }
         }
         catch (Exception e)
@@ -123,5 +102,33 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         }
         return name + "-" + username;
     }
+    
+    /*
+     * Retrieve < v1.1 download folder.
+     * Used to migrate to new folder structures in a one-off operation.
+     */
+    public static File getOldDownloadFolder(Context context)
+    {
+        File folder = null;
+        try
+        {
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
+            {
+                folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            }
+            
+            folder = createFolder(
+                    folder,
+                    context.getResources()
+                            .getText(
+                                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
+                            .toString());
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
 
+        return folder;
+    }
 }
