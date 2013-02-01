@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.utils;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,10 +29,22 @@ import java.io.OutputStream;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.content.Context;
-import android.os.Environment;
+import android.util.Log;
 
 public class IOUtils
 {
+    public static File createFolder(File f, String extendedPath)
+    {
+        File tmpFolder = null;
+        tmpFolder = new File(f, extendedPath);
+        if (!tmpFolder.exists())
+        {
+            tmpFolder.mkdirs();
+        }
+
+        return tmpFolder;
+    }
+    
     public static String writeAsset(Context c, String assetFilename) throws IOException
     {
         String newFilename = "";
@@ -77,4 +90,98 @@ public class IOUtils
         return newFilename;
     }
 
+    //Helper method with string arguments
+    public static boolean copyFile(String source, String dest) throws IOException
+    {
+        File destFile = new File (dest);
+        InputStream sourceFile = new FileInputStream(source);
+        
+        //Fully qualified package due to IOUtils name conflict.
+        boolean result = org.alfresco.mobile.android.api.utils.IOUtils.copyFile(sourceFile, destFile);
+        
+        sourceFile.close();
+        
+        return result;
+    }
+    
+    public static boolean isFolderEmpty (File folder)
+    {        
+        int nFiles = folder.listFiles().length;
+        return (nFiles == 0);
+    }
+    
+    public static void transferFilesBackground (final String sourceFolder, final String destFolder, final String additionalFolder, final boolean move, final boolean recursive)
+    {
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                transferFilesUnderNewStructure (sourceFolder, destFolder, additionalFolder, move, recursive);
+                super.run();
+            }
+        }.start();
+    }
+    
+    public static boolean transferFiles (String sourceFolder, String destFolder, boolean move, boolean recursive)
+    {
+        return transferFilesUnderNewStructure (sourceFolder, destFolder, "", move, recursive);
+    }
+    
+    public static boolean transferFilesUnderNewStructure (String sourceFolder, String destFolder, String additionalFolder, boolean move, boolean recursive)
+    {
+        boolean result = true;
+        
+        try
+        {
+            File f = new File(sourceFolder);        
+            File file[] = f.listFiles();
+            
+            for (int i = 0;  i < file.length; i++)
+            {
+                File sourceFile = file[i];
+                File destFile = new File(destFolder + File.separator + file[i].getName());
+                
+                if (!sourceFile.isHidden())
+                {
+                    if (sourceFile.isFile())
+                    {
+                        if (additionalFolder != null  &&  additionalFolder.length() > 0)
+                        {
+                            destFile = createFolder (destFile.getParentFile(), additionalFolder);
+                            destFile = new File(destFile, file[i].getName());
+                        }
+                        
+                        result = copyFile (sourceFile.getPath(), destFile.getPath() );
+                    }
+                    else
+                    {
+                        if (sourceFile.isDirectory()  &&  recursive  &&
+                           !sourceFile.getName().equals(".")  &&  !sourceFile.getName().equals("..") )
+                        {
+                            result = transferFilesUnderNewStructure (sourceFile.getPath(), destFile.getPath(), additionalFolder, move, recursive);
+                        }
+                    }
+                    
+                    if (!result)
+                    {
+                        Log.e("Alfresco", "File copy failed for " + sourceFile.getName() );
+                        break;
+                    }
+                    
+                    if (move)
+                        sourceFile.delete();
+                }
+            }
+            
+            return result;
+        }
+        catch (Exception e)
+        {
+            Log.e("Alfresco", "Error during file transfer: " + e.getMessage() );
+            e.printStackTrace();
+            
+            return false;
+        }   
+    }
 }
