@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -88,13 +88,26 @@ public class MetadataFragment extends BaseFragment
         v.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         v.setGravity(Gravity.CENTER);
 
-        // ASPECTS
-        ViewGroup parent = (ViewGroup) v;
+        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.app_properties, v);
+        grouprootview = (ViewGroup) grouprootview.findViewById(R.id.metadata);
 
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false);
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
-        createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
+        // ASPECTS
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
+
+        // Description
+        TextView tv = (TextView) v.findViewById(R.id.description);
+        if (node.getDescription() != null && node.getDescription().length() > 0)
+        {
+            v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
+            tv.setText(node.getDescription());
+        }
+        else
+        {
+            v.findViewById(R.id.description_group).setVisibility(View.GONE);
+        }
 
         sv.addView(v);
 

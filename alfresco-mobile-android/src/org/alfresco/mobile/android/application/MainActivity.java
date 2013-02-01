@@ -65,6 +65,8 @@ import org.alfresco.mobile.android.application.fragments.versions.VersionFragmen
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
@@ -74,8 +76,6 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.VideoCapture;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -96,7 +96,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
-import android.widget.Toast;
 
 @TargetApi(11)
 public class MainActivity extends Activity
