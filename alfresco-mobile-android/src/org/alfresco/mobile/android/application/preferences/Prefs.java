@@ -41,6 +41,10 @@ public class Prefs extends PreferenceActivity
         pref.setSelectable(false);
         pref.setEnabled(false);      
         
+        pref = preferenceScreen.findPreference("pin");
+        pref.setSelectable(false);
+        pref.setEnabled(false);              
+        
         if (isDeviceRooted()  ||  prefs.getBoolean("HasAccessedPaidServices", false) == false)
         {   
             Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
@@ -49,13 +53,6 @@ public class Prefs extends PreferenceActivity
                 privateFoldersPref.setSelectable(false);
                 privateFoldersPref.setEnabled(false);              
                 prefs.edit().putBoolean("privatefolders", false).commit();
-            }
-            
-            Preference pinPref = preferenceScreen.findPreference("pin");
-            if (pinPref != null)
-            {
-                pinPref.setSelectable(false);
-                pinPref.setEnabled(false);              
             }
         }
     }
