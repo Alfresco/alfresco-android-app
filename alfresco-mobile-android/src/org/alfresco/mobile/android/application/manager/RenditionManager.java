@@ -276,8 +276,6 @@ public class RenditionManager
             fis.close();
 
             // Find the correct scale value. It should be the power of 2.
-            // int requiredSizePx = Math.round((float)requiredSize *
-            // (dpiClassification / 160));
             int scale = calculateInSampleSize(o, requiredSize, requiredSize);
             // Log.d(TAG, "Scale:" + scale + "Px" +requiredSizePx + "DPI" +
             // dpiClassification);

@@ -72,6 +72,11 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
+/**
+ * Responsible to display details of a specific Node.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class DetailsFragment extends MetadataFragment implements OnTabChangeListener
 {
 
@@ -146,7 +151,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 iconId = MimeTypeManager.getLargeIcon(node.getName());
                 if (((Document) node).isLatestVersion())
                 {
-                    // iv.setImageResource(iconId);
                     if (v.findViewById(R.id.preview) != null)
                     {
                         renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId,
@@ -155,10 +159,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     }
                     else
                     {
-                        // renditionManager.display(iv, node, iconId);
                         renditionManager.preview(iv, node, iconId, 150);
                     }
-                    // v.findViewById(R.id.preview_group).setVisibility(View.GONE);
                 }
                 else
                 {

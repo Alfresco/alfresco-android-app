@@ -39,7 +39,7 @@ public class PreviewFragment extends BaseFragment
 {
 
     public static final String TAG = "PreviewFragment";
-    
+
     public static final String ARGUMENT_NODE = "node";
 
     public static Bundle createBundleArgs(Node node)
@@ -59,24 +59,25 @@ public class PreviewFragment extends BaseFragment
     private Node node;
 
     private RenditionManager renditionManager;
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(false);
 
-        if (container != null){
+        if (container != null)
+        {
             container.setVisibility(View.VISIBLE);
         }
         alfSession = SessionUtils.getSession(getActivity());
         View v = inflater.inflate(R.layout.app_preview, container, false);
-        
+
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
         renditionManager = new RenditionManager(getActivity(), alfSession);
-        
-        ImageView preview = (ImageView) v.findViewById(R.id.preview) ;
+
+        ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
         if (node.isDocument())
         {
@@ -85,10 +86,12 @@ public class PreviewFragment extends BaseFragment
             {
                 renditionManager.preview((ImageView) preview, node, iconId, DisplayUtils.getWidth(getActivity()));
             }
-        } else {
+        }
+        else
+        {
             preview.setImageResource(iconId);
         }
-        
+
         preview.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -97,10 +100,10 @@ public class PreviewFragment extends BaseFragment
                 openin();
             }
         });
-        
+
         return v;
     }
-    
+
     public void openin()
     {
         Bundle b = new Bundle();
