@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -21,6 +21,10 @@ import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.res.Resources;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
 
@@ -169,4 +173,48 @@ public abstract class DisplayUtils
             }
         }
     }
+
+    // ///////////////////////////////////////////
+    // SIZE OF THE SCREEN
+    // ///////////////////////////////////////////
+    public static int getWidth(Activity context)
+    {
+        Display display = context.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int width = Math.round(outMetrics.widthPixels / density);
+        
+        Resources res = context.getResources();
+        
+        int coeff = 150;
+        if (width < 320)
+        {
+            coeff = res.getInteger(R.integer.width_320);
+        }
+        else if (width < 480)
+        {
+            coeff = res.getInteger(R.integer.width_480);
+        }
+        else if (width < 600)
+        {
+            coeff = res.getInteger(R.integer.width_600);
+        }
+        else if (width < 720)
+        {
+            coeff = res.getInteger(R.integer.width_720);
+        }
+        else if (width < 1000)
+        {
+            coeff = res.getInteger(R.integer.width_1000);
+        } else
+        {
+            coeff = res.getInteger(R.integer.width_max);
+        }
+
+        Log.d("WIDTH", coeff + " : " + width);
+        return coeff;
+    }
+
 }

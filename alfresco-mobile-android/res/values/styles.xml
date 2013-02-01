@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -35,6 +35,7 @@
     <color name="grey_underline">#535554</color>
     <color name="sliding_grey_dark">#494F57</color>
     <color name="sliding_grey_darker">#3B4148</color>
+    <color name="grey_lighter">#eeeeee</color>
     <color name="sliding_account_background">#282828</color>
 
     <!-- =============================================================== -->
@@ -104,8 +105,13 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
-
-    <color name="grey_lighter">#eeeeee</color>
+    
+    <!-- ACTIONS IN DETAILS PAGE -->
+    <style name="details_action_icon">
+        <item name="android:paddingRight">@dimen/button_padding</item>
+        <item name="android:layout_weight">0</item>
+    </style>
+    
 
     <style name="alfrescotheme_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_stacked_transparent_light_holo</item>
