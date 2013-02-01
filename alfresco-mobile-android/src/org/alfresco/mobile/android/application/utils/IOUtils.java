@@ -29,7 +29,7 @@ import java.io.OutputStream;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.content.Context;
-import android.os.Environment;
+import android.util.Log;
 
 public class IOUtils
 {
@@ -164,7 +164,10 @@ public class IOUtils
                     }
                     
                     if (!result)
+                    {
+                        Log.e("Alfresco", "File copy failed for " + sourceFile.getName() );
                         break;
+                    }
                     
                     if (move)
                         sourceFile.delete();
@@ -175,6 +178,9 @@ public class IOUtils
         }
         catch (Exception e)
         {
+            Log.e("Alfresco", "Error during file transfer: " + e.getMessage() );
+            e.printStackTrace();
+            
             return false;
         }   
     }

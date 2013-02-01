@@ -105,9 +105,8 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     
     /*
      * Retrieve < v1.1 download folder.
-     * Used to migrate to new folder structures.
+     * Used to migrate to new folder structures in a one-off operation.
      */
-    @Deprecated
     public static File getOldDownloadFolder(Context context)
     {
         File folder = null;
