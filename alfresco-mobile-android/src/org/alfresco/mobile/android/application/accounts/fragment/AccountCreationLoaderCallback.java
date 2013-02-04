@@ -189,7 +189,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             {
                 String edition = session.getRepositoryInfo().getEdition();
                 
-                if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE)  ||  edition.equals(OnPremiseConstant.ALFRESCO_EDITION_UNKNOWN) )
+                if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
                 {
                     prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
                 }
