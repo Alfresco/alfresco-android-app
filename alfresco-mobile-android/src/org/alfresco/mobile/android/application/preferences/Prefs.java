@@ -1,3 +1,21 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+
 package org.alfresco.mobile.android.application.preferences;
 
 import java.io.File;
@@ -41,6 +59,10 @@ public class Prefs extends PreferenceActivity
         pref.setSelectable(false);
         pref.setEnabled(false);      
         
+        pref = preferenceScreen.findPreference("pin");
+        pref.setSelectable(false);
+        pref.setEnabled(false);              
+        
         if (isDeviceRooted()  ||  prefs.getBoolean("HasAccessedPaidServices", false) == false)
         {   
             Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
@@ -49,13 +71,6 @@ public class Prefs extends PreferenceActivity
                 privateFoldersPref.setSelectable(false);
                 privateFoldersPref.setEnabled(false);              
                 prefs.edit().putBoolean("privatefolders", false).commit();
-            }
-            
-            Preference pinPref = preferenceScreen.findPreference("pin");
-            if (pinPref != null)
-            {
-                pinPref.setSelectable(false);
-                pinPref.setEnabled(false);              
             }
         }
     }
