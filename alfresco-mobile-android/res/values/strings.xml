@@ -265,10 +265,11 @@
         
     <string name="create_document_editor_title">Complete action using</string>
     <string name="create_document_editor_not_available">No application available</string>
-    <string name="create_document_editor_not_available_description">It seems your device doesn\'t have any application to create this document type.</string>
-    
+    <string name="create_document_editor_not_available_description">You don\'t have an app that will create this document type.</string>
+    <string name="preview_unavailable">Preview is not available.</string>
     
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
     
+    <string name="metadata_general">General</string>
 </resources>

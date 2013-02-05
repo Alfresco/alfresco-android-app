@@ -141,58 +141,24 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv = (TextView) v.findViewById(R.id.details);
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
 
-        // Preview
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            ImageView iv = (ImageView) v.findViewById(R.id.icon);
-            int iconId = R.drawable.mime_folder;
-            if (node.isDocument())
-            {
-                iconId = MimeTypeManager.getLargeIcon(node.getName());
-                if (((Document) node).isLatestVersion())
-                {
-                    if (v.findViewById(R.id.preview) != null)
-                    {
-                        renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId,
-                                DisplayUtils.getWidth(getActivity()));
-                        iv.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-                        renditionManager.preview(iv, node, iconId, 150);
-                    }
-                }
-                else
-                {
-                    iv.setImageResource(iconId);
-                }
-
-                iv.setOnClickListener(new OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        openin();
-                    }
-                });
-            }
-            else
-            {
-                iv.setImageResource(iconId);
-            }
-        }
+        // Preview + Thumbnail
+        displayIcon(node, R.drawable.mime_folder, (ImageView) v.findViewById(R.id.icon), false);
+        displayIcon(node, R.drawable.mime_256_folder, (ImageView) v.findViewById(R.id.preview), true);
 
         // Description
+        Integer generalPropertyTitle = null;
         tv = (TextView) v.findViewById(R.id.description);
         if (node.getDescription() != null && node.getDescription().length() > 0
                 && v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
+            generalPropertyTitle = -1;
         }
         else if (v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
+            generalPropertyTitle = R.string.metadata;
         }
 
         // TAB
@@ -208,7 +174,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
@@ -297,8 +263,50 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-
         return v;
+    }
+
+    /**
+     * Display a drawable associated to the node type on a specific imageview.
+     * 
+     * @param node
+     * @param defaultIconId
+     * @param iv
+     * @param isLarge
+     */
+    private void displayIcon(Node node, int defaultIconId, ImageView iv, boolean isLarge)
+    {
+        if (iv == null) { return; }
+
+        int iconId = defaultIconId;
+        if (node.isDocument())
+        {
+            iconId = MimeTypeManager.getIcon(node.getName(), isLarge);
+            if (((Document) node).isLatestVersion())
+            {
+                if (isLarge)
+                {
+                    renditionManager.preview(iv, node, iconId, DisplayUtils.getWidth(getActivity()));
+                }
+                else
+                {
+                    renditionManager.display(iv, node, iconId);
+                }
+            }
+            else
+            {
+                iv.setImageResource(iconId);
+            }
+
+            iv.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
+        }
     }
 
     @Override

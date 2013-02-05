@@ -90,24 +90,28 @@ public class MetadataFragment extends BaseFragment
 
         ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.app_properties, v);
         grouprootview = (ViewGroup) grouprootview.findViewById(R.id.metadata);
-
-        // ASPECTS
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
-
+        
         // Description
+        Integer generalPropertyTitle = null;
         TextView tv = (TextView) v.findViewById(R.id.description);
         if (node.getDescription() != null && node.getDescription().length() > 0)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
+            ((TextView)v.findViewById(R.id.description_title)).setText(R.string.metadata_general);
             tv.setText(node.getDescription());
+            generalPropertyTitle = -1;
         }
         else
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
+            generalPropertyTitle = R.string.metadata_general;
         }
+
+        // ASPECTS
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
 
         sv.addView(v);
 
@@ -115,7 +119,7 @@ public class MetadataFragment extends BaseFragment
     }
 
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
-            boolean check)
+            boolean check, Integer overrideAspectTitle)
     {
         if (!check || node.hasAspect(aspect))
         {
@@ -124,7 +128,18 @@ public class MetadataFragment extends BaseFragment
 
             ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.sdk_property_title, null);
             tv = (TextView) grouprootview.findViewById(R.id.title);
-            tv.setText(PropertyManager.getAspectLabel(aspect));
+            if (overrideAspectTitle == null)
+            {
+                tv.setText(PropertyManager.getAspectLabel(aspect));
+            }
+            else if (overrideAspectTitle == -1)
+            {
+                tv.setVisibility(View.GONE);
+            }
+            else
+            {
+                tv.setText(overrideAspectTitle);
+            }
 
             ViewGroup groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
             for (Entry<String, Integer> map : PropertyManager.getPropertyLabel(aspect).entrySet())
@@ -156,6 +171,6 @@ public class MetadataFragment extends BaseFragment
 
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect)
     {
-        createAspectPanel(inflater, parentview, node, aspect, true);
+        createAspectPanel(inflater, parentview, node, aspect, true, null);
     }
 }
