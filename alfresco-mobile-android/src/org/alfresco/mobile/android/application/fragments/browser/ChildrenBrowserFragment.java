@@ -138,6 +138,24 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void onResume()
     {
         super.onResume();
+
+        // If the fragment is resumed after user content creation action, we
+        // have to check if the file has been modified or not. Depending on
+        // result we prompt the upload dialog or we do nothing (no modification
+        // / blank file)
+        if (createFile != null)
+        {
+            if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
+            {
+                tmpFile = createFile;
+                createFile = null;
+            }
+            else
+            {
+                createFile.delete();
+            }
+        }
+
         if (tmpFile != null)
         {
             importFolder = ((MainActivity) getActivity()).getImportParent();
@@ -376,20 +394,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         // Sample : Picasa image case
                         ActionManager.actionDisplayError(ChildrenBrowserFragment.this, new AlfrescoAppException(
                                 getString(R.string.error_unknown_filepath), true));
-                    }
-                }
-                break;
-            case PublicIntent.REQUESTCODE_CREATE:
-                if (createFile != null)
-                {
-                    if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
-                    {
-                        tmpFile = createFile;
-                        createFile = null;
-                    }
-                    else
-                    {
-                        createFile.delete();
                     }
                 }
                 break;

@@ -34,7 +34,4 @@ public class PublicIntent
     public static final int REQUESTCODE_FILEPICKER = 128;
 
     public static final int REQUESTCODE_SAVE_BACK = 129;
-    
-    public static final int REQUESTCODE_CREATE = 130;
-
 }
