@@ -24,10 +24,13 @@ import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 public class AddContentDialogFragment extends CreateDocumentDialogFragment
 {
@@ -41,7 +44,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType)));
         return adf;
     }
-    
+
     public static AddContentDialogFragment newInstance(Folder folder, File f)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
@@ -54,6 +57,23 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         AddContentDialogFragment adf = new AddContentDialogFragment();
         adf.setArguments(createBundle(folder));
         return adf;
+    }
+
+    @Override
+    public void onStart()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        super.onStart();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
     }
 
     @Override
@@ -70,7 +90,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         alfSession = SessionUtils.getSession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-    
+
     @Override
     public void onDestroyView()
     {

@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Editor;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
@@ -49,6 +50,8 @@ import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -499,7 +502,7 @@ public class RenditionManager
                 {
                     imageView.setImageBitmap(bitmap);
 
-                    //We create preview with a shadow effect around the image.
+                    // We create preview with a shadow effect around the image.
                     if (preview != null)
                     {
                         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
@@ -508,8 +511,16 @@ public class RenditionManager
                         params.width = bitmap.getWidth();
                         params.height = bitmap.getHeight();
                         imageView.setLayoutParams(params);
-                        Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());    
+                        Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
                     }
+                }
+            }
+            else if (preview != null && bitmap == null)
+            {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null && ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message) != null)
+                {
+                    ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message).setVisibility(View.VISIBLE);
                 }
             }
         }

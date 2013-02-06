@@ -81,7 +81,7 @@ public class PreviewFragment extends BaseFragment
         int iconId = R.drawable.mime_folder;
         if (node.isDocument())
         {
-            iconId = MimeTypeManager.getLargeIcon(node.getName());
+            iconId = MimeTypeManager.getIcon(node.getName(), true);
             if (((Document) node).isLatestVersion())
             {
                 renditionManager.preview((ImageView) preview, node, iconId, DisplayUtils.getWidth(getActivity()));

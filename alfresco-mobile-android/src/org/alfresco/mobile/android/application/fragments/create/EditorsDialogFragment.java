@@ -98,6 +98,7 @@ public class EditorsDialogFragment extends DialogFragment
             // warning message.
             lv.setVisibility(View.GONE);
             v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.empty_picture).setVisibility(View.GONE);
             ((TextView) v.findViewById(R.id.empty_text))
                     .setText(R.string.create_document_editor_not_available_description);
             title = R.string.create_document_editor_not_available;
