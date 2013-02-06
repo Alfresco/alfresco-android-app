@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -49,9 +48,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -182,13 +181,13 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                     {
                         // During Creation on a specific folder.
                         childFragment.setCreateFile(newFile);
-                        childFragment.startActivityForResult(intent, IntentIntegrator.REQUESTCODE_CREATE);
+                        childFragment.startActivity(intent);
                     }
                     else if (localFragment != null && localFragment.isVisible())
                     {
                         // During Creation inside the download folder.
-                        getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG).startActivityForResult(
-                                intent, IntentIntegrator.REQUESTCODE_CREATE);
+                        getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG).startActivity(
+                                intent);
                         localFragment.setCreateFile(newFile);
                     }
                 }
