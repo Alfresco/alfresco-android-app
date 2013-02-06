@@ -69,7 +69,7 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
     public static int getIcon(String fileName, boolean isLarge)
     {
         if (!isLarge) { return getIcon(fileName); }
-        int iconId = R.drawable.mime_generic;
+        int iconId = R.drawable.mime_256_generic;
         if (EXT2LARGEICON.get(getExtension(fileName)) != null)
         {
             iconId = EXT2LARGEICON.get(getExtension(fileName));
