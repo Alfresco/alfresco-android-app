@@ -35,6 +35,14 @@
             android:layout_gravity="center"
             android:contentDescription="@string/thumbnail"
             android:scaleType="centerInside" />
+         <TextView
+                    android:id="@+id/preview_message"
+                    style="@style/list_item_bottomtext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/preview_unavailable"
+                    android:visibility="gone" />
     </LinearLayout>
 
 </ScrollView>

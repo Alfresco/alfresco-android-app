@@ -30,33 +30,60 @@
         android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/group_details"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="4dip"
+            android:orientation="horizontal" >
+            
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="2dip"
+                android:background="@color/grey_lighter"
+                >
 
-            <TextView
-                android:id="@+id/title"
-                style="@style/list_item_toptext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Green Grass.JPG" />
+                <ImageView
+                    android:id="@+id/icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/thumbnail"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/mime_file"
+                    android:visibility="visible"
+                    android:gravity="center"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/details"
-                style="@style/list_item_bottomtext"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:layout_width="0dip"
                 android:layout_height="wrap_content"
-                android:text="G419 days ago - 142Kb, version 1.0" />
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="4dip" >
 
-            <TextView
-                android:id="@+id/description"
-                style="@style/description"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
-                android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf"
-                android:visibility="gone" />
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/list_item_toptext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:paddingLeft="0dip"
+                    android:paddingRight="@dimen/properties_details_padding"
+                    android:text="Green Grasssd fgsdf gdsf gds fgds fg fdgsdf gsdf gsdf gsd fgdsfg sdf.JPG" />
+
+                <TextView
+                    android:id="@+id/details"
+                    style="@style/list_item_bottomtext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dip"
+                    android:paddingLeft="0dip"
+                    android:text="G419 days ago - 142Kb, version 1.0" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

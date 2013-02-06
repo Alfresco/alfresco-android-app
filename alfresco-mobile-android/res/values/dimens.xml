@@ -44,6 +44,8 @@
 
     <!-- MAIN MENU DETAILS -->
     <dimen name="properties_padding">5dip</dimen>
+    <dimen name="preview_margin">10dip</dimen>
+    
 
     <!-- FRAGMENT DETAILS -->
     <dimen name="properties_details_padding">15dip</dimen>
