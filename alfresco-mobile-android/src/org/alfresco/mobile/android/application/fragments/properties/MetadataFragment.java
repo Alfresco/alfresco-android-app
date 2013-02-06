@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
@@ -94,21 +96,24 @@ public class MetadataFragment extends BaseFragment
         // Description
         Integer generalPropertyTitle = null;
         TextView tv = (TextView) v.findViewById(R.id.description);
+        List<String>  filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             ((TextView)v.findViewById(R.id.description_title)).setText(R.string.metadata_general);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
+            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());;
+            filter.add(ContentModel.PROP_NAME);
         }
         else
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
             generalPropertyTitle = R.string.metadata_general;
         }
-
+        
         // ASPECTS
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
@@ -119,7 +124,7 @@ public class MetadataFragment extends BaseFragment
     }
 
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
-            boolean check, Integer overrideAspectTitle)
+            boolean check, Integer overrideAspectTitle, List<String> filters)
     {
         if (!check || node.hasAspect(aspect))
         {
@@ -144,7 +149,7 @@ public class MetadataFragment extends BaseFragment
             ViewGroup groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
             for (Entry<String, Integer> map : PropertyManager.getPropertyLabel(aspect).entrySet())
             {
-                if (node.getProperty(map.getKey()) != null && node.getProperty(map.getKey()).getValue() != null)
+                if (node.getProperty(map.getKey()) != null && node.getProperty(map.getKey()).getValue() != null && !filters.contains(map.getKey()))
                 {
                     v = inflater.inflate(R.layout.sdk_property_row, null);
                     tv = (TextView) v.findViewById(R.id.propertyName);
@@ -171,6 +176,6 @@ public class MetadataFragment extends BaseFragment
 
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect)
     {
-        createAspectPanel(inflater, parentview, node, aspect, true, null);
+        createAspectPanel(inflater, parentview, node, aspect, true, null, new ArrayList<String>(0));
     }
 }

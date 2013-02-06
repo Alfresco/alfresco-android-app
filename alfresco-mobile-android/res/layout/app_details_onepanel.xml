@@ -60,23 +60,6 @@
                     android:paddingLeft="0dip"
                     android:text="G419 days ago - 142Kb, version 1.0" />
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:paddingLeft="2dip" >
-
-                <ImageView
-                    android:id="@+id/icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/thumbnail"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/mime_file"
-                    android:visibility="gone" />
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

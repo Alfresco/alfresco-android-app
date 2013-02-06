@@ -18,7 +18,9 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -148,19 +150,22 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         // Description
         Integer generalPropertyTitle = null;
         tv = (TextView) v.findViewById(R.id.description);
+        List<String>  filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0
                 && v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
+            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());;
+            filter.add(ContentModel.PROP_NAME);
         }
         else if (v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
             generalPropertyTitle = R.string.metadata;
         }
-
+        
         // TAB
         if (savedInstanceState != null)
         {
@@ -174,7 +179,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
