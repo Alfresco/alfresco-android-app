@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.application.fragments.browser.local.FileActio
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -41,7 +40,6 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.content.ActivityNotFoundException;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -239,27 +237,26 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
     }
-
+    
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void onResume()
     {
-        switch (requestCode)
+        super.onResume();
+        
+        // If the fragment is resumed after user content creation action, we
+        // have to check if the file has been modified or not. Depending on
+        // result we prompt the upload dialog or we do nothing (no modification
+        // / blank file)
+        if (createFile != null)
         {
-            case PublicIntent.REQUESTCODE_CREATE:
-                if (createFile != null)
-                {
-                    if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
-                    {
-                        refresh();
-                    }
-                    else
-                    {
-                        createFile.delete();
-                    }
-                }
-                break;
-            default:
-                break;
+            if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
+            {
+                refresh();
+            }
+            else
+            {
+                createFile.delete();
+            }
         }
     }
 
