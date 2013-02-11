@@ -42,7 +42,8 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="@string/preview_unavailable"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:layout_margin="0dip" />
     </LinearLayout>
 
 </ScrollView>
