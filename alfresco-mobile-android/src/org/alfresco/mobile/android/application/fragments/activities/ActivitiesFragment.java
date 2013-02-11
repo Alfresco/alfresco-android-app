@@ -86,14 +86,15 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
             identifier = item.getData(CloudConstant.OBJECTID_VALUE);
         }
 
-        if (identifier != null)
+        //Not necessary to enable touch on delete file.
+        if (identifier != null && !"org.alfresco.documentlibrary.file-deleted".equals(item.getType()))
         {
             NodeLoaderCallback call = new NodeLoaderCallback(getActivity(), alfSession, identifier);
             LoaderManager lm = getLoaderManager();
             lm.restartLoader(NodeLoader.ID, null, call);
             lm.getLoader(NodeLoader.ID).forceLoad();
+            DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
-        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 
     // //////////////////////////////////////////////////////////////////////

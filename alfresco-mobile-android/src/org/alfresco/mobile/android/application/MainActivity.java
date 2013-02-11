@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
@@ -219,19 +220,21 @@ public class MainActivity extends Activity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
-        
-        //Transfer downloads to new folder structure if they haven't been already.
+
+        // Transfer downloads to new folder structure if they haven't been
+        // already.
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!prefs.getBoolean("filesmigrated", false))
         {
-            File oldDownloads = StorageManager.getOldDownloadFolder (this);
-            File newDownloads = StorageManager.getPrivateFolder (this, "", "", "");
-            
+            File oldDownloads = StorageManager.getOldDownloadFolder(this);
+            File newDownloads = StorageManager.getPrivateFolder(this, "", "", "");
+
             if (IOUtils.isFolderEmpty(oldDownloads) == false)
             {
-                if (oldDownloads != null  &&  newDownloads != null)
+                if (oldDownloads != null && newDownloads != null)
                 {
-                    IOUtils.transferFilesBackground (oldDownloads.getPath(), newDownloads.getPath(), StorageManager.DLDIR, true, true);
+                    IOUtils.transferFilesBackground(oldDownloads.getPath(), newDownloads.getPath(),
+                            StorageManager.DLDIR, true, true);
                     prefs.edit().putBoolean("filesmigrated", true).commit();
                 }
             }
@@ -292,6 +295,15 @@ public class MainActivity extends Activity
                 setSessionState(SESSION_ACTIVE);
                 setProgressBarIndeterminateVisibility(false);
 
+                if (getSession() instanceof RepositorySession)
+                {
+                    DisplayUtils.switchSingleOrTwo(this, false);
+                }
+                else if (getSession() instanceof CloudSession)
+                {
+                    DisplayUtils.switchSingleOrTwo(this, true);
+                }
+
                 // Remove OAuthFragment if one
                 if (getFragment(AccountOAuthFragment.TAG) != null)
                 {
@@ -343,6 +355,7 @@ public class MainActivity extends Activity
                                 AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
                                 FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
                                         AccountOAuthFragment.TAG, true);
+                                DisplayUtils.switchSingleOrTwo(this, true);
                                 break;
                             }
                         }
@@ -668,7 +681,8 @@ public class MainActivity extends Activity
                 }
                 else
                 {
-                    File folder = StorageManager.getDownloadFolder(this, currentAccount.getUrl(), currentAccount.getUsername());
+                    File folder = StorageManager.getDownloadFolder(this, currentAccount.getUrl(),
+                            currentAccount.getUsername());
                     if (folder != null)
                     {
                         addLocalFileNavigationFragment(folder);
@@ -681,7 +695,7 @@ public class MainActivity extends Activity
                 break;
             case R.id.menu_prefs:
                 startActivity(new Intent(this, Prefs.class));
-                break;                
+                break;
             case R.id.menu_about:
                 displayAbout();
                 break;
@@ -852,6 +866,8 @@ public class MainActivity extends Activity
     {
         if (getFragment(AboutFragment.TAG) != null)
         {
+            // If reclick on About and if is visible, it removes the
+            // AboutFragment.
             getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         else
@@ -859,7 +875,7 @@ public class MainActivity extends Activity
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
         }
-        // DisplayUtils.switchSingleOrTwo(this, false);
+        DisplayUtils.switchSingleOrTwo(this, true);
     }
 
     public void displayMainMenu()
@@ -1166,8 +1182,29 @@ public class MainActivity extends Activity
                 DisplayUtils.getLeftPane(this).setVisibility(View.VISIBLE);
                 DisplayUtils.getCentralPane(this).setVisibility(View.GONE);
 
+                Fragment fr = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this));
+
+                boolean backStack = true;
+
+                if (fr instanceof AccountFragment)
+                {
+                    ((AccountFragment) fr).unselect();
+                    backStack = false;
+                }
+                
+                if (fr instanceof ChildrenBrowserFragment)
+                {
+                    ((ChildrenBrowserFragment) fr).unselect();
+                    backStack = false;
+                }
+
+                if (fr instanceof ActivitiesFragment)
+                {
+                    backStack = false;
+                }
+
                 // Special case : if Activities Fragment
-                if (getFragment(ActivitiesFragment.TAG) == null && getFragment(ChildrenBrowserFragment.TAG) == null)
+                if (backStack)
                 {
                     getFragmentManager().popBackStack();
                 }

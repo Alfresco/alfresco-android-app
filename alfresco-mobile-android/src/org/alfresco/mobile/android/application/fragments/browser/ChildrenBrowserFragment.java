@@ -348,6 +348,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         l.setItemChecked(position, true);
         boolean b = startSelection(v, n);
         ((MainActivity) getActivity()).addPropertiesFragment(n);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
         return b;
     };
 
@@ -590,6 +591,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         this.createFile = newFile;
         this.lastModifiedDate = newFile.lastModified();
+    }
+    
+    public void unselect()
+    {
+        selectedItems.clear();
     }
 
 }

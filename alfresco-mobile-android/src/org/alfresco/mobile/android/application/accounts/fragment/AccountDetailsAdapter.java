@@ -82,12 +82,12 @@ public class AccountDetailsAdapter extends ArrayAdapter<Account>
 
             if (selectedItems != null && selectedItems.contains(item))
             {
-                ((LinearLayout) v.icon.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(
+                ((LinearLayout) v.icon.getParent().getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(
                         R.drawable.list_longpressed_holo));
             }
             else
             {
-                ((LinearLayout) v.icon.getParent()).setBackgroundDrawable(null);
+                ((LinearLayout) v.icon.getParent().getParent()).setBackgroundDrawable(null);
             }
 
         }
