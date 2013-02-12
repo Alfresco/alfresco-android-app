@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -45,7 +45,7 @@ import android.widget.TextView;
  * Specific override for Uploading content. This fragment is responsible to
  * display the upload UI component. When user click on upload button, it creates
  * an UploadFragment (UI less) responsible to maintain callback methods. The
- * UploadFragment may diseapear to support batch upload/download.
+ * UploadFragment may disappear to support batch upload/download.
  * 
  * @author Jean Marie Pascal
  */
@@ -58,6 +58,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
     public static final String ARGUMENT_CONTENT_FILE = "contentFileURI";
 
     public static final String ARGUMENT_CONTENT_NAME = "contentName";
+
+    public static final String ARGUMENT_IS_CREATION = "isCreation";
 
     public static final String ARGUMENT_CONTENT_DESCRIPTION = "contentDescription";
 
@@ -73,14 +75,15 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
     public static Bundle createBundle(Folder folder)
     {
-        return createBundle(folder, null);
+        return createBundle(folder, null, null);
     }
 
-    public static Bundle createBundle(Folder folder, ContentFile f)
+    public static Bundle createBundle(Folder folder, ContentFile f, Boolean isCreation)
     {
         Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_FOLDER, folder);
         args.putSerializable(ARGUMENT_CONTENT_FILE, f);
+        args.putBoolean(ARGUMENT_IS_CREATION, isCreation);
         return args;
     }
 
@@ -137,26 +140,15 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
                 b.putAll(getArguments());
                 bcreate.setEnabled(false);
-
-                // Use UploadFragment to manage upload
-                UploadFragment uploadFragment = (UploadFragment) getFragmentManager().findFragmentByTag(
-                        UploadFragment.TAG);
-                if (uploadFragment == null)
-                {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    uploadFragment = UploadFragment.newInstance(b);
-                    fragmentTransaction.add(uploadFragment, UploadFragment.TAG);
-                    fragmentTransaction.commit();
-                }
-                else
-                {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    fragmentTransaction.remove(uploadFragment);
-                    uploadFragment = UploadFragment.newInstance(b);
-                    fragmentTransaction.add(uploadFragment, UploadFragment.TAG);
-                    fragmentTransaction.commit();
-                }
+                
+                //Dismiss the dialog
                 CreateDocumentDialogFragment.this.dismiss();
+                
+                // Use UploadFragment to manage upload
+                FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                UploadFragment uploadFragment = UploadFragment.newInstance(b);
+                fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
+                fragmentTransaction.commit();
             }
         });
 
@@ -199,7 +191,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         return v;
     }
 
-    public void onValidateTags()
+    private void onValidateTags()
     {
         String s = editTags.getText().toString();
         String[] listValues = s.split(",");

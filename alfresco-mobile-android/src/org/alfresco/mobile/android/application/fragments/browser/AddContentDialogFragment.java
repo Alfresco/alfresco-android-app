@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -30,25 +30,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Toast;
 
+/**
+ * Display a dialogFragment to retrieve user information about the document he
+ * wants to create/upload to the repository.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AddContentDialogFragment extends CreateDocumentDialogFragment
 {
     public AddContentDialogFragment()
     {
     }
 
-    public static AddContentDialogFragment newInstance(Folder folder, File f, String MIMEType)
+    public static AddContentDialogFragment newInstance(Folder folder, File f, String MIMEType, Boolean isCreation)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType)));
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType), isCreation));
         return adf;
     }
 
-    public static AddContentDialogFragment newInstance(Folder folder, File f)
+    public static AddContentDialogFragment newInstance(Folder folder, File f, Boolean isCreation)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f)));
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f), isCreation));
         return adf;
     }
 

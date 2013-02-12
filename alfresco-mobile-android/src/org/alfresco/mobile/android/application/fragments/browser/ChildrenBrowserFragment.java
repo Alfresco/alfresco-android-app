@@ -1,5 +1,5 @@
 /*******************************************************************************
-0 * Copyright (C) 2005-2012 Alfresco Software Limited.
+0 * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -73,6 +73,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
+/**
+ * Display a dialogFragment to retrieve user information about the document he
+ * wants to create/upload to the repository.
+ * 
+ * @author Jean Marie Pascal
+ */
 @TargetApi(11)
 public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment
 {
@@ -148,11 +154,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
             {
                 tmpFile = createFile;
-                createFile = null;
             }
             else
             {
                 createFile.delete();
+                createFile = null;
             }
         }
 
@@ -405,18 +411,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     public void createFile(File f)
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(AddContentDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-
         // Create and show the dialog.
-        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f);
-
-        newFragment.show(ft, AddContentDialogFragment.TAG);
+        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f, (createFile != null));
+        newFragment.show(getActivity().getFragmentManager(), AddContentDialogFragment.TAG);
         tmpFile = null;
+        createFile = null;
     }
 
     public void createFolder()
@@ -454,7 +453,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             }
 
             @Override
-            public void onExeceptionDuringCreation(Exception e)
+            public void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name, Map<String, Serializable> props,
+                    ContentFile contentFile)
             {
                 ActionManager.actionDisplayError(ChildrenBrowserFragment.this, e);
             }
@@ -478,12 +478,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             NodeActions.delete(getActivity(), this, selectedItems.get(0));
         }
-    }
-
-    public void createDocument()
-    {
-        // TODO Auto-generated method stub
-
     }
 
     // //////////////////////////////////////////////////////////////////////

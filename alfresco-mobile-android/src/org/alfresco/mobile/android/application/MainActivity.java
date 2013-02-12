@@ -364,6 +364,22 @@ public class MainActivity extends Activity
                 return;
             }
 
+            // Intent for Removing Fragment + eventual associated loader.
+            if (IntentIntegrator.ACTION_REMOVE_FRAGMENT.equals(intent.getAction()))
+            {
+                Fragment fr = getFragment(intent.getExtras().getString(IntentIntegrator.REMOVE_FRAGMENT_TAG));
+                if (fr != null)
+                {
+                    FragmentDisplayer.remove(this, fr, false);
+                }
+                int loaderId = intent.getExtras().getInt(IntentIntegrator.REMOVE_LOADER_ID);
+                if (loaderId != 0)
+                {
+                    getLoaderManager().destroyLoader(loaderId);
+                }
+                return;
+            }
+
             // Intent for Display Errors
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
@@ -1098,12 +1114,15 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_CREATE_DOCUMENT:
+                String fragmentTag = LocalFileBrowserFragment.TAG;
                 if (getFragment(ChildrenBrowserFragment.TAG) != null)
                 {
                     importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG))
                             .getImportFolder();
+                    fragmentTag = ChildrenBrowserFragment.TAG;
                 }
-                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount);
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount,
+                        fragmentTag);
                 dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
 
@@ -1191,7 +1210,7 @@ public class MainActivity extends Activity
                     ((AccountFragment) fr).unselect();
                     backStack = false;
                 }
-                
+
                 if (fr instanceof ChildrenBrowserFragment)
                 {
                     ((ChildrenBrowserFragment) fr).unselect();

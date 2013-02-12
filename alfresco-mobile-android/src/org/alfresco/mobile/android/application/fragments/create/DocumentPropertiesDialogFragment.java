@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_FRAGMENT_TAG;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_ACCOUNT;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
 import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.PARAM_EDITOR;
@@ -35,6 +36,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -76,11 +78,26 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        final String fragmentTag = (String) getArguments().get(PARAM_FRAGMENT_TAG);
         final Account currentAccount = (Account) getArguments().get(PARAM_ACCOUNT);
         final DocumentTypeRecord documentType = (DocumentTypeRecord) getArguments().get(PARAM_DOCUMENT_TYPE);
         final ResolveInfo editor = (ResolveInfo) getArguments().get(PARAM_EDITOR);
-        final File folderStorage = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
-                currentAccount.getUsername());
+
+        File f = null;
+        if (LocalFileBrowserFragment.TAG.equals(fragmentTag))
+        {
+            // If creation inside the download area, we store it inside
+            // download.
+            f = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(), currentAccount.getUsername());
+        }
+        else
+        {
+            // If creation inside a repository folder, we store temporarly
+            // inside the capture.
+            f = StorageManager.getCaptureFolder(getActivity(), currentAccount.getUrl(), currentAccount.getUsername());
+        }
+
+        final File folderStorage = f;
 
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View v = inflater.inflate(R.layout.app_create_document, (ViewGroup) this.getView());
@@ -136,7 +153,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
                 File newFile = new File(folderStorage, fileName);
 
-                if (newFile.exists())
+                if (newFile.exists() && LocalFileBrowserFragment.TAG.equals(fragmentTag))
                 {
                     // If the file already exist, we prompt a warning message.
                     errorMessage.setVisibility(View.VISIBLE);
@@ -174,21 +191,20 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
                 try
                 {
-                    ChildrenBrowserFragment childFragment = (ChildrenBrowserFragment) getFragmentManager()
-                            .findFragmentByTag(ChildrenBrowserFragment.TAG);
-                    LocalFileBrowserFragment localFragment = (LocalFileBrowserFragment) getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG);
-                    if (childFragment != null && childFragment.isVisible())
+                    Fragment fr = getFragmentManager().findFragmentByTag(fragmentTag);
+                    if (fr != null && fr.isVisible())
                     {
-                        // During Creation on a specific folder.
-                        childFragment.setCreateFile(newFile);
-                        childFragment.startActivity(intent);
-                    }
-                    else if (localFragment != null && localFragment.isVisible())
-                    {
-                        // During Creation inside the download folder.
-                        getFragmentManager().findFragmentByTag(LocalFileBrowserFragment.TAG).startActivity(
-                                intent);
-                        localFragment.setCreateFile(newFile);
+                        if (fr instanceof ChildrenBrowserFragment)
+                        {
+                            // During Creation on a specific folder.
+                            ((ChildrenBrowserFragment) fr).setCreateFile(newFile);
+                        }
+                        else if (fr instanceof LocalFileBrowserFragment)
+                        {
+                            // During Creation inside the download folder.
+                            ((LocalFileBrowserFragment) fr).setCreateFile(newFile);
+                        }
+                        fr.startActivity(intent);
                     }
                 }
                 catch (ActivityNotFoundException e)
@@ -201,7 +217,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();
     }
-    
+
     @Override
     public void onStart()
     {
@@ -213,6 +229,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);
+        // Avoid background stretching
         if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
         {
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
