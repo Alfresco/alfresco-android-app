@@ -90,11 +90,11 @@ public abstract class DeviceCapture implements Serializable
         
         if (MIMEType != null)
         {
-            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, MIMEType);
+            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, MIMEType, true);
         }
         else
         {
-            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload);
+            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, true);
         }
         
         newFragment.show(ft, AddContentDialogFragment.TAG);

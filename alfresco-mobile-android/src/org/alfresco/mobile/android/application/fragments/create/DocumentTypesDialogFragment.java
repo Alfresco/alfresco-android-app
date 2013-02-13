@@ -50,6 +50,11 @@ public class DocumentTypesDialogFragment extends DialogFragment
      * Used for retrieving default storage folder. Value must be an Account object.
      */
     public static final String PARAM_ACCOUNT = "account";
+    
+    /**
+     * Used for retrieving from which Fragment the wizard has been started.
+     */
+    public static final String PARAM_FRAGMENT_TAG = "FragmentTag";
 
     /**
      * Used for retrieving document information during document creation.
@@ -63,11 +68,12 @@ public class DocumentTypesDialogFragment extends DialogFragment
      * @param currentAccount : Alfresco Account.
      * @return a dialogfragment to dipslay file type creation list.
      */
-    public static DocumentTypesDialogFragment newInstance(Account currentAccount)
+    public static DocumentTypesDialogFragment newInstance(Account currentAccount, String fragmentTag)
     {
         DocumentTypesDialogFragment fragment = new DocumentTypesDialogFragment();
         Bundle args = new Bundle();
         args.putSerializable(PARAM_ACCOUNT, currentAccount);
+        args.putSerializable(PARAM_FRAGMENT_TAG, fragmentTag);
         fragment.setArguments(args);
         return fragment;
     }

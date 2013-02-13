@@ -156,6 +156,12 @@ public abstract class DisplayUtils
     // ///////////////////////////////////////////
     // SHOW / HIDE 2 OR SINGLE PANE
     // ///////////////////////////////////////////
+    /**
+     * Utility method to display or not the central panel in 7" configuration.<br/>
+     * Portrait mode is single panel instead of landscape is 2 panels.
+     * @param activity : 
+     * @param isNull : Indicate if there's already a fragment in the central panel.
+     */
     public static void switchSingleOrTwo(Activity activity, boolean isNull)
     {
         if (activity.getResources().getBoolean(R.bool.tablet_middle) && hasCentralPane(activity))

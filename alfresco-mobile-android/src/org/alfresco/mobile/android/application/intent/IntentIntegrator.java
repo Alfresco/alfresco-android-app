@@ -64,4 +64,11 @@ public class IntentIntegrator extends PublicIntent
     public static final String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG";
     
     public static final String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
+    
+    public static final String ACTION_REMOVE_FRAGMENT = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT";
+
+    public static final String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
+
+    public static final String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
+
 }

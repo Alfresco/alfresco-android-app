@@ -102,6 +102,7 @@
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_ERROR" />
                 <action android:name="org.alfresco.mobile.android.intent.DISPLAY_DIALOG" />
+                <action android:name="org.alfresco.mobile.android.intent.REMOVE_FRAGMENT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

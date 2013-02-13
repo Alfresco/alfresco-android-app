@@ -425,6 +425,8 @@ public class RenditionManager
         @Override
         protected Bitmap doInBackground(Void... params)
         {
+            if (session == null) { return null; }
+
             Bitmap bm = null;
             ContentStream cf = null;
             String key = getId();

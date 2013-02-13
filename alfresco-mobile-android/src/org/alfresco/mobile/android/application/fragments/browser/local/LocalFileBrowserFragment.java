@@ -232,10 +232,13 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     // //////////////////////////////////////////////////////////////////////
     public void getMenu(Menu menu)
     {
-        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
-                + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
-        mi.setIcon(android.R.drawable.ic_menu_add);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        if (getMode() == MODE_LISTING)
+        {
+            MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
+                    + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
+            mi.setIcon(android.R.drawable.ic_menu_add);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
     }
     
     @Override
