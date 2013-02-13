@@ -245,6 +245,8 @@
     
     <!-- Upload -->
     <string name="action_processing">Processing...</string>
+    <string name="action_upload_error">Unable to upload...</string>
+    
     
     <!-- Create Document -->
     <string name="open_play_store">Open Google Play Store</string>
@@ -257,6 +259,8 @@
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
     <string name="create_document_filename_error">This filename is already in use.</string>
+    <string name="create_document_save">An error occured during the upload. Your file is saved inside "Downloads".</string>
+    
     
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>

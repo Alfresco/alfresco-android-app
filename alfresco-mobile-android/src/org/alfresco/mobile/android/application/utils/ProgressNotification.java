@@ -49,6 +49,8 @@ public class ProgressNotification extends Service
 
     private static final int FLAG_UPLOAD_PROCESSING = -2;
 
+    public static final int FLAG_UPLOAD_ERROR = -3;
+
     private static Notification notification = null;
 
     private static Activity parent = null;
@@ -95,16 +97,28 @@ public class ProgressNotification extends Service
                 int dataSize = params.getInt(PARAM_DATA_SIZE);
 
                 // UPLOAD PROCESS IS FINISHED : Notification Upload Complete<
-                if (incrementBy != null && incrementBy == FLAG_UPLOAD_COMPLETED)
+                if (incrementBy != null && (incrementBy == FLAG_UPLOAD_COMPLETED || incrementBy == FLAG_UPLOAD_ERROR))
                 {
                     if (AndroidVersion.isICSOrAbove())
                     {
-                        tmpNotification = createNotification(ctxt, params, FLAG_UPLOAD_COMPLETED);
+                        tmpNotification = createNotification(ctxt, params, incrementBy);
                     }
                     else
                     {
+                        String title = null;
+                        switch (incrementBy)
+                        {
+                            case FLAG_UPLOAD_ERROR:
+                                title =  ctxt.getString(R.string.action_upload_error);
+                                break;
+                            case FLAG_UPLOAD_COMPLETED:
+                                title = ctxt.getString(R.string.download_complete);
+                                break;
+                            default:
+                                break;
+                        }
                         tmpNotification.contentView.setTextViewText(R.id.status_text,
-                                ctxt.getText(R.string.download_complete));
+                                title);
                         tmpNotification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
@@ -195,6 +209,11 @@ public class ProgressNotification extends Service
         {
             builder.setContentTitle(c.getText(R.string.action_processing));
         }
+        else if (FLAG_UPLOAD_ERROR == value)
+        {
+            builder.setContentTitle(params.getString(PARAM_DATA_NAME));
+            builder.setContentText(c.getText(R.string.create_document_save));
+        }
         else
         {
             builder.setContentTitle(c.getText(R.string.upload_in_progress));
@@ -205,17 +224,18 @@ public class ProgressNotification extends Service
 
         if (AndroidVersion.isICSOrAbove())
         {
-            if (FLAG_UPLOAD_COMPLETED == value)
+            switch (value)
             {
-                builder.setProgress(0, 0, false);
-            }
-            else if (FLAG_UPLOAD_PROCESSING == value)
-            {
-                builder.setProgress(0, 0, true);
-            }
-            else
-            {
-                builder.setProgress(params.getInt(PARAM_DATA_SIZE), value, false);
+                case FLAG_UPLOAD_ERROR:
+                case FLAG_UPLOAD_COMPLETED:
+                    builder.setProgress(0, 0, false);
+                    break;
+                case FLAG_UPLOAD_PROCESSING:
+                    builder.setProgress(0, 0, true);
+                    break;
+                default:
+                    builder.setProgress(params.getInt(PARAM_DATA_SIZE), value, false);
+                    break;
             }
         }
 

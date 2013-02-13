@@ -134,6 +134,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
                 AccountTypesFragment.TAG, true);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -148,6 +149,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
                 R.string.action_add_account);
         mi.setIcon(R.drawable.ic_account_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+
+    public void unselect()
+    {
+        selectedAccounts.clear();
     }
 
 }
