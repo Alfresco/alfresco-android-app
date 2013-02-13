@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -41,7 +40,6 @@ import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -51,7 +49,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.text.format.DateFormat;
 import android.util.Log;
 
 /**
@@ -148,21 +145,20 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             currentAccount = SessionUtils.getAccount(getActivity());
 
             Bundle progressBundle = new Bundle();
-            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-
             // Create the first Creation Notification.
-            if (f.getClass() == ContentFileProgressImpl.class)
+            if (contentFile.getClass() == ContentFileProgressImpl.class)
             {
-                ((ContentFileProgressImpl) f).setFilename(name);
+                ((ContentFileProgressImpl) contentFile).setFilename(name);
                 progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, name);
             }
             else
             {
-                progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, f.getFile().getName());
+                progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, contentFile.getFile().getName());
             }
 
-            progressBundle.putInt(ProgressNotification.PARAM_DATA_SIZE, (int) f.getFile().length());
-            progressBundle.putInt(ProgressNotification.PARAM_DATA_INCREMENT, (int) (f.getFile().length() / 10));
+            progressBundle.putInt(ProgressNotification.PARAM_DATA_SIZE, (int) contentFile.getFile().length());
+            progressBundle.putInt(ProgressNotification.PARAM_DATA_INCREMENT,
+                    (int) (contentFile.getFile().length() / 10));
 
             ProgressNotification.createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
 
@@ -199,7 +195,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                     if (dlFile.exists())
                     {
                         String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss-").format(new Date());
-                        dlFile = new File(folderStorage, timeStamp + contentFile.getFileName() );
+                        dlFile = new File(folderStorage, timeStamp + contentFile.getFileName());
                     }
 
                     if (contentFile.getFile().renameTo(dlFile))
