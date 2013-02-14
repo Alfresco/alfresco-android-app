@@ -1015,11 +1015,17 @@ public class MainActivity extends Activity
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
             return true;
         }
-
+        
         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
-            ((AccountFragment) getFragment(AccountFragment.TAG)).getMenu(menu);
+            AccountFragment.getMenu(menu);
+            return true;
+        }
+        
+        if (isVisible(BrowserSitesFragment.TAG))
+        {
+            BrowserSitesFragment.getMenu(menu);
             return true;
         }
 
@@ -1168,6 +1174,9 @@ public class MainActivity extends Activity
                 return true;
             case MenuActionItem.MENU_DELETE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).delete();
+                return true;
+            case MenuActionItem.MENU_SITE_LIST_REQUEST:
+                ((BrowserSitesFragment) getFragment(BrowserSitesFragment.TAG)).displayJoinSiteRequests();
                 return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();

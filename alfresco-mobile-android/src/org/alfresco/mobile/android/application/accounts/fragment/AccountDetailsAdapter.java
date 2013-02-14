@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.AdapterUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -82,12 +83,12 @@ public class AccountDetailsAdapter extends ArrayAdapter<Account>
 
             if (selectedItems != null && selectedItems.contains(item))
             {
-                ((LinearLayout) v.icon.getParent().getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(
-                        R.drawable.list_longpressed_holo));
+                UIUtils.setBackground(((LinearLayout) v.icon.getParent().getParent()), getContext().getResources()
+                        .getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                ((LinearLayout) v.icon.getParent().getParent()).setBackgroundDrawable(null);
+                UIUtils.setBackground(((LinearLayout) v.icon.getParent().getParent()), null);
             }
 
         }
