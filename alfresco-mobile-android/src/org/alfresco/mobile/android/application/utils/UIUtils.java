@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 /**
- * Utility arounf UI Management.
+ * Utility around UI Management.
  * 
  * @author Jean Marie Pascal
  */

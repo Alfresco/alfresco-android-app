@@ -93,6 +93,6 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
     @Override
     public void onLoaderReset(Loader<LoaderResult<Void>> arg0)
     {
-        // TODO Auto-generated method stub
+        //Do Nothing
     }
 }

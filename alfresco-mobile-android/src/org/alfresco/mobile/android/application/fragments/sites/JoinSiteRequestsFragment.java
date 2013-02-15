@@ -77,7 +77,7 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<List<JoinSiteRequest>>> arg0,
+    public void onLoadFinished(Loader<LoaderResult<List<JoinSiteRequest>>> loader,
             LoaderResult<List<JoinSiteRequest>> results)
     {
         if (adapter == null)
@@ -95,10 +95,9 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<List<JoinSiteRequest>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<List<JoinSiteRequest>>> loader)
     {
-        // TODO Auto-generated method stub
-
+        //Do Nothing
     }
 
     @SuppressWarnings("unchecked")
