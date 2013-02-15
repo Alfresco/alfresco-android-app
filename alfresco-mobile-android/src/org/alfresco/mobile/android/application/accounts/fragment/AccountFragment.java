@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -141,7 +141,7 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
 
-    public void getMenu(Menu menu)
+    public static void getMenu(Menu menu)
     {
         MenuItem mi;
 

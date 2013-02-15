@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -67,12 +68,12 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         vh.bottomText.setText(createContentBottomText(getContext(), item));
         if (selectedItems != null && selectedItems.contains(item))
         {
-            ((LinearLayout) vh.choose.getParent()).setBackgroundDrawable(getContext().getResources().getDrawable(
+            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),getContext().getResources().getDrawable(
                     R.drawable.list_longpressed_holo));
         }
         else
         {
-            ((LinearLayout) vh.choose.getParent()).setBackgroundDrawable(null);
+            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
         }
     }
 
