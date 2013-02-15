@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -17,27 +17,51 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.sites;
 
+import java.util.ArrayList;
+
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 
-public class BrowserSitesFragment extends SitesFragment implements OnTabChangeListener
+/**
+ * Fragment to display the list of sites depending on criteria like favorite,
+ * all, user sites.
+ * 
+ * @author Jean Marie Pascal
+ */
+public class BrowserSitesFragment extends SitesFragment implements RefreshFragment, OnTabChangeListener
 {
     public static final String TAG = "BrowserSitesFragment";
+
+    public static final String TAB_ALL_SITES = "All";
+
+    public static final String TAB_MY_SITES = "My";
+
+    public static final String TAB_FAV_SITES = "Fav";
+
+    private String currentTabId = TAB_MY_SITES;
 
     private TabHost mTabHost;
 
@@ -75,25 +99,24 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onStart()
     {
-        mTabHost.setCurrentTabByTag(MY_SITES);
+        mTabHost.setCurrentTabByTag(currentTabId);
         getActivity().invalidateOptionsMenu();
         getActivity().setTitle(R.string.menu_browse_all_sites);
         super.onStart();
     }
 
-    private static final String ALL_SITES = "All";
-
-    private static final String MY_SITES = "My";
-
-    private static final String FAV_SITES = "Fav";
+    public String getCurrentTabId()
+    {
+        return currentTabId;
+    }
 
     private void setupTabs()
     {
         mTabHost.setup(); // you must call this before adding your tabs!
 
-        mTabHost.addTab(newTab(ALL_SITES, R.string.menu_browse_all_sites, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(MY_SITES, R.string.menu_browse_my_sites, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(FAV_SITES, R.string.menu_browse_favorite_sites, android.R.id.tabcontent));
+        mTabHost.addTab(newTab(TAB_ALL_SITES, R.string.menu_browse_all_sites, android.R.id.tabcontent));
+        mTabHost.addTab(newTab(TAB_MY_SITES, R.string.menu_browse_my_sites, android.R.id.tabcontent));
+        mTabHost.addTab(newTab(TAB_FAV_SITES, R.string.menu_browse_favorite_sites, android.R.id.tabcontent));
         mTabHost.setOnTabChangedListener(this);
     }
 
@@ -108,18 +131,23 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
     @Override
     public void onTabChanged(String tabId)
     {
+        currentTabId = tabId;
+        reloadTab();
+    }
+
+    private void reloadTab()
+    {
         if (SessionUtils.getSession(getActivity()) == null) { return; }
         Bundle b = getListingBundle();
-        if (MY_SITES.equals(tabId))
+        if (TAB_MY_SITES.equals(currentTabId))
         {
             b = createBundleArgs(alfSession.getPersonIdentifier(), false);
         }
-        else if (FAV_SITES.equals(tabId))
+        else if (TAB_FAV_SITES.equals(currentTabId))
         {
             b = createBundleArgs(alfSession.getPersonIdentifier(), true);
         }
         reload(b, loaderId, this);
-
     }
 
     private static Bundle getListingBundle()
@@ -143,4 +171,87 @@ public class BrowserSitesFragment extends SitesFragment implements OnTabChangeLi
         setListShown(true);
         CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
+
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Site>>> arg0, LoaderResult<PagingResult<Site>> results)
+    {
+        if (adapter == null)
+        {
+            adapter = new SiteAdapter(this, R.layout.sdk_list_row, new ArrayList<Site>());
+        }
+        super.onLoadFinished(arg0, results);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+
+    public static void getMenu(Menu menu)
+    {
+        MenuItem mi;
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SITE_LIST_REQUEST, Menu.FIRST
+                + MenuActionItem.MENU_SITE_LIST_REQUEST, R.string.joinsiterequest_list_title);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
+                R.string.refresh);
+        mi.setIcon(R.drawable.ic_refresh);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+
+    public void displayJoinSiteRequests()
+    {
+        JoinSiteRequestsFragment dialogft = JoinSiteRequestsFragment.newInstance(null);
+        dialogft.show(getFragmentManager(), JoinSiteRequestsFragment.TAG);
+    }
+
+    /**
+     * Update and replace a site object inside the listing without requesting an
+     * HTTP call.
+     * 
+     * @param oldSite : original site inside the list
+     * @param newSite : new site to add which replace the old one at the same
+     *            place.
+     */
+    @SuppressWarnings("unchecked")
+    public void update(Site oldSite, Site newSite)
+    {
+        if (adapter != null)
+        {
+            int position = ((ArrayAdapter<Site>) adapter).getPosition(oldSite);
+            ((ArrayAdapter<Site>) adapter).remove(oldSite);
+            ((ArrayAdapter<Site>) adapter).insert(newSite, position);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    /**
+     * Remove a site object inside the listing without requesting an HTTP call.
+     * 
+     * @param site : site to remove
+     */
+    @SuppressWarnings("unchecked")
+    public void remove(Site site)
+    {
+        if (adapter != null)
+        {
+            ((ArrayAdapter<Site>) adapter).remove(site);
+            if (adapter.isEmpty())
+            {
+                displayEmptyView();
+            }
+        }
+    }
+
+    /**
+     * Clear all caches from service side + request a refresh of the list.
+     */
+    @Override
+    public void refresh()
+    {
+        alfSession.getServiceRegistry().getSiteService().clear();
+        reloadTab();
+    }
+
 }

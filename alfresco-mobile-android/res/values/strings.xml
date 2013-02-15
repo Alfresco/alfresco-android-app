@@ -276,4 +276,27 @@
     <string name="loginfirst">Please login to an account first</string>
     
     <string name="metadata_general">General</string>
+    
+    <!-- SITES ACTION -->
+    <string name="action_join_site">Join</string>
+    <string name="action_join_request_site">Request to join</string>
+    <string name="action_leave_site">Leave</string>
+    <string name="action_favorite_site">Mark favorite</string>
+    <string name="action_unfavorite_site">Remove favorite</string>
+    <string name="action_cancel_request">Cancel request</string>
+    <string name="action_pending_request">Pending Join Site Request</string>
+    <string name="action_join_site_validation">You are now member of "%s".</string>
+    <string name="action_leave_site_validation">You have left  "%s".</string>
+    <string name="action_favorite_site_validation">"%s" is marked as favorite.</string>
+    <string name="action_unfavorite_site_validation">"%s" has been removed as favorite.</string>
+    <string name="action_join_request_site_validation">You have requested to join "%s"</string>
+    <string name="empty_joinsiterequest">No Pending request</string>
+    <string name="joinsiterequest_list_title">List of pending request</string>
+    <string name="action_cancel_join_site_request">Your request to join "%s" has been removed.</string>
+    <string name="action_join_site_error">A problem prevented you to join site "%s".</string>
+    <string name="action_leave_site_error">A problem prevented you to leave site "%s".</string>
+    <string name="action_favorite_error">A problem prevented you to favorite site "%s".</string>
+    <string name="action_unfavorite_site_error">A problem prevented you to unfavorite site "%s".</string>
+    
+    
 </resources>
