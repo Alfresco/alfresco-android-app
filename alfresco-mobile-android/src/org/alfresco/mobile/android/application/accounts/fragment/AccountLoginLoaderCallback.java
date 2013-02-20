@@ -122,6 +122,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
             
             activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());
+            SessionUtils.setRenditionManager(activity, null);
             Intent i = new Intent(activity, getActivityClass());
             i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
             activity.startActivity(i);

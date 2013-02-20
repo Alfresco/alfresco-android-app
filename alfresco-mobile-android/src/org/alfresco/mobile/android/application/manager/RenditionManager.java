@@ -226,7 +226,11 @@ public class RenditionManager
 
     private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
     {
-        final String imageKey = identifier;
+        String imageKey = identifier;
+        if (imageKey != null && preview != null)
+        {
+            imageKey = "L" + identifier;
+        }
         final Bitmap bitmap = getBitmapFromMemCache(imageKey);
         if (bitmap != null)
         {
@@ -430,6 +434,10 @@ public class RenditionManager
             Bitmap bm = null;
             ContentStream cf = null;
             String key = getId();
+            if (preview != null)
+            {
+                key = "L" + getId();
+            }
 
             if (mDiskCache != null)
             {
@@ -508,7 +516,7 @@ public class RenditionManager
                     if (preview != null)
                     {
                         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                        imageView.setBackgroundResource(org.alfresco.mobile.android.ui.R.drawable.shadow_picture);
+                        imageView.setBackgroundResource(R.drawable.shadow_picture);
                         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageView.getLayoutParams();
                         params.width = bitmap.getWidth();
                         params.height = bitmap.getHeight();

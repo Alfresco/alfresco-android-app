@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.AlfrescoApplication;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -63,7 +64,21 @@ public class SessionUtils
     {
         return ((AlfrescoApplication) c.getApplicationContext()).getAccount();
     }
+    
+    public static RenditionManager getRenditionManager(Activity c)
+    {
+        if (((AlfrescoApplication) c.getApplicationContext()).geRenditionManager() == null)
+        {
+            SessionUtils.setRenditionManager(c, new RenditionManager((Activity) c, getSession(c)));
+        }
+        return ((AlfrescoApplication) c.getApplicationContext()).geRenditionManager();
+    }
 
+    public static void setRenditionManager(Context c, RenditionManager renditionManager)
+    {
+        ((AlfrescoApplication) c.getApplicationContext()).setRenditionManager(renditionManager);
+    }
+    
     public static void setAccount(Context c, Account account)
     {
         ((AlfrescoApplication) c.getApplicationContext()).setAccount(account);

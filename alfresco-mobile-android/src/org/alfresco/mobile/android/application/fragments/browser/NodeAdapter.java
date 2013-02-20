@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -55,7 +56,7 @@ public class NodeAdapter extends AlphabeticNodeAdapter
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
-        this.renditionManager = new RenditionManager(context, session);
+        this.renditionManager = SessionUtils.getRenditionManager(context);
         this.mode = mode;
     }
 

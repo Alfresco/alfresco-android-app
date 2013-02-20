@@ -135,7 +135,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        renditionManager = new RenditionManager(getActivity(), alfSession);
+        renditionManager = SessionUtils.getRenditionManager(getActivity());
 
         // Header
         TextView tv = (TextView) v.findViewById(R.id.title);
