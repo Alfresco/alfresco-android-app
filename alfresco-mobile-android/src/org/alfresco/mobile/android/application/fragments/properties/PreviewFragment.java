@@ -75,7 +75,7 @@ public class PreviewFragment extends BaseFragment
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        renditionManager = new RenditionManager(getActivity(), alfSession);
+        renditionManager = SessionUtils.getRenditionManager(getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;

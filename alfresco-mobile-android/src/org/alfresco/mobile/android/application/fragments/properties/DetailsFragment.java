@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_ACTION_UPDATE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_UPDATE_DOCUMENT;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,28 +41,27 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.fragments.browser.UploadFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -135,7 +139,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        renditionManager = new RenditionManager(getActivity(), alfSession);
+        renditionManager = SessionUtils.getRenditionManager(getActivity());
 
         // Header
         TextView tv = (TextView) v.findViewById(R.id.title);
@@ -332,13 +336,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     }
 
     @Override
-    public void onDestroy()
+    public void onStop()
     {
         getActivity().invalidateOptionsMenu();
         ((MainActivity) getActivity()).setCurrentNode(null);
-        super.onDestroy();
+        super.onStop();
     }
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -482,17 +486,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
-                                    (Document) node, dlFile);
-                            up.setOnUpdateListener(updateListener);
-                            if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
-                            {
-                                getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                            }
-                            else
-                            {
-                                getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
-                            }
+                            update(dlFile);
                             dialog.dismiss();
                         }
                     });
@@ -533,70 +527,19 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void update(File f)
     {
-        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
-        up.setOnUpdateListener(updateListener);
-        if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
-        {
-            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-        }
-        else
-        {
-            getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
-        }
-    }
+        Bundle b = new Bundle();
+        b.putSerializable(ARGUMENT_CONTENT_FILE, new ContentFileProgressImpl(f));
+        b.putString(ARGUMENT_CONTENT_NAME, node.getName());
+        b.putBoolean(ARGUMENT_ACTION_UPDATE, true);
+        b.putParcelable(ARGUMENT_UPDATE_DOCUMENT, node);
 
-    private OnNodeUpdateListener updateListener = new OnNodeUpdateListener()
-    {
-        public boolean hasWaiting = false;
-
-        @Override
-        public void beforeUpdate(Node node)
+        if (getActivity() instanceof MainActivity)
         {
-            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
-            {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
-            }
-            hasWaiting = true;
-        }
-
-        @Override
-        public void afterUpdate(Node node)
-        {
-
-            DetailsFragment lf = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-            if (lf != null)
-            {
-                Node n = (Node) lf.getArguments().get(ARGUMENT_NODE);
-                if (n != null
-                        && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
-                                NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
-                {
-                    ((MainActivity) getActivity()).setCurrentNode(node);
-                    ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                            PublicIntent.NODE_TYPE);
-                    MessengerManager.showToast(getActivity(),
-                            node.getName() + " " + getResources().getString(R.string.update_sucess));
-                    refreshThumbnail(node);
-                }
-            }
-        }
-
-        @Override
-        public void onExeceptionDuringUpdate(Exception e)
-        {
-            ActionManager.actionDisplayError(DetailsFragment.this, e);
-        }
-    };
-
-    private void refreshThumbnail(Node node)
-    {
-        if (node.isDocument())
-        {
-            if ((ImageView) getActivity().findViewById(R.id.icon) != null)
-            {
-                renditionManager.display((ImageView) getActivity().findViewById(R.id.icon), node,
-                        MimeTypeManager.getIcon(node.getName()));
-            }
+            // Use UploadFragment to manage upload
+            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+            UploadFragment uploadFragment = UploadFragment.newInstance(b);
+            fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
+            fragmentTransaction.commit();
         }
     }
 

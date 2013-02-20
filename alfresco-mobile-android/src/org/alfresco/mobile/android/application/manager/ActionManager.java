@@ -21,12 +21,16 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -103,6 +107,10 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         if (f.getActivity() instanceof HomeScreenActivity)
         {
             intentId = IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN;
+        }
+        if (f.getActivity() instanceof PublicDispatcherActivity)
+        {
+            intentId = IntentIntegrator.ACTION_DISPLAY_ERROR_IMPORT;
         }
         Intent i = new Intent(intentId);
         if (e != null)
@@ -191,5 +199,20 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             }
         }
         c.startActivity(intent);
+    }
+    
+    public static void actionSendContent(Activity activity, File contentFile)
+    {
+        try
+        {
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
+            i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+            activity.startActivity(Intent.createChooser(i, activity.getText(R.string.share_content)));
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(activity, R.string.error_unable_share_content);
+        }
     }
 }

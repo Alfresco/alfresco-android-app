@@ -26,10 +26,14 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -47,15 +51,18 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
 
     private Fragment fragment;
 
+    private int mode;
+
     public SiteAdapter(Activity context, int textViewResourceId, List<Site> listItems)
     {
         super(context, textViewResourceId, listItems);
     }
 
-    public SiteAdapter(Fragment fragment, int textViewResourceId, List<Site> listItems)
+    public SiteAdapter(Fragment fragment, int textViewResourceId, List<Site> listItems, int mode)
     {
         super(fragment.getActivity(), textViewResourceId, listItems);
         this.fragment = fragment;
+        this.mode = mode;
     }
 
     @Override
@@ -63,7 +70,9 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
     {
         super.updateTopText(vh, item);
 
-        ((View) vh.icon).setBackground(getContext().getResources().getDrawable(
+        if (mode == BrowserSitesFragment.MODE_IMPORT) { return; }
+
+        UIUtils.setBackground(((View) vh.icon), getContext().getResources().getDrawable(
                 R.drawable.quickcontact_badge_overlay_light));
 
         vh.icon.setVisibility(View.VISIBLE);
@@ -71,6 +80,7 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
         vh.icon.setOnClickListener(new OnClickListener()
         {
 
+            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
             @Override
             public void onClick(View v)
             {
@@ -79,14 +89,16 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 PopupMenu popup = new PopupMenu(getContext(), v);
                 getMenu(popup.getMenu(), item);
 
-                popup.setOnDismissListener(new OnDismissListener()
-                {
-                    @Override
-                    public void onDismiss(PopupMenu menu)
+                if (AndroidVersion.isICSOrAbove()){
+                    popup.setOnDismissListener(new OnDismissListener()
                     {
-                        selectedOptionItems.clear();
-                    }
-                });
+                        @Override
+                        public void onDismiss(PopupMenu menu)
+                        {
+                            selectedOptionItems.clear();
+                        }
+                    });
+                }
 
                 popup.setOnMenuItemClickListener(SiteAdapter.this);
 

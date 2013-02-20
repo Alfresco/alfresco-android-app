@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_FOLDER;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_DESCRIPTION;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_TAGS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +31,10 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.integration.upload.UploadService;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -53,17 +64,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 {
     public static final String TAG = "CreateContentDialogFragment";
 
-    public static final String ARGUMENT_FOLDER = "folder";
-
-    public static final String ARGUMENT_CONTENT_FILE = "contentFileURI";
-
-    public static final String ARGUMENT_CONTENT_NAME = "contentName";
-
     public static final String ARGUMENT_IS_CREATION = "isCreation";
-
-    public static final String ARGUMENT_CONTENT_DESCRIPTION = "contentDescription";
-
-    public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
 
     private EditText editTags;
 
@@ -122,6 +123,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             public void onClick(View v)
             {
                 Bundle b = new Bundle();
+                b.putAll(getArguments());
                 b.putString(ARGUMENT_CONTENT_NAME, tv.getText().toString());
                 if (desc.getText() != null && desc.getText().length() > 0)
                 {
@@ -138,17 +140,25 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                     b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
                 }
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
-                b.putAll(getArguments());
                 bcreate.setEnabled(false);
-                
-                //Dismiss the dialog
+
+                // Dismiss the dialog
                 CreateDocumentDialogFragment.this.dismiss();
-                
-                // Use UploadFragment to manage upload
-                FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-                UploadFragment uploadFragment = UploadFragment.newInstance(b);
-                fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
-                fragmentTransaction.commit();
+
+                if (getActivity() instanceof MainActivity)
+                {
+                    // Use UploadFragment to manage upload
+                    FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                    UploadFragment uploadFragment = UploadFragment.newInstance(b);
+                    fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
+                    fragmentTransaction.commit();
+                }
+                else if (getActivity() instanceof PublicDispatcherActivity)
+                {
+                    b.putParcelable(UploadService.ARGUMENT_SESSION, SessionUtils.getSession(getActivity()));
+                    UploadService.updateImportService(getActivity(), b);
+                    getActivity().finish();
+                }
             }
         });
 

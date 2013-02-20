@@ -44,9 +44,14 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.ListView;
 
+/**
+ * LocalFileBrowserFragment is responsible to display the content of Download
+ * Folder.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class LocalFileBrowserFragment extends LocalFileExplorerFragment
 {
     public static final String TAG = "LocalFileBrowserFragment";
@@ -127,17 +132,6 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         }
         getLoaderManager().initLoader(LocalFileExplorerLoader.ID, b, this);
         getLoaderManager().getLoader(LocalFileExplorerLoader.ID).forceLoad();
-    }
-
-    @Override
-    public void onStart()
-    {
-        if (getDialog() != null)
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
-        }
-        getActivity().invalidateOptionsMenu();
-        super.onStart();
     }
 
     @Override
@@ -240,12 +234,12 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
     }
-    
+
     @Override
     public void onResume()
     {
         super.onResume();
-        
+
         // If the fragment is resumed after user content creation action, we
         // have to check if the file has been modified or not. Depending on
         // result we prompt the upload dialog or we do nothing (no modification

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -35,6 +35,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
+/**
+ * Manage all local file actions like a sdcard file manager.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class FileActions implements ActionMode.Callback
 {
 
@@ -73,6 +78,11 @@ public class FileActions implements ActionMode.Callback
                 mode.finish();
                 Files.clear();
                 return true;
+            case MenuActionItem.MENU_SHARE:
+                share(fragment, Files.get(0));
+                mode.finish();
+                Files.clear();
+                return true;
             default:
                 break;
         }
@@ -91,12 +101,15 @@ public class FileActions implements ActionMode.Callback
 
         MenuItem mi;
 
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE, R.string.share);
+        mi.setIcon(R.drawable.ic_share);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
         mi.setIcon(R.drawable.ic_edit);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                R.string.delete);
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE, R.string.delete);
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
@@ -146,6 +159,11 @@ public class FileActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////////////
+    public static void share(final Fragment fr, final File file)
+    {
+        ActionManager.actionShareContent(fr, file);
+    }
+
     public static void edit(final Activity activity, final Fragment f, final File file)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
