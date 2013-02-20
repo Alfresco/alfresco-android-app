@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_FOLDER;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_DESCRIPTION;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_TAGS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,17 +64,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 {
     public static final String TAG = "CreateContentDialogFragment";
 
-    public static final String ARGUMENT_FOLDER = "folder";
-
-    public static final String ARGUMENT_CONTENT_FILE = "contentFileURI";
-
-    public static final String ARGUMENT_CONTENT_NAME = "contentName";
-
     public static final String ARGUMENT_IS_CREATION = "isCreation";
-
-    public static final String ARGUMENT_CONTENT_DESCRIPTION = "contentDescription";
-
-    public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
 
     private EditText editTags;
 

@@ -751,7 +751,7 @@ public class MainActivity extends Activity
     {
         sessionState = state;
     }
-    
+
     public void setSessionErrorMessageId(int messageId)
     {
         sessionState = SESSION_ERROR;

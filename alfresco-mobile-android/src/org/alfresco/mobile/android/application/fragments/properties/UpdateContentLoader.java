@@ -22,7 +22,6 @@ import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
@@ -39,7 +38,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
+public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Document>>
 {
 
     /** Unique NodeUpdateLoader identifier. */
@@ -51,7 +50,7 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
     private ContentFile contentFile;
 
     /** Node object to update. */
-    private Node node;
+    private Document node;
 
     /**
      * Update an existing document with current parameters (Content and/or
@@ -74,10 +73,10 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
     }
 
     @Override
-    public LoaderResult<Node> loadInBackground()
+    public LoaderResult<Document> loadInBackground()
     {
-        LoaderResult<Node> result = new LoaderResult<Node>();
-        Node resultNode = null;
+        LoaderResult<Document> result = new LoaderResult<Document>();
+        Document resultNode = null;
 
         try
         {
@@ -145,4 +144,15 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
         return result;
     }
+    
+    public ContentFile getContentFile()
+    {
+        return contentFile;
+    }
+    
+    public Document getDocument()
+    {
+        return node;
+    }
+    
 }

@@ -78,7 +78,8 @@ public class NodeAdapter extends AlphabeticNodeAdapter
     protected void updateBottomText(GenericViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        if (selectedItems != null && selectedItems.contains(item))
+        if (selectedItems != null && selectedItems.size() == 1
+                && selectedItems.get(0).getIdentifier().equals(item.getIdentifier()))
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
                     getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
@@ -89,7 +90,7 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         }
         if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
         {
-            //Disable document : grey font color instead of black
+            // Disable document : grey font color instead of black
             vh.bottomText.setEnabled(false);
         }
         else

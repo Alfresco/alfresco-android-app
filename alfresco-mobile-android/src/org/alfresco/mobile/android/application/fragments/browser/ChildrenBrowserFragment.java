@@ -335,7 +335,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
-            hideDetails = selectedItems.get(0).equals(item);
+            hideDetails = selectedItems.get(0).getIdentifier().equals(item.getIdentifier());
         }
         l.setItemChecked(position, true);
 
@@ -391,6 +391,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
     {
+        
+        if (getActivity() instanceof MainActivity && ((MainActivity) getActivity()).getCurrentNode() != null)
+        {
+            selectedItems.clear();
+            selectedItems.add(((MainActivity) getActivity()).getCurrentNode());
+        }
+        
         if (loader instanceof NodeChildrenLoader)
         {
             parentFolder = ((NodeChildrenLoader) loader).getParentFolder();

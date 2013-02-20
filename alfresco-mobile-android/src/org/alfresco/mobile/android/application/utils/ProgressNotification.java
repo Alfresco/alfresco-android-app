@@ -115,7 +115,7 @@ public class ProgressNotification extends Service
                                 title =  ctxt.getString(R.string.action_upload_error);
                                 break;
                             case FLAG_UPLOAD_COMPLETED:
-                                title = ctxt.getString(R.string.download_complete);
+                                title = ctxt.getString(R.string.upload_complete);
                                 break;
                             default:
                                 break;
