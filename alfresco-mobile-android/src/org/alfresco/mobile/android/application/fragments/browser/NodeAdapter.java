@@ -48,18 +48,29 @@ public class NodeAdapter extends AlphabeticNodeAdapter
 
     private RenditionManager renditionManager;
 
+    private int mode;
+
     public NodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
-            List<Node> selectedItems)
+            List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
         this.renditionManager = new RenditionManager(context, session);
+        this.mode = mode;
     }
 
     @Override
     protected void updateTopText(GenericViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
+        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        {
+            vh.topText.setEnabled(false);
+        }
+        else
+        {
+            vh.topText.setEnabled(true);
+        }
     }
 
     @Override
@@ -68,12 +79,21 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         vh.bottomText.setText(createContentBottomText(getContext(), item));
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),getContext().getResources().getDrawable(
-                    R.drawable.list_longpressed_holo));
+            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                    getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+        }
+        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        {
+            //Disable document : grey font color instead of black
+            vh.bottomText.setEnabled(false);
+        }
+        else
+        {
+            vh.bottomText.setEnabled(true);
         }
     }
 

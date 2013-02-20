@@ -823,7 +823,6 @@ public class MainActivity extends Activity
     {
         clearCentralPane();
         BaseFragment frag = LocalFileBrowserFragment.newInstance(file);
-        frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 LocalFileBrowserFragment.TAG, true);
     }
@@ -1015,14 +1014,14 @@ public class MainActivity extends Activity
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
             AccountFragment.getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(BrowserSitesFragment.TAG))
         {
             BrowserSitesFragment.getMenu(menu);

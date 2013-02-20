@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
@@ -70,18 +71,24 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
 /**
- * Display a dialogFragment to retrieve user information about the document he
- * wants to create/upload to the repository.
+ * Display a dialogFragment to retrieve information about the content of a
+ * specific folder.
  * 
  * @author Jean Marie Pascal
  */
 @TargetApi(11)
 public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment
 {
+    /** If enable, the fragment allows the user to manage the content. */
+    public static final int MODE_LISTING = 0;
+
+    /** If enable, the user can't manage the content. It's a read only mode. */
+    public static final int MODE_IMPORT = 1;
 
     public static final String TAG = "ChildrenBrowserFragment";
 
@@ -92,6 +99,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     private File createFile;
 
     private long lastModifiedDate;
+
+    /** By default, the fragment is in Listing mode. */
+    private int mode = MODE_LISTING;
+
+    private Button importButton;
 
     public ChildrenBrowserFragment()
     {
@@ -137,6 +149,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             setActivateThumbnail(true);
         }
+
+        // In case of Import mode, we disable thumbnails.
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            mode = MODE_IMPORT;
+            setActivateThumbnail(false);
+        }
+
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -144,6 +164,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void onResume()
     {
         super.onResume();
+
+        int titleId = R.string.app_name;
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            mode = MODE_IMPORT;
+            titleId = R.string.import_document_title;
+            checkImportButton();
+        }
 
         // If the fragment is resumed after user content creation action, we
         // have to check if the file has been modified or not. Depending on
@@ -167,28 +195,43 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             importFolder = ((MainActivity) getActivity()).getImportParent();
             createFile(tmpFile);
         }
-        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        getActivity().setTitle(R.string.app_name);
-        if (shortcutAlreadyVisible)
+
+        if (getActivity().getActionBar() != null)
         {
-            displayPathShortcut();
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActivity().setTitle(titleId);
+            if (shortcutAlreadyVisible)
+            {
+                displayPathShortcut();
+            }
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = super.onCreateView(inflater, container, savedInstanceState);
+        View v = null;
+        // In case of Import mode, we wrap the listing with buttons.
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            v = inflater.inflate(R.layout.app_browser_import, container, false);
+            init(v, emptyListMessageId);
 
-        ListView listView = (ListView) v.findViewById(R.id.listView);
-        listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        listView.setClickable(true);
+            importButton = (Button) v.findViewById(R.id.action_import);
+        }
+        else
+        {
+            v = super.onCreateView(inflater, container, savedInstanceState);
 
-        listView.setDivider(null);
-        listView.setDividerHeight(0);
+            ListView listView = (ListView) v.findViewById(R.id.listView);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            listView.setClickable(true);
 
-        listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
 
+            listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
+        }
         return v;
     }
 
@@ -196,16 +239,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void onPause()
     {
         getActivity().invalidateOptionsMenu();
-        getActivity().setTitle(R.string.app_name);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
+        int titleId = R.string.app_name;
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            titleId = R.string.import_document_title;
+        }
+        getActivity().setTitle(titleId);
+        if (getActivity().getActionBar() != null)
+        {
+            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        }
         super.onPause();
     }
 
     private void displayPathShortcut()
     {
         // /QUICK PATH
-        if (parentFolder != null)
+        if (parentFolder != null && getActivity().getActionBar() != null)
         {
             //
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -268,6 +320,18 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         Node item = (Node) l.getItemAtPosition(position);
 
+        // In case of import mode, we disable selection of document.
+        // It's only possible to select a folder for navigation purpose.
+        if (mode == MODE_IMPORT && getActivity() instanceof PublicDispatcherActivity)
+        {
+            l.setChoiceMode(ListView.CHOICE_MODE_NONE);
+            if (item.isFolder())
+            {
+                ((PublicDispatcherActivity) getActivity()).addNavigationFragment((Folder) item);
+            }
+            return;
+        }
+
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
@@ -305,7 +369,15 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             if (item.isFolder())
             {
                 // Browse
-                ((MainActivity) getActivity()).addNavigationFragment((Folder) item);
+                // Improvement : Create a common interface ?
+                if (getActivity() instanceof MainActivity)
+                {
+                    ((MainActivity) getActivity()).addNavigationFragment((Folder) item);
+                }
+                else if (getActivity() instanceof PublicDispatcherActivity)
+                {
+                    ((PublicDispatcherActivity) getActivity()).addNavigationFragment((Folder) item);
+                }
             }
             else
             {
@@ -328,7 +400,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (adapter == null)
         {
             adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
-                    selectedItems);
+                    selectedItems, mode);
         }
 
         if (results.hasException())
@@ -339,9 +411,29 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             displayPagingData(results.getData(), loaderId, callback);
         }
-        ((NodeAdapter) adapter).setActivateThumbnail(true);
+        ((NodeAdapter) adapter).setActivateThumbnail(hasActivateThumbnail());
         getActivity().invalidateOptionsMenu();
         displayPathShortcut();
+        checkImportButton();
+    }
+
+    /**
+     * Helper method to enable/disable the import button depending on mode and
+     * permission.
+     */
+    private void checkImportButton()
+    {
+        if (mode == MODE_IMPORT)
+        {
+            boolean enable = false;
+            if (parentFolder != null)
+            {
+                Permissions permission = alfSession.getServiceRegistry().getDocumentFolderService()
+                        .getPermissions(parentFolder);
+                enable = permission.canAddChildren();
+            }
+            importButton.setEnabled(enable);
+        }
     }
 
     private NodeActions nActions;
@@ -350,6 +442,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
+        // We disable long click during import mode.
+        if (mode == MODE_IMPORT) { return false; }
+
         Node n = (Node) l.getItemAtPosition(position);
         l.setItemChecked(position, true);
         boolean b = startSelection(v, n);
@@ -412,7 +507,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void createFile(File f)
     {
         // Create and show the dialog.
-        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f, (createFile != null));
+        AddContentDialogFragment newFragment = AddContentDialogFragment.newInstance(importFolder, f,
+                (createFile != null));
         newFragment.show(getActivity().getFragmentManager(), AddContentDialogFragment.TAG);
         tmpFile = null;
         createFile = null;
@@ -453,8 +549,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             }
 
             @Override
-            public void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name, Map<String, Serializable> props,
-                    ContentFile contentFile)
+            public void onExeceptionDuringCreation(Exception e, Folder parentFolder, String name,
+                    Map<String, Serializable> props, ContentFile contentFile)
             {
                 ActionManager.actionDisplayError(ChildrenBrowserFragment.this, e);
             }
@@ -586,7 +682,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         this.createFile = newFile;
         this.lastModifiedDate = newFile.lastModified();
     }
-    
+
     public void unselect()
     {
         selectedItems.clear();

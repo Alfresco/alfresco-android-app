@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
@@ -47,6 +48,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 @TargetApi(11)
+/**
+ * AccountLoginLoaderCallback is responsible to update the UI after session has been created.
+ * @author Jean Marie Pascal
+ *
+ */
 public class AccountLoginLoaderCallback extends AbstractSessionCallback
 {
 
@@ -112,16 +118,29 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
                 editor.commit();
-
-                activity.getLoaderManager().destroyLoader(loader.getId());
-                SessionUtils.setsession(activity, results.getData());
-                Intent i = new Intent(activity, MainActivity.class);
-                i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
-                activity.startActivity(i);
             }
+            
+            activity.getLoaderManager().destroyLoader(loader.getId());
+            SessionUtils.setsession(activity, results.getData());
+            Intent i = new Intent(activity, getActivityClass());
+            i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+            activity.startActivity(i);
         }
         else
         {
+            // In case of import. If something goes wrong We display an error
+            // message to alert the user.
+            // The user must open the main application to resolve the problem.
+            if (activity instanceof PublicDispatcherActivity)
+            {
+                SessionUtils.setsession(activity, null);
+                Intent i = new Intent(activity, getActivityClass());
+                i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                activity.startActivity(i);
+                MessengerManager.showLongToast(activity, activity.getString(R.string.error_import));
+                return;
+            }
+
             switch ((int) acc.getTypeId())
             {
                 case Account.TYPE_ALFRESCO_TEST_OAUTH:
@@ -152,7 +171,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     break;
                 default:
                     MessengerManager.showLongToast(activity, getText(R.string.error_session_creation));
-                    Intent i = new Intent(activity, MainActivity.class);
+                    Intent i = new Intent(activity, getActivityClass());
                     i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
                     activity.startActivity(i);
                     break;
@@ -194,6 +213,23 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 }
                 break;
         }
+    }
+
+    /**
+     * Helper method to retrieve the class name associated to the parent
+     * activity.
+     * 
+     * @return Class object of the parent activity.
+     */
+    @SuppressWarnings("rawtypes")
+    private Class getActivityClass()
+    {
+        if (activity instanceof MainActivity)
+        {
+            return MainActivity.class;
+        }
+        else if (activity instanceof PublicDispatcherActivity) { return PublicDispatcherActivity.class; }
+        return null;
     }
 
 }

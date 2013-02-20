@@ -38,6 +38,7 @@
     <string name="account_wizard_alfresco_help_inside_app">New to Alfresco ? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <string name="account">Account</string>
     <string name="action_add_account">Add</string>
     <string name="account_username">Username</string>
     <string name="account_password">Password</string>
@@ -204,7 +205,9 @@
     <string name="next">Next</string>
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
-    <string name="enter_details">Enter your details</string>
+    <string name="enter_details">Enter your details</string>    
+    <string name="share_content">Share Document with...</string>
+    
 
     <!-- HELP -->
     <string name="help_setup_guide">Alfresco_Mobile_Android_App_Setup_Guide.pdf</string>
@@ -297,6 +300,17 @@
     <string name="action_leave_site_error">A problem prevented you to leave site "%s".</string>
     <string name="action_favorite_error">A problem prevented you to favorite site "%s".</string>
     <string name="action_unfavorite_site_error">A problem prevented you to unfavorite site "%s".</string>
+    
+    <!-- IMPORT -->
+    <string name="import_document_title">Import in Alfresco Mobile</string>
+    <string name="import_document_name">Document Name</string>
+    <string name="import_account">Account</string>
+    <string name="import_send_download">The file is available inside \"%s\" Download space.</string>
+    <string name="import_folder">Import Folder</string>
+    <string name="import_error">An error occured during the upload.</string>
+    <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
+    <string name="action_import">Import</string>
+    <string name="error_import">We are unable to import. Pease check your account settings.</string>
     
     
 </resources>

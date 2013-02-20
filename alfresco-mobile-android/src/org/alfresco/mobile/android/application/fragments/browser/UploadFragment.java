@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -172,15 +173,18 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
     @Override
     public void onLoadFinished(Loader<LoaderResult<Document>> loader, LoaderResult<Document> results)
     {
+        
+        DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
+        ContentFile contentFile = loaderD.getContentFile();
+        String name = loaderD.getDocumentName();
+        
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-            DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
-            ContentFile contentFile = loaderD.getContentFile();
             if (contentFile != null)
             {
                 // An error occurs, notify the user.
-                ProgressNotification.updateProgress(contentFile.getFile().getName(),
+                ProgressNotification.updateProgress(name,
                         ProgressNotification.FLAG_UPLOAD_ERROR);
 
                 // During creation process, the content must be available on
@@ -228,7 +232,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 if (f != null)
                 {
                     // Notify the upload is complete.
-                    ProgressNotification.updateProgress(f.getFile().getName(),
+                    ProgressNotification.updateProgress(name,
                             ProgressNotification.FLAG_UPLOAD_COMPLETED);
 
                     // During creation process, we remove the file from the temp
@@ -241,7 +245,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
 
                 // If we can/need to refresh the panels, do that now...
                 Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                if (lf != null && lf instanceof ChildrenBrowserFragment)
+                if (getActivity() != null && lf != null && getActivity() instanceof MainActivity && lf instanceof ChildrenBrowserFragment)
                 {
                     Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
                     if (parentFolder == this.parentFolder)

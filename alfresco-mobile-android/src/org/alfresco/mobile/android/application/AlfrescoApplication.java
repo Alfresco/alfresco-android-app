@@ -34,6 +34,9 @@ public class AlfrescoApplication extends Application
 
     private AlfrescoSession alfSession;
 
+    /** Import Session is used during import process form 3rd party application. */
+    private AlfrescoSession importSession;
+
     private DatabaseManager databaseManager;
 
     @Override
@@ -71,5 +74,21 @@ public class AlfrescoApplication extends Application
     public void setAccount(Account account)
     {
         this.account = account;
+    }
+
+    /**
+     * Use only during Import Process (document from 3rd party app).
+     */
+    public AlfrescoSession getImportSession()
+    {
+        return importSession;
+    }
+
+    /**
+     * Use only during Import Process (document from 3rd party app).
+     */
+    public void setImportSession(AlfrescoSession importSession)
+    {
+        this.importSession = importSession;
     }
 }

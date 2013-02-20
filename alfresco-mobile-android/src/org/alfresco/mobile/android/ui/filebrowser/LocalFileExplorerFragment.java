@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -49,6 +51,9 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
     public static final int MODE_LISTING = 1;
 
     public static final int MODE_PICK_FILE = 2;
+    
+    public static final int MODE_IMPORT = 3;
+
 
     protected List<File> selectedItems = new ArrayList<File>(1);
 
@@ -78,14 +83,24 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         args.putSerializable(ARGUMENT_FOLDERPATH, path);
         return args;
     }
-
+    
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onStart()
     {
-        View v = inflater.inflate(R.layout.sdk_list, container, false);
-
-        init(v, emptyListMessageId);
-
+        retrieveTitle();
+        if (getDialog() != null)
+        {
+            getDialog().setTitle(titleId);
+        }
+        else
+        {
+            getActivity().getActionBar().show();
+            getActivity().setTitle(titleId);
+        }
+        super.onStart();
+    }
+    
+    private void retrieveTitle(){
         Bundle b = getArguments();
         if (b.getInt(MODE) == MODE_LISTING)
         {
@@ -95,19 +110,23 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         {
             titleId = R.string.upload_pick_document;
         }
+    }
+    
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState){
+        LayoutInflater inflater = LayoutInflater.from(getActivity());
+        View v = inflater.inflate(R.layout.sdk_list, null);
 
-        if (getDialog() != null)
+        init(v, emptyListMessageId);
+        
+        setRetainInstance(true);
+        if (initLoader)
         {
-            getDialog().setTitle(titleId);
-            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+            continueLoading(loaderId, callback);
         }
-        else
-        {
-            getActivity().getActionBar().show();
-            getActivity().setTitle(titleId);
-        }
-
-        return v;
+        
+        retrieveTitle();
+        return new AlertDialog.Builder(getActivity()).setTitle(titleId).setView(v).create();
     }
 
     protected int getMode()
