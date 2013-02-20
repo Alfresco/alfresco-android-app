@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
@@ -27,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -152,22 +151,16 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     break;
                 case Account.TYPE_ALFRESCO_TEST_BASIC:
                 case Account.TYPE_ALFRESCO_CMIS:
-                    if (results.getException() instanceof AlfrescoSessionException)
+                    Exception e = results.getException();
+                    Bundle b = new Bundle();
+                    b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, SessionExceptionHelper.getMessageId(activity, e));
+                    ActionManager.actionDisplayDialog(activity, b);
+                    if (activity instanceof MainActivity)
                     {
-                        AlfrescoSessionException ex = ((AlfrescoSessionException) results.getException());
-                        if (ex.getCause().getClass().equals(CmisUnauthorizedException.class)
-                                || ex.getErrorCode() == 100)
-                        {
-                            Bundle b = new Bundle();
-                            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
-                            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
-                            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-                            ActionManager.actionDisplayDialog(activity, b);
-                            if (activity instanceof MainActivity)
-                            {
-                                ((MainActivity) activity).setSessionState(MainActivity.SESSION_UNAUTHORIZED);
-                            }
-                        }
+                        ((MainActivity) activity).setSessionErrorMessageId(SessionExceptionHelper.getMessageId(activity, e));
                     }
                     break;
                 default:

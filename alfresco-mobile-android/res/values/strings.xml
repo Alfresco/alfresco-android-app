@@ -83,9 +83,40 @@
 
     <!-- SESSION ERROR -->
     <string name="error_session_creation_title">Save Account</string>
-    <string name="error_session_creation">Failure to authenticate. Check your account settings.</string>
-    <string name="error_session_hostname">Your hostname setting seems to be wrong. Check your account settings.</string>
-    <string name="error_session_unauthorized">You are not allowed to access this server. Please check your account settings (Username/Password).</string>
+    <string name="error_session_creation_message">Connection Error</string>
+    <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
+    <string name="error_session_hostname">
+        <![CDATA[Your <b>hostname</b> value seems to be wrong.<br/> Please check your account settings.]]>
+    </string>
+    <string name="error_session_nodata">
+        <![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable data connection.]]>
+    </string>
+    <string name="error_session_unauthorized">
+		<![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]>
+	</string>
+	<string name="error_session_service_url">
+		<![CDATA[Your <b>service url</b> value seems to be wrong.<br/> Please check your account settings.]]>
+	</string>
+	<string name="error_session_notfound">
+		<![CDATA[Your server seems to be unreachable.<br/> Please check your account settings.]]>
+	</string>
+	<string name="error_session_port">
+		<![CDATA[Your <b>port</b> value seems to be wrong.<br/> Please check your account settings.]]>
+	</string>
+	<string name="error_session_certificate">
+		<![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
+		The third-party organization that issued your server destination\'s certificate is not one that your device recognizes.<br/>
+		In order for Alfresco Mobile to verify that you\'re connecting with the appropriate server, its certificate must be from a trusted organization.<br/>
+		If your server has a self signed certificate please add it to your device to successfully connect.<br/> ]]>
+	</string>
+	<string name="error_session_certificate_expired">
+		<![CDATA[<p><b>The server\'s security certificate has expired or is not yet valid!</b><br/></p>
+		Please check the date and time your device is set to.<br/> If the problem persists please contact your administrator. ]]>
+	</string>
+	<string name="error_session_ssl">
+		<![CDATA[<p><b>An error occured with the SSL protocol.</b><br/></p>
+		Please check your account settings and retry again.<br/> If the problem persists please contact your administrator. ]]>
+	</string>
     <string name="error_session_unauthorized_title">Unauthorized.</string>
     <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
@@ -205,9 +236,8 @@
     <string name="next">Next</string>
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
-    <string name="enter_details">Enter your details</string>    
+    <string name="enter_details">Enter your details</string>
     <string name="share_content">Share Document with...</string>
-    
 
     <!-- HELP -->
     <string name="help_setup_guide">Alfresco_Mobile_Android_App_Setup_Guide.pdf</string>
@@ -245,15 +275,13 @@
     <string name="update_sucess"> has been updated successfully.</string>
     <string name="no_voice_recorder">You do not have a voice recorder on this device</string>
     <string name="cannot_capture">Cannot complete the capturing of this information</string>
-    
+
     <!-- Upload -->
     <string name="action_processing">Processing...</string>
     <string name="action_upload_error">Unable to upload...</string>
-    
-    
+
     <!-- Create Document -->
     <string name="open_play_store">Open Google Play Store</string>
-    
     <string name="create_document">Create Document</string>
     <string name="create_document_title">Create&#8230;</string>
     <string name="create_document_word">Word Document</string>
@@ -263,23 +291,18 @@
     <string name="create_document_name_hint">Type the document name here</string>
     <string name="create_document_filename_error">This filename is already in use.</string>
     <string name="create_document_save">An error occured during the upload. Your file is saved inside "Downloads".</string>
-    
-    
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>
     <string name="document_excel_extension">.xlsx</string>
     <string name="document_text_extension">.txt</string>
-        
     <string name="create_document_editor_title">Complete action using</string>
     <string name="create_document_editor_not_available">No application available</string>
     <string name="create_document_editor_not_available_description">You don\'t have an app that will create this document type.</string>
     <string name="preview_unavailable">Preview is not available.</string>
-    
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
-    
     <string name="metadata_general">General</string>
-    
+
     <!-- SITES ACTION -->
     <string name="action_join_site">Join</string>
     <string name="action_join_request_site">Request to join</string>
@@ -300,7 +323,7 @@
     <string name="action_leave_site_error">A problem prevented you to leave site "%s".</string>
     <string name="action_favorite_error">A problem prevented you to favorite site "%s".</string>
     <string name="action_unfavorite_site_error">A problem prevented you to unfavorite site "%s".</string>
-    
+
     <!-- IMPORT -->
     <string name="import_document_title">Import in Alfresco Mobile</string>
     <string name="import_document_name">Document Name</string>
@@ -311,6 +334,5 @@
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
     <string name="action_import">Import</string>
     <string name="error_import">We are unable to import. Pease check your account settings.</string>
-    
-    
+
 </resources>
