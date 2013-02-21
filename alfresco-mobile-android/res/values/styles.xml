@@ -37,6 +37,7 @@
     <color name="sliding_grey_darker">#3B4148</color>
     <color name="grey_lighter">#eeeeee</color>
     <color name="sliding_account_background">#282828</color>
+    <color name="dark_red">#ffcc0000</color>
 
     <!-- =============================================================== -->
     <!-- STYLE -->
@@ -98,6 +99,10 @@
         <item name="android:paddingTop">@dimen/properties_padding</item>
         <item name="android:textColor">@color/grey_text</item>
         <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="import_sectionHeader" parent="slidingmenu_sectionHeader">
+        <item name="android:drawableBottom">@drawable/grey_thin_section_header</item>
     </style>
 
     <style name="slidingmenu_actionitem" parent="android:Widget.Holo.Light.TextView">

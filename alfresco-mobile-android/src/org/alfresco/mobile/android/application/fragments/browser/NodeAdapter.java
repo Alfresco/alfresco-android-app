@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -48,32 +49,53 @@ public class NodeAdapter extends AlphabeticNodeAdapter
 
     private RenditionManager renditionManager;
 
+    private int mode;
+
     public NodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
-            List<Node> selectedItems)
+            List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
-        this.renditionManager = new RenditionManager(context, session);
+        this.renditionManager = SessionUtils.getRenditionManager(context);
+        this.mode = mode;
     }
 
     @Override
     protected void updateTopText(GenericViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
+        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        {
+            vh.topText.setEnabled(false);
+        }
+        else
+        {
+            vh.topText.setEnabled(true);
+        }
     }
 
     @Override
     protected void updateBottomText(GenericViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        if (selectedItems != null && selectedItems.contains(item))
+        if (selectedItems != null && selectedItems.size() == 1
+                && selectedItems.get(0).getIdentifier().equals(item.getIdentifier()))
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),getContext().getResources().getDrawable(
-                    R.drawable.list_longpressed_holo));
+            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                    getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+        }
+        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        {
+            // Disable document : grey font color instead of black
+            vh.bottomText.setEnabled(false);
+        }
+        else
+        {
+            vh.bottomText.setEnabled(true);
         }
     }
 

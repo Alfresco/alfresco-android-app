@@ -130,11 +130,13 @@ public class MainActivity extends Activity
 
     private int sessionState = 0;
 
+    private int sessionStateErrorMessageId;
+
     public static final int SESSION_LOADING = 0;
 
     public static final int SESSION_ACTIVE = 1;
 
-    public static final int SESSION_UNAUTHORIZED = 2;
+    public static final int SESSION_ERROR = 2;
 
     // ///////////////////////////////////////////
     // INIT
@@ -750,13 +752,20 @@ public class MainActivity extends Activity
         sessionState = state;
     }
 
+    public void setSessionErrorMessageId(int messageId)
+    {
+        sessionState = SESSION_ERROR;
+        sessionStateErrorMessageId = messageId;
+    }
+
     private boolean checkSession(int actionMainMenuId)
     {
-        if (sessionState == SESSION_UNAUTHORIZED)
+        if (sessionState == SESSION_ERROR)
         {
             Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
-            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
+            b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, sessionStateErrorMessageId);
             b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
             ActionManager.actionDisplayDialog(this, b);
             return false;
@@ -823,7 +832,6 @@ public class MainActivity extends Activity
     {
         clearCentralPane();
         BaseFragment frag = LocalFileBrowserFragment.newInstance(file);
-        frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 LocalFileBrowserFragment.TAG, true);
     }
@@ -1015,14 +1023,14 @@ public class MainActivity extends Activity
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
             AccountFragment.getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(BrowserSitesFragment.TAG))
         {
             BrowserSitesFragment.getMenu(menu);

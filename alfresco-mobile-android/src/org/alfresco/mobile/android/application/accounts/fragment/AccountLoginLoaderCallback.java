@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
@@ -27,13 +26,14 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -47,6 +47,11 @@ import android.os.Bundle;
 import android.util.Log;
 
 @TargetApi(11)
+/**
+ * AccountLoginLoaderCallback is responsible to update the UI after session has been created.
+ * @author Jean Marie Pascal
+ *
+ */
 public class AccountLoginLoaderCallback extends AbstractSessionCallback
 {
 
@@ -112,16 +117,30 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
                 editor.commit();
-
-                activity.getLoaderManager().destroyLoader(loader.getId());
-                SessionUtils.setsession(activity, results.getData());
-                Intent i = new Intent(activity, MainActivity.class);
-                i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
-                activity.startActivity(i);
             }
+            
+            activity.getLoaderManager().destroyLoader(loader.getId());
+            SessionUtils.setsession(activity, results.getData());
+            SessionUtils.setRenditionManager(activity, null);
+            Intent i = new Intent(activity, getActivityClass());
+            i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+            activity.startActivity(i);
         }
         else
         {
+            // In case of import. If something goes wrong We display an error
+            // message to alert the user.
+            // The user must open the main application to resolve the problem.
+            if (activity instanceof PublicDispatcherActivity)
+            {
+                SessionUtils.setsession(activity, null);
+                Intent i = new Intent(activity, getActivityClass());
+                i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                activity.startActivity(i);
+                MessengerManager.showLongToast(activity, activity.getString(R.string.error_import));
+                return;
+            }
+
             switch ((int) acc.getTypeId())
             {
                 case Account.TYPE_ALFRESCO_TEST_OAUTH:
@@ -132,27 +151,21 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     break;
                 case Account.TYPE_ALFRESCO_TEST_BASIC:
                 case Account.TYPE_ALFRESCO_CMIS:
-                    if (results.getException() instanceof AlfrescoSessionException)
+                    Exception e = results.getException();
+                    Bundle b = new Bundle();
+                    b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                    b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, SessionExceptionHelper.getMessageId(activity, e));
+                    ActionManager.actionDisplayDialog(activity, b);
+                    if (activity instanceof MainActivity)
                     {
-                        AlfrescoSessionException ex = ((AlfrescoSessionException) results.getException());
-                        if (ex.getCause().getClass().equals(CmisUnauthorizedException.class)
-                                || ex.getErrorCode() == 100)
-                        {
-                            Bundle b = new Bundle();
-                            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_unauthorized_title);
-                            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
-                            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-                            ActionManager.actionDisplayDialog(activity, b);
-                            if (activity instanceof MainActivity)
-                            {
-                                ((MainActivity) activity).setSessionState(MainActivity.SESSION_UNAUTHORIZED);
-                            }
-                        }
+                        ((MainActivity) activity).setSessionErrorMessageId(SessionExceptionHelper.getMessageId(activity, e));
                     }
                     break;
                 default:
                     MessengerManager.showLongToast(activity, getText(R.string.error_session_creation));
-                    Intent i = new Intent(activity, MainActivity.class);
+                    Intent i = new Intent(activity, getActivityClass());
                     i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
                     activity.startActivity(i);
                     break;
@@ -194,6 +207,23 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 }
                 break;
         }
+    }
+
+    /**
+     * Helper method to retrieve the class name associated to the parent
+     * activity.
+     * 
+     * @return Class object of the parent activity.
+     */
+    @SuppressWarnings("rawtypes")
+    private Class getActivityClass()
+    {
+        if (activity instanceof MainActivity)
+        {
+            return MainActivity.class;
+        }
+        else if (activity instanceof PublicDispatcherActivity) { return PublicDispatcherActivity.class; }
+        return null;
     }
 
 }

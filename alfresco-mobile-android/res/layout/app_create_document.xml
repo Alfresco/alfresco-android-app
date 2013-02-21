@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="3dip"
         android:text="@string/create_document_filename_error"
-        android:textColor="@android:color/holo_red_dark"
+        android:textColor="@color/dark_red"
         android:visibility="gone" />
 
     <LinearLayout

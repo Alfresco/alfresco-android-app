@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.sites;
 import java.util.ArrayList;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
@@ -29,6 +30,7 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
@@ -53,6 +55,10 @@ import android.widget.TabHost.TabSpec;
  */
 public class BrowserSitesFragment extends SitesFragment implements RefreshFragment, OnTabChangeListener
 {
+    public static final int MODE_LISTING = 0;
+    
+    public static final int MODE_IMPORT = 1;
+    
     public static final String TAG = "BrowserSitesFragment";
 
     public static final String TAB_ALL_SITES = "All";
@@ -64,6 +70,8 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     private String currentTabId = TAB_MY_SITES;
 
     private TabHost mTabHost;
+    
+    private int mode = MODE_LISTING;
 
     public BrowserSitesFragment()
     {
@@ -99,9 +107,15 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     @Override
     public void onStart()
     {
+        int titleId = R.string.menu_browse_all_sites;
+        if (getActivity() instanceof PublicDispatcherActivity){
+            mode  = MODE_IMPORT;
+            titleId = R.string.import_document_title;
+        }
+        
         mTabHost.setCurrentTabByTag(currentTabId);
         getActivity().invalidateOptionsMenu();
-        getActivity().setTitle(R.string.menu_browse_all_sites);
+        getActivity().setTitle(titleId);
         super.onStart();
     }
 
@@ -162,7 +176,14 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         Site s = (Site) l.getItemAtPosition(position);
-        ((MainActivity) getActivity()).addNavigationFragment(s);
+        if (getActivity() instanceof MainActivity)
+        {
+            ((MainActivity) getActivity()).addNavigationFragment(s);
+        }
+        else if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            ((PublicDispatcherActivity) getActivity()).addNavigationFragment(s);
+        }
     }
 
     @Override
@@ -177,7 +198,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     {
         if (adapter == null)
         {
-            adapter = new SiteAdapter(this, R.layout.sdk_list_row, new ArrayList<Site>());
+            adapter = new SiteAdapter(this, R.layout.sdk_list_row, new ArrayList<Site>(), mode);
         }
         super.onLoadFinished(arg0, results);
     }

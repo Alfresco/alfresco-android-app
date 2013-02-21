@@ -38,6 +38,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * AccountFragment is responsible to display the list of Accounts inside the application.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AccountFragment extends BaseListFragment implements LoaderCallbacks<List<Account>>
 {
 
@@ -114,7 +119,10 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         }
         else
         {
-            ((MainActivity) getActivity()).addAccountDetails(item.getId());
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).addAccountDetails(item.getId());
+            }
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
     }

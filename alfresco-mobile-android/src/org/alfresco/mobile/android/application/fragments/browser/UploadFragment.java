@@ -30,16 +30,23 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.UpdateContentLoader;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -61,6 +68,10 @@ import android.util.Log;
 public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderResult<Document>>
 {
     public static final String TAG = "UploadFragment";
+
+    public static final String ARGUMENT_ACTION_UPDATE = "updateDocumentContent";
+
+    public static final String ARGUMENT_UPDATE_DOCUMENT = "updateDocument";
 
     public static final String ARGUMENT_FOLDER = "folder";
 
@@ -133,11 +144,6 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
     @Override
     public Loader<LoaderResult<Document>> onCreateLoader(int id, Bundle args)
     {
-        Map<String, Serializable> props = new HashMap<String, Serializable>(3);
-        props.put(ContentModel.PROP_DESCRIPTION, args.getString(ARGUMENT_CONTENT_DESCRIPTION));
-        props.put(ContentModel.PROP_TAGS, args.getStringArrayList(ARGUMENT_CONTENT_TAGS));
-        props.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.DOCUMENT_BASETYPE_ID);
-
         String name = args.getString(ARGUMENT_CONTENT_NAME);
         ContentFile contentFile = (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE);
         if (contentFile != null && name != null)
@@ -162,26 +168,53 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
 
             ProgressNotification.createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
 
-            parentFolder = (Folder) getArguments().get(ARGUMENT_FOLDER);
+            parentFolder = (Folder) args.get(ARGUMENT_FOLDER);
         }
 
-        return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
-                args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+        if (args.getBoolean(ARGUMENT_ACTION_UPDATE))
+        {
+            return new UpdateContentLoader(getActivity(), alfSession, (Document) args.get(ARGUMENT_UPDATE_DOCUMENT),
+                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+        }
+        else
+        {
+            Map<String, Serializable> props = new HashMap<String, Serializable>(3);
+            props.put(ContentModel.PROP_DESCRIPTION, args.getString(ARGUMENT_CONTENT_DESCRIPTION));
+            props.put(ContentModel.PROP_TAGS, args.getStringArrayList(ARGUMENT_CONTENT_TAGS));
+            props.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.DOCUMENT_BASETYPE_ID);
+
+            return new DocumentCreateLoader(getActivity(), alfSession, (Folder) args.get(ARGUMENT_FOLDER),
+                    args.getString(ARGUMENT_CONTENT_NAME), props,
+                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<Document>> loader, LoaderResult<Document> results)
     {
+        ContentFile contentFile = null;
+        String name = null;
+
+        if (getArguments().getBoolean(ARGUMENT_ACTION_UPDATE))
+        {
+            UpdateContentLoader loaderD = (UpdateContentLoader) loader;
+            contentFile = loaderD.getContentFile();
+            name = loaderD.getDocument().getName();
+        }
+        else
+        {
+            DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
+            contentFile = loaderD.getContentFile();
+            name = loaderD.getDocumentName();
+        }
+
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-            DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
-            ContentFile contentFile = loaderD.getContentFile();
             if (contentFile != null)
             {
                 // An error occurs, notify the user.
-                ProgressNotification.updateProgress(contentFile.getFile().getName(),
-                        ProgressNotification.FLAG_UPLOAD_ERROR);
+                ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_ERROR);
 
                 // During creation process, the content must be available on
                 // Download area.
@@ -228,25 +261,50 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 if (f != null)
                 {
                     // Notify the upload is complete.
-                    ProgressNotification.updateProgress(f.getFile().getName(),
-                            ProgressNotification.FLAG_UPLOAD_COMPLETED);
+                    ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_COMPLETED);
 
                     // During creation process, we remove the file from the temp
                     // capture folder.
-                    if ((Boolean) getArguments().getSerializable(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
+                    if (getArguments().getSerializable(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION) != null
+                            && (Boolean) getArguments().getSerializable(
+                                    CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
                     {
                         f.getFile().delete();
                     }
                 }
 
                 // If we can/need to refresh the panels, do that now...
-                Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                if (lf != null && lf instanceof ChildrenBrowserFragment)
+                if (args.getBoolean(ARGUMENT_ACTION_UPDATE))
                 {
-                    Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
-                    if (parentFolder == this.parentFolder)
+                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
+                            DetailsFragment.TAG);
+                    if (getActivity() != null && detailsFragment != null && getActivity() instanceof MainActivity)
                     {
-                        ((ChildrenBrowserFragment) lf).refresh();
+                        Node n = (Node) detailsFragment.getArguments().get(DetailsFragment.ARGUMENT_NODE);
+                        Node node = results.getData();
+                        if (n != null
+                                && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
+                                        NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
+                        {
+                            ((MainActivity) getActivity()).setCurrentNode(node);
+                            ActionManager.actionRefresh(this, IntentIntegrator.CATEGORY_REFRESH_ALL,
+                                    PublicIntent.NODE_TYPE);
+                            MessengerManager.showToast(getActivity(),
+                                    node.getName() + " " + getResources().getString(R.string.update_sucess));
+                        }
+                    }
+                }
+                else
+                {
+                    Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
+                    if (getActivity() != null && lf != null && getActivity() instanceof MainActivity
+                            && lf instanceof ChildrenBrowserFragment)
+                    {
+                        Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
+                        if (parentFolder == this.parentFolder)
+                        {
+                            ((ChildrenBrowserFragment) lf).refresh();
+                        }
                     }
                 }
 
