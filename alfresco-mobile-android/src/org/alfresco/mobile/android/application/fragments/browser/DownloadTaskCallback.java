@@ -83,8 +83,8 @@ public class DownloadTaskCallback implements DownloadTaskListener
                     break;
 
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(fragment.getActivity(), results.getFileName(), fragment
-                            .getActivity().getString(R.string.email_content), Uri.fromFile(results.getFile()));
+                    EmailUtils.createMailWithAttachment(fragment, results.getFileName(), fragment
+                            .getActivity().getString(R.string.email_content), Uri.fromFile(results.getFile()), PublicIntent.REQUESTCODE_DECRYPTED);
                     break;
 
                 case ACTION_UNDEFINED:
@@ -98,6 +98,8 @@ public class DownloadTaskCallback implements DownloadTaskListener
                     fragment.getActivity().getText(R.string.download_error).toString());
         }
     }
+    
+    
 
     @Override
     public void onProgressUpdate(Integer... values)

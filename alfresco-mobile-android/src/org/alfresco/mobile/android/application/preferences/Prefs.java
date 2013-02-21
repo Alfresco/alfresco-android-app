@@ -19,16 +19,27 @@
 package org.alfresco.mobile.android.application.preferences;
 
 import java.io.File;
+import java.util.Vector;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.R.layout;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
 import android.preference.PreferenceScreen;
+import android.widget.EditText;
 
 @SuppressWarnings("deprecation")
 public class Prefs extends PreferenceActivity 
@@ -46,24 +57,12 @@ public class Prefs extends PreferenceActivity
         Preference pref = preferenceScreen.findPreference("allowuntrusted");
         pref.setSelectable(false);
         pref.setEnabled(false);              
-        
-        pref = preferenceScreen.findPreference("web");
-        pref.setSelectable(false);
-        pref.setEnabled(false);   
-        
-        pref = preferenceScreen.findPreference("rate");
-        pref.setSelectable(false);
-        pref.setEnabled(false);   
-        
-        pref = preferenceScreen.findPreference("like");
-        pref.setSelectable(false);
-        pref.setEnabled(false);      
-        
+                
         pref = preferenceScreen.findPreference("pin");
         pref.setSelectable(false);
         pref.setEnabled(false);              
         
-        if (isDeviceRooted()  ||  prefs.getBoolean("HasAccessedPaidServices", false) == false)
+        if (/*isDeviceRooted()  || */ prefs.getBoolean("HasAccessedPaidServices", false) == false)
         {   
             Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
             if (privateFoldersPref != null)
@@ -73,6 +72,83 @@ public class Prefs extends PreferenceActivity
                 prefs.edit().putBoolean("privatefolders", false).commit();
             }
         }
+        
+        Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
+        
+        privateFoldersPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Prefs.this);
+                final boolean checked = !prefs.getBoolean("privatefolders", false);
+                
+                final File folder = StorageManager.getPrivateFolder(Prefs.this, "", "", "");
+                if (folder != null)
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Prefs.this);
+                    builder.setTitle(Prefs.this.getString(R.string.data_protection));
+                    builder.setMessage(Prefs.this.getString(checked ? R.string.content_being_decrypted : R.string.content_being_encrypted));
+                    builder.setCancelable(false);
+                    final AlertDialog progressAlert = builder.create();
+                    
+                    builder = new AlertDialog.Builder(Prefs.this);
+                    builder.setTitle(Prefs.this.getString(R.string.data_protection));
+                    builder.setMessage(Prefs.this.getString(checked ? R.string.unprotect_question : R.string.protect_question));
+                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int item)
+                        {
+                            dialog.dismiss();
+                            progressAlert.show();
+                            
+                            new Handler().postDelayed(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    Vector<String> folders = new Vector<String>();
+                                    folders.add(StorageManager.DLDIR);
+                                    folders.add(StorageManager.TEMPDIR);
+                                    
+                                    if (checked)
+                                    {
+                                        if (IOUtils.decryptFiles(Prefs.this, folder.getPath(), folders, true))
+                                            prefs.edit().putBoolean("privatefolders", false).commit();
+                                        else
+                                            MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.decryption_failed));
+                                    }
+                                    else
+                                    {
+                                        if (IOUtils.encryptFiles(Prefs.this, folder.getPath(), folders, true))
+                                            prefs.edit().putBoolean("privatefolders", true).commit();
+                                        else
+                                            MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.encryption_failed));
+                                    }
+                                    
+                                    progressAlert.hide();
+                                }
+                                
+                            }, 1000);
+                        }
+                    });
+                    builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
+                    {
+                        public void onClick(DialogInterface dialog, int item)
+                        {
+                            prefs.edit().putBoolean("privatefolders", checked).commit();
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }
+                else
+                    MessengerManager.showLongToast(Prefs.this, getString(R.string.sdinaccessible));
+                
+                return false;
+            }
+        });
     }
     
     public static boolean isDeviceRooted() 

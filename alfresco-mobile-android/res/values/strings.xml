@@ -301,6 +301,19 @@
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
+
+    <string name="encrypt_title">Encrypting content</string>
+    <string name="content_being_encrypted">Content is being protected.  Please wait</string>
+    <string name="content_being_decrypted">Content is being unprotected.  Please wait</string>
+    <string name="data_protection">Data Protection</string>
+    <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these files cannot be read by other apps, only from within the Alfresco app)</string>
+    <string name="encryption_failed">Encryption failed</string>
+    <string name="decryption_failed">Decryption failed</string>
+	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account. and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
+	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
+	<string name="already_encrypted">This file is already encrypted!</string>
+	<string name="already_decrypted">This file is already decrypted!</string>
+	
     <string name="metadata_general">General</string>
 
     <!-- SITES ACTION -->

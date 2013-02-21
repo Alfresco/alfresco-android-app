@@ -17,24 +17,51 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
-import org.alfresco.mobile.android.application.R;
+import java.io.IOException;
 
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.text.Html;
 
 public class EmailUtils
 {
-    public static boolean createMailWithAttachment(Context c, String subject, String content, Uri attachment)
+    public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment, int requestCode)
     {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
-        i.putExtra(Intent.EXTRA_STREAM, attachment);
-        i.setType("text/plain");
-        c.startActivity(Intent.createChooser(i, c.getString(R.string.send_email)));
-        return true;
+        try
+        {
+            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true))
+            {
+                if ( CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", attachment.getPath()).commit();
+            }
+            
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.putExtra(Intent.EXTRA_SUBJECT, subject);
+            i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
+            i.putExtra(Intent.EXTRA_STREAM, attachment);
+            i.setType("text/plain");
+            fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
+            
+            return true;   
+        }
+        catch (IOException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            e.printStackTrace();
+        }
+        
+        return false;
     }
 
     public static boolean createMailWithLink(Context c, String subject, String content, Uri link)

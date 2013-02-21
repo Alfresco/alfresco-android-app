@@ -18,13 +18,15 @@
 package org.alfresco.mobile.android.application.manager;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.HomeScreenActivity;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.ui.R;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
@@ -34,16 +36,116 @@ import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 public class ActionManager extends org.alfresco.mobile.android.ui.manager.ActionManager
 {
 
     public static final String REFRESH_EXTRA = "refreshExtra";
 
+    /**
+     * Allow user to share a file with other applications.
+     * 
+     * @param fr
+     * @param contentFile
+     */
+    public static void actionShareContent(Fragment fr, File contentFile, int requestCode)
+    {
+        try
+        {
+            if (CipherUtils.isEncrypted(fr.getActivity(), contentFile.getPath(), true))
+            {
+                if (CipherUtils.decryptFile(fr.getActivity(), contentFile.getPath()))
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", contentFile.getPath()).commit();
+            }
+            
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
+            i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+            fr.startActivityForResult(Intent.createChooser(i, fr.getActivity().getText(R.string.share_content)), requestCode);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_share_content);
+        }
+        catch (IOException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            e.printStackTrace();
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            e.printStackTrace();
+        }
+    }
+    
+    public static void openIn(Fragment fr, File myFile, String mimeType, int requestCode)
+    {
+        try
+        {
+            if (CipherUtils.isEncrypted(fr.getActivity(), myFile.getPath(), true))
+            {
+                if (CipherUtils.decryptFile(fr.getActivity(), myFile.getPath()))
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", myFile.getPath()).commit();
+            }
+            
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri data = Uri.fromFile(myFile);
+            intent.setDataAndType(data, mimeType.toLowerCase());
+
+            fr.startActivityForResult(intent, requestCode);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showLongToast(fr.getActivity(), fr.getString(R.string.decryption_failed));
+            e.printStackTrace();
+        }
+    }
+    
+    public static void actionView(Fragment fr, File myFile, String mimeType, ActionManagerListener listener, int requestCode)
+    {
+        try
+        {
+            if (CipherUtils.isEncrypted(fr.getActivity(), myFile.getPath(), true))
+            {
+                if (CipherUtils.decryptFile(fr.getActivity(), myFile.getPath()))
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", myFile.getPath()).commit();
+            }
+            
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            Uri data = Uri.fromFile(myFile);
+            intent.setDataAndType(data, mimeType.toLowerCase());
+            
+            try
+            {
+                fr.startActivityForResult(intent, requestCode);
+            }
+            catch (ActivityNotFoundException e)
+            {
+                if (listener != null)
+                {
+                    listener.onActivityNotFoundException(e);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showLongToast(fr.getActivity(), fr.getString(R.string.decryption_failed));
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Allow to pick file with other apps.
      * 

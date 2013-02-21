@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Vector;
 
 import org.alfresco.mobile.android.application.manager.StorageManager;
 
@@ -33,6 +34,11 @@ import android.util.Log;
 
 public class IOUtils
 {
+    static Vector<String> filesEncrypted = null;
+    static Vector<String> filesDecrypted = null;
+    static final String encryptionExtension = ".etmp";
+    static final String decryptionExtension = ".utmp";
+    
     public static File createFolder(File f, String extendedPath)
     {
         File tmpFolder = null;
@@ -179,6 +185,246 @@ public class IOUtils
         catch (Exception e)
         {
             Log.e("Alfresco", "Error during file transfer: " + e.getMessage() );
+            e.printStackTrace();
+            
+            return false;
+        }   
+    }
+    
+    /*
+     * Encrypt an entire folder, recursively if required.  Rollback is implemented if any failures occur.
+     * 
+     * NOTE: This method is not thread-safe.
+     */
+    public static boolean encryptFiles (Context ctxt, String sourceFolder, boolean recursive)
+    {
+        return decryptFiles (ctxt, sourceFolder, null, recursive);
+    }
+    public static boolean encryptFiles (Context ctxt, String sourceFolder, Vector<String> withinFolders, boolean recursive)
+    {
+        boolean startPoint = false;
+        boolean result = true;
+        
+        if (filesEncrypted == null)
+        {
+            filesEncrypted = new Vector<String>();
+            startPoint = true;
+        }
+        try
+        {
+            File f = new File(sourceFolder);        
+            File file[] = f.listFiles();
+            
+            for (int i = 0;  i < file.length; i++)
+            {
+                File sourceFile = file[i];
+                String destFilename = file[i].getPath() + encryptionExtension;
+                
+                if (!sourceFile.isHidden())
+                {
+                    if (sourceFile.isFile() )
+                    {
+                        for (String item : withinFolders)
+                        {
+                            if (item.equals (sourceFile.getParentFile().getName()) )
+                            {
+                                result = CipherUtils.encryptFile(ctxt, sourceFile.getPath(), destFilename, true);
+                                if (result == true)
+                                    filesEncrypted.add(sourceFile.getPath());
+                            }
+                        }   
+                    }
+                    else
+                    {
+                        if (sourceFile.isDirectory()  &&  recursive  &&
+                           !sourceFile.getName().equals(".")  &&  !sourceFile.getName().equals("..") )
+                        {
+                            result = encryptFiles (ctxt, sourceFile.getPath(), withinFolders, recursive);
+                        }
+                    }
+                    
+                    if (!result)
+                    {
+                        if (filesEncrypted != null)
+                        {
+                            Log.e("Alfresco", "Folder encryption failed for " + sourceFile.getName() );
+                            
+                            //Remove the encrypted versions done so far.
+                            Log.i("Alfresco", "Encryption rollback in progress...");
+                            for (int j = 0;  j < filesEncrypted.size();  j++)
+                            {
+                                if (new File (filesEncrypted.get(j) + encryptionExtension).delete())
+                                    Log.i("Alfresco", "Deleted encrypted version of " + filesEncrypted.get(j));
+                            }
+                            filesEncrypted.clear();
+                            filesEncrypted = null;
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            if (result  &&  startPoint)
+            {
+                //Whole folder encrypt succeeded. Move over to new encrypted versions.
+                
+                for (int j = 0;  j < filesEncrypted.size();  j++)
+                {
+                    File src = new File (filesEncrypted.get(j));
+                    File dest = new File (filesEncrypted.get(j) + encryptionExtension);
+
+                    //
+                    // Two-stage delete for failsafe operation.
+                    //
+                    File tempSrc = new File (filesEncrypted.get(j) + ".mov");
+                    if (src.renameTo(tempSrc))
+                    {                    
+                        //Put encrypted version in originals place.
+                        if (dest.renameTo(src))
+                        {
+                            //Delete the original unencrypted temp file.
+                            if (!tempSrc.delete())
+                            {
+                                //At least rename it out of the way with a temp extension, and nuke its content.
+                                Log.w("Alfresco", "Could not delete original file. Nuking and renaming it " + tempSrc.getPath());
+                                CipherUtils.nukeFile (tempSrc, -1);
+                            }
+                        }
+                        else
+                        {
+                            tempSrc.renameTo(src);
+                        }
+                    }
+                }
+                filesEncrypted.clear();
+                filesEncrypted = null;
+            }
+            
+            return result;
+        }
+        catch (Exception e)
+        {
+            Log.e("Alfresco", "Error during folder encryption: " + e.getMessage() );
+            e.printStackTrace();
+            
+            return false;
+        }   
+    }
+    
+    /*
+     * Encrypt an entire folder, recursively if required.  Rollback is implemented if any failures occur.
+     * 
+     * NOTE: This method is not thread-safe.
+     */
+    public static boolean decryptFiles (Context ctxt, String sourceFolder, boolean recursive)
+    {
+        return decryptFiles (ctxt, sourceFolder, null, recursive);
+    }
+    public static boolean decryptFiles (Context ctxt, String sourceFolder, Vector<String> withinFolders, boolean recursive)
+    {
+        boolean startPoint = false;
+        boolean result = true;
+        
+        if (filesDecrypted == null)
+        {
+            filesDecrypted = new Vector<String>();
+            startPoint = true;
+        }
+        try
+        {
+            File f = new File(sourceFolder);        
+            File file[] = f.listFiles();
+            
+            for (int i = 0;  i < file.length; i++)
+            {
+                File sourceFile = file[i];
+                String destFilename = file[i].getPath() + decryptionExtension;
+                
+                if (!sourceFile.isHidden())
+                {
+                    if (sourceFile.isFile() )
+                    {
+                        for (String item : withinFolders)
+                        {
+                            if (item.equals (sourceFile.getParentFile().getName()) )
+                            {
+                                result = CipherUtils.decryptFile(ctxt, sourceFile.getPath(), destFilename);
+                                if (result == true)
+                                    filesDecrypted.add(sourceFile.getPath());
+                            }
+                        }   
+                    }
+                    else
+                    {
+                        if (sourceFile.isDirectory()  &&  recursive  &&
+                           !sourceFile.getName().equals(".")  &&  !sourceFile.getName().equals("..") )
+                        {
+                            result = decryptFiles (ctxt, sourceFile.getPath(), withinFolders, recursive);
+                        }
+                    }
+                    
+                    if (!result)
+                    {
+                        if (filesDecrypted != null)
+                        {    
+                            Log.e("Alfresco", "Folder decryption failed for " + sourceFile.getName() );
+                            
+                            //Remove the decrypted versions done so far.
+                            Log.i("Alfresco", "Decryption rollback in progress...");
+                            for (int j = 0;  j < filesDecrypted.size();  j++)
+                            {
+                                if (new File (filesDecrypted.get(j) + decryptionExtension).delete())
+                                    Log.i("Alfresco", "Deleted decrypted version of " + filesDecrypted.get(j));
+                            }
+                            filesDecrypted.clear();
+                            filesDecrypted = null;
+                        }
+                        
+                        break;
+                    }
+                }
+            }
+            
+            if (result  &&  startPoint)
+            {
+                //Whole folder decrypt succeeded. Move over to new decrypted versions.
+                
+                for (int j = 0;  j < filesDecrypted.size();  j++)
+                {
+                    File src = new File (filesDecrypted.get(j));
+                    File dest = new File (filesDecrypted.get(j) + decryptionExtension);
+
+                    //
+                    // Two-stage delete for failsafe operation.
+                    //
+                    File tempSrc = new File (filesDecrypted.get(j) + ".mov");
+                    if (src.renameTo(tempSrc))
+                    {                    
+                        //Put decrypted version in originals place.
+                        if (dest.renameTo(src))
+                        {
+                            //Delete the original decrypted temp file.
+                            if (!tempSrc.delete())
+                            {   
+                                Log.w("Alfresco", "Could not delete original file " + tempSrc.getPath());
+                            }
+                        }
+                        else
+                        {
+                            tempSrc.renameTo(src);
+                        }
+                    }
+                }
+                filesDecrypted.clear();
+                filesDecrypted = null;
+            }
+            
+            return result;
+        }
+        catch (Exception e)
+        {
+            Log.e("Alfresco", "Error during folder decryption: " + e.getMessage() );
             e.printStackTrace();
             
             return false;

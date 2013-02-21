@@ -43,10 +43,12 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -56,6 +58,7 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -307,6 +310,20 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                         }
                     }
                 }
+                
+                String filename = f.getFile().getPath();
+                if (StorageManager.shouldEncryptDecrypt(getActivity(), filename))
+                {
+                    try
+                    {
+                        CipherUtils.encryptFile(getActivity(), filename, true);
+                    }
+                    catch (Exception e)
+                    {
+                        MessengerManager.showToast(getActivity(), getString(R.string.encryption_failed));
+                        e.printStackTrace();
+                    }
+                }
 
                 // The upload is done. Remove the fragment + the loader
                 // associated.
@@ -314,6 +331,33 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             }
         }
     }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        {
+            try
+            {
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                if (filename != null && filename.length() > 0)
+                {
+                    if (!CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    else
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                }
+            }
+            catch (Exception e)
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                e.printStackTrace();
+            }
+        }
+        
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
 
     @Override
     public void onLoaderReset(Loader<LoaderResult<Document>> arg0)
