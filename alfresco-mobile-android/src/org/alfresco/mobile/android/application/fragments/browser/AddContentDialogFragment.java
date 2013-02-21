@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -29,29 +29,37 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
+/**
+ * Display a dialogFragment to retrieve user information about the document he
+ * wants to create/upload to the repository.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AddContentDialogFragment extends CreateDocumentDialogFragment
 {
     public AddContentDialogFragment()
     {
     }
 
-    public static AddContentDialogFragment newInstance(Folder folder, File f, String MIMEType)
+    public static AddContentDialogFragment newInstance(Folder folder, File f, String MIMEType, Boolean isCreation)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType)));
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f, f.getName(), MIMEType), isCreation));
         return adf;
     }
-    
-    public static AddContentDialogFragment newInstance(Folder folder, File f)
+
+    public static AddContentDialogFragment newInstance(Folder folder, File f, Boolean isCreation)
     {
         AddContentDialogFragment adf = new AddContentDialogFragment();
-        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f)));
+        adf.setArguments(createBundle(folder, new ContentFileProgressImpl(f), isCreation));
         return adf;
     }
 
@@ -60,6 +68,23 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         AddContentDialogFragment adf = new AddContentDialogFragment();
         adf.setArguments(createBundle(folder));
         return adf;
+    }
+
+    @Override
+    public void onStart()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        super.onStart();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
     }
 
     @Override
@@ -76,7 +101,7 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
         alfSession = SessionUtils.getSession(getActivity());
         return super.onCreateView(inflater, container, savedInstanceState);
     }
-    
+
     @Override
     public void onDestroyView()
     {

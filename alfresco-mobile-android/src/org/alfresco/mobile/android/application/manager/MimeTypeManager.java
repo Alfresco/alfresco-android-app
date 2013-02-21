@@ -24,16 +24,17 @@ import org.alfresco.mobile.android.application.R;
 import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 
 /**
- * Static Mimetype Manager : Extends SDK version.
- * Should be replaced by a more dynamic implementation based on content provider ?
+ * Static Mimetype Manager : Extends SDK version. Should be replaced by a more
+ * dynamic implementation based on content provider ?
+ * 
  * @author jpascal
  */
 public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.MimeTypeManager
 {
 
     private static final Map<String, Integer> EXT2ICON = new HashMap<String, Integer>();
-    private static final Map<String, Integer> EXT2LARGEICON = new HashMap<String, Integer>();
 
+    private static final Map<String, Integer> EXT2LARGEICON = new HashMap<String, Integer>();
 
     public static String getExtension(String uri)
     {
@@ -49,8 +50,9 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
             return "";
         }
     }
-    
-    public static String getMIMEType(String fileName) {
+
+    public static String getMIMEType(String fileName)
+    {
         return MimeTypes.getMIMEType(fileName);
     }
 
@@ -63,10 +65,11 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
         }
         return iconId;
     }
-    
-    public static int getLargeIcon(String fileName)
+
+    public static int getIcon(String fileName, boolean isLarge)
     {
-        int iconId = R.drawable.mime_generic;
+        if (!isLarge) { return getIcon(fileName); }
+        int iconId = R.drawable.mime_256_generic;
         if (EXT2LARGEICON.get(getExtension(fileName)) != null)
         {
             iconId = EXT2LARGEICON.get(getExtension(fileName));
@@ -191,7 +194,7 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
         EXT2ICON.put("z", R.drawable.mime_zip);
         EXT2ICON.put("zip", R.drawable.mime_zip);
     }
-    
+
     static
     {
         // extension to MIME type

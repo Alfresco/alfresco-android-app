@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.search;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.search.SearchFragment;
@@ -96,6 +97,7 @@ public class KeywordSearch extends SearchFragment
         {
             // Show properties
             ((MainActivity) getActivity()).addPropertiesFragment(n);
+            DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
     }
 

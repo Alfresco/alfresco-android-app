@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -80,6 +80,21 @@ public class MenuActionItem
     public static final int MENU_DEVICE_CAPTURE_CAMERA_VIDEO = 310;
 
     public static final int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
+    
+    // ///////////////////////////////////////////
+    // SITES
+    // ///////////////////////////////////////////
+    public static final int MENU_SITE_JOIN = 401;
+
+    public static final int MENU_SITE_LEAVE = 402;
+
+    public static final int MENU_SITE_CANCEL  = 403;
+    
+    public static final int MENU_SITE_FAVORITE  = 404;
+    
+    public static final int MENU_SITE_UNFAVORITE  = 405;
+    
+    public static final int MENU_SITE_LIST_REQUEST  = 406;
 
     // ///////////////////////////////////////////
     // GENERAL

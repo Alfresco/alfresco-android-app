@@ -23,10 +23,13 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Html;
+import android.view.Gravity;
+import android.widget.TextView;
 
 public class SimpleAlertDialogFragment extends DialogFragment
 {
-    
+
     public static final String TAG = "SimpleAlertDialogFragment";
 
     /** Associated Value must be a String id (int value). */
@@ -37,7 +40,7 @@ public class SimpleAlertDialogFragment extends DialogFragment
 
     /** Associated Value must be a String id (int value). */
     public static final String PARAM_POSITIVE_BUTTON = "alertDialogFragment_PositiveId";
-    
+
     /** Associated Value must be a String id (int value). */
     public static final String PARAM_MESSAGE = "alertDialogFragment_MessageId";
 
@@ -61,8 +64,8 @@ public class SimpleAlertDialogFragment extends DialogFragment
         int positiveId = getArguments().getInt(PARAM_POSITIVE_BUTTON);
         int messageId = getArguments().getInt(PARAM_MESSAGE);
 
-
-        Builder builder = new AlertDialog.Builder(getActivity()).setIcon(iconId).setTitle(titleId).setMessage(messageId)
+        Builder builder = new AlertDialog.Builder(getActivity()).setIcon(iconId).setTitle(titleId)
+                .setMessage(Html.fromHtml(getString(messageId)))
                 .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int whichButton)
@@ -72,5 +75,17 @@ public class SimpleAlertDialogFragment extends DialogFragment
                 });
 
         return builder.create();
+    }
+
+    @Override
+    public void onResume()
+    {
+        if (getDialog() != null)
+        {
+            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
+            messageText.setGravity(Gravity.CENTER);
+            getDialog().show();
+        }
+        super.onResume();
     }
 }

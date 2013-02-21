@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+import java.io.File;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,9 +32,15 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.UpdateContentLoader;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
@@ -41,6 +50,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.Fragment;
@@ -62,6 +72,10 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
 {
     public static final String TAG = "UploadFragment";
 
+    public static final String ARGUMENT_ACTION_UPDATE = "updateDocumentContent";
+
+    public static final String ARGUMENT_UPDATE_DOCUMENT = "updateDocument";
+
     public static final String ARGUMENT_FOLDER = "folder";
 
     public static final String ARGUMENT_CONTENT_FILE = "contentFileURI";
@@ -72,19 +86,35 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
 
     public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
 
-    private OnNodeCreateListener onCreateListener;
-
     /** RepositorySession */
     protected AlfrescoSession alfSession;
+
+    Account currentAccount = null;
+
+    private int loaderId;
+
+    private String fragmentTransactionTag;
+
+    private Folder parentFolder;
+
+    public String getFragmentTransactionTag()
+    {
+        return fragmentTransactionTag;
+    }
 
     public void setSession(AlfrescoSession session)
     {
         this.alfSession = session;
     }
 
+    public UploadFragment(String id)
+    {
+        this.fragmentTransactionTag = id;
+    }
+
     public static UploadFragment newInstance(Bundle b)
     {
-        UploadFragment adf = new UploadFragment();
+        UploadFragment adf = new UploadFragment(b.getString(ARGUMENT_CONTENT_NAME));
         adf.setArguments(b);
         return adf;
     }
@@ -100,15 +130,16 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
     @Override
     public void onStart()
     {
-        if (getLoaderManager().getLoader(DocumentCreateLoader.ID) == null)
+        loaderId = DocumentCreateLoader.ID + getArguments().getString(ARGUMENT_CONTENT_NAME).hashCode();
+        Loader<Object> loader = getActivity().getLoaderManager().getLoader(loaderId);
+        if (loader == null)
         {
-            onCreateListener = nodeCreateListener;
-            getLoaderManager().initLoader(DocumentCreateLoader.ID, getArguments(), UploadFragment.this);
-            getLoaderManager().getLoader(DocumentCreateLoader.ID).forceLoad();
+            getActivity().getLoaderManager().initLoader(loaderId, getArguments(), UploadFragment.this);
+            getActivity().getLoaderManager().getLoader(loaderId).forceLoad();
         }
         else
         {
-            getLoaderManager().initLoader(DocumentCreateLoader.ID, getArguments(), UploadFragment.this);
+            getActivity().getLoaderManager().initLoader(loaderId, getArguments(), UploadFragment.this);
         }
         super.onStart();
     }
@@ -116,83 +147,109 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
     @Override
     public Loader<LoaderResult<Document>> onCreateLoader(int id, Bundle args)
     {
-        Map<String, Serializable> props = new HashMap<String, Serializable>(3);
-        props.put(ContentModel.PROP_DESCRIPTION, args.getString(ARGUMENT_CONTENT_DESCRIPTION));
-        props.put(ContentModel.PROP_TAGS, args.getStringArrayList(ARGUMENT_CONTENT_TAGS));
-        props.put(PropertyIds.OBJECT_TYPE_ID, "cmis:document");
-        if (onCreateListener != null)
+        String name = args.getString(ARGUMENT_CONTENT_NAME);
+        ContentFile contentFile = (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE);
+        if (contentFile != null && name != null)
         {
-            onCreateListener.beforeContentCreation((Folder) getArguments().get(ARGUMENT_FOLDER),
+            currentAccount = SessionUtils.getAccount(getActivity());
+
+            Bundle progressBundle = new Bundle();
+            // Create the first Creation Notification.
+            if (contentFile.getClass() == ContentFileProgressImpl.class)
+            {
+                ((ContentFileProgressImpl) contentFile).setFilename(name);
+                progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, name);
+            }
+            else
+            {
+                progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, contentFile.getFile().getName());
+            }
+
+            progressBundle.putInt(ProgressNotification.PARAM_DATA_SIZE, (int) contentFile.getFile().length());
+            progressBundle.putInt(ProgressNotification.PARAM_DATA_INCREMENT,
+                    (int) (contentFile.getFile().length() / 10));
+
+            ProgressNotification.createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
+
+            parentFolder = (Folder) args.get(ARGUMENT_FOLDER);
+        }
+
+        if (args.getBoolean(ARGUMENT_ACTION_UPDATE))
+        {
+            return new UpdateContentLoader(getActivity(), alfSession, (Document) args.get(ARGUMENT_UPDATE_DOCUMENT),
+                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+        }
+        else
+        {
+            Map<String, Serializable> props = new HashMap<String, Serializable>(3);
+            props.put(ContentModel.PROP_DESCRIPTION, args.getString(ARGUMENT_CONTENT_DESCRIPTION));
+            props.put(ContentModel.PROP_TAGS, args.getStringArrayList(ARGUMENT_CONTENT_TAGS));
+            props.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.DOCUMENT_BASETYPE_ID);
+
+            return new DocumentCreateLoader(getActivity(), alfSession, (Folder) args.get(ARGUMENT_FOLDER),
                     args.getString(ARGUMENT_CONTENT_NAME), props,
                     (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
         }
-
-        return new DocumentCreateLoader(getActivity(), alfSession, (Folder) getArguments().get(ARGUMENT_FOLDER),
-                args.getString(ARGUMENT_CONTENT_NAME), props, (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
     }
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<Document>> loader, LoaderResult<Document> results)
     {
+        ContentFile contentFile = null;
+        String name = null;
+
+        if (getArguments().getBoolean(ARGUMENT_ACTION_UPDATE))
+        {
+            UpdateContentLoader loaderD = (UpdateContentLoader) loader;
+            contentFile = loaderD.getContentFile();
+            name = loaderD.getDocument().getName();
+        }
+        else
+        {
+            DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
+            contentFile = loaderD.getContentFile();
+            name = loaderD.getDocumentName();
+        }
+
         if (results.hasException())
         {
-            MessengerManager.showLongToast(getActivity(), results.getException().getMessage());
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-        }
-
-        if (onCreateListener != null)
-        {
-            if (results.hasException())
-            {
-                onCreateListener.onExeceptionDuringCreation(results.getException());
-            }
-            else
-            {
-                onCreateListener.afterContentCreation(results.getData());
-            }
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<LoaderResult<Document>> arg0)
-    {
-    }
-
-    OnNodeCreateListener nodeCreateListener = new OnNodeCreateListener()
-    {
-        Folder parentFolder = null;
-
-        @Override
-        public void beforeContentCreation(Folder parentFolder, String name, Map<String, Serializable> props,
-                ContentFile contentFile)
-        {
             if (contentFile != null)
             {
-                Bundle progressBundle = new Bundle();
-                ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+                // An error occurs, notify the user.
+                ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_ERROR);
 
-                if (f.getClass() == ContentFileProgressImpl.class)
+                // During creation process, the content must be available on
+                // Download area.
+                // The file is move from capture to download.
+                if ((Boolean) getArguments().getSerializable(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
                 {
-                    ((ContentFileProgressImpl) f).setFilename(name);
-                    progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, name);
+                    final File folderStorage = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
+                            currentAccount.getUsername());
+
+                    File dlFile = new File(folderStorage, contentFile.getFileName());
+                    if (dlFile.exists())
+                    {
+                        String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss-").format(new Date());
+                        dlFile = new File(folderStorage, timeStamp + contentFile.getFileName());
+                    }
+
+                    if (contentFile.getFile().renameTo(dlFile))
+                    {
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.create_document_save));
+                    }
+                    else
+                    {
+                        MessengerManager.showToast(getActivity(), R.string.error_general);
+                    }
                 }
-                else
-                {
-                    progressBundle.putString(ProgressNotification.PARAM_DATA_NAME, f.getFile().getName());
-                }
-
-                progressBundle.putInt(ProgressNotification.PARAM_DATA_SIZE, (int) f.getFile().length());
-                progressBundle.putInt(ProgressNotification.PARAM_DATA_INCREMENT, (int) (f.getFile().length() / 10));
-
-                ProgressNotification
-                        .createProgressNotification(getActivity(), progressBundle, getActivity().getClass());
-
-                this.parentFolder = parentFolder;
             }
-        }
 
-        @Override
-        public void afterContentCreation(Node node)
+            // The upload is done even if it's an error.
+            // Remove the fragment + the loader associated.
+            actionRemoveUploadFragment(UploadFragment.this, fragmentTransactionTag, loaderId);
+        }
+        else
         {
             Bundle args = getArguments();
             if (args != null)
@@ -202,21 +259,55 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 {
                     MessengerManager.showLongToast(getActivity(), getString(R.string.upload_complete));
                 }
+
                 ContentFile f = (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE);
                 if (f != null)
                 {
-                    ProgressNotification.updateProgress(f.getFile().getName(),
-                            ProgressNotification.FLAG_UPLOAD_COMPLETED);
+                    // Notify the upload is complete.
+                    ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_COMPLETED);
+
+                    // During creation process, we remove the file from the temp
+                    // capture folder.
+                    if (getArguments().getSerializable(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION) != null
+                            && (Boolean) getArguments().getSerializable(
+                                    CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
+                    {
+                        f.getFile().delete();
+                    }
                 }
 
                 // If we can/need to refresh the panels, do that now...
-                Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                if (lf != null && lf instanceof ChildrenBrowserFragment)
+                if (args.getBoolean(ARGUMENT_ACTION_UPDATE))
                 {
-                    Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
-                    if (parentFolder == this.parentFolder)
+                    DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
+                            DetailsFragment.TAG);
+                    if (getActivity() != null && detailsFragment != null && getActivity() instanceof MainActivity)
                     {
-                        ((ChildrenBrowserFragment) lf).refresh();
+                        Node n = (Node) detailsFragment.getArguments().get(DetailsFragment.ARGUMENT_NODE);
+                        Node node = results.getData();
+                        if (n != null
+                                && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
+                                        NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
+                        {
+                            ((MainActivity) getActivity()).setCurrentNode(node);
+                            ActionManager.actionRefresh(this, IntentIntegrator.CATEGORY_REFRESH_ALL,
+                                    PublicIntent.NODE_TYPE);
+                            MessengerManager.showToast(getActivity(),
+                                    node.getName() + " " + getResources().getString(R.string.update_sucess));
+                        }
+                    }
+                }
+                else
+                {
+                    Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
+                    if (getActivity() != null && lf != null && getActivity() instanceof MainActivity
+                            && lf instanceof ChildrenBrowserFragment)
+                    {
+                        Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
+                        if (parentFolder == this.parentFolder)
+                        {
+                            ((ChildrenBrowserFragment) lf).refresh();
+                        }
                     }
                 }
                 
@@ -233,15 +324,13 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                         e.printStackTrace();
                     }
                 }
+
+                // The upload is done. Remove the fragment + the loader
+                // associated.
+                actionRemoveUploadFragment(UploadFragment.this, fragmentTransactionTag, loaderId);
             }
         }
-
-        @Override
-        public void onExeceptionDuringCreation(Exception e)
-        {
-            CloudExceptionUtils.handleCloudException(getActivity(), e, false);
-        }
-    };
+    }
     
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -268,5 +357,27 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
         
         super.onActivityResult(requestCode, resultCode, data);
     }
+    
 
+    @Override
+    public void onLoaderReset(Loader<LoaderResult<Document>> arg0)
+    {
+    }
+
+    /**
+     * Create and start the remove Fragment Intent. It informs the activity that
+     * it can remove this fragment and this loader.
+     * 
+     * @param f : Fragment to remove.
+     * @param fragmentTransactionTag : Fragment transaction tag name.
+     * @param loaderId : loader unique identifier.
+     */
+    public static void actionRemoveUploadFragment(Fragment f, String fragmentTransactionTag, int loaderId)
+    {
+        String intentId = IntentIntegrator.ACTION_REMOVE_FRAGMENT;
+        Intent i = new Intent(intentId);
+        i.putExtra(IntentIntegrator.REMOVE_FRAGMENT_TAG, fragmentTransactionTag);
+        i.putExtra(IntentIntegrator.REMOVE_LOADER_ID, loaderId);
+        f.startActivity(i);
+    }
 }

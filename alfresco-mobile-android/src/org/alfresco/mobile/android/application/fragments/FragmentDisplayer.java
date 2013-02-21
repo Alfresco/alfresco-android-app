@@ -196,6 +196,10 @@ public class FragmentDisplayer
 
     public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack)
     {
+       replaceFragment(a, f, viewId, tag, backStack, true);
+    }
+    
+    public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack, boolean hasAnimation){
         if (f == null)
         {
             replaceFragment(a, viewId, tag, backStack);
@@ -205,18 +209,18 @@ public class FragmentDisplayer
             try
             {
                 FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
+                if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
                 {
                     // t2.setCustomAnimations(R.anim.slide_in_right,//
                     // R.anim.slide_out_left);
                 }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                else if ( hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                else if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                             R.anim.slide_out_right);

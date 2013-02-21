@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 
 import android.app.Application;
 
@@ -34,7 +35,13 @@ public class AlfrescoApplication extends Application
 
     private AlfrescoSession alfSession;
 
+    /** Import Session is used during import process form 3rd party application. */
+    private AlfrescoSession importSession;
+
     private DatabaseManager databaseManager;
+    
+    /** Common rendition manager. */
+    private RenditionManager renditionManager;
 
     @Override
     public void onCreate()
@@ -71,5 +78,31 @@ public class AlfrescoApplication extends Application
     public void setAccount(Account account)
     {
         this.account = account;
+    }
+
+    /**
+     * Use only during Import Process (document from 3rd party app).
+     */
+    public AlfrescoSession getImportSession()
+    {
+        return importSession;
+    }
+
+    /**
+     * Use only during Import Process (document from 3rd party app).
+     */
+    public void setImportSession(AlfrescoSession importSession)
+    {
+        this.importSession = importSession;
+    }
+    
+    public void setRenditionManager(RenditionManager renditionManager)
+    {
+        this.renditionManager = renditionManager;
+    }
+    
+    public RenditionManager geRenditionManager()
+    {
+        return renditionManager;
     }
 }

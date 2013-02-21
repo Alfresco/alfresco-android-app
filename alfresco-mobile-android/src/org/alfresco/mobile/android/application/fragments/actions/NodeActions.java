@@ -54,12 +54,10 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback

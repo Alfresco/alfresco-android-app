@@ -17,9 +17,17 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_ACTION_UPDATE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_UPDATE_DOCUMENT;
+
 import java.io.File;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -35,22 +43,21 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.fragments.browser.UploadFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -59,6 +66,7 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -137,7 +145,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        renditionManager = new RenditionManager(getActivity(), alfSession);
+        renditionManager = SessionUtils.getRenditionManager(getActivity());
 
         // Header
         TextView tv = (TextView) v.findViewById(R.id.title);
@@ -145,60 +153,29 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv = (TextView) v.findViewById(R.id.details);
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
 
-        // Preview
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            ImageView iv = (ImageView) v.findViewById(R.id.icon);
-            int iconId = R.drawable.mime_folder;
-            if (node.isDocument())
-            {
-                iconId = MimeTypeManager.getLargeIcon(node.getName());
-                if (((Document) node).isLatestVersion())
-                {
-                    if (v.findViewById(R.id.preview) != null)
-                    {
-                        renditionManager.preview((ImageView) v.findViewById(R.id.preview), node, iconId,
-                                DisplayUtils.getWidth(getActivity()));
-                        iv.setVisibility(View.GONE);
-                    }
-                    else
-                    {
-                        renditionManager.preview(iv, node, iconId, 150);
-                    }
-                }
-                else
-                {
-                    iv.setImageResource(iconId);
-                }
-
-                iv.setOnClickListener(new OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        openin();
-                    }
-                });
-            }
-            else
-            {
-                iv.setImageResource(iconId);
-            }
-        }
+        // Preview + Thumbnail
+        displayIcon(node, R.drawable.mime_folder, (ImageView) v.findViewById(R.id.icon), false);
+        displayIcon(node, R.drawable.mime_256_folder, (ImageView) v.findViewById(R.id.preview), true);
 
         // Description
+        Integer generalPropertyTitle = null;
         tv = (TextView) v.findViewById(R.id.description);
+        List<String>  filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0
                 && v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
+            generalPropertyTitle = -1;
+            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());;
+            filter.add(ContentModel.PROP_NAME);
         }
         else if (v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
+            generalPropertyTitle = R.string.metadata;
         }
-
+        
         // TAB
         if (savedInstanceState != null)
         {
@@ -212,7 +189,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
@@ -301,8 +278,50 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-
         return v;
+    }
+
+    /**
+     * Display a drawable associated to the node type on a specific imageview.
+     * 
+     * @param node
+     * @param defaultIconId
+     * @param iv
+     * @param isLarge
+     */
+    private void displayIcon(Node node, int defaultIconId, ImageView iv, boolean isLarge)
+    {
+        if (iv == null) { return; }
+
+        int iconId = defaultIconId;
+        if (node.isDocument())
+        {
+            iconId = MimeTypeManager.getIcon(node.getName(), isLarge);
+            if (((Document) node).isLatestVersion())
+            {
+                if (isLarge)
+                {
+                    renditionManager.preview(iv, node, iconId, DisplayUtils.getWidth(getActivity()));
+                }
+                else
+                {
+                    renditionManager.display(iv, node, iconId);
+                }
+            }
+            else
+            {
+                iv.setImageResource(iconId);
+            }
+
+            iv.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
+        }
     }
 
     @Override
@@ -323,13 +342,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     }
 
     @Override
-    public void onDestroy()
+    public void onStop()
     {
         getActivity().invalidateOptionsMenu();
         ((MainActivity) getActivity()).setCurrentNode(null);
-        super.onDestroy();
+        super.onStop();
     }
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -492,18 +511,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
-                                    (Document) node, dlFile);
-                            up.setOnUpdateListener(updateListener);
-                            updateListener.currentFile = dlFile.getPath();
-                            if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
-                            {
-                                getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-                            }
-                            else
-                            {
-                                getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
-                            }
+                            update(dlFile);
                             dialog.dismiss();
                         }
                     });
@@ -558,88 +566,19 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void update(File f)
     {
-        UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
-        up.setOnUpdateListener(updateListener);
-        updateListener.currentFile = f.getPath();
-        if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
-        {
-            getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
-        }
-        else
-        {
-            getLoaderManager().restartLoader(UpdateContentLoader.ID, null, up);
-        }
-    }
+        Bundle b = new Bundle();
+        b.putSerializable(ARGUMENT_CONTENT_FILE, new ContentFileProgressImpl(f));
+        b.putString(ARGUMENT_CONTENT_NAME, node.getName());
+        b.putBoolean(ARGUMENT_ACTION_UPDATE, true);
+        b.putParcelable(ARGUMENT_UPDATE_DOCUMENT, node);
 
-    private class DetailsNodeUpdateListener implements OnNodeUpdateListener
-    {
-        public boolean hasWaiting = false;
-        public String currentFile;
-        
-        @Override
-        public void beforeUpdate(Node node)
+        if (getActivity() instanceof MainActivity)
         {
-            if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
-            {
-                new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
-            }
-            hasWaiting = true;
-        }
-
-        @Override
-        public void afterUpdate(Node node)
-        {
-
-            DetailsFragment lf = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-            if (lf != null)
-            {
-                Node n = (Node) lf.getArguments().get(ARGUMENT_NODE);
-                if (n != null
-                        && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
-                                NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
-                {
-                    ((MainActivity) getActivity()).setCurrentNode(node);
-                    ActionManager.actionRefresh(DetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                            PublicIntent.NODE_TYPE);
-                    MessengerManager.showToast(getActivity(),
-                            node.getName() + " " + getResources().getString(R.string.update_sucess));
-                    refreshThumbnail(node);
-                    
-                    if (StorageManager.shouldEncryptDecrypt (getActivity(), currentFile))
-                    {
-                        try
-                        {
-                            CipherUtils.encryptFile(getActivity(), currentFile, true);
-                        }
-                        catch (Exception e)
-                        {
-                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                            e.printStackTrace();
-                        }
-                    }
-                }
-            }
-        }
-
-        @Override
-        public void onExeceptionDuringUpdate(Exception e)
-        {
-            ActionManager.actionDisplayError(DetailsFragment.this, e);
-        }
-    };
-
-    DetailsNodeUpdateListener updateListener = new DetailsNodeUpdateListener();
-    
-    
-    private void refreshThumbnail(Node node)
-    {
-        if (node.isDocument())
-        {
-            if ((ImageView) getActivity().findViewById(R.id.icon) != null)
-            {
-                renditionManager.display((ImageView) getActivity().findViewById(R.id.icon), node,
-                        MimeTypeManager.getIcon(node.getName()));
-            }
+            // Use UploadFragment to manage upload
+            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+            UploadFragment uploadFragment = UploadFragment.newInstance(b);
+            fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
+            fragmentTransaction.commit();
         }
     }
 

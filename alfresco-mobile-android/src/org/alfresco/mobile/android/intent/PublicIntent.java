@@ -38,5 +38,4 @@ public class PublicIntent
     public static final int REQUESTCODE_CREATE = 130;
     
     public static final int REQUESTCODE_DECRYPTED = 131;
-
 }

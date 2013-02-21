@@ -17,13 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import java.io.File;
-import java.net.UnknownHostException;
-
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -32,6 +30,7 @@ import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -39,9 +38,6 @@ import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
-import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
-import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -55,7 +51,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
 
 @TargetApi(11)
 public class AccountCreationLoaderCallback extends AbstractSessionCallback
@@ -127,7 +122,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     public void onLoadFinished(Loader<LoaderResult<AlfrescoSession>> loader, LoaderResult<AlfrescoSession> results)
     {
         int type;
-        
+
         AlfrescoSession session = results.getData();
         if (session != null)
         {
@@ -136,8 +131,8 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             long id = -1L;
             if (data == null)
             {
-                //Non OAuth login
-                
+                // Non OAuth login
+
                 type = Integer.valueOf(Account.TYPE_ALFRESCO_CMIS);
                 if (session instanceof CloudSession
                         && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
@@ -158,8 +153,8 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             }
             else
             {
-                //OAuth login
-                
+                // OAuth login
+
                 Person user = null;
                 if (loader instanceof CloudSessionLoader)
                 {
@@ -183,7 +178,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
             if (type == Account.TYPE_ALFRESCO_CLOUD)
             {
-                if (((CloudSession)session).getNetwork().isPaidNetwork())
+                if (((CloudSession) session).getNetwork().isPaidNetwork())
                 {
                     prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
                     
@@ -193,7 +188,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             else
             {
                 String edition = session.getRepositoryInfo().getEdition();
-                
+
                 if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
                 {
                     prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
@@ -218,22 +213,10 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         {
             Exception e = results.getException();
             Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
             b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_title);
             b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-
-            if (e.getCause() instanceof CmisUnauthorizedException)
-            {
-                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_unauthorized);
-            }
-            else if (e.getCause() instanceof CmisConnectionException
-                    && e.getCause().getCause() instanceof UnknownHostException)
-            {
-                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_hostname);
-            }
-            else
-            {
-                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_creation);
-            }
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, SessionExceptionHelper.getMessageId(activity, e));
 
             mProgressDialog.dismiss();
             ActionManager.actionDisplayDialog(activity, b);

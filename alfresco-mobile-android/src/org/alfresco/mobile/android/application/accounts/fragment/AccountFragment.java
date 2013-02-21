@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -38,6 +38,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+/**
+ * AccountFragment is responsible to display the list of Accounts inside the application.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AccountFragment extends BaseListFragment implements LoaderCallbacks<List<Account>>
 {
 
@@ -114,7 +119,10 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         }
         else
         {
-            ((MainActivity) getActivity()).addAccountDetails(item.getId());
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).addAccountDetails(item.getId());
+            }
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
     }
@@ -134,13 +142,14 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         AccountTypesFragment newFragment = new AccountTypesFragment();
         FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
                 AccountTypesFragment.TAG, true);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
 
-    public void getMenu(Menu menu)
+    public static void getMenu(Menu menu)
     {
         MenuItem mi;
 
@@ -148,6 +157,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
                 R.string.action_add_account);
         mi.setIcon(R.drawable.ic_account_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+    }
+
+    public void unselect()
+    {
+        selectedAccounts.clear();
     }
 
 }

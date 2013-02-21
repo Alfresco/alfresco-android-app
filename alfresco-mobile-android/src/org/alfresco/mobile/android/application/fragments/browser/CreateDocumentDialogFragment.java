@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -17,6 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_FOLDER;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_DESCRIPTION;
+import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_TAGS;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +34,10 @@ import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.integration.upload.UploadService;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -50,7 +61,7 @@ import android.widget.TextView;
  * Specific override for Uploading content. This fragment is responsible to
  * display the upload UI component. When user click on upload button, it creates
  * an UploadFragment (UI less) responsible to maintain callback methods. The
- * UploadFragment may diseapear to support batch upload/download.
+ * UploadFragment may disappear to support batch upload/download.
  * 
  * @author Jean Marie Pascal
  */
@@ -58,15 +69,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 {
     public static final String TAG = "CreateContentDialogFragment";
 
-    public static final String ARGUMENT_FOLDER = "folder";
-
-    public static final String ARGUMENT_CONTENT_FILE = "contentFileURI";
-
-    public static final String ARGUMENT_CONTENT_NAME = "contentName";
-
-    public static final String ARGUMENT_CONTENT_DESCRIPTION = "contentDescription";
-
-    public static final String ARGUMENT_CONTENT_TAGS = "contentTags";
+    public static final String ARGUMENT_IS_CREATION = "isCreation";
 
     private EditText editTags;
 
@@ -78,14 +81,15 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
     public static Bundle createBundle(Folder folder)
     {
-        return createBundle(folder, null);
+        return createBundle(folder, null, null);
     }
 
-    public static Bundle createBundle(Folder folder, ContentFile f)
+    public static Bundle createBundle(Folder folder, ContentFile f, Boolean isCreation)
     {
         Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_FOLDER, folder);
         args.putSerializable(ARGUMENT_CONTENT_FILE, f);
+        args.putBoolean(ARGUMENT_IS_CREATION, isCreation);
         return args;
     }
 
@@ -124,6 +128,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             public void onClick(View v)
             {
                 Bundle b = new Bundle();
+                b.putAll(getArguments());
                 b.putString(ARGUMENT_CONTENT_NAME, tv.getText().toString());
                 if (desc.getText() != null && desc.getText().length() > 0)
                 {
@@ -140,28 +145,25 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                     b.putStringArrayList(ARGUMENT_CONTENT_TAGS, listTagValue);
                 }
                 b.putSerializable(ARGUMENT_CONTENT_FILE, getArguments().getSerializable(ARGUMENT_CONTENT_FILE));
-                b.putAll(getArguments());
                 bcreate.setEnabled(false);
 
-                // Use UploadFragment to manage upload
-                UploadFragment uploadFragment = (UploadFragment) getFragmentManager().findFragmentByTag(
-                        UploadFragment.TAG);
-                if (uploadFragment == null)
-                {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    uploadFragment = UploadFragment.newInstance(b);
-                    fragmentTransaction.add(uploadFragment, UploadFragment.TAG);
-                    fragmentTransaction.commit();
-                }
-                else
-                {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    fragmentTransaction.remove(uploadFragment);
-                    uploadFragment = UploadFragment.newInstance(b);
-                    fragmentTransaction.add(uploadFragment, UploadFragment.TAG);
-                    fragmentTransaction.commit();
-                }
+                // Dismiss the dialog
                 CreateDocumentDialogFragment.this.dismiss();
+
+                if (getActivity() instanceof MainActivity)
+                {
+                    // Use UploadFragment to manage upload
+                    FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                    UploadFragment uploadFragment = UploadFragment.newInstance(b);
+                    fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
+                    fragmentTransaction.commit();
+                }
+                else if (getActivity() instanceof PublicDispatcherActivity)
+                {
+                    b.putParcelable(UploadService.ARGUMENT_SESSION, SessionUtils.getSession(getActivity()));
+                    UploadService.updateImportService(getActivity(), b);
+                    getActivity().finish();
+                }
             }
         });
 
@@ -204,7 +206,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         return v;
     }
 
-    public void onValidateTags()
+    private void onValidateTags()
     {
         String s = editTags.getText().toString();
         String[] listValues = s.split(",");

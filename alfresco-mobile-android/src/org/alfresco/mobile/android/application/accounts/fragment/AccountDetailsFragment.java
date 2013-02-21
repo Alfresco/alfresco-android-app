@@ -406,7 +406,7 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View v)
             {
                 retrieveFormValues();
-                if (accountDao.update(acc.getId(), description, url, username, password, acc.getRepositoryId(),
+                if (accountDao.update(acc.getId(), description, (url!=null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken()))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));

@@ -49,9 +49,15 @@ public class ProgressNotification extends Service
 
     private static final int FLAG_UPLOAD_PROCESSING = -2;
 
+    public static final int FLAG_UPLOAD_ERROR = -3;
+    
+    /** Error happens during import process. */
+    public static final int FLAG_UPLOAD_IMPORT_ERROR = -4;
+
+
     private static Notification notification = null;
 
-    private static Activity parent = null;
+    //private static Activity parent = null;
 
     private static Context ctxt = null;
 
@@ -70,7 +76,6 @@ public class ProgressNotification extends Service
     @Override
     public IBinder onBind(Intent intent)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -81,7 +86,7 @@ public class ProgressNotification extends Service
 
     static public synchronized boolean updateProgress(String name, Integer incrementBy)
     {
-        if (ctxt != null && inProgressObjects != null && parent != null)
+        if (ctxt != null && inProgressObjects != null)
         {
             NotificationManager notificationManager = (NotificationManager) ctxt
                     .getSystemService(Context.NOTIFICATION_SERVICE);
@@ -95,16 +100,28 @@ public class ProgressNotification extends Service
                 int dataSize = params.getInt(PARAM_DATA_SIZE);
 
                 // UPLOAD PROCESS IS FINISHED : Notification Upload Complete<
-                if (incrementBy != null && incrementBy == FLAG_UPLOAD_COMPLETED)
+                if (incrementBy != null && (incrementBy == FLAG_UPLOAD_COMPLETED || incrementBy == FLAG_UPLOAD_ERROR || incrementBy == FLAG_UPLOAD_IMPORT_ERROR))
                 {
                     if (AndroidVersion.isICSOrAbove())
                     {
-                        tmpNotification = createNotification(ctxt, params, FLAG_UPLOAD_COMPLETED);
+                        tmpNotification = createNotification(ctxt, params, incrementBy);
                     }
                     else
                     {
+                        String title = null;
+                        switch (incrementBy)
+                        {
+                            case FLAG_UPLOAD_ERROR:
+                                title =  ctxt.getString(R.string.action_upload_error);
+                                break;
+                            case FLAG_UPLOAD_COMPLETED:
+                                title = ctxt.getString(R.string.upload_complete);
+                                break;
+                            default:
+                                break;
+                        }
                         tmpNotification.contentView.setTextViewText(R.id.status_text,
-                                ctxt.getText(R.string.download_complete));
+                                title);
                         tmpNotification.contentView.setProgressBar(R.id.status_progress, dataSize, dataSize, false);
                     }
                     notificationManager.notify((int) progressItem.id, tmpNotification);
@@ -114,7 +131,7 @@ public class ProgressNotification extends Service
 
                     if (inProgressObjects.isEmpty())
                     {
-                        parent.stopService(new Intent(parent, ProgressNotification.class).putExtras(params));
+                        ctxt.getApplicationContext().stopService(new Intent(ctxt.getApplicationContext(), ProgressNotification.class).putExtras(params));
                     }
                 }
                 else
@@ -170,7 +187,7 @@ public class ProgressNotification extends Service
         if (inProgressObjects != null && inProgressObjects.size() > 0 && newItem != null)
         {
             ctxt = this;
-            parent = MainActivity.activity;
+            //parent = MainActivity.activity;
 
             MessengerManager.showLongToast(this, getString(R.string.upload_in_progress));
         }
@@ -185,37 +202,48 @@ public class ProgressNotification extends Service
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
         builder.setContentText(params.getString(PARAM_DATA_NAME));
-        if (FLAG_UPLOAD_COMPLETED == value)
+        
+        switch (value)
         {
-            builder.setContentTitle(c.getText(R.string.upload_complete));
-            builder.setTicker(c.getString(R.string.upload_complete) + " " + params.getString(PARAM_DATA_NAME));
-            builder.setAutoCancel(true);
-        }
-        else if (FLAG_UPLOAD_PROCESSING == value)
-        {
-            builder.setContentTitle(c.getText(R.string.action_processing));
-        }
-        else
-        {
-            builder.setContentTitle(c.getText(R.string.upload_in_progress));
-            builder.setTicker(params.getString(PARAM_DATA_NAME));
+            case FLAG_UPLOAD_COMPLETED:
+                builder.setContentTitle(c.getText(R.string.upload_complete));
+                builder.setTicker(c.getString(R.string.upload_complete) + " " + params.getString(PARAM_DATA_NAME));
+                builder.setAutoCancel(true);
+                break;
+            case FLAG_UPLOAD_PROCESSING:
+                builder.setContentTitle(c.getText(R.string.action_processing));
+                break;
+            case FLAG_UPLOAD_ERROR:
+                builder.setContentTitle(params.getString(PARAM_DATA_NAME));
+                builder.setContentText(c.getText(R.string.create_document_save));
+                break;
+            case FLAG_UPLOAD_IMPORT_ERROR:
+                builder.setContentTitle(params.getString(PARAM_DATA_NAME));
+                builder.setContentText(c.getText(R.string.import_error));
+                break;
+            default:
+                builder.setContentTitle(c.getText(R.string.upload_in_progress));
+                builder.setTicker(params.getString(PARAM_DATA_NAME));
+                break;
         }
         builder.setNumber(0);
         builder.setSmallIcon(R.drawable.ic_alfresco);
 
         if (AndroidVersion.isICSOrAbove())
         {
-            if (FLAG_UPLOAD_COMPLETED == value)
+            switch (value)
             {
-                builder.setProgress(0, 0, false);
-            }
-            else if (FLAG_UPLOAD_PROCESSING == value)
-            {
-                builder.setProgress(0, 0, true);
-            }
-            else
-            {
-                builder.setProgress(params.getInt(PARAM_DATA_SIZE), value, false);
+                case FLAG_UPLOAD_ERROR:
+                case FLAG_UPLOAD_IMPORT_ERROR:
+                case FLAG_UPLOAD_COMPLETED:
+                    builder.setProgress(0, 0, false);
+                    break;
+                case FLAG_UPLOAD_PROCESSING:
+                    builder.setProgress(0, 0, true);
+                    break;
+                default:
+                    builder.setProgress(params.getInt(PARAM_DATA_SIZE), value, false);
+                    break;
             }
         }
 
@@ -238,7 +266,7 @@ public class ProgressNotification extends Service
     public static void createProgressNotification(Context c, Bundle params, Class clickActivity)
     {
         ctxt = c;
-        parent = MainActivity.activity;
+        //parent = MainActivity.activity;
 
         if (inProgressObjects == null)
         {

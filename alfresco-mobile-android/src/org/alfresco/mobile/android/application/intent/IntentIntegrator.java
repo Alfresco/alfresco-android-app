@@ -58,10 +58,19 @@ public class IntentIntegrator extends PublicIntent
     public static final String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
 
     public static final String ACTION_DISPLAY_ERROR_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN";
+    
+    public static final String ACTION_DISPLAY_ERROR_IMPORT = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_IMPORT";
 
     public static final String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
 
     public static final String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG";
     
     public static final String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
+    
+    public static final String ACTION_REMOVE_FRAGMENT = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT";
+
+    public static final String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
+
+    public static final String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
+
 }
