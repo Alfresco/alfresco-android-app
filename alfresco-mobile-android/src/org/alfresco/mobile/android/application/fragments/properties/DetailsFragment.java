@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Date;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
@@ -45,6 +46,8 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
@@ -59,6 +62,7 @@ import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -450,6 +454,25 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         switch (requestCode)
         {
+            case PublicIntent.REQUESTCODE_DECRYPTED:
+                try
+                {
+                    String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                    if (filename != null && filename.length() > 0)
+                    {
+                        if (!CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                        else
+                            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    e.printStackTrace();
+                }
+                break;
+                
             case PublicIntent.REQUESTCODE_SAVE_BACK:
                 final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
 
@@ -472,6 +495,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(),
                                     (Document) node, dlFile);
                             up.setOnUpdateListener(updateListener);
+                            updateListener.currentFile = dlFile.getPath();
                             if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
                             {
                                 getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
@@ -501,7 +525,21 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     if (tmpPath != null)
                     {
                         File f = new File(tmpPath);
-                        update(f);
+                        
+                        if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
+                        {
+                            try
+                            {
+                                if (CipherUtils.decryptFile(getActivity(), tmpPath) == false)
+                                    MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
+                            }
+                            catch (Exception e)
+                            {
+                                MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
+                                e.printStackTrace();
+                            }
+                        }
+                        
                     }
                     else
                     {
@@ -522,6 +560,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         UpdateContentCallback up = new UpdateContentCallback(alfSession, getActivity(), (Document) node, f);
         up.setOnUpdateListener(updateListener);
+        updateListener.currentFile = f.getPath();
         if (getLoaderManager().getLoader(UpdateContentLoader.ID) == null)
         {
             getLoaderManager().initLoader(UpdateContentLoader.ID, null, up);
@@ -532,10 +571,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
     }
 
-    private OnNodeUpdateListener updateListener = new OnNodeUpdateListener()
+    private class DetailsNodeUpdateListener implements OnNodeUpdateListener
     {
         public boolean hasWaiting = false;
-
+        public String currentFile;
+        
         @Override
         public void beforeUpdate(Node node)
         {
@@ -564,6 +604,19 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     MessengerManager.showToast(getActivity(),
                             node.getName() + " " + getResources().getString(R.string.update_sucess));
                     refreshThumbnail(node);
+                    
+                    if (StorageManager.shouldEncryptDecrypt (getActivity(), currentFile))
+                    {
+                        try
+                        {
+                            CipherUtils.encryptFile(getActivity(), currentFile, true);
+                        }
+                        catch (Exception e)
+                        {
+                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                            e.printStackTrace();
+                        }
+                    }
                 }
             }
         }
@@ -575,6 +628,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
     };
 
+    DetailsNodeUpdateListener updateListener = new DetailsNodeUpdateListener();
+    
+    
     private void refreshThumbnail(Node node)
     {
         if (node.isDocument())

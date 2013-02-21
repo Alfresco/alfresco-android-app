@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.fragments.browser.local.FileActio
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerFragment;
 import org.alfresco.mobile.android.ui.filebrowser.LocalFileExplorerLoader;
@@ -43,6 +44,7 @@ import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -158,7 +160,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
             else
             {
                 // Show properties
-                ActionManager.actionView(getActivity(), file, MimeTypeManager.getMIMEType(file.getName()),
+                ActionManager.actionView(this, file, MimeTypeManager.getMIMEType(file.getName()),
                         new ActionManagerListener()
                         {
                             @Override
@@ -170,7 +172,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                                 b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
                                 ActionManager.actionDisplayDialog(getActivity(), b);
                             }
-                        });
+                        }, PublicIntent.REQUESTCODE_DECRYPTED);
             }
         }
         else if (getMode() == MODE_PICK_FILE)
@@ -245,6 +247,25 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
     {
         switch (requestCode)
         {
+            case PublicIntent.REQUESTCODE_DECRYPTED:
+                try
+                {
+                    String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                    if (filename != null && filename.length() > 0)
+                    {
+                        if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                        else
+                            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    e.printStackTrace();
+                }
+                break;
+                
             case PublicIntent.REQUESTCODE_CREATE:
                 if (createFile != null)
                 {

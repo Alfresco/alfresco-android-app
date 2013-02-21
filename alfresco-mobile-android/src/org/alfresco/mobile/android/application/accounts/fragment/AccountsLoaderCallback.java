@@ -20,6 +20,8 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
@@ -28,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -36,8 +39,10 @@ import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
 {
@@ -130,6 +135,9 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
+            
+            
+            
         }
         else if (signup)
         {
@@ -146,7 +154,6 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
                 activity.getLoaderManager().initLoader(SessionLoader.ID, null, call);
             }
-
         }
         activity.invalidateOptionsMenu();
     }

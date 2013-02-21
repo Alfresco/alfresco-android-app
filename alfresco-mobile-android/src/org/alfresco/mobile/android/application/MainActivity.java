@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
@@ -69,6 +70,7 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.PhotoCapture;
@@ -314,6 +316,22 @@ public class MainActivity extends Activity
                 // reload account
                 refreshAccounts();
 
+                boolean paidNetwork = false;
+                AlfrescoSession session = getSession();
+                
+                if (session instanceof CloudSession)
+                    paidNetwork = ((CloudSession)session).getNetwork().isPaidNetwork();
+                else
+                    paidNetwork = session.getRepositoryInfo().getEdition().equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+                
+                if (paidNetwork)
+                {
+                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+
+                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                    
+                    CipherUtils.EncryptionUserInteraction (activity);
+                }
                 return;
             }
 
