@@ -35,10 +35,10 @@ public class EmailUtils
     {
         try
         {
-            if (CipherUtils.isEncrypted(fr.getActivity(), content, true))
+            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true))
             {
-                if ( CipherUtils.decryptFile(fr.getActivity(), content))
-                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", content).commit();
+                if ( CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", attachment.getPath()).commit();
             }
             
             Intent i = new Intent(Intent.ACTION_SEND);
