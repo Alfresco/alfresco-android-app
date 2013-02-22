@@ -59,6 +59,7 @@ import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDia
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
@@ -77,6 +78,7 @@ import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.PhotoCapture;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.VideoCapture;
+import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -88,6 +90,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -270,6 +273,16 @@ public class MainActivity extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        {
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString("RequiresEncrypt", "");
+            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
+            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+            fragmentTransaction.commit();
+        }
+        
+        
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
             photoCapture.capturedCallback(requestCode, resultCode, data);
@@ -332,19 +345,20 @@ public class MainActivity extends Activity
 
                 boolean paidNetwork = false;
                 AlfrescoSession session = getSession();
-                
+
                 if (session instanceof CloudSession)
-                    paidNetwork = ((CloudSession)session).getNetwork().isPaidNetwork();
+                    paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
                 else
-                    paidNetwork = session.getRepositoryInfo().getEdition().equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
-                
+                    paidNetwork = session.getRepositoryInfo().getEdition()
+                            .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+
                 if (paidNetwork)
                 {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
                     prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
-                    
-                    CipherUtils.EncryptionUserInteraction (activity);
+
+                    CipherUtils.EncryptionUserInteraction(activity);
                 }
                 return;
             }
@@ -387,16 +401,7 @@ public class MainActivity extends Activity
             // Intent for Removing Fragment + eventual associated loader.
             if (IntentIntegrator.ACTION_REMOVE_FRAGMENT.equals(intent.getAction()))
             {
-                Fragment fr = getFragment(intent.getExtras().getString(IntentIntegrator.REMOVE_FRAGMENT_TAG));
-                if (fr != null)
-                {
-                    FragmentDisplayer.remove(this, fr, false);
-                }
-                int loaderId = intent.getExtras().getInt(IntentIntegrator.REMOVE_LOADER_ID);
-                if (loaderId != 0)
-                {
-                    getLoaderManager().destroyLoader(loaderId);
-                }
+                EncryptionDialogFragment.removeFragment(this, intent);
                 return;
             }
 

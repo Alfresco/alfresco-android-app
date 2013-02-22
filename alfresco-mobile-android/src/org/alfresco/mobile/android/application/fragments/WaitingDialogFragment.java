@@ -28,13 +28,47 @@ public class WaitingDialogFragment extends DialogFragment
 {
     public static final String TAG = "WaitingDialogFragment";
 
+    private int messageId = R.string.wait_message;
+
+    private int titleId = R.string.wait_title;
+
+    private boolean isCancelable = false;
+
+    private static final String PARAM_TITLEID = "titleId";
+
+    private static final String PARAM_MESSAGEID = "messageId";
+
+    private static final String PARAM_CANCELABLE = "cancelable";
+
+    public WaitingDialogFragment()
+    {
+    }
+
+    public static WaitingDialogFragment newInstance(int titleId, int messageId, boolean cancelable)
+    {
+        WaitingDialogFragment fragment = new WaitingDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(PARAM_CANCELABLE, cancelable);
+        bundle.putInt(PARAM_TITLEID, titleId);
+        bundle.putInt(PARAM_MESSAGEID, messageId);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+
     public Dialog onCreateDialog(final Bundle savedInstanceState)
     {
+        if (getArguments() != null)
+        {
+            titleId = getArguments().getInt(PARAM_TITLEID);
+            messageId = getArguments().getInt(PARAM_MESSAGEID);
+            isCancelable = getArguments().getBoolean(PARAM_CANCELABLE);
+        }
+
         final ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setTitle(R.string.wait_title);
-        dialog.setMessage(getString(R.string.wait_message));
+        dialog.setTitle(titleId);
+        dialog.setMessage(getString(messageId));
         dialog.setIndeterminate(true);
-        dialog.setCancelable(false);
+        dialog.setCancelable(isCancelable);
         return dialog;
     }
 

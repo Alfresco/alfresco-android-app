@@ -18,27 +18,27 @@
 package org.alfresco.mobile.android.application.integration;
 
 import java.io.File;
-import java.io.IOException;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.IOUtils;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -148,22 +148,20 @@ public class ImportLocalDialogFragment extends DialogFragment
                 }
                 else
                 {
-                    try
-                    {
-                        // TODO Encryption ?
-                        // TODO Background task  ?
-                        IOUtils.copyFile(file.getPath(), newFile.getPath());
-                    }
-                    catch (IOException e1)
-                    {
-                        Log.e(TAG, Log.getStackTraceString(e1));
-                    }
-                    MessengerManager.showLongToast(getActivity(),
-                            String.format(getString(R.string.import_send_download), currentAccount.getDescription()));
+                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
+                    
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    EncryptionDialogFragment fragment = EncryptionDialogFragment.copyAndEncrypt(file.getPath(),
+                            newFile.getPath(), currentAccount);
+                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                    fragmentTransaction.commit();
+                    //MessengerManager.showLongToast(getActivity(),
+                    //        String.format(getString(R.string.import_send_download), currentAccount.getDescription()));
                 }
 
                 dismiss();
-                getActivity().finish();
+                //getActivity().finish();
             }
         });
 
