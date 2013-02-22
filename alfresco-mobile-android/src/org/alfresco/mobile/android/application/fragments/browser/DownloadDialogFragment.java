@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsF
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
@@ -45,6 +46,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -73,7 +75,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     private ContentFile contentFile;
 
     private int action = ACTION_UNDEFINED;
-
+    
+       
     public static DownloadDialogFragment newInstance()
     {
         DownloadDialogFragment d = new DownloadDialogFragment();
@@ -145,6 +148,32 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         return dialog;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        {
+            try
+            {
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                if (filename != null && filename.length() > 0)
+                {
+                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    else
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                }
+            }
+            catch (Exception e)
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                e.printStackTrace();
+            }
+        }
+        
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
     private File getDownloadFile()
     {
         if (SessionUtils.getAccount(getActivity()) == null) { return null; }
@@ -204,9 +233,9 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     break;
 
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(getActivity(), contentFile.getFileName(), getFragmentManager()
+                    EmailUtils.createMailWithAttachment(this, contentFile.getFileName(), getFragmentManager()
                             .findFragmentByTag(DetailsFragment.TAG).getActivity().getString(R.string.email_content),
-                            Uri.fromFile(contentFile.getFile()));
+                            Uri.fromFile(contentFile.getFile()), PublicIntent.REQUESTCODE_DECRYPTED);
                     break;
 
                 case ACTION_UNDEFINED:

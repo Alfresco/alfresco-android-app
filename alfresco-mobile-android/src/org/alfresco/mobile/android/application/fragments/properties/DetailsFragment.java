@@ -23,6 +23,8 @@ import static org.alfresco.mobile.android.application.fragments.browser.UploadFr
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_UPDATE_DOCUMENT;
 
 import java.io.File;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,10 +53,13 @@ import org.alfresco.mobile.android.application.fragments.versions.VersionFragmen
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -65,6 +70,7 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -467,6 +473,25 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         switch (requestCode)
         {
+            case PublicIntent.REQUESTCODE_DECRYPTED:
+                try
+                {
+                    String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                    if (filename != null && filename.length() > 0)
+                    {
+                        if (!CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                        else
+                            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    e.printStackTrace();
+                }
+                break;
+                
             case PublicIntent.REQUESTCODE_SAVE_BACK:
                 final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
 
@@ -508,7 +533,21 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     if (tmpPath != null)
                     {
                         File f = new File(tmpPath);
-                        update(f);
+                        
+                        if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
+                        {
+                            try
+                            {
+                                if (CipherUtils.decryptFile(getActivity(), tmpPath) == false)
+                                    MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
+                            }
+                            catch (Exception e)
+                            {
+                                MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
+                                e.printStackTrace();
+                            }
+                        }
+                        
                     }
                     else
                     {

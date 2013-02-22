@@ -24,15 +24,20 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.intent.PublicIntent;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 public class UploadChooseDialogFragment extends DialogFragment
 {
@@ -93,6 +98,32 @@ public class UploadChooseDialogFragment extends DialogFragment
                                 IntentIntegrator.REQUESTCODE_FILEPICKER);
                     }
                 }).create();
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        {
+            try
+            {
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                if (filename != null && filename.length() > 0)
+                {
+                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    else
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                }
+            }
+            catch (Exception e)
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                e.printStackTrace();
+            }
+        }
+        
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
 }

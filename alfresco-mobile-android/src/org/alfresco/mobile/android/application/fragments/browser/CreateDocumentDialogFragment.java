@@ -31,16 +31,21 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.integration.upload.UploadService;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -212,5 +217,31 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 selectedTags.add(new TagImpl(listValues[i].trim()));
             }
         }
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        {
+            try
+            {
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                if (filename != null && filename.length() > 0)
+                {
+                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    else
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                }
+            }
+            catch (Exception e)
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                e.printStackTrace();
+            }
+        }
+        
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

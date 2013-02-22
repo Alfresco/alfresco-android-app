@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 
@@ -37,7 +39,18 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     public static final String TEMPDIR = "Capture";     
     public static final String DLDIR = "Download";    
     public static final String ASSETDIR = "Assets";    
+       
+    public static boolean isEncryptableLocation (Context context, String filename)
+    {
+        File appPath = context.getExternalFilesDir(null);
+        return (filename.startsWith(appPath.getPath()));
+    }
     
+    public static boolean shouldEncryptDecrypt (Context context, String filename)
+    {
+        return (CipherUtils.isEncryptionActive(context) &&
+                isEncryptableLocation(context, filename));
+    }
     
     private static boolean isExternalStorageAccessible()
     {
