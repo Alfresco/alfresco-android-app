@@ -554,7 +554,7 @@ public class MainActivity extends Activity
                         if (!DisplayUtils.hasCentralPane(this))
                         {
                             backstack = true;
-                            getFragmentManager().popBackStackImmediate(DetailsFragment.TAG,
+                            getFragmentManager().popBackStack(DetailsFragment.TAG,
                                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         }
                         addPropertiesFragment(currentNode, backstack);
