@@ -20,18 +20,12 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,31 +110,5 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     public void onDismiss(DialogInterface dialog)
     {
         super.onDismiss(dialog);
-    }
-    
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
-        {
-            try
-            {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
-                if (filename != null && filename.length() > 0)
-                {
-                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
-                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    else
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
-                }
-            }
-            catch (Exception e)
-            {
-                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                e.printStackTrace();
-            }
-        }
-        
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -313,6 +313,8 @@
 	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
 	<string name="already_encrypted">This file is already encrypted!</string>
 	<string name="already_decrypted">This file is already decrypted!</string>
+	<string name="decryption_title">Deactivate data protection in progress...</string>
+	<string name="encryption_title">Data protection in progress...</string>
 	
     <string name="metadata_general">General</string>
 
@@ -338,14 +340,15 @@
     <string name="action_unfavorite_site_error">A problem prevented you to unfavorite site "%s".</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Import in Alfresco Mobile</string>
+    <string name="import_document_title">Upload in Alfresco Mobile</string>
     <string name="import_document_name">Document Name</string>
     <string name="import_account">Account</string>
     <string name="import_send_download">The file is available inside \"%s\" Download space.</string>
-    <string name="import_folder">Import Folder</string>
+    <string name="import_folder">Upload Folder</string>
     <string name="import_error">An error occured during the upload.</string>
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
+    <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
-    <string name="error_import">We are unable to import. Pease check your account settings.</string>
+    <string name="error_import">We are unable to upload. Please check your account settings.</string>
 
 </resources>

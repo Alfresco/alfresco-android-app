@@ -492,25 +492,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         switch (requestCode)
         {
-            case PublicIntent.REQUESTCODE_DECRYPTED:
-                try
-                {
-                    String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
-                    if (filename != null && filename.length() > 0)
-                    {
-                        if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
-                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                        else
-                            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    e.printStackTrace();
-                }
-                break;
-                
             case PublicIntent.REQUESTCODE_FILEPICKER:
                 if (data != null && data.getData() != null)
                 {
@@ -518,19 +499,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                     if (tmpPath != null)
                     {
                         tmpFile = new File(tmpPath);
-                        if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
-                        {
-                            try
-                            {
-                                if (CipherUtils.decryptFile(getActivity(), tmpPath) == false)
-                                    MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
-                            }
-                            catch (Exception e)
-                            {
-                                MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
-                                e.printStackTrace();
-                            }
-                        }
                     }
                     else
                     {
