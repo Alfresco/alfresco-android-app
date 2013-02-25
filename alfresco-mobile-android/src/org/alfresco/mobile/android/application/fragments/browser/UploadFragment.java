@@ -186,9 +186,9 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             props.put(ContentModel.PROP_TAGS, args.getStringArrayList(ARGUMENT_CONTENT_TAGS));
             props.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.DOCUMENT_BASETYPE_ID);
 
-            return new DocumentCreateLoader(getActivity(), alfSession, (Folder) args.get(ARGUMENT_FOLDER),
-                    args.getString(ARGUMENT_CONTENT_NAME), props,
-                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+            return new CryptoDocumentCreateLoader(getActivity(), alfSession, (Folder) args.get(ARGUMENT_FOLDER),
+                                                    args.getString(ARGUMENT_CONTENT_NAME), props,
+                                                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
         }
     }
 
@@ -311,20 +311,6 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                     }
                 }
                 
-                String filename = f.getFile().getPath();
-                if (StorageManager.shouldEncryptDecrypt(getActivity(), filename))
-                {
-                    try
-                    {
-                        CipherUtils.encryptFile(getActivity(), filename, true);
-                    }
-                    catch (Exception e)
-                    {
-                        MessengerManager.showToast(getActivity(), getString(R.string.encryption_failed));
-                        e.printStackTrace();
-                    }
-                }
-
                 // The upload is done. Remove the fragment + the loader
                 // associated.
                 actionRemoveUploadFragment(UploadFragment.this, fragmentTransactionTag, loaderId);
@@ -332,33 +318,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
         }
     }
     
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
-        {
-            try
-            {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
-                if (filename != null && filename.length() > 0)
-                {
-                    if (!CipherUtils.encryptFile(getActivity(), filename, true) == false)
-                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    else
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
-                }
-            }
-            catch (Exception e)
-            {
-                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                e.printStackTrace();
-            }
-        }
-        
-        super.onActivityResult(requestCode, resultCode, data);
-    }
     
-
     @Override
     public void onLoaderReset(Loader<LoaderResult<Document>> arg0)
     {

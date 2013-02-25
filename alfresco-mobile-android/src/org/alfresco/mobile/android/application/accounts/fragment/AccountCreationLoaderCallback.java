@@ -180,7 +180,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
             {
                 if (((CloudSession) session).getNetwork().isPaidNetwork())
                 {
-                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
                     
                     CipherUtils.EncryptionUserInteraction (activity);
                 }
@@ -191,7 +191,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
 
                 if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
                 {
-                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
                     
                     CipherUtils.EncryptionUserInteraction (activity);
                 }

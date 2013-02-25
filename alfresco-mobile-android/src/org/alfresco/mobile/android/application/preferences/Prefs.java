@@ -44,6 +44,12 @@ import android.widget.EditText;
 @SuppressWarnings("deprecation")
 public class Prefs extends PreferenceActivity 
 {
+    public static final String HAS_ACCESSED_PAID_SERVICES = "HasAccessedPaidServices";
+    public static final String REQUIRES_ENCRYPT = "RequiresEncrypt";
+    public static final String ENCRYPTION_USER_INTERACTION = "EncryptionUserInteraction";
+    public static final String PRIVATE_FOLDERS = "privatefolders";
+    
+    
     @Override
     public void onCreate(Bundle savedInstanceState) 
     {
@@ -53,27 +59,19 @@ public class Prefs extends PreferenceActivity
         
         PreferenceScreen preferenceScreen = getPreferenceScreen();
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
-        Preference pref = preferenceScreen.findPreference("allowuntrusted");
-        pref.setSelectable(false);
-        pref.setEnabled(false);              
-                
-        pref = preferenceScreen.findPreference("pin");
-        pref.setSelectable(false);
-        pref.setEnabled(false);              
-        
-        if (/*isDeviceRooted()  || */ prefs.getBoolean("HasAccessedPaidServices", false) == false)
+                                
+        if (/*isDeviceRooted()  || */ prefs.getBoolean(HAS_ACCESSED_PAID_SERVICES, false) == false)
         {   
-            Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
+            Preference privateFoldersPref = preferenceScreen.findPreference(PRIVATE_FOLDERS);
             if (privateFoldersPref != null)
             {
                 privateFoldersPref.setSelectable(false);
                 privateFoldersPref.setEnabled(false);              
-                prefs.edit().putBoolean("privatefolders", false).commit();
+                prefs.edit().putBoolean(PRIVATE_FOLDERS, false).commit();
             }
         }
         
-        Preference privateFoldersPref = preferenceScreen.findPreference("privatefolders");
+        Preference privateFoldersPref = preferenceScreen.findPreference(PRIVATE_FOLDERS);
         
         privateFoldersPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
         {
@@ -81,7 +79,7 @@ public class Prefs extends PreferenceActivity
             public boolean onPreferenceClick(Preference preference)
             {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Prefs.this);
-                final boolean checked = !prefs.getBoolean("privatefolders", false);
+                final boolean checked = !prefs.getBoolean(PRIVATE_FOLDERS, false);
                 
                 final File folder = StorageManager.getPrivateFolder(Prefs.this, "", "", "");
                 if (folder != null)
@@ -114,14 +112,14 @@ public class Prefs extends PreferenceActivity
                                     if (checked)
                                     {
                                         if (IOUtils.decryptFiles(Prefs.this, folder.getPath(), folders, true))
-                                            prefs.edit().putBoolean("privatefolders", false).commit();
+                                            prefs.edit().putBoolean(PRIVATE_FOLDERS, false).commit();
                                         else
                                             MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.decryption_failed));
                                     }
                                     else
                                     {
                                         if (IOUtils.encryptFiles(Prefs.this, folder.getPath(), folders, true))
-                                            prefs.edit().putBoolean("privatefolders", true).commit();
+                                            prefs.edit().putBoolean(PRIVATE_FOLDERS, true).commit();
                                         else
                                             MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.encryption_failed));
                                     }
@@ -136,7 +134,7 @@ public class Prefs extends PreferenceActivity
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            prefs.edit().putBoolean("privatefolders", checked).commit();
+                            prefs.edit().putBoolean(PRIVATE_FOLDERS, checked).commit();
                             dialog.dismiss();
                         }
                     });
