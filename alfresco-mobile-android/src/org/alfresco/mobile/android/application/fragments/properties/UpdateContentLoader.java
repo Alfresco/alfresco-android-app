@@ -25,6 +25,10 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -52,6 +56,8 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Documen
     /** Node object to update. */
     private Document node;
 
+    private Context context;
+
     /**
      * Update an existing document with current parameters (Content and/or
      * properties)
@@ -70,6 +76,7 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Documen
         this.session = session;
         this.node = document;
         this.contentFile = contentFile;
+        this.context = context; //Only used for non UI interaction.
     }
 
     @Override
@@ -82,6 +89,11 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Documen
         {
             if (contentFile != null)
             {
+                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
+                {
+                    CipherUtils.decryptFile(context, contentFile.getFile().getPath());
+                }
+                
                 Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
                 AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(node.getIdentifier());
 
@@ -132,6 +144,11 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Documen
 
                 resultNode = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
+                
+                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
+                {
+                    CipherUtils.encryptFile(context, contentFile.getFile().getPath(), true);
+                }
             }
         }
         catch (Exception e)

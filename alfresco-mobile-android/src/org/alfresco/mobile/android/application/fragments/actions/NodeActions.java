@@ -32,26 +32,35 @@ import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DownloadManager;
+import android.app.DownloadManager.Query;
 import android.app.DownloadManager.Request;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -62,14 +71,13 @@ import android.view.MenuItem;
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback
 {
-
     private ArrayList<Node> nodes = new ArrayList<Node>();
 
     private onFinishModeListerner mListener;
 
     private ActionMode mode;
 
-    private Activity activity;
+    static private Activity activity = null;
 
     private Fragment fragment;
 
@@ -78,6 +86,11 @@ public class NodeActions implements ActionMode.Callback
         this.fragment = f;
         this.activity = f.getActivity();
         nodes.add(node);
+    }
+    
+    protected void finalize()
+    {
+        activity = null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -308,4 +321,38 @@ public class NodeActions implements ActionMode.Callback
         return null;
     }
 
+    static class DownloadReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+            String action = intent.getAction();
+            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
+            {
+                long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
+                Query query = new Query();
+                query.setFilterById(downloadId);
+                Cursor c = dm.query(query);
+                if (c.moveToFirst())
+                {
+                    int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
+                    if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex))
+                    {
+                        Uri filenameUri = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
+                        String filename = filenameUri.getPath();
+                        
+                        //Only if we're currently in a download initiated with Activity present
+                        if (activity != null  &&  StorageManager.shouldEncryptDecrypt(context, filename))
+                        {
+                            FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
+                            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
+                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                            fragmentTransaction.commit();
+                        }
+                    }
+                }
+            }
+        }
+    };
 }
