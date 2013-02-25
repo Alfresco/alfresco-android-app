@@ -23,8 +23,6 @@ import static org.alfresco.mobile.android.application.fragments.browser.UploadFr
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_UPDATE_DOCUMENT;
 
 import java.io.File;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -70,7 +68,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -473,25 +470,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         switch (requestCode)
         {
-            case PublicIntent.REQUESTCODE_DECRYPTED:
-                try
-                {
-                    String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
-                    if (filename != null && filename.length() > 0)
-                    {
-                        if (!CipherUtils.encryptFile(getActivity(), filename, true) == false)
-                            MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                        else
-                            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
-                    }
-                }
-                catch (Exception e)
-                {
-                    MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    e.printStackTrace();
-                }
-                break;
-                
             case PublicIntent.REQUESTCODE_SAVE_BACK:
                 final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
 

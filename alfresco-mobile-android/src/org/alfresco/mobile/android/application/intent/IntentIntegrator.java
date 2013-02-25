@@ -71,6 +71,8 @@ public class IntentIntegrator extends PublicIntent
 
     public static final String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
 
+    public static final String REMOVE_FRAGMENT_WAITING = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_WAITING";
+
     public static final String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
 
 }

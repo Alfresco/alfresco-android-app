@@ -99,31 +99,4 @@ public class UploadChooseDialogFragment extends DialogFragment
                     }
                 }).create();
     }
-    
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
-        {
-            try
-            {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
-                if (filename != null && filename.length() > 0)
-                {
-                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
-                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    else
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
-                }
-            }
-            catch (Exception e)
-            {
-                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                e.printStackTrace();
-            }
-        }
-        
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
 }
