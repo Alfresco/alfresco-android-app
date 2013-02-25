@@ -28,14 +28,10 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Random;
 import java.util.Vector;
-
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
 import javax.crypto.CipherOutputStream;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
@@ -45,6 +41,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
@@ -117,61 +114,60 @@ public class CipherUtils
      */
     public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws Exception
     {
-        if (isEncrypted(ctxt, filename, true))
+        if (!isEncrypted(ctxt, filename, true))
         {
-            MessengerManager.showToast(ctxt, ctxt.getString(R.string.already_encrypted));
-            return true;
-        }
-        
-        boolean ret = true;
-        File source = new File (filename);
-        File dest = new File (newFilename != null ? newFilename : filename + ".etmp");
-        InputStream sourceFile = new FileInputStream(source);
-        OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, 128).toString());
-        int nBytes = 0;
-        long size = 0;
-        
-        chunkSize = 10240;
-        byte buffer[] = new byte[chunkSize];
-        
-        do
-        {
-            size += (nBytes = sourceFile.read(buffer));
+            boolean ret = true;
+            File source = new File (filename);
+            File dest = new File (newFilename != null ? newFilename : filename + ".etmp");
+            InputStream sourceFile = new FileInputStream(source);
+            OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, 128).toString());
+            int nBytes = 0;
+            long size = 0;
             
-            if (nBytes > 0)
-            {
-                destFile.write(buffer);
-            }
-        }
-        while (nBytes > 0);
-        
-        sourceFile.close();
-        destFile.flush();
-        destFile.close();
-        
-        Log.e("Alfresco", "Encryption phase succeeded for file " + source.getName());
-        
-        if (newFilename == null)
-        {
-            if (nuke)
-                nukeFile (source, size);
+            chunkSize = 10240;
+            byte buffer[] = new byte[chunkSize];
             
-            if (source.delete())
+            do
             {
-                //Rename encrypted file to original name.
-                if (false == (ret=dest.renameTo(source)))
-                    Log.e("Alfresco", "Cannot rename encrypted file " + dest.getName());
-            }
-            else
-            {
-                Log.e("Alfresco", "Cannot delete original file " + source.getName());
+                size += (nBytes = sourceFile.read(buffer));
                 
-                dest.delete();
-                ret = false;
+                if (nBytes > 0)
+                {
+                    destFile.write(buffer);
+                }
             }
+            while (nBytes > 0);
+            
+            sourceFile.close();
+            destFile.flush();
+            destFile.close();
+            
+            Log.e("Alfresco", "Encryption phase succeeded for file " + source.getName());
+            
+            if (newFilename == null)
+            {
+                if (nuke)
+                    nukeFile (source, size);
+                
+                if (source.delete())
+                {
+                    //Rename encrypted file to original name.
+                    if (false == (ret=dest.renameTo(source)))
+                        Log.e("Alfresco", "Cannot rename encrypted file " + dest.getName());
+                }
+                else
+                {
+                    Log.e("Alfresco", "Cannot delete original file " + source.getName());
+                    
+                    dest.delete();
+                    ret = false;
+                }
+            }
+            
+            return ret;
         }
-        
-        return ret;
+        else
+            return true;
     }
     
     /*
@@ -190,61 +186,60 @@ public class CipherUtils
      */
     public static boolean decryptFile(Context ctxt, String filename, String newFilename) throws Exception
     {
-        if (!isEncrypted(ctxt, filename, true))
+        if (isEncrypted(ctxt, filename, true))
         {
-            MessengerManager.showToast(ctxt, ctxt.getString(R.string.already_decrypted));
-            return true;
-        }
-        
-        boolean ret = true;
-        File source = new File (filename);
-        File dest = new File (newFilename != null ? newFilename : filename + ".utmp");
-        InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, 128).toString());
-        OutputStream destFile = new FileOutputStream(dest);
-        int nBytes = 0;
- 
-        chunkSize = 10240;
-        byte buffer[] = new byte[chunkSize];
-        
-        do
-        {
-            nBytes = sourceFile.read(buffer);
+            boolean ret = true;
+            File source = new File (filename);
+            File dest = new File (newFilename != null ? newFilename : filename + ".utmp");
+            InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, 128).toString());
+            OutputStream destFile = new FileOutputStream(dest);
+            int nBytes = 0;
+     
+            chunkSize = 10240;
+            byte buffer[] = new byte[chunkSize];
             
-            if (nBytes > 0)
+            do
             {
-               destFile.write(buffer);
+                nBytes = sourceFile.read(buffer);
+                
+                if (nBytes > 0)
+                {
+                   destFile.write(buffer);
+                }
             }
+            while (nBytes > 0);
+            
+            sourceFile.close();
+            destFile.close();
+            
+            Log.e("Alfresco", "Decryption phase succeeded for file " + source.getName());
+            
+            if (newFilename == null)
+            {
+                if (source.delete())
+                {
+                    //Rename decrypted file to original name.
+                    if (false == (ret=dest.renameTo(source)))
+                        Log.e("Alfresco", "Cannot rename decrypted file " + dest.getName());
+                }
+                else
+                {
+                    Log.e("Alfresco", "Cannot delete original file " + source.getName());
+                    dest.delete();
+                    ret = false;
+                }
+            }
+            
+            return ret;
         }
-        while (nBytes > 0);
-        
-        sourceFile.close();
-        destFile.close();
-        
-        Log.e("Alfresco", "Decryption phase succeeded for file " + source.getName());
-        
-        if (newFilename == null)
-        {
-            if (source.delete())
-            {
-                //Rename decrypted file to original name.
-                if (false == (ret=dest.renameTo(source)))
-                    Log.e("Alfresco", "Cannot rename decrypted file " + dest.getName());
-            }
-            else
-            {
-                Log.e("Alfresco", "Cannot delete original file " + source.getName());
-                dest.delete();
-                ret = false;
-            }
-        }
-        
-        return ret;
+        else
+            return true;
     }
         
     public static boolean isEncryptionActive (Context ctxt)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
-        return prefs.getBoolean("privatefolders", false);
+        return prefs.getBoolean(Prefs.PRIVATE_FOLDERS, false);
     }
     
     public static boolean isEncrypted (Context ctxt, String filename, boolean fullTest) throws IOException
@@ -378,12 +373,12 @@ public class CipherUtils
     {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
 
-        if (!prefs.getBoolean("EncryptionUserInteraction", false)  &&  !prefs.getBoolean("privatefolders", false) )
+        if (!prefs.getBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false)  &&  !prefs.getBoolean(Prefs.PRIVATE_FOLDERS, false) )
         {
             final File folder = StorageManager.getPrivateFolder(ctxt, "", "", "");
             if (folder != null)
             {
-                prefs.edit().putBoolean ("EncryptionUserInteraction", true).commit();
+                prefs.edit().putBoolean (Prefs.ENCRYPTION_USER_INTERACTION, true).commit();
                 
                 AlertDialog.Builder builder = new AlertDialog.Builder(ctxt);
                 builder.setTitle(ctxt.getString(R.string.data_protection));
@@ -411,7 +406,7 @@ public class CipherUtils
                                 folders.add(StorageManager.TEMPDIR);
                                 
                                 if (IOUtils.encryptFiles(ctxt, folder.getPath(), folders, true))
-                                    prefs.edit().putBoolean("privatefolders", true).commit();
+                                    prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, true).commit();
                                 else
                                     MessengerManager.showLongToast(ctxt, ctxt.getString(R.string.encryption_failed));
                                 
