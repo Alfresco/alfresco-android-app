@@ -55,6 +55,7 @@ import android.util.Log;
 
 public class CipherUtils
 {
+    public static final String TAG = "CipherUtils";
     private static final byte[] SALT = { 0x0A, 0x02, 0x13, 0x3C, 0x3B, 0x0F, 0x1A };
     private static final int COUNT = 10;
     private static final byte[] REFERENCE_DATA = "AlfrescoCrypto".getBytes();
@@ -252,7 +253,7 @@ public class CipherUtils
         }
         catch (NoSuchAlgorithmException e)
         {
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
         }
         
         if (sourceFile != null)

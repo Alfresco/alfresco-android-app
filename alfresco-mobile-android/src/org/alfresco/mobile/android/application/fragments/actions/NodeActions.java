@@ -73,6 +73,8 @@ import android.view.MenuItem;
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback
 {
+    public static final String TAG = "NodeActions";
+    
     private ArrayList<Node> nodes = new ArrayList<Node>();
 
     private onFinishModeListerner mListener;
@@ -354,7 +356,7 @@ public class NodeActions implements ActionMode.Callback
                                     }
                                     catch (Exception e)
                                     {
-                                        e.printStackTrace();
+                                        Log.d(TAG, Log.getStackTraceString(e));
                                     }
                                 }
                                 

@@ -187,6 +187,14 @@
             android:name=".utils.ProgressNotification"
             android:exported="false" />
         
+        <receiver 
+        android:name=".fragments.actions.NodeActions$DownloadReceiver"
+        android:exported="true">
+        <intent-filter>
+            <action android:name="android.intent.action.DOWNLOAD_COMPLETE" />
+         </intent-filter>
+     </receiver>
+       
     </application>
 
 </manifest>

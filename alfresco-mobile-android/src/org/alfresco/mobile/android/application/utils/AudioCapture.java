@@ -36,10 +36,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 public class AudioCapture extends DeviceCapture
 {
+    public static final String TAG = "AudioCapture";
     private static final long serialVersionUID = 1L;
 
     public AudioCapture(Activity parent, Folder folder)
@@ -69,7 +71,7 @@ public class AudioCapture extends DeviceCapture
             catch (Exception e)
             {
                 MessengerManager.showLongToast(context, context.getString (R.string.no_voice_recorder));
-                e.printStackTrace();
+                Log.d(TAG, Log.getStackTraceString(e));
                 return false;
             }
 
@@ -113,7 +115,7 @@ public class AudioCapture extends DeviceCapture
         catch (IOException e)
         {
             MessengerManager.showLongToast(context, context.getString (R.string.cannot_capture));
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
         }
     }
 

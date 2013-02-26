@@ -254,21 +254,8 @@ public class MainActivity extends Activity
             else
                 prefs.edit().putBoolean("filesmigrated", true).commit();
         }
-        
-        downloadReceiver = new NodeActions.DownloadReceiver();
-        registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
-    @Override
-    protected void onDestroy()
-    {
-        if (downloadReceiver != null)
-        {
-            unregisterReceiver(downloadReceiver);
-            downloadReceiver = null;
-        }
-        super.onDestroy();
-    }
     
     @Override
     public void onResume()
