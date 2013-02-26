@@ -288,8 +288,7 @@ public class MainActivity extends Activity
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
-        
-        
+
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
             photoCapture.capturedCallback(requestCode, resultCode, data);
@@ -338,6 +337,11 @@ public class MainActivity extends Activity
                 if (getFragment(WaitingDialogFragment.TAG) != null)
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+
+                if (getFragment(AccountFragment.TAG) != null)
+                {
+                    ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
                 }
 
                 // Used for launching last pressed action button from main menu
@@ -627,7 +631,7 @@ public class MainActivity extends Activity
     public void loadAccount(Account account)
     {
         // TODO Remove this indication ?
-        MessengerManager.showToast(this, getString(R.string.account_loading) + account.getDescription());
+        MessengerManager.showToast(this, getString(R.string.account_loading) + " " + account.getDescription());
         SessionUtils.setsession(this, null);
         SessionUtils.setAccount(this, account);
         if (account.getActivation() != null)
