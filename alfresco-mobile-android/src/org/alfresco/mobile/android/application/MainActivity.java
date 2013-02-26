@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -642,7 +641,12 @@ public class MainActivity extends Activity
         {
             setProgressBarIndeterminateVisibility(true);
             AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
-            getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+            // If the loader already exist, we do nothing.
+            // It prevents to request OAuth token multiple times.
+            if (getLoaderManager().getLoader(call.getAccountLoginLoaderId()) == null)
+            {
+                getLoaderManager().restartLoader(call.getAccountLoginLoaderId(), null, call);
+            }
         }
     }
 
