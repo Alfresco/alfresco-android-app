@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.UploadFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -497,11 +498,29 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
+                            if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
+                            {
+                                FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
+                                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                fragmentTransaction.commit();
+                            }
+                            
                             dialog.dismiss();
                         }
                     });
                     AlertDialog alert = builder.create();
                     alert.show();
+                }
+                else
+                {
+                    if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
+                    {
+                        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                        EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
+                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                        fragmentTransaction.commit();
+                    }
                 }
                 break;
             case PublicIntent.REQUESTCODE_FILEPICKER:
@@ -514,18 +533,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         
                         if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
                         {
-                            try
-                            {
-                                if (CipherUtils.decryptFile(getActivity(), tmpPath) == false)
-                                    MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
-                            }
-                            catch (Exception e)
-                            {
-                                MessengerManager.showLongToast(getActivity(), getString(R.string.decryption_failed));
-                                e.printStackTrace();
-                            }
+                            String mimeType = MimeTypeManager.getMIMEType(tmpPath);
+                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                            EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(f, mimeType, null, null);
+                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                            fragmentTransaction.commit();
                         }
-                        
                     }
                     else
                     {

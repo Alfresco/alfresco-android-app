@@ -53,6 +53,8 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions.DownloadReceiver;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
@@ -88,11 +90,13 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -136,6 +140,8 @@ public class MainActivity extends Activity
     private int sessionState = 0;
 
     private int sessionStateErrorMessageId;
+
+    private DownloadReceiver downloadReceiver;
 
     public static final int SESSION_LOADING = 0;
 
@@ -248,8 +254,22 @@ public class MainActivity extends Activity
             else
                 prefs.edit().putBoolean("filesmigrated", true).commit();
         }
+        
+        downloadReceiver = new NodeActions.DownloadReceiver();
+        registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
     }
 
+    @Override
+    protected void onDestroy()
+    {
+        if (downloadReceiver != null)
+        {
+            unregisterReceiver(downloadReceiver);
+            downloadReceiver = null;
+        }
+        super.onDestroy();
+    }
+    
     @Override
     public void onResume()
     {

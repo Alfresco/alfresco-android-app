@@ -142,7 +142,7 @@ public class CipherUtils
             destFile.flush();
             destFile.close();
             
-            Log.e("Alfresco", "Encryption phase succeeded for file " + source.getName());
+            Log.i("Alfresco", "Encryption phase succeeded for file " + source.getName());
             
             if (newFilename == null)
             {
@@ -212,7 +212,7 @@ public class CipherUtils
             sourceFile.close();
             destFile.close();
             
-            Log.e("Alfresco", "Decryption phase succeeded for file " + source.getName());
+            Log.i("Alfresco", "Decryption phase succeeded for file " + source.getName());
             
             if (newFilename == null)
             {
