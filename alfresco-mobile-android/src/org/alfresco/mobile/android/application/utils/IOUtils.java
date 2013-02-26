@@ -33,7 +33,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class IOUtils
-{
+{   static final private String TAG = "IOUtils";
     static Vector<String> filesEncrypted = null;
     static Vector<String> filesDecrypted = null;
     static final String encryptionExtension = ".etmp";
@@ -185,7 +185,7 @@ public class IOUtils
         catch (Exception e)
         {
             Log.e("Alfresco", "Error during file transfer: " + e.getMessage() );
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
             
             return false;
         }   
@@ -306,7 +306,7 @@ public class IOUtils
         catch (Exception e)
         {
             Log.e("Alfresco", "Error during folder encryption: " + e.getMessage() );
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
             
             return false;
         }   
@@ -425,7 +425,7 @@ public class IOUtils
         catch (Exception e)
         {
             Log.e("Alfresco", "Error during folder decryption: " + e.getMessage() );
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
             
             return false;
         }   

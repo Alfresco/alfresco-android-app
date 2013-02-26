@@ -167,7 +167,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             catch (Exception e)
             {
                 MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                e.printStackTrace();
+                Log.d(TAG, Log.getStackTraceString(e));
             }
         }
         
