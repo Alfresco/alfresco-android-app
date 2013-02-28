@@ -76,16 +76,9 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
             }
             else if (doEncrypt)
             {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getContext()).getString(
-                        "RequiresEncrypt", "");
-                if (filename != null && filename.length() > 0)
+                if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
                 {
-                    if (CipherUtils.encryptFile(getContext(), filename, true))
-                    {
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                                .putString("RequiresEncrypt", "").commit();
-                        encryptedFile = new File(filename);
-                    }
+                    encryptedFile = new File(file.getPath());
                 }
             }
             else

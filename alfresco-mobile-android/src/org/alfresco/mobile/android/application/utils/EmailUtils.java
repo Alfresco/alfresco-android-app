@@ -28,9 +28,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.text.Html;
+import android.util.Log;
 
 public class EmailUtils
 {
+    public static final String TAG = "EmailUtils";
+    
     public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment, int requestCode)
     {
         try
@@ -53,12 +56,12 @@ public class EmailUtils
         catch (IOException e)
         {
             MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
         }
         catch (Exception e)
         {
             MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
-            e.printStackTrace();
+            Log.d(TAG, Log.getStackTraceString(e));
         }
         
         return false;

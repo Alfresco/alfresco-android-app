@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionLoader;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -60,6 +61,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -71,6 +73,8 @@ import android.view.MenuItem;
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback
 {
+    public static final String TAG = "NodeActions";
+    
     private ArrayList<Node> nodes = new ArrayList<Node>();
 
     private onFinishModeListerner mListener;
@@ -88,10 +92,6 @@ public class NodeActions implements ActionMode.Callback
         nodes.add(node);
     }
     
-    protected void finalize()
-    {
-        activity = null;
-    }
 
     // ///////////////////////////////////////////////////////////////////////////////////
     // ACTION MODE
@@ -303,7 +303,7 @@ public class NodeActions implements ActionMode.Callback
                 }
             }
         }
-
+        
         manager.enqueue(request);
     }
 
@@ -320,11 +320,11 @@ public class NodeActions implements ActionMode.Callback
         
         return null;
     }
-
-    static class DownloadReceiver extends BroadcastReceiver
+    
+    static public class DownloadReceiver extends BroadcastReceiver
     {
         @Override
-        public void onReceive(Context context, Intent intent)
+        public void onReceive(final Context context, Intent intent)
         {
             DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             String action = intent.getAction();
@@ -340,15 +340,27 @@ public class NodeActions implements ActionMode.Callback
                     if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex))
                     {
                         Uri filenameUri = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
-                        String filename = filenameUri.getPath();
+                        final String filename = filenameUri.getPath();
                         
                         //Only if we're currently in a download initiated with Activity present
-                        if (activity != null  &&  StorageManager.shouldEncryptDecrypt(context, filename))
+                        if (StorageManager.shouldEncryptDecrypt(context, filename))
                         {
-                            FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
-                            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
-                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                            fragmentTransaction.commit();
+                            new Thread()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    try
+                                    {
+                                        CipherUtils.encryptFile(context, filename, true);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Log.d(TAG, Log.getStackTraceString(e));
+                                    }
+                                }
+                                
+                            }.start();
                         }
                     }
                 }

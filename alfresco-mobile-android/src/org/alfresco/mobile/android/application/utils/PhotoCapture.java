@@ -30,10 +30,12 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Toast;
 
 public class PhotoCapture extends DeviceCapture
 {
+    static final private String TAG = "PhotoCapture";
     private static final long serialVersionUID = 1L;
 
     public PhotoCapture(Activity parent, Folder folder)
@@ -73,7 +75,7 @@ public class PhotoCapture extends DeviceCapture
             }
             catch (Exception e)
             {
-                e.printStackTrace();
+                Log.d(TAG, Log.getStackTraceString(e));
                 return false;
             }
 
