@@ -255,6 +255,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                 createFile.delete();
             }
         }
+        getActivity().invalidateOptionsMenu();
     }
 
     @Override

@@ -61,10 +61,14 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
     private ProgressDialog mProgressDialog;
 
+    /** Unique Loader identifier for a specific account. */
+    private int accountLoginLoaderId;
+
     public AccountLoginLoaderCallback(Activity activity, Account acc)
     {
         this.activity = activity;
         this.acc = acc;
+        this.accountLoginLoaderId = acc.hashCode();
     }
 
     public AccountLoginLoaderCallback(Activity activity, Account acc, OAuthData data)
@@ -72,6 +76,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         this.activity = activity;
         this.acc = acc;
         this.data = data;
+        this.accountLoginLoaderId = acc.hashCode();
     }
 
     @Override
@@ -106,6 +111,16 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         {
             mProgressDialog.dismiss();
         }
+
+        // If the current account is not the one that loader has retrieved
+        // We save the OAuth token if necessary and do nothing...
+        if (SessionUtils.getAccount(activity).getId() != acc.getId())
+        {
+            saveNewOauthData(loader);
+            activity.getLoaderManager().destroyLoader(loader.getId());
+            return;
+        }
+
         if (!results.hasException())
         {
             saveNewOauthData(loader);
@@ -118,7 +133,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 editor.putLong(AccountsPreferences.ACCOUNT_DEFAULT, acc.getId());
                 editor.commit();
             }
-            
+
             activity.getLoaderManager().destroyLoader(loader.getId());
             SessionUtils.setsession(activity, results.getData());
             SessionUtils.setRenditionManager(activity, null);
@@ -160,7 +175,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                     ActionManager.actionDisplayDialog(activity, b);
                     if (activity instanceof MainActivity)
                     {
-                        ((MainActivity) activity).setSessionErrorMessageId(SessionExceptionHelper.getMessageId(activity, e));
+                        ((MainActivity) activity).setSessionErrorMessageId(SessionExceptionHelper.getMessageId(
+                                activity, e));
                     }
                     break;
                 default:
@@ -199,7 +215,9 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                         ((CloudSessionLoader) loader).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
                                 .getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
-                    SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
+                    Intent i = new Intent(activity, getActivityClass());
+                    i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                    activity.startActivity(i);
                 }
                 else
                 {
@@ -226,4 +244,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         return null;
     }
 
+    public int getAccountLoginLoaderId()
+    {
+        return accountLoginLoaderId;
+    }
 }

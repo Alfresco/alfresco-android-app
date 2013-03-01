@@ -59,6 +59,7 @@ public abstract class AbstractSessionCallback implements LoaderCallbacks<LoaderR
         }
         else
         {
+            settings.putAll(settingsHelper.prepareSSLSettings());
             return new SessionLoader(settingsHelper.getContext(), settingsHelper.getBaseUrl(),
                     settingsHelper.getUsername(), settingsHelper.getPassword(), settings);
         }
@@ -79,6 +80,7 @@ public abstract class AbstractSessionCallback implements LoaderCallbacks<LoaderR
         }
         else
         {
+            settings.putAll(settingsHelper.prepareSSLSettings());
             return new SessionLoader(activity, baseUrl, username, password, settings);
         }
     }

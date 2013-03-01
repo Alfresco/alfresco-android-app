@@ -23,7 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -54,7 +53,6 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.DownloadReceiver;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
@@ -91,13 +89,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -217,6 +213,7 @@ public class MainActivity extends Activity
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
             }
+
         }
         else
         {
@@ -256,7 +253,6 @@ public class MainActivity extends Activity
         }
     }
 
-    
     @Override
     public void onResume()
     {
@@ -288,7 +284,7 @@ public class MainActivity extends Activity
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
-        else
+
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
             photoCapture.capturedCallback(requestCode, resultCode, data);
@@ -339,6 +335,11 @@ public class MainActivity extends Activity
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
+                if (getFragment(AccountFragment.TAG) != null)
+                {
+                    ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
+                }
+
                 // Used for launching last pressed action button from main menu
                 if (fragmentQueue != -1)
                 {
@@ -349,33 +350,33 @@ public class MainActivity extends Activity
                 // reload account
                 refreshAccounts();
 
-                if (SessionUtils.getAccount(this) != null)
-                    currentAccount = SessionUtils.getAccount(this);
+                if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
 
                 if (!currentAccount.getIsPaidAccount())
                 {
                     boolean paidNetwork = false;
                     AlfrescoSession session = getSession();
-    
+
                     if (session instanceof CloudSession)
                         paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
                     else
                         paidNetwork = session.getRepositoryInfo().getEdition()
                                 .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
-    
+
                     if (paidNetwork)
                     {
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-    
-                        prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
-    
+
+                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+
                         CipherUtils.EncryptionUserInteraction(activity);
-                        
+
                         AccountDAO serverDao = new AccountDAO(this, SessionUtils.getDataBaseManager(this).getWriteDb());
-                        serverDao.update(currentAccount.getId(), currentAccount.getDescription(), currentAccount.getUrl(),
-                                        currentAccount.getUsername(), currentAccount.getPassword(), currentAccount.getRepositoryId(),
-                                        currentAccount.getTypeId(), currentAccount.getActivation(), currentAccount.getAccessToken(),
-                                        currentAccount.getRefreshToken(), 1);
+                        serverDao.update(currentAccount.getId(), currentAccount.getDescription(),
+                                currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),
+                                currentAccount.getRepositoryId(), currentAccount.getTypeId(),
+                                currentAccount.getActivation(), currentAccount.getAccessToken(),
+                                currentAccount.getRefreshToken(), 1);
                     }
                 }
                 return;
@@ -638,7 +639,7 @@ public class MainActivity extends Activity
     public void loadAccount(Account account)
     {
         // TODO Remove this indication ?
-        MessengerManager.showToast(this, getString(R.string.account_loading) + account.getDescription());
+        MessengerManager.showToast(this, getString(R.string.account_loading) + " " + account.getDescription());
         SessionUtils.setsession(this, null);
         SessionUtils.setAccount(this, account);
         if (account.getActivation() != null)
@@ -649,7 +650,12 @@ public class MainActivity extends Activity
         {
             setProgressBarIndeterminateVisibility(true);
             AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
-            getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+            // If the loader already exist, we do nothing.
+            // It prevents to request OAuth token multiple times.
+            if (getLoaderManager().getLoader(call.getAccountLoginLoaderId()) == null)
+            {
+                getLoaderManager().restartLoader(call.getAccountLoginLoaderId(), null, call);
+            }
         }
     }
 

@@ -66,6 +66,11 @@ public class SessionExceptionHelper
             messageId = R.string.error_session_service_url;
         }
         // Case where the port seems to be wrong.
+        else if (e.getCause() instanceof CmisRuntimeException && e.getCause().getMessage().contains("Service Temporarily Unavailable"))
+        {
+            messageId = R.string.error_session_service_unavailable;
+        }
+        // Case where the port seems to be wrong.
         else if (e.getCause() instanceof CmisRuntimeException && e.getCause().getMessage().contains("Found"))
         {
             messageId = R.string.error_session_port;
