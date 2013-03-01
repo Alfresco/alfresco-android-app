@@ -86,12 +86,8 @@ public class AccountSchema
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        if (newVersion <= 2)
-        {
-            db.execSQL(QUERY_TABLE_DROP);
-            onCreate(context, db);
-        }
-        else if (newVersion >= 3)
+        //Update database to add the Paid Account flag.  This was introduced in DB version 3.
+        if (oldVersion <= 2)
         {
             final String ALTER_TBL = 
                     "ALTER TABLE " + TABLENAME +
