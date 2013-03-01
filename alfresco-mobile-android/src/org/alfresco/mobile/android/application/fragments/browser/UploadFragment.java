@@ -211,7 +211,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             name = loaderD.getDocumentName();
         }
 
-        if (results.hasException())
+        if (results.hasException() || (results.getData() == null && results.getException() == null))
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
             if (contentFile != null)
@@ -222,7 +222,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 // During creation process, the content must be available on
                 // Download area.
                 // The file is move from capture to download.
-                if ((Boolean) getArguments().getSerializable(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
+                if (getArguments() != null && getArguments().getBoolean(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
                 {
                     final File folderStorage = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
                             currentAccount.getUsername());

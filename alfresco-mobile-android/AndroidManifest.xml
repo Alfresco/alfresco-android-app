@@ -73,9 +73,11 @@
         <activity
             android:name="net.hockeyapp.android.UpdateActivity"
             android:exported="false" />
+        
+        
         <activity
             android:name=".MainActivity"
-            android:exported="false"
+            android:exported="true"
             android:launchMode="singleTop"
             android:logo="@drawable/ic_alfresco"
             android:uiOptions="splitActionBarWhenNarrow"
@@ -121,7 +123,7 @@
                 <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
 
-            <!-- Internal : Used for Cloud activation -->
+            <!-- Internal : Used for Cloud activation. Only for this part we have to use exported = true -->
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
