@@ -80,6 +80,12 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
             {
                 ((JoinSiteRequestsFragment) fragment).remove(joinSiteRequest);
             }
+            BrowserSitesFragment sitesFragment = (BrowserSitesFragment) fragment.getActivity().getFragmentManager()
+                    .findFragmentByTag(BrowserSitesFragment.TAG);
+            if (sitesFragment != null)
+            {
+                sitesFragment.refresh();
+            }
         }
         else
         {
@@ -93,6 +99,6 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
     @Override
     public void onLoaderReset(Loader<LoaderResult<Void>> arg0)
     {
-        //Do Nothing
+        // Do Nothing
     }
 }
