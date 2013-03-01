@@ -22,6 +22,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -37,6 +38,7 @@ import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.app.Activity;
@@ -65,6 +67,8 @@ public class AccountSettingsHelper
 
     private static final String APP_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
             + "/alfresco-mobile/app-config.properties";
+
+    private static final String ONPREMISE_TRUSTMANAGER_CLASSNAME = "org.alfresco.mobile.binding.internal.https.trustmanager";
 
     private static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
 
@@ -329,4 +333,26 @@ public class AccountSettingsHelper
         return doesRequestNewToken;
     }
 
+    public Map<String, Serializable> prepareSSLSettings()
+    {
+        Map<String, Serializable> settings = new HashMap<String, Serializable>(1);
+        // ssl certificate
+        try
+        {
+            URI url = new URI(baseUrl);
+            File f = StorageManager.getFileInPrivateFolder(context, url.getHost() + ".properties");
+            if (f.exists() && f.isFile())
+            {
+                MessengerManager.showToast(context, R.string.security_ssl_disable);
+                settings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME,
+                        "org.alfresco.mobile.android.application.security.AlfrescoTrustManager");
+            }
+        }
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+
+        return settings;
+    }
 }

@@ -31,27 +31,27 @@ import android.util.Log;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
-
 public class StorageManager extends org.alfresco.mobile.android.ui.manager.StorageManager
 {
     private static final String TAG = "StorageManager";
-    
-    public static final String TEMPDIR = "Capture";     
-    public static final String DLDIR = "Download";    
-    public static final String ASSETDIR = "Assets";    
-       
-    public static boolean isEncryptableLocation (Context context, String filename)
+
+    public static final String TEMPDIR = "Capture";
+
+    public static final String DLDIR = "Download";
+
+    public static final String ASSETDIR = "Assets";
+
+    public static boolean isEncryptableLocation(Context context, String filename)
     {
         File appPath = context.getExternalFilesDir(null);
         return (filename.startsWith(appPath.getPath()));
     }
-    
-    public static boolean shouldEncryptDecrypt (Context context, String filename)
+
+    public static boolean shouldEncryptDecrypt(Context context, String filename)
     {
-        return (CipherUtils.isEncryptionActive(context) &&
-                isEncryptableLocation(context, filename));
+        return (CipherUtils.isEncryptionActive(context) && isEncryptableLocation(context, filename));
     }
-    
+
     private static boolean isExternalStorageAccessible()
     {
         return (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED) == 0);
@@ -59,36 +59,64 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     public static File getDownloadFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, DLDIR, urlValue, username);
+        return getPrivateFolder(context, DLDIR, urlValue, username);
     }
-    
+
     public static File getTempFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, TEMPDIR, urlValue, username);
+        return getPrivateFolder(context, TEMPDIR, urlValue, username);
     }
-    
+
     public static File getCaptureFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, TEMPDIR, urlValue, username);
+        return getPrivateFolder(context, TEMPDIR, urlValue, username);
     }
-    
+
     public static File getAssetFolder(Context context, String urlValue, String username)
     {
-        return getPrivateFolder (context, ASSETDIR, null, null);
+        return getPrivateFolder(context, ASSETDIR, null, null);
     }
-    
+
+    /**
+     * Returns a specific file/folder inside the private area of the
+     * application.
+     * 
+     * @param context : Android context.
+     * @param filePath : extended Path relative to the private folder.
+     * @return the file object. This file might be exist.
+     */
+    public static File getFileInPrivateFolder(Context context, String filePath)
+    {
+        File file = null;
+        try
+        {
+            if (isExternalStorageAccessible() && filePath != null && !filePath.isEmpty())
+            {
+                file = new File(context.getExternalFilesDir(null), filePath);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return file;
+    }
+
     public static File getPrivateFolder(Context context, String requestedFolder, String urlValue, String username)
     {
         File folder = null;
         try
         {
-            //NOTE: We must have access to external storage in order to get a private folder for this Android logged in user.
+            // NOTE: We must have access to external storage in order to get a
+            // private folder for this Android logged in user.
             if (isExternalStorageAccessible())
             {
                 folder = context.getExternalFilesDir(null);
-                
+
                 if (urlValue != null && urlValue.length() > 0 && username != null && username.length() > 0)
-                    folder = IOUtils.createFolder(folder, getAccountFolder(urlValue, username) + File.separator + requestedFolder);
+                    folder = IOUtils.createFolder(folder, getAccountFolder(urlValue, username) + File.separator
+                            + requestedFolder);
                 else
                     folder = IOUtils.createFolder(folder, requestedFolder);
             }
@@ -115,10 +143,10 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         }
         return name + "-" + username;
     }
-    
+
     /*
-     * Retrieve < v1.1 download folder.
-     * Used to migrate to new folder structures in a one-off operation.
+     * Retrieve < v1.1 download folder. Used to migrate to new folder structures
+     * in a one-off operation.
      */
     public static File getOldDownloadFolder(Context context)
     {
@@ -129,7 +157,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
             {
                 folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             }
-            
+
             folder = createFolder(
                     folder,
                     context.getResources()

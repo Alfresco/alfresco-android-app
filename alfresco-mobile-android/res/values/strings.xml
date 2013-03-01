@@ -97,8 +97,11 @@
 	<string name="error_session_service_url">
 		<![CDATA[Your <b>service url</b> value seems to be wrong.<br/> Please check your account settings.]]>
 	</string>
+	<string name="error_session_service_unavailable">
+		<![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]>
+	</string>
 	<string name="error_session_notfound">
-		<![CDATA[Your server seems to be unreachable.<br/> Please check your account settings.]]>
+		<![CDATA[The server seems to be unreachable.<br/> Please check your account settings.]]>
 	</string>
 	<string name="error_session_port">
 		<![CDATA[Your <b>port</b> value seems to be wrong.<br/> Please check your account settings.]]>
@@ -350,5 +353,9 @@
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
     <string name="error_import">We are unable to upload. Please check your account settings.</string>
+    
+     <!-- SSL -->
+     <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
+     
 
 </resources>
