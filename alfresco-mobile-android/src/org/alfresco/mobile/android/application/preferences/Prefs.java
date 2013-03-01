@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.R.layout;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -30,11 +31,13 @@ import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
@@ -49,6 +52,8 @@ public class Prefs extends PreferenceActivity
     public static final String ENCRYPTION_USER_INTERACTION = "EncryptionUserInteraction";
     public static final String PRIVATE_FOLDERS = "privatefolders";
     
+    private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
+    
     
     @Override
     public void onCreate(Bundle savedInstanceState) 
@@ -58,20 +63,22 @@ public class Prefs extends PreferenceActivity
         addPreferencesFromResource(R.layout.prefs);
         
         PreferenceScreen preferenceScreen = getPreferenceScreen();
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                                
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this); 
+        Preference privateFoldersPref = preferenceScreen.findPreference(PRIVATE_FOLDERS_BUTTON);
+        
         if (/*isDeviceRooted()  || */ prefs.getBoolean(HAS_ACCESSED_PAID_SERVICES, false) == false)
         {   
-            Preference privateFoldersPref = preferenceScreen.findPreference(PRIVATE_FOLDERS);
-            if (privateFoldersPref != null)
-            {
-                privateFoldersPref.setSelectable(false);
-                privateFoldersPref.setEnabled(false);              
-                prefs.edit().putBoolean(PRIVATE_FOLDERS, false).commit();
-            }
+            privateFoldersPref.setSelectable(false);
+            privateFoldersPref.setEnabled(false);              
+            privateFoldersPref.setSummary(R.string.data_protection_unavailable);
+            prefs.edit().putBoolean(PRIVATE_FOLDERS, false).commit();
         }
-        
-        Preference privateFoldersPref = preferenceScreen.findPreference(PRIVATE_FOLDERS);
+        else
+        {
+            privateFoldersPref.setSelectable(true);
+            privateFoldersPref.setEnabled(true);
+            privateFoldersPref.setSummary(prefs.getBoolean(PRIVATE_FOLDERS, false) ? R.string.data_protection_on : R.string.data_protection_off);
+        }
         
         privateFoldersPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
         {
@@ -79,17 +86,12 @@ public class Prefs extends PreferenceActivity
             public boolean onPreferenceClick(Preference preference)
             {
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(Prefs.this);
-                final boolean checked = !prefs.getBoolean(PRIVATE_FOLDERS, false);
+                final boolean checked = prefs.getBoolean(PRIVATE_FOLDERS, false);
                 
                 final File folder = StorageManager.getPrivateFolder(Prefs.this, "", "", "");
                 if (folder != null)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(Prefs.this);
-                    builder.setTitle(Prefs.this.getString(R.string.data_protection));
-                    builder.setMessage(Prefs.this.getString(checked ? R.string.content_being_decrypted : R.string.content_being_encrypted));
-                    builder.setCancelable(false);
-                    final AlertDialog progressAlert = builder.create();
-                    
                     builder = new AlertDialog.Builder(Prefs.this);
                     builder.setTitle(Prefs.this.getString(R.string.data_protection));
                     builder.setMessage(Prefs.this.getString(checked ? R.string.unprotect_question : R.string.protect_question));
@@ -98,43 +100,27 @@ public class Prefs extends PreferenceActivity
                         public void onClick(DialogInterface dialog, int item)
                         {
                             dialog.dismiss();
-                            progressAlert.show();
                             
-                            new Handler().postDelayed(new Runnable()
+                            if (checked)
                             {
-                                @Override
-                                public void run()
-                                {
-                                    Vector<String> folders = new Vector<String>();
-                                    folders.add(StorageManager.DLDIR);
-                                    folders.add(StorageManager.TEMPDIR);
-                                    
-                                    if (checked)
-                                    {
-                                        if (IOUtils.decryptFiles(Prefs.this, folder.getPath(), folders, true))
-                                            prefs.edit().putBoolean(PRIVATE_FOLDERS, false).commit();
-                                        else
-                                            MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.decryption_failed));
-                                    }
-                                    else
-                                    {
-                                        if (IOUtils.encryptFiles(Prefs.this, folder.getPath(), folders, true))
-                                            prefs.edit().putBoolean(PRIVATE_FOLDERS, true).commit();
-                                        else
-                                            MessengerManager.showLongToast(Prefs.this, Prefs.this.getString(R.string.encryption_failed));
-                                    }
-                                    
-                                    progressAlert.hide();
-                                }
-                                
-                            }, 1000);
+                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
+                                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                fragmentTransaction.commit();
+                            }
+                            else
+                            {
+                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encryptAll(folder.getPath());
+                                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                fragmentTransaction.commit();
+                            }
                         }
                     });
                     builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            prefs.edit().putBoolean(PRIVATE_FOLDERS, checked).commit();
                             dialog.dismiss();
                         }
                     });

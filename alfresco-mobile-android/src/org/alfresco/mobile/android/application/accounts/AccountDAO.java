@@ -37,30 +37,30 @@ public class AccountDAO extends DAO<Account>
         super(context);
         this.db = db;
     }
-
+    
     public long insert(String name, String url, String username, String pass, String workspace, Integer type,
-            String accessToken, String refreshToken)
+            String accessToken, String refreshToken, int isPaid)
     {
         ContentValues insertValues = createContentValues(name, url, username, pass, workspace, type, null, accessToken,
-                refreshToken);
+                refreshToken, isPaid);
 
         return db.insert(AccountSchema.TABLENAME, null, insertValues);
     }
 
     public long insert(String name, String url, String username, String pass, String workspace, Integer type,
-            String activation, String accessToken, String refreshToken)
+            String activation, String accessToken, String refreshToken, int isPaid)
     {
         ContentValues insertValues = createContentValues(name, url, username, pass, workspace, type, activation,
-                accessToken, refreshToken);
+                accessToken, refreshToken, isPaid);
 
         return db.insert(AccountSchema.TABLENAME, null, insertValues);
     }
 
     public boolean update(long id, String name, String url, String username, String pass, String workspace,
-            Integer type, String activation, String accessToken, String refreshToken)
+            Integer type, String activation, String accessToken, String refreshToken, int isPaid)
     {
         ContentValues updateValues = createContentValues(name, url, username, pass, workspace, type, activation,
-                accessToken, refreshToken);
+                accessToken, refreshToken, isPaid);
 
         return db.update(AccountSchema.TABLENAME, updateValues, AccountSchema.COLUMN_ID + "=" + id, null) > 0;
     }
@@ -77,7 +77,7 @@ public class AccountDAO extends DAO<Account>
                         AccountSchema.COLUMN_USERNAME, AccountSchema.COLUMN_PASSWORD,
                         AccountSchema.COLUMN_REPOSITORY_ID, AccountSchema.COLUMN_REPOSITORY_TYPE,
                         AccountSchema.COLUMN_ACTIVATION, AccountSchema.COLUMN_ACCESS_TOKEN,
-                        AccountSchema.COLUMN_REFRESH_TOKEN }, null, null, null, null, AccountSchema.COLUMN_ID + " ASC");
+                        AccountSchema.COLUMN_REFRESH_TOKEN, AccountSchema.COLUMN_IS_PAID_ACCOUNT }, null, null, null, null, AccountSchema.COLUMN_ID + " ASC");
         return cursorToAccounts(c);
     }
 
@@ -94,7 +94,7 @@ public class AccountDAO extends DAO<Account>
     }
 
     private ContentValues createContentValues(String name, String url, String username, String pass, String workspace,
-            Integer type, String activation, String accessToken, String refreshToken)
+            Integer type, String activation, String accessToken, String refreshToken, int isPaidAccount)
     {
         ContentValues updateValues = new ContentValues();
 
@@ -107,6 +107,7 @@ public class AccountDAO extends DAO<Account>
         updateValues.put(AccountSchema.COLUMN_ACTIVATION, activation);
         updateValues.put(AccountSchema.COLUMN_ACCESS_TOKEN, accessToken);
         updateValues.put(AccountSchema.COLUMN_REFRESH_TOKEN, refreshToken);
+        updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, isPaidAccount);
         return updateValues;
     }
 
@@ -132,7 +133,8 @@ public class AccountDAO extends DAO<Account>
                 c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
                 c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
                 c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
-                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID));
+                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
+                c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
         return account;
     }
 

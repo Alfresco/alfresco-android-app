@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
@@ -216,7 +217,6 @@ public class MainActivity extends Activity
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
             }
-
         }
         else
         {
@@ -282,14 +282,13 @@ public class MainActivity extends Activity
     {
         if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
         {
-            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString("RequiresEncrypt", "");
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(Prefs.REQUIRES_ENCRYPT, "");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
-        
-        
+        else
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
             photoCapture.capturedCallback(requestCode, resultCode, data);
@@ -350,22 +349,34 @@ public class MainActivity extends Activity
                 // reload account
                 refreshAccounts();
 
-                boolean paidNetwork = false;
-                AlfrescoSession session = getSession();
+                if (SessionUtils.getAccount(this) != null)
+                    currentAccount = SessionUtils.getAccount(this);
 
-                if (session instanceof CloudSession)
-                    paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
-                else
-                    paidNetwork = session.getRepositoryInfo().getEdition()
-                            .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
-
-                if (paidNetwork)
+                if (!currentAccount.getIsPaidAccount())
                 {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-
-                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
-
-                    CipherUtils.EncryptionUserInteraction(activity);
+                    boolean paidNetwork = false;
+                    AlfrescoSession session = getSession();
+    
+                    if (session instanceof CloudSession)
+                        paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
+                    else
+                        paidNetwork = session.getRepositoryInfo().getEdition()
+                                .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+    
+                    if (paidNetwork)
+                    {
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    
+                        prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+    
+                        CipherUtils.EncryptionUserInteraction(activity);
+                        
+                        AccountDAO serverDao = new AccountDAO(this, SessionUtils.getDataBaseManager(this).getWriteDb());
+                        serverDao.update(currentAccount.getId(), currentAccount.getDescription(), currentAccount.getUrl(),
+                                        currentAccount.getUsername(), currentAccount.getPassword(), currentAccount.getRepositoryId(),
+                                        currentAccount.getTypeId(), currentAccount.getActivation(), currentAccount.getAccessToken(),
+                                        currentAccount.getRefreshToken(), 1);
+                    }
                 }
                 return;
             }

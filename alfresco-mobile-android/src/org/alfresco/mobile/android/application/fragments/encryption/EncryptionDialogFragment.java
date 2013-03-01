@@ -66,6 +66,8 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     private static final String PARAM_INTENT_ACTION = "intentAction";
 
     private static final String PARAM_COPIED_FILE = "copiedFile";
+    
+    private static final String PARAM_FOLDER = "folder";
 
     private ActionManagerListener listener;
 
@@ -112,6 +114,19 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         return fragment;
     }
 
+    public static EncryptionDialogFragment encryptAll(String filePath)
+    {
+        File myFile = new File(filePath);
+        EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
+        Bundle b = new Bundle();
+        b.putString(PARAM_FILENAME, myFile.getName());
+        b.putSerializable(PARAM_FILE, myFile);
+        b.putBoolean(PARAM_ENCRYPT, true);
+        b.putBoolean(PARAM_FOLDER, true);
+        fragment.setArguments(b);
+        return fragment;
+    }
+    
     public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
             String intentAction)
     {
@@ -127,6 +142,18 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         return fragment;
     }
 
+    public static EncryptionDialogFragment decryptAll(File myFile)
+    {
+        EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_FILE, myFile);
+        b.putString(PARAM_FILENAME, myFile.getName());
+        b.putBoolean(PARAM_ENCRYPT, false);
+        b.putBoolean(PARAM_FOLDER, true);
+        fragment.setArguments(b);
+        return fragment;
+    }
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -178,7 +205,7 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         }
         else
         {
-            return new EncryptionLoader(this, SessionUtils.getSession(getActivity()), myFile, doEncrypt);
+            return new EncryptionLoader(this, SessionUtils.getSession(getActivity()), myFile, doEncrypt, getArguments().containsKey(PARAM_FOLDER));
         }
     }
 

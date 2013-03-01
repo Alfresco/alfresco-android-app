@@ -197,7 +197,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
                         .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
                         ((CloudSessionLoader) loader).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
-                                .getOAuthData().getRefreshToken()))
+                                .getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
                 }

@@ -18,14 +18,18 @@
 package org.alfresco.mobile.android.application.fragments.encryption;
 
 import java.io.File;
+import java.util.Vector;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -42,12 +46,15 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
 
     private File copiedFile;
 
+    private boolean folder;
+    
     public EncryptionLoader(Fragment fr, AlfrescoSession session, File file, boolean doEncrypt)
     {
         super(fr.getActivity());
         this.session = session;
         this.file = file;
         this.doEncrypt = doEncrypt;
+        this.folder = false;
     }
 
     public EncryptionLoader(Fragment fr, AlfrescoSession session, File file, boolean doEncrypt, File copiedFile)
@@ -57,13 +64,28 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
         this.file = file;
         this.doEncrypt = doEncrypt;
         this.copiedFile = copiedFile;
+        this.folder = false;
     }
 
+    public EncryptionLoader(Fragment fr, AlfrescoSession session, File file, boolean doEncrypt, boolean folder)
+    {
+        super(fr.getActivity());
+        this.session = session;
+        this.file = file;
+        this.doEncrypt = doEncrypt;
+        this.folder = folder;
+    }
+    
     @Override
     public LoaderResult<File> loadInBackground()
     {
         LoaderResult<File> result = new LoaderResult<File>();
         File encryptedFile = null;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
+        Vector<String> folders = new Vector<String>();
+        folders.add(StorageManager.DLDIR);
+        folders.add(StorageManager.TEMPDIR);
+        
         try
         {
             if (copiedFile != null)
@@ -76,6 +98,12 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
             }
             else if (doEncrypt)
             {
+                if (folder)
+                {
+                    if (IOUtils.encryptFiles(getContext(), file.getPath(), folders, true))
+                        prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, true).commit();
+                }
+                else
                 if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
                 {
                     encryptedFile = new File(file.getPath());
@@ -83,22 +111,28 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
             }
             else
             {
-                if (CipherUtils.isEncrypted(getContext(), file.getPath(), true))
+                //Decrypt
+                
+                if (folder)
                 {
-                    if (CipherUtils.decryptFile(getContext(), file.getPath()))
-                    {
-                        PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                                .putString("RequiresEncrypt", file.getPath()).commit();
-                        encryptedFile = file;
-                    }
+                    if (IOUtils.decryptFiles(getContext(), file.getPath(), folders, true))
+                        prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, false).commit();
                 }
                 else
                 {
-                    PreferenceManager.getDefaultSharedPreferences(getContext()).edit()
-                            .putString("RequiresEncrypt", file.getPath()).commit();
-                    encryptedFile = file;
+                    if (CipherUtils.isEncrypted(getContext(), file.getPath(), true))
+                    {
+                        if (CipherUtils.decryptFile(getContext(), file.getPath()))
+                        {
+                            encryptedFile = file;
+                        }
+                    }
+                    else
+                    {
+                        encryptedFile = file;
+                    }
+                    prefs.edit().putString(Prefs.REQUIRES_ENCRYPT, file.getPath()).commit();
                 }
-
             }
         }
         catch (Exception e)
