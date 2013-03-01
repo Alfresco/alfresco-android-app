@@ -40,11 +40,14 @@ import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.Prefs;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -127,6 +130,8 @@ public class CipherUtils
             
             chunkSize = 10240;
             byte buffer[] = new byte[chunkSize];
+         
+            Log.i(TAG, "Encrypting file " + filename);
             
             do
             {
@@ -168,7 +173,10 @@ public class CipherUtils
             return ret;
         }
         else
+        {
+            Log.w(TAG, "File is already encrypted: " + filename);
             return true;
+        }
     }
     
     /*
@@ -198,6 +206,8 @@ public class CipherUtils
      
             chunkSize = 10240;
             byte buffer[] = new byte[chunkSize];
+            
+            Log.i(TAG, "Decrypting file " + filename);
             
             do
             {
@@ -234,7 +244,10 @@ public class CipherUtils
             return ret;
         }
         else
+        {
+            Log.w(TAG, "File is already decrypted: " + filename);
             return true;
+        }
     }
         
     public static boolean isEncryptionActive (Context ctxt)
@@ -370,51 +383,31 @@ public class CipherUtils
         destroyFile.close();
     }
     
-    public static void EncryptionUserInteraction (final Context ctxt)
+    public static void EncryptionUserInteraction (final Activity activity)
     {
-        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ctxt);
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
         if (!prefs.getBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false)  &&  !prefs.getBoolean(Prefs.PRIVATE_FOLDERS, false) )
         {
-            final File folder = StorageManager.getPrivateFolder(ctxt, "", "", "");
+            final File folder = StorageManager.getPrivateFolder(activity, "", "", "");
             if (folder != null)
             {
                 prefs.edit().putBoolean (Prefs.ENCRYPTION_USER_INTERACTION, true).commit();
                 
-                AlertDialog.Builder builder = new AlertDialog.Builder(ctxt);
-                builder.setTitle(ctxt.getString(R.string.data_protection));
-                builder.setMessage(ctxt.getString(R.string.content_being_encrypted));
-                builder.setCancelable(false);
-                final AlertDialog progressAlert = builder.create();
-                
-                builder = new AlertDialog.Builder(ctxt);
-                builder.setTitle(ctxt.getString(R.string.data_protection));
-                builder.setMessage(ctxt.getString(R.string.data_protection_blurb));
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder = new AlertDialog.Builder(activity);
+                builder.setTitle(activity.getString(R.string.data_protection));
+                builder.setMessage(activity.getString(R.string.data_protection_blurb));
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int item)
                     {
                         dialog.dismiss();
-                        progressAlert.show();
                         
-                        new Handler().postDelayed(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                Vector<String> folders = new Vector<String>();
-                                folders.add(StorageManager.DLDIR);
-                                folders.add(StorageManager.TEMPDIR);
-                                
-                                if (IOUtils.encryptFiles(ctxt, folder.getPath(), folders, true))
-                                    prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, true).commit();
-                                else
-                                    MessengerManager.showLongToast(ctxt, ctxt.getString(R.string.encryption_failed));
-                                
-                                progressAlert.hide();
-                            }
-                            
-                        }, 1000);
+                        FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
+                        EncryptionDialogFragment fragment = EncryptionDialogFragment.encryptAll(folder.getPath());
+                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                        fragmentTransaction.commit();  
                     }
                 });
                 

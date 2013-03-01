@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
+import org.alfresco.mobile.android.application.database.DatabaseManager;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -65,11 +67,15 @@ public class AccountSchema
 
     public static final int COLUMN_REFRESH_TOKEN_ID = 9;
 
+    public static final String COLUMN_IS_PAID_ACCOUNT = "isPaidAccount";
+
+    public static final int COLUMN_IS_PAID_ACCOUNT_ID = 10;
+    
     private static final String QUERY_TABLE_CREATE = "create table " + TABLENAME + " (" + COLUMN_ID
             + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_NAME + " TEXT NOT NULL," + COLUMN_URL + " TEXT NOT NULL,"
             + COLUMN_USERNAME + " TEXT NOT NULL," + COLUMN_PASSWORD + " TEXT," + COLUMN_REPOSITORY_ID
             + " TEXT NOT NULL," + COLUMN_REPOSITORY_TYPE + " INTEGER," + COLUMN_ACTIVATION + " TEXT,"
-            + COLUMN_ACCESS_TOKEN + " TEXT," + COLUMN_REFRESH_TOKEN + " TEXT);";
+            + COLUMN_ACCESS_TOKEN + " TEXT," + COLUMN_REFRESH_TOKEN + " TEXT," + COLUMN_IS_PAID_ACCOUNT + " INTEGER);";
 
     private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
 
@@ -84,6 +90,13 @@ public class AccountSchema
         {
             db.execSQL(QUERY_TABLE_DROP);
             onCreate(context, db);
+        }
+        else if (newVersion >= 3)
+        {
+            final String ALTER_TBL = 
+                    "ALTER TABLE " + TABLENAME +
+                    " ADD COLUMN " + COLUMN_IS_PAID_ACCOUNT + " integer default 0;";
+                db.execSQL(ALTER_TBL);
         }
     }
 }
