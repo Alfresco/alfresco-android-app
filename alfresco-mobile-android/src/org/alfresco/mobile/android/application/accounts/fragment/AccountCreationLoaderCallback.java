@@ -128,6 +128,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         {
             SessionUtils.setsession(activity, session);
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
             long id = -1L;
             if (data == null)
             {
@@ -148,8 +149,9 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                 description = (description != null && !description.isEmpty()) ? description : activity
                         .getString(R.string.account_default_onpremise);
 
+                boolean isPaidAccount = isPaid (type, session, prefs);
                 id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
-                        .getIdentifier(), type, null, null);
+                        .getIdentifier(), type, null, null, isPaidAccount ? 1 : 0);
             }
             else
             {
@@ -169,32 +171,11 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                             .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
 
+                boolean isPaidAccount = isPaid (type, session, prefs);
                 id = serverDao.insert(activity.getString(R.string.account_default_cloud), session.getBaseUrl(), user
                         .getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type,
                         ((CloudSession) session).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
-                                .getOAuthData().getRefreshToken());
-            }
-
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-            if (type == Account.TYPE_ALFRESCO_CLOUD)
-            {
-                if (((CloudSession) session).getNetwork().isPaidNetwork())
-                {
-                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
-                    
-                    CipherUtils.EncryptionUserInteraction (activity);
-                }
-            }
-            else
-            {
-                String edition = session.getRepositoryInfo().getEdition();
-
-                if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
-                {
-                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
-                    
-                    CipherUtils.EncryptionUserInteraction (activity);
-                }
+                                .getOAuthData().getRefreshToken(), isPaidAccount ? 1 : 0);
             }
 
             SessionUtils.setAccount(activity, serverDao.findById(id));
@@ -229,5 +210,35 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> arg0)
     {
         mProgressDialog.dismiss();
+    }
+    
+    boolean isPaid(int type, AlfrescoSession session, SharedPreferences prefs)
+    {
+        if (type == Account.TYPE_ALFRESCO_CLOUD)
+        {
+            if (((CloudSession) session).getNetwork().isPaidNetwork())
+            {
+                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                
+                CipherUtils.EncryptionUserInteraction (activity);
+                
+                return true;
+            }
+        }
+        else
+        {
+            String edition = session.getRepositoryInfo().getEdition();
+
+            if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
+            {
+                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                
+                CipherUtils.EncryptionUserInteraction (activity);
+                
+                return true;
+            }
+        }
+        
+        return false;
     }
 }

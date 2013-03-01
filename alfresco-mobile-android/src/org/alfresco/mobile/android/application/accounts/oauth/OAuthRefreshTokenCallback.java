@@ -101,7 +101,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
                 AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
                 if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
                         .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, loader
-                        .getData().getAccessToken(), loader.getData().getRefreshToken()))
+                        .getData().getAccessToken(), loader.getData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
                 }

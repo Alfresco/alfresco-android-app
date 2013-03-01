@@ -46,7 +46,7 @@ public class Account implements Serializable
 
     private String repositoryId;
 
-    private long typeId;
+    private int typeId;
 
     private String activation;
 
@@ -56,8 +56,10 @@ public class Account implements Serializable
 
     protected Context context;
 
+    private int isPaidAccount;
+    
     public Account(long id, String description, String url, String username, String password, String repositoryId,
-            long typeId, String activation, String accessToken, String refreshToken)
+            int typeId, String activation, String accessToken, String refreshToken, int isPaidAccount)
     {
         super();
         this.id = id;
@@ -70,7 +72,7 @@ public class Account implements Serializable
         this.activation = activation;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-
+        this.isPaidAccount = isPaidAccount;
     }
 
     public String getAccessToken()
@@ -113,7 +115,7 @@ public class Account implements Serializable
         return repositoryId;
     }
 
-    public long getTypeId()
+    public int getTypeId()
     {
         return typeId;
     }
@@ -126,5 +128,10 @@ public class Account implements Serializable
     public void setRepositoryId(String repositoryId)
     {
         this.repositoryId = repositoryId;
+    }
+    
+    public boolean getIsPaidAccount()
+    {
+        return (isPaidAccount != 0);
     }
 }

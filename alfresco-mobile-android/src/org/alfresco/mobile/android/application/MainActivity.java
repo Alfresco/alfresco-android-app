@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.AccountDAO;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
@@ -52,7 +53,6 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.DownloadReceiver;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
@@ -89,13 +89,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -255,7 +253,6 @@ public class MainActivity extends Activity
         }
     }
 
-    
     @Override
     public void onResume()
     {
@@ -281,7 +278,7 @@ public class MainActivity extends Activity
     {
         if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
         {
-            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString("RequiresEncrypt", "");
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(Prefs.REQUIRES_ENCRYPT, "");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
@@ -353,22 +350,34 @@ public class MainActivity extends Activity
                 // reload account
                 refreshAccounts();
 
-                boolean paidNetwork = false;
-                AlfrescoSession session = getSession();
+                if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
 
-                if (session instanceof CloudSession)
-                    paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
-                else
-                    paidNetwork = session.getRepositoryInfo().getEdition()
-                            .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
-
-                if (paidNetwork)
+                if (!currentAccount.getIsPaidAccount())
                 {
-                    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+                    boolean paidNetwork = false;
+                    AlfrescoSession session = getSession();
 
-                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                    if (session instanceof CloudSession)
+                        paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
+                    else
+                        paidNetwork = session.getRepositoryInfo().getEdition()
+                                .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
 
-                    CipherUtils.EncryptionUserInteraction(activity);
+                    if (paidNetwork)
+                    {
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+
+                        CipherUtils.EncryptionUserInteraction(activity);
+
+                        AccountDAO serverDao = new AccountDAO(this, SessionUtils.getDataBaseManager(this).getWriteDb());
+                        serverDao.update(currentAccount.getId(), currentAccount.getDescription(),
+                                currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),
+                                currentAccount.getRepositoryId(), currentAccount.getTypeId(),
+                                currentAccount.getActivation(), currentAccount.getAccessToken(),
+                                currentAccount.getRefreshToken(), 1);
+                    }
                 }
                 return;
             }

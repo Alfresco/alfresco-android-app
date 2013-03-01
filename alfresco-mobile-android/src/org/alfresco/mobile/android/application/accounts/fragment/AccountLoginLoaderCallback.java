@@ -213,7 +213,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
                 if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
                         .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
                         ((CloudSessionLoader) loader).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
-                                .getOAuthData().getRefreshToken()))
+                                .getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     Intent i = new Intent(activity, getActivityClass());
                     i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
