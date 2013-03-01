@@ -100,7 +100,7 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
             AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
                     Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
-                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null) != -1)
+                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null, 0) != -1)
             {
                 mProgressDialog.dismiss();
                 ((CloudSignupDialogFragment) fr).displayAccounts();

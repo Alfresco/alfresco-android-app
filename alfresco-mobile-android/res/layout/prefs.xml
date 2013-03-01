@@ -33,11 +33,10 @@
        />
   -->
     
-    <CheckBoxPreference
-       android:key="privatefolders"
+    <Preference
+       android:key="privatefoldersbutton"
        android:title="Data Protection"
-       android:summary="Data protection allows all downloaded content to be readable only in the Alfresco app. (corporate customers)"
-       android:defaultValue="false"
+       android:summary="Data protection unavailable (paid account-holders only)"
        />
     
   <!-- 

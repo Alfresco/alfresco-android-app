@@ -17,8 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
@@ -32,18 +34,25 @@ import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatus
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.Prefs;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
@@ -407,7 +416,7 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 retrieveFormValues();
                 if (accountDao.update(acc.getId(), description, (url!=null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
-                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken()))
+                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                     initValues(vRoot, false);
@@ -437,45 +446,102 @@ public class AccountDetailsFragment extends BaseFragment
 
     public void delete()
     {
-
+        final List<Account> accounts = accountDao.findAll();
+        final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean dataProtectionDeletion = false;
+        
+        if (prefs.getBoolean(Prefs.PRIVATE_FOLDERS, false) == true)
+        {
+            boolean havePaidAccounts = false;
+        
+            for (Account account : accounts)
+            {
+                //Ignoring the one we're deleting, are there any further paid accounts left?
+                if (account.getId() != acc.getId() && account.getIsPaidAccount())
+                {
+                    havePaidAccounts = true;
+                    break;
+                }
+            }
+            dataProtectionDeletion = !havePaidAccounts;
+        }
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.delete);
-        builder.setMessage(getResources().getString(R.string.delete_description) + " " + acc.getDescription());
-        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+        
+        final File folder = StorageManager.getPrivateFolder(getActivity(), "", "", "");
+        if (dataProtectionDeletion && folder != null)
         {
-            public void onClick(DialogInterface dialog, int item)
+            builder.setTitle(R.string.delete);
+            builder.setMessage(getResources().getString(R.string.delete_description_data_protection) + " " + acc.getDescription());
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
-                accountDao.delete(acc.getId());
-                // In case where currentAccount is the one deleted.
-                if (SessionUtils.getAccount(getActivity()) != null
-                        && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+                public void onClick(DialogInterface dialog, int item)
                 {
-                    SessionUtils.setAccount(getActivity(), null);
+                    accountDao.delete(acc.getId());
+                    // In case where currentAccount is the one deleted.
+                    if (SessionUtils.getAccount(getActivity()) != null
+                            && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+                    {
+                        SessionUtils.setAccount(getActivity(), null);
+                    }
+                    
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
+                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                    fragmentTransaction.commit();
+                    
+                    //Unflag this so that on next (first) addition of a new paid account, they will get prompted again.
+                    prefs.edit().putBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false).commit();
                 }
-
-                if (!accountDao.findAll().isEmpty())
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int item)
                 {
-                    ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                            IntentIntegrator.ACCOUNT_TYPE);
+                    dialog.dismiss();
                 }
-                else
-                {
-                    getActivity().finish();
-                    startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
-                }
-
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            });
+        }
+        else
         {
-            public void onClick(DialogInterface dialog, int item)
+            builder.setTitle(R.string.delete);
+            builder.setMessage(getResources().getString(R.string.delete_description) + " " + acc.getDescription());
+            builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
-                dialog.dismiss();
-            }
-        });
+                public void onClick(DialogInterface dialog, int item)
+                {
+                    accountDao.delete(acc.getId());
+                    // In case where currentAccount is the one deleted.
+                    if (SessionUtils.getAccount(getActivity()) != null
+                            && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+                    {
+                        SessionUtils.setAccount(getActivity(), null);
+                    }
+    
+                    if (!accounts.isEmpty())
+                    {                    
+                        ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
+                                IntentIntegrator.ACCOUNT_TYPE);
+                    }
+                    else
+                    {
+                        getActivity().finish();
+                        startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
+                    }
+    
+                }
+            });
+            builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+            {
+                public void onClick(DialogInterface dialog, int item)
+                {
+                    dialog.dismiss();
+                }
+            });
+        }
+        
         AlertDialog alert = builder.create();
         alert.show();
-
     }
 
     public void displayOAuthFragment()
