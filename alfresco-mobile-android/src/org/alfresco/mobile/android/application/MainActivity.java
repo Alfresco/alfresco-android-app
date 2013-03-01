@@ -366,7 +366,7 @@ public class MainActivity extends Activity
                 {
                     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
-                    prefs.edit().putBoolean("HasAccessedPaidServices", true).commit();
+                    prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
                     CipherUtils.EncryptionUserInteraction(activity);
                 }
