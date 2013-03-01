@@ -92,12 +92,10 @@ public class CryptoDocumentCreateLoader extends DocumentCreateLoader
         this.context = context;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public LoaderResult<Document> loadInBackground()
     {
         LoaderResult<Document> result = new LoaderResult<Document>();
-        Document doc = null;
 
         try
         {
@@ -109,7 +107,7 @@ public class CryptoDocumentCreateLoader extends DocumentCreateLoader
                 CipherUtils.decryptFile(context, filename);
             }
             
-            super.loadInBackground();
+            result = super.loadInBackground();
             
             if (encdec)
             {
@@ -120,8 +118,6 @@ public class CryptoDocumentCreateLoader extends DocumentCreateLoader
         {
             result.setException(e);
         }
-        
-        result.setData(doc);
 
         return result;
     }
