@@ -402,8 +402,6 @@ public class CipherUtils
                 {
                     public void onClick(DialogInterface dialog, int item)
                     {
-                        dialog.dismiss();
-                        
                         FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
                         EncryptionDialogFragment fragment = EncryptionDialogFragment.encryptAll(folder.getPath());
                         fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
@@ -415,7 +413,6 @@ public class CipherUtils
                 {
                     public void onClick(DialogInterface dialog, int item)
                     {
-                        dialog.dismiss();
                     }
                 });
                 

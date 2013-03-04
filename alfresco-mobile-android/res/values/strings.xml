@@ -315,8 +315,8 @@
 	<string name="unprotect_question">Data Protection is currently on. Would you like to disable it and unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
 	<string name="already_encrypted">This file is already encrypted!</string>
 	<string name="already_decrypted">This file is already decrypted!</string>
-	<string name="decryption_title">Deactivate data protection in progress...</string>
-	<string name="encryption_title">Data protection in progress...</string>
+	<string name="decryption_title">Deactivating Data Protection...</string>
+	<string name="encryption_title">Activating Data Protection...</string>
 	
     <string name="metadata_general">General</string>
 
