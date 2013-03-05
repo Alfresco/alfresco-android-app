@@ -23,15 +23,6 @@
 
   <PreferenceCategory
      android:title="Settings">
-
-  <!-- 
-     <CheckBoxPreference
-       android:key="allowuntrusted"
-       android:title="Allow untrusted servers"
-       android:summary="Allow connection to servers with untrusted SSL certificates"
-       android:defaultValue="false"
-       />
-  -->
     
     <Preference
        android:key="privatefoldersbutton"
@@ -39,14 +30,6 @@
        android:summary="Data protection unavailable (paid account-holders only)"
        />
     
-  <!-- 
-	<EditTextPreference
-		android:key="pin"
-		android:inputType="numberPassword"
-		android:title="PIN number"
-		android:summary="PIN number for opening the Alfresco app (corporate customers)" />
-   -->
-   
   </PreferenceCategory>
 
    <PreferenceCategory

@@ -122,7 +122,8 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     public void onLoadFinished(Loader<LoaderResult<AlfrescoSession>> loader, LoaderResult<AlfrescoSession> results)
     {
         int type;
-
+        boolean isPaidAccount = false;
+        
         AlfrescoSession session = results.getData();
         if (session != null)
         {
@@ -149,7 +150,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                 description = (description != null && !description.isEmpty()) ? description : activity
                         .getString(R.string.account_default_onpremise);
 
-                boolean isPaidAccount = isPaid (type, session, prefs);
+                isPaidAccount = isPaid (type, session, prefs);
                 id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
                         .getIdentifier(), type, null, null, isPaidAccount ? 1 : 0);
             }
@@ -171,7 +172,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                             .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
                 }
 
-                boolean isPaidAccount = isPaid (type, session, prefs);
+                isPaidAccount = isPaid (type, session, prefs);
                 id = serverDao.insert(activity.getString(R.string.account_default_cloud), session.getBaseUrl(), user
                         .getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type,
                         ((CloudSession) session).getOAuthData().getAccessToken(), ((CloudSessionLoader) loader)
@@ -182,12 +183,24 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
 
             if (fr != null)
             {
+                //If there's a fragment, the prompt for Data Protection will happen back in MainActivity on the refresh,
+                //otherwise, it needs prompting for here in the else case.
+                
                 ActionManager.actionRefresh(fr, IntentIntegrator.CATEGORY_REFRESH_ALL, IntentIntegrator.ACCOUNT_TYPE);
                 if (fr.getActivity() instanceof HomeScreenActivity)
                 {
                     fr.getActivity().finish();
                 }
+                else
+                    if (isPaidAccount)
+                    {
+                        //Check if we've prompted the user for Data Protection yet.
+                        CipherUtils.EncryptionUserInteraction(activity);
+                        
+                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                    }
             }
+            
             mProgressDialog.dismiss();
         }
         else
@@ -216,29 +229,13 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
     {
         if (type == Account.TYPE_ALFRESCO_CLOUD)
         {
-            if (((CloudSession) session).getNetwork().isPaidNetwork())
-            {
-                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
-                
-                CipherUtils.EncryptionUserInteraction (activity);
-                
-                return true;
-            }
+            return (((CloudSession) session).getNetwork().isPaidNetwork());
         }
         else
         {
             String edition = session.getRepositoryInfo().getEdition();
 
-            if (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE))
-            {
-                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
-                
-                CipherUtils.EncryptionUserInteraction (activity);
-                
-                return true;
-            }
+            return (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE));
         }
-        
-        return false;
     }
 }

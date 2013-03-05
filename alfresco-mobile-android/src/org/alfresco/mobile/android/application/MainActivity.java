@@ -153,6 +153,8 @@ public class MainActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        
         activity = this;
 
         super.onCreate(savedInstanceState);
@@ -220,6 +222,19 @@ public class MainActivity extends Activity
             displayMainMenu();
         }
 
+        if (SessionUtils.getAccount(this) != null)
+        { 
+            currentAccount = SessionUtils.getAccount(this);
+            if (currentAccount.getIsPaidAccount() == true)
+            {
+                //Check if we've prompted the user for Data Protection yet.
+                //This is needed on new account creation, as the Activity gets re-created after the account is created.
+                CipherUtils.EncryptionUserInteraction(this);
+                
+                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+            }
+        }
+        
         initActionBar();
         checkForUpdates();
 
@@ -233,7 +248,6 @@ public class MainActivity extends Activity
 
         // Transfer downloads to new folder structure if they haven't been
         // already.
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         if (!prefs.getBoolean("filesmigrated", false))
         {
             File oldDownloads = StorageManager.getOldDownloadFolder(this);
@@ -352,6 +366,8 @@ public class MainActivity extends Activity
 
                 if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
 
+                //Check to see if we have an old account that needs its paid network flag setting.
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 if (!currentAccount.getIsPaidAccount())
                 {
                     boolean paidNetwork = false;
@@ -365,8 +381,6 @@ public class MainActivity extends Activity
 
                     if (paidNetwork)
                     {
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-
                         prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
                         CipherUtils.EncryptionUserInteraction(activity);
@@ -379,6 +393,7 @@ public class MainActivity extends Activity
                                 currentAccount.getRefreshToken(), 1);
                     }
                 }
+
                 return;
             }
 
