@@ -102,6 +102,21 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         return fragment;
     }
 
+    public static EncryptionDialogFragment copy(String copiedPath, String filePath, Account account)
+    {
+        File myFile = new File(filePath);
+        File copiedFile = new File(copiedPath);
+        EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_COPIED_FILE, copiedFile);
+        b.putString(PARAM_FILENAME, myFile.getName());
+        b.putSerializable(PARAM_FILE, myFile);
+        b.putBoolean(PARAM_ENCRYPT, false);
+        b.putSerializable(PARAM_ACCOUNT, account);
+        fragment.setArguments(b);
+        return fragment;
+    }
+
     public static EncryptionDialogFragment encrypt(String filePath)
     {
         File myFile = new File(filePath);
@@ -166,15 +181,22 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     public void onStart()
     {
         Boolean doEncrypt = getArguments().getBoolean(PARAM_ENCRYPT);
+
         int messageId = R.string.decryption_title;
-        if (doEncrypt)
+        int titleId = R.string.data_protection;
+        if (getArguments().containsKey(PARAM_COPIED_FILE) && !doEncrypt)
+        {
+            messageId = R.string.copy_file_title;
+            titleId = R.string.import_document_title;
+        }
+        else if (doEncrypt)
         {
             messageId = R.string.encryption_title;
         }
 
         if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
         {
-            WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection, messageId, true);
+            WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(titleId, messageId, true);
             dialog.show(getFragmentManager(), WaitingDialogFragment.TAG);
         }
 
@@ -243,8 +265,6 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     @Override
     public void onLoaderReset(Loader<LoaderResult<File>> arg0)
     {
-        // TODO Auto-generated method stub
-
     }
 
     /**

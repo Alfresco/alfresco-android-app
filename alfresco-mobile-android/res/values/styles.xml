@@ -18,7 +18,7 @@
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-   <style name="alfrescotheme" parent="android:Theme.Holo.Light">
+    <style name="alfrescotheme" parent="android:Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
         <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb_holo</item>
         <item name="android:fastScrollTrackDrawable">@null</item>
@@ -102,7 +102,7 @@
         <item name="android:textColor">@color/grey_text</item>
         <item name="android:textSize">14sp</item>
     </style>
-    
+
     <style name="import_sectionHeader" parent="slidingmenu_sectionHeader">
         <item name="android:drawableBottom">@drawable/grey_thin_section_header</item>
     </style>
@@ -112,16 +112,29 @@
         <item name="android:textColor">@android:color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
-    
+
     <!-- ACTIONS IN DETAILS PAGE -->
     <style name="details_action_icon">
         <item name="android:paddingRight">@dimen/button_padding</item>
         <item name="android:layout_weight">0</item>
     </style>
-    
 
     <style name="alfrescotheme_ActionBar" parent="@android:style/Widget.Holo.Light.ActionBar">
         <item name="android:background">@drawable/ab_stacked_transparent_light_holo</item>
+    </style>
+
+    <style name="passcode_button">
+        <item name="android:paddingLeft">20dip</item>
+        <item name="android:paddingRight">20dip</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_width">100dip</item>
+    </style>
+
+    <style name="passcode_input">
+        <item name="android:textSize">@dimen/passcode_text_size</item>
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:ems">2</item>
+        <item name="android:maxLength">1</item>
     </style>
 
 </resources>

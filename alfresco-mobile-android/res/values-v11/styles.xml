@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -40,6 +40,12 @@
         <item name="android:textColor">@color/tab_indicator_text</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
+    </style>
+    
+    <style name="passcode_input">
+        <item name="android:textSize">@dimen/passcode_text_size</item>
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:maxLength">1</item>
     </style>
 
 </resources>

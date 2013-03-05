@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -148,20 +149,18 @@ public class ImportLocalDialogFragment extends DialogFragment
                 }
                 else
                 {
-                    InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
-                    
+
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    EncryptionDialogFragment fragment = EncryptionDialogFragment.copyAndEncrypt(file.getPath(),
-                            newFile.getPath(), currentAccount);
+                    EncryptionDialogFragment fragment = (CipherUtils.isEncryptionActive(getActivity())) ? EncryptionDialogFragment
+                            .copyAndEncrypt(file.getPath(), newFile.getPath(), currentAccount)
+                            : EncryptionDialogFragment.copy(file.getPath(), newFile.getPath(), currentAccount);
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
-                    //MessengerManager.showLongToast(getActivity(),
-                    //        String.format(getString(R.string.import_send_download), currentAccount.getDescription()));
                 }
-
                 dismiss();
-                //getActivity().finish();
             }
         });
 

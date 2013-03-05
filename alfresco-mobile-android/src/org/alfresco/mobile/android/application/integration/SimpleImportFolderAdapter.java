@@ -58,7 +58,7 @@ public class SimpleImportFolderAdapter extends BaseListAdapter<Integer, GenericV
             case R.string.menu_downloads:
                 iconId = R.drawable.ic_download_dark;
                 break;
-            case R.string.menu_browse_all_sites:
+            case R.string.menu_browse_sites:
                 iconId = R.drawable.mime_site;
                 break;
             default:

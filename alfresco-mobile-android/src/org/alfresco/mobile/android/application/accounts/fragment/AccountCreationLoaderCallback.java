@@ -34,14 +34,13 @@ import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -197,7 +196,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                         //Check if we've prompted the user for Data Protection yet.
                         CipherUtils.EncryptionUserInteraction(activity);
                         
-                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                        prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                     }
             }
             
@@ -234,7 +233,6 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
         else
         {
             String edition = session.getRepositoryInfo().getEdition();
-
             return (edition.equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE));
         }
     }

@@ -16,20 +16,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item name="tab_comment" type="id"/>
-
-    <!-- LOADERS ID -->
-    <item name="tab_history" type="id"/>
-
-    <bool name="tablet_middle">false</bool>
-
-    <item name="tag_account" type="id"/>
-    <item name="tag_action" type="id"/>
+  <style name="passcode_input">
+        <item name="android:textSize">@dimen/passcode_text_size</item>
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:ems">1</item>
+        <item name="android:maxLength">1</item>
+    </style>
     
-    <item name="site_action" type="id"/>
-    
-    <string name="passcode_enable_key">TurnPasscodeKey</string>
-
 </resources>

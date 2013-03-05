@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -27,6 +27,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+/**
+ * Manage Account database table.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AccountDAO extends DAO<Account>
 {
 
@@ -37,7 +42,7 @@ public class AccountDAO extends DAO<Account>
         super(context);
         this.db = db;
     }
-    
+
     public long insert(String name, String url, String username, String pass, String workspace, Integer type,
             String accessToken, String refreshToken, int isPaid)
     {
@@ -70,14 +75,22 @@ public class AccountDAO extends DAO<Account>
         return db.delete(AccountSchema.TABLENAME, AccountSchema.COLUMN_ID + "=" + id, null) > 0;
     }
 
+    /**
+     * Use with extreme caution ! This method clear all accounts from the
+     * accounts table. It's like reset.
+     */
+    public boolean clear()
+    {
+        return db.delete(AccountSchema.TABLENAME, "1", null) > 0;
+    }
+
     public List<Account> findAll()
     {
-        Cursor c = db.query(AccountSchema.TABLENAME,
-                new String[] { AccountSchema.COLUMN_ID, AccountSchema.COLUMN_NAME, AccountSchema.COLUMN_URL,
-                        AccountSchema.COLUMN_USERNAME, AccountSchema.COLUMN_PASSWORD,
-                        AccountSchema.COLUMN_REPOSITORY_ID, AccountSchema.COLUMN_REPOSITORY_TYPE,
-                        AccountSchema.COLUMN_ACTIVATION, AccountSchema.COLUMN_ACCESS_TOKEN,
-                        AccountSchema.COLUMN_REFRESH_TOKEN, AccountSchema.COLUMN_IS_PAID_ACCOUNT }, null, null, null, null, AccountSchema.COLUMN_ID + " ASC");
+        Cursor c = db.query(AccountSchema.TABLENAME, new String[] { AccountSchema.COLUMN_ID, AccountSchema.COLUMN_NAME,
+                AccountSchema.COLUMN_URL, AccountSchema.COLUMN_USERNAME, AccountSchema.COLUMN_PASSWORD,
+                AccountSchema.COLUMN_REPOSITORY_ID, AccountSchema.COLUMN_REPOSITORY_TYPE,
+                AccountSchema.COLUMN_ACTIVATION, AccountSchema.COLUMN_ACCESS_TOKEN, AccountSchema.COLUMN_REFRESH_TOKEN,
+                AccountSchema.COLUMN_IS_PAID_ACCOUNT }, null, null, null, null, AccountSchema.COLUMN_ID + " ASC");
         return cursorToAccounts(c);
     }
 

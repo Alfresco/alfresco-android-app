@@ -70,7 +70,9 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
@@ -215,7 +217,6 @@ public class MainActivity extends Activity
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
             }
-
         }
         else
         {
@@ -231,7 +232,7 @@ public class MainActivity extends Activity
                 //This is needed on new account creation, as the Activity gets re-created after the account is created.
                 CipherUtils.EncryptionUserInteraction(this);
                 
-                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
         }
         
@@ -272,6 +273,14 @@ public class MainActivity extends Activity
     {
         super.onResume();
         checkForCrashes();
+        PassCodeActivity.requestUserPasscode(this);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        PasscodePreferences.updateLastActivityDisplay(activity);
     }
 
     // ///////////////////////////////////////////
@@ -292,12 +301,21 @@ public class MainActivity extends Activity
     {
         if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
         {
-            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(Prefs.REQUIRES_ENCRYPT, "");
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(GeneralPreferences.REQUIRES_ENCRYPT, "");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
+
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        {
+            if (resultCode == RESULT_CANCELED)
+            {
+                finish();
+            }
+        }
+
 
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
@@ -317,6 +335,8 @@ public class MainActivity extends Activity
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
+
+        if (PasscodePreferences.hasPasscodeEnable(this)) { return; }
 
         try
         {
@@ -381,7 +401,7 @@ public class MainActivity extends Activity
 
                     if (paidNetwork)
                     {
-                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                        prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
                         CipherUtils.EncryptionUserInteraction(activity);
 
@@ -504,25 +524,11 @@ public class MainActivity extends Activity
             // DISPLAY NODE based on URL
             if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
             {
-                // case phone
-                if (!DisplayUtils.hasCentralPane(this) && getFragment(DetailsFragment.TAG) != null) { return; }
-
-                if (SessionUtils.getAccount(this) != null)
+                DetailsFragment fr = (DetailsFragment) getFragment(DetailsFragment.TAG);
+                if (fr != null)
                 {
-                    currentAccount = SessionUtils.getAccount(this);
+                    fr.refresh();
                 }
-                if (currentNode.isDocument())
-                {
-                    addPropertiesFragment(currentNode);
-                }
-                else
-                {
-                    // Uncomment this part to enable quick access to specific
-                    // folder.
-                    // NB : Issue can occurs with top quick navigation dropdown.
-                    // addNavigationFragment((Folder) currentNode);
-                }
-                return;
             }
 
             // Intent for display Sign up Dialog
@@ -591,7 +597,7 @@ public class MainActivity extends Activity
                             getFragmentManager().popBackStack(DetailsFragment.TAG,
                                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
                         }
-                        addPropertiesFragment(currentNode, backstack);
+                        addPropertiesFragment(currentNode, getImportParent(), backstack);
                     }
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
@@ -728,6 +734,10 @@ public class MainActivity extends Activity
             hideSlideMenu();
         }
 
+        if (DisplayUtils.hasCentralPane(this)) {
+            clearCentralPane();
+        }
+        
         switch (id)
         {
             case R.id.menu_browse_my_sites:
@@ -774,7 +784,7 @@ public class MainActivity extends Activity
                 }
                 break;
             case R.id.menu_prefs:
-                startActivity(new Intent(this, Prefs.class));
+                displayPreferences();
                 break;
             case R.id.menu_about:
                 displayAbout();
@@ -892,29 +902,45 @@ public class MainActivity extends Activity
 
     public void addLocalFileNavigationFragment(File file)
     {
+        clearScreen();
         clearCentralPane();
         BaseFragment frag = LocalFileBrowserFragment.newInstance(file);
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 LocalFileBrowserFragment.TAG, true);
     }
 
-    public void addPropertiesFragment(Node n, boolean forceBackStack)
+    public void addPropertiesFragment(Node n, Folder parentFolder, boolean forceBackStack)
     {
+        clearCentralPane();
         if (DisplayUtils.hasCentralPane(this))
         {
             stackCentral.clear();
             stackCentral.push(DetailsFragment.TAG);
         }
-        BaseFragment frag = DetailsFragment.newInstance(n);
+        BaseFragment frag = DetailsFragment.newInstance(n, parentFolder);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, forceBackStack);
+
+    }
+
+    public void addPropertiesFragment(String nodeIdentifier)
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        BaseFragment frag = DetailsFragment.newInstance(nodeIdentifier);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
 
     public void addPropertiesFragment(Node n)
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
-        addPropertiesFragment(n, b);
+        addPropertiesFragment(n, getImportParent(), b);
     }
 
     public void addComments(Node n)
@@ -950,6 +976,8 @@ public class MainActivity extends Activity
 
     public void displayAbout()
     {
+        clearScreen();
+        clearCentralPane();
         if (getFragment(AboutFragment.TAG) != null)
         {
             // If reclick on About and if is visible, it removes the
@@ -960,6 +988,24 @@ public class MainActivity extends Activity
         {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
+            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(AboutFragment.TAG);
+        }
+        DisplayUtils.switchSingleOrTwo(this, true);
+    }
+
+    public void displayPreferences()
+    {
+        clearScreen();
+        clearCentralPane();
+        if (getFragment(GeneralPreferences.TAG) != null)
+        {
+            getFragmentManager().popBackStack(GeneralPreferences.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else
+        {
+            Fragment f = new GeneralPreferences();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
+            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(GeneralPreferences.TAG);
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }
@@ -997,10 +1043,10 @@ public class MainActivity extends Activity
         return id;
     }
 
-    public int getFragmentPlace(boolean right)
+    public int getFragmentPlace(boolean forceRight)
     {
         int id = R.id.left_pane_body;
-        if (DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
+        if (forceRight && DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
         return id;
     }
 
@@ -1180,6 +1226,11 @@ public class MainActivity extends Activity
                 ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).delete();
                 return true;
 
+            case MenuActionItem.MENU_SEARCH_FOLDER:
+                FragmentDisplayer.replaceFragment(this, KeywordSearch.newInstance(getImportParent(), isDisplayFromSite()),
+                        getFragmentPlace(false), KeywordSearch.TAG, true);
+                return true;
+
             case MenuActionItem.MENU_SEARCH:
                 FragmentDisplayer.replaceFragment(this, new KeywordSearch(), getFragmentPlace(), KeywordSearch.TAG,
                         true);
@@ -1193,8 +1244,6 @@ public class MainActivity extends Activity
                 String fragmentTag = LocalFileBrowserFragment.TAG;
                 if (getFragment(ChildrenBrowserFragment.TAG) != null)
                 {
-                    importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG))
-                            .getImportFolder();
                     fragmentTag = ChildrenBrowserFragment.TAG;
                 }
                 DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount,
@@ -1203,7 +1252,6 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_UPLOAD:
-                importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
                 UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
                 dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
                 return true;
@@ -1225,7 +1273,6 @@ public class MainActivity extends Activity
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).download();
                 return true;
             case MenuActionItem.MENU_UPDATE:
-                importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
                 UploadChooseDialogFragment dialogu = UploadChooseDialogFragment.newInstance(currentAccount,
                         DetailsFragment.TAG);
                 dialogu.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
@@ -1293,6 +1340,12 @@ public class MainActivity extends Activity
                 if (fr instanceof ChildrenBrowserFragment)
                 {
                     ((ChildrenBrowserFragment) fr).unselect();
+                    backStack = false;
+                }
+                
+                if (fr instanceof KeywordSearch)
+                {
+                    ((KeywordSearch) fr).unselect();
                     backStack = false;
                 }
 
@@ -1401,7 +1454,6 @@ public class MainActivity extends Activity
                         }).create();
                 dialog.show();
         }
-        // TODO Auto-generated method stub
         return super.onCreateDialog(id);
     }
 
@@ -1429,6 +1481,14 @@ public class MainActivity extends Activity
     // For Creating file in childrenbrowser
     public Folder getImportParent()
     {
+        if (getFragment(ChildrenBrowserFragment.TAG) != null)
+        {
+            importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getImportFolder();
+            if (importParent == null)
+            {
+                importParent = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getParent();
+            }
+        }
         return importParent;
     }
 }

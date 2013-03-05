@@ -23,12 +23,14 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.PropertyManager;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -46,6 +48,10 @@ public class MetadataFragment extends BaseFragment
     public static final String TAG = "MetadataFragment";
 
     public static final String ARGUMENT_NODE = "node";
+    
+    public static final String ARGUMENT_NODE_PARENT = "nodeParent";
+
+    protected Folder parentNode;
 
     protected Node node;
 
@@ -54,6 +60,21 @@ public class MetadataFragment extends BaseFragment
         Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_NODE, node);
         return args;
+    }
+    
+    public static Bundle createBundleArgs(Node node, Folder parentNode)
+    {
+        Bundle args = new Bundle();
+        args.putSerializable(ARGUMENT_NODE, node);
+        args.putSerializable(ARGUMENT_NODE_PARENT, parentNode);
+        return args;
+    }
+    
+    public static MetadataFragment newInstance(Node node, Folder parentNode)
+    {
+        MetadataFragment bf = new MetadataFragment();
+        bf.setArguments(createBundleArgs(node, parentNode));
+        return bf;
     }
 
     public static MetadataFragment newInstance(Node n)
@@ -80,6 +101,7 @@ public class MetadataFragment extends BaseFragment
         }
         alfSession = SessionUtils.getSession(getActivity());
         node = (Node) getArguments().get(ARGUMENT_NODE);
+        parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
 
         ScrollView sv = new ScrollView(getActivity());
         sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
@@ -113,7 +135,8 @@ public class MetadataFragment extends BaseFragment
         }
         
         // ASPECTS
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+        ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+        addPathProperty(generalGroup, inflater);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
@@ -122,10 +145,23 @@ public class MetadataFragment extends BaseFragment
 
         return sv;
     }
+    
+    protected void addPathProperty(ViewGroup generalGroup, LayoutInflater inflater){
+      //Add Path
+        if (parentNode != null){
+            View vr = inflater.inflate(R.layout.sdk_property_row, null);
+            TextView tv = (TextView) vr.findViewById(R.id.propertyName);
+            tv.setText(R.string.metadata_prop_path);
+            tv = (TextView) vr.findViewById(R.id.propertyValue);
+            tv.setText((String) parentNode.getPropertyValue(PropertyIds.PATH) + "/" + node.getName());
+            generalGroup.addView(vr);
+        }
+    }
 
-    protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
+    protected ViewGroup createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect,
             boolean check, Integer overrideAspectTitle, List<String> filters)
     {
+        ViewGroup groupview = null;
         if (!check || node.hasAspect(aspect))
         {
             View v = null;
@@ -146,7 +182,7 @@ public class MetadataFragment extends BaseFragment
                 tv.setText(overrideAspectTitle);
             }
 
-            ViewGroup groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
+            groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
             for (Entry<String, Integer> map : PropertyManager.getPropertyLabel(aspect).entrySet())
             {
                 if (node.getProperty(map.getKey()) != null && node.getProperty(map.getKey()).getValue() != null && !filters.contains(map.getKey()))
@@ -172,6 +208,7 @@ public class MetadataFragment extends BaseFragment
             }
             parentview.addView(grouprootview);
         }
+        return groupview;
     }
 
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect)

@@ -25,10 +25,12 @@ public class MenuActionItem
     // ///////////////////////////////////////////
     public static final int MENU_SEARCH = 10;
 
+    public static final int MENU_SEARCH_FOLDER = 11;
+
     public static final int MENU_SEARCH_OPTION = 11;
 
     public static final int MENU_CREATE_DOCUMENT = 19;
-    
+
     public static final int MENU_CREATE_FOLDER = 20;
 
     public static final int MENU_UPLOAD = 30;
@@ -80,7 +82,7 @@ public class MenuActionItem
     public static final int MENU_DEVICE_CAPTURE_CAMERA_VIDEO = 310;
 
     public static final int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
-    
+
     // ///////////////////////////////////////////
     // SITES
     // ///////////////////////////////////////////
@@ -88,13 +90,13 @@ public class MenuActionItem
 
     public static final int MENU_SITE_LEAVE = 402;
 
-    public static final int MENU_SITE_CANCEL  = 403;
-    
-    public static final int MENU_SITE_FAVORITE  = 404;
-    
-    public static final int MENU_SITE_UNFAVORITE  = 405;
-    
-    public static final int MENU_SITE_LIST_REQUEST  = 406;
+    public static final int MENU_SITE_CANCEL = 403;
+
+    public static final int MENU_SITE_FAVORITE = 404;
+
+    public static final int MENU_SITE_UNFAVORITE = 405;
+
+    public static final int MENU_SITE_LIST_REQUEST = 406;
 
     // ///////////////////////////////////////////
     // GENERAL

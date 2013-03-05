@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="@string/passcode_preference" >
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/passcode_enable_key"
+            android:title="@string/passcode_enable_title" />
+
+        <Preference
+            android:dependency="@string/passcode_enable_key"
+            android:key="@string/passcode_change"
+            android:title="@string/passcode_change" />
+
+        <ListPreference
+            android:defaultValue="300000"
+            android:dependency="@string/passcode_enable_key"
+            android:dialogTitle="@string/passcode_timeout_title"
+            android:entries="@array/passcode_timeout_entries"
+            android:entryValues="@array/passcode_timeout_values"
+            android:key="@string/passcode_timeout"
+            android:title="@string/passcode_timeout" />
+
+        <CheckBoxPreference
+            android:dependency="@string/passcode_enable_key"
+            android:key="@string/passcode_erase_data"
+            android:summary="@string/passcode_erase_data_summary"
+            android:title="@string/passcode_erase_data" />
+    </PreferenceCategory>
+
+</PreferenceScreen>

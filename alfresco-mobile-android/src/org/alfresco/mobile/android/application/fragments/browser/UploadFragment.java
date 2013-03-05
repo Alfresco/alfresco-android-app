@@ -187,8 +187,8 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             props.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.DOCUMENT_BASETYPE_ID);
 
             return new CryptoDocumentCreateLoader(getActivity(), alfSession, (Folder) args.get(ARGUMENT_FOLDER),
-                                                    args.getString(ARGUMENT_CONTENT_NAME), props,
-                                                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
+                    args.getString(ARGUMENT_CONTENT_NAME), props,
+                    (ContentFile) args.getSerializable(ARGUMENT_CONTENT_FILE));
         }
     }
 
@@ -222,7 +222,8 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 // During creation process, the content must be available on
                 // Download area.
                 // The file is move from capture to download.
-                if (getArguments() != null && getArguments().getBoolean(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
+                if (getArguments() != null
+                        && getArguments().getBoolean(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
                 {
                     final File folderStorage = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
                             currentAccount.getUsername());
@@ -292,8 +293,9 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                             ((MainActivity) getActivity()).setCurrentNode(node);
                             ActionManager.actionRefresh(this, IntentIntegrator.CATEGORY_REFRESH_ALL,
                                     PublicIntent.NODE_TYPE);
+
                             MessengerManager.showToast(getActivity(),
-                                    node.getName() + " " + getResources().getString(R.string.update_sucess));
+                                    String.format(getResources().getString(R.string.update_sucess), node.getName()));
                         }
                     }
                 }
@@ -310,15 +312,14 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                         }
                     }
                 }
-                
+
                 // The upload is done. Remove the fragment + the loader
                 // associated.
                 actionRemoveUploadFragment(UploadFragment.this, fragmentTransactionTag, loaderId);
             }
         }
     }
-    
-    
+
     @Override
     public void onLoaderReset(Loader<LoaderResult<Document>> arg0)
     {

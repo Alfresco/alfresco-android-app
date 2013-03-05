@@ -27,13 +27,13 @@
     <string name="home_sign_cloud_description">New to Alfresco ? Create a free online account to store your documents and access them from anywhere.</string>
     <string name="home_account">I already have an account</string>
     <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
-    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at our Guides in the Help area</string>
+    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at our guide in the Help area</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
     <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_alfresco_server_description">Connect to an Alfresco Server</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
-    <string name="account_wizard_alfresco_cloud_description">Access your Alfresco online account</string>
+    <string name="account_wizard_alfresco_cloud_description">Access your Alfresco Cloud account</string>
     <string name="account_wizard_alfresco_help">New to Alfresco ? <a href="alfresco://sign_up_cloud/">Sign Up</a> for a free account</string>
     <string name="account_wizard_alfresco_help_inside_app">New to Alfresco ? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
@@ -56,7 +56,7 @@
     <string name="email_hint">example@acme.com</string>
     <string name="account_url">URL (hostname + service url)</string>
     <string name="error_account_form">Please check : </string>
-    <string name="account_validate">Validate</string>
+    <string name="account_validate">Save</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
     <string name="account_wizard_alldone">All Done !</string>
@@ -70,7 +70,7 @@
     <string name="account_wizard_step2_description">Account Information</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">Your account is not activated. Please check manage account screen.</string>
+    <string name="account_not_activated">Your account is not activated. Please check the Manage Account screen.</string>
     <string name="account_loading">Loading:&#160;</string>
     <string name="account_not_activated_title">Alfresco in the cloud.</string>
     <string name="account_not_activated_description">Your account is still waiting for verification</string>
@@ -89,22 +89,22 @@
         <![CDATA[Your <b>hostname</b> value seems to be wrong.<br/> Please check your account settings.]]>
     </string>
     <string name="error_session_nodata">
-        <![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable data connection.]]>
+        <![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]>
     </string>
     <string name="error_session_unauthorized">
 		<![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]>
 	</string>
 	<string name="error_session_service_url">
-		<![CDATA[Your <b>service url</b> value seems to be wrong.<br/> Please check your account settings.]]>
+		<![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your account settings.]]>
 	</string>
 	<string name="error_session_service_unavailable">
 		<![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]>
 	</string>
 	<string name="error_session_notfound">
-		<![CDATA[The server seems to be unreachable.<br/> Please check your account settings.]]>
+		<![CDATA[Your server couldn\'t be reached.<br/> Please check your account settings.]]>
 	</string>
 	<string name="error_session_port">
-		<![CDATA[Your <b>port</b> value seems to be wrong.<br/> Please check your account settings.]]>
+		<![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your account settings.]]>
 	</string>
 	<string name="error_session_certificate">
 		<![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
@@ -117,22 +117,21 @@
 		Please check the date and time your device is set to.<br/> If the problem persists please contact your administrator. ]]>
 	</string>
 	<string name="error_session_ssl">
-		<![CDATA[<p><b>An error occured with the SSL protocol.</b><br/></p>
-		Please check your account settings and retry again.<br/> If the problem persists please contact your administrator. ]]>
+		<![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
+        Please check your account settings and try again.<br/> If the problem persists please contact your administrator.]]>
 	</string>
     <string name="error_session_unauthorized_title">Unauthorized.</string>
-    <string name="error_session_expired">Your session has expired. Please sign-in again.</string>
+    <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
-    <string name="error_signin_form">We are unable to create a session. Please check your informations.</string>
-    <string name="error_signin_form_mandatory">Mandatory fields has not been filled.</string>
+    <string name="error_signin_form">We are unable to create a session. Please check your sign in details.</string>
+    <string name="error_signin_form_mandatory">Mandatory fields have not been completed.</string>
 
     <!-- MESSAGE ERROR -->
     <string name="error_refresh_token">Error during authentication</string>
-    <string name="error_unable_url">Unable to open this url : </string>
-    <string name="error_general">An error occured during the operation. Please retry again.</string>
-    <string name="error_account_url">Url seems to be non valid. Please check your information.</string>
+    <string name="error_general">An error has occurred. Please try again.</string>
+    <string name="error_account_url">The URL is incorrect. Please check your account settings.</string>
     <string name="error_signup_account_confirmation">Unable to find an account to activate.</string>
-    <string name="error_unknown_filepath">We are unable to find the ressource. It\'s maybe not available in your device.</string>
+    <string name="error_unknown_filepath">Failed to find the resource.</string>
 
     <!-- DETAILS -->
     <string name="geolocation">Geolocation</string>
@@ -157,6 +156,7 @@
 
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repository</string>
+    <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_all_sites">All Sites</string>
     <string name="menu_browse_my_sites">My Sites</string>
     <string name="menu_browse_favorite_sites">Favorite Sites</string>
@@ -204,11 +204,11 @@
     <string name="cloud_signup_password">Password</string>
     <string name="cloud_signup_password_hint">6 characters min.</string>
     <string name="cloud_signup_confirm">Confirm Password</string>
-    <string name="cloud_signup_action">Sign up</string>
+    <string name="cloud_signup_action">Sign Up</string>
     <string name="cloud_signup_hint">By tapping Sign Up, you are agreeing to the Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">Terms of Service</a> and <a href="http://www.alfresco.com/privacy">Privacy Policy</a>.</string>
-    <string name="sign_up_cloud">Sign-up for Alfresco Cloud</string>
+    <string name="sign_up_cloud">Sign Up for Alfresco Cloud</string>
     <string name="sign_up_cloud_email_verification">Account waiting for email verification</string>
-    <string name="sign_up_cloud_email_verification_line1">You\'ve sign-up for Alfresco in the cloud using the email address:</string>
+    <string name="sign_up_cloud_email_verification_line1">You\'ve signed up for Alfresco in the cloud using the email address:</string>
     <string name="sign_up_cloud_email_verification_line2">Please check your email. We\'ve sent you a link that you\'ll need to use to complete the registration.</string>
     <string name="sign_up_cloud_email_having_trouble">Having trouble activating ?</string>
     <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your account.</string>
@@ -224,17 +224,17 @@
 
     <!-- NETWORK -->
     <string name="error_network_title">No Network.</string>
-    <string name="error_network_details">Your device is not connected to a network. In consequent some features are disable.</string>
+    <string name="error_network_details">Your device is not connected to a network, so some features may be disable.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
     <string name="upload_in_progress">Upload in progress.</string>
-    <string name="error_unable_open_file_title">Failed to open the document.</string>
-    <string name="error_unable_open_file">This file format is not supported. You need to install a third party application to read it.</string>
+    <string name="error_unable_open_file_title">The document could not be opened.</string>
+    <string name="error_unable_open_file">This file format is not supported. You need to install an app that can read it.</string>
 
     <!-- OTHER -->
-    <string name="error_retrieve_likes">Could not retrieve Like/Unlike tag for this document.</string>
+    <string name="error_retrieve_likes">The Like/Unlike tag for this document could not be retrieved.</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="save">Save</string>
@@ -270,14 +270,12 @@
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
     <!-- Delete -->
-    <string name="delete_description">Are you sure you want to delete this item :</string>
-
-    <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your files will be returned to their unprotected state.\n\nAre you sure you want to delete this item :</string>
+    <string name="delete_description">Are you sure you want to delete "%s" ?</string>
+    <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your files will be returned to their unprotected state.\n\nAre you sure you want to delete "%s" ?</string>
     
     <!-- Save Back -->
-    <string name="save_back_description"> has been modified. Do you want to upload this new version ?</string>
-    <string name="save_back_sucess"> has been uploaded successfully.</string>
-    <string name="update_sucess"> has been updated successfully.</string>
+    <string name="save_back_description">"%s" has been modified. Do you want to upload this new version ?</string>
+    <string name="update_sucess">"%s" has been updated successfully.</string>
     <string name="no_voice_recorder">You do not have a voice recorder on this device</string>
     <string name="cannot_capture">Cannot complete the capturing of this information</string>
 
@@ -295,7 +293,7 @@
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
     <string name="create_document_filename_error">This filename is already in use.</string>
-    <string name="create_document_save">An error occured during the upload. Your file is saved inside "Downloads".</string>
+    <string name="create_document_save">An error occurred during the upload. Your file is saved inside "Downloads".</string>
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>
     <string name="document_excel_extension">.xlsx</string>
@@ -308,18 +306,19 @@
     <string name="loginfirst">Please login to an account first</string>
 
     <string name="encrypt_title">Encrypting content</string>
-    <string name="content_being_encrypted">Content is being protected.  Please wait</string>
-    <string name="content_being_decrypted">Content is being unprotected.  Please wait</string>
+    <string name="content_being_encrypted">Content is being protected. Please wait</string>
+    <string name="content_being_decrypted">Content is being unprotected. Please wait</string>
     <string name="data_protection">Data Protection</string>
     <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these files cannot be read by other apps, only from within the Alfresco app)</string>
     <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
-	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account. and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
-	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
+	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all files you\'ve downloaded from all your Alfresco accounts, and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
+	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all files you\'ve downloaded from all your Alfresco accounts.</string>
 	<string name="already_encrypted">This file is already encrypted!</string>
 	<string name="already_decrypted">This file is already decrypted!</string>
 	<string name="decryption_title">Deactivating Data Protection...</string>
 	<string name="encryption_title">Activating Data Protection...</string>
+	<string name="copy_file_title">File copy in progress...</string>
 	
     <string name="metadata_general">General</string>
 
@@ -327,35 +326,34 @@
     <string name="action_join_site">Join</string>
     <string name="action_join_request_site">Request to join</string>
     <string name="action_leave_site">Leave</string>
-    <string name="action_favorite_site">Mark favorite</string>
-    <string name="action_unfavorite_site">Remove favorite</string>
-    <string name="action_cancel_request">Cancel request</string>
-    <string name="action_pending_request">Pending Join Site Request</string>
+    <string name="action_favorite_site">Favorite</string>
+    <string name="action_unfavorite_site">Unfavorite</string>
+    <string name="action_cancel_request">Cancel Request</string>
+    <string name="action_pending_request">Pending Join Site Requests</string>
     <string name="action_join_site_validation">You are now member of "%s".</string>
     <string name="action_leave_site_validation">You have left  "%s".</string>
-    <string name="action_favorite_site_validation">"%s" is marked as favorite.</string>
-    <string name="action_unfavorite_site_validation">"%s" has been removed as favorite.</string>
+    <string name="action_favorite_site_validation">"%s" is now a favorite.</string>
+    <string name="action_unfavorite_site_validation">"%s" has been unfavorited.</string>
     <string name="action_join_request_site_validation">You have requested to join "%s"</string>
-    <string name="empty_joinsiterequest">No Pending request</string>
-    <string name="joinsiterequest_list_title">List of pending request</string>
-    <string name="action_cancel_join_site_request">Your request to join "%s" has been removed.</string>
-    <string name="action_join_site_error">A problem prevented you to join site "%s".</string>
-    <string name="action_leave_site_error">A problem prevented you to leave site "%s".</string>
-    <string name="action_favorite_error">A problem prevented you to favorite site "%s".</string>
-    <string name="action_unfavorite_site_error">A problem prevented you to unfavorite site "%s".</string>
+    <string name="empty_joinsiterequest">No Pending requests</string>
+    <string name="joinsiterequest_list_title">List of pending requests</string>
+    <string name="action_cancel_join_site_request">Your request to join "%s" has been cancelled.</string>
+    <string name="action_join_site_error">A problem prevented you from joining the site "%s".</string>
+    <string name="action_leave_site_error">A problem prevented you from leaving the site "%s".</string>
+    <string name="action_favorite_error">A problem prevented you from favoriting the site "%s".</string>
+    <string name="action_unfavorite_site_error">A problem prevented you from unfavoriting the site "%s".</string>
 
     <!-- IMPORT -->
     <string name="import_document_title">Upload in Alfresco Mobile</string>
     <string name="import_document_name">Document Name</string>
     <string name="import_account">Account</string>
-    <string name="import_send_download">The file is available inside \"%s\" Download space.</string>
+    <string name="import_send_download">The file is available inside \"%s\"\'s Download folder.</string>
     <string name="import_folder">Upload Folder</string>
-    <string name="import_error">An error occured during the upload.</string>
+    <string name="import_error">An error occurred during the upload.</string>
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
     <string name="error_import">We are unable to upload. Please check your account settings.</string>
-
     
      <!-- SSL -->
      <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
@@ -364,6 +362,73 @@
     <string name="data_protection_unavailable">Data protection unavailable (paid-account-holders only)"</string>
 	<string name="data_protection_off">Data protection is currently off"</string>
 	<string name="data_protection_on">Data protection is currently on"</string>
-	        
-</resources>
 
+
+    <!-- PIN Code -->
+    <string name="passcode_title">Enter Passcode</string>
+    <string name="passcode_enable_title">Enable Passcode</string>
+    <string name="passcode_summary">Enter Passcode</string>
+    <string name="passcode_preference">Passcode Protection</string>
+    <string name="passcode_enable">Enabled</string>
+    <string name="passcode_disable">Disabled</string>
+    <string name="passcode_change">Change Passcode</string>
+    <string name="passcode_timeout">Expiration</string>
+    <string name="passcode_timeout_summary">After %s minutes</string>
+    <string name="passcode_erase_data">Erase Data</string>
+    <string name="passcode_erase_data_summary">Erase all Alfresco Mobile data from this device after 10 failed passcode attempts</string>
+    <string name="passcode_edit">Enter your new Passcode</string>
+    <string name="passcode_confirmation">Re-Enter Passcode</string>
+    <string name="passcode_error_confirmation">Your passcode doesn\'t match.</string>
+    <string name="passcode_unknown">Your passcode is incorrect.</string>
+    
+    <string name="passcode_erase_data_complete">All local data has been removed.</string>
+    <string name="passcode_timeout_title">Passcode timeout</string>
+    <string name="passcode_timeout_1min">1 minutes</string>
+    <string name="passcode_timeout_2min">2 minutes</string>
+    <string name="passcode_timeout_5min">5 minutes</string>
+    <string name="passcode_timeout_10min">10 minutes</string>
+    <string name="passcode_timeout_30min">30 minutes</string>
+    <string name="passcode_timeout_60min">1 hour</string>
+    
+                     
+    <string-array name="passcode_timeout_entries">
+    	<item>@string/passcode_timeout_1min</item>
+    	<item>@string/passcode_timeout_2min</item>
+    	<item>@string/passcode_timeout_5min</item>
+    	<item>@string/passcode_timeout_10min</item>
+    	<item>@string/passcode_timeout_30min</item>
+    	<item>@string/passcode_timeout_60min</item>
+	</string-array>
+	
+     <string-array name="passcode_timeout_values">
+    	<item>60000</item>
+    	<item>120000</item>
+    	<item>300000</item>
+    	<item>600000</item>
+    	<item>1800000</item>
+    	<item>3600000</item>
+	</string-array>
+     
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="settings_enterprise">Enterprise Settings</string>
+    <string name="settings_privatefolder_summary">Data protection allows all downloaded content to be readable only in the Alfresco app. (Enterprise customers only)</string>
+    <string name="settings_privatefolder_title">Data Protection</string>
+    
+    <string name="settings_links">Links</string>
+    <string name="settings_links_website">Alfresco</string>
+    <string name="settings_links_website_summary">Visit the official Alfresco website</string>
+    
+    <string name="settings_links_website">Alfresco</string>
+    <string name="settings_links_website_summary">Visit official Alfresco website</string>
+    <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
+    
+    <string name="settings_rating">Write a review</string>
+    <string name="settings_rating_summary">Rate Alfresco Mobile on Google Play</string>
+    <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
+   
+    <string name="settings_links_facebook">Like Alfresco on Facebook</string>
+    <string name="settings_links_facebook_summary">Like on Facebook</string>
+    <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
+       
+</resources>
