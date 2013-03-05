@@ -318,7 +318,7 @@
 	<string name="already_decrypted">This file is already decrypted!</string>
 	<string name="decryption_title">Deactivating Data Protection...</string>
 	<string name="encryption_title">Activating Data Protection...</string>
-	<string name="copy_file_title">Copy file in progress...</string>
+	<string name="copy_file_title">File copy in progress...</string>
 	
     <string name="metadata_general">General</string>
 
@@ -369,7 +369,6 @@
     <string name="passcode_enable_title">Enable Passcode</string>
     <string name="passcode_summary">Enter Passcode</string>
     <string name="passcode_preference">Passcode Protection</string>
-    <string name="passcode_enable_key">TurnPasscodeKey</string>
     <string name="passcode_enable">Enabled</string>
     <string name="passcode_disable">Disabled</string>
     <string name="passcode_change">Change Passcode</string>

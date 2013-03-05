@@ -92,7 +92,7 @@ public class GeneralPreferences extends PreferenceFragment
         Preference privateFoldersPref = findPreference(PRIVATE_FOLDERS_BUTTON);
 
         // DATA PROTECTION
-        if (sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false) == false)
+        if (/*isDeviceRooted()  || */ sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false) == false)
         {
             privateFoldersPref.setSelectable(false);
             privateFoldersPref.setEnabled(false);
@@ -186,4 +186,32 @@ public class GeneralPreferences extends PreferenceFragment
         });
     }
 
+    
+    public static boolean isDeviceRooted() 
+    {
+
+      // get from build info
+      String buildTags = android.os.Build.TAGS;
+      if (buildTags != null && buildTags.contains("test-keys"))
+      {
+        return true;
+      }
+
+      // check if /system/app/Superuser.apk is present
+      try 
+      {
+        File file = new File("/system/app/Superuser.apk");
+        if (file.exists())
+        {
+           return true;
+        }
+      } 
+      catch (Throwable e1)
+      {
+        // ignore
+      }
+
+      return false;
+    }
+    
 }

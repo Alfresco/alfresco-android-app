@@ -28,7 +28,8 @@
     <item name="tag_account" type="id"/>
     <item name="tag_action" type="id"/>
     
-        <item name="site_action" type="id"/>
+    <item name="site_action" type="id"/>
     
+    <string name="passcode_enable_key">TurnPasscodeKey</string>
 
 </resources>
