@@ -107,7 +107,11 @@ public class AccountFragment extends BaseListFragment implements LoaderCallbacks
         l.setItemChecked(position, true);
         l.setSelection(position);
         v.setSelected(true);
-        selectedAccounts.add(item);
+        
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            selectedAccounts.add(item);
+        }
 
         if (hideDetails)
         {

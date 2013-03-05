@@ -120,7 +120,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
         try
         {
             // Manage only one clip data. If multiple we ignore.
-            if (AndroidVersion.isJBOrAbove())
+            if (AndroidVersion.isJBOrAbove() && (!Intent.ACTION_SEND.equals(action) || type == null))
             {
                 ClipData clipdata = intent.getClipData();
                 if (clipdata != null && clipdata.getItemCount() == 1 && clipdata.getItemAt(0) != null

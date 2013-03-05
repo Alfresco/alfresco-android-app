@@ -19,19 +19,17 @@ package org.alfresco.mobile.android.application.fragments.activities;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
-import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activitystream.ActivityEventAdapter;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
-import android.app.LoaderManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -91,10 +89,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
         // Not necessary to enable touch on delete file.
         if (identifier != null && !TYPE_FILE_DELETE.equals(item.getType()))
         {
-            NodeLoaderCallback call = new NodeLoaderCallback(getActivity(), alfSession, identifier);
-            LoaderManager lm = getLoaderManager();
-            lm.restartLoader(NodeLoader.ID, null, call);
-            lm.getLoader(NodeLoader.ID).forceLoad();
+            ((MainActivity) getActivity()).addPropertiesFragment(identifier);
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
     }

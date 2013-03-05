@@ -22,19 +22,18 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-@SuppressLint("UseSparseArrays")
-public abstract class AlphabeticNodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
+public class AlphabeticNodeAdapter extends NodeAdapter
 {
     private final int ITEM_TYPE = 0;
 
@@ -46,16 +45,20 @@ public abstract class AlphabeticNodeAdapter extends BaseListAdapter<Node, Generi
 
     LayoutInflater mInflater;
 
-    protected abstract void updateTopText(GenericViewHolder vh, Node item2);
-
-    protected abstract void updateBottomText(GenericViewHolder vh, Node item2);
-
-    protected abstract void updateIcon(GenericViewHolder vh, Node item2);
-
     public AlphabeticNodeAdapter(Context context, int textViewResourceId, List<Node> objects)
     {
         super(context, textViewResourceId, objects);
 
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        alphaIndexer = new HashMap<String, Integer>();
+        positionIndexer = new HashMap<Integer, String>();
+    }
+    
+    public AlphabeticNodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
+            List<Node> selectedItems, int mode)
+    {
+        super(context, session, textViewResourceId, listItems, selectedItems, mode);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         alphaIndexer = new HashMap<String, Integer>();
