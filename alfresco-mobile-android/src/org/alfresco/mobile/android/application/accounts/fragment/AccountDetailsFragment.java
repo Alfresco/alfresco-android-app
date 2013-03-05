@@ -51,6 +51,7 @@ import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -499,8 +500,15 @@ public class AccountDetailsFragment extends BaseFragment
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
                     
+                    Editor edit = prefs.edit();
+                    
                     //Unflag this so that on next (first) addition of a new paid account, they will get prompted again.
-                    prefs.edit().putBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false).commit();
+                    edit.putBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false);
+                    //Last paid service removed, so unflag that we've accessed paid services.
+                    edit.putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, false);
+                    //Turn off data protection
+                    edit.putBoolean(Prefs.PRIVATE_FOLDERS, false);
+                    edit.commit();
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()

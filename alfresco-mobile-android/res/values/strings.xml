@@ -71,7 +71,7 @@
 
     <!-- ACCOUNTS -->
     <string name="account_not_activated">Your account is not activated. Please check manage account screen.</string>
-    <string name="account_loading">Loading : </string>
+    <string name="account_loading">Loading:&#160;</string>
     <string name="account_not_activated_title">Alfresco in the cloud.</string>
     <string name="account_not_activated_description">Your account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
@@ -318,8 +318,8 @@
 	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
 	<string name="already_encrypted">This file is already encrypted!</string>
 	<string name="already_decrypted">This file is already decrypted!</string>
-	<string name="decryption_title">Deactivate data protection in progress...</string>
-	<string name="encryption_title">Data protection in progress...</string>
+	<string name="decryption_title">Deactivating Data Protection...</string>
+	<string name="encryption_title">Activating Data Protection...</string>
 	
     <string name="metadata_general">General</string>
 
