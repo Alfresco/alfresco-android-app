@@ -34,6 +34,8 @@ import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -58,7 +60,7 @@ public class PublicDispatcherActivity extends Activity
     /** Define the type of importFolder. */
     private int uploadFolder;
 
-    /** Define the local file to upload*/
+    /** Define the local file to upload */
     private File uploadFile;
 
     // ///////////////////////////////////////////
@@ -80,9 +82,39 @@ public class PublicDispatcherActivity extends Activity
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        {
+            if (resultCode == RESULT_CANCELED)
+            {
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        PassCodeActivity.requestUserPasscode(this);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        PasscodePreferences.updateLastActivityDisplay(this);
+    }
+
+    @Override
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
+
+        if (PasscodePreferences.hasPasscodeEnable(this)) { return; }
 
         try
         {
@@ -125,7 +157,7 @@ public class PublicDispatcherActivity extends Activity
                 }
                 return;
             }
-            
+
             // Intent for Display Errors
             if (IntentIntegrator.ACTION_DISPLAY_ERROR_IMPORT.equals(intent.getAction()))
             {
@@ -157,7 +189,7 @@ public class PublicDispatcherActivity extends Activity
     // ///////////////////////////////////////////
     // FRAGMENT MANAGEMENT
     // ///////////////////////////////////////////
-    
+
     public void addNavigationFragment(Folder f)
     {
         BaseFragment frag = ChildrenBrowserFragment.newInstance(f);
@@ -177,7 +209,7 @@ public class PublicDispatcherActivity extends Activity
     // ///////////////////////////////////////////
     // UI Public Method
     // ///////////////////////////////////////////
-    
+
     public void doCancel(View v)
     {
         finish();

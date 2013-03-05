@@ -70,7 +70,9 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.AudioCapture;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
@@ -215,7 +217,6 @@ public class MainActivity extends Activity
                 stackCentral = new Stack<String>();
                 stackCentral.addAll(list);
             }
-
         }
         else
         {
@@ -231,7 +232,7 @@ public class MainActivity extends Activity
                 //This is needed on new account creation, as the Activity gets re-created after the account is created.
                 CipherUtils.EncryptionUserInteraction(this);
                 
-                prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
         }
         
@@ -272,6 +273,14 @@ public class MainActivity extends Activity
     {
         super.onResume();
         checkForCrashes();
+        PassCodeActivity.requestUserPasscode(this);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        PasscodePreferences.updateLastActivityDisplay(activity);
     }
 
     // ///////////////////////////////////////////
@@ -292,12 +301,22 @@ public class MainActivity extends Activity
     {
         if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
         {
-            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(Prefs.REQUIRES_ENCRYPT, "");
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(GeneralPreferences.REQUIRES_ENCRYPT, "");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
+
+
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        {
+            if (resultCode == RESULT_CANCELED)
+            {
+                finish();
+            }
+        }
+
 
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
@@ -317,6 +336,8 @@ public class MainActivity extends Activity
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
+
+        if (PasscodePreferences.hasPasscodeEnable(this)) { return; }
 
         try
         {
@@ -381,7 +402,7 @@ public class MainActivity extends Activity
 
                     if (paidNetwork)
                     {
-                        prefs.edit().putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                        prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
                         CipherUtils.EncryptionUserInteraction(activity);
 
@@ -774,7 +795,7 @@ public class MainActivity extends Activity
                 }
                 break;
             case R.id.menu_prefs:
-                startActivity(new Intent(this, Prefs.class));
+                displayPreferences();
                 break;
             case R.id.menu_about:
                 displayAbout();
@@ -892,6 +913,7 @@ public class MainActivity extends Activity
 
     public void addLocalFileNavigationFragment(File file)
     {
+        clearScreen();
         clearCentralPane();
         BaseFragment frag = LocalFileBrowserFragment.newInstance(file);
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
@@ -900,6 +922,7 @@ public class MainActivity extends Activity
 
     public void addPropertiesFragment(Node n, boolean forceBackStack)
     {
+        clearCentralPane();
         if (DisplayUtils.hasCentralPane(this))
         {
             stackCentral.clear();
@@ -908,7 +931,6 @@ public class MainActivity extends Activity
         BaseFragment frag = DetailsFragment.newInstance(n);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, forceBackStack);
-        clearCentralPane();
     }
 
     public void addPropertiesFragment(Node n)
@@ -950,6 +972,8 @@ public class MainActivity extends Activity
 
     public void displayAbout()
     {
+        clearScreen();
+        clearCentralPane();
         if (getFragment(AboutFragment.TAG) != null)
         {
             // If reclick on About and if is visible, it removes the
@@ -960,6 +984,22 @@ public class MainActivity extends Activity
         {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
+        }
+        DisplayUtils.switchSingleOrTwo(this, true);
+    }
+
+    public void displayPreferences()
+    {
+        clearScreen();
+        clearCentralPane();
+        if (getFragment(GeneralPreferences.TAG) != null)
+        {
+            getFragmentManager().popBackStack(GeneralPreferences.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else
+        {
+            Fragment f = new GeneralPreferences();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }

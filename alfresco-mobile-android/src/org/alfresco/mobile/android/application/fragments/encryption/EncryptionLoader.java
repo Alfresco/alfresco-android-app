@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
@@ -33,6 +33,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+/**
+ * Loader responsible to do encryption / decryption in a background thread.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
 {
     /** Unique EncryptionLoader identifier. */
@@ -91,7 +96,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
             if (copiedFile != null)
             {
                 IOUtils.copyFile(copiedFile.getPath(), file.getPath());
-                if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
+                if (doEncrypt && CipherUtils.encryptFile(getContext(), file.getPath(), true))
                 {
                     encryptedFile = new File(file.getPath());
                 }
@@ -101,7 +106,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
                 if (folder)
                 {
                     if (IOUtils.encryptFiles(getContext(), file.getPath(), folders, true))
-                        prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, true).commit();
+                        prefs.edit().putBoolean(GeneralPreferences.PRIVATE_FOLDERS, true).commit();
                 }
                 else
                 if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
@@ -116,7 +121,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
                 if (folder)
                 {
                     if (IOUtils.decryptFiles(getContext(), file.getPath(), folders, true))
-                        prefs.edit().putBoolean(Prefs.PRIVATE_FOLDERS, false).commit();
+                        prefs.edit().putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false).commit();
                 }
                 else
                 {
@@ -131,7 +136,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
                     {
                         encryptedFile = file;
                     }
-                    prefs.edit().putString(Prefs.REQUIRES_ENCRYPT, file.getPath()).commit();
+                    prefs.edit().putString(GeneralPreferences.REQUIRES_ENCRYPT, file.getPath()).commit();
                 }
             }
         }
@@ -145,7 +150,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
 
         return result;
     }
-    
+
     public File getFile()
     {
         return file;

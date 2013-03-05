@@ -155,7 +155,13 @@
             android:name=".preferences.Prefs"
             android:exported="false"
             android:label="@string/app_name" />
-
+        
+		<!-- Private : Passcode Activity-->
+        <activity
+            android:name=".security.PassCodeActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+        
         <!-- Public : Official entry point for 3rd party application -->
         <activity
             android:name=".integration.PublicDispatcherActivity"
@@ -189,6 +195,7 @@
             android:name=".utils.ProgressNotification"
             android:exported="false" />
         
+
         <receiver 
         android:name=".fragments.actions.NodeActions$DownloadReceiver"
         android:exported="true">

@@ -124,15 +124,23 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
             {
                 ClipData clipdata = intent.getClipData();
                 if (clipdata != null && clipdata.getItemCount() == 1 && clipdata.getItemAt(0) != null
-                        && clipdata.getItemAt(0).getText() != null)
+                        && (clipdata.getItemAt(0).getText() != null || clipdata.getItemAt(0).getUri() != null))
                 {
                     Item item = clipdata.getItemAt(0);
-                    String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
-                    File localParentFolder = StorageManager.getCacheDir(getActivity(), "AlfrescoMobile/import");
-                    File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
-                    if (f.exists())
+                    Uri uri = item.getUri();
+                    if (uri != null)
                     {
-                        retrieveIntentInfo(Uri.fromFile(f));
+                        retrieveIntentInfo(uri);
+                    }
+                    else
+                    {
+                        String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+                        File localParentFolder = StorageManager.getCacheDir(getActivity(), "AlfrescoMobile/import");
+                        File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
+                        if (f.exists())
+                        {
+                            retrieveIntentInfo(Uri.fromFile(f));
+                        }
                     }
                 }
             }
@@ -146,7 +154,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
             {
                 retrieveIntentInfo(intent.getData());
             }
-            else
+            else if (file == null || fileName == null)
             {
                 MessengerManager.showLongToast(getActivity(), getString(R.string.import_unsupported_intent));
                 getActivity().finish();

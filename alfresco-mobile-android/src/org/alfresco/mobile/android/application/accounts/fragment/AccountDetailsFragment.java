@@ -38,8 +38,7 @@ import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDi
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.Prefs;
-import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -460,7 +459,7 @@ public class AccountDetailsFragment extends BaseFragment
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean dataProtectionDeletion = false;
         
-        if (prefs.getBoolean(Prefs.PRIVATE_FOLDERS, false) == true)
+        if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false) == true)
         {
             boolean havePaidAccounts = false;
         
@@ -503,11 +502,11 @@ public class AccountDetailsFragment extends BaseFragment
                     Editor edit = prefs.edit();
                     
                     //Unflag this so that on next (first) addition of a new paid account, they will get prompted again.
-                    edit.putBoolean(Prefs.ENCRYPTION_USER_INTERACTION, false);
+                    edit.putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, false);
                     //Last paid service removed, so unflag that we've accessed paid services.
-                    edit.putBoolean(Prefs.HAS_ACCESSED_PAID_SERVICES, false);
+                    edit.putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false);
                     //Turn off data protection
-                    edit.putBoolean(Prefs.PRIVATE_FOLDERS, false);
+                    edit.putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
                     edit.commit();
                 }
             });

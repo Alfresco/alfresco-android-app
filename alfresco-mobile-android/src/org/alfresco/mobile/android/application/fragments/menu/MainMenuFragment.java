@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -24,7 +24,9 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountAdapter;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.ActionBar;
@@ -82,7 +84,13 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         getActivity().invalidateOptionsMenu();
         if (isAdded() && TAG.equals(getTag()))
         {
-            ((MainActivity) getActivity()).clearScreen();
+            // Configuration changes: don't remove if about or
+            // GeneralPreferences are visible.
+            if (getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
+                    && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
+            {
+                ((MainActivity) getActivity()).clearScreen();
+            }
         }
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         accounts = ((MainActivity) getActivity()).getAccounts();
