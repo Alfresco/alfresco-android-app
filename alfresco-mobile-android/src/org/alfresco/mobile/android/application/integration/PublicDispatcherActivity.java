@@ -145,7 +145,7 @@ public class PublicDispatcherActivity extends Activity
                 }
 
                 BaseFragment frag = null;
-                if (getSession() != null && uploadFolder == R.string.menu_browse_all_sites)
+                if (getSession() != null && uploadFolder == R.string.menu_browse_sites)
                 {
                     frag = BrowserSitesFragment.newInstance();
                     FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),

@@ -523,7 +523,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.save_back);
-                    builder.setMessage(node.getName() + " " + getResources().getString(R.string.save_back_description));
+                    builder.setMessage(String.format(getResources().getString(R.string.save_back_description), node.getName()));
                     builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)

@@ -348,7 +348,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
     {
         {
             add(R.string.menu_downloads);
-            add(R.string.menu_browse_all_sites);
+            add(R.string.menu_browse_sites);
             add(R.string.menu_browse_root);
         }
     };
@@ -357,7 +357,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
     {
         switch (folderImportId)
         {
-            case R.string.menu_browse_all_sites:
+            case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), selectedAccount);
                 getActivity().getLoaderManager().restartLoader(SessionLoader.ID, null, call);

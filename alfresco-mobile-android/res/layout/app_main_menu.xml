@@ -97,7 +97,7 @@
                 android:drawableRight="@drawable/ic_all_sites_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:text="@string/menu_browse_all_sites"
+                android:text="@string/menu_browse_sites"
                 android:textColor="@android:color/white" />
 
             <Button

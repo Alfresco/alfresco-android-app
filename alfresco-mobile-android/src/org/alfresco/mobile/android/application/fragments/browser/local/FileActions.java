@@ -199,7 +199,7 @@ public class FileActions implements ActionMode.Callback
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.delete);
-        builder.setMessage(activity.getResources().getString(R.string.delete_description) + " " + file.getName());
+        builder.setMessage(String.format(activity.getResources().getString(R.string.delete_description),file.getName()));
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)

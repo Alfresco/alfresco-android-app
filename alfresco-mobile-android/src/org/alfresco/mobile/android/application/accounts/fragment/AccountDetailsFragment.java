@@ -481,7 +481,7 @@ public class AccountDetailsFragment extends BaseFragment
         if (dataProtectionDeletion && folder != null)
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(getResources().getString(R.string.delete_description_data_protection) + " " + acc.getDescription());
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description_data_protection),acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
@@ -521,7 +521,7 @@ public class AccountDetailsFragment extends BaseFragment
         else
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(getResources().getString(R.string.delete_description) + " " + acc.getDescription());
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description),acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
