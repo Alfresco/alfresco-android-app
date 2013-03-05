@@ -734,6 +734,10 @@ public class MainActivity extends Activity
             hideSlideMenu();
         }
 
+        if (DisplayUtils.hasCentralPane(this)) {
+            clearCentralPane();
+        }
+        
         switch (id)
         {
             case R.id.menu_browse_my_sites:
@@ -984,6 +988,7 @@ public class MainActivity extends Activity
         {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
+            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(AboutFragment.TAG);
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }
@@ -1000,6 +1005,7 @@ public class MainActivity extends Activity
         {
             Fragment f = new GeneralPreferences();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
+            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(GeneralPreferences.TAG);
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }
