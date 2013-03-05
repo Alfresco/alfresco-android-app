@@ -20,6 +20,8 @@
 
    <style name="alfrescotheme" parent="android:Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/alfrescotheme_ActionBar</item>
+        <item name="android:fastScrollThumbDrawable">@drawable/fastscroll_thumb_holo</item>
+        <item name="android:fastScrollTrackDrawable">@null</item>
     </style> 
 
     <!-- =============================================================== -->

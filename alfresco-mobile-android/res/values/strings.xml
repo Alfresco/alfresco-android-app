@@ -97,8 +97,11 @@
 	<string name="error_session_service_url">
 		<![CDATA[Your <b>service url</b> value seems to be wrong.<br/> Please check your account settings.]]>
 	</string>
+	<string name="error_session_service_unavailable">
+		<![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]>
+	</string>
 	<string name="error_session_notfound">
-		<![CDATA[Your server seems to be unreachable.<br/> Please check your account settings.]]>
+		<![CDATA[The server seems to be unreachable.<br/> Please check your account settings.]]>
 	</string>
 	<string name="error_session_port">
 		<![CDATA[Your <b>port</b> value seems to be wrong.<br/> Please check your account settings.]]>
@@ -311,8 +314,8 @@
     <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these files cannot be read by other apps, only from within the Alfresco app)</string>
     <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
-	<string name="protect_question">Data Protection is currently off. Would you like to enable it and protect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account. and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
-	<string name="unprotect_question">Data Protection is currently on. Would you like to disable it and unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
+	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account. and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
+	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will get applied to your Alfresco files for every account.</string>
 	<string name="already_encrypted">This file is already encrypted!</string>
 	<string name="already_decrypted">This file is already decrypted!</string>
 	<string name="decryption_title">Deactivating Data Protection...</string>
@@ -353,8 +356,14 @@
     <string name="action_import">Import</string>
     <string name="error_import">We are unable to upload. Please check your account settings.</string>
 
+    
+     <!-- SSL -->
+     <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
+     
+
     <string name="data_protection_unavailable">Data protection unavailable (paid-account-holders only)"</string>
 	<string name="data_protection_off">Data protection is currently off"</string>
 	<string name="data_protection_on">Data protection is currently on"</string>
 	        
 </resources>
+

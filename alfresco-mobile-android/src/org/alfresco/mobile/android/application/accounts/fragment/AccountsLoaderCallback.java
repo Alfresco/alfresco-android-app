@@ -20,29 +20,20 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
-import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
-import org.alfresco.mobile.android.application.loaders.NodeLoaderCallback;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.SharedPreferences;
-import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 
 public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
 {
@@ -91,29 +82,6 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 MessengerManager
                         .showLongToast(activity, activity.getString(R.string.error_signup_account_confirmation));
             }
-        }
-        else
-
-        // VIEW INTENT
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction())
-                || NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())
-                || Intent.ACTION_SEND.equals(getIntent().getAction()))
-        {
-
-            String url = getIntent().getDataString();
-            if (Intent.ACTION_SEND.equals(getIntent().getAction()) && getIntent().getExtras() != null
-                    && getIntent().getExtras().getString(Intent.EXTRA_TEXT) != null)
-            {
-                url = getIntent().getExtras().getString(Intent.EXTRA_TEXT);
-            }
-
-            MessengerManager.showLongToast(activity, url);
-            // Load First Account by default
-            NodeLoaderCallback call = new NodeLoaderCallback(activity, results, url);
-            LoaderManager lm = activity.getLoaderManager();
-            lm.restartLoader(NodeLoader.ID, null, call);
-            lm.getLoader(NodeLoader.ID).forceLoad();
-            // return;
         }
 
         activity.setAccounts(results);

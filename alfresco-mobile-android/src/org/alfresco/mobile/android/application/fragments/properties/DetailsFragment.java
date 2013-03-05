@@ -320,6 +320,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 }
             });
         }
+        else
+        {
+            iv.setImageResource(defaultIconId);
+        }
     }
 
     @Override

@@ -70,6 +70,11 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
 import android.widget.TextView;
 
+/**
+ * It's responsible to display the details of a specific account.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AccountDetailsFragment extends BaseFragment
 {
 
@@ -424,6 +429,10 @@ public class AccountDetailsFragment extends BaseFragment
                     vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                     vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
+                    
+                    //Refresh listing
+                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(AccountFragment.TAG);
+                    fragmentList.refresh();
                 }
             }
         });
