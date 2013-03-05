@@ -58,6 +58,8 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
     /** Unique NodeChildrenLoader identifier. */
     public static final int ID = NodeLoader.class.hashCode();
+    
+    private static final String TAG = "NodeLoader";
 
     private AlfrescoSession session;
 
@@ -76,11 +78,11 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         this.uri = url;
     }
 
-    public NodeLoader(Activity context, AlfrescoSession session, String url)
+    public NodeLoader(Activity context, AlfrescoSession session, String nodeIdentifier)
     {
         super(context);
         this.session = session;
-        this.uri = url;
+        this.uri = nodeIdentifier;
     }
 
     @Override
@@ -114,13 +116,16 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 n = session.getServiceRegistry().getVersionService().getVersions((Document) n).get(0);
             }
 
-            if (n.isDocument()) try
+            if (n.isDocument())
             {
-                parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
-            }
-            catch (Exception e)
-            {
-                Log.d("NodeLoader", Log.getStackTraceString(e));
+                try
+                {
+                    parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
+                }
+                catch (Exception e)
+                {
+                    Log.d(TAG, Log.getStackTraceString(e));
+                }
             }
         }
         catch (Exception e)

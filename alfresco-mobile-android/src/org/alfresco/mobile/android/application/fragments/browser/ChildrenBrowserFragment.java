@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -49,15 +50,12 @@ import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onF
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.annotation.TargetApi;
@@ -68,7 +66,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -395,13 +392,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
     {
-        
+
         if (getActivity() instanceof MainActivity && ((MainActivity) getActivity()).getCurrentNode() != null)
         {
             selectedItems.clear();
             selectedItems.add(((MainActivity) getActivity()).getCurrentNode());
         }
-        
+
         if (loader instanceof NodeChildrenLoader)
         {
             parentFolder = ((NodeChildrenLoader) loader).getParentFolder();
@@ -410,7 +407,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
+            adapter = new AlphabeticNodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems, mode);
         }
 
@@ -602,6 +599,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (parentFolder == null) { return; }
 
         Permissions permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
+
+        if (!extended)
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_FOLDER, Menu.FIRST + MenuActionItem.MENU_SEARCH_FOLDER,
+                    R.string.search);
+            mi.setIcon(R.drawable.ic_search);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
 
         if (!extended && parentFolder != null && permission.canAddChildren())
         {

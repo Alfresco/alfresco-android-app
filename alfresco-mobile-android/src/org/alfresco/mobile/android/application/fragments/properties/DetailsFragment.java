@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -34,6 +35,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
@@ -42,13 +44,14 @@ import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
-import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.UploadFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.loaders.NodeLoader;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
@@ -60,14 +63,18 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.app.FragmentTransaction;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -87,14 +94,17 @@ import android.widget.TextView;
  * 
  * @author Jean Marie Pascal
  */
-public class DetailsFragment extends MetadataFragment implements OnTabChangeListener
+public class DetailsFragment extends MetadataFragment implements OnTabChangeListener,
+        LoaderCallbacks<LoaderResult<Node>>
 {
 
     public static final String TAG = "DetailsFragment";
 
     private TabHost mTabHost;
 
-    public static final String ARGUMENT_NODE = "node";
+    private static final String ARGUMENT_NODE_ID = "nodeIdentifier";
+
+    private static final String TAB_SELECTED = "tabSelected";
 
     protected RenditionManager renditionManager;
 
@@ -108,19 +118,23 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
     }
 
-    protected Node node;
+    private String nodeIdentifier;
 
-    public static Bundle createBundleArgs(Node node)
-    {
-        Bundle args = new Bundle();
-        args.putSerializable(ARGUMENT_NODE, node);
-        return args;
-    }
+    private View v;
 
-    public static DetailsFragment newInstance(Node n)
+    public static DetailsFragment newInstance(Node node, Folder parentNode)
     {
         DetailsFragment bf = new DetailsFragment();
-        bf.setArguments(createBundleArgs(n));
+        bf.setArguments(createBundleArgs(node, parentNode));
+        return bf;
+    }
+
+    public static DetailsFragment newInstance(String nodeIdentifier)
+    {
+        DetailsFragment bf = new DetailsFragment();
+        Bundle b = new Bundle();
+        b.putString(ARGUMENT_NODE_ID, nodeIdentifier);
+        bf.setArguments(b);
         return bf;
     }
 
@@ -138,10 +152,47 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
-        View v = inflater.inflate(R.layout.app_details, container, false);
+        v = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
-        if (node == null) { return null; }
+        nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
+        parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
+        if (node == null && nodeIdentifier == null) { return null; }
+
+        // TAB
+        if (savedInstanceState != null)
+        {
+            tabSelection = savedInstanceState.getInt(TAB_SELECTED);
+            savedInstanceState.remove(TAB_SELECTED);
+        }
+
+        if (node != null)
+        {
+            display(node, inflater);
+        }
+        else if (nodeIdentifier != null)
+        {
+            getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
+        }
+        return v;
+    }
+
+    public void refresh()
+    {
+        v.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
+        v.findViewById(R.id.progressbar).setVisibility(View.GONE);
+        display(node);
+    }
+
+    private void display(Node refreshedNode)
+    {
+        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        display(refreshedNode, inflater);
+    }
+
+    private void display(Node refreshedNode, LayoutInflater inflater)
+    {
+        node = refreshedNode;
 
         renditionManager = SessionUtils.getRenditionManager(getActivity());
 
@@ -158,27 +209,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         // Description
         Integer generalPropertyTitle = null;
         tv = (TextView) v.findViewById(R.id.description);
-        List<String>  filter = new ArrayList<String>();
+        List<String> filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0
                 && v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
-            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());;
+            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());
             filter.add(ContentModel.PROP_NAME);
         }
         else if (v.findViewById(R.id.description_group) != null)
         {
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
             generalPropertyTitle = R.string.metadata;
-        }
-        
-        // TAB
-        if (savedInstanceState != null)
-        {
-            tabSelection = savedInstanceState.getInt("TAB");
-            savedInstanceState.remove("TAB");
         }
 
         mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
@@ -187,7 +231,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+            ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+            addPathProperty(generalGroup, inflater);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
@@ -276,7 +321,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-        return v;
     }
 
     /**
@@ -350,7 +394,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         ((MainActivity) getActivity()).setCurrentNode(null);
         super.onStop();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -358,15 +402,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (node.isFolder()) return;
 
-        final MainActivity activity = ((MainActivity) getActivity());
-        boolean cloud = (alfSession instanceof CloudSession);
-
-        // TODO Add a mechanism at SDK to store parent in each node, so that we
-        // can share links to documents
-        // at all levels, rather than just from browser itself.
-        boolean canShareLink = (activity.getFragment(ChildrenBrowserFragment.TAG) != null);
-
-        if (!cloud || !canShareLink)
+        if (alfSession instanceof RepositorySession)
         {
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
@@ -400,11 +436,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    Folder parentFolder = ((ChildrenBrowserFragment) activity.getFragment(ChildrenBrowserFragment.TAG))
-                            .getParent();
-                    if (parentFolder != null)
+                    if (parentNode != null)
                     {
-                        String path = parentFolder.getPropertyValue("cmis:path");
+                        String path = parentNode.getPropertyValue(PropertyIds.PATH);
                         if (path.length() > 0)
                         {
                             if (path.startsWith("/Sites/"))
@@ -489,7 +523,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.save_back);
-                    builder.setMessage(node.getName() + " " + getResources().getString(R.string.save_back_description));
+                    builder.setMessage(String.format(getResources().getString(R.string.save_back_description), node.getName()));
                     builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)
@@ -534,7 +568,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     if (tmpPath != null)
                     {
                         File f = new File(tmpPath);
-                        
+
                         if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
                         {
                             String mimeType = MimeTypeManager.getMIMEType(tmpPath);
@@ -687,6 +721,42 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // LOADER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Loader<LoaderResult<Node>> onCreateLoader(final int id, Bundle args)
+    {
+        v.findViewById(R.id.properties_details).setVisibility(View.GONE);
+        v.findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
+
+        return new NodeLoader(getActivity(), alfSession, args.getString(ARGUMENT_NODE_ID));
+    }
+
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<Node>> loader, LoaderResult<Node> results)
+    {
+        if (results.hasException())
+        {
+            v.findViewById(R.id.progressbar).setVisibility(View.GONE);
+            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
+            ((TextView) v.findViewById(R.id.empty_text)).setText(R.string.empty_child);
+        }
+        else
+        {
+            node = results.getData();
+            parentNode = ((NodeLoader) loader).getParentFolder();
+            Intent i = new Intent(getActivity(), MainActivity.class);
+            i.setAction(IntentIntegrator.ACTION_DISPLAY_NODE);
+            getActivity().startActivity(i);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<LoaderResult<Node>> arg0)
+    {
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // TAB MENU
     // ///////////////////////////////////////////////////////////////////////////
 
@@ -696,7 +766,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         super.onSaveInstanceState(outState);
         if (tabSelected != null)
         {
-            outState.putInt("TAB", tabSelected);
+            outState.putInt(TAB_SELECTED, tabSelected);
         }
     }
 
@@ -802,7 +872,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void addMetadata(Node n)
     {
         int layoutid = android.R.id.tabcontent;
-        BaseFragment frag = MetadataFragment.newInstance(n);
+        BaseFragment frag = MetadataFragment.newInstance(n, parentNode);
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, layoutid, MetadataFragment.TAG, false);
     }

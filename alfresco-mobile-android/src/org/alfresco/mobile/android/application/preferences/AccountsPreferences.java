@@ -24,6 +24,11 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import android.app.Activity;
 import android.content.SharedPreferences;
 
+/**
+ * Manage application preferences associated to accounts objects.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class AccountsPreferences
 {
     public static final String ACCOUNT_PREFS = "org.alfresco.mobile.android.account.preferences";

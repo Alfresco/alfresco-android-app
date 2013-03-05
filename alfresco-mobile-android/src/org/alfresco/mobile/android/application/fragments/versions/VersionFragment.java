@@ -74,7 +74,7 @@ public class VersionFragment extends VersionsFragment
         if (versionedDoc.getVersionLabel() != null
                 && !versionedDoc.getVersionLabel().equals(((Document) node).getVersionLabel()))
         {
-            ((MainActivity) getActivity()).addPropertiesFragment(versionedDoc, true);
+            ((MainActivity) getActivity()).addPropertiesFragment(versionedDoc, null, true);
         }
     }
 

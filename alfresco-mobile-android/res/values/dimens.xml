@@ -60,5 +60,8 @@
     <integer name="width_1000">400</integer>
     <integer name="width_max">500</integer>
 
-
+  	<!-- PASSCODE  -->
+    <dimen name="passcode_text_size">40sp</dimen>
+    
+    
 </resources>

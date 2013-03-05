@@ -23,11 +23,11 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.AlphabeticNodeAdapter;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -41,7 +41,7 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends AlphabeticNodeAdapter
+public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
 {
     private List<Node> selectedItems;
 
@@ -58,6 +58,11 @@ public class NodeAdapter extends AlphabeticNodeAdapter
         this.selectedItems = selectedItems;
         this.renditionManager = SessionUtils.getRenditionManager(context);
         this.mode = mode;
+    }
+
+    public NodeAdapter(Context context, int textViewResourceId, List<Node> listItems)
+    {
+        super(context, textViewResourceId, listItems);
     }
 
     @Override
