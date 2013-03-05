@@ -67,7 +67,7 @@ public class DatabaseManager
 
     private static class GenericDbHelper extends SQLiteOpenHelper
     {
-        Context ctx;
+        private Context ctx;
 
         GenericDbHelper(Context ctx)
         {

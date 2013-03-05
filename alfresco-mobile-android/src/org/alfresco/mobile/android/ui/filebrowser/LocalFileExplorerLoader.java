@@ -37,8 +37,6 @@ public class LocalFileExplorerLoader extends AsyncTaskLoader<List<File>>
 
     private File folder;
 
-    private ListingContext listingContext;
-
     private Context context;
 
     public static final int ID = LocalFileExplorerLoader.class.hashCode();
@@ -49,26 +47,13 @@ public class LocalFileExplorerLoader extends AsyncTaskLoader<List<File>>
      * @param context
      * @param repoSession
      * @param folder
-     */
-    public LocalFileExplorerLoader(Context context, File folder)
-    {
-        this(context, folder, null);
-    }
-
-    /**
-     * Get all children from a the specified folder.
-     * 
-     * @param context
-     * @param repoSession
-     * @param folder
      * @param lcontext
      */
-    public LocalFileExplorerLoader(Context context, File folder, ListingContext lcontext)
+    public LocalFileExplorerLoader(Context context, File folder)
     {
         super(context);
         this.context = context;
         this.folder = folder;
-        this.listingContext = lcontext;
     }
 
     @Override

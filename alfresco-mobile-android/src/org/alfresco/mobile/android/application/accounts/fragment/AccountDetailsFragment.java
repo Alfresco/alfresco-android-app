@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -172,10 +172,10 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initValues(final View v, boolean isEditable)
     {
-        URL url = null;
+        URL tmprUrl = null;
         try
         {
-            url = new URL(acc.getUrl());
+            tmprUrl = new URL(acc.getUrl());
         }
         catch (MalformedURLException e)
         {
@@ -216,25 +216,25 @@ public class AccountDetailsFragment extends BaseFragment
         });
 
         // Init values
-        EditText form_value = (EditText) v.findViewById(R.id.repository_hostname);
-        form_value.setText(url.getHost());
-        form_value.setEnabled(isEditable);
+        EditText formValue = (EditText) v.findViewById(R.id.repository_hostname);
+        formValue.setText(tmprUrl.getHost());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_username);
-        form_value.setText(acc.getUsername());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_username);
+        formValue.setText(acc.getUsername());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_description);
-        form_value.setText(acc.getDescription());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_description);
+        formValue.setText(acc.getDescription());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_password);
-        form_value.setText(acc.getPassword());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_password);
+        formValue.setText(acc.getPassword());
+        formValue.setEnabled(isEditable);
 
         // TODO Switch widget ?
         final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
-        sw.setChecked(url.getProtocol().equals("https"));
+        sw.setChecked(tmprUrl.getProtocol().equals("https"));
         sw.setEnabled(isEditable);
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
@@ -248,7 +248,7 @@ public class AccountDetailsFragment extends BaseFragment
                 {
                     portForm.setText("80");
                 }
-                else if (sw.isChecked() == true
+                else if (sw.isChecked()
                         && (portForm.getText().toString() == null || portForm.getText().toString().equals("80")))
                 {
                     portForm.setText("443");
@@ -256,53 +256,52 @@ public class AccountDetailsFragment extends BaseFragment
             }
         });
 
-        form_value = (EditText) v.findViewById(R.id.repository_port);
-        if (url.getPort() != -1)
+        formValue = (EditText) v.findViewById(R.id.repository_port);
+        if (tmprUrl.getPort() != -1)
         {
-            form_value.setText(url.getPort() + "");
+            formValue.setText(tmprUrl.getPort() + "");
         }
         else
         {
-            form_value.setText(url.getDefaultPort() + "");
+            formValue.setText(tmprUrl.getDefaultPort() + "");
         }
-        form_value.setEnabled(isEditable);
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_servicedocument);
-        form_value.setText(url.getPath());
-        form_value.setEnabled(isEditable);
-
+        formValue = (EditText) v.findViewById(R.id.repository_servicedocument);
+        formValue.setText(tmprUrl.getPath());
+        formValue.setEnabled(isEditable);
     }
 
     private boolean retrieveFormValues()
     {
         // Check values
-        EditText form_value = (EditText) vRoot.findViewById(R.id.repository_hostname);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        EditText formValue = (EditText) vRoot.findViewById(R.id.repository_hostname);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            host = form_value.getText().toString();
+            host = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_username);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_username);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            username = form_value.getText().toString();
+            username = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_description);
-        description = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_description);
+        description = formValue.getText().toString();
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_password);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_password);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            password = form_value.getText().toString();
+            password = formValue.getText().toString();
         }
         else
         {
@@ -313,18 +312,18 @@ public class AccountDetailsFragment extends BaseFragment
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_port);
-        if (form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_port);
+        if (formValue.getText().length() > 0)
         {
-            port = Integer.parseInt(form_value.getText().toString());
+            port = Integer.parseInt(formValue.getText().toString());
         }
         else
         {
             port = (protocol.equals("https")) ? 443 : 80;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_servicedocument);
-        servicedocument = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_servicedocument);
+        servicedocument = formValue.getText().toString();
         URL u = null;
         try
         {
@@ -363,11 +362,11 @@ public class AccountDetailsFragment extends BaseFragment
     private void initForm()
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
-        EditText form_value = null;
+        EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
-            form_value = (EditText) vRoot.findViewById(ids[i]);
-            form_value.addTextChangedListener(watcher);
+            formValue = (EditText) vRoot.findViewById(ids[i]);
+            formValue.addTextChangedListener(watcher);
         }
     }
 
@@ -459,7 +458,7 @@ public class AccountDetailsFragment extends BaseFragment
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean dataProtectionDeletion = false;
         
-        if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false) == true)
+        if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
             boolean havePaidAccounts = false;
         

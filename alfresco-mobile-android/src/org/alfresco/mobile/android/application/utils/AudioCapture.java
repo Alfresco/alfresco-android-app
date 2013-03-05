@@ -34,21 +34,20 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 public class AudioCapture extends DeviceCapture
 {
     public static final String TAG = "AudioCapture";
+
     private static final long serialVersionUID = 1L;
 
     public AudioCapture(Activity parent, Folder folder)
     {
         super(parent, folder);
-        
-        //Default MIME type if it cannot be retrieved from Uri later.
+
+        // Default MIME type if it cannot be retrieved from Uri later.
         MIMEType = "audio/3gpp";
     }
 
@@ -70,7 +69,7 @@ public class AudioCapture extends DeviceCapture
             }
             catch (Exception e)
             {
-                MessengerManager.showLongToast(context, context.getString (R.string.no_voice_recorder));
+                MessengerManager.showLongToast(context, context.getString(R.string.no_voice_recorder));
                 Log.d(TAG, Log.getStackTraceString(e));
                 return false;
             }
@@ -78,7 +77,9 @@ public class AudioCapture extends DeviceCapture
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
     @Override
@@ -88,20 +89,22 @@ public class AudioCapture extends DeviceCapture
 
         try
         {
-            File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());          
+            File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
+                    .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
             if (folder != null)
             {
                 String filePath = getAudioFilePathFromUri(savedUri);
                 String fileType = getAudioFileTypeFromUri(savedUri);
-                String newFilePath = folder.getPath() + "/" + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
-    
+                String newFilePath = folder.getPath() + "/"
+                        + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
+
                 copyFile(filePath, newFilePath);
-    
+
                 parentActivity.getContentResolver().delete(savedUri, null, null);
                 (new File(filePath)).delete();
-    
+
                 payload = new File(newFilePath);
-                
+
                 if (!fileType.isEmpty())
                 {
                     MIMEType = fileType;
@@ -114,7 +117,7 @@ public class AudioCapture extends DeviceCapture
         }
         catch (IOException e)
         {
-            MessengerManager.showLongToast(context, context.getString (R.string.cannot_capture));
+            MessengerManager.showLongToast(context, context.getString(R.string.cannot_capture));
             Log.d(TAG, Log.getStackTraceString(e));
         }
     }
@@ -126,7 +129,7 @@ public class AudioCapture extends DeviceCapture
         {
             cursor.moveToFirst();
             int index = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-            
+
             return (index != -1 ? cursor.getString(index) : "");
         }
         else
@@ -134,7 +137,7 @@ public class AudioCapture extends DeviceCapture
             return "";
         }
     }
-    
+
     private String getAudioFileTypeFromUri(Uri uri)
     {
         Cursor cursor = parentActivity.getContentResolver().query(uri, null, null, null, null);

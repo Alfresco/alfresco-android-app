@@ -98,8 +98,12 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public String getFileName()
     {
         if (newFilename != null)
+        {
             return newFilename;
+        }
         else
+        {
             return super.getFileName();
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.accounts.networks;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -36,7 +35,7 @@ import android.view.View;
  */
 public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, GenericViewHolder>
 {
-    public CloudNetworkAdapter(Activity context, AlfrescoSession session, int textViewResourceId,
+    public CloudNetworkAdapter(Activity context, int textViewResourceId,
             List<CloudNetwork> listItems)
     {
         super(context, textViewResourceId, listItems);

@@ -455,13 +455,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         Node n = (Node) l.getItemAtPosition(position);
         l.setItemChecked(position, true);
-        boolean b = startSelection(v, n);
+        boolean b = startSelection(n);
         ((MainActivity) getActivity()).addPropertiesFragment(n);
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
         return b;
     };
 
-    private boolean startSelection(View v, Node item)
+    private boolean startSelection(Node item)
     {
         if (nActions != null) { return false; }
 
@@ -537,14 +537,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         newFragment.setOnCreateListener(new OnNodeCreateListener()
         {
+            boolean hasWaiting = false;
+            
             @Override
             public void afterContentCreation(Node node)
             {
                 ActionManager.actionRefresh(ChildrenBrowserFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
                         IntentIntegrator.NODE_TYPE);
             }
-
-            public boolean hasWaiting = false;
 
             @Override
             public void beforeContentCreation(Folder arg0, String arg1, Map<String, Serializable> arg2, ContentFile arg3)
@@ -616,7 +616,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        if (!extended && parentFolder != null && permission.canAddChildren())
+        if (!extended && permission.canAddChildren())
         {
             SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
@@ -642,14 +642,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         }
 
-        if (extended && parentFolder != null && permission.canEdit())
+        if (extended && permission.canEdit())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        if (extended && parentFolder != null && permission.canDelete())
+        if (extended && permission.canDelete())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE_FOLDER, Menu.FIRST + MenuActionItem.MENU_DELETE_FOLDER,
                     R.string.delete);
@@ -657,7 +657,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        if (!extended && parentFolder != null)
+        if (!extended)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
                     R.string.refresh);

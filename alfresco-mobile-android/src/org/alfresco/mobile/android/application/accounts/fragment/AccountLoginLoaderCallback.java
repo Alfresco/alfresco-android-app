@@ -204,6 +204,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
     private void saveNewOauthData(Loader<LoaderResult<AlfrescoSession>> loader)
     {
+        if (!(loader instanceof CloudSessionLoader) && ((CloudSessionLoader) loader).getOAuthData() == null) { return; }
         Log.d(TAG, loader.toString());
         switch ((int) acc.getTypeId())
         {

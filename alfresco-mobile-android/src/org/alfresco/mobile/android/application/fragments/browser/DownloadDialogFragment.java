@@ -25,12 +25,10 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskLis
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.IOUtils;
-import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -48,7 +46,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.Toast;
 
 public class DownloadDialogFragment extends DialogFragment implements DownloadTaskListener
 {
@@ -75,12 +72,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     private ContentFile contentFile;
 
     private int action = ACTION_UNDEFINED;
-    
-       
+
     public static DownloadDialogFragment newInstance()
     {
-        DownloadDialogFragment d = new DownloadDialogFragment();
-        return d;
+        return new DownloadDialogFragment();
     }
 
     public Dialog onCreateDialog(final Bundle savedInstanceState)
@@ -114,11 +109,11 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         progress.setProgress(0);
         progress.setMax(100);
         dialog = progress;
-        
+
         if (dlt == null)
         {
             File dlFile = getDownloadFile();
-            
+
             if (dlFile != null)
             {
                 totalSize = doc.getContentStreamLength();
@@ -155,13 +150,19 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         {
             try
             {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+                        GeneralPreferences.REQUIRES_ENCRYPT, "");
                 if (filename != null && filename.length() > 0)
                 {
                     if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                    {
                         MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    }
                     else
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                    {
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                                .putString(GeneralPreferences.REQUIRES_ENCRYPT, "").commit();
+                    }
                 }
             }
             catch (Exception e)
@@ -170,10 +171,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                 Log.d(TAG, Log.getStackTraceString(e));
             }
         }
-        
+
         super.onActivityResult(requestCode, resultCode, data);
     }
-    
+
     private File getDownloadFile()
     {
         if (SessionUtils.getAccount(getActivity()) == null) { return null; }
@@ -182,7 +183,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         {
             IOUtils.ensureOrCreatePathAndFile(tmpFile);
         }
-        
+
         return tmpFile;
     }
 
@@ -195,7 +196,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     public void onProgressUpdate(Integer... values)
     {
         int percent = Math.round(((float) values[0] / totalSize) * 100);
-        ((ProgressDialog)dialog).setProgress(percent);
+        ((ProgressDialog) dialog).setProgress(percent);
     }
 
     @Override
@@ -244,8 +245,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         else
         {
-            MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_error)
-                    .toString());
+            MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_error).toString());
         }
         dismiss();
     }

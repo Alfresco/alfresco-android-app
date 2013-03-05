@@ -58,7 +58,11 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
     /** Unique NodeChildrenLoader identifier. */
     public static final int ID = NodeLoader.class.hashCode();
-    
+
+    private static final String MY_ALFRESCO_HOSTNAME = "my.alfresco.com";
+
+    private static final String API_ALFRESCO_HOSTNAME = "api.alfresco.com";
+
     private static final String TAG = "NodeLoader";
 
     private AlfrescoSession session;
@@ -173,10 +177,6 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 + tmpurl); }
     }
 
-    private final static String MY_ALFRESCO_HOSTNAME = "my.alfresco.com";
-
-    private final static String API_ALFRESCO_HOSTNAME = "api.alfresco.com";
-
     private void findAccount(URL searchedURL) throws MalformedURLException
     {
         URL tmpurl = searchedURL;
@@ -217,7 +217,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             }
         }
 
-        if (!match) throw new AlfrescoServiceException("No account match this url : " + tmpurl);
+        if (!match) { throw new AlfrescoServiceException("No account match this url : " + tmpurl); }
     }
 
     private URL findUrl(String text)
@@ -236,7 +236,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             {
             }
         }
-        if (url == null) throw new AlfrescoServiceException("This information is not a valid url");
+        if (url == null) { throw new AlfrescoServiceException("This information is not a valid url"); }
         return url;
     }
 

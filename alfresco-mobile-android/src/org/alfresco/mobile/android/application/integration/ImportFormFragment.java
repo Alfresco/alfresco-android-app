@@ -297,7 +297,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
         {
             for (int i = 0; i < accounts.size(); i++)
             {
-                if (selectedAccount != null && accounts.get(i).getId() == selectedAccount.getId())
+                if (accounts.get(i).getId() == selectedAccount.getId())
                 {
                     accountIndex = i;
                     break;
@@ -317,7 +317,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
     {
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
         SimpleImportFolderAdapter adapter = new SimpleImportFolderAdapter(getActivity(), R.layout.app_list_row,
-                importFolderList);
+                IMPORT_FOLDER_LIST);
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
@@ -344,7 +344,7 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
     }
 
     @SuppressWarnings("serial")
-    private static final List<Integer> importFolderList = new ArrayList<Integer>(3)
+    private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(3)
     {
         {
             add(R.string.menu_downloads);

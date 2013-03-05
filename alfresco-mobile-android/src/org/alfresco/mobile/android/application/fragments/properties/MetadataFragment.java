@@ -125,7 +125,7 @@ public class MetadataFragment extends BaseFragment
             ((TextView)v.findViewById(R.id.description_title)).setText(R.string.metadata_general);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
-            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());;
+            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());
             filter.add(ContentModel.PROP_NAME);
         }
         else

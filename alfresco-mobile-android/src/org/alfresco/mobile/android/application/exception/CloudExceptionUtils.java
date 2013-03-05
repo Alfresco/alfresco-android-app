@@ -32,6 +32,10 @@ import android.util.Log;
 public class CloudExceptionUtils
 {
 
+    private CloudExceptionUtils()
+    {
+    };
+
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
         Log.d("CloudExceptionUtils", Log.getStackTraceString(exception));
@@ -57,8 +61,7 @@ public class CloudExceptionUtils
         if (exception instanceof AlfrescoServiceException)
         {
             AlfrescoServiceException ex = ((AlfrescoServiceException) exception);
-            if (ex != null
-                    && (ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
+            if ((ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
                             "No authentication challenges found"))))
             {
                 manageException(activity, forceRefresh);

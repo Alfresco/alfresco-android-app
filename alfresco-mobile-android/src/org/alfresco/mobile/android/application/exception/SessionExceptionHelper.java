@@ -43,6 +43,10 @@ import android.content.Context;
 public class SessionExceptionHelper
 {
 
+    private SessionExceptionHelper()
+    {
+    }
+    
     /**
      * Return user friendly message Id for a specific exception.
      * 

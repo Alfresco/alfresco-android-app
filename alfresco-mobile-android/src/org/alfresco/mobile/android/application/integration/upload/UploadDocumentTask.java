@@ -158,8 +158,8 @@ public class UploadDocumentTask extends AsyncTask<Void, Integer, LoaderResult<Do
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-            ContentFile contentFile = getContentFile();
-            if (contentFile != null)
+            ContentFile tmpContentFile = getContentFile();
+            if (tmpContentFile != null)
             {
                 // An error occurs, notify the user.
                 ProgressNotification.updateProgress(getDocumentName(), ProgressNotification.FLAG_UPLOAD_IMPORT_ERROR);

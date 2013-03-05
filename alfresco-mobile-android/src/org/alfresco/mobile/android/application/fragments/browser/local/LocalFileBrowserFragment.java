@@ -165,21 +165,18 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
                 });
             }
         }
-        else if (getMode() == MODE_PICK_FILE)
+        else if (getMode() == MODE_PICK_FILE && file.isFile() && getArguments().getString(FRAGMENT_TAG) != null)
         {
-            if (file.isFile() && getArguments().getString(FRAGMENT_TAG) != null)
-            {
-                String fragmentTag = getArguments().getString(FRAGMENT_TAG);
+            String fragmentTag = getArguments().getString(FRAGMENT_TAG);
 
-                if (ChildrenBrowserFragment.TAG.equals(fragmentTag))
-                {
-                    ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG))
-                            .createFile(file);
-                }
-                else if (DetailsFragment.TAG.equals(fragmentTag))
-                {
-                    ((DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG)).update(file);
-                }
+            if (ChildrenBrowserFragment.TAG.equals(fragmentTag))
+            {
+                ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG))
+                        .createFile(file);
+            }
+            else if (DetailsFragment.TAG.equals(fragmentTag))
+            {
+                ((DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG)).update(file);
             }
         }
 

@@ -127,26 +127,26 @@ public class CloudSignupDialogFragment extends DialogFragment
     private boolean retrieveFormValues()
     {
 
-        EditText form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_firstname);
-        firstName = form_value.getText().toString();
+        EditText formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_firstname);
+        firstName = formValue.getText().toString();
 
         if (firstName.length() == 0) { return false; }
 
-        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_lastname);
-        lastName = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_lastname);
+        lastName = formValue.getText().toString();
 
         if (lastName.length() == 0) { return false; }
 
-        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
-        password = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_password);
+        password = formValue.getText().toString();
 
-        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
-        String confirm = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
+        String confirm = formValue.getText().toString();
 
         if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password)) { return false; }
 
-        form_value = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
-        emailAddress = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
+        emailAddress = formValue.getText().toString();
 
         if (emailAddress.length() == 0 || !emailAddress.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) { return false; }
 
@@ -157,11 +157,11 @@ public class CloudSignupDialogFragment extends DialogFragment
     {
         int[] ids = new int[] { R.id.cloud_signup_firstname, R.id.cloud_signup_lastname, R.id.cloud_signup_password,
                 R.id.cloud_signup_confirm, R.id.cloud_signup_email };
-        EditText form_value = null;
+        EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
-            form_value = (EditText) findViewByIdInternal(ids[i]);
-            form_value.addTextChangedListener(watcher);
+            formValue = (EditText) findViewByIdInternal(ids[i]);
+            formValue.addTextChangedListener(watcher);
         }
     }
 

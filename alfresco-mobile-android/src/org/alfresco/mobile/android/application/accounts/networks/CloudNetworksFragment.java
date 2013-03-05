@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -46,8 +46,6 @@ public class CloudNetworksFragment extends BaseListFragment implements
 
     public static final String ARGUMENT_CLOUDSESSION = "CloudSession";
 
-    protected CloudSession session;
-
     public CloudNetworksFragment()
     {
         loaderId = CloudNetworksLoader.ID;
@@ -75,7 +73,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new CloudNetworkAdapter(getActivity(), alfSession, R.layout.sdk_list_comment_row,
+            adapter = new CloudNetworkAdapter(getActivity(), R.layout.sdk_list_comment_row,
                     new ArrayList<CloudNetwork>(0));
         }
         if (checkException(results))

@@ -61,35 +61,35 @@ public class DocumentTypeRecord implements Serializable
     public static final int TEXT_ID = 40;
 
     /** Unique Identifier of the file type. */
-    int id;
+    public int id;
 
     /** Icon Ressource Identifier associated to the file type. */
-    int iconId;
+    public int iconId;
 
     /**
      * String Ressource Identifier associated to the file type. <br/>
      * Example : Word Document
      */
-    int nameId;
+    public int nameId;
 
     /**
      * String value that represents filename extension part of the document. <br/>
      * Example : .docx, .xlsx
      */
-    String extension;
+    public String extension;
 
     /**
      * String value that represents document mimetype . <br/>
      * Example :
      * application/vnd.openxmlformats-officedocument.wordprocessingml.document
      */
-    String mimetype;
+    public String mimetype;
 
     /**
      * Path value to a default template file associated to the document type. <br/>
      * By default the root folder is "assets" folder inside the application.
      */
-    String templatePath;
+    public String templatePath;
 
     public DocumentTypeRecord(int id, int iconId, int nameId, String extension, String mimetype, String template)
     {

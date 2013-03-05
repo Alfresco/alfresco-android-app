@@ -34,8 +34,6 @@ import android.content.Loader;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 
 public abstract class LocalFileExplorerFragment extends BaseListFragment implements LoaderCallbacks<List<File>>
 {
@@ -164,12 +162,12 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         if (path != null)
         {
             title = path.substring(path.lastIndexOf("/") + 1, path.length());
-            loader = new LocalFileExplorerLoader(getActivity(), new File(path), lc);
+            loader = new LocalFileExplorerLoader(getActivity(), new File(path));
         }
         else if (f != null)
         {
             title = f.getName();
-            loader = new LocalFileExplorerLoader(getActivity(), f, lc);
+            loader = new LocalFileExplorerLoader(getActivity(), f);
         }
 
         return loader;

@@ -86,12 +86,9 @@ public class PublicDispatcherActivity extends Activity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
         {
-            if (resultCode == RESULT_CANCELED)
-            {
-                finish();
-            }
+            finish();
         }
     }
 
