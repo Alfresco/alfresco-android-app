@@ -120,6 +120,10 @@
 		<![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
         Please check your account settings and try again.<br/> If the problem persists please contact your administrator.]]>
 	</string>
+	<string name="error_session_cloud_unavailable">
+		<![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
+        Please try again in a few minutes.<br/>]]>
+	</string>
     <string name="error_session_unauthorized_title">Unauthorized.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
