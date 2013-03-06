@@ -361,7 +361,8 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
+                R.id.repository_port };
         EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
@@ -419,17 +420,19 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View v)
             {
                 retrieveFormValues();
-                if (accountDao.update(acc.getId(), description, (url!=null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
-                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
+                if (accountDao.update(acc.getId(), description, (url != null) ? url : acc.getUrl(), username, password,
+                        acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(),
+                        acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                     initValues(vRoot, false);
                     vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                     vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
-                    
-                    //Refresh listing
-                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(AccountFragment.TAG);
+
+                    // Refresh listing
+                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(
+                            AccountFragment.TAG);
                     fragmentList.refresh();
                 }
             }
@@ -457,14 +460,15 @@ public class AccountDetailsFragment extends BaseFragment
         final List<Account> accounts = accountDao.findAll();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean dataProtectionDeletion = false;
-        
+
         if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
             boolean havePaidAccounts = false;
-        
+
             for (Account account : accounts)
             {
-                //Ignoring the one we're deleting, are there any further paid accounts left?
+                // Ignoring the one we're deleting, are there any further paid
+                // accounts left?
                 if (account.getId() != acc.getId() && account.getIsPaidAccount())
                 {
                     havePaidAccounts = true;
@@ -473,14 +477,15 @@ public class AccountDetailsFragment extends BaseFragment
             }
             dataProtectionDeletion = !havePaidAccounts;
         }
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        
+
         final File folder = StorageManager.getPrivateFolder(getActivity(), "", "", "");
         if (dataProtectionDeletion && folder != null)
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(String.format(getResources().getString(R.string.delete_description_data_protection),acc.getDescription()));
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description_data_protection),
+                    acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
@@ -497,14 +502,16 @@ public class AccountDetailsFragment extends BaseFragment
                     EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
-                    
+
                     Editor edit = prefs.edit();
-                    
-                    //Unflag this so that on next (first) addition of a new paid account, they will get prompted again.
+
+                    // Unflag this so that on next (first) addition of a new
+                    // paid account, they will get prompted again.
                     edit.putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, false);
-                    //Last paid service removed, so unflag that we've accessed paid services.
+                    // Last paid service removed, so unflag that we've accessed
+                    // paid services.
                     edit.putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false);
-                    //Turn off data protection
+                    // Turn off data protection
                     edit.putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
                     edit.commit();
                 }
@@ -520,30 +527,13 @@ public class AccountDetailsFragment extends BaseFragment
         else
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(String.format(getResources().getString(R.string.delete_description),acc.getDescription()));
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description),
+                    acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    accountDao.delete(acc.getId());
-                    // In case where currentAccount is the one deleted.
-                    if (SessionUtils.getAccount(getActivity()) != null
-                            && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
-                    {
-                        SessionUtils.setAccount(getActivity(), null);
-                    }
-    
-                    if (!accounts.isEmpty())
-                    {                    
-                        ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                                IntentIntegrator.ACCOUNT_TYPE);
-                    }
-                    else
-                    {
-                        getActivity().finish();
-                        startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
-                    }
-    
+                    deleteAccount(accounts);
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -554,9 +544,41 @@ public class AccountDetailsFragment extends BaseFragment
                 }
             });
         }
-        
+
         AlertDialog alert = builder.create();
         alert.show();
+    }
+    
+    private void deleteAccount(List<Account> accounts){
+        accountDao.delete(acc.getId());
+        if (accounts.size() == 1 && accounts.get(0).getId() == acc.getId())
+        {
+            accounts.clear();
+        }
+        // In case where currentAccount is the one deleted.
+        if (SessionUtils.getAccount(getActivity()) != null
+                && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+        {
+            SessionUtils.setAccount(getActivity(), null);
+        }
+
+        if (!accounts.isEmpty())
+        {
+            ActionManager.actionRefresh(AccountDetailsFragment.this,
+                    IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.ACCOUNT_TYPE);
+        }
+        else
+        {
+            //Remove preferences
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.commit();
+            
+            //Redirect to HomeScreenActivity
+            getActivity().finish();
+            startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
+        }
     }
 
     public void displayOAuthFragment()
