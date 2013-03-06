@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
@@ -113,11 +112,11 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
             // Case of config changes to retrieve the sessionLoader and continue
             // the work.
             if (SessionUtils.getSession(activity) == null
-                    && (activity.getLoaderManager().getLoader(SessionLoader.ID) != null || signup))
+                    && (activity.getLoaderManager().getLoader(AccountLoginLoaderCallback.getAccountLoginLoaderId(currentAccount)) != null || signup))
             {
                 activity.setProgressBarIndeterminateVisibility(true);
                 AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(activity, currentAccount);
-                activity.getLoaderManager().initLoader(SessionLoader.ID, null, call);
+                activity.getLoaderManager().initLoader(call.getAccountLoginLoaderId(), null, call);
             }
         }
         activity.invalidateOptionsMenu();

@@ -83,6 +83,13 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     @Override
     public Loader<LoaderResult<AlfrescoSession>> onCreateLoader(final int id, Bundle args)
     {
+        // Resolve latency problem between dropdown menu and account object.
+        // We force to use the latest save account object.
+        if (Account.TYPE_ALFRESCO_CLOUD == acc.getTypeId())
+        {
+            AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
+            acc = accountDao.findById(acc.getId());
+        }
 
         Loader<LoaderResult<AlfrescoSession>> loader = null;
         if (data != null)
@@ -248,5 +255,10 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     public int getAccountLoginLoaderId()
     {
         return accountLoginLoaderId;
+    }
+
+    public static int getAccountLoginLoaderId(Account acc)
+    {
+        return acc.hashCode();
     }
 }

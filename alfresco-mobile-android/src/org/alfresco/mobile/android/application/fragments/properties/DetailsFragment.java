@@ -743,7 +743,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
             ((TextView) v.findViewById(R.id.empty_text)).setText(R.string.empty_child);
         }
-        else if (loader instanceof NodeLoader)
+        else if (loader instanceof NodeLoader && getActivity() != null)
         {
             node = results.getData();
             parentNode = ((NodeLoader) loader).getParentFolder();
