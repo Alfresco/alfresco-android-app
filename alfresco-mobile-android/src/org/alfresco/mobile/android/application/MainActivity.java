@@ -53,7 +53,6 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.actions.NodeActions.DownloadReceiver;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
@@ -140,13 +139,29 @@ public class MainActivity extends Activity
 
     private int sessionStateErrorMessageId;
 
-    private DownloadReceiver downloadReceiver;
-
     public static final int SESSION_LOADING = 0;
 
     public static final int SESSION_ACTIVE = 1;
 
     public static final int SESSION_ERROR = 2;
+
+    private static final String PARAM_ACCOUNT = "account";
+
+    private static final String PARAM_DISPLAY_FROM_SITE = "displayFromSite";
+
+    private static final String PARAM_IMPORT_PARENT = "importParent";
+
+    private static final String PARAM_FRAGMENT_QUEUE = "fragmentQueue";
+
+    private static final String PARAM_STACK_CENTRAL = "stackCentral";
+
+    private static final String PARAM_CAPTURE_AUDIO = "audioCap";
+
+    private static final String PARAM_CAPTURE_VIDEO = "videoCap";
+
+    private static final String PARAM_CAPTURE_PHOTO = "photoCap";
+
+    private static final String PREF_MIGRATION_FILES = "filesmigrated";
 
     // ///////////////////////////////////////////
     // INIT
@@ -156,7 +171,7 @@ public class MainActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        
+
         activity = this;
 
         super.onCreate(savedInstanceState);
@@ -175,42 +190,42 @@ public class MainActivity extends Activity
 
         if (savedInstanceState != null)
         {
-            currentAccount = (Account) savedInstanceState.getSerializable("account");
-            if (savedInstanceState.containsKey("displayFromSite"))
+            currentAccount = (Account) savedInstanceState.getSerializable(PARAM_ACCOUNT);
+            if (savedInstanceState.containsKey(PARAM_DISPLAY_FROM_SITE))
             {
-                displayFromSite = (Site) savedInstanceState.getSerializable("displayFromSite");
+                displayFromSite = (Site) savedInstanceState.getSerializable(PARAM_DISPLAY_FROM_SITE);
             }
 
-            if (savedInstanceState.containsKey("importParent"))
+            if (savedInstanceState.containsKey(PARAM_IMPORT_PARENT))
             {
-                importParent = (Folder) savedInstanceState.getSerializable("importParent");
+                importParent = (Folder) savedInstanceState.getSerializable(PARAM_IMPORT_PARENT);
             }
 
-            if (savedInstanceState.containsKey("fragmentQueue"))
+            if (savedInstanceState.containsKey(PARAM_FRAGMENT_QUEUE))
             {
-                fragmentQueue = savedInstanceState.getInt("fragmentQueue");
-                savedInstanceState.remove("fragmentQueue");
+                fragmentQueue = savedInstanceState.getInt(PARAM_FRAGMENT_QUEUE);
+                savedInstanceState.remove(PARAM_FRAGMENT_QUEUE);
             }
 
-            audioCapture = (AudioCapture) savedInstanceState.getSerializable("audioCap");
+            audioCapture = (AudioCapture) savedInstanceState.getSerializable(PARAM_CAPTURE_AUDIO);
             if (audioCapture != null)
             {
                 audioCapture.setActivity(this);
             }
 
-            videoCapture = (VideoCapture) savedInstanceState.getSerializable("videoCap");
+            videoCapture = (VideoCapture) savedInstanceState.getSerializable(PARAM_CAPTURE_VIDEO);
             if (videoCapture != null)
             {
                 videoCapture.setActivity(this);
             }
 
-            photoCapture = (PhotoCapture) savedInstanceState.getSerializable("photoCap");
+            photoCapture = (PhotoCapture) savedInstanceState.getSerializable(PARAM_CAPTURE_PHOTO);
             if (photoCapture != null)
             {
                 photoCapture.setActivity(this);
             }
 
-            String[] d = savedInstanceState.getStringArray("stackCentral");
+            String[] d = savedInstanceState.getStringArray(PARAM_STACK_CENTRAL);
             if (d != null)
             {
                 List<String> list = Arrays.asList(d);
@@ -224,18 +239,19 @@ public class MainActivity extends Activity
         }
 
         if (SessionUtils.getAccount(this) != null)
-        { 
+        {
             currentAccount = SessionUtils.getAccount(this);
             if (currentAccount.getIsPaidAccount() == true)
             {
-                //Check if we've prompted the user for Data Protection yet.
-                //This is needed on new account creation, as the Activity gets re-created after the account is created.
+                // Check if we've prompted the user for Data Protection yet.
+                // This is needed on new account creation, as the Activity gets
+                // re-created after the account is created.
                 CipherUtils.EncryptionUserInteraction(this);
-                
+
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
         }
-        
+
         initActionBar();
         checkForUpdates();
 
@@ -249,7 +265,7 @@ public class MainActivity extends Activity
 
         // Transfer downloads to new folder structure if they haven't been
         // already.
-        if (!prefs.getBoolean("filesmigrated", false))
+        if (!prefs.getBoolean(PREF_MIGRATION_FILES, false))
         {
             File oldDownloads = StorageManager.getOldDownloadFolder(this);
             File newDownloads = StorageManager.getPrivateFolder(this, "", "", "");
@@ -260,11 +276,13 @@ public class MainActivity extends Activity
                 {
                     IOUtils.transferFilesBackground(oldDownloads.getPath(), newDownloads.getPath(),
                             StorageManager.DLDIR, true, true);
-                    prefs.edit().putBoolean("filesmigrated", true).commit();
+                    prefs.edit().putBoolean(PREF_MIGRATION_FILES, true).commit();
                 }
             }
             else
-                prefs.edit().putBoolean("filesmigrated", true).commit();
+            {
+                prefs.edit().putBoolean(PREF_MIGRATION_FILES, true).commit();
+            }
         }
     }
 
@@ -301,21 +319,18 @@ public class MainActivity extends Activity
     {
         if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
         {
-            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(GeneralPreferences.REQUIRES_ENCRYPT, "");
+            String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(
+                    GeneralPreferences.REQUIRES_ENCRYPT, "");
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
             fragmentTransaction.commit();
         }
 
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
         {
-            if (resultCode == RESULT_CANCELED)
-            {
-                finish();
-            }
+            finish();
         }
-
 
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
         {
@@ -384,9 +399,13 @@ public class MainActivity extends Activity
                 // reload account
                 refreshAccounts();
 
-                if (SessionUtils.getAccount(this) != null) currentAccount = SessionUtils.getAccount(this);
+                if (SessionUtils.getAccount(this) != null)
+                {
+                    currentAccount = SessionUtils.getAccount(this);
+                }
 
-                //Check to see if we have an old account that needs its paid network flag setting.
+                // Check to see if we have an old account that needs its paid
+                // network flag setting.
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 if (!currentAccount.getIsPaidAccount())
                 {
@@ -394,10 +413,14 @@ public class MainActivity extends Activity
                     AlfrescoSession session = getSession();
 
                     if (session instanceof CloudSession)
+                    {
                         paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
+                    }
                     else
+                    {
                         paidNetwork = session.getRepositoryInfo().getEdition()
                                 .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+                    }
 
                     if (paidNetwork)
                     {
@@ -435,17 +458,15 @@ public class MainActivity extends Activity
                             getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,
                                     new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
                         }
-                        else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH))
+                        else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH)
+                                && getFragment(AccountOAuthFragment.TAG) == null
+                                || getFragment(AccountOAuthFragment.TAG).isAdded())
                         {
-                            if (getFragment(AccountOAuthFragment.TAG) == null
-                                    || getFragment(AccountOAuthFragment.TAG).isAdded())
-                            {
-                                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
-                                FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
-                                        AccountOAuthFragment.TAG, true);
-                                DisplayUtils.switchSingleOrTwo(this, true);
-                                break;
-                            }
+                            AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
+                            FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
+                                    AccountOAuthFragment.TAG, true);
+                            DisplayUtils.switchSingleOrTwo(this, true);
+                            break;
                         }
                     }
                 }
@@ -498,14 +519,12 @@ public class MainActivity extends Activity
             }
 
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
-                    && intent.getData().getHost().equals("activate-cloud-account"))
+                    && intent.getData().getHost().equals("activate-cloud-account")
+                    && getFragment(AccountDetailsFragment.TAG) != null)
             {
 
-                if (getFragment(AccountDetailsFragment.TAG) != null)
-                {
-                    ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
-                    return;
-                }
+                ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
+                return;
             }
 
             //
@@ -570,7 +589,10 @@ public class MainActivity extends Activity
                     {
                         ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                         FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                        if (!DisplayUtils.hasCentralPane(this)) getFragmentManager().popBackStack();
+                        if (!DisplayUtils.hasCentralPane(this))
+                        {
+                            getFragmentManager().popBackStack();
+                        }
                     }
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_ALL))
@@ -625,32 +647,32 @@ public class MainActivity extends Activity
     {
         super.onSaveInstanceState(outState);
         String[] stringArray = Arrays.copyOf(stackCentral.toArray(), stackCentral.size(), String[].class);
-        outState.putStringArray("stackCentral", stringArray);
-        outState.putSerializable("account", currentAccount);
+        outState.putStringArray(PARAM_STACK_CENTRAL, stringArray);
+        outState.putSerializable(PARAM_ACCOUNT, currentAccount);
         if (audioCapture != null)
         {
-            outState.putSerializable("audioCap", audioCapture);
+            outState.putSerializable(PARAM_CAPTURE_AUDIO, audioCapture);
         }
 
         if (videoCapture != null)
         {
-            outState.putSerializable("videoCap", videoCapture);
+            outState.putSerializable(PARAM_CAPTURE_VIDEO, videoCapture);
         }
 
         if (photoCapture != null)
         {
-            outState.putSerializable("photoCap", photoCapture);
+            outState.putSerializable(PARAM_CAPTURE_PHOTO, photoCapture);
         }
-        outState.putInt("fragmentQueue", fragmentQueue);
+        outState.putInt(PARAM_FRAGMENT_QUEUE, fragmentQueue);
 
         if (displayFromSite != null)
         {
-            outState.putSerializable("displayFromSite", displayFromSite);
+            outState.putSerializable(PARAM_DISPLAY_FROM_SITE, displayFromSite);
         }
 
         if (importParent != null)
         {
-            outState.putParcelable("importParent", importParent);
+            outState.putParcelable(PARAM_IMPORT_PARENT, importParent);
         }
     }
 
@@ -734,10 +756,11 @@ public class MainActivity extends Activity
             hideSlideMenu();
         }
 
-        if (DisplayUtils.hasCentralPane(this)) {
+        if (DisplayUtils.hasCentralPane(this))
+        {
             clearCentralPane();
         }
-        
+
         switch (id)
         {
             case R.id.menu_browse_my_sites:
@@ -945,7 +968,10 @@ public class MainActivity extends Activity
 
     public void addComments(Node n)
     {
-        if (DisplayUtils.hasCentralPane(this)) stackCentral.push(CommentsFragment.TAG);
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.push(CommentsFragment.TAG);
+        }
         BaseFragment frag = CommentsFragment.newInstance(n);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(true), CommentsFragment.TAG, true);
@@ -954,7 +980,10 @@ public class MainActivity extends Activity
 
     public void addVersions(Document d)
     {
-        if (DisplayUtils.hasCentralPane(this)) stackCentral.push(VersionFragment.TAG);
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.push(VersionFragment.TAG);
+        }
         BaseFragment frag = VersionFragment.newInstance(d);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(true), VersionFragment.TAG, true);
@@ -988,7 +1017,10 @@ public class MainActivity extends Activity
         {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
-            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(AboutFragment.TAG);
+            if (DisplayUtils.hasCentralPane(this))
+            {
+                stackCentral.push(AboutFragment.TAG);
+            }
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }
@@ -1005,7 +1037,10 @@ public class MainActivity extends Activity
         {
             Fragment f = new GeneralPreferences();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
-            if (DisplayUtils.hasCentralPane(this)) stackCentral.push(GeneralPreferences.TAG);
+            if (DisplayUtils.hasCentralPane(this))
+            {
+                stackCentral.push(GeneralPreferences.TAG);
+            }
         }
         DisplayUtils.switchSingleOrTwo(this, true);
     }
@@ -1025,7 +1060,7 @@ public class MainActivity extends Activity
 
     public void displayNetworks()
     {
-        if (getSession() != null && getSession() instanceof CloudSession)
+        if (getSession() instanceof CloudSession)
         {
             Fragment f = new CloudNetworksFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG,
@@ -1039,14 +1074,20 @@ public class MainActivity extends Activity
     public int getFragmentPlace()
     {
         int id = R.id.left_pane_body;
-        if (DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            id = R.id.central_pane_body;
+        }
         return id;
     }
 
     public int getFragmentPlace(boolean forceRight)
     {
         int id = R.id.left_pane_body;
-        if (forceRight && DisplayUtils.hasCentralPane(this)) id = R.id.central_pane_body;
+        if (forceRight && DisplayUtils.hasCentralPane(this))
+        {
+            id = R.id.central_pane_body;
+        }
         return id;
     }
 
@@ -1227,8 +1268,9 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_SEARCH_FOLDER:
-                FragmentDisplayer.replaceFragment(this, KeywordSearch.newInstance(getImportParent(), isDisplayFromSite()),
-                        getFragmentPlace(false), KeywordSearch.TAG, true);
+                FragmentDisplayer.replaceFragment(this,
+                        KeywordSearch.newInstance(getImportParent(), isDisplayFromSite()), getFragmentPlace(false),
+                        KeywordSearch.TAG, true);
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
@@ -1342,7 +1384,7 @@ public class MainActivity extends Activity
                     ((ChildrenBrowserFragment) fr).unselect();
                     backStack = false;
                 }
-                
+
                 if (fr instanceof KeywordSearch)
                 {
                     ((KeywordSearch) fr).unselect();

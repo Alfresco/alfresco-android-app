@@ -103,9 +103,6 @@ public class AccountsLoaderCallback implements LoaderCallbacks<List<Account>>
                 activity.loadAccount(currentAccount);
             }
             SessionUtils.setAccount(activity, currentAccount);
-            
-            
-            
         }
         else if (signup)
         {

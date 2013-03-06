@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.AsyncTaskLoader;
@@ -35,10 +36,13 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
 
     private Context context;
 
+    private DatabaseManager db;
+
     public AccountsLoader(Context context)
     {
         super(context);
         this.context = context;
+        this.db = SessionUtils.getDataBaseManager(context);
     }
 
     @Override
@@ -51,11 +55,24 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
     @Override
     public void deliverResult(List<Account> data)
     {
+        if (isReset())
+        {
+            if (data != null)
+            {
+                onReleaseResources(data);
+            }
+        }
+        List<Account> oldApps = data;
         mApps = data;
 
         if (isStarted())
         {
             super.deliverResult(data);
+        }
+
+        if (oldApps != null)
+        {
+            onReleaseResources(oldApps);
         }
     }
 
@@ -69,6 +86,34 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
         else
         {
             forceLoad();
+        }
+    }
+
+    @Override
+    public void onCanceled(List<Account> data)
+    {
+        if (db != null)
+        {
+            db.close();
+        }
+        super.onCanceled(data);
+    }
+
+    @Override
+    protected void onAbandon()
+    {
+        if (db != null)
+        {
+            db.close();
+        }
+        super.onAbandon();
+    }
+
+    protected void onReleaseResources(List<Account> apps)
+    {
+        if (db != null)
+        {
+            db.close();
         }
     }
 }

@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
@@ -194,8 +195,6 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     @Override
     public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> loader)
     {
-        saveNewOauthData(loader);
-
         if (mProgressDialog != null)
         {
             mProgressDialog.dismiss();
@@ -204,7 +203,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
     private void saveNewOauthData(Loader<LoaderResult<AlfrescoSession>> loader)
     {
-        if (!(loader instanceof CloudSessionLoader) && ((CloudSessionLoader) loader).getOAuthData() == null) { return; }
+        if (loader instanceof SessionLoader) { return; }
+        if (loader instanceof CloudSessionLoader && ((CloudSessionLoader) loader).getOAuthData() == null) { return; }
         Log.d(TAG, loader.toString());
         switch ((int) acc.getTypeId())
         {
