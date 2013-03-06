@@ -247,6 +247,8 @@
 
     <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
+    <string name="sdknumber_version">SDK : </string>
+    
     <!-- BuildNumber Bamboo -->
     <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
     <string name="about_description">
