@@ -46,7 +46,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -82,6 +81,8 @@ public class RenditionManager
     public static final int TYPE_NODE = 0;
 
     public static final int TYPE_PERSON = 1;
+
+    BitmapThread task;
 
     public RenditionManager(Activity context, AlfrescoSession session)
     {
@@ -127,7 +128,7 @@ public class RenditionManager
         if (getBitmapFromMemCache(hashKey) == null)
         {
             mMemoryCache.put(hashKey, bitmap);
-            Log.d(TAG, "Add MemoryCache : " + key);
+            //Log.d(TAG, "Add MemoryCache : " + key);
         }
     }
 
@@ -144,7 +145,7 @@ public class RenditionManager
                 IOUtils.copyStream(cf.getInputStream(), editor.newOutputStream(0));
                 editor.commit();
             }
-            Log.d(TAG, "Add DiskCache : " + key);
+            //Log.d(TAG, "Add DiskCache : " + key);
         }
         catch (Exception e)
         {
@@ -174,7 +175,7 @@ public class RenditionManager
             snapshot = mDiskCache.get(hashKey);
             if (snapshot != null)
             {
-                Log.d(TAG, "GET DiskCache : " + key);
+                //Log.d(TAG, "GET DiskCache : " + key);
                 if (preview != null)
                 {
                     return decodeStream(mDiskCache, hashKey, preview, dm);
@@ -235,15 +236,23 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
-            Log.d(TAG, "Cache : " + identifier);
+            //Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
         {
-            final BitmapWorkerTask task = new BitmapWorkerTask(session, iv, identifier, type, preview);
+            final BitmapThread thread = new BitmapThread(session, iv, identifier, type, preview);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            if (preview != null)
+            {
+                thread.setPriority(Thread.NORM_PRIORITY);
+            }
             Bitmap bm = BitmapFactory.decodeResource(context.getResources(), initDrawableId);
-            final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), bm, task);
+            final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), bm, thread);
             iv.setImageDrawable(asyncDrawable);
-            task.execute();
+            if (thread.getState() == Thread.State.NEW)
+            {
+                thread.start();
+            }
         }
     }
 
@@ -264,7 +273,7 @@ public class RenditionManager
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
 
-        Log.d(TAG, "height:" + height + "width" + width);
+        //Log.d(TAG, "height:" + height + "width" + width);
 
         return inSampleSize;
     }
@@ -379,7 +388,7 @@ public class RenditionManager
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
-    public class BitmapWorkerTask extends AsyncTask<Void, Integer, Bitmap>
+    public class BitmapThread extends Thread
     {
         private final WeakReference<ImageView> imageViewReference;
 
@@ -391,13 +400,12 @@ public class RenditionManager
 
         private Integer preview;
 
-        public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type)
+        public BitmapThread(AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
             this(session, imageView, identifier, type, null);
         }
 
-        public BitmapWorkerTask(AlfrescoSession session, ImageView imageView, String identifier, int type,
-                Integer preview)
+        public BitmapThread(AlfrescoSession session, ImageView imageView, String identifier, int type, Integer preview)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
@@ -415,7 +423,7 @@ public class RenditionManager
             this.preview = preview;
         }
 
-        private String getId()
+        private String getBmId()
         {
             if (identifier != null)
             {
@@ -427,16 +435,17 @@ public class RenditionManager
 
         // Decode image in background.
         @Override
-        protected Bitmap doInBackground(Void... params)
+        public void run()
         {
-            if (session == null) { return null; }
+            if (session == null) { return; }
+            if (isInterrupted()) { return; }
 
             Bitmap bm = null;
             ContentStream cf = null;
-            String key = getId();
+            String key = getBmId();
             if (preview != null)
             {
-                key = "L" + getId();
+                key = "L" + getBmId();
             }
 
             if (mDiskCache != null)
@@ -456,6 +465,7 @@ public class RenditionManager
                             renditionId = DocumentFolderService.RENDITION_PREVIEW;
                         }
 
+                        if (isInterrupted()) { return; }
                         cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
                                 .getDocumentFolderService()).getRenditionStream(identifier, renditionId);
                     }
@@ -481,6 +491,7 @@ public class RenditionManager
                 {
                     if (mDiskCache != null)
                     {
+                        if (isInterrupted()) { return; }
                         addBitmapToDiskMemoryCache(key, cf);
                         bm = getBitmapFromDiskCache(key, preview);
                     }
@@ -491,24 +502,54 @@ public class RenditionManager
                 }
             }
 
-            addBitmapToMemoryCache(key, bm);
-            return bm;
+            if (imageViewReference != null && imageViewReference.get() != null
+                    && imageViewReference.get().getContext() instanceof Activity)
+            {
+                addBitmapToMemoryCache(key, bm);
+                if (!isInterrupted())
+                {
+                    ((Activity) imageViewReference.get().getContext()).runOnUiThread(new BitmapDisplayer(bm, preview,
+                            imageViewReference, this));
+                }
+            }
+        }
+    }
+
+    public static int getDPI(DisplayMetrics dm, int sizeInDp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
+    }
+
+    // Used to display bitmap in the UI thread
+    class BitmapDisplayer implements Runnable
+    {
+        Bitmap bitmap;
+
+        ImageView imageView;
+
+        Integer preview;
+
+        WeakReference<ImageView> imageViewReference;
+
+        BitmapThread bitmapTask;
+
+        public BitmapDisplayer(Bitmap b, Integer p, WeakReference<ImageView> im, BitmapThread bt)
+        {
+            bitmap = b;
+            imageView = im.get();
+            preview = p;
+            imageViewReference = im;
+            bitmapTask = bt;
         }
 
-        // Once complete, see if ImageView is still around and set bitmap.
-        @Override
-        protected void onPostExecute(Bitmap bitmap)
+        public void run()
         {
-            if (isCancelled())
-            {
-                bitmap = null;
-            }
 
             if (imageViewReference != null && bitmap != null)
             {
                 final ImageView imageView = imageViewReference.get();
-                final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
-                if (this == bitmapWorkerTask && imageView != null)
+                final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
+                if (bitmapTask == bitmapWorkerTask && imageView != null)
                 {
                     imageView.setImageBitmap(bitmap);
 
@@ -521,7 +562,7 @@ public class RenditionManager
                         params.width = bitmap.getWidth();
                         params.height = bitmap.getHeight();
                         imageView.setLayoutParams(params);
-                        Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
+                        //Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
                     }
                 }
             }
@@ -536,25 +577,20 @@ public class RenditionManager
         }
     }
 
-    public static int getDPI(DisplayMetrics dm, int sizeInDp)
-    {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
-    }
-
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////////////
     public static class AsyncDrawable extends BitmapDrawable
     {
-        private final WeakReference<BitmapWorkerTask> bitmapWorkerTaskReference;
+        private final WeakReference<BitmapThread> bitmapWorkerTaskReference;
 
-        public AsyncDrawable(Resources res, Bitmap bitmap, BitmapWorkerTask bitmapWorkerTask)
+        public AsyncDrawable(Resources res, Bitmap bitmap, BitmapThread bitmapThread)
         {
             super(res, bitmap);
-            bitmapWorkerTaskReference = new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
+            bitmapWorkerTaskReference = new WeakReference<BitmapThread>(bitmapThread);
         }
 
-        public BitmapWorkerTask getBitmapWorkerTask()
+        public BitmapThread getBitmapWorkerTask()
         {
             return bitmapWorkerTaskReference.get();
         }
@@ -562,14 +598,15 @@ public class RenditionManager
 
     public static boolean cancelPotentialWork(String data, ImageView imageView)
     {
-        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
+        final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
 
         if (bitmapWorkerTask != null)
         {
-            final String bitmapData = bitmapWorkerTask.username;
+            final String bitmapData = bitmapWorkerTask.identifier;
             if (bitmapData != null && !bitmapData.equals(data))
             {
-                bitmapWorkerTask.cancel(true);
+                //Log.d(TAG, "Cancel : " + data);
+                bitmapWorkerTask.interrupt();
             }
             else
             {
@@ -579,7 +616,7 @@ public class RenditionManager
         return true;
     }
 
-    private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView)
+    private static BitmapThread getBitmapThread(ImageView imageView)
     {
         if (imageView != null)
         {
