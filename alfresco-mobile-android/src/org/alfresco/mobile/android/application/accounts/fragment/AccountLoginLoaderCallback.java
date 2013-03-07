@@ -122,7 +122,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
         // If the current account is not the one that loader has retrieved
         // We save the OAuth token if necessary and do nothing...
-        if (SessionUtils.getAccount(activity).getId() != acc.getId())
+        if (activity instanceof MainActivity && SessionUtils.getAccount(activity).getId() != acc.getId())
         {
             saveNewOauthData(loader);
             activity.getLoaderManager().destroyLoader(loader.getId());
