@@ -103,7 +103,10 @@ public class PublicDispatcherActivity extends Activity
     protected void onPause()
     {
         super.onPause();
-        PasscodePreferences.updateLastActivityDisplay(this);
+        if (!PasscodePreferences.hasPasscodeEnable(this))
+        {
+            PasscodePreferences.updateLastActivityDisplay(this);
+        }
     }
 
     @Override
