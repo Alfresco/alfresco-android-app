@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.application.manager;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.HomeScreenActivity;
@@ -27,6 +29,7 @@ import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDi
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
@@ -78,6 +81,8 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
             if (CipherUtils.isEncryptionActive(fr.getActivity()))
             {
+                myFile = IOUtils.makeTempFile(myFile);
+                
                 FragmentTransaction fragmentTransaction = fr.getActivity().getFragmentManager().beginTransaction();
                 EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, listener,
                         Intent.ACTION_VIEW);
