@@ -29,7 +29,6 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -114,11 +113,6 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
             // Retrieve Node
             n = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(identifier);
-
-            if (n.isDocument())
-            {
-                n = session.getServiceRegistry().getVersionService().getVersions((Document) n).get(0);
-            }
 
             if (n.isDocument())
             {
