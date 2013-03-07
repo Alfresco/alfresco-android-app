@@ -25,6 +25,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Vector;
 
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -43,6 +45,35 @@ public class IOUtils
     static final String encryptionExtension = ".etmp";
 
     static final String decryptionExtension = ".utmp";
+
+    private static final String TEMP_FILESTAMP = "-yyyyddMM-HHmmss";
+
+    private static final String TEMP_FILE_EXT = ".tmp";
+
+    private static final int TEMP_LEN = TEMP_FILESTAMP.length() + TEMP_FILE_EXT.length();
+
+    public static File makeTempFile(File f)
+    {
+        String timeStamp = new SimpleDateFormat(TEMP_FILESTAMP).format(new Date());
+        File newFile = new File(f.getPath() + timeStamp + TEMP_FILE_EXT);
+
+        if (f.renameTo(newFile)) return newFile;
+
+        return f;
+    }
+
+    public static File returnTempFileToOriginal(File f)
+    {
+        if (f.getName().endsWith(".tmp"))
+        {
+            String name = f.getPath();
+            File newFile = new File(name.substring(0, name.length() - TEMP_LEN));
+
+            if (f.renameTo(newFile)) return newFile;
+        }
+
+        return f;
+    }
 
     public static File createFolder(File f, String extendedPath)
     {
