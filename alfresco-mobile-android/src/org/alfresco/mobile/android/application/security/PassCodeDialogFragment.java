@@ -271,8 +271,8 @@ public class PassCodeDialogFragment extends DialogFragment
                 {
                     Editor editor = sharedPref.edit();
                     editor.putLong(KEY_PASSCODE_ACTIVATED_AT, -1);
+                    editor.remove(KEY_PASSCODE_ATTEMPT);
                     editor.commit();
-
                     getActivity().setResult(Activity.RESULT_OK);
                     getActivity().finish();
                 }
@@ -395,10 +395,10 @@ public class PassCodeDialogFragment extends DialogFragment
 
     private void checkAttempts()
     {
-        int attempts = sharedPref.getInt(KEY_PASSCODE_ATTEMPT, 0);
+        int attempts = sharedPref.getInt(KEY_PASSCODE_ATTEMPT, 1);
         int maxAttempts = sharedPref.getInt(KEY_PASSCODE_MAX_ATTEMPT, -1);
 
-        if (maxAttempts > 0 && attempts > maxAttempts)
+        if (maxAttempts > 0 && attempts >= maxAttempts)
         {
             WaitingDialogFragment fr = new WaitingDialogFragment();
             fr.show(getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
