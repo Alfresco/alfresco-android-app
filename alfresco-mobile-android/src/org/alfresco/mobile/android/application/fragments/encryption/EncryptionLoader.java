@@ -106,7 +106,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
                 else
                 if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
                 {
-                    encryptedFile = new File(file.getPath());
+                    encryptedFile = IOUtils.returnTempFileToOriginal(file);
                 }
             }
             else
