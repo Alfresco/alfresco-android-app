@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
 import android.app.LoaderManager;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -45,8 +44,6 @@ public class AccountOAuthFragment extends OAuthFragment
     public static final String TAG = "AccountOAuthFragment";
 
     private static final String PARAM_ACCOUNT = "account";
-
-    private ProgressDialog mProgressDialog;
 
     public static AccountOAuthFragment newInstance()
     {
@@ -130,11 +127,6 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void failedRequestAccessToken(Exception e)
             {
-                if (mProgressDialog != null)
-                {
-                    mProgressDialog.dismiss();
-                }
-
                 if (DisplayUtils.hasCentralPane(getActivity()))
                 {
                     ((MainActivity) getActivity()).clearScreen();

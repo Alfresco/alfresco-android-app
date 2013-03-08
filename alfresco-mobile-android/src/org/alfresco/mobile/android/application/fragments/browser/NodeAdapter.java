@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
@@ -51,7 +50,7 @@ public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
 
     private int mode;
 
-    public NodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, listItems);

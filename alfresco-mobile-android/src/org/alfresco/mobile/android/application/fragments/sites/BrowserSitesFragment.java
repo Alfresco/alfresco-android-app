@@ -79,8 +79,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
 
     public static BrowserSitesFragment newInstance()
     {
-        BrowserSitesFragment bf = new BrowserSitesFragment();
-        return bf;
+        return new BrowserSitesFragment();
     }
 
     @Override

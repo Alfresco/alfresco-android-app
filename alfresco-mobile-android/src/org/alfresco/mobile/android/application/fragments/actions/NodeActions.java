@@ -32,8 +32,6 @@ import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionLoader;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -46,7 +44,6 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
 import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -60,8 +57,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,7 +76,7 @@ public class NodeActions implements ActionMode.Callback
 
     private ActionMode mode;
 
-    static private Activity activity = null;
+    private Activity activity = null;
 
     private Fragment fragment;
 
@@ -184,7 +179,7 @@ public class NodeActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public interface onFinishModeListerner
     {
-        public void onFinish();
+        void onFinish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +316,7 @@ public class NodeActions implements ActionMode.Callback
         return null;
     }
     
-    static public class DownloadReceiver extends BroadcastReceiver
+    public static class DownloadReceiver extends BroadcastReceiver
     {
         @Override
         public void onReceive(final Context context, Intent intent)

@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.intent;
 
-public class PublicIntent
+public interface PublicIntent
 {
 
     public static final String ACTION_VIEW = "org.alfresco.mobile.android.intent.ACTION_VIEW";

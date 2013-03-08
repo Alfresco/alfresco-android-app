@@ -70,7 +70,9 @@ public abstract class DisplayUtils
     {
         a.findViewById(R.id.left_pane_title).setVisibility(View.VISIBLE);
         if (a.findViewById(R.id.left_pane_title) != null)
+        {
             a.findViewById(R.id.left_pane_title).setVisibility(View.VISIBLE);
+        }
         ((TextView) a.findViewById(R.id.left_pane_title)).setText(title);
     }
 
@@ -117,7 +119,7 @@ public abstract class DisplayUtils
 
     public static int getMainPaneId(Activity a)
     {
-        if (hasCentralPane(a)) return getCentralFragmentId(a);
+        if (hasCentralPane(a)) { return getCentralFragmentId(a); }
         return getLeftFragmentId(a);
     }
 
@@ -136,7 +138,7 @@ public abstract class DisplayUtils
 
     public static View getMainPane(Activity a)
     {
-        if (hasCentralPane(a)) return getCentralPane(a);
+        if (hasCentralPane(a)) { return getCentralPane(a); }
         return getLeftPane(a);
     }
 
@@ -159,8 +161,10 @@ public abstract class DisplayUtils
     /**
      * Utility method to display or not the central panel in 7" configuration.<br/>
      * Portrait mode is single panel instead of landscape is 2 panels.
-     * @param activity : 
-     * @param isNull : Indicate if there's already a fragment in the central panel.
+     * 
+     * @param activity :
+     * @param isNull : Indicate if there's already a fragment in the central
+     *            panel.
      */
     public static void switchSingleOrTwo(Activity activity, boolean isNull)
     {
@@ -191,9 +195,9 @@ public abstract class DisplayUtils
 
         float density = context.getResources().getDisplayMetrics().density;
         int width = Math.round(outMetrics.widthPixels / density);
-        
+
         Resources res = context.getResources();
-        
+
         int coeff = 150;
         if (width < 320)
         {
@@ -214,7 +218,8 @@ public abstract class DisplayUtils
         else if (width < 1000)
         {
             coeff = res.getInteger(R.integer.width_1000);
-        } else
+        }
+        else
         {
             coeff = res.getInteger(R.integer.width_max);
         }

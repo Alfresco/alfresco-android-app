@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments;
 import java.util.Stack;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -29,6 +30,10 @@ import android.app.FragmentTransaction;
 @TargetApi(13)
 public class FragmentDisplayer
 {
+
+    private FragmentDisplayer()
+    {
+    }
 
     public static void loadFragment(Activity a, Integer viewId, String tag)
     {
@@ -40,7 +45,7 @@ public class FragmentDisplayer
 
     public static void loadFragment(Activity a, Fragment f, Integer viewId, String tag)
     {
-
+        PasscodePreferences.updateLastActivityDisplay(a);
         if (f == null)
         {
             loadFragment(a, viewId, tag);
@@ -66,7 +71,6 @@ public class FragmentDisplayer
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                             R.anim.slide_out_right);
-                    ;
                 }
                 t2.add(viewId, f, tag);
                 t2.commit();
@@ -196,10 +200,13 @@ public class FragmentDisplayer
 
     public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack)
     {
-       replaceFragment(a, f, viewId, tag, backStack, true);
+        replaceFragment(a, f, viewId, tag, backStack, true);
     }
-    
-    public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack, boolean hasAnimation){
+
+    public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack,
+            boolean hasAnimation)
+    {
+        PasscodePreferences.updateLastActivityDisplay(a);
         if (f == null)
         {
             replaceFragment(a, viewId, tag, backStack);
@@ -215,12 +222,14 @@ public class FragmentDisplayer
                     // t2.setCustomAnimations(R.anim.slide_in_right,//
                     // R.anim.slide_out_left);
                 }
-                else if ( hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                else if (hasAnimation
+                        && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
                 }
-                else if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                else if (hasAnimation
+                        && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
                             R.anim.slide_out_right);

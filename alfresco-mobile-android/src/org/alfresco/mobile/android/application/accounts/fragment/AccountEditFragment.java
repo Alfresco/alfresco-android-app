@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -47,6 +47,13 @@ public class AccountEditFragment extends DialogFragment
     public static final String TAG = "AccountEditFragment";
 
     private Button validate;
+    
+    private String url = null, host = null, username = null, password = null, servicedocument = null,
+            description = null;
+
+    private boolean https = false;
+
+    private int port;
 
     public AccountEditFragment()
     {
@@ -116,7 +123,7 @@ public class AccountEditFragment extends DialogFragment
                 {
                     portForm.setText("80");
                 }
-                else if (sw.isChecked() == true
+                else if (sw.isChecked()
                         && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("80")))
                 {
                     portForm.setText("443");
@@ -129,13 +136,6 @@ public class AccountEditFragment extends DialogFragment
 
         return v;
     }
-
-    private String url = null, host = null, username = null, password = null, servicedocument = null,
-            description = null;
-
-    private boolean https = false;
-
-    private int port;
 
     private void validateServer(View v)
     {
@@ -153,11 +153,11 @@ public class AccountEditFragment extends DialogFragment
     private void initForm()
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
-        EditText form_value = null;
+        EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
-            form_value = (EditText) findViewByIdInternal(ids[i]);
-            form_value.addTextChangedListener(watcher);
+            formValue = (EditText) findViewByIdInternal(ids[i]);
+            formValue.addTextChangedListener(watcher);
         }
     }
 
@@ -194,33 +194,33 @@ public class AccountEditFragment extends DialogFragment
     private boolean retrieveFormValues()
     {
 
-        EditText form_value = (EditText) findViewByIdInternal(R.id.repository_username);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        EditText formValue = (EditText) findViewByIdInternal(R.id.repository_username);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            username = form_value.getText().toString();
+            username = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) findViewByIdInternal(R.id.repository_description);
-        description = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.repository_description);
+        description = formValue.getText().toString();
 
-        form_value = (EditText) findViewByIdInternal(R.id.repository_password);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) findViewByIdInternal(R.id.repository_password);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            password = form_value.getText().toString();
+            password = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) findViewByIdInternal(R.id.repository_hostname);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) findViewByIdInternal(R.id.repository_hostname);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            host = form_value.getText().toString();
+            host = formValue.getText().toString();
         }
         else
         {
@@ -231,18 +231,18 @@ public class AccountEditFragment extends DialogFragment
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
-        form_value = (EditText) findViewByIdInternal(R.id.repository_port);
-        if (form_value.getText().length() > 0)
+        formValue = (EditText) findViewByIdInternal(R.id.repository_port);
+        if (formValue.getText().length() > 0)
         {
-            port = Integer.parseInt(form_value.getText().toString());
+            port = Integer.parseInt(formValue.getText().toString());
         }
         else
         {
             port = (protocol.equals("https")) ? 443 : 80;
         }
 
-        form_value = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
-        servicedocument = form_value.getText().toString();
+        formValue = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
+        servicedocument = formValue.getText().toString();
         URL u = null;
         try
         {

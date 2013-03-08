@@ -138,7 +138,7 @@ public class EditorsDialogFragment extends DialogFragment
     /**
      * Inner class responsible to manage the list of Editors.
      */
-    public class EditorAdapter extends BaseListAdapter<ResolveInfo, GenericViewHolder>
+    private static class EditorAdapter extends BaseListAdapter<ResolveInfo, GenericViewHolder>
     {
 
         public EditorAdapter(Activity context, int textViewResourceId, List<ResolveInfo> listItems)

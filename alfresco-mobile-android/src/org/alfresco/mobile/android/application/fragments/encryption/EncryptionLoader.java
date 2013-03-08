@@ -52,7 +52,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
     private File copiedFile;
 
     private boolean folder;
-    
+
     public EncryptionLoader(Fragment fr, AlfrescoSession session, File file, boolean doEncrypt)
     {
         super(fr.getActivity());
@@ -80,7 +80,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
         this.doEncrypt = doEncrypt;
         this.folder = folder;
     }
-    
+
     @Override
     public LoaderResult<File> loadInBackground()
     {
@@ -90,7 +90,7 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
         Vector<String> folders = new Vector<String>();
         folders.add(StorageManager.DLDIR);
         folders.add(StorageManager.TEMPDIR);
-        
+
         try
         {
             if (copiedFile != null)
@@ -106,22 +106,25 @@ public class EncryptionLoader extends AbstractBaseLoader<LoaderResult<File>>
                 if (folder)
                 {
                     if (IOUtils.encryptFiles(getContext(), file.getPath(), folders, true))
+                    {
                         prefs.edit().putBoolean(GeneralPreferences.PRIVATE_FOLDERS, true).commit();
+                    }
                 }
-                else
-                if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
+                else if (CipherUtils.encryptFile(getContext(), file.getPath(), true))
                 {
                     encryptedFile = IOUtils.returnTempFileToOriginal(file);
                 }
             }
             else
             {
-                //Decrypt
-                
+                // Decrypt
+
                 if (folder)
                 {
                     if (IOUtils.decryptFiles(getContext(), file.getPath(), folders, true))
+                    {
                         prefs.edit().putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false).commit();
+                    }
                 }
                 else
                 {

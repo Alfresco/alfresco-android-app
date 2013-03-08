@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
-
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_FOLDER;
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
@@ -31,6 +30,7 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.application.R;
@@ -219,7 +219,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             }
         }
     }
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -227,13 +227,19 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         {
             try
             {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString("RequiresEncrypt", "");
+                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
+                        GeneralPreferences.REQUIRES_ENCRYPT, "");
                 if (filename != null && filename.length() > 0)
                 {
                     if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                    {
                         MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
+                    }
                     else
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString("RequiresEncrypt", "").commit();
+                    {
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                                .putString(GeneralPreferences.REQUIRES_ENCRYPT, "").commit();
+                    }
                 }
             }
             catch (Exception e)
@@ -242,7 +248,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 Log.d(TAG, Log.getStackTraceString(e));
             }
         }
-        
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

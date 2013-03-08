@@ -27,6 +27,9 @@ import android.util.Log;
 
 public class ReportManager
 {
+    private ReportManager()
+    {
+    }
 
     private static final String CRASHMANAGER_CLASS = "net.hockeyapp.android.CrashManager";
 

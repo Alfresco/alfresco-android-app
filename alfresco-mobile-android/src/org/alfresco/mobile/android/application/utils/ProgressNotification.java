@@ -65,13 +65,13 @@ public class ProgressNotification extends Service
 
     private static progressItem newItem = null;
 
-    private static String TAG = "ProgressNotification";
+    private static final String TAG = "ProgressNotification";
 
-    public static String PARAM_DATA_SIZE = "dataSize";
+    public static final String PARAM_DATA_SIZE = "dataSize";
 
-    public static String PARAM_DATA_INCREMENT = "dataIncrement";
+    public static final String PARAM_DATA_INCREMENT = "dataIncrement";
 
-    public static String PARAM_DATA_NAME = "name";
+    public static final String PARAM_DATA_NAME = "name";
 
     @Override
     public IBinder onBind(Intent intent)

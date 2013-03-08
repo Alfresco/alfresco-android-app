@@ -35,15 +35,15 @@ import android.widget.TextView;
 
 public class AlphabeticNodeAdapter extends NodeAdapter
 {
-    private final int ITEM_TYPE = 0;
+    private final static int ITEM_TYPE = 0;
 
-    private final int HEADING_TYPE = 1;
+    private final static int HEADING_TYPE = 1;
 
-    HashMap<String, Integer> alphaIndexer;
+    private HashMap<String, Integer> alphaIndexer;
 
-    HashMap<Integer, String> positionIndexer;
+    private HashMap<Integer, String> positionIndexer;
 
-    LayoutInflater mInflater;
+    private LayoutInflater mInflater;
 
     public AlphabeticNodeAdapter(Context context, int textViewResourceId, List<Node> objects)
     {
@@ -58,7 +58,7 @@ public class AlphabeticNodeAdapter extends NodeAdapter
     public AlphabeticNodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
-        super(context, session, textViewResourceId, listItems, selectedItems, mode);
+        super(context, textViewResourceId, listItems, selectedItems, mode);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         alphaIndexer = new HashMap<String, Integer>();
@@ -72,7 +72,7 @@ public class AlphabeticNodeAdapter extends NodeAdapter
         String element = object.getName();
         String key = element.substring(0, 1).toUpperCase();
 
-        if (alphaIndexer.containsKey(key) == false)
+        if (!alphaIndexer.containsKey(key))
         {
             alphaIndexer.put(key, idx);
             positionIndexer.put(idx, key);

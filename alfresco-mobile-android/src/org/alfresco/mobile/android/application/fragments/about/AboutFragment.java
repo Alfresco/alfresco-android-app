@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.about;
 
+import org.alfresco.mobile.android.api.Version;
 import org.alfresco.mobile.android.application.R;
 
 import android.app.Fragment;
@@ -60,6 +61,13 @@ public class AboutFragment extends Fragment
             versionNumber = "X.x.x.x";
         }
         tv.setText(versionNumber);
+
+        // SDK Version Number
+        tv = (TextView) v.findViewById(R.id.about_sdknumber);
+        StringBuilder sb = new StringBuilder(getText(R.string.sdknumber_version));
+        sb.append(" ");
+        sb.append(Version.SDK);
+        tv.setText(sb.toString());
 
         return v;
     }

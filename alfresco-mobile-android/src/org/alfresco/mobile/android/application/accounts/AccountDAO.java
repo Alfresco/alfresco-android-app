@@ -102,8 +102,9 @@ public class AccountDAO extends DAO<Account>
         if (c != null)
         {
             c.moveToFirst();
+            return cursorToAccount(c);
         }
-        return cursorToAccount(c);
+        return null;
     }
 
     private ContentValues createContentValues(String name, String url, String username, String pass, String workspace,
@@ -128,16 +129,16 @@ public class AccountDAO extends DAO<Account>
     {
         if (c.getCount() == 0) { return new ArrayList<Account>(); }
 
-        ArrayList<Account> Accounts = new ArrayList<Account>(c.getCount());
+        ArrayList<Account> accounts = new ArrayList<Account>(c.getCount());
         c.moveToFirst();
 
         do
         {
-            Account Account = createAccountFromCursor(c);
-            Accounts.add(Account);
+            Account account = createAccountFromCursor(c);
+            accounts.add(account);
         } while (c.moveToNext());
         c.close();
-        return Accounts;
+        return accounts;
     }
 
     private Account createAccountFromCursor(Cursor c)
@@ -154,9 +155,9 @@ public class AccountDAO extends DAO<Account>
     private Account cursorToAccount(Cursor c)
     {
         if (c.getCount() == 0) { return null; }
-        Account Account = createAccountFromCursor(c);
+        Account account = createAccountFromCursor(c);
         c.close();
-        return Account;
+        return account;
     }
 
 }

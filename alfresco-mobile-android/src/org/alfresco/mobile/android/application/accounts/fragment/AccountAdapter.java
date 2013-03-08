@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -37,8 +37,6 @@ public class AccountAdapter extends ArrayAdapter<String>
 
     private List<Account> accounts;
 
-    private Account selectedAccount;
-
     public AccountAdapter(Context context, int textViewResourceId, List<Account> accounts)
     {
         super(context, textViewResourceId);
@@ -68,16 +66,16 @@ public class AccountAdapter extends ArrayAdapter<String>
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        return getInternalView(position, convertView, parent);
+        return getInternalView(position, convertView);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        return getInternalView(position, convertView, parent);
+        return getInternalView(position, convertView);
     }
 
-    private View getInternalView(int position, View convertView, ViewGroup parent)
+    private View getInternalView(int position, View convertView)
     {
         View v = convertView;
         if (v == null)
@@ -105,14 +103,7 @@ public class AccountAdapter extends ArrayAdapter<String>
             iv.setVisibility(View.VISIBLE);
             item = accounts.get(position);
             tv.setText(item.getDescription());
-            if (selectedAccount != null && item.getId() == selectedAccount.getId())
-            {
-                iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_confirm_light));
-            }
-            else
-            {
-                iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_account_light));
-            }
+            iv.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_account_light));
         }
         return v;
     }

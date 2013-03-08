@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -168,7 +168,7 @@ public class AccountSettingsHelper
         }
         else
         {
-            return (data != null || (baseUrl != null && baseUrl.toString().startsWith(ALFRESCO_CLOUD_URL)));
+            return (data != null || (baseUrl != null && baseUrl.startsWith(ALFRESCO_CLOUD_URL)));
         }
     }
 

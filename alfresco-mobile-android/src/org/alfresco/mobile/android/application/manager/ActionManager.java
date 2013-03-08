@@ -122,13 +122,13 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
 
     public static void actionDisplayDialog(Activity activity, Bundle bundle)
     {
-        String IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
+        String intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
         if (activity instanceof HomeScreenActivity)
         {
-            IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
+            intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
         }
 
-        Intent i = new Intent(IntentId);
+        Intent i = new Intent(intentId);
         if (bundle != null)
         {
             i.putExtras(bundle);
@@ -138,13 +138,13 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
 
     public static void actionDisplayDialog(Fragment f, Bundle bundle)
     {
-        String IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
+        String intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
         if (f.getActivity() instanceof HomeScreenActivity)
         {
-            IntentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
+            intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
         }
 
-        Intent i = new Intent(IntentId);
+        Intent i = new Intent(intentId);
         if (bundle != null)
         {
             i.putExtras(bundle);

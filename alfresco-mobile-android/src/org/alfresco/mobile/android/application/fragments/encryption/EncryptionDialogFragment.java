@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.fragments.encryption;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -66,7 +65,7 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     private static final String PARAM_INTENT_ACTION = "intentAction";
 
     private static final String PARAM_COPIED_FILE = "copiedFile";
-    
+
     private static final String PARAM_FOLDER = "folder";
 
     private ActionManagerListener listener;
@@ -74,9 +73,6 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     private int loaderId;
 
     private String fragmentTransactionTag;
-
-    /** RepositorySession */
-    protected AlfrescoSession alfSession;
 
     public EncryptionDialogFragment()
     {
@@ -141,7 +137,7 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         fragment.setArguments(b);
         return fragment;
     }
-    
+
     public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
             String intentAction)
     {
@@ -168,12 +164,11 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         fragment.setArguments(b);
         return fragment;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         setRetainInstance(true);
-        alfSession = SessionUtils.getSession(getActivity());
         super.onCreate(savedInstanceState);
     }
 
@@ -227,7 +222,8 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         }
         else
         {
-            return new EncryptionLoader(this, SessionUtils.getSession(getActivity()), myFile, doEncrypt, getArguments().containsKey(PARAM_FOLDER));
+            return new EncryptionLoader(this, SessionUtils.getSession(getActivity()), myFile, doEncrypt, getArguments()
+                    .containsKey(PARAM_FOLDER));
         }
     }
 
@@ -301,12 +297,10 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
                 FragmentDisplayer.remove(activity, fr, false);
             }
 
-            if (intent.getExtras().getBoolean(IntentIntegrator.REMOVE_FRAGMENT_WAITING))
+            if (intent.getExtras().getBoolean(IntentIntegrator.REMOVE_FRAGMENT_WAITING)
+                    && getFragment(activity, WaitingDialogFragment.TAG) != null)
             {
-                if (getFragment(activity, WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(activity, WaitingDialogFragment.TAG)).dismiss();
-                }
+                ((DialogFragment) getFragment(activity, WaitingDialogFragment.TAG)).dismiss();
             }
 
             int loaderId = intent.getExtras().getInt(IntentIntegrator.REMOVE_LOADER_ID);
