@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments;
 import java.util.Stack;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -44,7 +45,7 @@ public class FragmentDisplayer
 
     public static void loadFragment(Activity a, Fragment f, Integer viewId, String tag)
     {
-
+        PasscodePreferences.updateLastActivityDisplay(a);
         if (f == null)
         {
             loadFragment(a, viewId, tag);
@@ -205,6 +206,7 @@ public class FragmentDisplayer
     public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack,
             boolean hasAnimation)
     {
+        PasscodePreferences.updateLastActivityDisplay(a);
         if (f == null)
         {
             replaceFragment(a, viewId, tag, backStack);
