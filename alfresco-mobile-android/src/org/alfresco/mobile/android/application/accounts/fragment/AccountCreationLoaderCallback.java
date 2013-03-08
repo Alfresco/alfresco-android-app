@@ -167,8 +167,7 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                 if (session instanceof CloudSession
                         && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
                 {
-                    type = (data != null) ? Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH) : Integer
-                            .valueOf(Account.TYPE_ALFRESCO_TEST_BASIC);
+                    type = Integer.valueOf(Account.TYPE_ALFRESCO_TEST_OAUTH);
                 }
 
                 isPaidAccount = isPaid (type, session, prefs);

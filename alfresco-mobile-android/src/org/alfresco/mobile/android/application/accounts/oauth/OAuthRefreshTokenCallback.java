@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -57,9 +57,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
     @Override
     public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle args)
     {
-
-        Loader<LoaderResult<OAuthData>> loader = new OAuthRefreshTokenLoader(activity, session);
-        return loader;
+        return new OAuthRefreshTokenLoader(activity, session);
     }
 
     @Override
@@ -75,9 +73,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
             {
                 case Account.TYPE_ALFRESCO_TEST_OAUTH:
                 case Account.TYPE_ALFRESCO_CLOUD:
-
                     CloudExceptionUtils.handleCloudException(activity, results.getException(), true);
-
                     break;
             }
             Log.e(TAG, Log.getStackTraceString(results.getException()));

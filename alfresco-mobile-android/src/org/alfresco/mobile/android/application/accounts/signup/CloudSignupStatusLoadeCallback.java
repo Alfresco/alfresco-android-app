@@ -77,13 +77,13 @@ public class CloudSignupStatusLoadeCallback implements LoaderCallbacks<LoaderRes
     public void onLoadFinished(Loader<LoaderResult<Boolean>> loader, LoaderResult<Boolean> results)
     {
         mProgressDialog.dismiss();
-        Boolean request = results.getData();
+        Boolean hasData = results.getData();
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
             MessengerManager.showLongToast(activity, activity.getString(R.string.error_general));
         }
-        else if (request)
+        else if (hasData)
         {
             fr.getLoaderManager().destroyLoader(CloudSignupStatusLoader.ID);
             validateAccount();

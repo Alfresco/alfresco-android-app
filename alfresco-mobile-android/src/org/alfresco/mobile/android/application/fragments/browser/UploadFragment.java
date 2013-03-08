@@ -43,12 +43,10 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.ProgressNotification;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -58,7 +56,6 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 /**
@@ -198,13 +195,13 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
         ContentFile contentFile = null;
         String name = null;
 
-        if (getArguments().getBoolean(ARGUMENT_ACTION_UPDATE))
+        if (getArguments().getBoolean(ARGUMENT_ACTION_UPDATE) && loader instanceof UpdateContentLoader)
         {
             UpdateContentLoader loaderD = (UpdateContentLoader) loader;
             contentFile = loaderD.getContentFile();
             name = loaderD.getDocument().getName();
         }
-        else
+        else if (loader instanceof DocumentCreateLoader)
         {
             DocumentCreateLoader loaderD = (DocumentCreateLoader) loader;
             contentFile = loaderD.getContentFile();
@@ -282,7 +279,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 {
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
                             DetailsFragment.TAG);
-                    if (getActivity() != null && detailsFragment != null && getActivity() instanceof MainActivity)
+                    if (detailsFragment != null && getActivity() instanceof MainActivity)
                     {
                         Node n = (Node) detailsFragment.getArguments().get(DetailsFragment.ARGUMENT_NODE);
                         Node node = results.getData();
@@ -302,11 +299,11 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 else
                 {
                     Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                    if (getActivity() != null && lf != null && getActivity() instanceof MainActivity
+                    if (lf != null && getActivity() instanceof MainActivity
                             && lf instanceof ChildrenBrowserFragment)
                     {
-                        Folder parentFolder = ((ChildrenBrowserFragment) lf).getParent();
-                        if (parentFolder == this.parentFolder)
+                        Folder pFolder = ((ChildrenBrowserFragment) lf).getParent();
+                        if (pFolder == this.parentFolder)
                         {
                             ((ChildrenBrowserFragment) lf).refresh();
                         }

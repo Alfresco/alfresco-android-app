@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.utils;
 import java.io.IOException;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Fragment;
@@ -32,26 +33,33 @@ import android.util.Log;
 
 public class EmailUtils
 {
-    public static final String TAG = "EmailUtils";
+    private EmailUtils(){
+    }
     
-    public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment, int requestCode)
+    public static final String TAG = "EmailUtils";
+
+    public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment,
+            int requestCode)
     {
         try
         {
             if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true))
             {
-                if ( CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
-                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit().putString("RequiresEncrypt", attachment.getPath()).commit();
+                if (CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
+                {
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
+                            .putString(GeneralPreferences.REQUIRES_ENCRYPT, attachment.getPath()).commit();
+                }
             }
-            
+
             Intent i = new Intent(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_SUBJECT, subject);
             i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
             i.putExtra(Intent.EXTRA_STREAM, attachment);
             i.setType("text/plain");
             fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
-            
-            return true;   
+
+            return true;
         }
         catch (IOException e)
         {
@@ -63,7 +71,7 @@ public class EmailUtils
             MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
             Log.d(TAG, Log.getStackTraceString(e));
         }
-        
+
         return false;
     }
 

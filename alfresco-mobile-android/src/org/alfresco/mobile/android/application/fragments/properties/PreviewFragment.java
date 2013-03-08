@@ -58,8 +58,6 @@ public class PreviewFragment extends BaseFragment
 
     private Node node;
 
-    private RenditionManager renditionManager;
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -75,7 +73,7 @@ public class PreviewFragment extends BaseFragment
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        renditionManager = SessionUtils.getRenditionManager(getActivity());
+        RenditionManager renditionManager = SessionUtils.getRenditionManager(getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;

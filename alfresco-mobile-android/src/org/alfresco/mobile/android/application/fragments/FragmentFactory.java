@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -33,16 +33,24 @@ import android.util.Log;
 public class FragmentFactory
 {
 
+    private FragmentFactory()
+    {
+    }
+
     private static final String TAG = "FragmentFactory";
 
     public static Fragment createInstance(String tag)
     {
         try
         {
-            if (FragmentRegistry.containsKey(tag))
-                return (Fragment) FragmentRegistry.get(tag).newInstance();
+            if (fragmentRegistry.containsKey(tag))
+            {
+                return (Fragment) fragmentRegistry.get(tag).newInstance();
+            }
             else
+            {
                 return null;
+            }
         }
         catch (Exception e)
         {
@@ -52,7 +60,7 @@ public class FragmentFactory
     }
 
     @SuppressWarnings({ "rawtypes", "serial" })
-    public static Map<String, Class> FragmentRegistry = new HashMap<String, Class>()
+    public static Map<String, Class> fragmentRegistry = new HashMap<String, Class>()
     {
         {
             put(ChildrenBrowserFragment.TAG, ChildrenBrowserFragment.class);

@@ -23,7 +23,6 @@ import android.content.Context;
 
 public abstract class DAO<T>
 {
-
     protected Context context;
 
     public DAO(Context context)

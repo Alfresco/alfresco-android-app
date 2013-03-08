@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -22,7 +22,6 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountDAO;
-import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.AsyncTaskLoader;
@@ -30,14 +29,11 @@ import android.content.Context;
 
 public class AccountsLoader extends AsyncTaskLoader<List<Account>>
 {
-
     public static final int ID = 46893278;
 
-    List<Account> mApps;
+    private List<Account> mApps;
 
     private Context context;
-
-    private DatabaseManager db;
 
     public AccountsLoader(Context context)
     {
@@ -48,22 +44,13 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
     @Override
     public List<Account> loadInBackground()
     {
-        AccountDAO AccountDao = new AccountDAO(context, SessionUtils.getDataBaseManager(context).getWriteDb());
-        ArrayList<Account> l = new ArrayList<Account>(AccountDao.findAll());
-        return l;
+        AccountDAO accountDao = new AccountDAO(context, SessionUtils.getDataBaseManager(context).getWriteDb());
+        return new ArrayList<Account>(accountDao.findAll());
     }
 
     @Override
     public void deliverResult(List<Account> data)
     {
-        if (isReset())
-        {
-            if (data != null)
-            {
-                onReleaseResources(data);
-            }
-        }
-        List<Account> oldApps = data;
         mApps = data;
 
         if (isStarted())
@@ -71,10 +58,6 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
             super.deliverResult(data);
         }
 
-        if (oldApps != null)
-        {
-            onReleaseResources(oldApps);
-        }
     }
 
     @Override
@@ -87,34 +70,6 @@ public class AccountsLoader extends AsyncTaskLoader<List<Account>>
         else
         {
             forceLoad();
-        }
-    }
-
-    @Override
-    public void onCanceled(List<Account> data)
-    {
-        if (db != null)
-        {
-            db.close();
-        }
-        super.onCanceled(data);
-    }
-
-    @Override
-    protected void onAbandon()
-    {
-        if (db != null)
-        {
-            db.close();
-        }
-        super.onAbandon();
-    }
-
-    protected void onReleaseResources(List<Account> apps)
-    {
-        if (db != null)
-        {
-            db.close();
         }
     }
 }

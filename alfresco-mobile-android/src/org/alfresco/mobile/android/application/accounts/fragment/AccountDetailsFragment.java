@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -172,10 +172,10 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initValues(final View v, boolean isEditable)
     {
-        URL url = null;
+        URL tmprUrl = null;
         try
         {
-            url = new URL(acc.getUrl());
+            tmprUrl = new URL(acc.getUrl());
         }
         catch (MalformedURLException e)
         {
@@ -216,25 +216,25 @@ public class AccountDetailsFragment extends BaseFragment
         });
 
         // Init values
-        EditText form_value = (EditText) v.findViewById(R.id.repository_hostname);
-        form_value.setText(url.getHost());
-        form_value.setEnabled(isEditable);
+        EditText formValue = (EditText) v.findViewById(R.id.repository_hostname);
+        formValue.setText(tmprUrl.getHost());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_username);
-        form_value.setText(acc.getUsername());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_username);
+        formValue.setText(acc.getUsername());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_description);
-        form_value.setText(acc.getDescription());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_description);
+        formValue.setText(acc.getDescription());
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_password);
-        form_value.setText(acc.getPassword());
-        form_value.setEnabled(isEditable);
+        formValue = (EditText) v.findViewById(R.id.repository_password);
+        formValue.setText(acc.getPassword());
+        formValue.setEnabled(isEditable);
 
         // TODO Switch widget ?
         final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
-        sw.setChecked(url.getProtocol().equals("https"));
+        sw.setChecked(tmprUrl.getProtocol().equals("https"));
         sw.setEnabled(isEditable);
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
@@ -248,7 +248,7 @@ public class AccountDetailsFragment extends BaseFragment
                 {
                     portForm.setText("80");
                 }
-                else if (sw.isChecked() == true
+                else if (sw.isChecked()
                         && (portForm.getText().toString() == null || portForm.getText().toString().equals("80")))
                 {
                     portForm.setText("443");
@@ -256,53 +256,52 @@ public class AccountDetailsFragment extends BaseFragment
             }
         });
 
-        form_value = (EditText) v.findViewById(R.id.repository_port);
-        if (url.getPort() != -1)
+        formValue = (EditText) v.findViewById(R.id.repository_port);
+        if (tmprUrl.getPort() != -1)
         {
-            form_value.setText(url.getPort() + "");
+            formValue.setText(tmprUrl.getPort() + "");
         }
         else
         {
-            form_value.setText(url.getDefaultPort() + "");
+            formValue.setText(tmprUrl.getDefaultPort() + "");
         }
-        form_value.setEnabled(isEditable);
+        formValue.setEnabled(isEditable);
 
-        form_value = (EditText) v.findViewById(R.id.repository_servicedocument);
-        form_value.setText(url.getPath());
-        form_value.setEnabled(isEditable);
-
+        formValue = (EditText) v.findViewById(R.id.repository_servicedocument);
+        formValue.setText(tmprUrl.getPath());
+        formValue.setEnabled(isEditable);
     }
 
     private boolean retrieveFormValues()
     {
         // Check values
-        EditText form_value = (EditText) vRoot.findViewById(R.id.repository_hostname);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        EditText formValue = (EditText) vRoot.findViewById(R.id.repository_hostname);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            host = form_value.getText().toString();
+            host = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_username);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_username);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            username = form_value.getText().toString();
+            username = formValue.getText().toString();
         }
         else
         {
             return false;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_description);
-        description = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_description);
+        description = formValue.getText().toString();
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_password);
-        if (form_value != null && form_value.getText() != null && form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_password);
+        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
-            password = form_value.getText().toString();
+            password = formValue.getText().toString();
         }
         else
         {
@@ -313,18 +312,18 @@ public class AccountDetailsFragment extends BaseFragment
         https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_port);
-        if (form_value.getText().length() > 0)
+        formValue = (EditText) vRoot.findViewById(R.id.repository_port);
+        if (formValue.getText().length() > 0)
         {
-            port = Integer.parseInt(form_value.getText().toString());
+            port = Integer.parseInt(formValue.getText().toString());
         }
         else
         {
             port = (protocol.equals("https")) ? 443 : 80;
         }
 
-        form_value = (EditText) vRoot.findViewById(R.id.repository_servicedocument);
-        servicedocument = form_value.getText().toString();
+        formValue = (EditText) vRoot.findViewById(R.id.repository_servicedocument);
+        servicedocument = formValue.getText().toString();
         URL u = null;
         try
         {
@@ -362,12 +361,13 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
-        EditText form_value = null;
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
+                R.id.repository_port };
+        EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
-            form_value = (EditText) vRoot.findViewById(ids[i]);
-            form_value.addTextChangedListener(watcher);
+            formValue = (EditText) vRoot.findViewById(ids[i]);
+            formValue.addTextChangedListener(watcher);
         }
     }
 
@@ -420,17 +420,19 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View v)
             {
                 retrieveFormValues();
-                if (accountDao.update(acc.getId(), description, (url!=null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
-                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
+                if (accountDao.update(acc.getId(), description, (url != null) ? url : acc.getUrl(), username, password,
+                        acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(),
+                        acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                     initValues(vRoot, false);
                     vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                     vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
-                    
-                    //Refresh listing
-                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(AccountFragment.TAG);
+
+                    // Refresh listing
+                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(
+                            AccountFragment.TAG);
                     fragmentList.refresh();
                 }
             }
@@ -458,14 +460,15 @@ public class AccountDetailsFragment extends BaseFragment
         final List<Account> accounts = accountDao.findAll();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean dataProtectionDeletion = false;
-        
-        if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false) == true)
+
+        if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
             boolean havePaidAccounts = false;
-        
+
             for (Account account : accounts)
             {
-                //Ignoring the one we're deleting, are there any further paid accounts left?
+                // Ignoring the one we're deleting, are there any further paid
+                // accounts left?
                 if (account.getId() != acc.getId() && account.getIsPaidAccount())
                 {
                     havePaidAccounts = true;
@@ -474,14 +477,15 @@ public class AccountDetailsFragment extends BaseFragment
             }
             dataProtectionDeletion = !havePaidAccounts;
         }
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        
+
         final File folder = StorageManager.getPrivateFolder(getActivity(), "", "", "");
         if (dataProtectionDeletion && folder != null)
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(String.format(getResources().getString(R.string.delete_description_data_protection),acc.getDescription()));
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description_data_protection),
+                    acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
@@ -493,19 +497,21 @@ public class AccountDetailsFragment extends BaseFragment
                     {
                         SessionUtils.setAccount(getActivity(), null);
                     }
-                    
+
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
-                    
+
                     Editor edit = prefs.edit();
-                    
-                    //Unflag this so that on next (first) addition of a new paid account, they will get prompted again.
+
+                    // Unflag this so that on next (first) addition of a new
+                    // paid account, they will get prompted again.
                     edit.putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, false);
-                    //Last paid service removed, so unflag that we've accessed paid services.
+                    // Last paid service removed, so unflag that we've accessed
+                    // paid services.
                     edit.putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false);
-                    //Turn off data protection
+                    // Turn off data protection
                     edit.putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
                     edit.commit();
                 }
@@ -521,30 +527,13 @@ public class AccountDetailsFragment extends BaseFragment
         else
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(String.format(getResources().getString(R.string.delete_description),acc.getDescription()));
+            builder.setMessage(String.format(getResources().getString(R.string.delete_description),
+                    acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    accountDao.delete(acc.getId());
-                    // In case where currentAccount is the one deleted.
-                    if (SessionUtils.getAccount(getActivity()) != null
-                            && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
-                    {
-                        SessionUtils.setAccount(getActivity(), null);
-                    }
-    
-                    if (!accounts.isEmpty())
-                    {                    
-                        ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                                IntentIntegrator.ACCOUNT_TYPE);
-                    }
-                    else
-                    {
-                        getActivity().finish();
-                        startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
-                    }
-    
+                    deleteAccount(accounts);
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -555,9 +544,42 @@ public class AccountDetailsFragment extends BaseFragment
                 }
             });
         }
-        
+
         AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    private void deleteAccount(List<Account> accounts)
+    {
+        accountDao.delete(acc.getId());
+        if (accounts.size() == 1 && accounts.get(0).getId() == acc.getId())
+        {
+            accounts.clear();
+        }
+        // In case where currentAccount is the one deleted.
+        if (SessionUtils.getAccount(getActivity()) != null
+                && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+        {
+            SessionUtils.setAccount(getActivity(), null);
+        }
+
+        if (!accounts.isEmpty())
+        {
+            ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
+                    IntentIntegrator.ACCOUNT_TYPE);
+        }
+        else
+        {
+            // Remove preferences
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            Editor editor = sharedPref.edit();
+            editor.clear();
+            editor.commit();
+
+            // Redirect to HomeScreenActivity
+            getActivity().finish();
+            startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
+        }
     }
 
     public void displayOAuthFragment()

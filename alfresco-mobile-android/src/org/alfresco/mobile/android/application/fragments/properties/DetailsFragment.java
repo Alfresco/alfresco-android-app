@@ -56,12 +56,10 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
@@ -118,8 +116,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
     }
 
-    private String nodeIdentifier;
-
     private View v;
 
     public static DetailsFragment newInstance(Node node, Folder parentNode)
@@ -155,7 +151,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         v = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
-        nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
+        String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
         parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
         if (node == null && nodeIdentifier == null) { return null; }
 
@@ -182,6 +178,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         v.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
         v.findViewById(R.id.progressbar).setVisibility(View.GONE);
         display(node);
+        getActivity().invalidateOptionsMenu();
     }
 
     private void display(Node refreshedNode)
@@ -231,7 +228,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (mTabHost == null)
         {
             ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
-            ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+            ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false,
+                    generalPropertyTitle, filter);
             addPathProperty(generalGroup, inflater);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
@@ -400,7 +398,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     // ///////////////////////////////////////////////////////////////////////////
     public void share()
     {
-        if (node.isFolder()) return;
+        if (node.isFolder()) { return; }
 
         if (alfSession instanceof RepositorySession)
         {
@@ -523,7 +521,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                     builder.setTitle(R.string.save_back);
-                    builder.setMessage(String.format(getResources().getString(R.string.save_back_description), node.getName()));
+                    builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
+                            node.getName()));
                     builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
                     {
                         public void onClick(DialogInterface dialog, int item)
@@ -538,12 +537,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         {
                             if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
                             {
-                                FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                                FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
+                                        .beginTransaction();
                                 EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
                                 fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                                 fragmentTransaction.commit();
                             }
-                            
+
                             dialog.dismiss();
                         }
                     });
@@ -572,8 +572,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
                         {
                             String mimeType = MimeTypeManager.getMIMEType(tmpPath);
-                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-                            EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(f, mimeType, null, null);
+                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
+                                    .beginTransaction();
+                            EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(f, mimeType, null,
+                                    null);
                             fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                             fragmentTransaction.commit();
                         }
@@ -741,7 +743,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
             ((TextView) v.findViewById(R.id.empty_text)).setText(R.string.empty_child);
         }
-        else
+        else if (loader instanceof NodeLoader && getActivity() != null)
         {
             node = results.getData();
             parentNode = ((NodeLoader) loader).getParentFolder();
@@ -801,7 +803,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (tabSelection != null)
         {
-            if (tabSelection == 0) return;
+            if (tabSelection == 0) { return; }
             int index = (node.isDocument()) ? tabSelection : tabSelection - 1;
             mTabHost.setCurrentTab(index);
         }

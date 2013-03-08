@@ -82,7 +82,7 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new JoinSiteRequestAdapter(this, R.layout.app_list_button_row, alfSession, new ArrayList<JoinSiteRequest>(0));
+            adapter = new JoinSiteRequestAdapter(this, R.layout.app_list_button_row, new ArrayList<JoinSiteRequest>(0));
         }
         if (checkException(results))
         {

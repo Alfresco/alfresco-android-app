@@ -20,17 +20,25 @@ package org.alfresco.mobile.android.application.exception;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
+import org.apache.http.HttpStatus;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.util.Log;
 
 public class CloudExceptionUtils
 {
+
+    private CloudExceptionUtils()
+    {
+    };
 
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
@@ -57,9 +65,8 @@ public class CloudExceptionUtils
         if (exception instanceof AlfrescoServiceException)
         {
             AlfrescoServiceException ex = ((AlfrescoServiceException) exception);
-            if (ex != null
-                    && (ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
-                            "No authentication challenges found"))))
+            if ((ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
+                    "No authentication challenges found"))))
             {
                 manageException(activity, forceRefresh);
                 return;
@@ -74,6 +81,28 @@ public class CloudExceptionUtils
                 manageException(activity, forceRefresh);
                 return;
             }
+        }
+
+        if (exception instanceof AlfrescoSessionException)
+        {
+            int messageId = R.string.error_session_notfound;
+            AlfrescoSessionException se = ((AlfrescoSessionException) exception);
+            if (se.getErrorCode() == ErrorCodeRegistry.GENERAL_HTTP_RESP && se.getMessage() != null
+                    && se.getMessage().contains(HttpStatus.SC_SERVICE_UNAVAILABLE + ""))
+            {
+                messageId = R.string.error_session_cloud_unavailable;
+            }
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, messageId);
+            ActionManager.actionDisplayDialog(activity, b);
+            if (activity instanceof MainActivity)
+            {
+                ((MainActivity) activity).setSessionErrorMessageId(messageId);
+            }
+            return;
         }
     }
 

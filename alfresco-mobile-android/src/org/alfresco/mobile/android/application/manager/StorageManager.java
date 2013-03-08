@@ -115,10 +115,14 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
                 folder = context.getExternalFilesDir(null);
 
                 if (urlValue != null && urlValue.length() > 0 && username != null && username.length() > 0)
+                {
                     folder = IOUtils.createFolder(folder, getAccountFolder(urlValue, username) + File.separator
                             + requestedFolder);
+                }
                 else
+                {
                     folder = IOUtils.createFolder(folder, requestedFolder);
+                }
             }
         }
         catch (Exception e)

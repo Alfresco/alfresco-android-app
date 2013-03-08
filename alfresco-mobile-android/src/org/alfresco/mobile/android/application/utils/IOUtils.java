@@ -57,9 +57,8 @@ public class IOUtils
         String timeStamp = new SimpleDateFormat(TEMP_FILESTAMP).format(new Date());
         File newFile = new File(f.getPath() + timeStamp + TEMP_FILE_EXT);
 
-        if (f.renameTo(newFile))
-            return newFile;
-        
+        if (f.renameTo(newFile)) return newFile;
+
         return f;
     }
 
@@ -69,9 +68,8 @@ public class IOUtils
         {
             String name = f.getPath();
             File newFile = new File(name.substring(0, name.length() - TEMP_LEN));
-            
-            if (f.renameTo(newFile))
-                return newFile;
+
+            if (f.renameTo(newFile)) return newFile;
         }
 
         return f;

@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
@@ -82,6 +83,13 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     @Override
     public Loader<LoaderResult<AlfrescoSession>> onCreateLoader(final int id, Bundle args)
     {
+        // Resolve latency problem between dropdown menu and account object.
+        // We force to use the latest save account object.
+        if (Account.TYPE_ALFRESCO_CLOUD == acc.getTypeId())
+        {
+            AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
+            acc = accountDao.findById(acc.getId());
+        }
 
         Loader<LoaderResult<AlfrescoSession>> loader = null;
         if (data != null)
@@ -114,7 +122,7 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
         // If the current account is not the one that loader has retrieved
         // We save the OAuth token if necessary and do nothing...
-        if (SessionUtils.getAccount(activity).getId() != acc.getId())
+        if (activity instanceof MainActivity && SessionUtils.getAccount(activity).getId() != acc.getId())
         {
             saveNewOauthData(loader);
             activity.getLoaderManager().destroyLoader(loader.getId());
@@ -194,8 +202,6 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     @Override
     public void onLoaderReset(Loader<LoaderResult<AlfrescoSession>> loader)
     {
-        saveNewOauthData(loader);
-
         if (mProgressDialog != null)
         {
             mProgressDialog.dismiss();
@@ -204,6 +210,8 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
 
     private void saveNewOauthData(Loader<LoaderResult<AlfrescoSession>> loader)
     {
+        if (loader instanceof SessionLoader) { return; }
+        if (loader instanceof CloudSessionLoader && ((CloudSessionLoader) loader).getOAuthData() == null) { return; }
         Log.d(TAG, loader.toString());
         switch ((int) acc.getTypeId())
         {
@@ -247,5 +255,10 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     public int getAccountLoginLoaderId()
     {
         return accountLoginLoaderId;
+    }
+
+    public static int getAccountLoginLoaderId(Account acc)
+    {
+        return acc.hashCode();
     }
 }

@@ -57,7 +57,7 @@ public class SimpleAlertDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        if (getArguments() == null) return null;
+        if (getArguments() == null) { return null; }
 
         int titleId = getArguments().getInt(PARAM_TITLE);
         int iconId = getArguments().getInt(PARAM_ICON);

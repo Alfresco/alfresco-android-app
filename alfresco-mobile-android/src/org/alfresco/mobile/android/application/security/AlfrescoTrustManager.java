@@ -84,7 +84,10 @@ public class AlfrescoTrustManager implements X509TrustManager
                         break;
                     }
                 }
-                if (!foundNext) break;
+                if (!foundNext)
+                {
+                    break;
+                }
             }
             X509Certificate lastCertificate = chain[chainLength - 1];
             Date now = new Date();

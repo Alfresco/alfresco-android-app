@@ -17,7 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
-public class MenuActionItem
+/**
+ * List of all Action Item menu available inside the application.
+ * 
+ * @author Jean Marie Pascal
+ */
+public interface MenuActionItem
 {
 
     // ///////////////////////////////////////////

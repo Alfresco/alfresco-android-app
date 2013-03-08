@@ -43,7 +43,7 @@ import android.widget.EditText;
 public class FileActions implements ActionMode.Callback
 {
 
-    private ArrayList<File> Files = new ArrayList<File>();
+    private ArrayList<File> files = new ArrayList<File>();
 
     private onFinishModeListerner mListener;
 
@@ -53,11 +53,11 @@ public class FileActions implements ActionMode.Callback
 
     private Fragment fragment;
 
-    public FileActions(Fragment f, File File)
+    public FileActions(Fragment f, File file)
     {
         this.fragment = f;
         this.activity = f.getActivity();
-        Files.add(File);
+        files.add(file);
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -69,19 +69,19 @@ public class FileActions implements ActionMode.Callback
         switch (item.getItemId())
         {
             case MenuActionItem.MENU_DELETE:
-                delete(activity, fragment, Files.get(0));
+                delete(activity, fragment, files.get(0));
                 mode.finish();
-                Files.clear();
+                files.clear();
                 return true;
             case MenuActionItem.MENU_EDIT:
-                edit(activity, fragment, Files.get(0));
+                edit(activity, fragment, files.get(0));
                 mode.finish();
-                Files.clear();
+                files.clear();
                 return true;
             case MenuActionItem.MENU_SHARE:
-                share(fragment, Files.get(0));
+                share(fragment, files.get(0));
                 mode.finish();
-                Files.clear();
+                files.clear();
                 return true;
             default:
                 break;
@@ -95,7 +95,7 @@ public class FileActions implements ActionMode.Callback
         return true;
     }
 
-    private void getMenu(Menu menu, File File)
+    private void getMenu(Menu menu, File file)
     {
         menu.clear();
 
@@ -119,21 +119,21 @@ public class FileActions implements ActionMode.Callback
     public void onDestroyActionMode(ActionMode mode)
     {
         mListener.onFinish();
-        Files.clear();
+        files.clear();
     }
 
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu)
     {
         this.mode = mode;
-        getMenu(menu, Files.get(0));
+        getMenu(menu, files.get(0));
         return false;
     }
 
     public void addFile(File n)
     {
-        Files.clear();
-        Files.add(n);
+        files.clear();
+        files.add(n);
         mode.setTitle(n.getName());
         mode.invalidate();
     }

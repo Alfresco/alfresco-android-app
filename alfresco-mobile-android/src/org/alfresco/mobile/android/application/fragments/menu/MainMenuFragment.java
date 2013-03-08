@@ -82,15 +82,11 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         getActivity().setTitle(R.string.app_name);
 
         getActivity().invalidateOptionsMenu();
-        if (isAdded() && TAG.equals(getTag()))
+        if (isAdded() && TAG.equals(getTag())
+                && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
+                && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
         {
-            // Configuration changes: don't remove if about or
-            // GeneralPreferences are visible.
-            if (getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
-                    && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
-            {
-                ((MainActivity) getActivity()).clearScreen();
-            }
+            ((MainActivity) getActivity()).clearScreen();
         }
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         accounts = ((MainActivity) getActivity()).getAccounts();
@@ -138,7 +134,7 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         {
             for (int i = 0; i < accounts.size(); i++)
             {
-                if (currentAccount != null && accounts.get(i).getId() == currentAccount.getId())
+                if (accounts.get(i).getId() == currentAccount.getId())
                 {
                     accountIndex = i;
                     break;

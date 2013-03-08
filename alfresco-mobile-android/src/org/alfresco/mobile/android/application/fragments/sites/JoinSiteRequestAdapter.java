@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.fragments.sites;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.JoinSiteRequest;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
@@ -42,8 +41,7 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<JoinSiteRequest, Gen
 {
     private Fragment fragment;
 
-    public JoinSiteRequestAdapter(Fragment fr, int textViewResourceId, AlfrescoSession session,
-            List<JoinSiteRequest> objects)
+    public JoinSiteRequestAdapter(Fragment fr, int textViewResourceId, List<JoinSiteRequest> objects)
     {
         super(fr.getActivity(), textViewResourceId, objects);
         this.vhClassName = GenericViewHolder.class.getCanonicalName();

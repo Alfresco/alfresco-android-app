@@ -61,8 +61,6 @@ public class KeywordSearch extends SearchFragment
 
     private static final int MAX_RESULT_ITEMS = 30;
 
-    private String title;
-
     private Site site;
 
     private Folder tmpParentFolder;
@@ -258,7 +256,7 @@ public class KeywordSearch extends SearchFragment
     {
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
+            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems, -1);
         }
         ((NodeAdapter) adapter).setActivateThumbnail(true);

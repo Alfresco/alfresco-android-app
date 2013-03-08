@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.intent;
 
 import org.alfresco.mobile.android.intent.PublicIntent;
 
-public class IntentIntegrator extends PublicIntent
+public interface IntentIntegrator extends PublicIntent
 {
     public static final String ALFRESCO_SCHEME_SHORT = "alfresco";
 

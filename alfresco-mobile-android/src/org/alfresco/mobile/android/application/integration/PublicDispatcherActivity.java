@@ -86,12 +86,9 @@ public class PublicDispatcherActivity extends Activity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
         {
-            if (resultCode == RESULT_CANCELED)
-            {
-                finish();
-            }
+            finish();
         }
     }
 
@@ -106,7 +103,10 @@ public class PublicDispatcherActivity extends Activity
     protected void onPause()
     {
         super.onPause();
-        PasscodePreferences.updateLastActivityDisplay(this);
+        if (!PasscodePreferences.hasPasscodeEnable(this))
+        {
+            PasscodePreferences.updateLastActivityDisplay(this);
+        }
     }
 
     @Override
