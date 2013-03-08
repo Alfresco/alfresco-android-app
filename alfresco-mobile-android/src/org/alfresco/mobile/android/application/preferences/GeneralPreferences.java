@@ -188,17 +188,21 @@ public class GeneralPreferences extends PreferenceFragment
         });
     }
 
+    private static final String TEST_KEYS = "test-keys";
+
+    private static final String PATH_SUPERUSER_APK = "/system/app/Superuser.apk";
+
     public static boolean isDeviceRooted()
     {
 
         // get from build info
         String buildTags = android.os.Build.TAGS;
-        if (buildTags != null && buildTags.contains("test-keys")) { return true; }
+        if (buildTags != null && buildTags.contains(TEST_KEYS)) { return true; }
 
         // check if /system/app/Superuser.apk is present
         try
         {
-            File file = new File("/system/app/Superuser.apk");
+            File file = new File(PATH_SUPERUSER_APK);
             if (file.exists()) { return true; }
         }
         catch (Throwable e1)

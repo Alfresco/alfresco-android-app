@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -33,9 +33,10 @@ import android.util.Log;
 public class FragmentFactory
 {
 
-    private FragmentFactory(){
+    private FragmentFactory()
+    {
     }
-    
+
     private static final String TAG = "FragmentFactory";
 
     public static Fragment createInstance(String tag)
@@ -43,9 +44,13 @@ public class FragmentFactory
         try
         {
             if (fragmentRegistry.containsKey(tag))
+            {
                 return (Fragment) fragmentRegistry.get(tag).newInstance();
+            }
             else
+            {
                 return null;
+            }
         }
         catch (Exception e)
         {

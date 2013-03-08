@@ -497,7 +497,7 @@ public class AccountDetailsFragment extends BaseFragment
                     {
                         SessionUtils.setAccount(getActivity(), null);
                     }
-                    
+
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
@@ -548,8 +548,9 @@ public class AccountDetailsFragment extends BaseFragment
         AlertDialog alert = builder.create();
         alert.show();
     }
-    
-    private void deleteAccount(List<Account> accounts){
+
+    private void deleteAccount(List<Account> accounts)
+    {
         accountDao.delete(acc.getId());
         if (accounts.size() == 1 && accounts.get(0).getId() == acc.getId())
         {
@@ -564,18 +565,18 @@ public class AccountDetailsFragment extends BaseFragment
 
         if (!accounts.isEmpty())
         {
-            ActionManager.actionRefresh(AccountDetailsFragment.this,
-                    IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.ACCOUNT_TYPE);
+            ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
+                    IntentIntegrator.ACCOUNT_TYPE);
         }
         else
         {
-            //Remove preferences
+            // Remove preferences
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Editor editor = sharedPref.edit();
             editor.clear();
             editor.commit();
-            
-            //Redirect to HomeScreenActivity
+
+            // Redirect to HomeScreenActivity
             getActivity().finish();
             startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
         }
