@@ -789,7 +789,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         mTabHost.setup(); // you must call this before adding your tabs!
         mTabHost.setOnTabChangedListener(this);
 
-        if (node.isDocument())
+        if (node.isDocument() && ((Document)node).isLatestVersion())
         {
             mTabHost.addTab(newTab(TAB_PREVIEW, R.string.preview, android.R.id.tabcontent));
         }
