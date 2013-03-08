@@ -75,6 +75,8 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
                 case Account.TYPE_ALFRESCO_CLOUD:
                     CloudExceptionUtils.handleCloudException(activity, results.getException(), true);
                     break;
+                default:
+                    break;
             }
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
@@ -95,12 +97,16 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
                 AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-                if (accountDao.update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
-                        .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, loader
-                        .getData().getAccessToken(), loader.getData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
+                if (accountDao
+                        .update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc.getPassword(),
+                                acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, loader.getData()
+                                        .getAccessToken(), loader.getData().getRefreshToken(),
+                                acc.getIsPaidAccount() ? 1 : 0))
                 {
                     SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
                 }
+                break;
+            default:
                 break;
         }
         Intent i = new Intent(activity, MainActivity.class);

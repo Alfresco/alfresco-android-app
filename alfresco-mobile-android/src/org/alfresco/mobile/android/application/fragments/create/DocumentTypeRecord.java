@@ -106,7 +106,7 @@ public class DocumentTypeRecord implements Serializable
      * Default List of all Document types available for creation inside the
      * application.
      */
-    static List<DocumentTypeRecord> DOCUMENT_TYPES_CREATION_LIST = new ArrayList<DocumentTypeRecord>(4)
+    public static final List<DocumentTypeRecord> DOCUMENT_TYPES_CREATION_LIST = new ArrayList<DocumentTypeRecord>(4)
     {
         private static final long serialVersionUID = 1L;
         {

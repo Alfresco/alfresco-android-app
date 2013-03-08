@@ -51,8 +51,6 @@ public class AccountEditFragment extends DialogFragment
     private String url = null, host = null, username = null, password = null, servicedocument = null,
             description = null;
 
-    private boolean https = false;
-
     private int port;
 
     public AccountEditFragment()
@@ -228,7 +226,7 @@ public class AccountEditFragment extends DialogFragment
         }
 
         CheckBox sw = (CheckBox) findViewByIdInternal(R.id.repository_https);
-        https = sw.isChecked();
+        boolean https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
         formValue = (EditText) findViewByIdInternal(R.id.repository_port);

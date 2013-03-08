@@ -40,7 +40,7 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class SessionExceptionHelper
+public final class SessionExceptionHelper
 {
 
     private SessionExceptionHelper()

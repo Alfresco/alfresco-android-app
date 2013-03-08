@@ -92,7 +92,7 @@ public class GeneralPreferences extends PreferenceFragment
         Preference privateFoldersPref = findPreference(PRIVATE_FOLDERS_BUTTON);
 
         // DATA PROTECTION
-        if (/* isDeviceRooted() || */sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false) == false)
+        if (/* isDeviceRooted() || */!sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false))
         {
             privateFoldersPref.setSelectable(false);
             privateFoldersPref.setEnabled(false);

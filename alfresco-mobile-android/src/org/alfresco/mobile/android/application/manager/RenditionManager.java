@@ -82,8 +82,6 @@ public class RenditionManager
 
     public static final int TYPE_PERSON = 1;
 
-    BitmapThread task;
-
     public RenditionManager(Activity context, AlfrescoSession session)
     {
         this.context = context;
@@ -523,15 +521,15 @@ public class RenditionManager
     // Used to display bitmap in the UI thread
     class BitmapDisplayer implements Runnable
     {
-        Bitmap bitmap;
+        private Bitmap bitmap;
 
-        ImageView imageView;
+        private ImageView imageView;
 
-        Integer preview;
+        private Integer preview;
 
-        WeakReference<ImageView> imageViewReference;
+        private WeakReference<ImageView> imageViewReference;
 
-        BitmapThread bitmapTask;
+        private BitmapThread bitmapTask;
 
         public BitmapDisplayer(Bitmap b, Integer p, WeakReference<ImageView> im, BitmapThread bt)
         {
@@ -547,9 +545,9 @@ public class RenditionManager
 
             if (imageViewReference != null && bitmap != null)
             {
-                final ImageView imageView = imageViewReference.get();
+                imageView = imageViewReference.get();
                 final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
-                if (bitmapTask == bitmapWorkerTask && imageView != null)
+                if (bitmapTask.equals(bitmapWorkerTask) && imageView != null)
                 {
                     imageView.setImageBitmap(bitmap);
 
@@ -568,7 +566,7 @@ public class RenditionManager
             }
             else if (preview != null && bitmap == null)
             {
-                final ImageView imageView = imageViewReference.get();
+                imageView = imageViewReference.get();
                 if (imageView != null && ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message) != null)
                 {
                     ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message).setVisibility(View.VISIBLE);

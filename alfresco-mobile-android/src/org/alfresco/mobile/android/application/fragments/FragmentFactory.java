@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import android.app.Fragment;
 import android.util.Log;
 
-public class FragmentFactory
+public final class FragmentFactory
 {
 
     private FragmentFactory()
@@ -60,7 +60,7 @@ public class FragmentFactory
     }
 
     @SuppressWarnings({ "rawtypes", "serial" })
-    public static Map<String, Class> fragmentRegistry = new HashMap<String, Class>()
+    public static final Map<String, Class> fragmentRegistry = new HashMap<String, Class>()
     {
         {
             put(ChildrenBrowserFragment.TAG, ChildrenBrowserFragment.class);

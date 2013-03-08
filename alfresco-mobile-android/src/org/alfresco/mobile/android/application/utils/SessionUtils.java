@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -28,8 +28,11 @@ import org.alfresco.mobile.android.application.manager.RenditionManager;
 import android.app.Activity;
 import android.content.Context;
 
-public class SessionUtils
+public final class SessionUtils
 {
+    
+    private SessionUtils(){
+    }
 
     public static AlfrescoSession getSession(Context c)
     {

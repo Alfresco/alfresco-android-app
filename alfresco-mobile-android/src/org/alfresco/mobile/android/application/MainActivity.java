@@ -298,9 +298,9 @@ public class MainActivity extends Activity
     protected void onPause()
     {
         super.onPause();
-        if (!PasscodePreferences.hasPasscodeEnable(activity))
+        if (!PasscodePreferences.hasPasscodeEnable(this))
         {
-            PasscodePreferences.updateLastActivityDisplay(activity);
+            PasscodePreferences.updateLastActivityDisplay(this);
         }
     }
 

@@ -153,15 +153,11 @@ public class AccountCreationLoaderCallback extends AbstractSessionCallback
                 id = serverDao.insert(description, baseUrl, username, password, session.getRepositoryInfo()
                         .getIdentifier(), type, null, null, isPaidAccount ? 1 : 0);
             }
-            else
+            else if (loader instanceof CloudSessionLoader)
             {
                 // OAuth login
 
-                Person user = null;
-                if (loader instanceof CloudSessionLoader)
-                {
-                    user = ((CloudSessionLoader) loader).getUser();
-                }
+                Person user = ((CloudSessionLoader) loader).getUser();
 
                 type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
                 if (session instanceof CloudSession

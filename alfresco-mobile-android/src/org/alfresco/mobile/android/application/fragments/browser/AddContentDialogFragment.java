@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -104,11 +103,5 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             getDialog().setDismissMessage(null);
         }
         super.onDestroyView();
-    }
-
-    @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
     }
 }
