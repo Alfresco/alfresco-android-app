@@ -68,6 +68,8 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
 
     private static final String PARAM_FOLDER = "folder";
 
+    private static Runnable finishedRunnable = null;
+
     private ActionManagerListener listener;
 
     private int loaderId;
@@ -155,6 +157,13 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
 
     public static EncryptionDialogFragment decryptAll(File myFile)
     {
+        return decryptAll(myFile, null);
+    }
+    
+    public static EncryptionDialogFragment decryptAll(File myFile, Runnable r)
+    {
+        finishedRunnable = r;
+        
         EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
         Bundle b = new Bundle();
         b.putSerializable(PARAM_FILE, myFile);
@@ -230,6 +239,12 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     @Override
     public void onLoadFinished(Loader<LoaderResult<File>> loader, LoaderResult<File> results)
     {
+        if (finishedRunnable != null)
+        {
+            finishedRunnable.run();
+            finishedRunnable = null;
+        }
+        
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
