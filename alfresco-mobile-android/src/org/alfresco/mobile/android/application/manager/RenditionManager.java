@@ -126,7 +126,7 @@ public class RenditionManager
         if (getBitmapFromMemCache(hashKey) == null)
         {
             mMemoryCache.put(hashKey, bitmap);
-            //Log.d(TAG, "Add MemoryCache : " + key);
+            // Log.d(TAG, "Add MemoryCache : " + key);
         }
     }
 
@@ -143,7 +143,7 @@ public class RenditionManager
                 IOUtils.copyStream(cf.getInputStream(), editor.newOutputStream(0));
                 editor.commit();
             }
-            //Log.d(TAG, "Add DiskCache : " + key);
+            // Log.d(TAG, "Add DiskCache : " + key);
         }
         catch (Exception e)
         {
@@ -173,7 +173,7 @@ public class RenditionManager
             snapshot = mDiskCache.get(hashKey);
             if (snapshot != null)
             {
-                //Log.d(TAG, "GET DiskCache : " + key);
+                // Log.d(TAG, "GET DiskCache : " + key);
                 if (preview != null)
                 {
                     return decodeStream(mDiskCache, hashKey, preview, dm);
@@ -189,6 +189,35 @@ public class RenditionManager
             Log.w(TAG, Log.getStackTraceString(e));
         }
         return null;
+    }
+
+    public void removeFromCache(String key)
+    {
+        try
+        {
+            if (key == null) { return; }
+            String largePreviewKey = getLargePreviewKey(key);
+            String hashKey = StorageManager.md5(key);
+            String hashLargeKey = StorageManager.md5(largePreviewKey);
+            if (getBitmapFromMemCache(key) != null)
+            {
+                mMemoryCache.remove(hashKey);
+                mMemoryCache.remove(hashLargeKey);
+            }
+            if (getBitmapFromDiskCache(key) != null)
+            {
+                mDiskCache.remove(hashKey);
+                mDiskCache.remove(hashLargeKey);
+            }
+        }
+        catch (IOException e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+    }
+    
+    private String getLargePreviewKey(String key){
+        return "L" + key;
     }
 
     /**
@@ -234,7 +263,7 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
-            //Log.d(TAG, "Cache : " + identifier);
+            // Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
         {
@@ -271,7 +300,7 @@ public class RenditionManager
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
 
-        //Log.d(TAG, "height:" + height + "width" + width);
+        // Log.d(TAG, "height:" + height + "width" + width);
 
         return inSampleSize;
     }
@@ -560,7 +589,8 @@ public class RenditionManager
                         params.width = bitmap.getWidth();
                         params.height = bitmap.getHeight();
                         imageView.setLayoutParams(params);
-                        //Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
+                        // Log.d(TAG, "W:" + bitmap.getWidth() + " H:" +
+                        // bitmap.getHeight());
                     }
                 }
             }
@@ -603,7 +633,7 @@ public class RenditionManager
             final String bitmapData = bitmapWorkerTask.identifier;
             if (bitmapData != null && !bitmapData.equals(data))
             {
-                //Log.d(TAG, "Cancel : " + data);
+                // Log.d(TAG, "Cancel : " + data);
                 bitmapWorkerTask.interrupt();
             }
             else

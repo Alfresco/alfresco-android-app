@@ -612,6 +612,11 @@ public class MainActivity extends Activity
                     }
                     else
                     {
+                        if (getCurrentNode() != null)
+                        {
+                            SessionUtils.getRenditionManager(this)
+                                    .removeFromCache(getCurrentNode().getIdentifier());
+                        }
                         if (getFragment(ChildrenBrowserFragment.TAG) != null)
                         {
                             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
