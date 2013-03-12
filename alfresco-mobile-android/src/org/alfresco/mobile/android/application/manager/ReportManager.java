@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -23,9 +23,8 @@ import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
-public class ReportManager
+public final class ReportManager
 {
     private ReportManager()
     {
@@ -53,7 +52,7 @@ public class ReportManager
         catch (Exception e)
         {
             // If error happens do nothing...
-            Log.d("ReportManager", e.getMessage());
+            //Log.d("ReportManager", e.getMessage());
         }
     }
 
@@ -73,7 +72,7 @@ public class ReportManager
         catch (Exception e)
         {
             // If error happens do nothing...
-            Log.d("ReportManager", e.getMessage());
+            //Log.d("ReportManager", e.getMessage());
         }
     }
 

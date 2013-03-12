@@ -21,7 +21,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.AsyncTaskLoader;
@@ -32,9 +31,6 @@ import android.content.Context;
  */
 public class LocalFileExplorerLoader extends AsyncTaskLoader<List<File>>
 {
-
-    private static final String TAG = "LocalFileExplorerLoader";
-
     private File folder;
 
     private Context context;

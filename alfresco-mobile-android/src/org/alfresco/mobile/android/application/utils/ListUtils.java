@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -20,8 +20,10 @@ package org.alfresco.mobile.android.application.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ListUtils
+public final class ListUtils
 {
+    private ListUtils(){
+    }
 
     public static Map<String, ?> createPair(String name, String value)
     {

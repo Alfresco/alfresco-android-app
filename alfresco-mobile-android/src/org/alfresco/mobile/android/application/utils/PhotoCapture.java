@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -28,14 +28,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.Toast;
 
 public class PhotoCapture extends DeviceCapture
 {
-    static final private String TAG = "PhotoCapture";
+    private static final String TAG = "PhotoCapture";
+
     private static final long serialVersionUID = 1L;
 
     public PhotoCapture(Activity parent, Folder folder)
@@ -59,13 +58,14 @@ public class PhotoCapture extends DeviceCapture
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
+                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
+                        .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
                 if (folder != null)
                 {
                     payload = new File(folder.getPath(), createFilename("", "jpg"));
-    
+
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
-    
+
                     parentActivity.startActivityForResult(intent, getRequestCode());
                 }
                 else
@@ -82,7 +82,9 @@ public class PhotoCapture extends DeviceCapture
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
     @Override

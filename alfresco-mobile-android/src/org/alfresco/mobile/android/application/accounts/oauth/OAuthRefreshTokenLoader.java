@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -35,8 +35,6 @@ public class OAuthRefreshTokenLoader extends AbstractBaseLoader<LoaderResult<OAu
 {
     public static final int ID = OAuthRefreshTokenLoader.class.hashCode();
 
-    private OAuthData oauthData;
-
     private CloudSession session;
 
     public OAuthRefreshTokenLoader(Context context, CloudSession session)
@@ -50,9 +48,10 @@ public class OAuthRefreshTokenLoader extends AbstractBaseLoader<LoaderResult<OAu
     {
         LoaderResult<OAuthData> result = new LoaderResult<OAuthData>();
 
+        OAuthData oauthData = null;
         try
         {
-            oauthData = session.getOAuthData();
+            oauthData  = session.getOAuthData();
             OAuthHelper helper = new OAuthHelper(session.getBaseUrl());
             oauthData = helper.refreshToken(session.getOAuthData());
             session.setOAuthData(oauthData);

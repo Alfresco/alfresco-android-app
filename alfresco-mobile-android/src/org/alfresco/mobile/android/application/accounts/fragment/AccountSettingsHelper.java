@@ -215,8 +215,8 @@ public class AccountSettingsHelper
                 break;
 
             case Account.TYPE_ALFRESCO_TEST_BASIC:
-                isCloud = true;
             case Account.TYPE_ALFRESCO_CMIS:
+                isCloud = false;
                 baseUrl = acc.getUrl();
                 username = acc.getUsername();
                 password = acc.getPassword();

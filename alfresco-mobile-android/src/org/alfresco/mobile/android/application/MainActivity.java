@@ -298,9 +298,9 @@ public class MainActivity extends Activity
     protected void onPause()
     {
         super.onPause();
-        if (!PasscodePreferences.hasPasscodeEnable(activity))
+        if (!PasscodePreferences.hasPasscodeEnable(this))
         {
-            PasscodePreferences.updateLastActivityDisplay(activity);
+            PasscodePreferences.updateLastActivityDisplay(this);
         }
     }
 
@@ -612,6 +612,11 @@ public class MainActivity extends Activity
                     }
                     else
                     {
+                        if (getCurrentNode() != null)
+                        {
+                            SessionUtils.getRenditionManager(this)
+                                    .removeFromCache(getCurrentNode().getIdentifier());
+                        }
                         if (getFragment(ChildrenBrowserFragment.TAG) != null)
                         {
                             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();

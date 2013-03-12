@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -37,18 +37,19 @@ public abstract class DeviceCapture implements Serializable
 
     private Folder repositoryFolder = null;
 
-    transient protected Context context = null;
+    protected transient Context context = null;
 
-    transient protected Activity parentActivity = null;
+    protected transient Activity parentActivity = null;
 
     protected File payload = null;
+
     protected String MIMEType = null;
 
-    abstract public boolean hasDevice();
+    public abstract boolean hasDevice();
 
-    abstract public boolean captureData();
+    public abstract boolean captureData();
 
-    abstract protected void payloadCaptured(int requestCode, int resultCode, Intent data);
+    protected abstract void payloadCaptured(int requestCode, int resultCode, Intent data);
 
     public void capturedCallback(int requestCode, int resultCode, Intent data)
     {
@@ -82,12 +83,15 @@ public abstract class DeviceCapture implements Serializable
         FragmentTransaction ft = parentActivity.getFragmentManager().beginTransaction();
         Fragment prev = parentActivity.getFragmentManager().findFragmentByTag(AddContentDialogFragment.TAG);
 
-        if (prev != null) ft.remove(prev);
+        if (prev != null)
+        {
+            ft.remove(prev);
+        }
 
         ft.addToBackStack(null);
 
         AddContentDialogFragment newFragment;
-        
+
         if (MIMEType != null)
         {
             newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, MIMEType, true);
@@ -96,7 +100,7 @@ public abstract class DeviceCapture implements Serializable
         {
             newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, true);
         }
-        
+
         newFragment.show(ft, AddContentDialogFragment.TAG);
     }
 

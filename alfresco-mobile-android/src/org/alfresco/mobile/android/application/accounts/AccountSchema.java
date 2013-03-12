@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -26,8 +26,11 @@ import android.database.sqlite.SQLiteDatabase;
  * 
  * @author Jean Marie Pascal
  */
-public class AccountSchema
+public final class AccountSchema
 {
+    
+    private AccountSchema(){
+    }
 
     public static final String TABLENAME = "Account";
 
