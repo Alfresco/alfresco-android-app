@@ -490,16 +490,15 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    accountDao.delete(acc.getId());
-                    // In case where currentAccount is the one deleted.
-                    if (SessionUtils.getAccount(getActivity()) != null
-                            && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
-                    {
-                        SessionUtils.setAccount(getActivity(), null);
-                    }
-
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
+                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder, new Runnable()
+                                                                                    {                                                                
+                                                                                        @Override
+                                                                                        public void run()
+                                                                                        {
+                                                                                            deleteAccount(accounts);
+                                                                                        }
+                                                                                    });
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
 
