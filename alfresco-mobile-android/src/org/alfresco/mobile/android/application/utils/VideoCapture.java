@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -34,6 +34,7 @@ import android.util.Log;
 public class VideoCapture extends DeviceCapture
 {
     public static final String TAG = "VideoCapture";
+
     private static final long serialVersionUID = 1L;
 
     public VideoCapture(Activity parent, Folder folder)
@@ -55,18 +56,19 @@ public class VideoCapture extends DeviceCapture
         {
             try
             {
-                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity).getUrl(), SessionUtils.getAccount(parentActivity).getUsername());          
+                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
+                        .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
                 if (folder != null)
                 {
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-    
+
                     payload = new File(folder.getPath(), createFilename("", "mp4"));
-    
+
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
-                    //Represents a limit of 300Mb
+                    // Represents a limit of 300Mb
                     intent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 314572800L);
-    
+
                     parentActivity.startActivityForResult(intent, getRequestCode());
                 }
                 else
@@ -83,7 +85,9 @@ public class VideoCapture extends DeviceCapture
             return true;
         }
         else
+        {
             return false;
+        }
     }
 
     @Override

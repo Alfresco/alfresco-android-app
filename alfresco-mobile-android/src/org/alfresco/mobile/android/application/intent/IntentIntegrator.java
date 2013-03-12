@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -21,58 +21,58 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 
 public interface IntentIntegrator extends PublicIntent
 {
-    public static final String ALFRESCO_SCHEME_SHORT = "alfresco";
+    String ALFRESCO_SCHEME_SHORT = "alfresco";
 
-    public static final String CLOUD_SIGNUP = "sign_up_cloud";
+    String CLOUD_SIGNUP = "sign_up_cloud";
 
-    public static final String CLOUD_SIGNUP_I = "sign_up_cloud_i";
+    String CLOUD_SIGNUP_I = "sign_up_cloud_i";
 
-    public static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
+    String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
 
-    public static final String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
+    String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
 
-    public static final String CATEGORY_REFRESH_ALL = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL";
+    String CATEGORY_REFRESH_ALL = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL";
 
-    public static final String CATEGORY_REFRESH_DELETE = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE";
+    String CATEGORY_REFRESH_DELETE = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE";
 
-    public static final String CATEGORY_REFRESH_OTHERS = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS";
+    String CATEGORY_REFRESH_OTHERS = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS";
 
-    public static final String CATEGORY_REMOVE_AND_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REMOVE_AND_REFRESH";
+    String CATEGORY_REMOVE_AND_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REMOVE_AND_REFRESH";
 
-    public static final String ACCOUNT_TYPE = "org.alfresco.mobile.android/object.account";
+    String ACCOUNT_TYPE = "org.alfresco.mobile.android/object.account";
 
-    public static final String FILE_TYPE = "org.alfresco.mobile.android/object.file";
+    String FILE_TYPE = "org.alfresco.mobile.android/object.file";
 
-    public static final String ACTION_LOAD_SESSION_FINISH = "org.alfresco.mobile.android.intent.ACTION_LOAD_SESSION_FINISH";
+    String ACTION_LOAD_SESSION_FINISH = "org.alfresco.mobile.android.intent.ACTION_LOAD_SESSION_FINISH";
 
-    public static final String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
+    String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
 
-    public static final String ACTION_DISPLAY_NODE = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_NODE";
+    String ACTION_DISPLAY_NODE = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_NODE";
 
-    public static final String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
+    String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
 
-    public static final String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
+    String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
 
-    public static final String CATEGORY_OAUTH_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH";
+    String CATEGORY_OAUTH_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH";
 
-    public static final String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
+    String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
 
-    public static final String ACTION_DISPLAY_ERROR_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN";
-    
-    public static final String ACTION_DISPLAY_ERROR_IMPORT = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_IMPORT";
+    String ACTION_DISPLAY_ERROR_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN";
 
-    public static final String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
+    String ACTION_DISPLAY_ERROR_IMPORT = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_IMPORT";
 
-    public static final String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG";
-    
-    public static final String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
-    
-    public static final String ACTION_REMOVE_FRAGMENT = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT";
+    String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
 
-    public static final String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
+    String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG";
 
-    public static final String REMOVE_FRAGMENT_WAITING = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_WAITING";
+    String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
 
-    public static final String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
+    String ACTION_REMOVE_FRAGMENT = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT";
+
+    String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
+
+    String REMOVE_FRAGMENT_WAITING = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_WAITING";
+
+    String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
 
 }

@@ -86,7 +86,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
     /** RepositorySession */
     protected AlfrescoSession alfSession;
 
-    Account currentAccount = null;
+    private Account currentAccount = null;
 
     private int loaderId;
 
@@ -299,7 +299,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 else
                 {
                     Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                    if (lf != null && getActivity() instanceof MainActivity
+                    if (getActivity() instanceof MainActivity
                             && lf instanceof ChildrenBrowserFragment)
                     {
                         Folder pFolder = ((ChildrenBrowserFragment) lf).getParent();

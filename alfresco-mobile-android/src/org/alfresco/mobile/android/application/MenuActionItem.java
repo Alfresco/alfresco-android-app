@@ -28,91 +28,91 @@ public interface MenuActionItem
     // ///////////////////////////////////////////
     // BROWSER
     // ///////////////////////////////////////////
-    public static final int MENU_SEARCH = 10;
+    int MENU_SEARCH = 10;
 
-    public static final int MENU_SEARCH_FOLDER = 11;
+    int MENU_SEARCH_FOLDER = 11;
 
-    public static final int MENU_SEARCH_OPTION = 11;
+    int MENU_SEARCH_OPTION = 11;
 
-    public static final int MENU_CREATE_DOCUMENT = 19;
+    int MENU_CREATE_DOCUMENT = 19;
 
-    public static final int MENU_CREATE_FOLDER = 20;
+    int MENU_CREATE_FOLDER = 20;
 
-    public static final int MENU_UPLOAD = 30;
+    int MENU_UPLOAD = 30;
 
-    public static final int MENU_DEVICE_CAPTURE = 31;
+    int MENU_DEVICE_CAPTURE = 31;
 
-    public static final int MENU_REFRESH = 40;
+    int MENU_REFRESH = 40;
 
-    public static final int MENU_DELETE_FOLDER = 191;
+    int MENU_DELETE_FOLDER = 191;
 
     // ///////////////////////////////////////////
     // DETAILS
     // ///////////////////////////////////////////
-    public static final int MENU_SHARE = 100;
+    int MENU_SHARE = 100;
 
-    public static final int MENU_OPEN_IN = 110;
+    int MENU_OPEN_IN = 110;
 
-    public static final int MENU_DOWNLOAD = 120;
+    int MENU_DOWNLOAD = 120;
 
-    public static final int MENU_UPDATE = 130;
+    int MENU_UPDATE = 130;
 
-    public static final int MENU_COMMENT = 140;
+    int MENU_COMMENT = 140;
 
-    public static final int MENU_LIKE = 150;
+    int MENU_LIKE = 150;
 
-    public static final int MENU_EDIT = 160;
+    int MENU_EDIT = 160;
 
-    public static final int MENU_VERSION_HISTORY = 170;
+    int MENU_VERSION_HISTORY = 170;
 
-    public static final int MENU_TAGS = 180;
+    int MENU_TAGS = 180;
 
-    public static final int MENU_DELETE = 190;
+    int MENU_DELETE = 190;
 
     // ///////////////////////////////////////////
     // Account
     // ///////////////////////////////////////////
 
-    public static final int MENU_ACCOUNT_ADD = 200;
+    int MENU_ACCOUNT_ADD = 200;
 
-    public static final int MENU_ACCOUNT_EDIT = 210;
+    int MENU_ACCOUNT_EDIT = 210;
 
-    public static final int MENU_ACCOUNT_DELETE = 220;
+    int MENU_ACCOUNT_DELETE = 220;
 
     // ///////////////////////////////////////////
     // DEVICE CAPTURE SUB-MENU
     // ///////////////////////////////////////////
-    public static final int MENU_DEVICE_CAPTURE_CAMERA_PHOTO = 300;
+    int MENU_DEVICE_CAPTURE_CAMERA_PHOTO = 300;
 
-    public static final int MENU_DEVICE_CAPTURE_CAMERA_VIDEO = 310;
+    int MENU_DEVICE_CAPTURE_CAMERA_VIDEO = 310;
 
-    public static final int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
+    int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
 
     // ///////////////////////////////////////////
     // SITES
     // ///////////////////////////////////////////
-    public static final int MENU_SITE_JOIN = 401;
+    int MENU_SITE_JOIN = 401;
 
-    public static final int MENU_SITE_LEAVE = 402;
+    int MENU_SITE_LEAVE = 402;
 
-    public static final int MENU_SITE_CANCEL = 403;
+    int MENU_SITE_CANCEL = 403;
 
-    public static final int MENU_SITE_FAVORITE = 404;
+    int MENU_SITE_FAVORITE = 404;
 
-    public static final int MENU_SITE_UNFAVORITE = 405;
+    int MENU_SITE_UNFAVORITE = 405;
 
-    public static final int MENU_SITE_LIST_REQUEST = 406;
+    int MENU_SITE_LIST_REQUEST = 406;
 
     // ///////////////////////////////////////////
     // GENERAL
     // ///////////////////////////////////////////
 
-    public static final int ACCOUNT_ID = 1000;
+    int ACCOUNT_ID = 1000;
 
-    public static final int PARAMETER_ID = 2000;
+    int PARAMETER_ID = 2000;
 
-    public static final int PARAMETER_HIDE_SHOW_TAB = 3000;
+    int PARAMETER_HIDE_SHOW_TAB = 3000;
 
-    public static final int ABOUT_ID = 4000;
+    int ABOUT_ID = 4000;
 
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -20,22 +20,22 @@ package org.alfresco.mobile.android.intent;
 public interface PublicIntent
 {
 
-    public static final String ACTION_VIEW = "org.alfresco.mobile.android.intent.ACTION_VIEW";
+    String ACTION_VIEW = "org.alfresco.mobile.android.intent.ACTION_VIEW";
 
-    public static final String EXTRA_NODE = "org.alfresco.mobile.android.intent.EXTRA_NODE";
+    String EXTRA_NODE = "org.alfresco.mobile.android.intent.EXTRA_NODE";
 
-    public static final String EXTRA_CONTENT = "org.alfresco.mobile.android.intent.EXTRA_CONTENT";
+    String EXTRA_CONTENT = "org.alfresco.mobile.android.intent.EXTRA_CONTENT";
 
-    public static final String EXTRA_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_FOLDER";
+    String EXTRA_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_FOLDER";
 
-    public static final String NODE_TYPE = "org.alfresco.mobile.android/object.node";
+    String NODE_TYPE = "org.alfresco.mobile.android/object.node";
 
     // REQUEST CODE
-    public static final int REQUESTCODE_FILEPICKER = 128;
+    int REQUESTCODE_FILEPICKER = 128;
 
-    public static final int REQUESTCODE_SAVE_BACK = 129;
-    
-    public static final int REQUESTCODE_CREATE = 130;
-    
-    public static final int REQUESTCODE_DECRYPTED = 131;
+    int REQUESTCODE_SAVE_BACK = 129;
+
+    int REQUESTCODE_CREATE = 130;
+
+    int REQUESTCODE_DECRYPTED = 131;
 }

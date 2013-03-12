@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 
@@ -35,9 +34,9 @@ import android.widget.TextView;
 
 public class AlphabeticNodeAdapter extends NodeAdapter
 {
-    private final static int ITEM_TYPE = 0;
+    private static final int ITEM_TYPE = 0;
 
-    private final static int HEADING_TYPE = 1;
+    private static final int HEADING_TYPE = 1;
 
     private HashMap<String, Integer> alphaIndexer;
 
@@ -55,7 +54,7 @@ public class AlphabeticNodeAdapter extends NodeAdapter
         positionIndexer = new HashMap<Integer, String>();
     }
     
-    public AlphabeticNodeAdapter(Activity context, AlfrescoSession session, int textViewResourceId, List<Node> listItems,
+    public AlphabeticNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, listItems, selectedItems, mode);

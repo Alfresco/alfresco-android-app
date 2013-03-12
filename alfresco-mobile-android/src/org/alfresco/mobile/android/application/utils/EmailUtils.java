@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -31,11 +31,12 @@ import android.preference.PreferenceManager;
 import android.text.Html;
 import android.util.Log;
 
-public class EmailUtils
+public final class EmailUtils
 {
-    private EmailUtils(){
+    private EmailUtils()
+    {
     }
-    
+
     public static final String TAG = "EmailUtils";
 
     public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment,
@@ -43,13 +44,11 @@ public class EmailUtils
     {
         try
         {
-            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true))
+            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true)
+                    && CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
             {
-                if (CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
-                {
-                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
-                            .putString(GeneralPreferences.REQUIRES_ENCRYPT, attachment.getPath()).commit();
-                }
+                PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
+                        .putString(GeneralPreferences.REQUIRES_ENCRYPT, attachment.getPath()).commit();
             }
 
             Intent i = new Intent(Intent.ACTION_SEND);

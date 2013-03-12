@@ -407,7 +407,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (adapter == null)
         {
-            adapter = new AlphabeticNodeAdapter(getActivity(), alfSession, R.layout.sdk_list_row, new ArrayList<Node>(0),
+            adapter = new AlphabeticNodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0),
                     selectedItems, mode);
         }
 
@@ -608,7 +608,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        if (!extended && parentFolder != null && permission.canAddChildren())
+        if (!extended && permission.canAddChildren())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST + MenuActionItem.MENU_CREATE_FOLDER,
                     R.string.folder_create);

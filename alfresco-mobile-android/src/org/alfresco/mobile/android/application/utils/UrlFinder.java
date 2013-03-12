@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -24,24 +24,29 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 
 import android.text.TextUtils;
 
-public class UrlFinder
+public final class UrlFinder
 {
+
+    private UrlFinder()
+    {
+    }
+
     private static final String NODEREF = "noderef=";
 
     private static final String ID = "id=";
 
-    private static final List<String> patterns = new ArrayList<String>(2);
+    private static final List<String> PATTERNS = new ArrayList<String>(2);
     static
     {
-        patterns.add(NODEREF);
-        patterns.add(ID);
+        PATTERNS.add(NODEREF);
+        PATTERNS.add(ID);
     }
 
     public static String getIdentifier(String url)
     {
         String identifier = null, tmp = null;
         tmp = url.toLowerCase();
-        for (String pattern : patterns)
+        for (String pattern : PATTERNS)
         {
             if (tmp.contains(pattern.toLowerCase()))
             {

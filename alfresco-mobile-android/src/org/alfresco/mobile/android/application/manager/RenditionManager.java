@@ -82,8 +82,6 @@ public class RenditionManager
 
     public static final int TYPE_PERSON = 1;
 
-    BitmapThread task;
-
     public RenditionManager(Activity context, AlfrescoSession session)
     {
         this.context = context;
@@ -128,7 +126,7 @@ public class RenditionManager
         if (getBitmapFromMemCache(hashKey) == null)
         {
             mMemoryCache.put(hashKey, bitmap);
-            //Log.d(TAG, "Add MemoryCache : " + key);
+            // Log.d(TAG, "Add MemoryCache : " + key);
         }
     }
 
@@ -145,7 +143,7 @@ public class RenditionManager
                 IOUtils.copyStream(cf.getInputStream(), editor.newOutputStream(0));
                 editor.commit();
             }
-            //Log.d(TAG, "Add DiskCache : " + key);
+            // Log.d(TAG, "Add DiskCache : " + key);
         }
         catch (Exception e)
         {
@@ -175,7 +173,7 @@ public class RenditionManager
             snapshot = mDiskCache.get(hashKey);
             if (snapshot != null)
             {
-                //Log.d(TAG, "GET DiskCache : " + key);
+                // Log.d(TAG, "GET DiskCache : " + key);
                 if (preview != null)
                 {
                     return decodeStream(mDiskCache, hashKey, preview, dm);
@@ -191,6 +189,35 @@ public class RenditionManager
             Log.w(TAG, Log.getStackTraceString(e));
         }
         return null;
+    }
+
+    public void removeFromCache(String key)
+    {
+        try
+        {
+            if (key == null) { return; }
+            String largePreviewKey = getLargePreviewKey(key);
+            String hashKey = StorageManager.md5(key);
+            String hashLargeKey = StorageManager.md5(largePreviewKey);
+            if (getBitmapFromMemCache(key) != null)
+            {
+                mMemoryCache.remove(hashKey);
+                mMemoryCache.remove(hashLargeKey);
+            }
+            if (getBitmapFromDiskCache(key) != null)
+            {
+                mDiskCache.remove(hashKey);
+                mDiskCache.remove(hashLargeKey);
+            }
+        }
+        catch (IOException e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+    }
+    
+    private String getLargePreviewKey(String key){
+        return "L" + key;
     }
 
     /**
@@ -236,7 +263,7 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
-            //Log.d(TAG, "Cache : " + identifier);
+            // Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
         {
@@ -273,7 +300,7 @@ public class RenditionManager
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
 
-        //Log.d(TAG, "height:" + height + "width" + width);
+        // Log.d(TAG, "height:" + height + "width" + width);
 
         return inSampleSize;
     }
@@ -523,15 +550,15 @@ public class RenditionManager
     // Used to display bitmap in the UI thread
     class BitmapDisplayer implements Runnable
     {
-        Bitmap bitmap;
+        private Bitmap bitmap;
 
-        ImageView imageView;
+        private ImageView imageView;
 
-        Integer preview;
+        private Integer preview;
 
-        WeakReference<ImageView> imageViewReference;
+        private WeakReference<ImageView> imageViewReference;
 
-        BitmapThread bitmapTask;
+        private BitmapThread bitmapTask;
 
         public BitmapDisplayer(Bitmap b, Integer p, WeakReference<ImageView> im, BitmapThread bt)
         {
@@ -547,9 +574,9 @@ public class RenditionManager
 
             if (imageViewReference != null && bitmap != null)
             {
-                final ImageView imageView = imageViewReference.get();
+                imageView = imageViewReference.get();
                 final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
-                if (bitmapTask == bitmapWorkerTask && imageView != null)
+                if (bitmapTask.equals(bitmapWorkerTask) && imageView != null)
                 {
                     imageView.setImageBitmap(bitmap);
 
@@ -562,13 +589,14 @@ public class RenditionManager
                         params.width = bitmap.getWidth();
                         params.height = bitmap.getHeight();
                         imageView.setLayoutParams(params);
-                        //Log.d(TAG, "W:" + bitmap.getWidth() + " H:" + bitmap.getHeight());
+                        // Log.d(TAG, "W:" + bitmap.getWidth() + " H:" +
+                        // bitmap.getHeight());
                     }
                 }
             }
             else if (preview != null && bitmap == null)
             {
-                final ImageView imageView = imageViewReference.get();
+                imageView = imageViewReference.get();
                 if (imageView != null && ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message) != null)
                 {
                     ((ViewGroup) imageView.getParent()).findViewById(R.id.preview_message).setVisibility(View.VISIBLE);
@@ -605,7 +633,7 @@ public class RenditionManager
             final String bitmapData = bitmapWorkerTask.identifier;
             if (bitmapData != null && !bitmapData.equals(data))
             {
-                //Log.d(TAG, "Cancel : " + data);
+                // Log.d(TAG, "Cancel : " + data);
                 bitmapWorkerTask.interrupt();
             }
             else

@@ -154,7 +154,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                         GeneralPreferences.REQUIRES_ENCRYPT, "");
                 if (filename != null && filename.length() > 0)
                 {
-                    if (CipherUtils.encryptFile(getActivity(), filename, true) == false)
+                    if (!CipherUtils.encryptFile(getActivity(), filename, true))
                     {
                         MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
                     }
