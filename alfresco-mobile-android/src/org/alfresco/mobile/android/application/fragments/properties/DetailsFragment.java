@@ -568,17 +568,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     if (tmpPath != null)
                     {
                         File f = new File(tmpPath);
-
-                        if (StorageManager.shouldEncryptDecrypt(getActivity(), tmpPath))
-                        {
-                            String mimeType = MimeTypeManager.getMIMEType(tmpPath);
-                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
-                                    .beginTransaction();
-                            EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(f, mimeType, null,
-                                    null);
-                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                            fragmentTransaction.commit();
-                        }
+                        update(f);
                     }
                     else
                     {
@@ -789,7 +779,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         mTabHost.setup(); // you must call this before adding your tabs!
         mTabHost.setOnTabChangedListener(this);
 
-        if (node.isDocument() && ((Document)node).isLatestVersion())
+        if (node.isDocument() && ((Document) node).isLatestVersion())
         {
             mTabHost.addTab(newTab(TAB_PREVIEW, R.string.preview, android.R.id.tabcontent));
         }
