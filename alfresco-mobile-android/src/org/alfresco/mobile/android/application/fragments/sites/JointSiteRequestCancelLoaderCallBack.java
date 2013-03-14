@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.fragments.sites;
 
 import org.alfresco.mobile.android.api.asynchronous.JoinSiteRequestCancelLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -35,7 +35,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<LoaderResult<Void>>
+public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<LoaderResult<Site>>
 {
 
     private static final String TAG = "JointSiteRequestLoaderCallBack";
@@ -62,17 +62,17 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
     }
 
     @Override
-    public Loader<LoaderResult<Void>> onCreateLoader(int id, Bundle bundle)
+    public Loader<LoaderResult<Site>> onCreateLoader(int id, Bundle bundle)
     {
         return new JoinSiteRequestCancelLoader(fragment.getActivity(), SessionUtils.getSession(fragment.getActivity()),
-                (JoinSiteRequest) bundle.getSerializable(PARAM_JOIN_SITE_REQUEST));
+                (Site) bundle.getSerializable(PARAM_JOIN_SITE_REQUEST));
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Void>> loader, LoaderResult<Void> result)
+    public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        JoinSiteRequest joinSiteRequest = ((JoinSiteRequestCancelLoader) loader).getJoinSiteRequest();
+        Site joinSiteRequest = ((JoinSiteRequestCancelLoader) loader).getJoinSiteRequest();
         if (!result.hasException())
         {
             messageId = R.string.action_cancel_join_site_request;
@@ -93,11 +93,11 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
         }
 
         MessengerManager.showLongToast(fragment.getActivity(),
-                String.format(fragment.getString(messageId), joinSiteRequest.getSiteShortName()));
+                String.format(fragment.getString(messageId), joinSiteRequest.getShortName()));
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<Void>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<Site>> arg0)
     {
         // Do Nothing
     }

@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.ui.site.SitesFragment;
 
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,9 +56,9 @@ import android.widget.TabHost.TabSpec;
 public class BrowserSitesFragment extends SitesFragment implements RefreshFragment, OnTabChangeListener
 {
     public static final int MODE_LISTING = 0;
-    
+
     public static final int MODE_IMPORT = 1;
-    
+
     public static final String TAG = "BrowserSitesFragment";
 
     public static final String TAB_ALL_SITES = "All";
@@ -69,7 +70,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     private String currentTabId = TAB_MY_SITES;
 
     private TabHost mTabHost;
-    
+
     private int mode = MODE_LISTING;
 
     public BrowserSitesFragment()
@@ -106,11 +107,12 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     public void onStart()
     {
         int titleId = R.string.menu_browse_all_sites;
-        if (getActivity() instanceof PublicDispatcherActivity){
-            mode  = MODE_IMPORT;
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            mode = MODE_IMPORT;
             titleId = R.string.import_document_title;
         }
-        
+
         mTabHost.setCurrentTabByTag(currentTabId);
         getActivity().invalidateOptionsMenu();
         getActivity().setTitle(titleId);
@@ -236,12 +238,19 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     @SuppressWarnings("unchecked")
     public void update(Site oldSite, Site newSite)
     {
-        if (adapter != null)
+        try
         {
-            int position = ((ArrayAdapter<Site>) adapter).getPosition(oldSite);
-            ((ArrayAdapter<Site>) adapter).remove(oldSite);
-            ((ArrayAdapter<Site>) adapter).insert(newSite, position);
-            adapter.notifyDataSetChanged();
+            if (adapter != null)
+            {
+                int position = ((ArrayAdapter<Site>) adapter).getPosition(oldSite);
+                ((ArrayAdapter<Site>) adapter).remove(oldSite);
+                ((ArrayAdapter<Site>) adapter).insert(newSite, position);
+                adapter.notifyDataSetChanged();
+            }
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, "Unable to refresh sites objects");
         }
     }
 
