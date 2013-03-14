@@ -72,7 +72,7 @@
     <!-- ACCOUNTS -->
     <string name="account_not_activated">Your account is not activated. Please check the Manage Account screen.</string>
     <string name="account_loading">Loading:&#160;</string>
-    <string name="account_not_activated_title">Alfresco Cloud.</string>
+    <string name="account_not_activated_title">Alfresco in the cloud.</string>
     <string name="account_not_activated_description">Your account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
@@ -121,7 +121,7 @@
         Please check your account settings and try again.<br/> If the problem persists please contact your administrator.]]>
 	</string>
 	<string name="error_session_cloud_unavailable">
-		<![CDATA[<p><b>Alfresco Cloud is under heavy load right now!</b><br/></p>
+		<![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
         Please try again in a few minutes.<br/>]]>
 	</string>
     <string name="error_session_unauthorized_title">Unauthorized.</string>
@@ -211,7 +211,7 @@
     <string name="cloud_signup_hint">By tapping Sign Up, you are agreeing to the Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">Terms of Service</a> and <a href="http://www.alfresco.com/privacy">Privacy Policy</a>.</string>
     <string name="sign_up_cloud">Sign Up for Alfresco Cloud</string>
     <string name="sign_up_cloud_email_verification">Account waiting for email verification</string>
-    <string name="sign_up_cloud_email_verification_line1">You\'ve signed up for Alfresco Cloud using the email address:</string>
+    <string name="sign_up_cloud_email_verification_line1">You\'ve signed up for Alfresco in the cloud using the email address:</string>
     <string name="sign_up_cloud_email_verification_line2">Please check your email. We\'ve sent you a link that you\'ll need to use to complete the registration.</string>
     <string name="sign_up_cloud_email_having_trouble">Having trouble activating ?</string>
     <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your account.</string>
@@ -255,7 +255,7 @@
     <!-- BuildNumber Bamboo -->
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile connects to Alfresco Cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate documents on the go.</p> 
+<p>Alfresco Mobile connects to Alfresco in the cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate documents on the go.</p> 
 
 <p>Alfresco Mobile connects to your Alfresco repository using your Alfresco log-in credentials (over HTTP or HTTPS), and manages user access based on their permissions.</p> 
 ]]>
