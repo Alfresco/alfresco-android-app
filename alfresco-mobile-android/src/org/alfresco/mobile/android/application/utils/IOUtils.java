@@ -87,52 +87,6 @@ public class IOUtils
         return tmpFolder;
     }
 
-    public static String writeAsset(Context c, String assetFilename) throws IOException
-    {
-        String newFilename = "";
-
-        File folder = StorageManager.getAssetFolder(c, SessionUtils.getAccount(c).getUrl(), SessionUtils.getAccount(c)
-                .getUsername());
-        if (folder != null)
-        {
-            newFilename = folder.getPath() + File.separator + assetFilename;
-            BufferedInputStream bis = null;
-            BufferedOutputStream bos = null;
-
-            try
-            {
-                InputStream is = c.getAssets().open(assetFilename);
-                OutputStream os = new FileOutputStream(newFilename);
-
-                bis = new BufferedInputStream(is);
-                bos = new BufferedOutputStream(os);
-                byte[] buf = new byte[1024];
-
-                int n = 0;
-                int o = 0;
-                while ((n = bis.read(buf, o, buf.length)) > 0)
-                {
-                    bos.write(buf, 0, n);
-                }
-            }
-            catch (IOException e)
-            {
-                newFilename = "";
-            }
-
-            if (bis != null)
-            {
-                bis.close();
-            }
-            if (bos != null)
-            {
-                bos.close();
-            }
-        }
-
-        return newFilename;
-    }
-
     // Helper method with string arguments
     public static boolean copyFile(String source, String dest) throws IOException
     {

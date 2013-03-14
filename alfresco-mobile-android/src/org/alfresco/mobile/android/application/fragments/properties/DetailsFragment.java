@@ -651,7 +651,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             if (((Document) node).getContentStreamLength() > 0)
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD,
-                        R.string.share);
+                        R.string.download);
                 mi.setIcon(R.drawable.ic_download_dark);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
@@ -660,7 +660,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     && ((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPDATE, Menu.FIRST + MenuActionItem.MENU_UPDATE,
-                        R.string.upload);
+                        R.string.update);
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }

@@ -72,11 +72,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return getPrivateFolder(context, TEMPDIR, urlValue, username);
     }
 
-    public static File getAssetFolder(Context context, String urlValue, String username)
+    public static File getAssetFolder(Context context)
     {
         return getPrivateFolder(context, ASSETDIR, null, null);
     }
-
+    
     /**
      * Returns a specific file/folder inside the private area of the
      * application.

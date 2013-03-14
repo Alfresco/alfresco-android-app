@@ -168,7 +168,7 @@ public class FileActions implements ActionMode.Callback
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.action_rename);
-        builder.setMessage(activity.getResources().getString(R.string.action_rename_desc) + " " + file.getName());
+        builder.setMessage(String.format(activity.getResources().getString(R.string.action_rename_desc), file.getName()));
         // Set an EditText view to get user input
         final EditText input = new EditText(activity);
         builder.setView(input);
