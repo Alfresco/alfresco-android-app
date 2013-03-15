@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+
+    <string name="app_name">Alfresco</string>
+    <string name="empty_accounts">Aucun compte disponible</string>
+
+    <!-- HOME SCREEN -->
+    <string name="home_title">Commençons&#8230; </string>
+    <string name="home_sign_cloud">Créer un compte Alfresco Cloud</string>
+    <string name="home_sign_cloud_description">Nouvel utilisateur Alfresco ? Créez gratuitement un compte en ligne pour stocker vos documents et y accéder où que vous soyez.</string>
+    <string name="home_account">Je possède déjà un compte</string>
+    <string name="home_account_description">Choisissez cette option si vous possédez déjà un compte Alfresco Cloud ou si vous souhaitez vous connecter à un serveur Alfresco</string>
+    <string name="home_helper">Pour plus d\'informations sur Alfresco Mobile, consultez les guides de la section d\'aide</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
+    <string name="account_wizard_alfresco_server">Serveur Alfresco</string>
+    <string name="account_wizard_alfresco_server_description">Connexion à un serveur Alfresco</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud_description">Accéder à votre compte Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_help">Nouvel utilisateur Alfresco ? <a href="alfresco://sign_up_cloud/">Créer un compte</a> gratuit</string>
+    <string name="account_wizard_alfresco_help_inside_app">Nouvel utilisateur Alfresco ? <a href="alfresco://sign_up_cloud_i/">Créer un compte</a> gratuit</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <string name="account">Compte</string>
+    <string name="action_add_account">Ajouter</string>
+    <string name="account_username">Nom utilisateur</string>
+    <string name="account_password">Mot de passe</string>
+    <string name="account_hostname">Nom d\'hôte</string>
+    <string name="account_hostname_hint">www.exemple.com (requis)</string>
+    <string name="account_description">Description</string>
+    <string name="account_description_hint">Serveur Alfresco (facultatif)</string>
+    <string name="account_advanced">Avancé</string>
+    <string name="account_authentication">Authentification du compte</string>
+    <string name="account_https">HTTPS</string>
+    <string name="account_port">Port</string>
+    <string name="account_servicedocument">URL du service</string>
+    <string name="account_wizard_step2_title">Informations d\'authentification du compte</string>
+    <string name="account_verify">Vérification des informations du compte&#8230;</string>
+    <string name="email_hint">exemple@acme.com</string>
+    <string name="account_url">URL (nom d\'hôte + URL du service)</string>
+    <string name="error_account_form">Vérifiez : </string>
+    <string name="account_validate">Enregistrer</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
+    <string name="account_wizard_alldone">Terminé !</string>
+    <string name="account_wizard_alldone_description">Vous pouvez maintenant utiliser votre compte.</string>
+    <string name="account_wizard_donee">Fait.</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <string name="account_wizard_step1">Etape 1 sur 2</string>
+    <string name="account_wizard_step1_description">Sélectionner le compte</string>
+    <string name="account_wizard_step2">Etape 2 sur 2</string>
+    <string name="account_wizard_step2_description">Infos sur le compte</string>
+
+    <!-- ACCOUNTS -->
+    <string name="account_not_activated">Votre compte n\'est pas activé. Veuillez vérifier sur l\'écran de gestion des comptes.</string>
+    <string name="account_loading">Chargement : </string>
+    <string name="account_not_activated_title">Alfresco in the cloud.</string>
+    <string name="account_not_activated_description">Votre compte est en cours de vérification</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
+    <string name="account_default_onpremise">Serveur Alfresco</string>
+
+    <!-- MAIN MENU -->
+    <string name="wait_title">Veuillez patienter</string>
+    <string name="wait_message">Le système contacte le serveur&#8230;</string>
+
+    <!-- SESSION ERROR -->
+    <string name="error_session_creation_title">Enregistrer le compte</string>
+    <string name="error_session_creation_message">Erreur connexion</string>
+    <string name="error_session_creation">Authentification impossible. Vérifiez les paramètres de votre compte.</string>
+    <string name="error_session_hostname">
+        <![CDATA[La valeur de votre <b>nom d\'hôte</b> semble incorrecte.<br/> Vérifiez les paramètres de votre compte.]]>
+    </string>
+    <string name="error_session_nodata">
+        <![CDATA[<p><b>Aucune donnée n\'est transmise depuis votre appareil.</b><br/></p> Vérifiez ses paramètres et activez une connexion de données.]]>
+    </string>
+    <string name="error_session_unauthorized">
+		<![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte <b>(Nom d\'utilisateur/Mot de passe)</b>.]]>
+	</string>
+	<string name="error_session_service_url">
+		<![CDATA[La valeur de l\'<b>URL du service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]>
+	</string>
+	<string name="error_session_service_unavailable">
+		<![CDATA[En raison d\'un arrêt de maintenance ou de problèmes de capacité, le serveur ne peut traiter votre demande pour l\'instant.<br/> Veuillez réessayer ultérieurement.]]>
+	</string>
+	<string name="error_session_notfound">
+		<![CDATA[Impossible d\'accéder à votre serveur.<br/> Vérifiez les paramètres de votre compte.]]>
+	</string>
+	<string name="error_session_port">
+		<![CDATA[La valeur du <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]>
+	</string>
+	<string name="error_session_certificate">
+		<![CDATA[<p><b>Le certificat de sécurité du serveur n\'est pas approuvé.</b><br/></p>
+		La société tierce ayant émis le certificat de destination de votre serveur n\'est pas reconnue par votre appareil.<br/>
+		Pour qu\'Alfresco Mobile puisse vérifier que vous vous connectez avec le serveur approprié, il faut que le certificat de ce dernier provienne d\'une entreprise reconnue.<br/>
+		Si votre serveur dispose d\'un certificat auto-signé, ajoutez-le à votre appareil pour pouvoir vous connecter.<br/> ]]>
+	</string>
+	<string name="error_session_certificate_expired">
+		<![CDATA[<p><b>Le certificat de sécurité du serveur a expiré ou n\'est pas encore valide.</b><br/></p>
+		Vérifiez la configuration de date et d\'heure de votre appareil.<br/> Si le problème persiste, veuillez contacter votre administrateur. ]]>
+	</string>
+	<string name="error_session_ssl">
+		<![CDATA[<p><b>Une erreur de protocole SSL s\'est produite.</b><br/></p>
+        Vérifiez les paramètres de votre compte et réessayez.<br/> Si le problème persiste, veuillez contacter votre administrateur.]]>
+	</string>
+    <string name="error_session_unauthorized_title">Non autorisé.</string>
+    <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
+    <string name="error_session_refresh">Rafraîchissement de la session.</string>
+    <string name="error_signin_form">Nous ne pouvons pas créer une session. Vérifiez vos informations de connexion.</string>
+    <string name="error_signin_form_mandatory">Certains champs obligatoires n\'ont pas été remplis.</string>
+
+    <!-- MESSAGE ERROR -->
+    <string name="error_refresh_token">Erreur lors de l\'authentification</string>
+    <string name="error_general">Une erreur s\'est produite. Veuillez réessayer.</string>
+    <string name="error_account_url">L\'URL est incorrecte. Vérifiez les paramètres de votre compte.</string>
+    <string name="error_signup_account_confirmation">Impossible de trouver un compte à activer.</string>
+    <string name="error_unknown_filepath">Ressource introuvable.</string>
+
+    <!-- DETAILS -->
+    <string name="geolocation">Géolocalisation</string>
+    <string name="action_version">Versions</string>
+    <string name="document_comments_header">Commentaires</string>
+    <string name="document_tags_header">Tags</string>
+    <string name="document_version_header">Version</string>
+
+    <!-- DOWNLOAD -->
+    <string name="empty_download">Aucun document</string>
+
+    <!-- SEARCH -->
+    <string name="search_form_hint">Saisissez un terme de recherche</string>
+
+    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <string name="optional">Facultatif</string>
+    <string name="required">Obligatoire</string>
+
+    <!-- LOCAL FIlE -->
+    <string name="action_rename">Renommer</string>
+    <string name="action_rename_desc">Nouveau nom pour \"%s\"</string>
+
+    <!-- MAIN MENU -->
+    <string name="menu_browse_root">Entrepôt</string>
+    <string name="menu_browse_sites">Sites</string>
+    <string name="menu_browse_all_sites">Tous les sites</string>
+    <string name="menu_browse_my_sites">Mes sites</string>
+    <string name="menu_browse_favorite_sites">Sites favoris</string>
+    <string name="menu_browse_tags">Tags</string>
+    <string name="menu_browse_activities">Activités</string>
+    <string name="menu_search">Recherche</string>
+    <string name="menu_downloads">Téléchargements</string>
+    <string name="menu_about">Infos</string>
+    <string name="menu_settings">Paramètres</string>
+    <string name="menu_more">Plus</string>
+    <string name="menu_accounts">Comptes</string>
+    <string name="menu_alfresco">Mon Alfresco</string>
+    <string name="menu_view">Vues</string>
+    <string name="menu_account_manage">Gérer</string>
+    <string name="menu_help">Aide</string>
+    <string name="menu_prefs">Paramètres</string>
+    <string name="menu_resources">Ressources</string>
+
+    <!-- UPLOAD -->
+    <string name="upload_pick_document">Choisissez un document&#8230;</string>
+    <string name="upload_from">Importer un document depuis&#8230;</string>
+    <string name="upload_download_folder">Télécharger le dossier</string>
+    <string name="upload_third_application">Autre application</string>
+
+    <!-- ACCOUNTS -->
+    <string name="accounts_manage">Comptes</string>
+    <string name="accounts_details">Détails</string>
+
+    <!-- PROPERTIES -->
+    <string name="details">Détails</string>
+    <string name="metadata">Propriétés</string>
+    <string name="preview">Aperçu</string>
+
+    <!-- NETWORKS -->
+    <string name="cloud_networks">Réseaux</string>
+    <string name="cloud_networks_empty">Aucun réseau disponible</string>
+    <string name="manage_accounts">Gérer les comptes&#8230;</string>
+    <string name="cloud_networks_switch">Changer de réseau&#8230;</string>
+
+    <!-- CLOUD SIGNUP -->
+    <string name="cloud_signup_firstname">Prénom</string>
+    <string name="cloud_signup_lastname">Nom</string>
+    <string name="cloud_signup_email">Email</string>
+    <string name="cloud_signup_password">Mot de passe</string>
+    <string name="cloud_signup_password_hint">6 caractères au minimum</string>
+    <string name="cloud_signup_confirm">Confirmer le mot de passe</string>
+    <string name="cloud_signup_action">Créer un compte</string>
+    <string name="cloud_signup_hint">En sélectionnant Créer un compte, vous acceptez les <a href="http://www.alfresco.com/legal/agreements/cloud">conditions d\'utilisation</a> et la <a href="http://www.alfresco.com/privacy">politique de confidentialité d\'Alfresco</a>.</string>
+    <string name="sign_up_cloud">Créer un compte Alfresco Cloud</string>
+    <string name="sign_up_cloud_email_verification">Vérification de l\'e-mail compte en attente</string>
+    <string name="sign_up_cloud_email_verification_line1">Vous avez créé un compte Alfresco in the cloud avec l\'adresse :</string>
+    <string name="sign_up_cloud_email_verification_line2">Consultez votre boîte e-mail. Vous avez reçu un lien permettant de terminer le processus d\'enregistrement.</string>
+    <string name="sign_up_cloud_email_having_trouble">Problèmes d\'activation ?</string>
+    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Veuillez nous prévenir</a> en cas de problème d\'activation de votre compte.</string>
+    <string name="sign_up_cloud_awaiting_email">Confirmation de l\'e-mail en attente</string>
+    <string name="cloud_signup_resend">Renvoyer l\'e-mail</string>
+    <string name="cloud_signup_resend_successfull">L\'e-mail a été renvoyé</string>
+    <string name="cloud_signup_resend_body">Vous ne recevez pas nos e-mails ? Vérifiez que l\'adresse indiquée est correcte et consultez le dossier des e-mails indésirables</string>
+    <string name="cloud_signup_error_email">Alfresco a besoin de votre adresse e-mail professionnelle pour ajouter votre profil au réseau de collaboration de votre entreprise.</string>
+    <string name="cloud_signup_error_email_title">Alfresco in the Cloud : créer un compte.</string>
+
+    <!-- AUTHENTICATION -->
+    <string name="cloud_authentication">Authentification</string>
+
+    <!-- NETWORK -->
+    <string name="error_network_title">Aucun réseau.</string>
+    <string name="error_network_details">Votre appareil n\'est pas connecté à un réseau. Par conséquent, certaines fonctions peuvent être désactivées.</string>
+
+    <!-- NOTIFICATION -->
+    <string name="upload">Ajouter </string>
+    <string name="upload_complete">Ajout terminé.</string>
+    <string name="upload_in_progress">Ajout en cours&#8230;</string>
+    <string name="error_unable_open_file_title">Impossible d\'ouvrir le document.</string>
+    <string name="error_unable_open_file">Ce format de document n\'est pas pris en charge. Vous devez installer une application capable de le lire.</string>
+
+    <!-- OTHER -->
+    <string name="error_retrieve_likes">Impossible de récupérer le tag Aimer/Ne plus aimer pour ce document.</string>
+    <string name="previous">Précédent</string>
+    <string name="next">Suivant</string>
+    <string name="save">Enregistrer</string>
+    <string name="action_ok">OK</string>
+    <string name="enter_details">Saisissez vos informations</string>
+    <string name="share_content">Partager le document avec&#8230;</string>
+
+    <!-- HELP -->
+    <string name="asset_folder_prefix">fr</string>
+
+    <!-- About Message -->
+    <string name="buildnumber_version">Version : </string>
+    <!-- BuildNumber Bamboo -->
+    <string name="about_description">
+<![CDATA[
+<p>Alfresco Mobile se connecte à Alfresco in the cloud et aux serveurs sur site Alfresco (version 3.4 et ultérieures) et vous permet d\'accéder en toute sécurité à vos documents d\'entreprise lors de vos déplacements.</p> 
+
+<p>Alfresco Mobile se connecte à votre entrepôt Alfresco à l\'aide de vos identifiants de connexion Alfresco (via HTTP ou HTTPS) et gère l\'accès utilisateur en fonction de vos droits.</p> 
+]]>
+    </string>
+
+    <!-- Waiting Message -->
+    <string name="dialog_wait">Veuillez patienter</string>
+    <string name="contact_server_progress">Le système contacte le serveur&#8230;</string>
+    <string name="validation_credentials">Validation de vos identifiants&#8230;</string>
+    <string name="get_pdf_viewer">Un lecteur de PDF est requis pour afficher ce document.\n\nSouhaitez-vous en obtenir un maintenant ?</string>
+    <string name="send_email">Partager ce document</string>
+    <string name="link_or_attach">Souhaitez-vous partager le document ou le lien vers ce document ?</string>
+    <string name="full_attachment">Elément attaché</string>
+    <string name="link_to_repo">Lien</string>
+    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Envoyer avec <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
+
+    <!-- Delete -->
+    <string name="delete_description">Voulez vous supprimer \"%s\" ?</string>
+    <string name="delete_description_data_protection">Protection des données active.\n\nSi vous supprimez ce compte, vos documents reprendront leur état non protégé.\n\nSupprimer \"%s\" ?</string>
+    
+    <!-- Save Back -->
+    <string name="save_back_description">\"%s\" a été modifié. Souhaitez-vous ajouter cette nouvelle version ?</string>
+    <string name="update_sucess">\"%s\" a été mis à jour avec succès.</string>
+    <string name="no_voice_recorder">Vous n\'avez pas d\'enregistreur vocal sur cet appareil.</string>
+    <string name="cannot_capture">Impossible de terminer la capture de ces informations</string>
+
+    <!-- Upload -->
+    <string name="action_processing">En cours de traitement&#8230;</string>
+    <string name="action_upload_error">Ajout impossible&#8230;</string>
+
+    <!-- Create Document -->
+    <string name="open_play_store">Ouvrir la boutique Google Play</string>
+    <string name="create_document">Créer document</string>
+    <string name="create_document_title">Créer&#8230;</string>
+    <string name="create_document_word">Document Word</string>
+    <string name="create_document_powerpoint">Présentation Powerpoint</string>
+    <string name="create_document_excel">Feuille de calcul Excel</string>
+    <string name="create_document_text">Document texte </string>
+    <string name="create_document_name_hint">Saisissez le nom du document ici</string>
+    <string name="create_document_filename_error">Ce nom est déjà utilisé.</string>
+    <string name="create_document_save">Une erreur s\'est produite lors de l\'ajout. Votre document est enregistré dans \"Téléchargements\".</string>
+    <string name="document_word_extension">.docx</string>
+    <string name="document_powerpoint_extension">.pptx</string>
+    <string name="document_excel_extension">.xlsx</string>
+    <string name="document_text_extension">.txt</string>
+    <string name="create_document_editor_title">Terminer l\'action avec</string>
+    <string name="create_document_editor_not_available">Aucune application disponible</string>
+    <string name="create_document_editor_not_available_description">Vous ne disposez d\'aucune appli capable de créer ce type de document.</string>
+    <string name="preview_unavailable">Aperçu non disponible.</string>
+    <string name="sdinaccessible">Pour cette opération, la carte SD doit être accessible</string>
+    <string name="loginfirst">Veuillez d\'abord vous connecter à un compte</string>
+
+    <string name="encrypt_title">Chiffrement du contenu</string>
+    <string name="content_being_encrypted">La protection du contenu est en cours. Veuillez patienter</string>
+    <string name="content_being_decrypted">L\'annulation de la protection du contenu est en cours. Veuillez patienter</string>
+    <string name="data_protection">Protection des données</string>
+    <string name="data_protection_blurb">Souhaitez vous activer la protection des données ? (Cette opération chiffre toutes les données Alfresco téléchargées pour chaque compte. Seules les applications Alfresco ont accès à ces documents.)</string>
+    <string name="encryption_failed">Echec du chiffrement</string>
+    <string name="decryption_failed">Echec du déchiffrement</string>
+	<string name="protect_question">Protéger dès maintenant toutes les données Alfresco téléchargées ?  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco. Seules les applications Alfresco ont accès à ces documents.</string>
+	<string name="unprotect_question">Annuler dès maintenant la protection de toutes les données Alfresco téléchargées ?  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco.</string>
+	<string name="already_encrypted">Ce document est déjà chiffré.</string>
+	<string name="already_decrypted">Ce document est déjà déchiffré.</string>
+	<string name="decryption_title">Désactivation de la protection des données en cours&#8230;</string>
+	<string name="encryption_title">Activation de la protection des données en cours&#8230;</string>
+	<string name="copy_file_title">Copie du document en cours&#8230;</string>
+	
+    <string name="metadata_general">Général</string>
+
+    <!-- SITES ACTION -->
+    <string name="action_join_site">Rejoindre</string>
+    <string name="action_join_request_site">Demander à rejoindre</string>
+    <string name="action_leave_site">Se désabonner</string>
+    <string name="action_favorite_site">Favori</string>
+    <string name="action_unfavorite_site">Supp. fav.</string>
+    <string name="action_cancel_request">Annuler la demande</string>
+    <string name="action_pending_request">Demandes à rejoindre en attente</string>
+    <string name="action_join_site_validation">Vous êtes maintenant membre de \"%s\".</string>
+    <string name="action_leave_site_validation">Vous avez quitté \"%s\".</string>
+    <string name="action_favorite_site_validation">\"%s\" fait maintenant partie des favoris.</string>
+    <string name="action_unfavorite_site_validation">\"%s\" ne figure plus dans les favoris.</string>
+    <string name="action_join_request_site_validation">Vous avez demandé à rejoindre \"%s\"</string>
+    <string name="empty_joinsiterequest">Aucune demande en attente</string>
+    <string name="joinsiterequest_list_title">Liste des demandes en attente</string>
+    <string name="action_cancel_join_site_request">Votre demande de rejoindre \"%s\" a été annulée.</string>
+    <string name="action_join_site_error">Un problème vous a empêché de rejoindre le site \"%s\".</string>
+    <string name="action_leave_site_error">Un problème vous a empêché de quitter le site \"%s\".</string>
+    <string name="action_favorite_error">Un problème vous a empêché d\'inclure le site \"%s\" dans les favoris.</string>
+    <string name="action_unfavorite_site_error">Un problème vous a empêché de supprimer le site \"%s\" des favoris.</string>
+
+    <!-- IMPORT -->
+    <string name="import_document_title">Importer dans Alfresco Mobile</string>
+    <string name="import_document_name">Nom du document</string>
+    <string name="import_account">Compte</string>
+    <string name="import_send_download">Le document se trouve dans le dossier Téléchargement de \"%s\".</string>
+    <string name="import_folder">Dossier Ajout</string>
+    <string name="import_error">Une erreur s\'est produite lors de l\'ajout.</string>
+    <string name="import_unsupported_intent">Alfresco Mobile : impossible de récupérer les informations.</string>
+    <string name="action_upload">Ajouter</string>
+    <string name="action_import">Importer</string>
+    <string name="error_import">Impossible d\'ajouter. Vérifiez les paramètres de votre compte.</string>
+    
+     <!-- SSL -->
+     <string name="security_ssl_disable">La validation du certificat SSL a été désactivée.</string>
+     
+
+    <string name="data_protection_unavailable">Protection des données non disponible (uniquement en version Enterprise)</string>
+	<string name="data_protection_off">La protection des données est actuellement désactivée</string>
+	<string name="data_protection_on">La protection des données est actuellement activée</string>
+
+
+    <!-- PIN Code -->
+    <string name="passcode_title">Entrer le code d\'accès</string>
+    <string name="passcode_enable_title">Activer le code d\'accès</string>
+    <string name="passcode_summary">Entrer le code d\'accès</string>
+    <string name="passcode_preference">Protection du code d\'accès</string>
+    <string name="passcode_enable">Activé</string>
+    <string name="passcode_disable">Désactivé</string>
+    <string name="passcode_change">Modifier le code d\'accès</string>
+    <string name="passcode_timeout">Expiration</string>
+    <string name="passcode_timeout_summary">Au bout de %s minutes</string>
+    <string name="passcode_erase_data">Effacer les données</string>
+    <string name="passcode_erase_data_summary">Effacer toutes les données Alfresco Mobile de cet appareil après 10 échecs de saisie du code d\'accès</string>
+    <string name="passcode_edit">Saisissez votre nouveau code d\'accès</string>
+    <string name="passcode_confirmation">Saisissez une nouvelle fois le code d\'accès</string>
+    <string name="passcode_error_confirmation">Votre code d\'accès ne correspond pas.</string>
+    <string name="passcode_unknown">Votre code d\'accès est incorrect.</string>
+    
+    <string name="passcode_erase_data_complete">Toutes les données locales ont été supprimées.</string>
+    <string name="passcode_timeout_title">Expiration du délai de saisie du code d\'accès</string>
+    <string name="passcode_timeout_1min">1 minute</string>
+    <string name="passcode_timeout_2min">2 minutes</string>
+    <string name="passcode_timeout_5min">5 minutes</string>
+    <string name="passcode_timeout_10min">10 minutes</string>
+    <string name="passcode_timeout_30min">30 minutes</string>
+    <string name="passcode_timeout_60min">1 heure</string>
+    
+                     
+    <string-array name="passcode_timeout_entries">
+    	<item>@string/passcode_timeout_1min</item>
+    	<item>@string/passcode_timeout_2min</item>
+    	<item>@string/passcode_timeout_5min</item>
+    	<item>@string/passcode_timeout_10min</item>
+    	<item>@string/passcode_timeout_30min</item>
+    	<item>@string/passcode_timeout_60min</item>
+	</string-array>
+	
+     <string-array name="passcode_timeout_values">
+    	<item>60000</item>
+    	<item>120000</item>
+    	<item>300000</item>
+    	<item>600000</item>
+    	<item>1800000</item>
+    	<item>3600000</item>
+	</string-array>
+     
+    <!-- Settings -->
+    <string name="settings">Paramètres</string>
+    <string name="settings_enterprise">Paramètres de la version Entreprise</string>
+    <string name="settings_privatefolder_summary">Avec la protection des données, les contenus téléchargés ne sont lisibles qu\'à partir des applications Alfresco (uniquement en version Enterprise)</string>
+    <string name="settings_privatefolder_title">Protection des données</string>
+    
+    <string name="settings_links">Liens</string>
+    <string name="settings_links_website">Alfresco</string>
+    <string name="settings_links_website_summary">Visiter le site Web officiel d\'Alfresco</string>
+    
+    <string name="settings_links_website">Alfresco</string>
+    <string name="settings_links_website_summary">Visiter le site Web officiel d\'Alfresco</string>
+    <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
+    
+    <string name="settings_rating">Rédiger un avis</string>
+    <string name="settings_rating_summary">Noter Alfresco Mobile sur Google Play</string>
+    <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
+   
+    <string name="settings_links_facebook">J\'aime Alfresco sur Facebook</string>
+    <string name="settings_links_facebook_summary">J\'aime sur Facebook</string>
+    <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
+       
+</resources>

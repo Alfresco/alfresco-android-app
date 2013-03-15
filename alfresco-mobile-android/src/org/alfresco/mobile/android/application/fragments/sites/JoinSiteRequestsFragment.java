@@ -22,7 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.JoinSiteRequestsLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -39,8 +39,7 @@ import android.widget.ArrayAdapter;
  * 
  * @author Jean Marie Pascal
  */
-public class JoinSiteRequestsFragment extends BaseListFragment implements
-        LoaderCallbacks<LoaderResult<List<JoinSiteRequest>>>
+public class JoinSiteRequestsFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<List<Site>>>
 {
     /** Public Fragment TAG. */
     public static final String TAG = "JoinSiteRequestsFragment";
@@ -64,25 +63,24 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements
         alfSession = SessionUtils.getSession(getActivity());
         title = getString(R.string.joinsiterequest_list_title);
         Dialog d = super.onCreateDialog(savedInstanceState);
-        
+
         setListShown(false);
-        
+
         return d;
     }
 
     @Override
-    public Loader<LoaderResult<List<JoinSiteRequest>>> onCreateLoader(int id, Bundle args)
+    public Loader<LoaderResult<List<Site>>> onCreateLoader(int id, Bundle args)
     {
         return new JoinSiteRequestsLoader(getActivity(), alfSession);
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<List<JoinSiteRequest>>> loader,
-            LoaderResult<List<JoinSiteRequest>> results)
+    public void onLoadFinished(Loader<LoaderResult<List<Site>>> loader, LoaderResult<List<Site>> results)
     {
         if (adapter == null)
         {
-            adapter = new JoinSiteRequestAdapter(this, R.layout.app_list_button_row, new ArrayList<JoinSiteRequest>(0));
+            adapter = new JoinSiteRequestAdapter(this, R.layout.app_list_button_row, new ArrayList<Site>(0));
         }
         if (checkException(results))
         {
@@ -90,23 +88,25 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements
         }
         else
         {
-            displayPagingData(new PagingResultImpl<JoinSiteRequest>(results.getData(), false, results.getData().size()), loaderId, callback);
+            displayPagingData(new PagingResultImpl<Site>(results.getData(), false, results.getData().size()), loaderId,
+                    callback);
         }
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<List<JoinSiteRequest>>> loader)
+    public void onLoaderReset(Loader<LoaderResult<List<Site>>> loader)
     {
-        //Do Nothing
+        // Do Nothing
     }
 
     @SuppressWarnings("unchecked")
-    public void remove(JoinSiteRequest joinSiteRequest)
+    public void remove(Site site)
     {
         if (adapter != null)
         {
-            ((ArrayAdapter<JoinSiteRequest>) adapter).remove(joinSiteRequest);
-            if (adapter.isEmpty()){
+            ((ArrayAdapter<Site>) adapter).remove(site);
+            if (adapter.isEmpty())
+            {
                 displayEmptyView();
             }
         }
