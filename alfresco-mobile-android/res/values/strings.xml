@@ -22,7 +22,7 @@
     <string name="empty_accounts">No account available</string>
 
     <!-- HOME SCREEN -->
-    <string name="home_title">Let\'s get you started... </string>
+    <string name="home_title">Let\'s get you started&#8230; </string>
     <string name="home_sign_cloud">Sign up for Alfresco Cloud</string>
     <string name="home_sign_cloud_description">New to Alfresco ? Create a free online account to store your documents and access them from anywhere.</string>
     <string name="home_account">I already have an account</string>
@@ -52,7 +52,7 @@
     <string name="account_port">Port</string>
     <string name="account_servicedocument">Service URL</string>
     <string name="account_wizard_step2_title">Account Authentication Information</string>
-    <string name="account_verify">Verifying Account Information...</string>
+    <string name="account_verify">Verifying Account Information&#8230;</string>
     <string name="email_hint">example@acme.com</string>
     <string name="account_url">URL (hostname + service url)</string>
     <string name="error_account_form">Please check : </string>
@@ -79,7 +79,7 @@
 
     <!-- MAIN MENU -->
     <string name="wait_title">Please wait</string>
-    <string name="wait_message">Contacting your server...</string>
+    <string name="wait_message">Contacting your server&#8230;</string>
 
     <!-- SESSION ERROR -->
     <string name="error_session_creation_title">Save Account</string>
@@ -156,7 +156,7 @@
 
     <!-- LOCAL FIlE -->
     <string name="action_rename">Rename</string>
-    <string name="action_rename_desc">New name for</string>
+    <string name="action_rename_desc">New name for %s</string>
 
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repository</string>
@@ -170,7 +170,6 @@
     <string name="menu_downloads">Downloads</string>
     <string name="menu_about">About</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_hide_show_tabs">Hide/Show Tabs</string>
     <string name="menu_more">More</string>
     <string name="menu_accounts">Accounts</string>
     <string name="menu_alfresco">My Alfresco</string>
@@ -181,8 +180,8 @@
     <string name="menu_resources">Resources</string>
 
     <!-- UPLOAD -->
-    <string name="upload_pick_document">Choose a document...</string>
-    <string name="upload_from">Upload file from...</string>
+    <string name="upload_pick_document">Choose a document&#8230;</string>
+    <string name="upload_from">Upload document from&#8230;</string>
     <string name="upload_download_folder">Download folder</string>
     <string name="upload_third_application">Another application</string>
 
@@ -198,8 +197,8 @@
     <!-- NETWORKS -->
     <string name="cloud_networks">Networks</string>
     <string name="cloud_networks_empty">No Networks available</string>
-    <string name="manage_accounts">Manage accounts...</string>
-    <string name="cloud_networks_switch">Switch networks...</string>
+    <string name="manage_accounts">Manage accounts&#8230;</string>
+    <string name="cloud_networks_switch">Switch networks&#8230;</string>
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
@@ -221,7 +220,7 @@
     <string name="cloud_signup_resend_successfull">Successfully Resent Email</string>
     <string name="cloud_signup_resend_body">Not receiving our email? Please check you entered the email address correctly and remember to look in your spam folders</string>
     <string name="cloud_signup_error_email">Alfresco requires you to use your company email address so you can be added to your company collaboration network.</string>
-    <string name="cloud_signup_error_email_title">Alfresco in the Cloud : Sign Up.</string>
+    <string name="cloud_signup_error_email_title">Alfresco Cloud : Sign Up.</string>
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">Authentication</string>
@@ -233,9 +232,9 @@
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
-    <string name="upload_in_progress">Upload in progress.</string>
+    <string name="upload_in_progress">Upload in progress&#8230;</string>
     <string name="error_unable_open_file_title">The document could not be opened.</string>
-    <string name="error_unable_open_file">This file format is not supported. You need to install an app that can read it.</string>
+    <string name="error_unable_open_file">This document format is not supported. You need to install an app that can read it.</string>
 
     <!-- OTHER -->
     <string name="error_retrieve_likes">The Like/Unlike tag for this document could not be retrieved.</string>
@@ -244,17 +243,16 @@
     <string name="save">Save</string>
     <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
-    <string name="share_content">Share Document with...</string>
+    <string name="share_content">Share Document with&#8230;</string>
 
     <!-- HELP -->
-    <string name="help_setup_guide">Alfresco_Mobile_Android_App_Setup_Guide.pdf</string>
+    <string name="asset_folder_prefix">en</string>
 
     <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
     <string name="sdknumber_version">SDK : </string>
     
     <!-- BuildNumber Bamboo -->
-    <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
     <string name="about_description">
 <![CDATA[
 <p>Alfresco Mobile connects to Alfresco in the cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate documents on the go.</p> 
@@ -273,21 +271,20 @@
     <string name="full_attachment">Attachment</string>
     <string name="link_to_repo">Clickable link</string>
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
-    <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
     <!-- Delete -->
-    <string name="delete_description">Are you sure you want to delete "%s" ?</string>
-    <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your files will be returned to their unprotected state.\n\nAre you sure you want to delete "%s" ?</string>
+    <string name="delete_description">Are you sure you want to delete \"%s\" ?</string>
+    <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your documents will be returned to their unprotected state.\n\nAre you sure you want to delete \"%s\" ?</string>
     
     <!-- Save Back -->
-    <string name="save_back_description">"%s" has been modified. Do you want to upload this new version ?</string>
-    <string name="update_sucess">"%s" has been updated successfully.</string>
+    <string name="save_back_description">\"%s\" has been modified. Do you want to upload this new version ?</string>
+    <string name="update_sucess">\"%s\" has been updated successfully.</string>
     <string name="no_voice_recorder">You do not have a voice recorder on this device</string>
     <string name="cannot_capture">Cannot complete the capturing of this information</string>
 
     <!-- Upload -->
-    <string name="action_processing">Processing...</string>
-    <string name="action_upload_error">Unable to upload...</string>
+    <string name="action_processing">Processing&#8230;</string>
+    <string name="action_upload_error">Unable to upload&#8230;</string>
 
     <!-- Create Document -->
     <string name="open_play_store">Open Google Play Store</string>
@@ -298,8 +295,8 @@
     <string name="create_document_excel">Excel Spreadsheet</string>
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
-    <string name="create_document_filename_error">This filename is already in use.</string>
-    <string name="create_document_save">An error occurred during the upload. Your file is saved inside "Downloads".</string>
+    <string name="create_document_filename_error">This name is already in use.</string>
+    <string name="create_document_save">An error occurred during the upload. Your document is saved inside "Downloads".</string>
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>
     <string name="document_excel_extension">.xlsx</string>
@@ -315,16 +312,16 @@
     <string name="content_being_encrypted">Content is being protected. Please wait</string>
     <string name="content_being_decrypted">Content is being unprotected. Please wait</string>
     <string name="data_protection">Data Protection</string>
-    <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these files cannot be read by other apps, only from within the Alfresco app)</string>
+    <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these documents cannot be read by other apps, only from within the Alfresco app)</string>
     <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
-	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all files you\'ve downloaded from all your Alfresco accounts, and will mean these files cannot be read by other apps, only from within the Alfresco app.</string>
-	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all files you\'ve downloaded from all your Alfresco accounts.</string>
-	<string name="already_encrypted">This file is already encrypted!</string>
-	<string name="already_decrypted">This file is already decrypted!</string>
-	<string name="decryption_title">Deactivating Data Protection...</string>
-	<string name="encryption_title">Activating Data Protection...</string>
-	<string name="copy_file_title">File copy in progress...</string>
+	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts, and will mean these documents cannot be read by other apps, only from within the Alfresco app.</string>
+	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts.</string>
+	<string name="already_encrypted">This document is already encrypted!</string>
+	<string name="already_decrypted">This document is already decrypted!</string>
+	<string name="decryption_title">Deactivating Data Protection&#8230;</string>
+	<string name="encryption_title">Activating Data Protection&#8230;</string>
+	<string name="copy_file_title">Document copy in progress&#8230;</string>
 	
     <string name="metadata_general">General</string>
 
@@ -336,24 +333,24 @@
     <string name="action_unfavorite_site">Unfavorite</string>
     <string name="action_cancel_request">Cancel Request</string>
     <string name="action_pending_request">Pending Join Site Requests</string>
-    <string name="action_join_site_validation">You are now member of "%s".</string>
-    <string name="action_leave_site_validation">You have left  "%s".</string>
-    <string name="action_favorite_site_validation">"%s" is now a favorite.</string>
-    <string name="action_unfavorite_site_validation">"%s" has been unfavorited.</string>
-    <string name="action_join_request_site_validation">You have requested to join "%s"</string>
+    <string name="action_join_site_validation">You are now member of \"%s\".</string>
+    <string name="action_leave_site_validation">You have left  \"%s\".</string>
+    <string name="action_favorite_site_validation">\"%s\" is now a favorite.</string>
+    <string name="action_unfavorite_site_validation">\"%s\" has been unfavorited.</string>
+    <string name="action_join_request_site_validation">You have requested to join \"%s\"</string>
     <string name="empty_joinsiterequest">No Pending requests</string>
     <string name="joinsiterequest_list_title">List of pending requests</string>
-    <string name="action_cancel_join_site_request">Your request to join "%s" has been cancelled.</string>
-    <string name="action_join_site_error">A problem prevented you from joining the site "%s".</string>
-    <string name="action_leave_site_error">A problem prevented you from leaving the site "%s".</string>
-    <string name="action_favorite_error">A problem prevented you from favoriting the site "%s".</string>
-    <string name="action_unfavorite_site_error">A problem prevented you from unfavoriting the site "%s".</string>
+    <string name="action_cancel_join_site_request">Your request to join \"%s\" has been cancelled.</string>
+    <string name="action_join_site_error">A problem prevented you from joining the site \"%s\".</string>
+    <string name="action_leave_site_error">A problem prevented you from leaving the site \"%s\".</string>
+    <string name="action_favorite_error">A problem prevented you from favoriting the site \"%s\".</string>
+    <string name="action_unfavorite_site_error">A problem prevented you from unfavoriting the site \"%s\".</string>
 
     <!-- IMPORT -->
     <string name="import_document_title">Upload in Alfresco Mobile</string>
     <string name="import_document_name">Document Name</string>
     <string name="import_account">Account</string>
-    <string name="import_send_download">The file is available inside \"%s\"\'s Download folder.</string>
+    <string name="import_send_download">The document is available inside \"%s\"\'s Download folder.</string>
     <string name="import_folder">Upload Folder</string>
     <string name="import_error">An error occurred during the upload.</string>
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>

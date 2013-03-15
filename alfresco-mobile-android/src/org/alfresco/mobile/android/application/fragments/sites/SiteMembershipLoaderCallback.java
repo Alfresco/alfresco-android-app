@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.sites;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SiteMembershipLoader;
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
@@ -38,7 +37,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResult<JoinSiteRequest>>
+public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResult<Site>>
 {
     private static final String TAG = "SiteMembershipLoaderCallback";
 
@@ -56,29 +55,27 @@ public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResul
     }
 
     @Override
-    public Loader<LoaderResult<JoinSiteRequest>> onCreateLoader(int id, Bundle bundle)
+    public Loader<LoaderResult<Site>> onCreateLoader(int id, Bundle bundle)
     {
         return new SiteMembershipLoader(fragment.getActivity(), SessionUtils.getSession(fragment.getActivity()),
-                (Site) bundle.get(PARAM_SITE), (Boolean) bundle.get(PARAM_ISJOINING),
-                (String) bundle.get(PARAM_MESSAGE));
+                (Site) bundle.get(PARAM_SITE), (Boolean) bundle.get(PARAM_ISJOINING));
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<JoinSiteRequest>> loader, LoaderResult<JoinSiteRequest> result)
+    public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        Site site = ((SiteMembershipLoader) loader).getSite();
+        Site site = ((SiteMembershipLoader) loader).getOldSite();
         if (!result.hasException())
         {
-            AbstractSiteServiceImpl siteService = (AbstractSiteServiceImpl) SessionUtils
-                    .getSession(fragment.getActivity()).getServiceRegistry().getSiteService();
+            Site updatedSite = result.getData();
             if (((SiteMembershipLoader) loader).isJoining())
             {
                 messageId = (SiteVisibility.PUBLIC.equals(site.getVisibility())) ? R.string.action_join_site_validation
                         : R.string.action_join_request_site_validation;
                 if (fragment instanceof BrowserSitesFragment)
                 {
-                    ((BrowserSitesFragment) fragment).update(site, siteService.refresh(site));
+                    ((BrowserSitesFragment) fragment).update(site, updatedSite);
                 }
             }
             else
@@ -92,7 +89,7 @@ public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResul
                 }
                 else if (fragment instanceof BrowserSitesFragment)
                 {
-                    ((BrowserSitesFragment) fragment).update(site, siteService.refresh(site));
+                    ((BrowserSitesFragment) fragment).update(site, updatedSite);
                 }
             }
         }
@@ -109,7 +106,7 @@ public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResul
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<JoinSiteRequest>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<Site>> arg0)
     {
 
     }

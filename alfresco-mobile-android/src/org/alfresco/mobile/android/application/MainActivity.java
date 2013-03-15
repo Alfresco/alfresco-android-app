@@ -96,6 +96,8 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -614,8 +616,7 @@ public class MainActivity extends Activity
                     {
                         if (getCurrentNode() != null)
                         {
-                            SessionUtils.getRenditionManager(this)
-                                    .removeFromCache(getCurrentNode().getIdentifier());
+                            SessionUtils.getRenditionManager(this).removeFromCache(getCurrentNode().getIdentifier());
                         }
                         if (getFragment(ChildrenBrowserFragment.TAG) != null)
                         {
@@ -821,22 +822,7 @@ public class MainActivity extends Activity
                 displayAbout();
                 break;
             case R.id.menu_help:
-                String newFile;
-                try
-                {
-                    // FIXME Write asset everytime I click ?
-                    newFile = IOUtils.writeAsset(this, getString(R.string.help_setup_guide));
-                    if (newFile.length() > 0)
-                    {
-                        if (!ActionManager.launchPDF(this, newFile))
-                        {
-                            showDialog(GET_PDF_VIEWER);
-                        }
-                    }
-                }
-                catch (IOException e)
-                {
-                }
+                displayHelp();
                 break;
 
             default:
@@ -1011,6 +997,37 @@ public class MainActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG, b);
     }
 
+    public void displayHelp()
+    {
+        String pathHelpGuideFile = null;
+        try
+        {
+            long lastUpdate = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).lastUpdateTime;
+            // Check last update time of the app and compare to an
+            // existing (or not) help guide.
+            File assetFolder = StorageManager.getAssetFolder(this);
+            String helpGuideName =  getString(R.string.asset_folder_prefix)+ "_" + getString(R.string.help_user_guide);
+            File helpGuideFile = new File(assetFolder, helpGuideName);
+
+            if (!helpGuideFile.exists() || helpGuideFile.lastModified() < lastUpdate)
+            {
+                String assetfilePath = getString(R.string.help_path) + helpGuideName;
+                org.alfresco.mobile.android.api.utils.IOUtils.copyFile(getAssets().open(assetfilePath), helpGuideFile);
+            }
+            
+            pathHelpGuideFile = helpGuideFile.getPath();
+            
+            if (!ActionManager.launchPDF(this, pathHelpGuideFile))
+            {
+                showDialog(GET_PDF_VIEWER);
+            }
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Unable to open help guide.");
+        }
+    }
+    
     public void displayAbout()
     {
         clearScreen();

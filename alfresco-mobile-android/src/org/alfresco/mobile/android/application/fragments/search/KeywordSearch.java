@@ -40,12 +40,14 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.ActionBar;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -94,7 +96,7 @@ public class KeywordSearch extends SearchFragment
         View v = inflater.inflate(R.layout.app_search, container, false);
 
         init(v, R.string.empty_child);
-        
+
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         final EditText searchForm = (EditText) v.findViewById(R.id.search_query);
@@ -204,6 +206,7 @@ public class KeywordSearch extends SearchFragment
         super.onResume();
         setTitle();
         setActivateThumbnail(true);
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
     private void setTitle()
@@ -256,8 +259,7 @@ public class KeywordSearch extends SearchFragment
     {
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0),
-                    selectedItems, -1);
+            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0), selectedItems, -1);
         }
         ((NodeAdapter) adapter).setActivateThumbnail(true);
 
@@ -270,9 +272,24 @@ public class KeywordSearch extends SearchFragment
             displayPagingData(results.getData(), loaderId, callback);
         }
     }
-    
+
     public void unselect()
     {
         selectedItems.clear();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        // Avoid background stretching
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+        else
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        }
     }
 }

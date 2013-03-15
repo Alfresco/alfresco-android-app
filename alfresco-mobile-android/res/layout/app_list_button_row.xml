@@ -62,7 +62,6 @@
         style="@style/list_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/thumbnail"
         android:text="@string/cancel" />
 
 </LinearLayout>

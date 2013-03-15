@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.fragments.sites;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.JoinSiteRequest;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
@@ -33,15 +33,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Responsible to display the list of JoinSiteRequest;
+ * Responsible to display the list of Site;
  * 
  * @author Jean Marie Pascal
  */
-public class JoinSiteRequestAdapter extends BaseListAdapter<JoinSiteRequest, GenericViewHolder>
+public class JoinSiteRequestAdapter extends BaseListAdapter<Site, GenericViewHolder>
 {
     private Fragment fragment;
 
-    public JoinSiteRequestAdapter(Fragment fr, int textViewResourceId, List<JoinSiteRequest> objects)
+    public JoinSiteRequestAdapter(Fragment fr, int textViewResourceId, List<Site> objects)
     {
         super(fr.getActivity(), textViewResourceId, objects);
         this.vhClassName = GenericViewHolder.class.getCanonicalName();
@@ -49,13 +49,13 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<JoinSiteRequest, Gen
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, JoinSiteRequest item)
+    protected void updateTopText(GenericViewHolder vh, Site item)
     {
-        vh.topText.setText(item.getSiteShortName());
+        vh.topText.setText(item.getShortName());
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, JoinSiteRequest item)
+    protected void updateIcon(GenericViewHolder vh, Site item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_site));
 
@@ -67,14 +67,14 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<JoinSiteRequest, Gen
             {
                 Bundle b = new Bundle();
                 b.putSerializable(JointSiteRequestCancelLoaderCallBack.PARAM_JOIN_SITE_REQUEST,
-                        (JoinSiteRequest) v.getTag());
+                        (Site) v.getTag());
                 new JointSiteRequestCancelLoaderCallBack(fragment).execute(b);
             }
         });
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, JoinSiteRequest item)
+    protected void updateBottomText(GenericViewHolder vh, Site item)
     {
         vh.bottomText.setVisibility(View.GONE);
     }

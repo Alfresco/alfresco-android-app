@@ -36,7 +36,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<Boolean>>
+public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<Site>>
 {
 
     private static final String TAG = "SiteFavoriteLoaderCallback";
@@ -51,27 +51,26 @@ public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<
     }
 
     @Override
-    public Loader<LoaderResult<Boolean>> onCreateLoader(int id, Bundle bundle)
+    public Loader<LoaderResult<Site>> onCreateLoader(int id, Bundle bundle)
     {
         return new SiteFavoriteLoader(fragment.getActivity(), SessionUtils.getSession(fragment.getActivity()),
                 (Site) bundle.get(PARAM_SITE));
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<Boolean>> loader, LoaderResult<Boolean> result)
+    public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        Site site = ((SiteFavoriteLoader) loader).getSite();
+        Site site = ((SiteFavoriteLoader) loader).getOldSite();
         if (!result.hasException())
         {
-            AbstractSiteServiceImpl siteService = (AbstractSiteServiceImpl) SessionUtils
-                    .getSession(fragment.getActivity()).getServiceRegistry().getSiteService();
-            if (result.getData())
+            Site updatedSite = result.getData();
+            if (updatedSite.isFavorite())
             {
                 messageId = R.string.action_favorite_site_validation;
                 if (fragment instanceof BrowserSitesFragment)
                 {
-                    ((BrowserSitesFragment) fragment).update(site, siteService.refresh(site));
+                    ((BrowserSitesFragment) fragment).update(site, updatedSite);
                 }
             }
             else
@@ -85,13 +84,13 @@ public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<
                 }
                 else if (fragment instanceof BrowserSitesFragment)
                 {
-                    ((BrowserSitesFragment) fragment).update(site, siteService.refresh(site));
+                    ((BrowserSitesFragment) fragment).update(site, updatedSite);
                 }
             }
         }
         else
         {
-            messageId = ((SiteFavoriteLoader) loader).getSite().isFavorite() ? R.string.action_unfavorite_site_error
+            messageId = ((SiteFavoriteLoader) loader).getOldSite().isFavorite() ? R.string.action_unfavorite_site_error
                     : R.string.action_favorite_error;
 
             Log.d(TAG, Log.getStackTraceString(result.getException()));
@@ -102,7 +101,7 @@ public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<Boolean>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<Site>> arg0)
     {
 
     }
