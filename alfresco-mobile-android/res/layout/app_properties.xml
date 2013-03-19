@@ -56,7 +56,9 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="2dip"
                 android:layout_weight="1"
-                android:gravity="right" />
+                android:gravity="right"
+                android:textIsSelectable="true"
+                 />
         </LinearLayout>
 
         <TextView
@@ -73,7 +75,9 @@
             android:layout_height="wrap_content"
             android:maxLines="1000"
             android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf"
-            android:gravity="right" />
+            android:gravity="right"
+            android:textIsSelectable="true"
+             />
     </LinearLayout>
 
     <LinearLayout
