@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -96,8 +95,6 @@ import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -297,6 +294,13 @@ public class MainActivity extends Activity
     }
 
     @Override
+    protected void onStart()
+    {
+        super.onStart();
+        OAuthRefreshTokenCallback.requestRefreshToken(getSession(), this);
+    }
+
+    @Override
     protected void onPause()
     {
         super.onPause();
@@ -409,6 +413,16 @@ public class MainActivity extends Activity
                     currentAccount = SessionUtils.getAccount(this);
                 }
 
+                // Check Last cloud session creation ==> prevent oauth token expiration
+                if (getSession() instanceof CloudSession)
+                {
+                    OAuthRefreshTokenCallback.saveLastCloudLoadingTime(this);
+                }
+                else
+                {
+                    OAuthRefreshTokenCallback.removeLastCloudLoadingTime(this);
+                }
+
                 // Check to see if we have an old account that needs its paid
                 // network flag setting.
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -454,6 +468,8 @@ public class MainActivity extends Activity
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
+                if (accounts == null) { return;}
+                
                 for (Account account : accounts)
                 {
                     if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
@@ -462,6 +478,7 @@ public class MainActivity extends Activity
                         {
                             getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,
                                     new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
+                            return;
                         }
                         else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH)
                                 && getFragment(AccountOAuthFragment.TAG) == null
@@ -471,7 +488,7 @@ public class MainActivity extends Activity
                             FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
                                     AccountOAuthFragment.TAG, true);
                             DisplayUtils.switchSingleOrTwo(this, true);
-                            break;
+                            return;
                         }
                     }
                 }
@@ -647,7 +664,7 @@ public class MainActivity extends Activity
         }
         catch (Exception e)
         {
-            MessengerManager.showLongToast(this, e.getMessage());
+            Log.d(TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -1006,7 +1023,7 @@ public class MainActivity extends Activity
             // Check last update time of the app and compare to an
             // existing (or not) help guide.
             File assetFolder = StorageManager.getAssetFolder(this);
-            String helpGuideName =  getString(R.string.asset_folder_prefix)+ "_" + getString(R.string.help_user_guide);
+            String helpGuideName = getString(R.string.asset_folder_prefix) + "_" + getString(R.string.help_user_guide);
             File helpGuideFile = new File(assetFolder, helpGuideName);
 
             if (!helpGuideFile.exists() || helpGuideFile.lastModified() < lastUpdate)
@@ -1014,9 +1031,9 @@ public class MainActivity extends Activity
                 String assetfilePath = getString(R.string.help_path) + helpGuideName;
                 org.alfresco.mobile.android.api.utils.IOUtils.copyFile(getAssets().open(assetfilePath), helpGuideFile);
             }
-            
+
             pathHelpGuideFile = helpGuideFile.getPath();
-            
+
             if (!ActionManager.launchPDF(this, pathHelpGuideFile))
             {
                 showDialog(GET_PDF_VIEWER);
@@ -1027,7 +1044,7 @@ public class MainActivity extends Activity
             Log.e(TAG, "Unable to open help guide.");
         }
     }
-    
+
     public void displayAbout()
     {
         clearScreen();
