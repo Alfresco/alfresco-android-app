@@ -74,6 +74,18 @@ public class IOUtils
 
         return f;
     }
+    
+    public static String getOriginalFromTempFilename (String filename)
+    {
+        if (filename.endsWith(".tmp"))
+        {
+            return filename.substring(0, filename.length() - TEMP_LEN);
+        }
+        else
+        {
+            return filename;
+        }
+    }
 
     public static File createFolder(File f, String extendedPath)
     {
