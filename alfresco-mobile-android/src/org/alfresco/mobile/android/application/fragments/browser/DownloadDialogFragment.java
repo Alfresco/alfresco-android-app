@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
@@ -60,6 +60,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     public static final int ACTION_UNDEFINED = 0;
 
     public static final String TAG = "DownloadDialogFragment";
+
+    public static final String ARGUMENT_TEMPFILE = "TempFile";
 
     private Dialog dialog;
 
@@ -112,7 +114,15 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
         if (dlt == null)
         {
-            File dlFile = getDownloadFile();
+            File dlFile = null;
+            if (getArguments().containsKey(ARGUMENT_TEMPFILE))
+            {
+                dlFile = new File (getArguments().getString(ARGUMENT_TEMPFILE));
+            }
+            else
+            {
+                dlFile = getDownloadFile();
+            }
 
             if (dlFile != null)
             {
@@ -181,7 +191,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
         if (tmpFile != null)
         {
-            IOUtils.ensureOrCreatePathAndFile(tmpFile);
+            org.alfresco.mobile.android.api.utils.IOUtils.ensureOrCreatePathAndFile(tmpFile);
         }
 
         return tmpFile;
@@ -220,7 +230,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     Log.d(TAG, contentFile + "");
 
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
-                            + contentFile.getFileName());
+                            + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
 
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
                             DetailsFragment.TAG);
