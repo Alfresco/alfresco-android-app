@@ -179,7 +179,7 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
             {
-                 waiting.setVisibility(View.VISIBLE);
+                waiting.setVisibility(View.VISIBLE);
             }
 
         });
@@ -214,6 +214,16 @@ public class AccountOAuthFragment extends OAuthFragment
     {
         getActivity().invalidateOptionsMenu();
         super.onStart();
+    }
+
+    @Override
+    public void onStop()
+    {
+        if (getDialog() == null)
+        {
+            getActivity().setTitle(R.string.app_name);
+        }
+        super.onStop();
     }
 
 }
