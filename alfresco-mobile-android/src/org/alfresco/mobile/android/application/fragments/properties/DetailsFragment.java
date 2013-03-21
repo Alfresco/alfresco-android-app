@@ -56,7 +56,9 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -112,6 +114,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     protected Integer tabSelection = null;
 
+    protected File tempFile = null;
+    
+    protected PreviewFragment replacementPreviewFragment = null;
+    
     public DetailsFragment()
     {
     }
@@ -485,6 +491,17 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void openin()
     {
         Bundle b = new Bundle();
+        
+        if (CipherUtils.isEncryptionActive(getActivity()))
+        {
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            if (replacementPreviewFragment != null)
+            {
+                replacementPreviewFragment.setTempFile (tempFile);
+            }
+            b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
+        }
+        
         b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
         b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
         DialogFragment frag = new DownloadDialogFragment();
@@ -508,7 +525,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         switch (requestCode)
         {
             case PublicIntent.REQUESTCODE_SAVE_BACK:
-                final File dlFile = NodeActions.getDownloadFile(getActivity(), node);
+                if (replacementPreviewFragment != null)
+                {
+                    tempFile = replacementPreviewFragment.getTempFile();
+                }
+                final File dlFile = (tempFile != null ? tempFile : NodeActions.getDownloadFile(getActivity(), node) );
 
                 long datetime = dlFile.lastModified();
                 Date d = new Date(datetime);
@@ -844,9 +865,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void addPreview(Node n, int layoutId, boolean backstack)
     {
-        BaseFragment frag = PreviewFragment.newInstance(n);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, PreviewFragment.TAG, backstack);
+        replacementPreviewFragment = PreviewFragment.newInstance(n);
+        replacementPreviewFragment.setSession(alfSession);
+        FragmentDisplayer.replaceFragment(getActivity(), replacementPreviewFragment, layoutId, PreviewFragment.TAG, backstack);
     }
 
     public void addComments(Node n, int layoutId, boolean backstack)

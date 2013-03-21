@@ -64,7 +64,7 @@ public class IOUtils
 
     public static File returnTempFileToOriginal(File f)
     {
-        if (f.getName().endsWith(".tmp"))
+        if (f.getName().endsWith(TEMP_FILE_EXT))
         {
             String name = f.getPath();
             File newFile = new File(name.substring(0, name.length() - TEMP_LEN));
@@ -73,6 +73,18 @@ public class IOUtils
         }
 
         return f;
+    }
+    
+    public static String getOriginalFromTempFilename (String filename)
+    {
+        if (filename.endsWith(TEMP_FILE_EXT))
+        {
+            return filename.substring(0, filename.length() - TEMP_LEN);
+        }
+        else
+        {
+            return filename;
+        }
     }
 
     public static File createFolder(File f, String extendedPath)

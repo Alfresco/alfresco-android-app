@@ -17,13 +17,18 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import java.io.File;
+
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
@@ -42,6 +47,18 @@ public class PreviewFragment extends BaseFragment
 
     public static final String ARGUMENT_NODE = "node";
 
+    protected File tempFile = null;
+    
+    public File getTempFile()
+    {
+        return tempFile;
+    }
+    
+    public void setTempFile (File tempFile)
+    {
+        this.tempFile = tempFile;
+    }
+    
     public static Bundle createBundleArgs(Node node)
     {
         Bundle args = new Bundle();
@@ -105,6 +122,13 @@ public class PreviewFragment extends BaseFragment
     public void openin()
     {
         Bundle b = new Bundle();
+        
+        if (CipherUtils.isEncryptionActive(getActivity()))
+        {
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
+        }
+        
         b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
         b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
         DialogFragment frag = new DownloadDialogFragment();
