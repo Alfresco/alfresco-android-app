@@ -188,6 +188,7 @@
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Accounts</string>
     <string name="accounts_details">Details</string>
+    <string name="browse_documents">Browse Documents</string>
 
     <!-- PROPERTIES -->
     <string name="details">Details</string>

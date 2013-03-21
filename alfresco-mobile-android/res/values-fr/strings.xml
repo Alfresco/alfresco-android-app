@@ -184,6 +184,7 @@
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Comptes</string>
     <string name="accounts_details">Détails</string>
+    <string name="browse_documents">Parcourir les documents</string>
 
     <!-- PROPERTIES -->
     <string name="details">Détails</string>
