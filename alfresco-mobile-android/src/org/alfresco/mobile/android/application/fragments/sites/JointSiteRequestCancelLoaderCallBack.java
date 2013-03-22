@@ -89,7 +89,7 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
         }
         else
         {
-            Log.d(TAG, Log.getStackTraceString(result.getException()));
+            Log.w(TAG, Log.getStackTraceString(result.getException()));
         }
 
         MessengerManager.showLongToast(fragment.getActivity(),

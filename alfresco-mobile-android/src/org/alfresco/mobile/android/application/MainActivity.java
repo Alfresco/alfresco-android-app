@@ -674,7 +674,7 @@ public class MainActivity extends Activity
         }
         catch (Exception e)
         {
-            Log.d(TAG, Log.getStackTraceString(e));
+            Log.w(TAG, Log.getStackTraceString(e));
         }
     }
 

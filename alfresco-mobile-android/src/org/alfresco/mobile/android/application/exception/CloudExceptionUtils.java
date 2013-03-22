@@ -36,13 +36,15 @@ import android.util.Log;
 public final class CloudExceptionUtils
 {
 
+    private static final String TAG = CloudExceptionUtils.class.getName();
+    
     private CloudExceptionUtils()
     {
     };
 
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
-        Log.d("CloudExceptionUtils", Log.getStackTraceString(exception));
+        Log.w(TAG, Log.getStackTraceString(exception));
         if (exception instanceof AlfrescoSessionException)
         {
             AlfrescoSessionException ex = ((AlfrescoSessionException) exception);

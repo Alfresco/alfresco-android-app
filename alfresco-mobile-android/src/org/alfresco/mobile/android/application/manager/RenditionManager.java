@@ -115,7 +115,7 @@ public class RenditionManager
         }
         catch (IOException e)
         {
-            Log.d(TAG, e.getMessage());
+            Log.w(TAG, e.getMessage());
         }
     }
 

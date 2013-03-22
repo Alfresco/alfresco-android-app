@@ -224,7 +224,6 @@ public abstract class DisplayUtils
             coeff = res.getInteger(R.integer.width_max);
         }
 
-        Log.d("WIDTH", coeff + " : " + width);
         return coeff;
     }
 

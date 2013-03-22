@@ -278,7 +278,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             catch (Exception e)
             {
                 MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                Log.d(TAG, Log.getStackTraceString(e));
+                Log.w(TAG, Log.getStackTraceString(e));
             }
         }
 
