@@ -19,7 +19,10 @@ package org.alfresco.mobile.android.application.preferences;
 
 import java.util.Date;
 
+import org.alfresco.mobile.android.application.HomeScreenActivity;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
 
 import android.content.Context;
@@ -223,6 +226,13 @@ public class PasscodePreferences extends PreferenceFragment
      */
     public static void updateLastActivityDisplay(Context context)
     {
+        if (context instanceof HomeScreenActivity || context instanceof PassCodeActivity) { return; }
+        if (context instanceof MainActivity && !((MainActivity) context).hasActivateCheckPasscode()) { return; }
+        updateLastActivity(context);
+    }
+
+    public static void updateLastActivity(Context context)
+    {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         editor.putLong(KEY_PASSCODE_ACTIVATED_AT, new Date().getTime());
@@ -238,18 +248,21 @@ public class PasscodePreferences extends PreferenceFragment
     public static boolean hasPasscodeEnable(Context context)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        boolean passcodeActivated = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
+        if (!passcodeActivated) { return false; }
+
         long activationTime = sharedPref.getLong(KEY_PASSCODE_ACTIVATED_AT, DEFAULT_ACTIVATION_TIME);
+        if (activationTime == DEFAULT_ACTIVATION_TIME) { return false; }
+
         long durationTime = Long.parseLong(sharedPref.getString(KEY_PASSCODE_TIMEOUT, DEFAULT_TIMEOUT));
         long now = new Date().getTime();
 
         boolean isTimeOut = (now - activationTime) > durationTime;
         if (!isTimeOut)
         {
-            updateLastActivityDisplay(context);
+            updateLastActivity(context);
         }
-        boolean doActivate = (activationTime == DEFAULT_ACTIVATION_TIME) ? false : isTimeOut;
-        boolean passcodeActivated = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
 
-        return (passcodeActivated && doActivate);
+        return isTimeOut;
     }
 }

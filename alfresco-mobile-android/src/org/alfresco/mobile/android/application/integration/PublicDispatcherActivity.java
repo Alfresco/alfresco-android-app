@@ -63,6 +63,8 @@ public class PublicDispatcherActivity extends Activity
     /** Define the local file to upload */
     private File uploadFile;
 
+    private boolean activateCheckPasscode = false;
+
     // ///////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////
@@ -70,6 +72,8 @@ public class PublicDispatcherActivity extends Activity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        activateCheckPasscode = false;
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_LEFT_ICON);
         setContentView(R.layout.app_left_panel);
@@ -86,24 +90,32 @@ public class PublicDispatcherActivity extends Activity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
         {
-            finish();
+            if (resultCode == RESULT_CANCELED)
+            {
+                finish();
+            }
+            else
+            {
+                activateCheckPasscode = true;
+            }
         }
     }
 
     @Override
-    protected void onResume()
+    protected void onStart()
     {
-        super.onResume();
+        super.onStart();
         PassCodeActivity.requestUserPasscode(this);
+        activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        if (!PasscodePreferences.hasPasscodeEnable(this))
+        if (!activateCheckPasscode)
         {
             PasscodePreferences.updateLastActivityDisplay(this);
         }
@@ -113,8 +125,6 @@ public class PublicDispatcherActivity extends Activity
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-
-        if (PasscodePreferences.hasPasscodeEnable(this)) { return; }
 
         try
         {
