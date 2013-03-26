@@ -48,6 +48,8 @@ import android.util.Log;
  */
 public class CloudSignupRequest
 {
+    private static final String TAG = CloudSignupRequest.class.getName();
+    
     private String identifier;
 
     private String apiKey;
@@ -147,7 +149,7 @@ public class CloudSignupRequest
         }
         else
         {
-            Log.d("error", resp.getErrorContent());
+            Log.w(TAG, resp.getErrorContent());
             throw new AlfrescoServiceException(SESSION_SIGNUP_ERROR, resp.getErrorContent());
         }
     }
@@ -174,7 +176,7 @@ public class CloudSignupRequest
         }
         else
         {
-            Log.d("error", resp.getErrorContent());
+            Log.w(TAG, resp.getErrorContent());
             return false;
         }
     }

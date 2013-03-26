@@ -98,7 +98,7 @@ public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResul
             messageId = ((SiteMembershipLoader) loader).isJoining() ? R.string.action_join_site_error
                     : R.string.action_leave_site_error;
 
-            Log.d(TAG, Log.getStackTraceString(result.getException()));
+            Log.w(TAG, Log.getStackTraceString(result.getException()));
         }
 
         MessengerManager.showLongToast(fragment.getActivity(),

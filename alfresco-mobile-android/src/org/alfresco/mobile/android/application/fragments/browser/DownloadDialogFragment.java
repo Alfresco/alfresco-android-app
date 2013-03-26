@@ -178,7 +178,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             catch (Exception e)
             {
                 MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                Log.d(TAG, Log.getStackTraceString(e));
+                Log.w(TAG, Log.getStackTraceString(e));
             }
         }
 
@@ -226,9 +226,6 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             switch (action)
             {
                 case ACTION_OPEN:
-                    Log.d(TAG, getActivity().toString());
-                    Log.d(TAG, contentFile + "");
-
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
                             + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
 

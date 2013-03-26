@@ -162,6 +162,8 @@ public class MainActivity extends Activity
 
     private static final String PREF_MIGRATION_FILES = "filesmigrated";
 
+    private boolean activateCheckPasscode = false;
+
     // ///////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////
@@ -172,6 +174,7 @@ public class MainActivity extends Activity
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         activity = this;
+        activateCheckPasscode = false;
 
         super.onCreate(savedInstanceState);
 
@@ -290,7 +293,6 @@ public class MainActivity extends Activity
     {
         super.onResume();
         checkForCrashes();
-        PassCodeActivity.requestUserPasscode(this);
     }
 
     @Override
@@ -298,15 +300,17 @@ public class MainActivity extends Activity
     {
         super.onStart();
         OAuthRefreshTokenCallback.requestRefreshToken(getSession(), this);
+        PassCodeActivity.requestUserPasscode(this);
+        activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
-        if (!PasscodePreferences.hasPasscodeEnable(this))
+        if (!activateCheckPasscode)
         {
-            PasscodePreferences.updateLastActivityDisplay(this);
+            PasscodePreferences.updateLastActivity(this);
         }
     }
 
@@ -336,9 +340,16 @@ public class MainActivity extends Activity
             fragmentTransaction.commit();
         }
 
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
         {
-            finish();
+            if (resultCode == RESULT_CANCELED)
+            {
+                finish();
+            }
+            else
+            {
+                activateCheckPasscode = true;
+            }
         }
 
         if (photoCapture != null && requestCode == photoCapture.getRequestCode())
@@ -359,8 +370,6 @@ public class MainActivity extends Activity
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-
-        if (PasscodePreferences.hasPasscodeEnable(this)) { return; }
 
         try
         {
@@ -413,7 +422,8 @@ public class MainActivity extends Activity
                     currentAccount = SessionUtils.getAccount(this);
                 }
 
-                // Check Last cloud session creation ==> prevent oauth token expiration
+                // Check Last cloud session creation ==> prevent oauth token
+                // expiration
                 if (getSession() instanceof CloudSession)
                 {
                     OAuthRefreshTokenCallback.saveLastCloudLoadingTime(this);
@@ -468,8 +478,8 @@ public class MainActivity extends Activity
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
-                if (accounts == null) { return;}
-                
+                if (accounts == null) { return; }
+
                 for (Account account : accounts)
                 {
                     if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
@@ -664,7 +674,7 @@ public class MainActivity extends Activity
         }
         catch (Exception e)
         {
-            Log.d(TAG, Log.getStackTraceString(e));
+            Log.w(TAG, Log.getStackTraceString(e));
         }
     }
 
@@ -1574,5 +1584,10 @@ public class MainActivity extends Activity
             }
         }
         return importParent;
+    }
+
+    public boolean hasActivateCheckPasscode()
+    {
+        return activateCheckPasscode;
     }
 }
