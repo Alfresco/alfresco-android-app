@@ -93,7 +93,7 @@ public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<
             messageId = ((SiteFavoriteLoader) loader).getOldSite().isFavorite() ? R.string.action_unfavorite_site_error
                     : R.string.action_favorite_error;
 
-            Log.d(TAG, Log.getStackTraceString(result.getException()));
+            Log.w(TAG, Log.getStackTraceString(result.getException()));
         }
 
         MessengerManager.showLongToast(fragment.getActivity(),

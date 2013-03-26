@@ -94,6 +94,8 @@ public class AccountDetailsFragment extends BaseFragment
 
     private View vRoot;
 
+    private boolean isEditable = false;
+
     public AccountDetailsFragment()
     {
     }
@@ -125,13 +127,19 @@ public class AccountDetailsFragment extends BaseFragment
         if (acc.getActivation() == null)
         {
             vRoot = inflater.inflate(R.layout.app_account_details, container, false);
-            initValues(vRoot, false);
+            initValues(vRoot);
         }
         else
         {
             vRoot = inflater.inflate(R.layout.app_cloud_signup_check, container, false);
             initAwaitingCloud(vRoot);
         }
+
+        if (isEditable)
+        {
+            edit();
+        }
+
         return vRoot;
     }
 
@@ -170,7 +178,7 @@ public class AccountDetailsFragment extends BaseFragment
         });
     }
 
-    private void initValues(final View v, boolean isEditable)
+    private void initValues(final View v)
     {
         URL tmprUrl = null;
         try
@@ -409,7 +417,8 @@ public class AccountDetailsFragment extends BaseFragment
 
     public void edit()
     {
-        initValues(vRoot, true);
+        isEditable = true;
+        initValues(vRoot);
         initForm();
 
         validate = (Button) vRoot.findViewById(R.id.validate_account);
@@ -419,13 +428,14 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
+                isEditable = false;
                 retrieveFormValues();
                 if (accountDao.update(acc.getId(), description, (url != null) ? url : acc.getUrl(), username, password,
                         acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(),
                         acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
                 {
                     acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
-                    initValues(vRoot, false);
+                    initValues(vRoot);
                     vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                     vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                     v.setVisibility(View.GONE);
@@ -445,7 +455,8 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
-                initValues(vRoot, false);
+                isEditable = false;
+                initValues(vRoot);
                 vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                 v.setVisibility(View.GONE);
                 vRoot.findViewById(R.id.validate_account).setVisibility(View.GONE);
@@ -492,13 +503,13 @@ public class AccountDetailsFragment extends BaseFragment
                 {
                     FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                     EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder, new Runnable()
-                                                                                    {                                                                
-                                                                                        @Override
-                                                                                        public void run()
-                                                                                        {
-                                                                                            deleteAccount(accounts);
-                                                                                        }
-                                                                                    });
+                    {
+                        @Override
+                        public void run()
+                        {
+                            deleteAccount(accounts);
+                        }
+                    });
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                     fragmentTransaction.commit();
 

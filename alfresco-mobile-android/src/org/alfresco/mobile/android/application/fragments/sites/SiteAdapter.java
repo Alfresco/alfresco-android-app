@@ -113,9 +113,6 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
 
     public void getMenu(Menu menu, Site site)
     {
-        Log.d("CACHE", "AC : " + site.getShortName() + "|PM:" + site.isPendingMember() + "|M:" + site.isMember()
-                + "|F:" + site.isFavorite());
-
         if (site.isMember())
         {
             menu.add(Menu.NONE, MenuActionItem.MENU_SITE_LEAVE, Menu.FIRST + MenuActionItem.MENU_SITE_LEAVE,

@@ -194,7 +194,6 @@ public class NodeActions implements ActionMode.Callback
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                Log.d("Delete Node", node.getName());
                 DeleteLoaderCallback up = new DeleteLoaderCallback(SessionUtils.getSession(activity), activity, node);
                 up.setOnDeleteListener(new OnNodeDeleteListener()
                 {
@@ -351,7 +350,7 @@ public class NodeActions implements ActionMode.Callback
                                     }
                                     catch (Exception e)
                                     {
-                                        Log.d(TAG, Log.getStackTraceString(e));
+                                        Log.w(TAG, Log.getStackTraceString(e));
                                     }
                                 }
                                 

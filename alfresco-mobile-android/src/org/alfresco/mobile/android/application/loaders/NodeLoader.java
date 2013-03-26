@@ -122,7 +122,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 }
                 catch (Exception e)
                 {
-                    Log.d(TAG, Log.getStackTraceString(e));
+                    Log.w(TAG, Log.getStackTraceString(e));
                 }
             }
         }
@@ -146,7 +146,6 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         {
             identifier = NodeRefUtils.getVersionIdentifier(identifier);
         }
-        Log.d("Identifier", identifier);
         if (identifier == null) { throw new AlfrescoServiceException("Unable to find a correct identifier : " + tmpurl); }
         return identifier;
     }

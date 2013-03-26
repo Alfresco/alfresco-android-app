@@ -212,7 +212,6 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
     {
         if (loader instanceof SessionLoader) { return; }
         if (loader instanceof CloudSessionLoader && ((CloudSessionLoader) loader).getOAuthData() == null) { return; }
-        Log.d(TAG, loader.toString());
         switch ((int) acc.getTypeId())
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:

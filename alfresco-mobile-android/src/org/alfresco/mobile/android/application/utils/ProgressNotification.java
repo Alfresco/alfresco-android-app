@@ -140,7 +140,6 @@ public class ProgressNotification extends Service
                     {
                         incrementBy = Integer.valueOf(params.getInt(PARAM_DATA_INCREMENT));
                     }
-                    Log.d(TAG, progressItem.currentProgress + "");
 
                     progressItem.currentProgress += incrementBy;
 
