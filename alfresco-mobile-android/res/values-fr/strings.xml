@@ -178,7 +178,7 @@
     <!-- UPLOAD -->
     <string name="upload_pick_document">Choisissez un document&#8230;</string>
     <string name="upload_from">Importer un document depuis&#8230;</string>
-    <string name="upload_download_folder">Télécharger le dossier</string>
+    <string name="upload_download_folder">le dossier Téléchargements</string>
     <string name="upload_third_application">Autre application</string>
 
     <!-- ACCOUNTS -->
