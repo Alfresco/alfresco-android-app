@@ -166,8 +166,12 @@ public class GeneralPreferences extends PreferenceFragment
 
         // PASSCODE
         Boolean passcodeEnable = sharedPref.getBoolean(PasscodePreferences.KEY_PASSCODE_ENABLE, false);
-
         Preference pref = findPreference(getString(R.string.passcode_title));
+
+        boolean isActivate = sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false);
+        pref.setSelectable(isActivate);
+        pref.setEnabled(isActivate);
+
         int summaryId = R.string.passcode_disable;
         if (passcodeEnable)
         {
