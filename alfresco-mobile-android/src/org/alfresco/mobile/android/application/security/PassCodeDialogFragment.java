@@ -372,7 +372,7 @@ public class PassCodeDialogFragment extends DialogFragment
             clearAll();
             errorMessage.setVisibility(View.VISIBLE);
             errorMessage.setText(R.string.passcode_unknown);
-            checkAttempts();
+            //checkAttempts();
         }
     }
 
