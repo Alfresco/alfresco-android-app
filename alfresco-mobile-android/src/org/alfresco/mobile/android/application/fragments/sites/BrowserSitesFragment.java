@@ -106,7 +106,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     @Override
     public void onStart()
     {
-        int titleId = R.string.menu_browse_all_sites;
+        int titleId = R.string.menu_browse_sites;
         if (getActivity() instanceof PublicDispatcherActivity)
         {
             mode = MODE_IMPORT;

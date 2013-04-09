@@ -571,6 +571,7 @@ public class AccountDetailsFragment extends BaseFragment
                 && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
         {
             SessionUtils.setAccount(getActivity(), null);
+            SessionUtils.setsession(getActivity(), null);
         }
 
         if (!accounts.isEmpty())

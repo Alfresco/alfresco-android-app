@@ -87,8 +87,10 @@ public class AccountLoginLoaderCallback extends AbstractSessionCallback
         // We force to use the latest save account object.
         if (Account.TYPE_ALFRESCO_CLOUD == acc.getTypeId())
         {
+            String networkId = acc.getRepositoryId();
             AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
             acc = accountDao.findById(acc.getId());
+            acc.setRepositoryId(networkId);
         }
 
         Loader<LoaderResult<AlfrescoSession>> loader = null;
