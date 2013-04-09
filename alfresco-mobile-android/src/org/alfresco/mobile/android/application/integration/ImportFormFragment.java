@@ -28,6 +28,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.AlfrescoApplication;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -35,10 +37,12 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountLoginLoa
 import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -359,12 +363,29 @@ public class ImportFormFragment extends Fragment implements LoaderCallbacks<List
         {
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
-                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), selectedAccount);
-                getActivity().getLoaderManager().restartLoader(SessionLoader.ID, null, call);
+                
                 if (getActivity() instanceof PublicDispatcherActivity)
                 {
                     ((PublicDispatcherActivity) getActivity()).setUploadFolder(folderImportId);
                 }
+                
+                Account applicationAccount = SessionUtils.getAccount(getActivity());
+                
+                //Try to use Session used by the application
+                if (applicationAccount != null && applicationAccount.getId() == selectedAccount.getId()){
+                    AlfrescoSession session = ((AlfrescoApplication) getActivity().getApplicationContext()).getRepositorySession();
+                    SessionUtils.setsession(getActivity(), session);
+                    
+                    SessionUtils.setRenditionManager(getActivity(), null);
+                    Intent i = new Intent(getActivity(), PublicDispatcherActivity.class);
+                    i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+                    getActivity().startActivity(i);
+                    return;
+                }
+
+                //Session is not used by the application so create one.
+                AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(getActivity(), selectedAccount);
+                getActivity().getLoaderManager().restartLoader(SessionLoader.ID, null, call);
                 if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
                 {
                     new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);

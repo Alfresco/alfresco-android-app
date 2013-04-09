@@ -156,7 +156,7 @@ public class CloudSignupRequest
 
     public static boolean checkAccount(CloudSignupRequest signupRequest, String apiKey)
     {
-        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, OAuthConstant.PUBLIC_API_HOSTNAME));
+        UrlBuilder url = new UrlBuilder(getVerifiedAccountUrl(signupRequest, AccountSettingsHelper.getSignUpHostname()));
 
         Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
         List<String> headers = new ArrayList<String>();
