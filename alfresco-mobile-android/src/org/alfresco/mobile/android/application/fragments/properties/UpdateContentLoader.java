@@ -146,6 +146,8 @@ public class UpdateContentLoader extends AbstractBaseLoader<LoaderResult<Documen
                 if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
                 {
                     CipherUtils.encryptFile(context, contentFile.getFile().getPath(), true);
+                    
+                    org.alfresco.mobile.android.application.utils.IOUtils.returnTempFileToOriginal(contentFile.getFile());
                 }
             }
         }

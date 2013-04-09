@@ -46,16 +46,16 @@ public class IOUtils
 
     static final String decryptionExtension = ".utmp";
 
-    private static final String TEMP_FILESTAMP = "-yyyyddMM-HHmmss";
+    private static final String TEMP_PREFIX = "AlfTmp@";
+    
+    private static final String TEMP_FILESTAMP = "yyyyddMM-HHmmss-";
 
-    private static final String TEMP_FILE_EXT = ".tmp";
-
-    private static final int TEMP_LEN = TEMP_FILESTAMP.length() + TEMP_FILE_EXT.length();
+    private static final int TEMP_LEN = TEMP_PREFIX.length() + TEMP_FILESTAMP.length();
 
     public static File makeTempFile(File f)
     {
         String timeStamp = new SimpleDateFormat(TEMP_FILESTAMP).format(new Date());
-        File newFile = new File(f.getPath() + timeStamp + TEMP_FILE_EXT);
+        File newFile = new File(f.getParent() + "/" + TEMP_PREFIX + timeStamp + f.getName());
 
         if (f.renameTo(newFile)) return newFile;
 
@@ -64,10 +64,10 @@ public class IOUtils
 
     public static File returnTempFileToOriginal(File f)
     {
-        if (f.getName().endsWith(TEMP_FILE_EXT))
+        if (f.getName().startsWith(TEMP_PREFIX))
         {
-            String name = f.getPath();
-            File newFile = new File(name.substring(0, name.length() - TEMP_LEN));
+            String name = f.getName();
+            File newFile = new File(f.getParent() + "/" + name.substring(TEMP_LEN, name.length()));
 
             if (f.renameTo(newFile)) return newFile;
         }
@@ -77,9 +77,12 @@ public class IOUtils
     
     public static String getOriginalFromTempFilename (String filename)
     {
-        if (filename.endsWith(TEMP_FILE_EXT))
+        File origFile = new File(filename);
+        String name = origFile.getName();
+        
+        if (name.startsWith(TEMP_PREFIX))
         {
-            return filename.substring(0, filename.length() - TEMP_LEN);
+            return origFile.getParent() + "/" + name.substring(TEMP_LEN, name.length());
         }
         else
         {

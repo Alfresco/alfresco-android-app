@@ -23,6 +23,7 @@ import static org.alfresco.mobile.android.application.fragments.browser.UploadFr
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_TAGS;
 import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_FOLDER;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.integration.upload.UploadService;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -44,6 +46,7 @@ import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -132,6 +135,12 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         {
             public void onClick(View v)
             {
+                File uploadFile = ((ContentFile)getArguments().getSerializable(ARGUMENT_CONTENT_FILE)).getFile();
+                
+                //If the file is a temporary file, remove it on cancellation of dialog.
+                if (StorageManager.isTempFile(getActivity(), uploadFile))
+                    uploadFile.delete();
+                
                 CreateDocumentDialogFragment.this.dismiss();
             }
         });
