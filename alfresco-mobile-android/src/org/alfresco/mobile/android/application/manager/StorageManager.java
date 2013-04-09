@@ -30,6 +30,7 @@ import android.util.Log;
 
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 public class StorageManager extends org.alfresco.mobile.android.ui.manager.StorageManager
 {
@@ -47,6 +48,15 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return (filename.startsWith(appPath.getPath()));
     }
 
+    public static boolean isTempFile (Context c, File file)
+    {
+        File tempFolder = StorageManager.getTempFolder(c,
+                SessionUtils.getAccount(c).getUrl(),
+                SessionUtils.getAccount(c).getUsername());
+
+        return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
+    }
+    
     public static boolean shouldEncryptDecrypt(Context context, String filename)
     {
         return (CipherUtils.isEncryptionActive(context) && isEncryptableLocation(context, filename));
