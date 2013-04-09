@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.content.Context;
 
@@ -109,6 +110,8 @@ public class CryptoDocumentCreateLoader extends DocumentCreateLoader
             if (encdec)
             {
                 CipherUtils.encryptFile(context, filename, true);
+                
+                IOUtils.returnTempFileToOriginal(getContentFile().getFile());
             }
         }
         catch (Exception e)
