@@ -25,17 +25,35 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.filebrowser.FolderAdapter.FolderBookmark;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.Context;
 import android.content.Loader;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.HorizontalScrollView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Spinner;
+import android.widget.TextView;
 
-public abstract class LocalFileExplorerFragment extends BaseListFragment implements LoaderCallbacks<List<File>>
+
+public abstract class LocalFileExplorerFragment extends BaseListFragment implements LoaderCallbacks<List<File>>, OnClickListener
 {
 
     public static final String TAG = "LocalFileExplorerFragment";
@@ -52,11 +70,27 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
     
     public static final int MODE_IMPORT = 3;
 
-
     protected List<File> selectedItems = new ArrayList<File>(1);
 
     private int titleId;
 
+    enum fileLocation { INITIAL_FOLDER, DOWNLOAD_FOLDER, SDCARD_ROOT };
+    
+    private fileLocation currentLocation = fileLocation.INITIAL_FOLDER;
+    
+    private File userLocation = null;
+    
+    private File downloadLocation = null;
+ 
+    private File sdCardLocation = null;
+ 
+    private File cameraLocation;
+    
+    private TextView pathText = null;
+
+    private HorizontalScrollView pathTextScroller = null;
+        
+    
     public LocalFileExplorerFragment()
     {
         loaderId = LocalFileExplorerLoader.ID;
@@ -110,13 +144,170 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         }
     }
     
+    private int max (int val1, int val2)
+    {
+        return (val1 > val2 ? val1 : val2);
+    }
+    
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState){
+    public Dialog onCreateDialog(Bundle savedInstanceState)
+    { 
+        View toolButton = null;
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         View v = inflater.inflate(R.layout.sdk_list, null);
+        View toolsGroup = v.findViewById(R.id.tools_group);
+        
+        //Set to a decent size for a file browser, using minimum Android 'NORMAL' screen size as smallest possible.
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        v.setMinimumHeight(size.y);
+        v.setMinimumWidth(max(size.x/2, 320));
+        
+        pathTextScroller  = (HorizontalScrollView)v.findViewById(R.id.pathTextScrollView);
+        pathTextScroller.setVisibility(View.VISIBLE);
+        pathText = (TextView)v.findViewById(R.id.pathText);
+        
+        if (toolsGroup != null)
+        {
+            toolsGroup.setVisibility(View.VISIBLE);
+            
+            toolButton = toolsGroup.findViewById(R.id.toolbutton1);
+            ((ImageView)toolButton).setImageResource(android.R.drawable.ic_menu_revert);
+            toolButton.setVisibility(View.VISIBLE);
+            toolButton.setOnClickListener(this);
+            
+            Context c = getActivity();
+            File folder = StorageManager.getDownloadFolder(c, SessionUtils.getAccount(c).getUrl(), SessionUtils.getAccount(c).getUsername());
+            if (folder != null)
+            {
+                //Location buttons that require the presence of the SD card...
+                //Download button
+                /*toolButton = toolsGroup.findViewById(R.id.toolbutton2);
+                ((ImageView)toolButton).setImageResource(R.drawable.ic_download_dark);
+                toolButton.setVisibility(View.VISIBLE);
+                toolButton.setOnClickListener(this);
+                //SD button
+                toolButton = toolsGroup.findViewById(R.id.toolbutton3);
+                ((ImageView)toolButton).setImageResource(R.drawable.ic_repository_dark);
+                toolButton.setVisibility(View.VISIBLE);
+                toolButton.setOnClickListener(this);
+                */
+                
+                //Now we know SD is available, get relevant paths.
+                currentLocation = fileLocation.INITIAL_FOLDER;
+                userLocation = folder;
+                downloadLocation = folder;
+                sdCardLocation = Environment.getExternalStorageDirectory();
+                cameraLocation = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+                resetPathText();
+                
+                List<FolderBookmark> folders = new ArrayList<FolderBookmark>();
+                
+                FolderAdapter.FolderBookmark downloadFolder = new FolderBookmark();
+                downloadFolder.icon = R.drawable.ic_download_dark;
+                downloadFolder.name = "Download folder";
+                downloadFolder.location = downloadLocation.getPath();
+                folders.add(downloadFolder);
+                
+                if (cameraLocation != null)
+                {
+                    FolderAdapter.FolderBookmark DCIMFolder = new FolderBookmark();
+                    DCIMFolder.icon = R.drawable.ic_repository_dark;
+                    DCIMFolder.name = "Camera folder";
+                    DCIMFolder.location = cameraLocation.getPath();
+                    folders.add(DCIMFolder);
+                }
+                
+                FolderAdapter.FolderBookmark sdFolder = new FolderBookmark();
+                sdFolder.icon = R.drawable.ic_repository_dark;
+                sdFolder.name = "SD card";
+                sdFolder.location = sdCardLocation.getPath();
+                folders.add(sdFolder);
+                
+                FolderAdapter folderAdapter = new FolderAdapter(getActivity(), R.layout.app_account_list_row, folders);
+                
+                Spinner s = (Spinner) toolsGroup.findViewById(R.id.folderspinner);
+                s.setVisibility(View.VISIBLE);
+                s.setAdapter(folderAdapter);
+                s.setSelection(0);
+                s.setOnItemSelectedListener(new OnItemSelectedListener()
+                {
+                    @Override
+                    public void onItemSelected(AdapterView<?> a0, View v, int a2, long a3)
+                    {
+                        Bundle args = getArguments();
+                        String itemDesc = ((TextView)v.findViewById(R.id.toptext)).getText().toString();
+                        
+                        if (getString(R.string.sdcard_desc).compareTo(itemDesc) == 0)
+                        {   
+                            args.putSerializable(ARGUMENT_FOLDER, sdCardLocation);
+                            args.putSerializable(ARGUMENT_FOLDERPATH, sdCardLocation.getPath());
+                            userLocation = sdCardLocation;
+                            resetPathText();
+                            refresh();
+                        }
+                        else
+                        if (getString(R.string.download_folder_desc).compareTo(itemDesc) == 0)
+                        {        
+                            args.putSerializable(ARGUMENT_FOLDER, downloadLocation);
+                            args.putSerializable(ARGUMENT_FOLDERPATH, downloadLocation.getPath());
+                            userLocation = downloadLocation;
+                            resetPathText();
+                            refresh();
+                        }
+                        else
+                        if (getString(R.string.camera_folder_desc).compareTo(itemDesc) == 0)
+                        {                
+                            args.putSerializable(ARGUMENT_FOLDER, cameraLocation);
+                            args.putSerializable(ARGUMENT_FOLDERPATH, cameraLocation.getPath());
+                            userLocation = cameraLocation;
+                            resetPathText();
+                            refresh();
+                        }
+                    }
 
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0)
+                    {
+                    }
+                } );
+            }
+        }
+        
         init(v, emptyListMessageId);
         
+        //Override list item click
+        lv.setOnItemClickListener(new OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> l, View v, int position, long id)
+            {
+                LinearLayout entry = (LinearLayout)v;
+                
+                TextView filenameView = (TextView) entry.findViewById(R.id.toptext);
+                CharSequence filename = filenameView.getText();
+                File current = new File (userLocation.getPath() + "/" + filename);
+                
+                if (current.isDirectory())
+                {
+                    Bundle args = getArguments();
+                    args.putSerializable(ARGUMENT_FOLDER, current);
+                    args.putSerializable(ARGUMENT_FOLDERPATH, current.getPath());
+                    userLocation = current;
+                    resetPathText();
+                    refresh();
+                }
+                else
+                {
+                    //Fulfill base class behavior
+                    savePosition();
+                    onListItemClick((ListView) l, v, position, id);
+                }
+            }
+        });
+
+                
         setRetainInstance(true);
         if (initLoader)
         {
@@ -126,7 +317,92 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         retrieveTitle();
         return new AlertDialog.Builder(getActivity()).setTitle(titleId).setView(v).create();
     }
+    
+    String getRelativePath()
+    {
+        String path = userLocation.getPath();
+        String newPath = null;
+        
+        if (path.startsWith(downloadLocation.getPath()))
+        {
+            newPath = StorageManager.DLDIR + path.substring(downloadLocation.getPath().length());
+            return newPath;
+        }
+        else
+        if (path.startsWith(sdCardLocation.getPath()))
+        {
+            newPath = path.substring(sdCardLocation.getPath().length());
+            
+            return "SD" + newPath;
+        }
+        else
+            return path;
+    }
 
+    void resetPathText ()
+    {
+        pathText.setText(getRelativePath());
+        
+        pathTextScroller.post(new Runnable()
+                                {            
+                                    @Override
+                                    public void run() 
+                                    {
+                                        pathTextScroller.fullScroll(View.FOCUS_RIGHT);              
+                                    }
+                                });
+    }
+    
+    @Override
+    public void onClick(View v)
+    {
+        Bundle args = getArguments();
+        
+        switch (v.getId())
+        {
+            case R.id.toolbutton1:  //Up folder button
+                
+                //SD card or Downloads are top level folders, don't allow delving into system folders.
+//                if (userLocation.getPath().compareTo(sdCardLocation.getPath()) != 0 &&
+//                    userLocation.getPath().compareTo(downloadLocation.getPath()) != 0)
+                {
+                    File upFolder = userLocation.getParentFile();
+                    
+                    if (upFolder != null)
+                    {
+                        args.putSerializable(ARGUMENT_FOLDER, upFolder);
+                        args.putSerializable(ARGUMENT_FOLDERPATH, upFolder.getPath());
+                        userLocation = upFolder;
+                        resetPathText();
+                        refresh();
+                    }
+                }
+                break;
+                
+            case R.id.toolbutton2:  //Download folder button 
+                
+                args.putSerializable(ARGUMENT_FOLDER, downloadLocation);
+                args.putSerializable(ARGUMENT_FOLDERPATH, downloadLocation.getPath());
+                userLocation = downloadLocation;
+                resetPathText();
+                refresh();
+                break;
+                
+            case R.id.toolbutton3:  //SD Card button
+                
+                args.putSerializable(ARGUMENT_FOLDER, sdCardLocation);
+                args.putSerializable(ARGUMENT_FOLDERPATH, sdCardLocation.getPath());
+                userLocation = sdCardLocation;
+                resetPathText();
+                refresh();
+                break;
+                
+            case R.id.toolbutton4:  break;
+            case R.id.toolbutton5:  break;
+            default:                break;
+        }
+    }
+    
     protected int getMode()
     {
         Bundle b = getArguments();
