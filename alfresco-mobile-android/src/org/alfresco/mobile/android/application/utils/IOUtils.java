@@ -46,9 +46,10 @@ public class IOUtils
 
     static final String decryptionExtension = ".utmp";
 
-    private static final String TEMP_PREFIX = "AlfTmp@";
+    //Hard coded due to lack of a 'Context' in every use case, in order to get string resource.
+    private static final String TEMP_PREFIX = "Decrypted@";
     
-    private static final String TEMP_FILESTAMP = "yyyyddMM-HHmmss-";
+    private static final String TEMP_FILESTAMP = "HH-mm MM-dd-yy ";
 
     private static final int TEMP_LEN = TEMP_PREFIX.length() + TEMP_FILESTAMP.length();
 
