@@ -17,19 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
-
-import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.content.Context;
 import android.util.Log;
@@ -46,9 +40,9 @@ public class IOUtils
 
     static final String decryptionExtension = ".utmp";
 
-    private static final String TEMP_PREFIX = "AlfTmp@";
-    
-    private static final String TEMP_FILESTAMP = "yyyyddMM-HHmmss-";
+    private static final String TEMP_PREFIX = "Decrypted@";
+
+    private static final String TEMP_FILESTAMP = "HH-mm MM-dd-yy ";
 
     private static final int TEMP_LEN = TEMP_PREFIX.length() + TEMP_FILESTAMP.length();
 
@@ -74,12 +68,12 @@ public class IOUtils
 
         return f;
     }
-    
-    public static String getOriginalFromTempFilename (String filename)
+
+    public static String getOriginalFromTempFilename(String filename)
     {
         File origFile = new File(filename);
         String name = origFile.getName();
-        
+
         if (name.startsWith(TEMP_PREFIX))
         {
             return origFile.getParent() + "/" + name.substring(TEMP_LEN, name.length());
