@@ -30,7 +30,7 @@
         android:paddingLeft="@dimen/properties_details_padding"
         android:paddingRight="@dimen/properties_details_padding"
         android:paddingTop="2dip"
-        android:visibility="gone" >
+        android:visibility="visible" >
 
         <ImageView
             android:id="@+id/toolbutton1"
@@ -41,7 +41,7 @@
             android:layout_centerVertical="true"
             android:paddingRight="@dimen/button_padding"
             android:src="@drawable/ic_about_light"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <Spinner
             android:id="@+id/folderspinner"
@@ -51,7 +51,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginLeft="@dimen/folderpath_margin"
             android:layout_weight="0"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <ImageView
             android:id="@+id/toolbutton2"

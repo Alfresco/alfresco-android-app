@@ -162,7 +162,7 @@ public abstract class LocalFileExplorerFragment extends BaseListFragment impleme
         Point size = new Point();
         display.getSize(size);
         v.setMinimumHeight(size.y);
-        v.setMinimumWidth(size.x);
+        v.setMinimumWidth(max(size.x/2, 320));
         
         pathTextScroller  = (HorizontalScrollView)v.findViewById(R.id.pathTextScrollView);
         pathTextScroller.setVisibility(View.VISIBLE);
