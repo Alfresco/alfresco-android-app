@@ -40,7 +40,7 @@ public class IOUtils
 
     static final String decryptionExtension = ".utmp";
 
-    private static final String TEMP_PREFIX = "Decrypted@";
+    public static final String TEMP_PREFIX = "Decrypted@";
 
     private static final String TEMP_FILESTAMP = "HH-mm MM-dd-yy ";
 
