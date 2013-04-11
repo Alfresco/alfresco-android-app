@@ -62,9 +62,6 @@
 
   	<!-- PASSCODE  -->
     <dimen name="passcode_text_size">40sp</dimen>
-    <dimen name="path_leftright_margin">10dip</dimen>
-    <dimen name="path_topbottom_margin">10dip</dimen>
-    <dimen name="folderpath_margin">30dip</dimen>
     
     
 </resources>
