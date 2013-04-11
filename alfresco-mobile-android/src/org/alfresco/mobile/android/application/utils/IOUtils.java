@@ -17,13 +17,19 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
+
+import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.content.Context;
 import android.util.Log;
