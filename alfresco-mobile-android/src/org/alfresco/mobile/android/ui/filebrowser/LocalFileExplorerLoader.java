@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.AsyncTaskLoader;
@@ -66,7 +67,9 @@ public class LocalFileExplorerLoader extends AsyncTaskLoader<List<File>>
                 {
                     for (File child : childs)
                     {
-                        if (!child.isHidden() && !child.getName().startsWith("."))
+                        if (!child.isHidden() && 
+                            !child.getName().startsWith(".") &&
+                            !child.getName().startsWith(IOUtils.TEMP_PREFIX))
                         {
                             fileList.add(child);
                         }
