@@ -120,6 +120,10 @@
 		<![CDATA[<p><b>Une erreur de protocole SSL s\'est produite.</b><br/></p>
         Vérifiez les paramètres de votre compte et réessayez.<br/> Si le problème persiste, veuillez contacter votre administrateur.]]>
 	</string>
+	<string name="error_session_cloud_unavailable">
+		<![CDATA[<p><b>Alfresco dans le Cloud est en surcharge en ce moment!</b><br/></p>
+        Veuillez réessayer dans quelques minutes.<br/>]]>
+	</string>
     <string name="error_session_unauthorized_title">Non autorisé.</string>
     <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
     <string name="error_session_refresh">Rafraîchissement de la session.</string>
@@ -247,6 +251,8 @@
 
     <!-- About Message -->
     <string name="buildnumber_version">Version : </string>
+    <string name="sdknumber_version">SDK : </string>
+    
     <!-- BuildNumber Bamboo -->
     <string name="about_description">
 <![CDATA[
@@ -291,7 +297,8 @@
     <string name="create_document_text">Document texte </string>
     <string name="create_document_name_hint">Saisissez le nom du document ici</string>
     <string name="create_document_filename_error">Ce nom est déjà utilisé.</string>
-    <string name="create_document_save">Une erreur s\'est produite lors de l\'ajout. Votre document est enregistré dans \"Téléchargements\".</string>
+    <string name="create_document_save">Une erreur s\'est produite : Votre document est enregistré dans \"Téléchargements\".</string>
+    <string name="upload_error_alreadyexist">Une erreur s\'est produite: Ce nom est déjà utilisé.</string>
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>
     <string name="document_excel_extension">.xlsx</string>
