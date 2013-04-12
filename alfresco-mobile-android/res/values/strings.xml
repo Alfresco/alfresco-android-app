@@ -250,8 +250,8 @@
     <string name="asset_folder_prefix">en</string>
 
     <!-- About Message -->
-    <string name="buildnumber_version">Version : </string>
-    <string name="sdknumber_version">SDK : </string>
+    <string name="buildnumber_version">Version: </string>
+    <string name="sdknumber_version">SDK: </string>
     
     <!-- BuildNumber Bamboo -->
     <string name="about_description">
@@ -297,7 +297,8 @@
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
     <string name="create_document_filename_error">This name is already in use.</string>
-    <string name="create_document_save">An error occurred during the upload. Your document is saved inside "Downloads".</string>
+    <string name="create_document_save">An error occurred: Your document is saved inside "Downloads".</string>
+    <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
     <string name="document_word_extension">.docx</string>
     <string name="document_powerpoint_extension">.pptx</string>
     <string name="document_excel_extension">.xlsx</string>

@@ -50,6 +50,7 @@ import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -213,8 +214,11 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
             Log.e(TAG, Log.getStackTraceString(results.getException()));
             if (contentFile != null)
             {
-                // An error occurs, notify the user.
-                ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_ERROR);
+                if (results.hasException() && results.getException() != null && results.getException().getCause() instanceof CmisContentAlreadyExistsException)
+                {
+                    // An error occurs, notify the user.
+                    ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_ALREADY_EXIST);
+                }
 
                 // During creation process, the content must be available on
                 // Download area.
@@ -222,6 +226,9 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 if (getArguments() != null
                         && getArguments().getBoolean(CreateDocumentDialogFragment.ARGUMENT_IS_CREATION))
                 {
+                    // An error occurs, notify the user.
+                    ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_CREATION_ERROR);
+
                     final File folderStorage = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
                             currentAccount.getUsername());
 
@@ -240,6 +247,11 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                     {
                         MessengerManager.showToast(getActivity(), R.string.error_general);
                     }
+                }
+                else
+                {
+                    // An error occurs, notify the user.
+                    ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_IMPORT_ERROR);
                 }
             }
 
@@ -299,8 +311,7 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                 else
                 {
                     Fragment lf = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(getActivity()));
-                    if (getActivity() instanceof MainActivity
-                            && lf instanceof ChildrenBrowserFragment)
+                    if (getActivity() instanceof MainActivity && lf instanceof ChildrenBrowserFragment)
                     {
                         Folder pFolder = ((ChildrenBrowserFragment) lf).getParent();
                         if (pFolder == this.parentFolder)
