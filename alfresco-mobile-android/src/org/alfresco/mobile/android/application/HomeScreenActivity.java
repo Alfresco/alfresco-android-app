@@ -17,11 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
-import java.util.List;
-
-import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -31,28 +27,30 @@ import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.content.Loader;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
-public class HomeScreenActivity extends Activity implements LoaderCallbacks<List<Account>>
+public class HomeScreenActivity extends BaseActivity
 {
+    private static final String TAG = HomeScreenActivity.class.getName();
 
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
-        getLoaderManager().restartLoader(AccountsLoader.ID, null, this);
-        findViewById(R.id.left_pane).setVisibility(View.GONE);
-        getActionBar().hide();
 
         if (getFragmentManager().findFragmentByTag(HomeScreenFragment.TAG) == null)
         {
@@ -62,48 +60,16 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
         }
     }
 
-    public void cloud(View v)
-    {
-        CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                CloudSignupDialogFragment.TAG, true);
-    }
-
-    public void launch(View v)
-    {
-        AccountTypesFragment newFragment = new AccountTypesFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                AccountTypesFragment.TAG, true);
-    }
-
     @Override
-    public Loader<List<Account>> onCreateLoader(int id, Bundle args)
+    protected void onStart()
     {
-        return new AccountsLoader(this);
+        IntentFilter filters = new IntentFilter();
+        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED);
+        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+        registerPrivateReceiver(new HomeScreenReceiver(), filters);
+        super.onStart();
     }
-
-    @Override
-    public void onLoadFinished(Loader<List<Account>> arg0, List<Account> results)
-    {
-        if (results != null && results.size() > 0)
-        {
-            Intent i = new Intent(this, MainActivity.class);
-            this.startActivity(i);
-            finish();
-        }
-        else
-        {
-            getActionBar().show();
-            findViewById(R.id.left_pane).setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Account>> arg0)
-    {
-        // TODO Auto-generated method stub
-    }
-
+    
     @Override
     protected void onNewIntent(Intent intent)
     {
@@ -135,17 +101,60 @@ public class HomeScreenActivity extends Activity implements LoaderCallbacks<List
             getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             cloud(null);
         }
-        
+
         // Intent for Display Dialog
         if (IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN.equals(intent.getAction()))
         {
-            SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(), SimpleAlertDialogFragment.TAG);
+            SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(),
+                    SimpleAlertDialogFragment.TAG);
             return;
         }
     }
 
-    public Fragment getFragment(String tag)
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
+    public void cloud(View v)
     {
-        return getFragmentManager().findFragmentByTag(tag);
+        CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                CloudSignupDialogFragment.TAG, true);
+    }
+
+    public void launch(View v)
+    {
+        AccountTypesFragment newFragment = new AccountTypesFragment();
+        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
+                AccountTypesFragment.TAG, true);
+    }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    private class HomeScreenReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            
+            Log.d(TAG, intent.getAction());
+
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED.equals(intent.getAction()))
+            {
+                displayWaitingDialog();
+                return;
+            }
+            
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
+            {
+                removeWaitingDialog();
+                Intent i = new Intent(activity, MainActivity.class);
+                i.putExtras(intent.getExtras());
+                activity.startActivity(i);
+                activity.finish();
+                return;
+            }
+            return;
+        }
     }
 }

@@ -63,5 +63,16 @@
   	<!-- PASSCODE  -->
     <dimen name="passcode_text_size">40sp</dimen>
     
+    <!-- LIST ROW -->
+    <dimen name="row_height">48dp</dimen>
+    <dimen name="thumbnail_height">32dip</dimen>
+    <dimen name="thumbnail_margin">8dip</dimen>
+    <dimen name="top_text_size">18sp</dimen>
+    <dimen name="bottom_text_size">12sp</dimen>
+    
+    
+    <!-- IMPORT MARGIN -->
+    <dimen name="margin_top">3dip</dimen>
+    
     
 </resources>

@@ -17,25 +17,38 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.integration.Operation;
+import org.alfresco.mobile.android.application.integration.OperationManager;
+import org.alfresco.mobile.android.application.integration.OperationRequest;
+import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
+import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeUpdateListener;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class UpdateDialogFragment extends UpdateNodeDialogFragment
 {
+
+    private Node node;
+
+    private Folder folder;
+
+    public static final String ARGUMENT_FOLDER = "folder";
 
     public static final String TAG = "UpdateDialogFragment";
 
@@ -43,10 +56,12 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     {
     }
 
-    public static UpdateDialogFragment newInstance(Node node)
+    public static UpdateDialogFragment newInstance(Folder folder, Node node)
     {
         UpdateDialogFragment adf = new UpdateDialogFragment();
-        adf.setArguments(createBundle(node));
+        Bundle b = new Bundle(createBundle(node));
+        b.putParcelable(ARGUMENT_FOLDER, folder);
+        adf.setArguments(b);
         return adf;
     }
 
@@ -63,44 +78,32 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         alfSession = SessionUtils.getSession(getActivity());
         View v = super.onCreateView(inflater, container, savedInstanceState);
 
-        Node node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
+        node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
+        folder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
+
         if (node != null && node.isFolder())
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
         }
-
-        onUpdateListener = new OnNodeUpdateListener()
-        {
-            private boolean hasWaiting = false;
-
-            @Override
-            public void beforeUpdate(Node node)
-            {
-                if (!hasWaiting && getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
-                {
-                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
-                }
-                hasWaiting = true;
-            }
-
-            @Override
-            public void afterUpdate(Node node)
-            {
-                ActionManager.actionRefresh(UpdateDialogFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                        IntentIntegrator.NODE_TYPE);
-                ((MainActivity) getActivity()).setCurrentNode(node);
-                getDialog().dismiss();
-            }
-
-            @Override
-            public void onExeceptionDuringUpdate(Exception e)
-            {
-                ActionManager.actionDisplayError(UpdateDialogFragment.this, e);
-                Log.e(TAG, Log.getStackTraceString(e));
-                getDialog().dismiss();
-            }
-        };
-
         return v;
     }
+
+    protected void updateNode(EditText tv, EditText desc, Button bcreate)
+    {
+        bcreate.setEnabled(false);
+
+        Map<String, Serializable> props = new HashMap<String, Serializable>(2);
+        props.put(ContentModel.PROP_NAME, tv.getText().toString());
+        if (desc.getText() != null && desc.getText().length() > 0)
+        {
+            props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
+        }
+
+        OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new UpdatePropertiesRequest(folder, node, props).setNotificationTitle(node.getName())
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        OperationManager.getInstance(getActivity()).enqueue(group);
+        dismiss();
+    }
+
 }

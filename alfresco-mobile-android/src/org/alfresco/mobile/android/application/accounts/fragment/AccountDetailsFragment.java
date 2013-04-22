@@ -20,14 +20,15 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 
+import org.alfresco.mobile.android.application.ApplicationManager;
+import org.alfresco.mobile.android.application.BaseActivity;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoadeCallback;
@@ -39,7 +40,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -47,10 +48,12 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
@@ -90,8 +93,6 @@ public class AccountDetailsFragment extends BaseFragment
 
     private Account acc;
 
-    private AccountDAO accountDao;
-
     private View vRoot;
 
     private boolean isEditable = false;
@@ -103,15 +104,10 @@ public class AccountDetailsFragment extends BaseFragment
     public static AccountDetailsFragment newInstance(long accountID)
     {
         AccountDetailsFragment bf = new AccountDetailsFragment();
-        bf.setArguments(createBundleArgs(accountID));
-        return bf;
-    }
-
-    public static Bundle createBundleArgs(long accountID)
-    {
         Bundle args = new Bundle();
         args.putLong(ARGUMENT_ACCOUNT_ID, accountID);
-        return args;
+        bf.setArguments(args);
+        return bf;
     }
 
     @Override
@@ -119,10 +115,7 @@ public class AccountDetailsFragment extends BaseFragment
     {
         if (container == null) { return null; }
 
-        accountDao = new AccountDAO(getActivity(), SessionUtils.getDataBaseManager(getActivity()).getWriteDb());
-        acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
-
-        if (acc == null) { return null; }
+        acc = AccountProvider.retrieveAccount(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID));
 
         if (acc.getActivation() == null)
         {
@@ -218,8 +211,11 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                ((MainActivity) getActivity()).loadAccount(acc);
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                //Affect new account to activity
+                ((BaseActivity) getActivity()).setCurrentAccount(acc);
+                
+                //Request or create new session for the account.
+                ActionManager.reloadAccount(getActivity(), acc);
             }
         });
 
@@ -430,21 +426,20 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 isEditable = false;
                 retrieveFormValues();
-                if (accountDao.update(acc.getId(), description, (url != null) ? url : acc.getUrl(), username, password,
-                        acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(),
-                        acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0))
-                {
-                    acc = accountDao.findById(getArguments().getLong(ARGUMENT_ACCOUNT_ID));
-                    initValues(vRoot);
-                    vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
-                    vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
-                    v.setVisibility(View.GONE);
 
-                    // Refresh listing
-                    AccountFragment fragmentList = (AccountFragment) getFragmentManager().findFragmentByTag(
-                            AccountFragment.TAG);
-                    fragmentList.refresh();
-                }
+                ContentValues values = AccountProvider.createContentValues(description,
+                        (url != null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
+                        Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(),
+                        acc.getIsPaidAccount() ? 1 : 0);
+
+                getActivity().getContentResolver().update(
+                        AccountProvider.getUri(getArguments().getLong(ARGUMENT_ACCOUNT_ID)), values, null, null);
+                acc = AccountProvider.retrieveAccount(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID));
+                initValues(vRoot);
+                vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
+                vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
+                v.setVisibility(View.GONE);
+
             }
         });
 
@@ -468,25 +463,22 @@ public class AccountDetailsFragment extends BaseFragment
 
     public void delete()
     {
-        final List<Account> accounts = accountDao.findAll();
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
         boolean dataProtectionDeletion = false;
 
+        // Prepare deletion : Check if
         if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
-            boolean havePaidAccounts = false;
-
-            for (Account account : accounts)
+            Cursor cursor = getActivity().getContentResolver().query(
+                    AccountProvider.CONTENT_URI,
+                    AccountSchema.COLUMN_ALL,
+                    AccountSchema.COLUMN_ID + "!=" + acc.getId() + " AND " + AccountSchema.COLUMN_IS_PAID_ACCOUNT
+                            + " = 1", null, null);
+            if (cursor.getCount() == 0)
             {
-                // Ignoring the one we're deleting, are there any further paid
-                // accounts left?
-                if (account.getId() != acc.getId() && account.getIsPaidAccount())
-                {
-                    havePaidAccounts = true;
-                    break;
-                }
+                dataProtectionDeletion = true;
             }
-            dataProtectionDeletion = !havePaidAccounts;
+            cursor.close();
         }
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -507,7 +499,7 @@ public class AccountDetailsFragment extends BaseFragment
                         @Override
                         public void run()
                         {
-                            deleteAccount(accounts);
+                            deleteAccount();
                         }
                     });
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
@@ -537,13 +529,13 @@ public class AccountDetailsFragment extends BaseFragment
         else
         {
             builder.setTitle(R.string.delete);
-            builder.setMessage(String.format(getResources().getString(R.string.delete_description),
+            builder.setMessage(String.format(getResources().getQuantityString(R.plurals.delete_items, 1),
                     acc.getDescription()));
             builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    deleteAccount(accounts);
+                    deleteAccount();
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -559,28 +551,33 @@ public class AccountDetailsFragment extends BaseFragment
         alert.show();
     }
 
-    private void deleteAccount(List<Account> accounts)
+    // TODO move to mainActivity + broadcast !
+    private void deleteAccount()
     {
-        accountDao.delete(acc.getId());
-        if (accounts.size() == 1 && accounts.get(0).getId() == acc.getId())
-        {
-            accounts.clear();
-        }
-        // In case where currentAccount is the one deleted.
-        if (SessionUtils.getAccount(getActivity()) != null
-                && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
-        {
-            SessionUtils.setAccount(getActivity(), null);
-            SessionUtils.setsession(getActivity(), null);
-        }
+        getActivity().getContentResolver().delete(AccountProvider.getUri(acc.getId()), null, null);
+        
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED));
 
-        if (!accounts.isEmpty())
+        // In case where currentAccount is the one deleted.
+        ApplicationManager.getInstance(getActivity()).removeAccount(acc.getId());
+
+        Cursor cursor = getActivity().getContentResolver().query(AccountProvider.CONTENT_URI, AccountSchema.COLUMN_ALL,
+                null, null, null);
+        if (cursor.getCount() > 0)
         {
-            ActionManager.actionRefresh(AccountDetailsFragment.this, IntentIntegrator.CATEGORY_REFRESH_OTHERS,
-                    IntentIntegrator.ACCOUNT_TYPE);
+            // Remove Details panel
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), AccountDetailsFragment.TAG);
+            }
+            else
+            {
+                getFragmentManager().popBackStack(AccountDetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
         }
         else
         {
+            // If no account left, we remove all preferences
             // Remove preferences
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
             Editor editor = sharedPref.edit();
@@ -588,9 +585,10 @@ public class AccountDetailsFragment extends BaseFragment
             editor.commit();
 
             // Redirect to HomeScreenActivity
+            getActivity().startActivity(new Intent(getActivity(), HomeScreenActivity.class));
             getActivity().finish();
-            startActivityForResult(new Intent(getActivity(), HomeScreenActivity.class), 1);
         }
+        cursor.close();
     }
 
     public void displayOAuthFragment()

@@ -25,13 +25,12 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
-import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -100,11 +99,9 @@ public class CloudNetworksFragment extends BaseListFragment implements
         super.onListItemClick(l, v, position, id);
         CloudNetwork network = (CloudNetwork) l.getItemAtPosition(position);
         Account currentAccount = SessionUtils.getAccount(getActivity());
-        if (currentAccount != null)
+        if (currentAccount != null && !currentAccount.getRepositoryId().equals(network.getIdentifier()))
         {
-            currentAccount.setRepositoryId(network.getIdentifier());
-            ((MainActivity) getActivity()).loadAccount(currentAccount);
-            getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            ActionManager.reloadAccount(getActivity(), currentAccount, network.getIdentifier());
         }
     }
 }

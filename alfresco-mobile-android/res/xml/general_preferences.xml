@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/settings" >
@@ -24,9 +24,19 @@
             android:key="privatefoldersbutton"
             android:summary="@string/settings_privatefolder_summary"
             android:title="@string/settings_privatefolder_title" />
-        <Preference
+        <Preference
             android:key="@string/passcode_title"
             android:title="@string/passcode_preference" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_favorite" >
+        <CheckBoxPreference
+            android:key="@string/favorite_sync"
+            android:title="@string/settings_favorite_sync" />
+        <CheckBoxPreference
+            android:dependency="@string/favorite_sync"
+            android:key="@string/passcode_title"
+            android:summary="@string/settings_favorite_sync_data_wifi"
+            android:title="@string/settings_favorite_sync_data" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_links" >
         <Preference

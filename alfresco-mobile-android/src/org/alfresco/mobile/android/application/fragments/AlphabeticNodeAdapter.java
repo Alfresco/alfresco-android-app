@@ -17,13 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
+import org.alfresco.mobile.android.application.fragments.browser.ProgressNodeAdapter;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,42 +32,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class AlphabeticNodeAdapter extends NodeAdapter
+public class AlphabeticNodeAdapter extends ProgressNodeAdapter
 {
+    private static final String TAG = AlphabeticNodeAdapter.class.getName();
+
     private static final int ITEM_TYPE = 0;
 
     private static final int HEADING_TYPE = 1;
 
-    private HashMap<String, Integer> alphaIndexer;
+    private HashMap<String, Integer> alphaIndexer = new HashMap<String, Integer>();
 
-    private HashMap<Integer, String> positionIndexer;
+    private HashMap<Integer, String> positionIndexer = new HashMap<Integer, String>();
 
     private LayoutInflater mInflater;
 
-    public AlphabeticNodeAdapter(Context context, int textViewResourceId, List<Node> objects)
+    public AlphabeticNodeAdapter(Activity context, int textViewResourceId, List<Node> objects)
     {
         super(context, textViewResourceId, objects);
-
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        alphaIndexer = new HashMap<String, Integer>();
-        positionIndexer = new HashMap<Integer, String>();
     }
-    
-    public AlphabeticNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
+
+    public AlphabeticNodeAdapter(Activity context, int textViewResourceId, Node parent, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
-        super(context, textViewResourceId, listItems, selectedItems, mode);
+        super(context, textViewResourceId, parent, listItems, selectedItems, mode);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        alphaIndexer = new HashMap<String, Integer>();
-        positionIndexer = new HashMap<Integer, String>();
     }
 
     @Override
     public void add(Node object)
     {
         int idx = getCount();
+        if (object == null) { return; }
         String element = object.getName();
         String key = element.substring(0, 1).toUpperCase();
 
@@ -76,8 +72,8 @@ public class AlphabeticNodeAdapter extends NodeAdapter
             alphaIndexer.put(key, idx);
             positionIndexer.put(idx, key);
 
-            super.add(object); // Add a dummy at the point of the header to keep
-                               // in sync.
+            super.add(null); // Add a dummy at the point of the header to keep
+                             // in sync.
         }
 
         // Add the real new item
@@ -85,15 +81,11 @@ public class AlphabeticNodeAdapter extends NodeAdapter
     }
 
     @Override
-    public void addAll(Collection<? extends Node> collection)
+    public void clear()
     {
-        Node objects[] = (Node[]) collection.toArray(new Node[0]);
-
-        int size = objects.length;
-        for (int i = 0; i < size; i++)
-        {
-            add(objects[i]);
-        }
+        alphaIndexer.clear();
+        positionIndexer.clear();
+        super.clear();
     }
 
     public int getItemViewType(int position)

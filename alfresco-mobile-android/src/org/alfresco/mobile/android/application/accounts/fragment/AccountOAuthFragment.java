@@ -17,19 +17,23 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.integration.OperationManager;
+import org.alfresco.mobile.android.application.integration.OperationRequest;
+import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
+import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
+import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
-import android.app.LoaderManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -105,6 +109,9 @@ public class AccountOAuthFragment extends OAuthFragment
         return oauthFragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -143,9 +150,12 @@ public class AccountOAuthFragment extends OAuthFragment
             @Override
             public void beforeRequestAccessToken(Bundle b)
             {
-                if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+                if (getFragmentManager().findFragmentByTag(OperationWaitingDialogFragment.TAG) == null)
                 {
-                    new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
+                    // Create Account + Session
+                    OperationWaitingDialogFragment.newInstance(CreateAccountRequest.TYPE_ID, R.drawable.ic_cloud,
+                            getString(R.string.wait_title), getString(R.string.wait_message), null, 0).show(
+                            getFragmentManager(), OperationWaitingDialogFragment.TAG);
                 }
             }
 
@@ -187,28 +197,6 @@ public class AccountOAuthFragment extends OAuthFragment
         return v;
     }
 
-    public void load(OAuthData oauthData)
-    {
-        if (oauthData == null)
-        {
-            ActionManager.actionDisplayError(this, null);
-            return;
-        }
-
-        AbstractSessionCallback call = null;
-        if (getArguments().containsKey(PARAM_ACCOUNT))
-        {
-            call = new AccountLoginLoaderCallback(getActivity(), (Account) getArguments()
-                    .getSerializable(PARAM_ACCOUNT), oauthData);
-        }
-        else
-        {
-            call = new AccountCreationLoaderCallback(getActivity(), this, oauthData);
-        }
-        LoaderManager lm = getLoaderManager();
-        lm.restartLoader(SessionLoader.ID, null, call);
-    }
-
     @Override
     public void onStart()
     {
@@ -226,4 +214,26 @@ public class AccountOAuthFragment extends OAuthFragment
         super.onStop();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // Actions
+    // ///////////////////////////////////////////////////////////////////////////
+    public void load(OAuthData oauthData)
+    {
+        if (oauthData == null)
+        {
+            ActionManager.actionDisplayError(this, null);
+            return;
+        }
+
+        if (getArguments().containsKey(PARAM_ACCOUNT))
+        {
+            ActionManager
+                    .loadAccount(getActivity(), (Account) getArguments().getSerializable(PARAM_ACCOUNT), oauthData);
+        }
+        else
+        {
+            ActionManager.createAccount(getActivity(), (CreateAccountRequest) new CreateAccountRequest(oauthData)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+    }
 }

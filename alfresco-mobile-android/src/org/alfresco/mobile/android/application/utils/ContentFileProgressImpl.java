@@ -31,13 +31,15 @@ public class ContentFileProgressImpl extends ContentFileImpl
 {
     private static final long serialVersionUID = 1L;
 
-    private int amountCopied = 0;
+    private long amountCopied = 0;
 
     private int segment = 0;
 
     private int currentSegment = 0;
 
     private String newFilename = null;
+
+    private ReaderListener listener = null;
 
     public ContentFileProgressImpl()
     {
@@ -52,8 +54,6 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public ContentFileProgressImpl(File f)
     {
         super(f);
-
-        segment = (int) (f.length() / 10);
     }
 
     /**
@@ -67,8 +67,6 @@ public class ContentFileProgressImpl extends ContentFileImpl
     public ContentFileProgressImpl(File f, String filename, String mimetype)
     {
         super(f, filename, mimetype);
-
-        segment = (int) (f.length() / 10);
     }
 
     @Override
@@ -76,17 +74,18 @@ public class ContentFileProgressImpl extends ContentFileImpl
     {
         amountCopied += nBytes;
 
-        if (amountCopied / segment > currentSegment)
+        if (listener != null && (amountCopied / segment > currentSegment)
+                || amountCopied == getFile().length())
         {
             ++currentSegment;
-            ProgressNotification.updateProgress(getFileName());
+            listener.onRead(this, amountCopied);
         }
     }
 
     @Override
     public void fileWriteCallback(int nBytes)
     {
-        ProgressNotification.updateProgress(getFileName());
+
     }
 
     public void setFilename(String name)
@@ -105,5 +104,18 @@ public class ContentFileProgressImpl extends ContentFileImpl
         {
             return super.getFileName();
         }
+    }
+
+    public void setReaderListener(ReaderListener listener)
+    {
+        this.listener = listener;
+        segment = (int) (getFile().length() / listener.getSegment());
+    }
+
+    public interface ReaderListener
+    {
+        void onRead(ContentFileProgressImpl contentFile, Long amountCopied);
+
+        int getSegment();
     }
 }

@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -85,45 +85,31 @@
     <string name="error_session_creation_title">Save Account</string>
     <string name="error_session_creation_message">Connection Error</string>
     <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
-    <string name="error_session_hostname">
-        <![CDATA[Your <b>hostname</b> value seems to be wrong.<br/> Please check your account settings.]]>
-    </string>
-    <string name="error_session_nodata">
-        <![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]>
-    </string>
-    <string name="error_session_unauthorized">
-		<![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]>
-	</string>
-	<string name="error_session_service_url">
-		<![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your account settings.]]>
-	</string>
-	<string name="error_session_service_unavailable">
-		<![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]>
-	</string>
-	<string name="error_session_notfound">
-		<![CDATA[Your server couldn\'t be reached.<br/> Please check your account settings.]]>
-	</string>
-	<string name="error_session_port">
-		<![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your account settings.]]>
-	</string>
-	<string name="error_session_certificate">
-		<![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
+    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong.<br/> Please check your account settings.]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your account settings.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]></string>
+    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your account settings.]]></string>
+    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your account settings.]]></string>
+    <string name="error_session_certificate">
+<![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
 		The third-party organization that issued your server destination\'s certificate is not one that your device recognizes.<br/>
 		In order for Alfresco Mobile to verify that you\'re connecting with the appropriate server, its certificate must be from a trusted organization.<br/>
 		If your server has a self signed certificate please add it to your device to successfully connect.<br/> ]]>
-	</string>
-	<string name="error_session_certificate_expired">
-		<![CDATA[<p><b>The server\'s security certificate has expired or is not yet valid!</b><br/></p>
+    </string>
+    <string name="error_session_certificate_expired">
+<![CDATA[<p><b>The server\'s security certificate has expired or is not yet valid!</b><br/></p>
 		Please check the date and time your device is set to.<br/> If the problem persists please contact your administrator. ]]>
-	</string>
-	<string name="error_session_ssl">
-		<![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
+    </string>
+    <string name="error_session_ssl">
+<![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
         Please check your account settings and try again.<br/> If the problem persists please contact your administrator.]]>
-	</string>
-	<string name="error_session_cloud_unavailable">
-		<![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
+    </string>
+    <string name="error_session_cloud_unavailable">
+<![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
         Please try again in a few minutes.<br/>]]>
-	</string>
+    </string>
     <string name="error_session_unauthorized_title">Unauthorized.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
@@ -238,6 +224,7 @@
     <string name="error_unable_open_file">This document format is not supported. You need to install an app that can read it.</string>
 
     <!-- OTHER -->
+    <string name="unlike">UnLike</string>
     <string name="error_retrieve_likes">The Like/Unlike tag for this document could not be retrieved.</string>
     <string name="previous">Previous</string>
     <string name="next">Next</string>
@@ -274,9 +261,15 @@
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Send with <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
 
     <!-- Delete -->
-    <string name="delete_description">Are you sure you want to delete \"%s\" ?</string>
+    <plurals name="delete_items">
+        <item quantity="one">Are you sure you want to delete \"%s\" ?</item>
+        <item quantity="other">Are you sure you want to delete \"%s\" items ?</item>
+    </plurals>
+
     <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your documents will be returned to their unprotected state.\n\nAre you sure you want to delete \"%s\" ?</string>
-    
+    <string name="delete_in_progress">Delete in progress</string>
+    <string name="delete_complete">Delete complete</string>
+
     <!-- Save Back -->
     <string name="save_back_description">\"%s\" has been modified. Do you want to upload this new version ?</string>
     <string name="update_sucess">\"%s\" has been updated successfully.</string>
@@ -309,7 +302,6 @@
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
-
     <string name="encrypt_title">Encrypting content</string>
     <string name="content_being_encrypted">Content is being protected. Please wait</string>
     <string name="content_being_decrypted">Content is being unprotected. Please wait</string>
@@ -317,14 +309,13 @@
     <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these documents cannot be read by other apps, only from within the Alfresco app)</string>
     <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
-	<string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts, and will mean these documents cannot be read by other apps, only from within the Alfresco app.</string>
-	<string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts.</string>
-	<string name="already_encrypted">This document is already encrypted!</string>
-	<string name="already_decrypted">This document is already decrypted!</string>
-	<string name="decryption_title">Deactivating Data Protection&#8230;</string>
-	<string name="encryption_title">Activating Data Protection&#8230;</string>
-	<string name="copy_file_title">Document copy in progress&#8230;</string>
-	
+    <string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts, and will mean these documents cannot be read by other apps, only from within the Alfresco app.</string>
+    <string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts.</string>
+    <string name="already_encrypted">This document is already encrypted!</string>
+    <string name="already_decrypted">This document is already decrypted!</string>
+    <string name="decryption_title">Deactivating Data Protection&#8230;</string>
+    <string name="encryption_title">Activating Data Protection&#8230;</string>
+    <string name="copy_file_title">Document copy in progress&#8230;</string>
     <string name="metadata_general">General</string>
 
     <!-- SITES ACTION -->
@@ -351,6 +342,7 @@
     <!-- IMPORT -->
     <string name="import_document_title">Upload in Alfresco Mobile</string>
     <string name="import_document_name">Document Name</string>
+    <string name="import_documents">Documents</string>
     <string name="import_account">Account</string>
     <string name="import_send_download">The document is available inside \"%s\"\'s Download folder.</string>
     <string name="import_folder">Upload Folder</string>
@@ -359,15 +351,12 @@
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
     <string name="error_import">We are unable to upload. Please check your account settings.</string>
-    
-     <!-- SSL -->
-     <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
-     
 
+    <!-- SSL -->
+    <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
     <string name="data_protection_unavailable">Data protection unavailable (paid-account-holders only)"</string>
-	<string name="data_protection_off">Data protection is currently off"</string>
-	<string name="data_protection_on">Data protection is currently on"</string>
-
+    <string name="data_protection_off">Data protection is currently off"</string>
+    <string name="data_protection_on">Data protection is currently on"</string>
 
     <!-- PIN Code -->
     <string name="passcode_title">Enter Passcode</string>
@@ -385,7 +374,6 @@
     <string name="passcode_confirmation">Re-Enter Passcode</string>
     <string name="passcode_error_confirmation">Your passcode doesn\'t match.</string>
     <string name="passcode_unknown">Your passcode is incorrect.</string>
-    
     <string name="passcode_erase_data_complete">All local data has been removed.</string>
     <string name="passcode_timeout_title">Passcode timeout</string>
     <string name="passcode_timeout_1min">1 minutes</string>
@@ -394,46 +382,99 @@
     <string name="passcode_timeout_10min">10 minutes</string>
     <string name="passcode_timeout_30min">30 minutes</string>
     <string name="passcode_timeout_60min">1 hour</string>
-    
-                     
+
     <string-array name="passcode_timeout_entries">
-    	<item>@string/passcode_timeout_1min</item>
-    	<item>@string/passcode_timeout_2min</item>
-    	<item>@string/passcode_timeout_5min</item>
-    	<item>@string/passcode_timeout_10min</item>
-    	<item>@string/passcode_timeout_30min</item>
-    	<item>@string/passcode_timeout_60min</item>
-	</string-array>
-	
-     <string-array name="passcode_timeout_values">
-    	<item>60000</item>
-    	<item>120000</item>
-    	<item>300000</item>
-    	<item>600000</item>
-    	<item>1800000</item>
-    	<item>3600000</item>
-	</string-array>
-     
+        <item>@string/passcode_timeout_1min</item>
+        <item>@string/passcode_timeout_2min</item>
+        <item>@string/passcode_timeout_5min</item>
+        <item>@string/passcode_timeout_10min</item>
+        <item>@string/passcode_timeout_30min</item>
+        <item>@string/passcode_timeout_60min</item>
+    </string-array>
+    <string-array name="passcode_timeout_values">
+        <item>60000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+
     <!-- Settings -->
     <string name="settings">Settings</string>
     <string name="settings_enterprise">Enterprise Settings</string>
     <string name="settings_privatefolder_summary">Data protection allows all downloaded content to be readable only in the Alfresco app. (Enterprise customers only)</string>
     <string name="settings_privatefolder_title">Data Protection</string>
-    
     <string name="settings_links">Links</string>
     <string name="settings_links_website">Alfresco</string>
     <string name="settings_links_website_summary">Visit the official Alfresco website</string>
-    
     <string name="settings_links_website">Alfresco</string>
     <string name="settings_links_website_summary">Visit official Alfresco website</string>
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
-    
     <string name="settings_rating">Write a review</string>
     <string name="settings_rating_summary">Rate Alfresco Mobile on Google Play</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
-   
     <string name="settings_links_facebook">Like Alfresco on Facebook</string>
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
-       
+	<string name="settings_favorite">Favorite</string>
+    <string name="settings_favorite_sync">Activate Sync</string>
+	<string name="settings_favorite_sync_data">Data usage</string>
+	<string name="settings_favorite_sync_data_wifi">Only when on Wi-Fi</string>
+    <string name="settings_favorite_sync_data_all">On any networks</string>
+    
+    <!-- Multi Selection -->
+    <plurals name="selected_document">
+        <item quantity="one">no document</item>
+        <item quantity="one">1 document</item>
+        <item quantity="other">%1$s documents</item>
+    </plurals>
+    <plurals name="selected_folders">
+        <item quantity="one">no folder</item>
+        <item quantity="one">1 folder</item>
+        <item quantity="other">%1$s folders</item>
+    </plurals>
+    <string name="waiting_operations">Please wait...</string>
+    
+
+    <!-- Favorites -->
+    <string name="menu_favorites">Favorites</string>
+    <string name="empty_favorites">No Favorites</string>
+    <string name="favorites_document">Favorites Documents</string>
+    <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
+
+    <!-- Quick Action Folder -->
+    <string name="action_view_properties">View Properties</string>
+    <string name="action_edit_properties">Edit Properties</string>
+    <string name="like_in_progress">"Like" in progress</string>
+    <string name="like_complete">Like complete</string>
+    <string name="favorite">Favorite</string>
+    <string name="unfavorite">Unfavorite</string>
+    <string name="favorite_in_progress">"Favorite" in progress</string>
+    <string name="favorite_complete">Favorite complete</string>
+
+    <!-- Operations Status -->
+    <string name="status_pending">Pending</string>
+    <string name="status_running">Running</string>
+    <string name="status_paused">Paused</string>
+    <string name="status_successful">Successful</string>
+    <string name="status_failed">Failed</string>
+    <string name="status_cancelled">Cancelled</string>
+    
+    <!-- Operations Status -->
+    <string name="session_loaded">Session ready</string>
+    
+    <!-- Multi selection -->
+    <string name="emtpy">Nothing at all</string>
+    <string name="operations_empty">No Operations</string>
+    <string name="operations">Operations</string>
+    <string name="select_all">Select All</string>
+    <string name="unselect_all">Unselect all</string>
+    <string name="cancel_all">Cancel All</string>
+    <string name="dismiss_all">Dismiss all</string>
+    
+    <!-- Creation Folder -->
+    <string name="create_folder_in_progress">Create folder in progress</string>
+    <string name="create_folder_complete">Create folder complete</string>
+    
 </resources>

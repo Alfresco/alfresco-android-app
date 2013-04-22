@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.security;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.integration.ImportFormFragment;
+import org.alfresco.mobile.android.application.fragments.imports.ImportFormFragment;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 
 import android.app.Activity;

@@ -17,12 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.networks;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.CloudNetworkImpl;
 import org.alfresco.mobile.android.api.utils.messages.Messagesl18n;
 
 import android.content.Context;
@@ -52,11 +54,19 @@ public class CloudNetworksLoader extends AbstractBaseLoader<LoaderResult<List<Cl
                 Messagesl18n.getString("ErrorCodeRegistry.GENERAL_INVALID_ARG_NULL"), "CloudSession")); }
 
         LoaderResult<List<CloudNetwork>> result = new LoaderResult<List<CloudNetwork>>();
-        List<CloudNetwork> networks = null;
+        List<CloudNetwork> networks = new ArrayList<CloudNetwork>();
 
         try
         {
-            networks = cloudSession.getNetworks();
+            List<CloudNetwork> tmpNetworks = cloudSession.getNetworks();
+            networks = new ArrayList<CloudNetwork>(tmpNetworks.size());
+            for (CloudNetwork cloudNetwork : tmpNetworks)
+            {
+                if (((CloudNetworkImpl) cloudNetwork).isEnabled())
+                {
+                    networks.add(cloudNetwork);
+                }
+            }
         }
         catch (Exception e)
         {

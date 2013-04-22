@@ -27,19 +27,15 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.AccountProvider;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountEditFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountLoginLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoader;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountsLoaderCallback;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountsFragment;
 import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFragment;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
@@ -59,15 +55,18 @@ import org.alfresco.mobile.android.application.fragments.browser.local.LocalFile
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
@@ -85,15 +84,17 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -105,12 +106,19 @@ import android.view.Window;
 import android.view.animation.AnimationUtils;
 
 @TargetApi(11)
-public class MainActivity extends Activity
+public class MainActivity extends BaseActivity
 {
+    private static final int SESSION_LOADING = 1;
 
-    public static Activity activity = null;
+    private static final int SESSION_ACTIVE = 2;
 
-    private static final String TAG = "MainActivity";
+    private static final int SESSION_INACTIVE = 4;
+
+    private static final int SESSION_ERROR = 8;
+
+    public static MainActivity activity = null;
+
+    private static final String TAG = MainActivity.class.getName();
 
     private Stack<String> stackCentral = new Stack<String>();
 
@@ -118,31 +126,19 @@ public class MainActivity extends Activity
 
     private int fragmentQueue = -1;
 
-    private Account currentAccount;
-
     private PhotoCapture photoCapture = null;
 
     private VideoCapture videoCapture = null;
 
     private AudioCapture audioCapture = null;
 
-    private List<Account> accounts;
-
     private Site displayFromSite = null;
-
-    private AccountsLoaderCallback loadercallback;
 
     private Folder importParent;
 
     private int sessionState = 0;
 
     private int sessionStateErrorMessageId;
-
-    public static final int SESSION_LOADING = 0;
-
-    public static final int SESSION_ACTIVE = 1;
-
-    public static final int SESSION_ERROR = 2;
 
     private static final String PARAM_ACCOUNT = "account";
 
@@ -178,17 +174,18 @@ public class MainActivity extends Activity
 
         super.onCreate(savedInstanceState);
 
+        // Check intent
+        if (getIntent().hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+        {
+            long accountId = getIntent().getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID);
+            currentAccount = AccountProvider.retrieveAccount(this, accountId);
+        }
+
         // Loading progress
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
         setProgressBarIndeterminateVisibility(false);
-        // Load Accounts
-        if (loadercallback == null)
-        {
-            loadercallback = new AccountsLoaderCallback(this);
-        }
-        refreshAccounts();
 
         if (savedInstanceState != null)
         {
@@ -286,6 +283,11 @@ public class MainActivity extends Activity
                 prefs.edit().putBoolean(PREF_MIGRATION_FILES, true).commit();
             }
         }
+
+        // TODO FIXME Remove it!
+        //Clean all operations
+        //OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+
     }
 
     @Override
@@ -293,13 +295,27 @@ public class MainActivity extends Activity
     {
         super.onResume();
         checkForCrashes();
+        checkSession();
     }
 
     @Override
     protected void onStart()
     {
+        IntentFilter filters = new IntentFilter();
+        filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT);
+        filters.addAction(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
+        filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_STARTED);
+        filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_ACCOUNT_INACTIVE);
+        filters.addAction(IntentIntegrator.ACTION_USER_AUTHENTICATION);
+        filters.addCategory(IntentIntegrator.CATEGORY_OAUTH);
+        filters.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
+        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
+        registerPrivateReceiver(new MainActivityReceiver(), filters);
+
         super.onStart();
-        OAuthRefreshTokenCallback.requestRefreshToken(getSession(), this);
+        OAuthRefreshTokenCallback.requestRefreshToken(getCurrentSession(), this);
         PassCodeActivity.requestUserPasscode(this);
         activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
     }
@@ -375,170 +391,10 @@ public class MainActivity extends Activity
         {
             Boolean backstack = false;
 
-            // Intent after session loading
-            if (IntentIntegrator.ACTION_LOAD_SESSION_FINISH.equals(intent.getAction()))
-            {
-                setSessionState(SESSION_ACTIVE);
-                setProgressBarIndeterminateVisibility(false);
-
-                if (getSession() instanceof RepositorySession)
-                {
-                    DisplayUtils.switchSingleOrTwo(this, false);
-                }
-                else if (getSession() instanceof CloudSession)
-                {
-                    DisplayUtils.switchSingleOrTwo(this, true);
-                }
-
-                // Remove OAuthFragment if one
-                if (getFragment(AccountOAuthFragment.TAG) != null)
-                {
-                    getFragmentManager().popBackStack(AccountOAuthFragment.TAG,
-                            FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                }
-
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
-
-                if (getFragment(AccountFragment.TAG) != null)
-                {
-                    ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                }
-
-                // Used for launching last pressed action button from main menu
-                if (fragmentQueue != -1)
-                {
-                    doMainMenuAction(fragmentQueue);
-                }
-                fragmentQueue = -1;
-
-                // reload account
-                refreshAccounts();
-
-                if (SessionUtils.getAccount(this) != null)
-                {
-                    currentAccount = SessionUtils.getAccount(this);
-                }
-
-                // Check Last cloud session creation ==> prevent oauth token
-                // expiration
-                if (getSession() instanceof CloudSession)
-                {
-                    OAuthRefreshTokenCallback.saveLastCloudLoadingTime(this);
-                }
-                else
-                {
-                    OAuthRefreshTokenCallback.removeLastCloudLoadingTime(this);
-                }
-
-                // Check to see if we have an old account that needs its paid
-                // network flag setting.
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-                if (!currentAccount.getIsPaidAccount())
-                {
-                    boolean paidNetwork = false;
-                    AlfrescoSession session = getSession();
-
-                    if (session instanceof CloudSession)
-                    {
-                        paidNetwork = ((CloudSession) session).getNetwork().isPaidNetwork();
-                    }
-                    else
-                    {
-                        paidNetwork = session.getRepositoryInfo().getEdition()
-                                .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
-                    }
-
-                    if (paidNetwork)
-                    {
-                        prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
-
-                        CipherUtils.EncryptionUserInteraction(activity);
-
-                        AccountDAO serverDao = new AccountDAO(this, SessionUtils.getDataBaseManager(this).getWriteDb());
-                        serverDao.update(currentAccount.getId(), currentAccount.getDescription(),
-                                currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),
-                                currentAccount.getRepositoryId(), currentAccount.getTypeId(),
-                                currentAccount.getActivation(), currentAccount.getAccessToken(),
-                                currentAccount.getRefreshToken(), 1);
-                    }
-                }
-
-                return;
-            }
-
-            // Intent for USER AUTHENTICATION
-            if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
-            {
-                // if click on menu, hide the dialog
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
-
-                if (accounts == null) { return; }
-
-                for (Account account : accounts)
-                {
-                    if (account.getId() == intent.getExtras().getLong(IntentIntegrator.ACCOUNT_TYPE))
-                    {
-                        if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH_REFRESH))
-                        {
-                            getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,
-                                    new OAuthRefreshTokenCallback(this, getAccount(), (CloudSession) getSession()));
-                            return;
-                        }
-                        else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH)
-                                && getFragment(AccountOAuthFragment.TAG) == null
-                                || getFragment(AccountOAuthFragment.TAG).isAdded())
-                        {
-                            AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(account);
-                            FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getMainPaneId(this),
-                                    AccountOAuthFragment.TAG, true);
-                            DisplayUtils.switchSingleOrTwo(this, true);
-                            return;
-                        }
-                    }
-                }
-                return;
-            }
-
             // Intent for Removing Fragment + eventual associated loader.
             if (IntentIntegrator.ACTION_REMOVE_FRAGMENT.equals(intent.getAction()))
             {
                 EncryptionDialogFragment.removeFragment(this, intent);
-                return;
-            }
-
-            // Intent for Display Errors
-            if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
-            {
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
-                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
-
-                String errorMessage = getString(R.string.error_general);
-                if (e instanceof AlfrescoAppException && ((AlfrescoAppException) e).isDisplayMessage())
-                {
-                    errorMessage = e.getMessage();
-                }
-
-                MessengerManager.showLongToast(this, errorMessage);
-
-                CloudExceptionUtils.handleCloudException(this, e, false);
-
-                return;
-            }
-
-            // Intent for Display Dialog
-            if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
-            {
-                SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(),
-                        SimpleAlertDialogFragment.TAG);
                 return;
             }
 
@@ -572,16 +428,6 @@ public class MainActivity extends Activity
                 return;
             }
 
-            // DISPLAY NODE based on URL
-            if (IntentIntegrator.ACTION_DISPLAY_NODE.equals(intent.getAction()))
-            {
-                DetailsFragment fr = (DetailsFragment) getFragment(DetailsFragment.TAG);
-                if (fr != null)
-                {
-                    fr.refresh();
-                }
-            }
-
             // Intent for display Sign up Dialog
             if (Intent.ACTION_VIEW.equals(intent.getAction())
                     && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
@@ -602,18 +448,7 @@ public class MainActivity extends Activity
 
                 if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_OTHERS))
                 {
-                    if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
-                    {
-                        getFragmentManager().popBackStack(AccountDetailsFragment.TAG,
-                                FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        if (getFragment(AccountFragment.TAG) != null)
-                        {
-                            ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                        }
-                        refreshAccounts();
-                        clearScreen();
-                    }
-                    else if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
+                    if (IntentIntegrator.FILE_TYPE.equals(intent.getType()))
                     {
                         ((LocalFileBrowserFragment) getFragment(LocalFileBrowserFragment.TAG)).refresh();
                     }
@@ -629,46 +464,22 @@ public class MainActivity extends Activity
                 }
                 else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_ALL))
                 {
-                    if (IntentIntegrator.ACCOUNT_TYPE.equals(intent.getType()))
+                    if (getCurrentNode() != null)
                     {
-                        getFragmentManager().popBackStack(AccountTypesFragment.TAG,
-                                FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                        if (getFragment(AccountFragment.TAG) != null)
-                        {
-                            ((AccountFragment) getFragment(AccountFragment.TAG)).refresh();
-                        }
+                        applicationManager.getRenditionManager(this).removeFromCache(getCurrentNode().getIdentifier());
                     }
-                    else
+                    // TODO REmove it and use broadcastreceiver
+                    if (getFragment(ChildrenBrowserFragment.TAG) != null)
                     {
-                        if (getCurrentNode() != null)
-                        {
-                            SessionUtils.getRenditionManager(this).removeFromCache(getCurrentNode().getIdentifier());
-                        }
-                        if (getFragment(ChildrenBrowserFragment.TAG) != null)
-                        {
-                            ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
-                        }
-                        if (!DisplayUtils.hasCentralPane(this))
-                        {
-                            backstack = true;
-                            getFragmentManager().popBackStack(DetailsFragment.TAG,
-                                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                        }
-                        addPropertiesFragment(currentNode, getImportParent(), backstack);
+                        ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                     }
-                }
-                else if (intent.getCategories().contains(IntentIntegrator.CATEGORY_REFRESH_DELETE))
-                {
-                    ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).refresh();
                     if (!DisplayUtils.hasCentralPane(this))
                     {
-                        getFragmentManager().popBackStack();
+                        backstack = true;
+                        getFragmentManager()
+                                .popBackStack(DetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
-                    else
-                    {
-                        FragmentDisplayer.removeFragment(this, DetailsFragment.TAG);
-                    }
+                    addPropertiesFragment(currentNode, getImportParent(), backstack);
                 }
             }
         }
@@ -713,32 +524,6 @@ public class MainActivity extends Activity
     }
 
     // ///////////////////////////////////////////
-    // SWITCH ACCOUNT
-    // ///////////////////////////////////////////
-    public void loadAccount(Account account)
-    {
-        // TODO Remove this indication ?
-        MessengerManager.showToast(this, getString(R.string.account_loading) + " " + account.getDescription());
-        SessionUtils.setsession(this, null);
-        SessionUtils.setAccount(this, account);
-        if (account.getActivation() != null)
-        {
-            MessengerManager.showLongToast(this, getString(R.string.account_not_activated));
-        }
-        else
-        {
-            setProgressBarIndeterminateVisibility(true);
-            AccountLoginLoaderCallback call = new AccountLoginLoaderCallback(this, account);
-            // If the loader already exist, we do nothing.
-            // It prevents to request OAuth token multiple times.
-            if (getLoaderManager().getLoader(call.getAccountLoginLoaderId()) == null)
-            {
-                getLoaderManager().restartLoader(call.getAccountLoginLoaderId(), null, call);
-            }
-        }
-    }
-
-    // ///////////////////////////////////////////
     // SLIDE MENU
     // ///////////////////////////////////////////
     public void toggleSlideMenu()
@@ -754,7 +539,7 @@ public class MainActivity extends Activity
             MainMenuFragment slidefragment = (MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG);
             if (slidefragment != null)
             {
-                slidefragment.setAccounts(accounts);
+                slidefragment.refreshData();
             }
             showSlideMenu();
         }
@@ -784,7 +569,6 @@ public class MainActivity extends Activity
     private void doMainMenuAction(int id)
     {
         BaseFragment frag = null;
-        currentAccount = SessionUtils.getAccount(this);
 
         View slideMenu = findViewById(R.id.slide_pane);
         if (slideMenu.getVisibility() == View.VISIBLE)
@@ -808,7 +592,7 @@ public class MainActivity extends Activity
             case R.id.menu_browse_root:
                 if (!checkSession(R.id.menu_browse_root)) { return; }
                 setDisplayFromSite(null);
-                frag = ChildrenBrowserFragment.newInstance(getSession().getRootFolder());
+                frag = ChildrenBrowserFragment.newInstance(getCurrentSession().getRootFolder());
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         ChildrenBrowserFragment.TAG, true);
@@ -822,6 +606,12 @@ public class MainActivity extends Activity
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
                 FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
+                break;
+            case R.id.menu_favorites:
+                if (!checkSession(R.id.menu_favorites)) { return; }
+                frag = FavoritesFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                        FavoritesFragment.TAG, true);
                 break;
             case R.id.menu_download:
                 if (currentAccount == null)
@@ -890,12 +680,12 @@ public class MainActivity extends Activity
         {
             return false;
         }
-        else if (SessionUtils.getAccount(this) != null && SessionUtils.getAccount(this).getActivation() != null)
+        else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
         {
             MessengerManager.showToast(this, R.string.account_not_activated);
             return false;
         }
-        else if (SessionUtils.getSession(this) == null)
+        else if (getCurrentSession() == null)
         {
             displayWaitingDialog();
             fragmentQueue = actionMainMenuId;
@@ -903,11 +693,6 @@ public class MainActivity extends Activity
         }
 
         return true;
-    }
-
-    private void displayWaitingDialog()
-    {
-        new WaitingDialogFragment().show(getFragmentManager(), WaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////
@@ -1017,10 +802,9 @@ public class MainActivity extends Activity
         if (DisplayUtils.hasCentralPane(this))
         {
             stackCentral.clear();
-            stackCentral.push(AccountFragment.TAG);
+            stackCentral.push(AccountsFragment.TAG);
         }
         BaseFragment frag = AccountDetailsFragment.newInstance(id);
-        frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG, b);
     }
 
@@ -1106,13 +890,13 @@ public class MainActivity extends Activity
 
     public void displayAccounts()
     {
-        Fragment f = new AccountFragment();
-        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), AccountFragment.TAG, true);
+        Fragment f = new AccountsFragment();
+        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), AccountsFragment.TAG, true);
     }
 
     public void displayNetworks()
     {
-        if (getSession() instanceof CloudSession)
+        if (getCurrentSession() instanceof CloudSession)
         {
             Fragment f = new CloudNetworksFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), CloudNetworksFragment.TAG,
@@ -1225,10 +1009,10 @@ public class MainActivity extends Activity
             return true;
         }
 
-        if (isVisible(AccountFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
+        if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
-            AccountFragment.getMenu(menu);
+            AccountsFragment.getMenu(menu);
             return true;
         }
 
@@ -1248,6 +1032,13 @@ public class MainActivity extends Activity
         {
             getActionBar().setDisplayShowTitleEnabled(false);
             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
+            return true;
+        }
+
+        if (isVisible(FavoritesFragment.TAG))
+        {
+            getActionBar().setDisplayShowTitleEnabled(false);
+            FavoritesFragment.getMenu(menu);
             return true;
         }
 
@@ -1308,7 +1099,7 @@ public class MainActivity extends Activity
                 return true;
 
             case MenuActionItem.MENU_ACCOUNT_ADD:
-                ((AccountFragment) getFragment(AccountFragment.TAG)).add();
+                ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
 
             case MenuActionItem.MENU_ACCOUNT_EDIT:
@@ -1348,9 +1139,6 @@ public class MainActivity extends Activity
             case MenuActionItem.MENU_UPLOAD:
                 UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
                 dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
-                return true;
-            case MenuActionItem.MENU_DELETE_FOLDER:
-                ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).delete();
                 return true;
             case MenuActionItem.MENU_REFRESH:
                 ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
@@ -1425,9 +1213,9 @@ public class MainActivity extends Activity
 
                 boolean backStack = true;
 
-                if (fr instanceof AccountFragment)
+                if (fr instanceof AccountsFragment)
                 {
-                    ((AccountFragment) fr).unselect();
+                    ((AccountsFragment) fr).unselect();
                     backStack = false;
                 }
 
@@ -1444,6 +1232,11 @@ public class MainActivity extends Activity
                 }
 
                 if (fr instanceof ActivitiesFragment)
+                {
+                    backStack = false;
+                }
+
+                if (fr instanceof FavoritesFragment)
                 {
                     backStack = false;
                 }
@@ -1480,16 +1273,6 @@ public class MainActivity extends Activity
         return getFragmentManager().findFragmentByTag(tag);
     }
 
-    public AlfrescoSession getSession()
-    {
-        return SessionUtils.getSession(this);
-    }
-
-    public Account getAccount()
-    {
-        return currentAccount;
-    }
-
     public Node getCurrentNode()
     {
         return currentNode;
@@ -1498,11 +1281,6 @@ public class MainActivity extends Activity
     public void setCurrentNode(Node currentNode)
     {
         this.currentNode = currentNode;
-    }
-
-    public void refreshAccounts()
-    {
-        getLoaderManager().restartLoader(AccountsLoader.ID, null, loadercallback);
     }
 
     private boolean hasNetwork()
@@ -1551,16 +1329,6 @@ public class MainActivity extends Activity
         return super.onCreateDialog(id);
     }
 
-    public void setAccounts(List<Account> accounts)
-    {
-        this.accounts = accounts;
-    }
-
-    public List<Account> getAccounts()
-    {
-        return accounts;
-    }
-
     public Site isDisplayFromSite()
     {
         return displayFromSite;
@@ -1589,5 +1357,228 @@ public class MainActivity extends Activity
     public boolean hasActivateCheckPasscode()
     {
         return activateCheckPasscode;
+    }
+
+    // ////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////
+    private class MainActivityReceiver extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (IntentIntegrator.ACTION_LOAD_ACCOUNT.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_RELOAD_ACCOUNT.equals(intent.getAction()))
+            {
+                //Change activity state to loading.
+                setSessionState(SESSION_LOADING);
+                
+                if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
+                
+                //Assign the account
+                currentAccount = AccountProvider.retrieveAccount(context,
+                        intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                
+                //Return to root screen
+                activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                //Display progress
+                activity.setProgressBarIndeterminateVisibility(true);
+                
+                return;
+            }
+
+            if (IntentIntegrator.ACTION_LOAD_ACCOUNT_STARTED.equals(intent.getAction()))
+            {
+                setSessionState(SESSION_LOADING);
+                activity.setProgressBarIndeterminateVisibility(true);
+                if (intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+                {
+                    Account acc = AccountProvider.retrieveAccount(context,
+                            intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                    MessengerManager.showLongToast(activity, acc.getDescription());
+                }
+                return;
+            }
+
+            if (IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED.equals(intent.getAction()))
+            {
+                if (!isCurrentAccountToLoad(intent)) { return; }
+                
+                setSessionState(SESSION_ACTIVE);
+                setProgressBarIndeterminateVisibility(false);
+                
+                //Affect session
+                //currentSession = getCurrentSession()
+
+                if (getCurrentSession() instanceof RepositorySession)
+                {
+                    DisplayUtils.switchSingleOrTwo(activity, false);
+                }
+                else if (getCurrentSession() instanceof CloudSession)
+                {
+                    DisplayUtils.switchSingleOrTwo(activity, true);
+                }
+
+                // Remove OAuthFragment if one
+                if (getFragment(AccountOAuthFragment.TAG) != null)
+                {
+                    getFragmentManager().popBackStack(AccountOAuthFragment.TAG,
+                            FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                }
+
+                if (getFragment(WaitingDialogFragment.TAG) != null)
+                {
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+
+                // Used for launching last pressed action button from main menu
+                if (fragmentQueue != -1)
+                {
+                    doMainMenuAction(fragmentQueue);
+                }
+                fragmentQueue = -1;
+
+                // Save latest position as default future one
+                AccountsPreferences.setDefaultAccount(activity, currentAccount.getId());
+
+                // TODO Move to sessionManager/AccountManager ???
+                // Check Last cloud session creation ==> prevent oauth token
+                // expiration
+                if (getCurrentSession() instanceof CloudSession)
+                {
+                    OAuthRefreshTokenCallback.saveLastCloudLoadingTime(activity);
+                }
+                else
+                {
+                    OAuthRefreshTokenCallback.removeLastCloudLoadingTime(activity);
+                }
+
+                // NB : temporary code ?
+                // Check to see if we have an old account that needs its paid
+                // network flag setting.
+                if (!currentAccount.getIsPaidAccount())
+                {
+                    boolean paidNetwork = false;
+                    if (getCurrentSession() instanceof CloudSession)
+                    {
+                        paidNetwork = ((CloudSession) getCurrentSession()).getNetwork().isPaidNetwork();
+                    }
+                    else
+                    {
+                        paidNetwork = getCurrentSession().getRepositoryInfo().getEdition()
+                                .equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+                    }
+
+                    if (paidNetwork)
+                    {
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+                        prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+
+                        CipherUtils.EncryptionUserInteraction(activity);
+
+                        activity.getContentResolver().update(
+                                AccountProvider.getUri(currentAccount.getId()),
+                                AccountProvider.createContentValues(currentAccount.getDescription(),
+                                        currentAccount.getUrl(), currentAccount.getUsername(),
+                                        currentAccount.getPassword(), currentAccount.getRepositoryId(),
+                                        currentAccount.getTypeId(), currentAccount.getActivation(),
+                                        currentAccount.getAccessToken(), currentAccount.getRefreshToken(), 1), null,
+                                null);
+
+                        currentAccount = AccountProvider.retrieveAccount(activity, currentAccount.getId());
+                    }
+                }
+                return;
+            }
+            
+            if (IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR.equals(intent.getAction()))
+            {
+                if (!isCurrentAccountToLoad(intent)) { return; }
+
+                //Display error dialog message
+                ActionManager.actionDisplayDialog(context, intent.getExtras());
+                
+                //Change status
+                setSessionErrorMessageId(intent.getExtras().getInt(SimpleAlertDialogFragment.PARAM_MESSAGE));
+                
+                //Reset currentAccount & references
+                if (intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+                {
+                    currentAccount = AccountProvider.retrieveAccount(context,
+                            intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                    applicationManager.removeAccount(currentAccount.getId());
+                }
+                
+                //Stop progress indication
+                activity.setProgressBarIndeterminateVisibility(false);
+                return;
+            }
+
+            if (IntentIntegrator.ACTION_ACCOUNT_INACTIVE.equals(intent.getAction()))
+            {
+                if (!isCurrentAccountToLoad(intent)) { return; }
+                
+                setSessionState(SESSION_INACTIVE);
+                activity.setProgressBarIndeterminateVisibility(false);
+                MessengerManager.showLongToast(activity, getString(R.string.account_not_activated));
+                return;
+            }
+
+            if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
+            {
+                if (!isCurrentAccountToLoad(intent)) { return; }
+                
+                if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
+                Long accountId = intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID);
+                Account acc = AccountProvider.retrieveAccount(activity, accountId);
+
+                if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH)
+                        && getFragment(AccountOAuthFragment.TAG) == null
+                        || getFragment(AccountOAuthFragment.TAG).isAdded())
+                {
+                    AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+                    FragmentDisplayer.replaceFragment(activity, newFragment, DisplayUtils.getMainPaneId(activity),
+                            AccountOAuthFragment.TAG, true);
+                    DisplayUtils.switchSingleOrTwo(activity, true);
+                    return;
+                }
+
+                if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH_REFRESH))
+                {
+                    getLoaderManager().restartLoader(OAuthRefreshTokenLoader.ID, null,
+                            new OAuthRefreshTokenCallback(activity, acc, (CloudSession) getCurrentSession()));
+                    return;
+                }
+                return;
+            }
+
+            return;
+        }
+    }
+    
+    //Due to dropdown the account loaded might not be the last one to load.
+    private boolean isCurrentAccountToLoad(Intent intent){
+        if (currentAccount == null) { return false; }
+        if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return false; }
+        return (currentAccount.getId() == intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+    }
+    
+    protected void checkSession()
+    {
+        if (accountManager.isEmpty() && accountManager.hasData())
+        {
+            startActivity(new Intent(activity, HomeScreenActivity.class));
+            finish();
+            return;
+        }
+        else if (getCurrentAccount() == null && getCurrentSession() == null)
+        {
+            ActionManager.loadAccount(activity, accountManager.getDefaultAccount());
+        }
+        activity.invalidateOptionsMenu();
     }
 }
