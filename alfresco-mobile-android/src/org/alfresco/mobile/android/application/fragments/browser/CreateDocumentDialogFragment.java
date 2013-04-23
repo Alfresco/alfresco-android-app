@@ -262,6 +262,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         }
     }
 
+    //TODO Dead code ?
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
