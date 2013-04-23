@@ -436,4 +436,10 @@
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
        
+    <string name="sdcard_desc">SD card</string>
+    <string name="download_folder_desc">Download folder</string>
+    <string name="camera_folder_desc">Camera folder</string>
+    <string name="savebutton">Save</string>
+    <string name="discardbutton">Discard</string>
+    
 </resources>
