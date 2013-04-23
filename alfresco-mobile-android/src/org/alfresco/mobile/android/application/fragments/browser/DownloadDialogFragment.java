@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
@@ -57,6 +57,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final int ACTION_EMAIL = 2;
 
+    public static final int ACTION_EDIT = 3;
+    
     public static final int ACTION_UNDEFINED = 0;
 
     public static final String TAG = "DownloadDialogFragment";
@@ -74,7 +76,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     private ContentFile contentFile;
 
     private int action = ACTION_UNDEFINED;
-
+    
     public static DownloadDialogFragment newInstance()
     {
         return new DownloadDialogFragment();
@@ -221,10 +223,16 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private void executeAction()
     {
+        boolean edit = false;
+        
         if (contentFile != null && contentFile.getFile() != null)
         {
             switch (action)
             {
+                case ACTION_EDIT:
+                    edit = true;
+                    //Drop thru to Open action.
+                    
                 case ACTION_OPEN:
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
                             + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
@@ -235,8 +243,16 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     {
                         long datetime = contentFile.getFile().lastModified();
                         detailsFragment.setDownloadDateTime(new Date(datetime));
-                        ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                PublicIntent.REQUESTCODE_SAVE_BACK);
+                        
+                        if (edit)
+                        {
+                            
+                        }
+                        else
+                        {
+                            ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                    PublicIntent.REQUESTCODE_SAVE_BACK);
+                        }
                     }
                     break;
 
@@ -245,7 +261,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                             .findFragmentByTag(DetailsFragment.TAG).getActivity().getString(R.string.email_content),
                             Uri.fromFile(contentFile.getFile()), PublicIntent.REQUESTCODE_DECRYPTED);
                     break;
-
+                    
                 case ACTION_UNDEFINED:
                     break;
             }
