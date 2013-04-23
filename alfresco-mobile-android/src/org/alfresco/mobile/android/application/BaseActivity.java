@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ *  
+ *  This file is part of Alfresco Mobile for Android.
+ *  
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *  
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *  
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
 import java.util.ArrayList;
@@ -26,6 +43,11 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 
+/**
+ * Base class for all activities.
+ * 
+ * @author Jean Marie Pascal
+ */
 public abstract class BaseActivity extends Activity
 {
     protected static BaseActivity activity;
@@ -63,7 +85,6 @@ public abstract class BaseActivity extends Activity
         utilsReceiver = new UtilsReceiver();
         broadcastManager.registerReceiver(utilsReceiver, filters);
     }
-
 
     @Override
     protected void onStop()
@@ -149,6 +170,13 @@ public abstract class BaseActivity extends Activity
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////
+    /**
+     * Register a broadcast receiver to this specific activity. If used this methods is responsible to unregister the
+     * receiver during on stop().
+     * 
+     * @param receiver
+     * @param filter
+     */
     public void registerPrivateReceiver(BroadcastReceiver receiver, IntentFilter filter)
     {
         if (receiver != null && filter != null)
@@ -158,6 +186,12 @@ public abstract class BaseActivity extends Activity
         }
     }
 
+    /**
+     * Utility BroadcastReceiver for displaying dialog after an error or to display custom message.
+     * Use ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR Action inside an Intent and send it with localBroadcastManager instance.
+     * 
+     * @author Jean Marie Pascal
+     */
     private class UtilsReceiver extends BroadcastReceiver
     {
         @Override
@@ -165,6 +199,7 @@ public abstract class BaseActivity extends Activity
         {
             Log.d("UtilsReceiver", intent.getAction());
 
+            //
             if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
             {
                 removeWaitingDialog();

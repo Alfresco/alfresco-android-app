@@ -19,15 +19,11 @@ package org.alfresco.mobile.android.application;
 
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
-import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -37,11 +33,15 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+/**
+ * Displays a wizard for the first account creation.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class HomeScreenActivity extends BaseActivity
 {
     private static final String TAG = HomeScreenActivity.class.getName();
 
-    
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -63,36 +63,20 @@ public class HomeScreenActivity extends BaseActivity
     @Override
     protected void onStart()
     {
+        //Register the broadcast receiver.
         IntentFilter filters = new IntentFilter();
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED);
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
         registerPrivateReceiver(new HomeScreenReceiver(), filters);
+        
         super.onStart();
     }
-    
+
+    //TODO Change signup process ==> use onCreate intent than on newIntent.
     @Override
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-
-        // Use if OAuth process goes wrong
-        if (IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN.equals(intent.getAction()))
-        {
-            if (getFragment(WaitingDialogFragment.TAG) != null)
-            {
-                ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-            }
-
-            if (intent.getExtras() != null)
-            {
-                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
-                CloudExceptionUtils.handleCloudException(this, e, false);
-            }
-            MessengerManager.showLongToast(this, getString(R.string.error_general));
-            getFragmentManager().popBackStack();
-
-            return;
-        }
 
         if (intent.getAction() != null && intent.getData() != null && Intent.ACTION_VIEW.equals(intent.getAction())
                 && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
@@ -114,6 +98,7 @@ public class HomeScreenActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
+    
     public void cloud(View v)
     {
         CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
@@ -127,7 +112,7 @@ public class HomeScreenActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
                 AccountTypesFragment.TAG, true);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
@@ -136,15 +121,16 @@ public class HomeScreenActivity extends BaseActivity
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            
             Log.d(TAG, intent.getAction());
 
+            //Account is currently in creation, display a waiting dialog.
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED.equals(intent.getAction()))
             {
                 displayWaitingDialog();
                 return;
             }
-            
+
+            //Account is created, display the main activity and remove this activity.
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
                 removeWaitingDialog();

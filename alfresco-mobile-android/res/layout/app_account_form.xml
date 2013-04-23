@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/required"
                     android:inputType="text"
-                    android:text="admin" >
+                    >
                 </EditText>
             </TableRow>
 
@@ -80,7 +80,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/required"
                     android:inputType="textPassword"
-                    android:text="alzheimer" >
+                   >
                 </EditText>
             </TableRow>
 
@@ -100,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/account_hostname_hint"
                     android:inputType="text"
-                    android:text="ec2-176-34-173-67.eu-west-1.compute.amazonaws.com" >
+                     >
                 </EditText>
             </TableRow>
 

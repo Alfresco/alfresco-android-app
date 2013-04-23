@@ -25,8 +25,6 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
-import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
@@ -40,7 +38,6 @@ import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -58,14 +55,14 @@ import android.view.Window;
 import android.view.WindowManager;
 
 /**
- * Activity responsible to manage public intent from 3rd party application.
+ * Activity responsible to manage public intent from 3rd party application. This activity is "open" to public Intent.
  * 
  * @author Jean Marie Pascal
  */
 public class PublicDispatcherActivity extends BaseActivity
 {
     private static final String TAG = PublicDispatcherActivity.class.getName();
-    
+
     public static PublicDispatcherActivity activity = null;
 
     /** Define the type of importFolder. */
@@ -77,9 +74,9 @@ public class PublicDispatcherActivity extends BaseActivity
     private boolean activateCheckPasscode = false;
 
     private PublicDispatcherActivityReceiver receiver;
-    
+
     protected long requestedAccountId = -1;
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -191,7 +188,6 @@ public class PublicDispatcherActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // FRAGMENT MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
-
     public void addNavigationFragment(Folder f)
     {
         BaseFragment frag = ChildrenBrowserFragment.newInstance(f);
@@ -211,7 +207,6 @@ public class PublicDispatcherActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UI Public Method
     // ///////////////////////////////////////////////////////////////////////////
-
     public void doCancel(View v)
     {
         finish();
@@ -222,6 +217,9 @@ public class PublicDispatcherActivity extends BaseActivity
         ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).createFiles(uploadFiles);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -279,6 +277,7 @@ public class PublicDispatcherActivity extends BaseActivity
         {
             Log.d(TAG, intent.getAction());
 
+            //During the session creation, display a waiting dialog.
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT.equals(intent.getAction()))
             {
                 if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
@@ -287,14 +286,14 @@ public class PublicDispatcherActivity extends BaseActivity
                 return;
             }
             
-            
+            //If the sesison is available, display the view associated (repository, sites, downloads, favorites).
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
                 if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
                 long accountId = intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID);
                 if (requestedAccountId != -1 && requestedAccountId != accountId) { return; }
                 requestedAccountId = -1;
-                
+
                 setProgressBarIndeterminateVisibility(false);
 
                 if (getCurrentSession() instanceof RepositorySession)
@@ -318,6 +317,7 @@ public class PublicDispatcherActivity extends BaseActivity
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
 
+                //Upload process : Display the view where the user wants to upload files.
                 BaseFragment frag = null;
                 if (getCurrentSession() != null && uploadFolder == R.string.menu_browse_sites)
                 {
@@ -331,7 +331,6 @@ public class PublicDispatcherActivity extends BaseActivity
                 }
                 return;
             }
-
         }
     }
 }

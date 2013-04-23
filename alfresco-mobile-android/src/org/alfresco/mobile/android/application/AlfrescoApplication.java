@@ -24,9 +24,6 @@ import android.app.Application;
 public class AlfrescoApplication extends Application
 {
 
-    // -------------------------------------------------------------------------------------
-    // FOR ALFRESCO APP
-    // -------------------------------------------------------------------------------------
     private ApplicationManager helper;
 
     @Override

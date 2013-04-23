@@ -40,8 +40,6 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
-import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
-import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -61,7 +59,6 @@ import org.alfresco.mobile.android.application.fragments.properties.DetailsFragm
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
@@ -105,7 +102,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 
-@TargetApi(11)
+/**
+ * Main activity of the application.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class MainActivity extends BaseActivity
 {
     private static final int SESSION_LOADING = 1;
@@ -285,8 +286,8 @@ public class MainActivity extends BaseActivity
         }
 
         // TODO FIXME Remove it!
-        //Clean all operations
-        //OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        // Clean all operations
+        // OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
 
     }
 
@@ -466,7 +467,7 @@ public class MainActivity extends BaseActivity
                 {
                     if (getCurrentNode() != null)
                     {
-                        applicationManager.getRenditionManager(this).removeFromCache(getCurrentNode().getIdentifier());
+                        getRenditionManager().removeFromCache(getCurrentNode().getIdentifier());
                     }
                     // TODO REmove it and use broadcastreceiver
                     if (getFragment(ChildrenBrowserFragment.TAG) != null)
@@ -1373,21 +1374,21 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT.equals(intent.getAction())
                     || IntentIntegrator.ACTION_RELOAD_ACCOUNT.equals(intent.getAction()))
             {
-                //Change activity state to loading.
+                // Change activity state to loading.
                 setSessionState(SESSION_LOADING);
-                
+
                 if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
-                
-                //Assign the account
+
+                // Assign the account
                 currentAccount = AccountProvider.retrieveAccount(context,
                         intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
-                
-                //Return to root screen
+
+                // Return to root screen
                 activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-                //Display progress
+                // Display progress
                 activity.setProgressBarIndeterminateVisibility(true);
-                
+
                 return;
             }
 
@@ -1407,12 +1408,12 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
-                
+
                 setSessionState(SESSION_ACTIVE);
                 setProgressBarIndeterminateVisibility(false);
-                
-                //Affect session
-                //currentSession = getCurrentSession()
+
+                // Affect session
+                // currentSession = getCurrentSession()
 
                 if (getCurrentSession() instanceof RepositorySession)
                 {
@@ -1494,26 +1495,26 @@ public class MainActivity extends BaseActivity
                 }
                 return;
             }
-            
+
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
 
-                //Display error dialog message
+                // Display error dialog message
                 ActionManager.actionDisplayDialog(context, intent.getExtras());
-                
-                //Change status
+
+                // Change status
                 setSessionErrorMessageId(intent.getExtras().getInt(SimpleAlertDialogFragment.PARAM_MESSAGE));
-                
-                //Reset currentAccount & references
+
+                // Reset currentAccount & references
                 if (intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
                 {
                     currentAccount = AccountProvider.retrieveAccount(context,
                             intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
                     applicationManager.removeAccount(currentAccount.getId());
                 }
-                
-                //Stop progress indication
+
+                // Stop progress indication
                 activity.setProgressBarIndeterminateVisibility(false);
                 return;
             }
@@ -1521,7 +1522,7 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_ACCOUNT_INACTIVE.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
-                
+
                 setSessionState(SESSION_INACTIVE);
                 activity.setProgressBarIndeterminateVisibility(false);
                 MessengerManager.showLongToast(activity, getString(R.string.account_not_activated));
@@ -1531,7 +1532,7 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
-                
+
                 if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return; }
                 Long accountId = intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID);
                 Account acc = AccountProvider.retrieveAccount(activity, accountId);
@@ -1559,14 +1560,15 @@ public class MainActivity extends BaseActivity
             return;
         }
     }
-    
-    //Due to dropdown the account loaded might not be the last one to load.
-    private boolean isCurrentAccountToLoad(Intent intent){
+
+    // Due to dropdown the account loaded might not be the last one to load.
+    private boolean isCurrentAccountToLoad(Intent intent)
+    {
         if (currentAccount == null) { return false; }
         if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return false; }
         return (currentAccount.getId() == intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
     }
-    
+
     protected void checkSession()
     {
         if (accountManager.isEmpty() && accountManager.hasData())
