@@ -141,8 +141,15 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     }
 
     public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
-            String intentAction)
+                                            String intentAction)
     {
+        return decrypt(myFile, mimeType, listener, intentAction, null);
+        
+    }
+    public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
+                                                    String intentAction, Runnable r)
+    {
+        finishedRunnable = r;
         EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
         Bundle b = new Bundle();
         b.putSerializable(PARAM_FILE, myFile);
