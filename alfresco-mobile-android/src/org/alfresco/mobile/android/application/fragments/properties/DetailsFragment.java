@@ -349,10 +349,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
-        
+
         b = (ImageView) vRoot.findViewById(R.id.action_edit_text);
-        if (node.isDocument()  &&
-            MimeTypeManager.getMIMEType(node.getName()).contentEquals("text/plain"))
+        if (node.isDocument() && MimeTypeManager.getMIMEType(node.getName()).contentEquals("text/plain"))
         {
             b.setOnClickListener(new OnClickListener()
             {
@@ -553,21 +552,21 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             alert.show();
         }
     }
-    
+
     public void editText()
     {
         Bundle b = new Bundle();
-        
+
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
             tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
             if (replacementPreviewFragment != null)
             {
-                replacementPreviewFragment.setTempFile (tempFile);
+                replacementPreviewFragment.setTempFile(tempFile);
             }
             b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
         }
-        
+
         b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
         b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EDIT);
         DialogFragment frag = new DownloadDialogFragment();
@@ -1014,7 +1013,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         public void onReceive(Context context, Intent intent)
         {
             if (getActivity() == null) { return; }
-            
+
             if (intent.getAction().equals(ACTION_REFRESH))
             {
                 refresh();
@@ -1030,11 +1029,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     Node n = (Node) detailsFragment.getArguments().get(DetailsFragment.ARGUMENT_NODE);
                     Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
                     if (b == null) { return; }
-                    
+
                     Node node = null;
-                    if (b.containsKey(IntentIntegrator.EXTRA_DOCUMENT)){
+                    if (b.containsKey(IntentIntegrator.EXTRA_DOCUMENT))
+                    {
                         node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
-                    } else if (b.containsKey(IntentIntegrator.EXTRA_NODE)){
+                    }
+                    else if (b.containsKey(IntentIntegrator.EXTRA_NODE))
+                    {
                         node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
                     }
                     if (n != null
@@ -1099,10 +1101,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETE))
                         {
                             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
-                            
+
                             Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_DOCUMENT);
 
-                            ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity()).removeFromCache(node.getIdentifier());
+                            ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity())
+                                    .removeFromCache(node.getIdentifier());
                             Boolean backstack = false;
                             if (!DisplayUtils.hasCentralPane(getActivity()))
                             {
@@ -1124,11 +1127,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                             return;
                         }
-                        
+
                         if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
                         {
                             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
-                            
+
                             Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
 
                             Boolean backstack = false;

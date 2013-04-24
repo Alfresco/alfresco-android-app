@@ -17,20 +17,29 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.application.MainActivity;
+import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.OperationContentProvider;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.integration.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -38,14 +47,23 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnDismissListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 
-public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>
+public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>, OnMenuItemClickListener
 {
     private static final String TAG = ProgressNodeAdapter.class.getName();
 
     protected Node parentNode;
+    
+    private List<Node> selectedOptionItems = new ArrayList<Node>();
+
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
@@ -119,7 +137,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             super.updateBottomText(vh, item);
         }
     }
-
+    
     @Override
     protected void updateIcon(GenericViewHolder vh, Node item)
     {
@@ -132,8 +150,48 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             super.updateIcon(vh, item);
         }
-    }
+        
+        if (item.isFolder())
+        {
+            vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
 
+            if (mode == ChildrenBrowserFragment.MODE_IMPORT) { return; }
+
+            UIUtils.setBackground(((View) vh.icon),
+                    getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+
+            vh.icon.setVisibility(View.VISIBLE);
+            vh.icon.setTag(R.id.node_action, item);
+            vh.icon.setOnClickListener(new OnClickListener()
+            {
+
+                @Override
+                public void onClick(View v)
+                {
+                    Node item = (Node) v.getTag(R.id.node_action);
+                    selectedOptionItems.add(item);
+                    PopupMenu popup = new PopupMenu(getContext(), v);
+                    getMenu(popup.getMenu(), item);
+
+                    if (AndroidVersion.isICSOrAbove())
+                    {
+                        popup.setOnDismissListener(new OnDismissListener()
+                        {
+                            @Override
+                            public void onDismiss(PopupMenu menu)
+                            {
+                                selectedOptionItems.clear();
+                            }
+                        });
+                    }
+
+                    popup.setOnMenuItemClickListener(ProgressNodeAdapter.this);
+
+                    popup.show();
+                }
+            });
+        }
+    }
     // /////////////////////////////////////////////////////////////
     // INLINE PROGRESS
     // ////////////////////////////////////////////////////////////
@@ -185,5 +243,64 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     public void onLoaderReset(Loader<Cursor> arg0)
     {
         // TODO Auto-generated method stub
+    }
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+
+    public void getMenu(Menu menu, Node node)
+    {
+        MenuItem mi;
+
+        Permissions permission = SessionUtils.getSession(getContext()).getServiceRegistry().getDocumentFolderService()
+                .getPermissions(node);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
+                R.string.action_view_properties);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        if (permission.canEdit())
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
+                    R.string.action_edit_properties);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+
+        if (permission.canDelete())
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE_FOLDER, Menu.FIRST + MenuActionItem.MENU_DELETE_FOLDER,
+                    R.string.delete);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
+
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        boolean onMenuItemClick = true;
+        switch (item.getItemId())
+        {
+            case MenuActionItem.MENU_DETAILS:
+                onMenuItemClick = true;
+                ((MainActivity) getContext()).addPropertiesFragment(selectedOptionItems.get(0));
+                selectedItems.add(selectedOptionItems.get(0));
+                notifyDataSetChanged();
+                break;
+            case MenuActionItem.MENU_EDIT:
+                onMenuItemClick = true;
+                NodeActions.edit((Activity) getContext(), (Folder) parentNode, selectedOptionItems.get(0));
+                break;
+            case MenuActionItem.MENU_DELETE_FOLDER:
+                onMenuItemClick = true;
+                Fragment fr = ((Activity) getContext()).getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG);
+                NodeActions.delete((Activity) getContext(), fr, selectedOptionItems.get(0));
+                break;
+            default:
+                onMenuItemClick = false;
+                break;
+        }
+        selectedOptionItems.clear();
+        return onMenuItemClick;
     }
 }

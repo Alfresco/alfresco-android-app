@@ -642,7 +642,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public static void getMenu(AlfrescoSession session, Menu menu, Folder parentFolder, boolean actionMode)
     {
         MenuItem mi;
-
+        
         if (parentFolder == null) { return; }
         Permissions permission = null;
         try
@@ -675,7 +675,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
             createMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                    R.string.content_upload);
+                    R.string.upload_title);
 
             createMenu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
                     + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);

@@ -81,10 +81,6 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
         folder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
 
-        if (node != null && node.isFolder())
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(node.getName()));
-        }
         return v;
     }
 

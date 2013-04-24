@@ -59,6 +59,7 @@ import org.alfresco.mobile.android.application.fragments.properties.DetailsFragm
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
@@ -287,7 +288,7 @@ public class MainActivity extends BaseActivity
 
         // TODO FIXME Remove it!
         // Clean all operations
-        // OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
 
     }
 

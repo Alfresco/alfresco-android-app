@@ -166,11 +166,14 @@
     <string name="menu_resources">Resources</string>
 
     <!-- UPLOAD -->
+    <string name="upload_title">Upload&#8230;</string>
     <string name="upload_pick_document">Choose a document&#8230;</string>
-    <string name="upload_from">Upload document from&#8230;</string>
+    <string name="upload_photos">Photos</string>
+    <string name="upload_videos">Videos</string>
+    <string name="upload_files">Files</string>
     <string name="upload_download_folder">Download folder</string>
     <string name="upload_third_application">Another application</string>
-
+        
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Accounts</string>
     <string name="accounts_details">Details</string>

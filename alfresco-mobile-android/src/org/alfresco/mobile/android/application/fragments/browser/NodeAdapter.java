@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
@@ -32,6 +33,7 @@ import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
@@ -58,7 +60,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder> implements OnMenuItemClickListener
+public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
 {
     protected List<Node> originalNodes;
 
@@ -70,10 +72,18 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder> implem
 
     private RenditionManager renditionManager;
 
-    private int mode;
+    protected int mode;
 
-    private List<Node> selectedOptionItems = new ArrayList<Node>();
-
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, Folder parentFolder, List<Node> selectedItems,
+            int mode)
+    {
+        super(context, textViewResourceId, listItems);
+        originalNodes = listItems;
+        this.selectedItems = selectedItems;
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
+        this.mode = mode;
+    }
+    
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -246,42 +256,6 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder> implem
         else if (item.isFolder())
         {
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
-
-            if (mode == ChildrenBrowserFragment.MODE_IMPORT) { return; }
-
-            UIUtils.setBackground(((View) vh.icon),
-                    getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
-            vh.icon.setVisibility(View.VISIBLE);
-            vh.icon.setTag(R.id.node_action, item);
-            vh.icon.setOnClickListener(new OnClickListener()
-            {
-
-                @Override
-                public void onClick(View v)
-                {
-                    Node item = (Node) v.getTag(R.id.node_action);
-                    selectedOptionItems.add(item);
-                    PopupMenu popup = new PopupMenu(getContext(), v);
-                    getMenu(popup.getMenu(), item);
-
-                    if (AndroidVersion.isICSOrAbove())
-                    {
-                        popup.setOnDismissListener(new OnDismissListener()
-                        {
-                            @Override
-                            public void onDismiss(PopupMenu menu)
-                            {
-                                selectedOptionItems.clear();
-                            }
-                        });
-                    }
-
-                    popup.setOnMenuItemClickListener(NodeAdapter.this);
-
-                    popup.show();
-                }
-            });
         }
     }
 
@@ -293,62 +267,5 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder> implem
     public void setActivateThumbnail(Boolean activateThumbnail)
     {
         this.activateThumbnail = activateThumbnail;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    // ///////////////////////////////////////////////////////////////////////////
-
-    public void getMenu(Menu menu, Node node)
-    {
-        MenuItem mi;
-
-        Permissions permission = SessionUtils.getSession(getContext()).getServiceRegistry().getDocumentFolderService()
-                .getPermissions(node);
-
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
-                R.string.action_view_properties);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
-        if (permission.canEdit())
-        {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
-                    R.string.action_edit_properties);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }
-
-        if (permission.canDelete())
-        {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE_FOLDER, Menu.FIRST + MenuActionItem.MENU_DELETE_FOLDER,
-                    R.string.delete);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        }
-
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item)
-    {
-        boolean onMenuItemClick = true;
-        switch (item.getItemId())
-        {
-            case MenuActionItem.MENU_DETAILS:
-                onMenuItemClick = true;
-                ((MainActivity) getContext()).addPropertiesFragment(selectedOptionItems.get(0));
-                selectedItems.add(selectedOptionItems.get(0));
-                notifyDataSetChanged();
-                break;
-            case MenuActionItem.MENU_EDIT:
-                onMenuItemClick = true;
-                break;
-            case MenuActionItem.MENU_DELETE_FOLDER:
-                onMenuItemClick = true;
-                break;
-            default:
-                onMenuItemClick = false;
-                break;
-        }
-        selectedOptionItems.clear();
-        return onMenuItemClick;
     }
 }
