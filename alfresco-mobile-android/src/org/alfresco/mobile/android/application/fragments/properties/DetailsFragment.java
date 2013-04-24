@@ -68,6 +68,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
+import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -348,6 +349,24 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             b.setVisibility(View.GONE);
         }
+        
+        b = (ImageView) vRoot.findViewById(R.id.action_edit_text);
+        if (node.isDocument()  &&
+            MimeTypeManager.getMIMEType(node.getName()).contentEquals("text/plain"))
+        {
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    editText();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -533,6 +552,27 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             AlertDialog alert = builder.create();
             alert.show();
         }
+    }
+    
+    public void editText()
+    {
+        Bundle b = new Bundle();
+        
+        if (CipherUtils.isEncryptionActive(getActivity()))
+        {
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            if (replacementPreviewFragment != null)
+            {
+                replacementPreviewFragment.setTempFile (tempFile);
+            }
+            b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
+        }
+        
+        b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+        b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EDIT);
+        DialogFragment frag = new DownloadDialogFragment();
+        frag.setArguments(b);
+        frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
     }
 
     public void openin()

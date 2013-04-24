@@ -166,6 +166,15 @@
                     android:contentDescription="@string/geolocation"
                     android:src="@drawable/ic_location"
                     android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/action_edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingRight="@dimen/button_padding"
+                    android:src="@drawable/ic_edit" />
+
             </LinearLayout>
 
             <include

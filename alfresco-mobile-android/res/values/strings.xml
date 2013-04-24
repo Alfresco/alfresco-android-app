@@ -477,4 +477,14 @@
     <string name="create_folder_in_progress">Create folder in progress</string>
     <string name="create_folder_complete">Create folder complete</string>
     
+
+    <string name="sdcard_desc">SD card</string>
+    <string name="download_folder_desc">Download folder</string>
+    <string name="camera_folder_desc">Camera folder</string>
+    <string name="savebutton">Save</string>
+    <string name="discardbutton">Discard</string>
+    <string name="new_file">New text file</string>
+    <string name="textfile_populate_failed">Failed to load text into built-in editor</string>
+    <string name="textfile_too_large">Text file is too large for editor</string>
+
 </resources>
