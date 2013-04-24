@@ -125,7 +125,7 @@ public class PreviewFragment extends BaseFragment
         
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
-            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            tempFile = IOUtils.makeTempFile(NodeActions.getPreviewFile(getActivity(), node));
             b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
         }
         

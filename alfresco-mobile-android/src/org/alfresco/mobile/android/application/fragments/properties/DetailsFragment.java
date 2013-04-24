@@ -115,9 +115,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     protected Integer tabSelection = null;
 
     protected File tempFile = null;
-    
+
     protected PreviewFragment replacementPreviewFragment = null;
-    
+
     public DetailsFragment()
     {
     }
@@ -491,17 +491,17 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void openin()
     {
         Bundle b = new Bundle();
-        
+
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
-            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            tempFile = IOUtils.makeTempFile(NodeActions.getPreviewFile(getActivity(), node));
             if (replacementPreviewFragment != null)
             {
-                replacementPreviewFragment.setTempFile (tempFile);
+                replacementPreviewFragment.setTempFile(tempFile);
             }
             b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
         }
-        
+
         b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
         b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
         DialogFragment frag = new DownloadDialogFragment();
@@ -529,7 +529,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 {
                     tempFile = replacementPreviewFragment.getTempFile();
                 }
-                final File dlFile = (tempFile != null ? tempFile : NodeActions.getDownloadFile(getActivity(), node) );
+                final File dlFile = (tempFile != null ? tempFile : NodeActions.getPreviewFile(getActivity(), node));
 
                 long datetime = dlFile.lastModified();
                 Date d = new Date(datetime);
@@ -556,15 +556,25 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
+                            // File has been changed but is in tmp folder ==> Save to download + encrypt if necessary
+                            File renameFile = IOUtils.renameTimeStampFile(
+                                    StorageManager.getDownloadFolder(getActivity(),
+                                            SessionUtils.getAccount(getActivity()).getUrl(),
+                                            SessionUtils.getAccount(getActivity()).getUsername()), dlFile);
+                            if (renameFile.getName().equals(dlFile.getName()))
+                            {
+                                Log.w(TAG, "Unable to rename the document");
+                            }
+
+                            if (StorageManager.shouldEncryptDecrypt(getActivity(), renameFile.getPath()))
                             {
                                 FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
                                         .beginTransaction();
-                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
+                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(renameFile
+                                        .getPath());
                                 fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                                 fragmentTransaction.commit();
                             }
-
                             dialog.dismiss();
                         }
                     });
@@ -573,12 +583,17 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 }
                 else
                 {
-                    if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
+                    // Delete file
+                    if (!dlFile.delete())
                     {
-                        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-                        EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
-                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                        fragmentTransaction.commit();
+                        if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
+                        {
+                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
+                                    .beginTransaction();
+                            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
+                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                            fragmentTransaction.commit();
+                        }
                     }
                 }
                 break;
@@ -867,7 +882,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         replacementPreviewFragment = PreviewFragment.newInstance(n);
         replacementPreviewFragment.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), replacementPreviewFragment, layoutId, PreviewFragment.TAG, backstack);
+        FragmentDisplayer.replaceFragment(getActivity(), replacementPreviewFragment, layoutId, PreviewFragment.TAG,
+                backstack);
     }
 
     public void addComments(Node n, int layoutId, boolean backstack)

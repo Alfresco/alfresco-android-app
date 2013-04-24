@@ -260,7 +260,7 @@ public class NodeActions implements ActionMode.Callback
         Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) SessionUtils.getSession(activity).getServiceRegistry()
                 .getDocumentFolderService()).getDownloadUrl((Document) node));
 
-        File dlFile = getDownloadFile(activity, node);
+        File dlFile = getDownloadFile(activity, node.getName());
         if (dlFile == null)
         {
             MessengerManager.showLongToast(activity, activity.getString(R.string.sdinaccessible));
@@ -301,14 +301,40 @@ public class NodeActions implements ActionMode.Callback
         manager.enqueue(request);
     }
 
-    public static File getDownloadFile(final Activity activity, final Node node)
+    /**
+     * Provides a local file where to store preview. This file may be deleted.
+     * @param activity
+     * @param node
+     * @return
+     */
+    public static File getPreviewFile(final Activity activity, final Node node)
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
+        {
+            File folder = StorageManager.getTempFolder(activity, SessionUtils.getAccount(activity).getUrl(), SessionUtils.getAccount(activity).getUsername());
+            if (folder != null)
+            {
+                return new File(folder, node.getName());
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Provides file where to store permanently (inside Download) a document downloaded.
+     * @param activity
+     * @param node
+     * @return
+     */
+    public static File getDownloadFile(final Activity activity, final String name)
+    {
+        if (activity != null && name != null && SessionUtils.getAccount(activity) != null)
         {
             File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl(), SessionUtils.getAccount(activity).getUsername());
             if (folder != null)
             {
-                return new File(folder, node.getName());
+                return new File(folder, name);
             }
         }
         

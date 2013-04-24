@@ -330,7 +330,7 @@ public class MainActivity extends Activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED && CipherUtils.isEncryptionActive(this))
         {
             String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(
                     GeneralPreferences.REQUIRES_ENCRYPT, "");

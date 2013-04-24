@@ -50,6 +50,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     public static boolean isTempFile (Context c, File file)
     {
+        if (file == null) return false;
         File tempFolder = StorageManager.getTempFolder(c,
                 SessionUtils.getAccount(c).getUrl(),
                 SessionUtils.getAccount(c).getUsername());
