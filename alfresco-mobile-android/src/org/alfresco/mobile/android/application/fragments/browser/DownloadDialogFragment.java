@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.EmailUtils;
@@ -117,11 +118,11 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             File dlFile = null;
             if (getArguments().containsKey(ARGUMENT_TEMPFILE))
             {
-                dlFile = new File (getArguments().getString(ARGUMENT_TEMPFILE));
+                dlFile = new File(getArguments().getString(ARGUMENT_TEMPFILE));
             }
             else
             {
-                dlFile = getDownloadFile();
+                dlFile = getTempFile();
             }
 
             if (dlFile != null)
@@ -153,6 +154,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         return dialog;
     }
 
+    //TODO Dead code ?
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -164,6 +166,12 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                         GeneralPreferences.REQUIRES_ENCRYPT, "");
                 if (filename != null && filename.length() > 0)
                 {
+                    File f = new File(filename);
+                    if (StorageManager.isTempFile(getActivity(), f))
+                    {
+                        if (f.delete()) { return; }
+                    }
+
                     if (!CipherUtils.encryptFile(getActivity(), filename, true))
                     {
                         MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
@@ -185,10 +193,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private File getDownloadFile()
+    private File getTempFile()
     {
         if (SessionUtils.getAccount(getActivity()) == null) { return null; }
-        File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
+        File tmpFile = NodeActions.getPreviewFile(getActivity(), doc);
         if (tmpFile != null)
         {
             org.alfresco.mobile.android.api.utils.IOUtils.ensureOrCreatePathAndFile(tmpFile);
@@ -226,8 +234,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             switch (action)
             {
                 case ACTION_OPEN:
-                    MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
-                            + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
+                    MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete) + " "
+                            + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
 
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
                             DetailsFragment.TAG);

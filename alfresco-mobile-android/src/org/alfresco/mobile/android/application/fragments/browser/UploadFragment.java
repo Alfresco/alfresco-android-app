@@ -253,6 +253,12 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                     // An error occurs, notify the user.
                     ProgressNotification.updateProgress(name, ProgressNotification.FLAG_UPLOAD_IMPORT_ERROR);
                 }
+                
+                //Delete the file if it's a temporary file
+                if (StorageManager.isTempFile(getActivity(), contentFile.getFile()))
+                {
+                    contentFile.getFile().delete();
+                }
             }
 
             // The upload is done even if it's an error.
@@ -319,6 +325,12 @@ public class UploadFragment extends Fragment implements LoaderCallbacks<LoaderRe
                             ((ChildrenBrowserFragment) lf).refresh();
                         }
                     }
+                }
+                
+                //Delete the file if it's a temporary file
+                if (StorageManager.isTempFile(getActivity(), f.getFile()))
+                {
+                    contentFile.getFile().delete();
                 }
 
                 // The upload is done. Remove the fragment + the loader

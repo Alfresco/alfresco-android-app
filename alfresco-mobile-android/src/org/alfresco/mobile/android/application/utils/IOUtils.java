@@ -55,6 +55,14 @@ public class IOUtils
 
         return f;
     }
+    
+    public static File renameTimeStampFile(File parentFolder, File f)
+    {
+        String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss-").format(new Date());
+        File newFile = new File(parentFolder, timeStamp + f.getName());
+        if (f.renameTo(newFile)) return newFile;
+        return f;
+    }
 
     public static File returnTempFileToOriginal(File f)
     {

@@ -17,9 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -44,19 +47,35 @@ public final class EmailUtils
     {
         try
         {
-            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true)
-                    && CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
+            // If it comes from tmp folder we move it to download folder with timestamping.
+            File tmpFile = new File(new URI(attachment.toString()));
+            File f = new File(new URI(attachment.toString()));
+            if (StorageManager.isTempFile(fr.getActivity(), f))
+            {
+                tmpFile = IOUtils.renameTimeStampFile(
+                        StorageManager.getDownloadFolder(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())
+                                .getUrl(), SessionUtils.getAccount(fr.getActivity()).getUsername()), f);
+                
+                if (CipherUtils.isEncryptionActive(fr.getActivity())){
+                    PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
+                    .putString(GeneralPreferences.REQUIRES_ENCRYPT, tmpFile.getPath()).commit();
+                }
+            }
+            
+            if (CipherUtils.isEncrypted(fr.getActivity(), tmpFile.getPath(), true)
+                    && CipherUtils.decryptFile(fr.getActivity(), tmpFile.getPath()))
             {
                 PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
-                        .putString(GeneralPreferences.REQUIRES_ENCRYPT, attachment.getPath()).commit();
+                        .putString(GeneralPreferences.REQUIRES_ENCRYPT, tmpFile.getPath()).commit();
             }
 
             Intent i = new Intent(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_SUBJECT, subject);
             i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
-            i.putExtra(Intent.EXTRA_STREAM, attachment);
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tmpFile));
             i.setType("text/plain");
-            fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
+            fr.getActivity().startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)),
+                    requestCode);
 
             return true;
         }
