@@ -20,14 +20,17 @@ package org.alfresco.mobile.android.application.manager;
 import java.io.File;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.HomeScreenActivity;
+import org.alfresco.mobile.android.application.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
-import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
@@ -118,20 +121,15 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         f.startActivity(i);
     }
 
-    public static void actionDisplayDialog(Activity activity, Bundle bundle)
+    public static void actionDisplayDialog(Context context, Bundle bundle)
     {
         String intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
-        if (activity instanceof HomeScreenActivity)
-        {
-            intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
-        }
-
         Intent i = new Intent(intentId);
         if (bundle != null)
         {
             i.putExtras(bundle);
         }
-        activity.startActivity(i);
+        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
     }
 
     public static void actionDisplayDialog(Fragment f, Bundle bundle)
@@ -150,52 +148,36 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         f.startActivity(i);
     }
 
-    public static void actionRefresh(Fragment f, String refreshCategory, String type)
-    {
-        actionRefresh(f, refreshCategory, type, null);
-    }
-
     public static void actionDisplayError(Fragment f, Exception e)
     {
-        String intentId = IntentIntegrator.ACTION_DISPLAY_ERROR;
-        if (f.getActivity() instanceof HomeScreenActivity)
-        {
-            intentId = IntentIntegrator.ACTION_DISPLAY_ERROR_HOMESCREEN;
-        }
-        if (f.getActivity() instanceof PublicDispatcherActivity)
-        {
-            intentId = IntentIntegrator.ACTION_DISPLAY_ERROR_IMPORT;
-        }
-        Intent i = new Intent(intentId);
+        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_ERROR);
         if (e != null)
         {
             i.putExtra(IntentIntegrator.DISPLAY_ERROR_DATA, e);
         }
-        f.startActivity(i);
+        LocalBroadcastManager.getInstance(f.getActivity()).sendBroadcast(i);
     }
 
-    public static void actionRequestUserAuthentication(Activity activity, Account account)
+    public static void actionRequestUserAuthentication(Context activity, Account account)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_USER_AUTHENTICATION);
         i.addCategory(IntentIntegrator.CATEGORY_OAUTH);
-        i.setType(IntentIntegrator.ACCOUNT_TYPE);
         if (account != null)
         {
-            i.putExtra(IntentIntegrator.ACCOUNT_TYPE, account.getId());
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
         }
-        activity.startActivity(i);
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
 
-    public static void actionRequestAuthentication(Activity activity, Account account)
+    public static void actionRequestAuthentication(Context activity, Account account)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_USER_AUTHENTICATION);
         i.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
-        i.setType(IntentIntegrator.ACCOUNT_TYPE);
         if (account != null)
         {
-            i.putExtra(IntentIntegrator.ACCOUNT_TYPE, account.getId());
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
         }
-        activity.startActivity(i);
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
 
     public static boolean launchPDF(Context c, String pdfFile)
@@ -271,4 +253,79 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(activity, R.string.error_unable_share_content);
         }
     }
+    
+    
+    /**
+     * Allow to pick file with other apps.
+     * 
+     * @return Activity for Result.
+     */
+    public static void actionPickFile(Fragment f, int requestCode)
+    {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("*/*");
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        //i.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
+    }
+    
+    public static void actionDisplayOperations(Activity activity)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
+        activity.startActivity(i);
+    }
+    
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACCOUNT MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void reloadAccount(Activity activity, Account account, String networkId)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
+            i.putExtra(IntentIntegrator.EXTRA_NETWORK_ID, networkId);
+        }
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
+    }
+    
+    public static void reloadAccount(Activity activity, Account account)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
+        }
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
+    }
+    
+    public static void loadAccount(Activity activity, Account account)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
+        }
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
+    }
+    
+    public static void loadAccount(Activity activity, Account account, OAuthData data)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT);
+        if (account != null)
+        {
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, account.getId());
+            i.putExtra(IntentIntegrator.EXTRA_OAUTH_DATA, data);
+        }
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
+    }
+
+    public static void createAccount(Activity activity, CreateAccountRequest request)
+    {
+        Intent i = new Intent(IntentIntegrator.ACTION_CREATE_ACCOUNT);
+        i.putExtra(IntentIntegrator.EXTRA_CREATE_REQUEST, request);
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
+    }
+    
 }

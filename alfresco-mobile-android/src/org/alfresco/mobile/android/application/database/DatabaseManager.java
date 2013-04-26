@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.database;
 
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
+import org.alfresco.mobile.android.application.integration.OperationSchema;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,10 +26,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseManager
 {
-
     private static final String DATABASE_NAME = "AlfrescoMobileDataBase";
 
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
 
     private final GenericDbHelper dbHelper;
 
@@ -79,12 +79,14 @@ public class DatabaseManager
         public void onCreate(SQLiteDatabase db)
         {
             AccountSchema.onCreate(ctx, db);
+            OperationSchema.onCreate(ctx, db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
         {
             AccountSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+            OperationSchema.onUpgrade(ctx, db, oldVersion, newVersion);
         }
     }
 

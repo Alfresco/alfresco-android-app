@@ -22,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.accounts.AccountProvider;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -52,24 +51,23 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
     {
         try
         {
-            //Remove preferences
+            // Remove preferences
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
             Editor editor = sharedPref.edit();
             editor.clear();
             editor.commit();
-            
-            //Remove Account
-            AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            accountDao.clear();
-            
-            //Find folders
+
+            // Remove All Accounts
+            activity.getContentResolver().delete(AccountProvider.CONTENT_URI, null, null);
+
+            // Find folders
             File cache = activity.getCacheDir();
             File folder = activity.getExternalFilesDir(null);
-            
+
             listingFiles.add(cache);
             listingFiles.add(folder);
-            
-            //Remove Files/folders
+
+            // Remove Files/folders
             for (File file : listingFiles)
             {
                 if (file.exists())

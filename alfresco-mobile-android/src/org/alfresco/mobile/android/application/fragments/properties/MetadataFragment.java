@@ -215,4 +215,9 @@ public class MetadataFragment extends BaseFragment
     {
         createAspectPanel(inflater, parentview, node, aspect, true, null, new ArrayList<String>(0));
     }
+    
+    public Folder getParentNode()
+    {
+        return parentNode;
+    }
 }

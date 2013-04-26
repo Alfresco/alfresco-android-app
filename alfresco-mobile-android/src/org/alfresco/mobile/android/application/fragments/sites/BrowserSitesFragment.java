@@ -26,10 +26,10 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
-import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 

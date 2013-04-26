@@ -24,6 +24,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
+/**
+ * It's the first screen seens by the user when the application starts. Display the first step of account creation
+ * wizard.
+ * 
+ * @author Jean Marie Pascal
+ */
 public class HomeScreenFragment extends DialogFragment
 {
     public static final String TAG = "HomeScreenFragment";
@@ -49,12 +55,12 @@ public class HomeScreenFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            getDialog().setTitle("Alfresco");
+            getDialog().setTitle(R.string.app_name);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
         }
         else
         {
-            getActivity().setTitle("Alfresco");
+            getActivity().setTitle(R.string.app_name);
         }
 
         View v = inflater.inflate(R.layout.app_homescreen, container, false);

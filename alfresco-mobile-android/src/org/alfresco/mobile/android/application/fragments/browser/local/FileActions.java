@@ -179,8 +179,6 @@ public class FileActions implements ActionMode.Callback
             {
                 String value = input.getText().toString();
                 file.renameTo(new File(file.getParent(), value));
-                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE,
-                        null);
                 dialog.dismiss();
             }
         });
@@ -199,15 +197,14 @@ public class FileActions implements ActionMode.Callback
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.delete);
-        builder.setMessage(String.format(activity.getResources().getString(R.string.delete_description),file.getName()));
+        builder.setMessage(String.format(activity.getResources().getQuantityString(R.plurals.delete_items, 1),
+                file.getName()));
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)
             {
                 Log.d("Delete File", file.getName());
                 file.delete();
-                ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_OTHERS, IntentIntegrator.FILE_TYPE,
-                        null);
                 dialog.dismiss();
             }
         });

@@ -274,7 +274,6 @@
     <string name="email_content"><![CDATA[<!DOCTYPE html><html><body>Envoyer avec <a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a></body></html>]]></string>
 
     <!-- Delete -->
-    <string name="delete_description">Voulez vous supprimer \"%s\" ?</string>
     <string name="delete_description_data_protection">Protection des données active.\n\nSi vous supprimez ce compte, vos documents reprendront leur état non protégé.\n\nSupprimer \"%s\" ?</string>
     
     <!-- Save Back -->
