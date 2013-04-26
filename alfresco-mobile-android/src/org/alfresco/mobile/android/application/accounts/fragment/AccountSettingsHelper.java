@@ -102,13 +102,16 @@ public class AccountSettingsHelper
         this.context = context;
         this.acc = acc;
         prepareData();
-        this.data = data;
+        if (data != null)
+        {
+            this.data = data;
+        }
     }
 
-    public AccountSettingsHelper(Activity activity, String baseUrl, String username, String password, OAuthData data)
+    public AccountSettingsHelper(Context context, String baseUrl, String username, String password, OAuthData data)
     {
         super();
-        this.context = activity;
+        this.context = context;
         this.baseUrl = baseUrl;
         this.username = username;
         this.password = password;

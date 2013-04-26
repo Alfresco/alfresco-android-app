@@ -166,6 +166,7 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 onMenuItemClick = false;
                 break;
         }
+        selectedOptionItems.clear();
         return onMenuItemClick;
     }
 

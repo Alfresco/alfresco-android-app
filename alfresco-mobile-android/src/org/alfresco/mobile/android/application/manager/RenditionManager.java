@@ -215,8 +215,9 @@ public class RenditionManager
             Log.w(TAG, Log.getStackTraceString(e));
         }
     }
-    
-    private String getLargePreviewKey(String key){
+
+    private String getLargePreviewKey(String key)
+    {
         return "L" + key;
     }
 
@@ -464,82 +465,91 @@ public class RenditionManager
         @Override
         public void run()
         {
-            if (session == null) { return; }
-            if (isInterrupted()) { return; }
-
-            Bitmap bm = null;
-            ContentStream cf = null;
-            String key = getBmId();
-            if (preview != null)
+            try
             {
-                key = "L" + getBmId();
-            }
 
-            if (mDiskCache != null)
-            {
-                bm = getBitmapFromDiskCache(key);
-            }
+                if (session == null) { return; }
+                if (isInterrupted()) { return; }
 
-            if (bm == null)
-            {
-                if (identifier != null)
+                Bitmap bm = null;
+                ContentStream cf = null;
+                String key = getBmId();
+                if (preview != null)
                 {
-                    try
+                    key = "L" + getBmId();
+                }
+
+                if (mDiskCache != null)
+                {
+                    bm = getBitmapFromDiskCache(key);
+                }
+
+                if (bm == null)
+                {
+                    if (identifier != null)
                     {
-                        String renditionId = DocumentFolderService.RENDITION_THUMBNAIL;
-                        if (preview != null)
+                        try
                         {
-                            renditionId = DocumentFolderService.RENDITION_PREVIEW;
-                        }
+                            String renditionId = DocumentFolderService.RENDITION_THUMBNAIL;
+                            if (preview != null)
+                            {
+                                renditionId = DocumentFolderService.RENDITION_PREVIEW;
+                            }
 
-                        if (isInterrupted()) { return; }
-                        cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
-                                .getDocumentFolderService()).getRenditionStream(identifier, renditionId);
+                            if (isInterrupted()) { return; }
+                            cf = ((AbstractDocumentFolderServiceImpl) session.getServiceRegistry()
+                                    .getDocumentFolderService()).getRenditionStream(identifier, renditionId);
+                        }
+                        catch (AlfrescoServiceException e)
+                        {
+                            cf = null;
+                        }
                     }
-                    catch (AlfrescoServiceException e)
+                    else if (username != null)
                     {
-                        cf = null;
+                        try
+                        {
+                            cf = ((AbstractPersonService) session.getServiceRegistry().getPersonService())
+                                    .getAvatarStream(username);
+                            key = username;
+                        }
+                        catch (AlfrescoServiceException e)
+                        {
+                            cf = null;
+                        }
+                    }
+                    if (cf != null && cf.getInputStream() != null)
+                    {
+                        if (mDiskCache != null)
+                        {
+                            if (isInterrupted()) { return; }
+                            addBitmapToDiskMemoryCache(key, cf);
+                            bm = getBitmapFromDiskCache(key, preview);
+                        }
+                        else
+                        {
+                            bm = decodeStream(cf.getInputStream(), dm);
+                        }
                     }
                 }
-                else if (username != null)
+
+                if (imageViewReference != null && imageViewReference.get() != null
+                        && imageViewReference.get().getContext() instanceof Activity)
                 {
-                    try
+                    addBitmapToMemoryCache(key, bm);
+                    if (!isInterrupted())
                     {
-                        cf = ((AbstractPersonService) session.getServiceRegistry().getPersonService())
-                                .getAvatarStream(username);
-                        key = username;
-                    }
-                    catch (AlfrescoServiceException e)
-                    {
-                        cf = null;
-                    }
-                }
-                if (cf != null && cf.getInputStream() != null)
-                {
-                    if (mDiskCache != null)
-                    {
-                        if (isInterrupted()) { return; }
-                        addBitmapToDiskMemoryCache(key, cf);
-                        bm = getBitmapFromDiskCache(key, preview);
-                    }
-                    else
-                    {
-                        bm = decodeStream(cf.getInputStream(), dm);
+                        ((Activity) imageViewReference.get().getContext()).runOnUiThread(new BitmapDisplayer(bm,
+                                preview, imageViewReference, this));
                     }
                 }
             }
-
-            if (imageViewReference != null && imageViewReference.get() != null
-                    && imageViewReference.get().getContext() instanceof Activity)
+            catch (Exception e)
             {
-                addBitmapToMemoryCache(key, bm);
-                if (!isInterrupted())
-                {
-                    ((Activity) imageViewReference.get().getContext()).runOnUiThread(new BitmapDisplayer(bm, preview,
-                            imageViewReference, this));
-                }
+               //Continue
             }
         }
+
     }
 
     public static int getDPI(DisplayMetrics dm, int sizeInDp)

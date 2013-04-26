@@ -20,57 +20,54 @@ package org.alfresco.mobile.android.application.fragments.actions;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.alfresco.mobile.android.api.asynchronous.NodeDeleteLoader;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
-import org.alfresco.mobile.android.api.session.authentication.AuthenticationProvider;
-import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
+import org.alfresco.mobile.android.application.integration.OperationRequest;
+import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
+import org.alfresco.mobile.android.application.integration.OperationManager;
+import org.alfresco.mobile.android.application.integration.node.delete.DeleteNodeRequest;
+import org.alfresco.mobile.android.application.integration.node.download.DownloadRequest;
+import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.documentfolder.actions.DeleteLoaderCallback;
-import org.alfresco.mobile.android.ui.documentfolder.listener.OnNodeDeleteListener;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.app.DownloadManager.Query;
-import android.app.DownloadManager.Request;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SubMenu;
 
 @TargetApi(11)
 public class NodeActions implements ActionMode.Callback
 {
     public static final String TAG = "NodeActions";
-    
-    private ArrayList<Node> nodes = new ArrayList<Node>();
+
+    private List<Node> selectedNodes = new ArrayList<Node>();
+
+    private List<Folder> selectedFolder = new ArrayList<Folder>();
+
+    private List<Document> selectedDocument = new ArrayList<Document>();
 
     private onFinishModeListerner mListener;
 
@@ -80,146 +77,407 @@ public class NodeActions implements ActionMode.Callback
 
     private Fragment fragment;
 
-    public NodeActions(Fragment f, Node node)
+    private Folder parentFolder;
+
+    public NodeActions(Fragment f, List<Node> selectedNodes)
     {
         this.fragment = f;
         this.activity = f.getActivity();
-        nodes.add(node);
+        this.selectedNodes = selectedNodes;
+        for (Node node : selectedNodes)
+        {
+            addNode(node);
+        }
+        if (f instanceof ChildrenBrowserFragment)
+        {
+            this.parentFolder = ((ChildrenBrowserFragment) fragment).getParent();
+        }
     }
     
-
-    // ///////////////////////////////////////////////////////////////////////////////////
-    // ACTION MODE
-    // ///////////////////////////////////////////////////////////////////////////////////
-    @Override
-    public boolean onActionItemClicked(ActionMode mode, MenuItem item)
-    {
-        Boolean b = false;
-        switch (item.getItemId())
-        {
-            case MenuActionItem.MENU_UPDATE:
-                update(activity.getFragmentManager().findFragmentByTag(DetailsFragment.TAG));
-                b = true;
-                break;
-            case MenuActionItem.MENU_DOWNLOAD:
-                download(activity, nodes.get(0));
-                b = true;
-                break;
-            case MenuActionItem.MENU_EDIT:
-                edit(activity, nodes.get(0));
-                b = true;
-                break;
-            case MenuActionItem.MENU_DELETE:
-            case MenuActionItem.MENU_DELETE_FOLDER:
-                delete(activity, fragment, nodes.get(0));
-                b = true;
-                break;
-            default:
-                break;
-        }
-        mode.finish();
-        nodes.clear();
-        return b;
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu)
-    {
-        return true;
-    }
-
-    private void getMenu(Menu menu, Node node)
-    {
-        menu.clear();
-        if (node.isDocument())
-        {
-            DetailsFragment.getMenu(SessionUtils.getSession(activity), activity, menu, node);
-        }
-        else
-        {
-            ChildrenBrowserFragment.getMenu(SessionUtils.getSession(activity), menu, (Folder) node, true);
-        }
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode)
-    {
-        mListener.onFinish();
-        nodes.clear();
-    }
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public boolean onPrepareActionMode(ActionMode mode, Menu menu)
     {
         this.mode = mode;
-        getMenu(menu, nodes.get(0));
+        getMenu(menu, selectedNodes);
         return false;
     }
-
-    public void addNode(Node n)
+    
+    @Override
+    public boolean onCreateActionMode(ActionMode mode, Menu menu)
     {
-        nodes.clear();
-        nodes.add(n);
-        mode.setTitle(n.getName());
-        mode.invalidate();
+        mode.setTitle(createTitle());
+        return true;
     }
-
-    public void setOnFinishModeListerner(onFinishModeListerner mListener)
+    
+    @Override
+    public void onDestroyActionMode(ActionMode mode)
     {
-        this.mListener = mListener;
+        mListener.onFinish();
+        selectedNodes.clear();
     }
 
     public void finish()
     {
         mode.finish();
     }
-
-    // ///////////////////////////////////////////////////////////////////////////////////
-    // LISTENER
-    // ///////////////////////////////////////////////////////////////////////////////////
-    public interface onFinishModeListerner
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ///////////////////////////////////////////////////////////////////////////
+    private String createTitle()
     {
-        void onFinish();
+        String title = "";
+
+        if (selectedNodes.size() == 1)
+        {
+            title = selectedNodes.get(0).getName();
+        }
+        else
+        {
+            int size = selectedDocument.size();
+            if (size > 0)
+            {
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_document, size),
+                        size);
+            }
+            size = selectedFolder.size();
+            if (size > 0)
+            {
+                if (!title.isEmpty())
+                {
+                    title += " | ";
+                }
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_folders, size),
+                        size);
+            }
+        }
+
+        return title;
+    }
+    // ///////////////////////////////////////////////////////////////////////////////////
+    // LIST MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////////////
+    public void selectNode(Node n)
+    {
+        if (selectedNodes.contains(n))
+        {
+            removeNode(n);
+        }
+        else
+        {
+            addNode(n);
+        }
+        if (selectedNodes.isEmpty())
+        {
+            mode.finish();
+        }
+        else
+        {
+            mode.setTitle(createTitle());
+            mode.invalidate();
+        }
+    }
+
+    public void selectNodes(List<Node> nodes)
+    {
+        selectedNodes.clear();
+        selectedDocument.clear();
+        selectedFolder.clear();
+        for (Node node : nodes)
+        {
+            addNode(node);
+        }
+        mode.setTitle(createTitle());
+        mode.invalidate();
+    }
+    
+    private void addNode(Node n)
+    {
+        if (n == null) { return; }
+
+        if (!selectedNodes.contains(n))
+        {
+            selectedNodes.add(n);
+        }
+        if (n.isDocument())
+        {
+            selectedDocument.add((Document) n);
+        }
+        else
+        {
+            selectedFolder.add((Folder) n);
+        }
+    }
+
+    private void removeNode(Node n)
+    {
+        selectedNodes.remove(n);
+        if (n.isDocument())
+        {
+            selectedDocument.remove((Document) n);
+        }
+        else
+        {
+            selectedFolder.remove((Folder) n);
+        }
+    }
+
+    private void selectAll()
+    {
+        ((ChildrenBrowserFragment) fragment).selectAll();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
-    // ACTIONS
+    // MENU
     // ///////////////////////////////////////////////////////////////////////////////////
-    public static void delete(final Activity activity, final Fragment f, final Node node)
+    private void getMenu(Menu menu, List<Node> nodes)
     {
+        menu.clear();
+        getMenu(SessionUtils.getSession(activity), activity, menu);
+    }
+
+    private void getMenu(AlfrescoSession session, Activity activity, Menu menu)
+    {
+        MenuItem mi;
+        SubMenu createMenu;
+
+        if (selectedFolder.isEmpty())
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD_ALL, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD_ALL,
+                    R.string.download);
+            mi.setIcon(R.drawable.ic_download_dark);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+            createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
+                    + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
+            createMenu.setIcon(R.drawable.ic_favorite_dark);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
+                    + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
+                    + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+        }
+
+        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
+                + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
+        createMenu.setIcon(R.drawable.ic_like);
+        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_LIKE,
+                Menu.FIRST + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
+        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
+                + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE, R.string.delete);
+        mi.setIcon(R.drawable.ic_delete);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
+                R.string.select_all);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_OPERATIONS, Menu.FIRST + MenuActionItem.MENU_OPERATIONS,
+                R.string.operations);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+    }
+    
+    @Override
+    public boolean onActionItemClicked(ActionMode mode, MenuItem item)
+    {
+        Boolean b = false;
+        switch (item.getItemId())
+        {
+            case MenuActionItem.MENU_DETAILS:
+                ((MainActivity) activity).addPropertiesFragment(selectedNodes.get(0));
+                DisplayUtils.switchSingleOrTwo(activity, false);
+                break;
+            case MenuActionItem.MENU_UPDATE:
+                update(activity.getFragmentManager().findFragmentByTag(DetailsFragment.TAG));
+                b = true;
+                break;
+            case MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE:
+                favorite(true);
+                b = true;
+                break;
+            case MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE:
+                favorite(false);
+                b = true;
+                break;
+            case MenuActionItem.MENU_LIKE_GROUP_LIKE:
+                like(true);
+                b = true;
+                break;
+            case MenuActionItem.MENU_LIKE_GROUP_UNLIKE:
+                like(false);
+                b = true;
+                break;
+            case MenuActionItem.MENU_DOWNLOAD_ALL:
+            case MenuActionItem.MENU_DOWNLOAD:
+                download();
+                b = true;
+                break;
+            case MenuActionItem.MENU_EDIT:
+                edit(activity, parentFolder, selectedNodes.get(0));
+                b = true;
+                break;
+            case MenuActionItem.MENU_DELETE:
+            case MenuActionItem.MENU_DELETE_FOLDER:
+                delete(activity, fragment, new ArrayList<Node>(selectedNodes));
+                b = true;
+                break;
+            case MenuActionItem.MENU_SELECT_ALL:
+                selectAll();
+                b = false;
+                break;
+            case MenuActionItem.MENU_OPERATIONS:
+                activity.startActivity( new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
+                b = false;
+                break;
+            default:
+                break;
+        }
+        if (b)
+        {
+            selectedNodes.clear();
+            selectedDocument.clear();
+            selectedFolder.clear();
+            mode.finish();
+        }
+        return b;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
+    private void favorite(boolean doFavorite)
+    {
+        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        for (Node node : selectedNodes)
+        {
+            group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+
+        OperationManager.getInstance(activity).enqueue(group);
+
+        if (fragment instanceof ChildrenBrowserFragment)
+        {
+            int titleId = R.string.unfavorite;
+            int iconId = R.drawable.ic_unfavorite_dark;
+            if (doFavorite)
+            {
+                titleId = R.string.favorite;
+                iconId = R.drawable.ic_favorite_dark;
+            }
+            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
+                    fragment.getString(titleId), null, parentFolder, selectedNodes.size()).show(
+                    fragment.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+        }
+    }
+
+    private void like(boolean doLike)
+    {
+        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        for (Node node : selectedNodes)
+        {
+            group.enqueue(new LikeNodeRequest(parentFolder, node, doLike)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        OperationManager.getInstance(activity).enqueue(group);
+
+        if (fragment instanceof ChildrenBrowserFragment)
+        {
+            int titleId = R.string.unlike;
+            int iconId = R.drawable.ic_unlike;
+            if (doLike)
+            {
+                titleId = R.string.like;
+                iconId = R.drawable.ic_like;
+            }
+            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId, fragment.getString(titleId),
+                    null, parentFolder, selectedNodes.size()).show(fragment.getActivity().getFragmentManager(),
+                    OperationWaitingDialogFragment.TAG);
+        }
+    }
+    
+    public static void download(Activity activity, Document doc)
+    {
+        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        group.enqueue(new DownloadRequest(null, doc));
+        OperationManager.getInstance(activity).enqueue(group);
+    }
+
+    public void download()
+    {
+        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        for (Document doc : selectedDocument)
+        {
+            group.enqueue(new DownloadRequest(parentFolder, doc));
+        }
+        OperationManager.getInstance(activity).enqueue(group);
+    }
+
+    public static void delete(final Activity activity, final Fragment f, Node node)
+    {
+        List<Node> nodes = new ArrayList<Node>();
+        nodes.add(node);
+        delete(activity, f, nodes);
+    }
+
+    public static void delete(final Activity activity, final Fragment f, final List<Node> nodes)
+    {
+        Folder tmpParent = null;
+        if (f instanceof ChildrenBrowserFragment)
+        {
+            tmpParent = ((ChildrenBrowserFragment) f).getParent();
+        }
+        else if (f instanceof DetailsFragment)
+        {
+            tmpParent = ((DetailsFragment) f).getParentNode();
+        }
+        final Folder parent = tmpParent;
+
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         builder.setTitle(R.string.delete);
-        builder.setMessage(String.format(activity.getResources().getString(R.string.delete_description),node.getName()));
+        String nodeDescription = nodes.size() + "";
+        if (nodes.size() == 1)
+        {
+            nodeDescription = nodes.get(0).getName();
+        }
+        String description = String.format(
+                activity.getResources().getQuantityString(R.plurals.delete_items, nodes.size()), nodeDescription);
+        builder.setMessage(description);
         builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                DeleteLoaderCallback up = new DeleteLoaderCallback(SessionUtils.getSession(activity), activity, node);
-                up.setOnDeleteListener(new OnNodeDeleteListener()
+                OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+
+                if (nodes.size() == 1)
                 {
-                    @Override
-                    public void afterDelete(Node node)
+                    group.enqueue(new DeleteNodeRequest(parent, nodes.get(0))
+                            .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
+                }
+                else
+                {
+                    for (Node node : nodes)
                     {
-                        Bundle b = new Bundle();
-                        b.putString(PublicIntent.EXTRA_NODE, node.getIdentifier());
-                        ActionManager.actionRefresh(f, IntentIntegrator.CATEGORY_REFRESH_DELETE,
-                                PublicIntent.NODE_TYPE, b);
+                        group.enqueue(new DeleteNodeRequest(parent, node)
+                                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
                     }
 
-                    @Override
-                    public void beforeDelete(Node arg0)
+                    if (f instanceof ChildrenBrowserFragment)
                     {
-
+                        OperationWaitingDialogFragment.newInstance(DeleteNodeRequest.TYPE_ID, R.drawable.ic_delete,
+                                f.getString(R.string.delete), null, parent, nodes.size()).show(
+                                f.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
                     }
+                }
 
-                    @Override
-                    public void onExeceptionDuringDeletion(Exception arg0)
-                    {
-                        // TODO Auto-generated method stub
-                    }
-                });
-                activity.getLoaderManager().restartLoader(NodeDeleteLoader.ID, null, up);
-                activity.getLoaderManager().getLoader(NodeDeleteLoader.ID).forceLoad();
+                OperationManager.getInstance(activity).enqueue(group);
 
                 dialog.dismiss();
             }
@@ -235,7 +493,7 @@ public class NodeActions implements ActionMode.Callback
         alert.show();
     }
 
-    public static void edit(final Activity activity, final Node node)
+    public static void edit(final Activity activity, final Folder folder, final Node node)
     {
         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
         Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
@@ -246,7 +504,7 @@ public class NodeActions implements ActionMode.Callback
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(node);
+        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(folder, node);
         newFragment.show(ft, UpdateDialogFragment.TAG);
     }
 
@@ -255,110 +513,28 @@ public class NodeActions implements ActionMode.Callback
         ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
     }
 
-    public static void download(final Activity activity, final Node node)
-    {
-        Uri uri = Uri.parse(((AbstractDocumentFolderServiceImpl) SessionUtils.getSession(activity).getServiceRegistry()
-                .getDocumentFolderService()).getDownloadUrl((Document) node));
-
-        File dlFile = getDownloadFile(activity, node);
-        if (dlFile == null)
-        {
-            MessengerManager.showLongToast(activity, activity.getString(R.string.sdinaccessible));
-            return; 
-        }
-
-        DownloadManager manager = (DownloadManager) activity.getSystemService(Activity.DOWNLOAD_SERVICE);
-
-        Request request = new DownloadManager.Request(uri)
-                .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI | DownloadManager.Request.NETWORK_MOBILE)
-                .setAllowedOverRoaming(false).setVisibleInDownloadsUi(false).setTitle(node.getName())
-                .setDescription(node.getDescription())
-                .setDestinationUri(Uri.fromFile(dlFile));
-        
-        if (AndroidVersion.isICSOrAbove()){
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-        } else {
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_ONLY_COMPLETION);
-        }
-
-        AuthenticationProvider auth = ((AbstractAlfrescoSessionImpl) SessionUtils.getSession(activity))
-                .getAuthenticationProvider();
-        Map<String, List<String>> httpHeaders = auth.getHTTPHeaders();
-        if (httpHeaders != null)
-        {
-            for (Map.Entry<String, List<String>> header : httpHeaders.entrySet())
-            {
-                if (header.getValue() != null)
-                {
-                    for (String value : header.getValue())
-                    {
-                        request.addRequestHeader(header.getKey(), value);
-                    }
-                }
-            }
-        }
-        
-        manager.enqueue(request);
-    }
-
     public static File getDownloadFile(final Activity activity, final Node node)
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl(), SessionUtils.getAccount(activity).getUsername());
-            if (folder != null)
-            {
-                return new File(folder, node.getName());
-            }
+            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl(),
+                    SessionUtils.getAccount(activity).getUsername());
+            if (folder != null) { return new File(folder, node.getName()); }
         }
-        
+
         return null;
     }
-    
-    public static class DownloadReceiver extends BroadcastReceiver
+
+    // ///////////////////////////////////////////////////////////////////////////////////
+    // LISTENER
+    // ///////////////////////////////////////////////////////////////////////////////////
+    public interface onFinishModeListerner
     {
-        @Override
-        public void onReceive(final Context context, Intent intent)
-        {
-            DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-            String action = intent.getAction();
-            if (DownloadManager.ACTION_DOWNLOAD_COMPLETE.equals(action))
-            {
-                long downloadId = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, 0);
-                Query query = new Query();
-                query.setFilterById(downloadId);
-                Cursor c = dm.query(query);
-                if (c.moveToFirst())
-                {
-                    int columnIndex = c.getColumnIndex(DownloadManager.COLUMN_STATUS);
-                    if (DownloadManager.STATUS_SUCCESSFUL == c.getInt(columnIndex))
-                    {
-                        Uri filenameUri = Uri.parse(c.getString(c.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI)));
-                        final String filename = filenameUri.getPath();
-                        
-                        //Only if we're currently in a download initiated with Activity present
-                        if (StorageManager.shouldEncryptDecrypt(context, filename))
-                        {
-                            new Thread()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    try
-                                    {
-                                        CipherUtils.encryptFile(context, filename, true);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Log.w(TAG, Log.getStackTraceString(e));
-                                    }
-                                }
-                                
-                            }.start();
-                        }
-                    }
-                }
-            }
-        }
-    };
+        void onFinish();
+    }
+    
+    public void setOnFinishModeListerner(onFinishModeListerner mListener)
+    {
+        this.mListener = mListener;
+    }
 }

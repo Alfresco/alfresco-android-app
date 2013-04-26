@@ -22,6 +22,7 @@ import java.io.File;
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.application.BaseActivity;
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
@@ -111,7 +112,7 @@ public class LocalFileBrowserFragment extends LocalFileExplorerFragment
         Bundle b = getArguments();
         if (b == null)
         {
-            Account acc = ((MainActivity) getActivity()).getAccount();
+            Account acc = ((BaseActivity) getActivity()).getCurrentAccount();
             if (acc != null)
             {
                 File folder = StorageManager.getDownloadFolder(getActivity(), acc.getUrl(), acc.getUsername());

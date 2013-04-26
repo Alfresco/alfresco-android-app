@@ -44,6 +44,8 @@ public interface MenuActionItem
 
     int MENU_REFRESH = 40;
 
+    int MENU_DETAILS = 50;
+
     int MENU_DELETE_FOLDER = 191;
 
     // ///////////////////////////////////////////
@@ -55,11 +57,27 @@ public interface MenuActionItem
 
     int MENU_DOWNLOAD = 120;
 
+    int MENU_DOWNLOAD_ALL = 121;
+
     int MENU_UPDATE = 130;
+
+    int MENU_FAVORITE = 135;
+
+    int MENU_FAVORITE_GROUP = 136;
+
+    int MENU_FAVORITE_GROUP_FAVORITE = 137;
+
+    int MENU_FAVORITE_GROUP_UNFAVORITE = 138;
 
     int MENU_COMMENT = 140;
 
     int MENU_LIKE = 150;
+
+    int MENU_LIKE_GROUP = 151;
+
+    int MENU_LIKE_GROUP_LIKE = 152;
+
+    int MENU_LIKE_GROUP_UNLIKE = 153;
 
     int MENU_EDIT = 160;
 
@@ -68,6 +86,13 @@ public interface MenuActionItem
     int MENU_TAGS = 180;
 
     int MENU_DELETE = 190;
+
+    // ///////////////////////////////////////////
+    // SELECTION
+    // ///////////////////////////////////////////
+    int MENU_SELECT_ALL = 198;
+    
+    int MENU_OPERATIONS = 199;
 
     // ///////////////////////////////////////////
     // Account

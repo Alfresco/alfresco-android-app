@@ -21,6 +21,7 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
@@ -90,7 +91,7 @@ public class PreviewFragment extends BaseFragment
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        RenditionManager renditionManager = SessionUtils.getRenditionManager(getActivity());
+        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;

@@ -17,11 +17,13 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.signup;
 
+import org.alfresco.mobile.android.api.asynchronous.CloudSessionLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.AccountProvider;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
@@ -35,6 +37,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.content.Loader;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -94,10 +97,13 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
         CloudSignupRequest request = results.getData();
         if (request != null && fr instanceof CloudSignupDialogFragment)
         {
-            AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
-                    Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
-                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null, 0) != -1)
+            Uri accountUri = activity.getContentResolver().insert(
+                    AccountProvider.CONTENT_URI,
+                    AccountProvider.createContentValues(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
+                            Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
+                            request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null, 0));
+            
+            if (accountUri != null)
             {
                 mProgressDialog.dismiss();
                 ((CloudSignupDialogFragment) fr).displayAccounts();

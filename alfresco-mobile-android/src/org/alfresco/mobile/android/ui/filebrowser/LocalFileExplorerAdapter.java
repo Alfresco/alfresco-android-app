@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 
 /**
  * Provides access to files and displays them as a view based on
@@ -52,6 +53,12 @@ public class LocalFileExplorerAdapter extends BaseListAdapter<File, GenericViewH
     {
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
+    }
+    
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent)
+    {
+        return getView(position, convertView, parent);
     }
 
     @Override

@@ -29,8 +29,15 @@
     <item name="tag_action" type="id"/>
     
     <item name="site_action" type="id"/>
+    <item name="node_action" type="id"/>
     
+    <item name="operation_id" type="id"/>
+    <item name="operation_status" type="id"/>
+    
+     <!-- Settings -->
     <string name="passcode_enable_key">TurnPasscodeKey</string>
+    <string name="favorite_sync">favoriteSync</string>
+    
     
     <!-- HELP -->
     <string name="help_path">Help/</string>

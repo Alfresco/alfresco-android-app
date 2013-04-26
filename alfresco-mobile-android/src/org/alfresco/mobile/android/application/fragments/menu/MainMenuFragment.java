@@ -17,22 +17,31 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
-import java.util.List;
-
 import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountAdapter;
+import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountSchema;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.LoaderManager.LoaderCallbacks;
+import android.content.CursorLoader;
+import android.content.Intent;
+import android.content.Loader;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,37 +49,49 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Spinner;
 
-public class MainMenuFragment extends Fragment implements OnItemSelectedListener
+public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor>, OnItemSelectedListener
 {
-    private View view = null;
+    private View rootView = null;
 
-    private AccountAdapter adapter = null;
+    private AccountCursorAdapter cursorAdapter;
 
-    private List<Account> accounts;
+    private Spinner spinnerAccount;
 
-    private int accountIndex = 0;
+    private Cursor accountCursor;
+
+    private int accountIndex;
 
     public static final String TAG = "MainMenuFragment";
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (container == null)
-        {
-            view = inflater.inflate(R.layout.app_main_menu, container, false);
-        }
-        view = inflater.inflate(R.layout.app_main_menu, container, false);
+        rootView = inflater.inflate(R.layout.app_main_menu, container, false);
 
-        return view;
+        spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
+        spinnerAccount.setOnItemSelectedListener(this);
+
+        return rootView;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
+
+        if (accountCursor != null)
+        {
+            accountCursor.close();
+            accountCursor = null;
+        }
+        cursorAdapter = new AccountCursorAdapter(getActivity(), null, R.layout.app_account_list_row, null);
+        spinnerAccount.setAdapter(cursorAdapter);
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -89,60 +110,7 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
             ((MainActivity) getActivity()).clearScreen();
         }
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-        accounts = ((MainActivity) getActivity()).getAccounts();
-        refreshAccounts();
-
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-    }
-
-    public void setAccounts(List<Account> accounts)
-    {
-        this.accounts = accounts;
-        if (isAdded())
-        {
-            refreshAccounts();
-        }
-    }
-
-    public void refreshAccounts()
-    {
-        if (accounts == null) { return; }
-
-        if (adapter == null)
-        {
-            adapter = new AccountAdapter(getActivity(), R.layout.app_account_list_row, accounts);
-        }
-        else
-        {
-            adapter.refreshData(accounts);
-        }
-
-        Spinner s = (Spinner) view.findViewById(R.id.accounts_spinner);
-        s.setAdapter(adapter);
-        s.setOnItemSelectedListener(this);
-
-        Account currentAccount = SessionUtils.getAccount(getActivity());
-        if (currentAccount == null)
-        {
-            currentAccount = AccountsPreferences.getDefaultAccount(getActivity(), accounts);
-        }
-        if (currentAccount == null)
-        {
-            accountIndex = 0;
-        }
-        else
-        {
-            for (int i = 0; i < accounts.size(); i++)
-            {
-                if (accounts.get(i).getId() == currentAccount.getId())
-                {
-                    accountIndex = i;
-                    break;
-                }
-            }
-        }
-
-        s.setSelection(accountIndex);
     }
 
     @Override
@@ -155,33 +123,113 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // DPUBLIC
+    // ///////////////////////////////////////////////////////////////////////////
+    public void refreshData()
+    {
+        refresh();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // DROPDOWN EVENTS
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
     {
-        if (position < accounts.size())
+        Cursor cursor = (Cursor) parentView.getItemAtPosition(position);
+        int accountId = cursor.getInt(AccountSchema.COLUMN_ID_ID);
+
+        switch (accountId)
         {
-            Account selectedAccount = accounts.get(position);
-            Account currentAccount = SessionUtils.getAccount(getActivity());
-            if (currentAccount != null && selectedAccount != null && currentAccount.getId() != selectedAccount.getId())
+            case AccountCursorAdapter.NETWORK_ITEM:
+                ((MainActivity) getActivity()).displayNetworks();
+                hideSlidingMenu(false);
+                break;
+            case AccountCursorAdapter.MANAGE_ITEM:
+                ((MainActivity) getActivity()).displayAccounts();
+                hideSlidingMenu(false);
+                break;
+
+            default:
+                Account currentAccount = SessionUtils.getAccount(getActivity());
+                if (currentAccount != null && cursor.getCount() > 1
+                        && currentAccount.getId() != cursor.getLong(AccountSchema.COLUMN_ID_ID))
+                {
+                    hideSlidingMenu(true);
+
+                    // Request session loading for the selected account.
+                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
+                            new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT).putExtra(
+                                    IntentIntegrator.EXTRA_ACCOUNT_ID, cursor.getLong(AccountSchema.COLUMN_ID_ID)));
+
+                    // Update dropdown menu (eventual new items to display)
+                    cursorAdapter.swapCursor(AccountCursorAdapter.createMergeCursor(getActivity(), accountCursor));
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> arg0)
+    {
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CALLBACKS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args)
+    {
+        Uri baseUri = AccountProvider.CONTENT_URI;
+        return new CursorLoader(getActivity(), baseUri, AccountSchema.COLUMN_ALL, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
+    {
+        accountCursor = cursor;
+        cursorAdapter.changeCursor(AccountCursorAdapter.createMergeCursor(getActivity(), accountCursor));
+        if (cursor.getCount() > 0)
+        {
+            refresh();
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> arg0)
+    {
+        cursorAdapter.changeCursor(null);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ///////////////////////////////////////////////////////////////////////////
+    private void refresh()
+    {
+        if (accountCursor == null) { return; }
+        if (accountCursor.isClosed()) { return; }
+
+        Account currentAccount = SessionUtils.getAccount(getActivity());
+        if (currentAccount == null)
+        {
+            currentAccount = AccountsPreferences.getDefaultAccount(getActivity());
+        }
+
+        if (currentAccount == null) { return; }
+
+        for (int i = 0; i < accountCursor.getCount(); i++)
+        {
+            accountCursor.moveToPosition(i);
+            if (accountCursor.getLong(AccountSchema.COLUMN_ID_ID) == currentAccount.getId())
             {
-                hideSlidingMenu(true);
-                accountIndex = position;
-                ((MainActivity) getActivity()).loadAccount(selectedAccount);
-                getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                refreshAccounts();
+                accountIndex = accountCursor.getPosition();
+                break;
             }
         }
-        else if (position == accounts.size())
-        {
-            // Manage accounts item selected...
-            ((MainActivity) getActivity()).displayAccounts();
-            hideSlidingMenu(false);
-        }
-        else if (position == accounts.size() + 1)
-        {
-            ((MainActivity) getActivity()).displayNetworks();
-            hideSlidingMenu(false);
-        }
+
+        Log.d(TAG, getTag() + " : " + accountIndex);
+        spinnerAccount.setSelection(accountIndex);
     }
 
     private void hideSlidingMenu(boolean goHome)
@@ -197,8 +245,4 @@ public class MainMenuFragment extends Fragment implements OnItemSelectedListener
         }
     }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0)
-    {
-    }
 }

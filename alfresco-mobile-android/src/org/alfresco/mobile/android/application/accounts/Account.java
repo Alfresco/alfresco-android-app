@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.accounts;
 import java.io.Serializable;
 
 import android.content.Context;
+import android.database.Cursor;
 
 public class Account implements Serializable
 {
@@ -74,7 +75,7 @@ public class Account implements Serializable
         this.refreshToken = refreshToken;
         this.isPaidAccount = isPaidAccount;
     }
-
+    
     public String getAccessToken()
     {
         return accessToken;
