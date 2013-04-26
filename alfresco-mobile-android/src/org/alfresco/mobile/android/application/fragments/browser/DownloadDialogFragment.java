@@ -27,6 +27,8 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.editor.TextEditorFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.CipherUtils;
@@ -35,10 +37,12 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -246,7 +250,43 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                         
                         if (edit)
                         {
-                            
+                            try
+                            {
+                                final FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                                
+                                if (CipherUtils.isEncryptionActive(getActivity()))
+                                {
+                                    final File myFile = IOUtils.makeTempFile(contentFile.getFile());
+                                    String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+                                    
+                                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, null,
+                                        null, new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                //Decryption finished
+                                                
+                                                TextEditorFragment fragment = TextEditorFragment.editFile(myFile);
+                                                fragmentTransaction.add(fragment, fragment.TAG);
+                                                fragmentTransaction.commit();
+                                            }
+                                        });
+                                        
+                                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                    fragmentTransaction.commit();
+                                }
+                                else
+                                {
+                                    TextEditorFragment fragment = TextEditorFragment.editFile(contentFile.getFile());
+                                    fragmentTransaction.add(fragment, fragment.TAG);
+                                    fragmentTransaction.commit();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                MessengerManager.showToast(getActivity(), R.string.error_unable_open_file);
+                            }
                         }
                         else
                         {
