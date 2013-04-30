@@ -20,15 +20,15 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.application.BaseActivity;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -40,7 +40,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -180,8 +179,7 @@ public class AccountsFragment extends BaseCursorListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        Uri baseUri = AccountProvider.CONTENT_URI;
-        return new CursorLoader(getActivity(), baseUri, AccountSchema.COLUMN_ALL, null, null, null);
+        return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL, null, null, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

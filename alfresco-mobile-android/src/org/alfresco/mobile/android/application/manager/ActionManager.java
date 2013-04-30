@@ -18,17 +18,19 @@
 package org.alfresco.mobile.android.application.manager;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -45,20 +47,58 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.Html;
+import android.util.Log;
 
 public class ActionManager extends org.alfresco.mobile.android.ui.manager.ActionManager
 {
+
+    public static final String TAG = ActionManager.class.getName();
 
     public static final String REFRESH_EXTRA = "refreshExtra";
 
     public static void actionShareContent(Fragment fr, File myFile)
     {
+        actionSendContent(fr.getActivity(), myFile);
+    }
+
+    public static void actionShareContent(Fragment fr, List<File> files)
+    {
+        if (files.size() == 1)
+        {
+            actionShareContent(fr, files.get(0));
+            return;
+        }
+
+        try
+        {
+            Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            ArrayList<Uri> uris = new ArrayList<Uri>();
+            // convert from paths to Android friendly Parcelable Uri's
+            for (File file : files)
+            {
+                Uri u = Uri.fromFile(file);
+                uris.add(u);
+            }
+            i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+            i.setType(MimeTypeManager.getMIMEType("text/plain"));
+            fr.getActivity().startActivity(Intent.createChooser(i, fr.getActivity().getText(R.string.share_content)));
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_share_content);
+        }
+    }
+
+    public static void actionShareContent(Activity activity, File myFile)
+    {
         try
         {
             String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
-            if (CipherUtils.isEncryptionActive(fr.getActivity()))
+            if (CipherUtils.isEncryptionActive(activity))
             {
-                FragmentTransaction fragmentTransaction = fr.getActivity().getFragmentManager().beginTransaction();
+                FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
                 EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, null,
                         Intent.ACTION_SEND);
                 fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
@@ -66,12 +106,12 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             }
             else
             {
-                actionShareContent(fr, myFile);
+                actionSendContent(activity, myFile);
             }
         }
         catch (Exception e)
         {
-            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
+            MessengerManager.showToast(activity, R.string.error_unable_open_file);
         }
     }
 
@@ -83,7 +123,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             if (CipherUtils.isEncryptionActive(fr.getActivity()))
             {
                 myFile = IOUtils.makeTempFile(myFile);
-                
+
                 FragmentTransaction fragmentTransaction = fr.getActivity().getFragmentManager().beginTransaction();
                 EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, listener,
                         Intent.ACTION_VIEW);
@@ -99,26 +139,6 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         {
             MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
         }
-    }
-
-    /**
-     * Allow to pick file with other apps.
-     * 
-     * @return Activity for Result.
-     */
-    public static void actionRefresh(Fragment f, String refreshCategory, String type, Bundle bundle)
-    {
-        Intent i = new Intent(IntentIntegrator.ACTION_REFRESH);
-        i.addCategory(refreshCategory);
-        if (type != null && type.length() > 0)
-        {
-            i.setType(type);
-        }
-        if (bundle != null)
-        {
-            i.putExtra(REFRESH_EXTRA, bundle);
-        }
-        f.startActivity(i);
     }
 
     public static void actionDisplayDialog(Context context, Bundle bundle)
@@ -207,8 +227,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     }
 
     /**
-     * Open Play Store application or its web version if no play store
-     * available.
+     * Open Play Store application or its web version if no play store available.
      * 
      * @param c : Android Context
      */
@@ -253,8 +272,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(activity, R.string.error_unable_share_content);
         }
     }
-    
-    
+
     /**
      * Allow to pick file with other apps.
      * 
@@ -262,20 +280,26 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
      */
     public static void actionPickFile(Fragment f, int requestCode)
     {
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.setType("*/*");
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        //i.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
+        try
+        {
+            Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+            i.setType("*/*");
+            i.addCategory(Intent.CATEGORY_OPENABLE);
+            // i.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+            f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(f.getActivity(), R.string.error_unable_open_file);
+        }
     }
-    
+
     public static void actionDisplayOperations(Activity activity)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
         activity.startActivity(i);
     }
-    
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -289,7 +313,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
         LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
-    
+
     public static void reloadAccount(Activity activity, Account account)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
@@ -299,7 +323,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
         LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
-    
+
     public static void loadAccount(Activity activity, Account account)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT);
@@ -309,7 +333,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
         LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
-    
+
     public static void loadAccount(Activity activity, Account account, OAuthData data)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT);
@@ -327,5 +351,51 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         i.putExtra(IntentIntegrator.EXTRA_CREATE_REQUEST, request);
         LocalBroadcastManager.getInstance(activity).sendBroadcast(i);
     }
-    
+
+    public static boolean createMailWithAttachment(Fragment fr, String subject, String content, Uri attachment,
+            int requestCode)
+    {
+        try
+        {
+            if (CipherUtils.isEncrypted(fr.getActivity(), attachment.getPath(), true)
+                    && CipherUtils.decryptFile(fr.getActivity(), attachment.getPath()))
+            {
+                PreferenceManager.getDefaultSharedPreferences(fr.getActivity()).edit()
+                        .putString(GeneralPreferences.REQUIRES_ENCRYPT, attachment.getPath()).commit();
+            }
+
+            Intent i = new Intent(Intent.ACTION_SEND);
+            i.putExtra(Intent.EXTRA_SUBJECT, subject);
+            i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
+            i.putExtra(Intent.EXTRA_STREAM, attachment);
+            i.setType("text/plain");
+            fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
+
+            return true;
+        }
+        catch (IOException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.decryption_failed);
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
+
+        return false;
+    }
+
+    public static boolean createMailWithLink(Context c, String subject, String content, Uri link)
+    {
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.putExtra(Intent.EXTRA_SUBJECT, subject);
+        i.putExtra(Intent.EXTRA_TEXT, content);
+        i.setType("text/plain");
+        c.startActivity(Intent.createChooser(i, String.format(c.getString(R.string.send_email), link.toString())));
+
+        return true;
+    }
+
 }

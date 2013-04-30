@@ -20,19 +20,13 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
 import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
-import org.alfresco.mobile.android.application.integration.node.download.DownloadRequest;
-import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.DialogFragment;
-import android.app.LoaderManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;

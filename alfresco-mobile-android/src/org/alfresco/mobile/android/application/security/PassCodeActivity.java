@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.security;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.imports.ImportFormFragment;
+import org.alfresco.mobile.android.application.fragments.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 
 import android.app.Activity;
@@ -42,7 +42,7 @@ public class PassCodeActivity extends Activity
         setContentView(R.layout.app_left_panel);
 
         PassCodeDialogFragment f = PassCodeDialogFragment.requestPasscode();
-        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), ImportFormFragment.TAG, false,
+        FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), UploadFormFragment.TAG, false,
                 false);
     }
 

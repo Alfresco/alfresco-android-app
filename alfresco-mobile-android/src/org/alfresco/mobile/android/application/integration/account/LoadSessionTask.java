@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationTask;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -53,7 +53,7 @@ public class LoadSessionTask extends AbstractOperationTask<AlfrescoSession>
         try
         {
             // Retrieve informations about the account.
-            account = AccountProvider.retrieveAccount(context, accountId);
+            account = AccountManager.retrieveAccount(context, accountId);
             if (listener != null)
             {
                 listener.onPreExecute(this);

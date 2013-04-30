@@ -24,12 +24,10 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
 import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesRequest;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
 
@@ -37,7 +35,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 

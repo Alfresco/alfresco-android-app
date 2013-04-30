@@ -42,45 +42,43 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
-import android.webkit.WebView.FindListener;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
-
-public class TextEditorFragment extends DialogFragment implements OnClickListener, LoaderCallbacks<LoaderResult<String>>, OnKeyListener, OnEditorActionListener
+public class TextEditorFragment extends DialogFragment implements OnClickListener,
+        LoaderCallbacks<LoaderResult<String>>, OnKeyListener, OnEditorActionListener
 {
     public static final String TAG = "TextEditorFragment";
-   
+
     protected List<File> selectedItems = new ArrayList<File>(1);
 
     private static final String PARAM_FILE = "file";
-    
+
     private String title;
 
     private int loaderId = 0;
-    
+
     private File currentFile = null;
 
     private boolean tempFile = false;
-    
+
     private View v;
-    
+
     boolean changed = false;
-    
-    
+
     public TextEditorFragment()
     {
         loaderId = TextEditorLoader.ID;
     }
-    
+
     public static TextEditorFragment editFile(String filePath)
     {
         File myFile = new File(filePath);
-        return editFile (myFile);
+        return editFile(myFile);
     }
-    
+
     public static TextEditorFragment editFile(File myFile)
     {
         if (myFile.length() < Integer.MAX_VALUE)
@@ -94,7 +92,7 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
         else
             return null;
     }
-    
+
     @Override
     public void onStart()
     {
@@ -108,8 +106,8 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
             getActivity().getActionBar().show();
             getActivity().setTitle(title);
         }
-        
-        loaderId = TextEditorLoader.ID + ((File)getArguments().getSerializable(PARAM_FILE)).getPath().hashCode();
+
+        loaderId = TextEditorLoader.ID + ((File) getArguments().getSerializable(PARAM_FILE)).getPath().hashCode();
         Loader<Object> loader = getActivity().getLoaderManager().getLoader(loaderId);
         if (loader == null)
         {
@@ -120,59 +118,58 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
         {
             getActivity().getLoaderManager().initLoader(loaderId, getArguments(), this);
         }
-        
+
         super.onStart();
     }
-    
+
     private void retrieveTitle()
     {
         Bundle b = getArguments();
-        
+
         currentFile = (File) getArguments().getSerializable(PARAM_FILE);
-        
+
         if (StorageManager.isTempFile(getActivity(), currentFile))
         {
             title = getString(R.string.new_file);
-            tempFile  = true;
+            tempFile = true;
         }
         else
             title = currentFile.getName();
     }
-    
-    
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
-    { 
+    {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         v = inflater.inflate(R.layout.app_text_editor, null);
-        
-        //Set to a decent size for a file browser, using minimum Android 'NORMAL' screen size as smallest possible.
+
+        // Set to a decent size for a file browser, using minimum Android 'NORMAL' screen size as smallest possible.
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         v.setMinimumHeight(size.y);
         v.setMinimumWidth(size.x);
-        
+
         setRetainInstance(true);
-        
+
         retrieveTitle();
-        
+
         EditText view = (EditText) v.findViewById(R.id.texteditor);
         view.setOnKeyListener(this);
         view.setOnEditorActionListener(this);
-        
+
         return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
     }
-    
+
     @Override
     public void onClick(View clickView)
     {
         Bundle args = getArguments();
-        
+
         switch (clickView.getId())
         {
-            case R.id.savebutton: 
-                
+            case R.id.savebutton:
+
                 TextView view = (TextView) v.findViewById(R.id.texteditor);
                 OutputStream sourceFile;
                 try
@@ -191,14 +188,14 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-                
+
                 break;
-                
-             default:
-                 break;
+
+            default:
+                break;
         }
     }
-    
+
     @Override
     public Loader<LoaderResult<String>> onCreateLoader(int id, Bundle ba)
     {
@@ -209,11 +206,11 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
         {
             currentFile = (File) bundle.getSerializable(PARAM_FILE);
         }
-        
+
         Loader<LoaderResult<String>> loader = null;
-        
+
         loader = new TextEditorLoader(this, currentFile);
-        
+
         return loader;
     }
 
@@ -221,7 +218,7 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
     public void onLoadFinished(Loader<LoaderResult<String>> loader, LoaderResult<String> results)
     {
         TextView view = (TextView) v.findViewById(R.id.texteditor);
-        
+
         try
         {
             view.setText(results.getData());
@@ -240,16 +237,16 @@ public class TextEditorFragment extends DialogFragment implements OnClickListene
     @Override
     public boolean onKey(View v, int keyCode, KeyEvent event)
     {
-        //TODO set changed = true appropriately
-        
+        // TODO set changed = true appropriately
+
         return false;
     }
 
     @Override
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
     {
-        //TODO set changed = true appropriately
-                
+        // TODO set changed = true appropriately
+
         return false;
     }
 }

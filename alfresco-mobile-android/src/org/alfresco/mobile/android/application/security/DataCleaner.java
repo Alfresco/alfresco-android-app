@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -58,7 +58,7 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
             editor.commit();
 
             // Remove All Accounts
-            activity.getContentResolver().delete(AccountProvider.CONTENT_URI, null, null);
+            activity.getContentResolver().delete(AccountManager.CONTENT_URI, null, null);
 
             // Find folders
             File cache = activity.getCacheDir();

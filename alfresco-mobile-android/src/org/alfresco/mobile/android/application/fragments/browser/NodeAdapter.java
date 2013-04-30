@@ -26,18 +26,13 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -45,14 +40,7 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.content.Context;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnDismissListener;
-import android.widget.PopupMenu.OnMenuItemClickListener;
 
 /**
  * Provides access to node (documents or folders) and displays them as a view
@@ -189,7 +177,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
     protected void updateTopText(GenericViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
-        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
         {
             vh.topText.setEnabled(false);
         }
@@ -212,7 +200,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
         }
-        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
         {
             // Disable document : grey font color instead of black
             vh.bottomText.setEnabled(false);

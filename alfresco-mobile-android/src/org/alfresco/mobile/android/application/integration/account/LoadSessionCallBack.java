@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
@@ -91,30 +91,26 @@ public class LoadSessionCallBack extends AbstractOperationCallback<AlfrescoSessi
     {
         LoadSessionTask loadingTask = ((LoadSessionTask) task);
         Account acc = loadingTask.getAccount();
-        
-        //Save Session for reuse purpose
+
+        // Save Session for reuse purpose
         if (session != null)
         {
             ApplicationManager.getInstance(getBaseContext()).saveSession(acc, session);
         }
-        
-        //For cloud session, try to save the latest version of oauthdata
+
+        // For cloud session, try to save the latest version of oauthdata
         if (loadingTask.getOAuthData() == null) return;
-        
+
         switch (loadingTask.getAccount().getTypeId())
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-                int updated = context.getContentResolver().update(
-                        AccountProvider.getUri(acc.getId()),
-                        AccountProvider.createContentValues(acc.getDescription(), acc.getUrl(), acc.getUsername(), acc
-                                .getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
-                                loadingTask.getOAuthData().getAccessToken(), loadingTask.getOAuthData()
-                                        .getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0), null, null);
+                acc = AccountManager.update(context, acc.getId(), acc.getDescription(), acc.getUrl(),
+                        acc.getUsername(), acc.getPassword(), acc.getRepositoryId(),
+                        Integer.valueOf((int) acc.getTypeId()), null, loadingTask.getOAuthData().getAccessToken(),
+                        loadingTask.getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
 
-                acc = AccountProvider.retrieveAccount(context, acc.getId());
-
-                if (updated != 1)
+                if (acc == null)
                 {
                     Log.e(TAG, "Error during saving oauth data");
                 }

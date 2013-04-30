@@ -23,8 +23,10 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.manager.UpgradeManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -53,6 +55,9 @@ public class ApplicationManager
     private RenditionManager renditionManager;
 
     private AccountManager accountManager;
+    
+    private UpgradeManager upgradeManager;
+
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -61,6 +66,7 @@ public class ApplicationManager
     {
         appContext = applicationContext;
         databaseManager = new DatabaseManager(appContext);
+        upgradeManager = new UpgradeManager(appContext);
     }
 
     public static ApplicationManager getInstance(Context context)
@@ -113,7 +119,11 @@ public class ApplicationManager
     {
         return accountManager;
     }
-
+    
+    public UpgradeManager getUpgradeManager()
+    {
+        return upgradeManager;
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT / SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////

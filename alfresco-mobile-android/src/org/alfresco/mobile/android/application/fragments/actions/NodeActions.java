@@ -25,26 +25,26 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
+import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.node.delete.DeleteNodeRequest;
 import org.alfresco.mobile.android.application.integration.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -406,7 +406,7 @@ public class NodeActions implements ActionMode.Callback
     public static void download(Activity activity, Document doc)
     {
         OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
-        group.enqueue(new DownloadRequest(null, doc));
+        group.enqueue(new DownloadRequest(doc));
         OperationManager.getInstance(activity).enqueue(group);
     }
 
@@ -517,8 +517,7 @@ public class NodeActions implements ActionMode.Callback
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity).getUrl(),
-                    SessionUtils.getAccount(activity).getUsername());
+            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
             if (folder != null) { return new File(folder, node.getName()); }
         }
 

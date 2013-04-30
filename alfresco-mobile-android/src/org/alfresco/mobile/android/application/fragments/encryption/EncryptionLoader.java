@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.app.Fragment;

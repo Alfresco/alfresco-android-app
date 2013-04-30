@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuthHelper;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 
 import android.content.Context;
@@ -52,7 +52,7 @@ public class LoadSessionHelper
 
     public LoadSessionHelper(Context context, long accountId)
     {
-        this(context, AccountProvider.retrieveAccount(context, accountId), null);
+        this(context, AccountManager.retrieveAccount(context, accountId), null);
     }
     
     public LoadSessionHelper(Context context, Account account, OAuthData data)
@@ -120,7 +120,7 @@ public class LoadSessionHelper
     {
         if (account == null)
         {
-            account = AccountProvider.retrieveAccount(context, accountId);
+            account = AccountManager.retrieveAccount(context, accountId);
         }
         return account;
     }

@@ -20,24 +20,15 @@ package org.alfresco.mobile.android.application.fragments.editor;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.lang.ref.WeakReference;
-import java.util.Scanner;
-import java.util.Vector;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractBaseLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
-import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.app.Fragment;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.TextView;
 
 /**
  * Loader responsible to do text file loading
@@ -52,11 +43,11 @@ public class TextEditorLoader extends AbstractBaseLoader<LoaderResult<String>>
     private static final String TAG = "TextEditorLoader";
 
     private File file;
-    
+
     public TextEditorLoader(Fragment fr, File file)
     {
         super(fr.getActivity());
-        
+
         this.file = file;
     }
 
@@ -65,24 +56,35 @@ public class TextEditorLoader extends AbstractBaseLoader<LoaderResult<String>>
     {
         String s = new String();
         LoaderResult<String> result = new LoaderResult<String>();
-        //long fileLen = file.length();
-        //if (fileLen < Integer.MAX_VALUE)
+
+        try
         {
-            try
-            {
-                s = new Scanner(file, "UTF-8" ).useDelimiter("\\A").next();
-            }
-            catch (Exception e)
-            {
-                result.setException(e);
-                Log.e(TAG, Log.getStackTraceString(e));
-            }
-            
-            result.setData(s);
+            s = readFile(file.getPath());
         }
-        //else
-        //    result.setException(new Exception("Out of memory"));
-        
+        catch (Exception e)
+        {
+            result.setException(e);
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+
+        result.setData(s);
+
         return result;
+    }
+
+    private static String readFile(String path) throws IOException
+    {
+        FileInputStream stream = new FileInputStream(new File(path));
+        try
+        {
+            FileChannel fc = stream.getChannel();
+            MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
+            /* Instead of using default, pass in a decoder. */
+            return Charset.defaultCharset().decode(bb).toString();
+        }
+        finally
+        {
+            stream.close();
+        }
     }
 }

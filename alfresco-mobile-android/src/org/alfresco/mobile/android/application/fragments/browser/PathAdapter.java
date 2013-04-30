@@ -42,7 +42,6 @@ public class PathAdapter extends ArrayAdapter<String>
     {
         super(context, textViewResourceId, objects);
         this.account = SessionUtils.getAccount(context);
-        // TODO Auto-generated constructor stub
     }
 
     @Override

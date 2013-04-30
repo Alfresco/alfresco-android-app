@@ -17,21 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.integration.node.download;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationRequestImpl;
 import org.alfresco.mobile.android.application.integration.node.NodeOperationRequest;
-import org.alfresco.mobile.android.application.integration.utils.MapUtil;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -49,6 +40,15 @@ public class DownloadRequest extends NodeOperationRequest
     {
         super(parentIdentifier, documentIdentifier);
         requestTypeId = TYPE_ID;
+    }
+    
+    public DownloadRequest(Document document)
+    {
+        this(null, document.getIdentifier());
+        this.contentStreamLength = document.getContentStreamLength();
+        
+        setNotificationTitle(document.getName());
+        setMimeType(document.getName());
     }
 
     public DownloadRequest(Folder folder, Document document)

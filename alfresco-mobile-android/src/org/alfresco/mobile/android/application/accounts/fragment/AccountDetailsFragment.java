@@ -22,20 +22,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.application.ApplicationManager;
-import org.alfresco.mobile.android.application.BaseActivity;
-import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoadeCallback;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -48,7 +48,6 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -115,7 +114,7 @@ public class AccountDetailsFragment extends BaseFragment
     {
         if (container == null) { return null; }
 
-        acc = AccountProvider.retrieveAccount(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID));
+        acc = AccountManager.retrieveAccount(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID));
 
         if (acc.getActivation() == null)
         {
@@ -426,20 +425,16 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 isEditable = false;
                 retrieveFormValues();
-
-                ContentValues values = AccountProvider.createContentValues(description,
+                
+                acc = AccountManager.update(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID), description,
                         (url != null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(),
                         acc.getIsPaidAccount() ? 1 : 0);
 
-                getActivity().getContentResolver().update(
-                        AccountProvider.getUri(getArguments().getLong(ARGUMENT_ACCOUNT_ID)), values, null, null);
-                acc = AccountProvider.retrieveAccount(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID));
                 initValues(vRoot);
                 vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                 vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                 v.setVisibility(View.GONE);
-
             }
         });
 
@@ -470,8 +465,8 @@ public class AccountDetailsFragment extends BaseFragment
         if (prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
             Cursor cursor = getActivity().getContentResolver().query(
-                    AccountProvider.CONTENT_URI,
-                    AccountSchema.COLUMN_ALL,
+                    AccountManager.CONTENT_URI,
+                    AccountManager.COLUMN_ALL,
                     AccountSchema.COLUMN_ID + "!=" + acc.getId() + " AND " + AccountSchema.COLUMN_IS_PAID_ACCOUNT
                             + " = 1", null, null);
             if (cursor.getCount() == 0)
@@ -554,14 +549,14 @@ public class AccountDetailsFragment extends BaseFragment
     // TODO move to mainActivity + broadcast !
     private void deleteAccount()
     {
-        getActivity().getContentResolver().delete(AccountProvider.getUri(acc.getId()), null, null);
+        getActivity().getContentResolver().delete(AccountManager.getUri(acc.getId()), null, null);
         
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED));
 
         // In case where currentAccount is the one deleted.
         ApplicationManager.getInstance(getActivity()).removeAccount(acc.getId());
 
-        Cursor cursor = getActivity().getContentResolver().query(AccountProvider.CONTENT_URI, AccountSchema.COLUMN_ALL,
+        Cursor cursor = getActivity().getContentResolver().query(AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL,
                 null, null, null);
         if (cursor.getCount() > 0)
         {
