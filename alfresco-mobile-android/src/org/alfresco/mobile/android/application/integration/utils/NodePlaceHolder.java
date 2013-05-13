@@ -58,8 +58,8 @@ public class NodePlaceHolder implements Node
 
     public long getLength()
     {
-        if (getPropertyValue(SIZEINBYTES) == null) { return -1; }
-        return getPropertyValue(SIZEINBYTES);
+        if (getPropertyValue(SIZEINBYTES) == null) { return (long) -1; }
+        return (Long) getPropertyValue(SIZEINBYTES);
     }
     
     public NodePlaceHolder setProgress(long progress){
@@ -69,8 +69,8 @@ public class NodePlaceHolder implements Node
 
     public long getProgress()
     {
-        if (getPropertyValue(PROGRESS) == null) { return -1; }
-        return getPropertyValue(PROGRESS);
+        if (getPropertyValue(PROGRESS) == null) { return (long) -1; }
+        return (Long) getPropertyValue(PROGRESS);
     }
 
     @Override
