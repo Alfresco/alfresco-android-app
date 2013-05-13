@@ -17,14 +17,22 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.browser;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
+import org.alfresco.mobile.android.api.utils.NodeComparator;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -40,35 +48,136 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
+public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
 {
-    private List<Node> selectedItems;
+    protected List<Node> originalNodes;
+
+    protected List<Node> selectedItems;
+
+    protected HashMap<String, Node> nodeNameIndexer = new HashMap<String, Node>();
 
     private Boolean activateThumbnail = Boolean.FALSE;
 
     private RenditionManager renditionManager;
 
-    private int mode;
+    protected int mode;
 
-    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
-            List<Node> selectedItems, int mode)
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, Folder parentFolder, List<Node> selectedItems,
+            int mode)
     {
         super(context, textViewResourceId, listItems);
+        originalNodes = listItems;
         this.selectedItems = selectedItems;
-        this.renditionManager = SessionUtils.getRenditionManager(context);
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
+        this.mode = mode;
+    }
+    
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
+            int mode)
+    {
+        super(context, textViewResourceId, listItems);
+        originalNodes = listItems;
+        this.selectedItems = selectedItems;
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.mode = mode;
     }
 
-    public NodeAdapter(Context context, int textViewResourceId, List<Node> listItems)
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
     }
+
+    // /////////////////////////////////////////////////////////////
+    // CRUD LIST
+    // ////////////////////////////////////////////////////////////
+    @Override
+    public void clear()
+    {
+        nodeNameIndexer.clear();
+        super.clear();
+    }
+
+    @Override
+    public void add(Node node)
+    {
+        if (node != null)
+        {
+            nodeNameIndexer.put(node.getName(), node);
+        }
+        super.add(node);
+    }
+
+    @Override
+    public void addAll(Collection<? extends Node> collection)
+    {
+        Node objects[] = (Node[]) collection.toArray(new Node[0]);
+
+        int size = objects.length;
+        for (int i = 0; i < size; i++)
+        {
+            add(objects[i]);
+        }
+    }
+
+    public synchronized void replaceNode(Node node)
+    {
+        if (nodeNameIndexer.containsKey(node.getName()))
+        {
+            int position = getPosition(nodeNameIndexer.get(node.getName()));
+            originalNodes.remove(position);
+            originalNodes.add(node);
+        }
+        else
+        {
+            originalNodes.add(node);
+        }
+
+        originalNodes.removeAll(Collections.singleton(null));
+        Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
+
+        List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
+        clear();
+        addAll(tmpNodes);
+    }
+
+    public synchronized void remove(String nodeName)
+    {
+        if (nodeNameIndexer.containsKey(nodeName))
+        {
+            int position = getPosition(nodeNameIndexer.get(nodeName));
+            originalNodes.remove(position);
+            List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
+            clear();
+            addAll(tmpNodes);
+        }
+    }
+
+    public List<Node> getNodes()
+    {
+        return originalNodes;
+    }
+
+    public boolean hasNode(String indexValue)
+    {
+        return nodeNameIndexer.containsKey(indexValue);
+    }
+
+    public Node getNode(String indexValue)
+    {
+        int position = getPosition(nodeNameIndexer.get(indexValue));
+        return originalNodes.get(position);
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // ITEM LINE
+    // ////////////////////////////////////////////////////////////
 
     @Override
     protected void updateTopText(GenericViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
-        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
         {
             vh.topText.setEnabled(false);
         }
@@ -82,8 +191,7 @@ public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
     protected void updateBottomText(GenericViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        if (selectedItems != null && selectedItems.size() == 1
-                && selectedItems.get(0).getIdentifier().equals(item.getIdentifier()))
+        if (selectedItems != null && selectedItems.contains(item))
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
                     getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
@@ -92,7 +200,7 @@ public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
         }
-        if (item.isDocument() && mode == ChildrenBrowserFragment.MODE_IMPORT)
+        if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
         {
             // Disable document : grey font color instead of black
             vh.bottomText.setEnabled(false);
@@ -106,6 +214,7 @@ public class NodeAdapter  extends BaseListAdapter<Node, GenericViewHolder>
     private String createContentBottomText(Context context, Node node)
     {
         String s = "";
+
         if (node.getCreatedAt() != null)
         {
             s = formatDate(context, node.getCreatedAt().getTime());

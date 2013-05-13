@@ -21,12 +21,11 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -94,10 +93,11 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
         CloudSignupRequest request = results.getData();
         if (request != null && fr instanceof CloudSignupDialogFragment)
         {
-            AccountDAO serverDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-            if (serverDao.insert(description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
-                    Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
-                    request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null, 0) != -1)
+            Account acc = AccountManager.createAccount(activity, description, AccountSettingsHelper.getSignUpHostname(), emailAddress, password, "",
+                            Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD),
+                            request.getIdentifier() + "?key=" + request.getRegistrationKey(), null, null, 0);
+            
+            if (acc != null)
             {
                 mProgressDialog.dismiss();
                 ((CloudSignupDialogFragment) fr).displayAccounts();

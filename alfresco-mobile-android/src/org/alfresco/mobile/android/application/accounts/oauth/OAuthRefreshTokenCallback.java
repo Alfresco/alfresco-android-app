@@ -23,10 +23,10 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountDAO;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -50,10 +50,13 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
 {
 
     private static final String TAG = OAuthRefreshTokenCallback.class.getName();
-    
+
     private static final String KEY_CLOUD_LOADING_TIME = "cloudLoadingTime";
 
-    /** flag to indicate it's not necessary to keep cloud session creation datetime. */
+    /**
+     * flag to indicate it's not necessary to keep cloud session creation
+     * datetime.
+     */
     private static final long DEFAULT_LOADING_TIME = -1;
 
     /**
@@ -120,21 +123,17 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-                AccountDAO accountDao = new AccountDAO(activity, SessionUtils.getDataBaseManager(activity).getWriteDb());
-                if (accountDao
-                        .update(acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(), acc.getPassword(),
-                                acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null, loader.getData()
-                                        .getAccessToken(), loader.getData().getRefreshToken(),
-                                acc.getIsPaidAccount() ? 1 : 0))
-                {
-                    SessionUtils.setAccount(activity, accountDao.findById(acc.getId()));
-                }
+                acc = AccountManager.update(activity, acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
+                        acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
+                        loader.getData().getAccessToken(), loader.getData().getRefreshToken(),
+                        acc.getIsPaidAccount() ? 1 : 0);
                 break;
             default:
                 break;
         }
+        //TODO FIXME Use broadcast instead
         Intent i = new Intent(activity, MainActivity.class);
-        i.setAction(IntentIntegrator.ACTION_LOAD_SESSION_FINISH);
+        i.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
         activity.startActivity(i);
     }
 
@@ -151,9 +150,10 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         editor.putLong(KEY_CLOUD_LOADING_TIME, new Date().getTime());
         editor.commit();
     }
-    
+
     /**
-     * Utility method to remove the flag when the cloud session has been created.
+     * Utility method to remove the flag when the cloud session has been
+     * created.
      * 
      * @param context
      */
@@ -182,6 +182,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
 
     /**
      * Request if necessary a new refresh token for cloudSession.
+     * 
      * @param alfrescoSession
      * @param activity
      */

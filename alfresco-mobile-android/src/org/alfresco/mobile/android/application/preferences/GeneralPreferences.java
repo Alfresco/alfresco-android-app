@@ -61,8 +61,6 @@ public class GeneralPreferences extends PreferenceFragment
     public static final String PRIVATE_FOLDERS = "privatefolders";
 
     private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
-    
-    public static final String IS_TEMP = "documentTemp";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)

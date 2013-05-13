@@ -74,7 +74,7 @@ public class Account implements Serializable
         this.refreshToken = refreshToken;
         this.isPaidAccount = isPaidAccount;
     }
-
+    
     public String getAccessToken()
     {
         return accessToken;

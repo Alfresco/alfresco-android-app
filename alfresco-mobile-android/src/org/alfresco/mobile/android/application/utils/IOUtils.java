@@ -25,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Vector;
 
+import org.alfresco.mobile.android.application.security.CipherUtils;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -53,14 +55,6 @@ public class IOUtils
 
         if (f.renameTo(newFile)) return newFile;
 
-        return f;
-    }
-    
-    public static File renameTimeStampFile(File parentFolder, File f)
-    {
-        String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss-").format(new Date());
-        File newFile = new File(parentFolder, timeStamp + f.getName());
-        if (f.renameTo(newFile)) return newFile;
         return f;
     }
 
@@ -443,5 +437,14 @@ public class IOUtils
 
             return false;
         }
+    }
+    
+    public static String extractFileExtension(String fileName) {
+        int dotInd = fileName.lastIndexOf('.');
+
+        // if dot is in the first position,
+        // we are dealing with a hidden file rather than an extension
+        return (dotInd > 0 && dotInd < fileName.length()) ? fileName
+                .substring(dotInd + 1) : null;
     }
 }

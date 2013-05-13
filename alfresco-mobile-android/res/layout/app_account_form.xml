@@ -59,7 +59,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/required"
-                    android:inputType="text" >
+                    android:inputType="text"
+                    >
                 </EditText>
             </TableRow>
 
@@ -78,7 +79,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/required"
-                    android:inputType="textPassword" >
+                    android:inputType="textPassword"
+                   >
                 </EditText>
             </TableRow>
 
@@ -97,7 +99,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/account_hostname_hint"
-                    android:inputType="text" >
+                    android:inputType="text"
+                     >
                 </EditText>
             </TableRow>
 
@@ -115,7 +118,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:hint="@string/account_description_hint"
-                    android:inputType="text" >
+                    android:inputType="text"
+                     >
                 </EditText>
             </TableRow>
 
@@ -134,7 +138,8 @@
                     android:id="@+id/repository_https"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right" />
+                    android:layout_gravity="right"
+                    android:checked="true" />
             </TableRow>
         </TableLayout>
 

@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
-import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_FRAGMENT_TAG;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_ACCOUNT;
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_FRAGMENT_TAG;
 import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.PARAM_EDITOR;
 
 import java.io.File;
@@ -29,7 +29,7 @@ import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -84,11 +84,11 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         final ResolveInfo editor = (ResolveInfo) getArguments().get(PARAM_EDITOR);
 
         File f = null;
-        if (LocalFileBrowserFragment.TAG.equals(fragmentTag))
+        if (FileExplorerFragment.TAG.equals(fragmentTag))
         {
             // If creation inside the download area, we store it inside
             // download.
-            f = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(), currentAccount.getUsername());
+            f = StorageManager.getDownloadFolder(getActivity(), currentAccount);
         }
         else
         {
@@ -153,7 +153,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
                 File newFile = new File(folderStorage, fileName);
 
-                if (newFile.exists() && LocalFileBrowserFragment.TAG.equals(fragmentTag))
+                if (newFile.exists() && FileExplorerFragment.TAG.equals(fragmentTag))
                 {
                     // If the file already exist, we prompt a warning message.
                     errorMessage.setVisibility(View.VISIBLE);
@@ -199,10 +199,10 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                             // During Creation on a specific folder.
                             ((ChildrenBrowserFragment) fr).setCreateFile(newFile);
                         }
-                        else if (fr instanceof LocalFileBrowserFragment)
+                        else if (fr instanceof FileExplorerFragment)
                         {
                             // During Creation inside the download folder.
-                            ((LocalFileBrowserFragment) fr).setCreateFile(newFile);
+                            ((FileExplorerFragment) fr).setCreateFile(newFile);
                         }
                         fr.startActivity(intent);
                     }

@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
@@ -113,6 +113,34 @@
                     android:gravity="center" >
 
                     <ImageView
+                        android:id="@+id/action_favorite"
+                        style="@style/details_action_icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@string/favorites_document"
+                        android:src="@drawable/ic_unfavorite_dark" />
+
+                    <ProgressBar
+                        android:id="@+id/favorite_progress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/action_share"
+                    style="@style/details_action_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/like"
+                    android:src="@drawable/ic_share" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <ImageView
                         android:id="@+id/like"
                         style="@style/details_action_icon"
                         android:layout_width="wrap_content"
@@ -128,14 +156,6 @@
                 </FrameLayout>
 
                 <ImageView
-                    android:id="@+id/action_share"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@string/like"
-                    android:src="@drawable/ic_share" />
-
-                <ImageView
                     android:id="@+id/action_geolocation"
                     style="@style/details_action_icon"
                     android:layout_width="wrap_content"
@@ -143,6 +163,16 @@
                     android:contentDescription="@string/geolocation"
                     android:src="@drawable/ic_location"
                     android:visibility="gone" />
+
+                <ImageView
+                    style="@style/details_action_icon"
+                    android:id="@+id/action_edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0"
+                    android:paddingRight="@dimen/button_padding"
+                    android:src="@drawable/ic_edit" />
+
             </LinearLayout>
         </LinearLayout>
 

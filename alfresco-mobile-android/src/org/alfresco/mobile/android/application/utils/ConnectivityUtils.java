@@ -28,7 +28,7 @@ public final class ConnectivityUtils
     {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnectedOrConnecting()) { return true; }
+        if (netInfo != null && netInfo.isConnected()) { return true; }
         return false;
     }
 
@@ -36,7 +36,7 @@ public final class ConnectivityUtils
     {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if (wifiInfo != null && wifiInfo.isConnectedOrConnecting()) { return true; }
+        if (wifiInfo != null && wifiInfo.isConnected()) { return true; }
         return false;
     }
 }

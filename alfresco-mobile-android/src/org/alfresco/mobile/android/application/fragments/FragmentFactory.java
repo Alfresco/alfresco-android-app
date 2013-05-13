@@ -20,10 +20,10 @@ package org.alfresco.mobile.android.application.fragments;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.application.accounts.fragment.AccountFragment;
+import org.alfresco.mobile.android.application.accounts.fragment.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 
@@ -66,9 +66,9 @@ public final class FragmentFactory
             put(ChildrenBrowserFragment.TAG, ChildrenBrowserFragment.class);
             put(ActivitiesFragment.TAG, ActivitiesFragment.class);
             put(MainMenuFragment.TAG, MainMenuFragment.class);
-            put(AccountFragment.TAG, AccountFragment.class);
+            put(AccountsFragment.TAG, AccountsFragment.class);
             put(KeywordSearch.TAG, KeywordSearch.class);
-            put(LocalFileBrowserFragment.TAG, LocalFileBrowserFragment.class);
+            put(FileExplorerFragment.TAG, FileExplorerFragment.class);
 
         }
     };

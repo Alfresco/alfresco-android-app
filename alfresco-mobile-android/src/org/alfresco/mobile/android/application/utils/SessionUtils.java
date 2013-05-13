@@ -18,97 +18,44 @@
 package org.alfresco.mobile.android.application.utils;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.application.AlfrescoApplication;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.database.DatabaseManager;
-import org.alfresco.mobile.android.application.integration.PublicDispatcherActivity;
-import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 
-import android.app.Activity;
 import android.content.Context;
 
 public final class SessionUtils
 {
-    
-    private SessionUtils(){
+    private SessionUtils()
+    {
     }
 
     public static AlfrescoSession getSession(Context c)
     {
-        if (c instanceof PublicDispatcherActivity)
+        if (c instanceof BaseActivity)
         {
-            return ((AlfrescoApplication) c.getApplicationContext()).getImportSession();
+            return ((BaseActivity) c).getCurrentSession();
         }
         else
         {
-            return ((AlfrescoApplication) c.getApplicationContext()).getRepositorySession();
+            return ApplicationManager.getInstance(c).getCurrentSession();
         }
-    }
-
-    public static void setsession(Context c, AlfrescoSession s)
-    {
-        if (c instanceof PublicDispatcherActivity)
-        {
-            ((AlfrescoApplication) c.getApplicationContext()).setImportSession(s);
-        }
-        else
-        {
-            ((AlfrescoApplication) c.getApplicationContext()).setRepositorySession(s);
-        }
-    }
-
-    public static boolean isCloudSession(Context c)
-    {
-        return getSession(c) instanceof CloudSession;
     }
 
     public static Account getAccount(Context c)
     {
-        return ((AlfrescoApplication) c.getApplicationContext()).getAccount();
-    }
-    
-    public static RenditionManager getRenditionManager(Activity c)
-    {
-        if (((AlfrescoApplication) c.getApplicationContext()).geRenditionManager() == null)
+        if (c instanceof BaseActivity)
         {
-            SessionUtils.setRenditionManager(c, new RenditionManager((Activity) c, getSession(c)));
-        }
-        return ((AlfrescoApplication) c.getApplicationContext()).geRenditionManager();
-    }
-
-    public static void setRenditionManager(Context c, RenditionManager renditionManager)
-    {
-        ((AlfrescoApplication) c.getApplicationContext()).setRenditionManager(renditionManager);
-    }
-    
-    public static void setAccount(Context c, Account account)
-    {
-        ((AlfrescoApplication) c.getApplicationContext()).setAccount(account);
-    }
-
-    public static DatabaseManager getDataBaseManager(Context c)
-    {
-        DatabaseManager cdl = ((AlfrescoApplication) c.getApplicationContext()).getDatabaseManager();
-        if (cdl == null)
-        {
-            cdl = initDataBaseManager((Activity) c);
-        }
-        return cdl;
-    }
-
-    private static DatabaseManager initDataBaseManager(Activity c)
-    {
-        if (getSession(c) != null)
-        {
-            ((AlfrescoApplication) c.getApplicationContext()).setDatabaseManager(new DatabaseManager(c
-                    .getApplicationContext()));
+            return ((BaseActivity) c).getCurrentAccount();
         }
         else
         {
-            return null;
+            return ApplicationManager.getInstance(c).getCurrentAccount();
         }
-        return getDataBaseManager(c);
     }
 
+    public static AlfrescoSession getSession(Context c, long accountId)
+    {
+        return ApplicationManager.getInstance(c).getSession(accountId);
+    }
 }

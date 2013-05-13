@@ -27,16 +27,19 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.PropertyManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
@@ -48,7 +51,7 @@ public class MetadataFragment extends BaseFragment
     public static final String TAG = "MetadataFragment";
 
     public static final String ARGUMENT_NODE = "node";
-    
+
     public static final String ARGUMENT_NODE_PARENT = "nodeParent";
 
     protected Folder parentNode;
@@ -61,7 +64,7 @@ public class MetadataFragment extends BaseFragment
         args.putSerializable(ARGUMENT_NODE, node);
         return args;
     }
-    
+
     public static Bundle createBundleArgs(Node node, Folder parentNode)
     {
         Bundle args = new Bundle();
@@ -69,7 +72,7 @@ public class MetadataFragment extends BaseFragment
         args.putSerializable(ARGUMENT_NODE_PARENT, parentNode);
         return args;
     }
-    
+
     public static MetadataFragment newInstance(Node node, Folder parentNode)
     {
         MetadataFragment bf = new MetadataFragment();
@@ -114,15 +117,15 @@ public class MetadataFragment extends BaseFragment
 
         ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.app_properties, v);
         grouprootview = (ViewGroup) grouprootview.findViewById(R.id.metadata);
-        
+
         // Description
         Integer generalPropertyTitle = null;
         TextView tv = (TextView) v.findViewById(R.id.description);
-        List<String>  filter = new ArrayList<String>();
+        List<String> filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0)
         {
             v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
-            ((TextView)v.findViewById(R.id.description_title)).setText(R.string.metadata_general);
+            ((TextView) v.findViewById(R.id.description_title)).setText(R.string.metadata_general);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
             ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());
@@ -133,9 +136,10 @@ public class MetadataFragment extends BaseFragment
             v.findViewById(R.id.description_group).setVisibility(View.GONE);
             generalPropertyTitle = R.string.metadata_general;
         }
-        
+
         // ASPECTS
-        ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false, generalPropertyTitle, filter);
+        ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false,
+                generalPropertyTitle, filter);
         addPathProperty(generalGroup, inflater);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
@@ -145,15 +149,34 @@ public class MetadataFragment extends BaseFragment
 
         return sv;
     }
-    
-    protected void addPathProperty(ViewGroup generalGroup, LayoutInflater inflater){
-      //Add Path
-        if (parentNode != null){
+
+    protected void addPathProperty(ViewGroup generalGroup, LayoutInflater inflater)
+    {
+        // Add Path
+        if (parentNode != null || node.isFolder())
+        {
+            Node tmpNode = (parentNode != null) ? parentNode : node;
             View vr = inflater.inflate(R.layout.sdk_property_row, null);
             TextView tv = (TextView) vr.findViewById(R.id.propertyName);
             tv.setText(R.string.metadata_prop_path);
             tv = (TextView) vr.findViewById(R.id.propertyValue);
-            tv.setText((String) parentNode.getPropertyValue(PropertyIds.PATH) + "/" + node.getName());
+            tv.setText((String) tmpNode.getPropertyValue(PropertyIds.PATH));
+            tv.setClickable(true);
+            tv.setFocusable(true);
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            tv.setTag(tmpNode);
+            tv.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    if (getActivity() instanceof BaseActivity)
+                    {
+                        ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) v.getTag())
+                                .getPropertyValue(PropertyIds.PATH));
+                    }
+                }
+            });
             generalGroup.addView(vr);
         }
     }
@@ -185,7 +208,8 @@ public class MetadataFragment extends BaseFragment
             groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
             for (Entry<String, Integer> map : PropertyManager.getPropertyLabel(aspect).entrySet())
             {
-                if (node.getProperty(map.getKey()) != null && node.getProperty(map.getKey()).getValue() != null && !filters.contains(map.getKey()))
+                if (node.getProperty(map.getKey()) != null && node.getProperty(map.getKey()).getValue() != null
+                        && !filters.contains(map.getKey()))
                 {
                     v = inflater.inflate(R.layout.sdk_property_row, null);
                     tv = (TextView) v.findViewById(R.id.propertyName);
@@ -214,5 +238,10 @@ public class MetadataFragment extends BaseFragment
     protected void createAspectPanel(LayoutInflater inflater, ViewGroup parentview, Node node, String aspect)
     {
         createAspectPanel(inflater, parentview, node, aspect, true, null, new ArrayList<String>(0));
+    }
+
+    public Folder getParentNode()
+    {
+        return parentNode;
     }
 }

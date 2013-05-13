@@ -70,7 +70,7 @@
                 android:id="@+id/menu_browse_activities"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_activities_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
@@ -81,7 +81,7 @@
                 android:id="@+id/menu_browse_root"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_repository_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
@@ -93,11 +93,23 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_all_sites_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_browse_sites"
+                android:textColor="@android:color/white" />
+            
+            <Button
+                android:id="@+id/menu_favorites"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@drawable/btn_default_holo_light_underline"
+                android:drawableRight="@drawable/ic_favorite"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:text="@string/menu_favorites"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -105,7 +117,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_search_off"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
@@ -113,15 +125,15 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/menu_download"
+                android:id="@+id/menu_documents"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_download_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:text="@string/menu_downloads"
+                android:text="@string/menu_documents"
                 android:textColor="@android:color/white" />
 
             <Button
@@ -129,7 +141,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/mime_file"
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_browse_tags"
@@ -154,7 +166,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_settings_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
@@ -166,7 +178,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_help"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
@@ -178,7 +190,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light"
+                android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableRight="@drawable/ic_about_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
