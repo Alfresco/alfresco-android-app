@@ -18,18 +18,13 @@
 package org.alfresco.mobile.android.application.fragments;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.operations.OperationCursorAdapter;
-import org.alfresco.mobile.android.application.integration.OperationContentProvider;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

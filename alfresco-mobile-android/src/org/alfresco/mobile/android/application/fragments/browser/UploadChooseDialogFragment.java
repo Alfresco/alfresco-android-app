@@ -23,12 +23,13 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.fragments.browser.local.LocalFileBrowserFragment;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -36,7 +37,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -50,10 +54,10 @@ public class UploadChooseDialogFragment extends DialogFragment
     private Account currentAccount;
 
     private String fragmentTag;
-    
-    private static final String PARAM_ACCOUNT = "account";
-    private static final String PARAM_FRAGMENT_TAG = "fragmentTag";
 
+    private static final String PARAM_ACCOUNT = "account";
+
+    private static final String PARAM_FRAGMENT_TAG = "fragmentTag";
 
     public static UploadChooseDialogFragment newInstance(Account currentAccount)
     {
@@ -102,25 +106,21 @@ public class UploadChooseDialogFragment extends DialogFragment
             public void onItemClick(AdapterView<?> l, View v, int position, long id)
             {
                 Integer itemId = (Integer) l.getItemAtPosition(position);
-                
-                currentAccount = (Account) getArguments().getSerializable(PARAM_ACCOUNT);
-                fragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
-         
+
                 switch (itemId)
                 {
                     case R.string.upload_photos:
+                        startPicker(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE);
+                        break;
                     case R.string.upload_videos:
+                        startPicker(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO);
+                        break;
                     case R.string.upload_files:
-                        File f = StorageManager.getDownloadFolder(getActivity(), currentAccount.getUrl(),
-                                currentAccount.getUsername());
-                        BaseFragment frag = LocalFileBrowserFragment.newInstance(f, LocalFileBrowserFragment.MODE_PICK_FILE,
-                                fragmentTag);
-                        frag.setSession(SessionUtils.getSession(getActivity()));
-                        frag.show(getFragmentManager(), LocalFileBrowserFragment.TAG);
-
+                        startPicker(StorageManager.getDownloadFolder(getActivity(),
+                                ((BaseActivity) getActivity()).getCurrentAccount()));
                         break;
                     default:
-                        ActionManager.actionPickFile(getFragmentManager().findFragmentByTag(fragmentTag),
+                        ActionManager.actionPickFile(getFragmentManager().findFragmentByTag(getArguments().getString(PARAM_FRAGMENT_TAG)),
                                 IntentIntegrator.REQUESTCODE_FILEPICKER);
                         break;
                 }
@@ -128,7 +128,27 @@ public class UploadChooseDialogFragment extends DialogFragment
             }
         });
         return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
+    }
 
+    private void startPicker(File f)
+    {
+        Fragment frag = getFragmentManager().findFragmentByTag(getArguments().getString(PARAM_FRAGMENT_TAG));
+
+        Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, getActivity(), PublicDispatcherActivity.class);
+        i.putExtra(IntentIntegrator.EXTRA_FOLDER, f);
+
+        frag.startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
+    }
+
+    private void startPicker(int mediatype)
+    {
+        FileExplorerHelper.setSelection(getActivity(), mediatype);
+        Fragment frag = getFragmentManager().findFragmentByTag(getArguments().getString(PARAM_FRAGMENT_TAG));
+
+        Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, getActivity(), PublicDispatcherActivity.class);
+        i.putExtra(IntentIntegrator.EXTRA_LIBRARY, mediatype);
+
+        frag.startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
     }
 
     /**

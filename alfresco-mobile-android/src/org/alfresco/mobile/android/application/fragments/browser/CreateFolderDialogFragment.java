@@ -20,9 +20,9 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.node.create.CreateFolderRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -51,8 +51,6 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
     public static final String TAG = "CreateFolderDialogFragment";
 
     public static final String ARGUMENT_FOLDER = "folder";
-
-    public static final String ARGUMENT_FOLDER_NAME = "folderName";
 
     public CreateFolderDialogFragment()
     {
@@ -106,9 +104,6 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                 InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(tv.getWindowToken(), 0);
-
-                Bundle b = new Bundle();
-                b.putString(ARGUMENT_FOLDER_NAME, tv.getText().toString());
 
                 OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(
                         getActivity()));

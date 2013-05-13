@@ -23,10 +23,10 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -123,13 +123,10 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-
-                activity.getContentResolver().update(
-                        AccountProvider.getUri(acc.getId()),
-                        AccountProvider.createContentValues(acc.getDescription(), acc.getUrl(), acc.getUsername(),
-                                acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
-                                loader.getData().getAccessToken(), loader.getData().getRefreshToken(),
-                                acc.getIsPaidAccount() ? 1 : 0), null, null);
+                acc = AccountManager.update(activity, acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
+                        acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
+                        loader.getData().getAccessToken(), loader.getData().getRefreshToken(),
+                        acc.getIsPaidAccount() ? 1 : 0);
                 break;
             default:
                 break;

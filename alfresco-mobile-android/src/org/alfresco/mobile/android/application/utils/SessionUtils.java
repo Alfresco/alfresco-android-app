@@ -19,8 +19,8 @@ package org.alfresco.mobile.android.application.utils;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.ApplicationManager;
-import org.alfresco.mobile.android.application.BaseActivity;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 
 import android.content.Context;
 

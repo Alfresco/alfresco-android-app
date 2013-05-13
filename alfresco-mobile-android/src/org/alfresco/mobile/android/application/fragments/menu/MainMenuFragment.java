@@ -17,12 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -39,7 +39,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -100,15 +99,28 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         super.onStart();
 
         DisplayUtils.hideLeftTitlePane(getActivity());
-        getActivity().setTitle(R.string.app_name);
 
-        getActivity().invalidateOptionsMenu();
         if (isAdded() && TAG.equals(getTag())
                 && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
                 && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
         {
             ((MainActivity) getActivity()).clearScreen();
         }
+        
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActivity().invalidateOptionsMenu();
+        
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+        getActivity().setTitle(R.string.app_name);
+
+        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+    }
+    
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
     }
@@ -181,8 +193,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        Uri baseUri = AccountProvider.CONTENT_URI;
-        return new CursorLoader(getActivity(), baseUri, AccountSchema.COLUMN_ALL, null, null, null);
+        return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL, null, null, null);
     }
 
     @Override
@@ -240,7 +251,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             if (goHome)
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                ((MainActivity) getActivity()).clearScreen();
+                //((MainActivity) getActivity()).clearScreen();
             }
         }
     }

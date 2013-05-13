@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.application.integration.impl.AbstractOperatio
 import org.alfresco.mobile.android.application.integration.node.AbstractUpTask;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 
 import android.content.Context;
 import android.content.Intent;

@@ -31,6 +31,8 @@ import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationRequestImpl;
 import org.alfresco.mobile.android.application.integration.node.NodeOperationTask;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -69,6 +71,8 @@ public class DownloadTask extends NodeOperationTask<ContentFile>
 
     private long totalLength;
 
+    private Account acc;
+
     public DownloadTask(Context ctx, AbstractOperationRequestImpl request)
     {
         super(ctx, request);
@@ -84,6 +88,7 @@ public class DownloadTask extends NodeOperationTask<ContentFile>
         try
         {
             session = SessionUtils.getSession(context, accountId);
+            acc = AccountManager.retrieveAccount(context, accountId);
 
             doc = (Document) session.getServiceRegistry().getDocumentFolderService()
                     .getNodeByIdentifier(nodeIdentifier);
@@ -174,8 +179,7 @@ public class DownloadTask extends NodeOperationTask<ContentFile>
     {
         if (context != null && doc != null && session != null)
         {
-            File folder = StorageManager.getDownloadFolder(context, session.getBaseUrl(),
-                    SessionUtils.getAccount(context).getUsername());
+            File folder = StorageManager.getDownloadFolder(context, acc);
             if (folder != null) { return new File(folder, doc.getName()); }
         }
 

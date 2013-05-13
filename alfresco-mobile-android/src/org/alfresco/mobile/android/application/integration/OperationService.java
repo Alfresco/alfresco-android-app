@@ -31,6 +31,15 @@ import org.alfresco.mobile.android.application.integration.account.CreateAccount
 import org.alfresco.mobile.android.application.integration.account.LoadSessionCallBack;
 import org.alfresco.mobile.android.application.integration.account.LoadSessionRequest;
 import org.alfresco.mobile.android.application.integration.account.LoadSessionTask;
+import org.alfresco.mobile.android.application.integration.file.create.CreateDirectoryCallBack;
+import org.alfresco.mobile.android.application.integration.file.create.CreateDirectoryRequest;
+import org.alfresco.mobile.android.application.integration.file.create.CreateDirectoryTask;
+import org.alfresco.mobile.android.application.integration.file.delete.DeleteFileCallback;
+import org.alfresco.mobile.android.application.integration.file.delete.DeleteFileRequest;
+import org.alfresco.mobile.android.application.integration.file.delete.DeleteFileTask;
+import org.alfresco.mobile.android.application.integration.file.update.RenameCallback;
+import org.alfresco.mobile.android.application.integration.file.update.RenameRequest;
+import org.alfresco.mobile.android.application.integration.file.update.RenameTask;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationRequestImpl;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationTask;
 import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentCallback;
@@ -51,8 +60,8 @@ import org.alfresco.mobile.android.application.integration.node.favorite.Favorit
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeCallback;
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeTask;
-import org.alfresco.mobile.android.application.integration.node.update.UpdateContentTask;
 import org.alfresco.mobile.android.application.integration.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.application.integration.node.update.UpdateContentTask;
 import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesCallback;
 import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesTask;
@@ -103,7 +112,7 @@ public class OperationService<T> extends Service
         super.onCreate();
 
         // Broadcast Receiver
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATION_COMPLETE);
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATION_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATION_STOP);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATIONS_STOP);
         intentFilter.addAction(OperationManager.ACTION_DATA_CHANGED);
@@ -187,6 +196,18 @@ public class OperationService<T> extends Service
                 task = (AbstractOperationTask<T>) new UpdatePropertiesTask(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new UpdatePropertiesCallback(getBaseContext(), totalItems,
                         pendingRequest);
+                break;
+            case DeleteFileRequest.TYPE_ID:
+                task = (AbstractOperationTask<T>) new DeleteFileTask(getBaseContext(), request);
+                callback = (OperationCallBack<T>) new DeleteFileCallback(getBaseContext(), totalItems, pendingRequest);
+                break;
+            case CreateDirectoryRequest.TYPE_ID:
+                task = (AbstractOperationTask<T>) new CreateDirectoryTask(getBaseContext(), request);
+                callback = (OperationCallBack<T>) new CreateDirectoryCallBack(getBaseContext(), totalItems, pendingRequest);
+                break;
+            case RenameRequest.TYPE_ID:
+                task = (AbstractOperationTask<T>) new RenameTask(getBaseContext(), request);
+                callback = (OperationCallBack<T>) new RenameCallback(getBaseContext(), totalItems, pendingRequest);
                 break;
             default:
                 break;
@@ -277,7 +298,7 @@ public class OperationService<T> extends Service
             }
 
             // START NEXT TASK
-            if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETE.equals(intent.getAction()))
+            if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETED.equals(intent.getAction()))
             {
                 operations.remove(operationId);
                 if (lastOperation.contains(operationId) && callBack != null)

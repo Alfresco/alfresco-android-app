@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationTask;
@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 public class CreateAccountTask extends AbstractOperationTask<Account>
 {
@@ -106,7 +105,7 @@ public class CreateAccountTask extends AbstractOperationTask<Account>
     {
         int type;
         boolean isPaidAccount = false;
-        Uri accountUri = null;
+        Account acc = null;
         
         if (oauthData == null)
         {
@@ -128,10 +127,8 @@ public class CreateAccountTask extends AbstractOperationTask<Account>
             isPaidAccount = isPaid(type, session);
 
             // Save Account
-            accountUri = context.getContentResolver().insert(
-                    AccountProvider.CONTENT_URI,
-                    AccountProvider.createContentValues(tmpDescription, baseUrl, username, password, session
-                            .getRepositoryInfo().getIdentifier(), type, null, null, null, isPaidAccount ? 1 : 0));
+            acc = AccountManager.createAccount(context, tmpDescription, baseUrl, username, password, session
+                    .getRepositoryInfo().getIdentifier(), type, null, null, null, isPaidAccount ? 1 : 0);
         }
         else if (oauthData != null)
         {
@@ -144,16 +141,14 @@ public class CreateAccountTask extends AbstractOperationTask<Account>
 
             isPaidAccount = isPaid(type, session);
 
-            // Save Account
-            accountUri = context.getContentResolver().insert(
-                    AccountProvider.CONTENT_URI,
-                    AccountProvider.createContentValues(context.getString(R.string.account_default_cloud), session
-                            .getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo()
-                            .getIdentifier(), type, null, ((CloudSession) session).getOAuthData().getAccessToken(),
-                            oauthData.getRefreshToken(), isPaidAccount ? 1 : 0));
+           // Save Account
+            acc = AccountManager.createAccount(context, context.getString(R.string.account_default_cloud), session
+                    .getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo()
+                    .getIdentifier(), type, null, ((CloudSession) session).getOAuthData().getAccessToken(),
+                    oauthData.getRefreshToken(), isPaidAccount ? 1 : 0);
         }
 
-        return AccountProvider.retrieveAccount(context, Long.parseLong(accountUri.getLastPathSegment()));
+        return acc;
     }
 
     private boolean isPaid(int type, AlfrescoSession session)

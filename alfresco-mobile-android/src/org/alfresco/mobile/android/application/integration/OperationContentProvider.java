@@ -22,7 +22,6 @@ import java.util.HashSet;
 
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;

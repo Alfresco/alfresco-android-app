@@ -21,7 +21,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.OperationContentProvider;
-import org.alfresco.mobile.android.application.integration.OperationService;
 import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -190,7 +189,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         if (canDismiss)
         {
             Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction(IntentIntegrator.ACTION_OPERATIONS_COMPLETE);
+            broadcastIntent.setAction(IntentIntegrator.ACTION_OPERATIONS_COMPLETED);
             LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(broadcastIntent);
         }
     }
@@ -216,7 +215,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     {
         setCancelable(false);
         super.onResume();
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATIONS_COMPLETE);
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATIONS_COMPLETED);
         if (receiver == null)
         {
             receiver = new OperationReceiver();
@@ -231,13 +230,13 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (canDismiss && IntentIntegrator.ACTION_OPERATIONS_COMPLETE.equals(intent.getAction()))
+            if (canDismiss && IntentIntegrator.ACTION_OPERATIONS_COMPLETED.equals(intent.getAction()))
             {
                 dismiss();
                 return;
             }
 
-            if (IntentIntegrator.ACTION_OPERATIONS_COMPLETE.equals(intent.getAction()))
+            if (IntentIntegrator.ACTION_OPERATIONS_COMPLETED.equals(intent.getAction()))
             {
                 canDismiss = true;
             }

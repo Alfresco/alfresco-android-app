@@ -24,18 +24,17 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.editor.TextEditorFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
-import org.alfresco.mobile.android.application.utils.EmailUtils;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
@@ -297,7 +296,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     break;
 
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(this, contentFile.getFileName(), getFragmentManager()
+                    ActionManager.createMailWithAttachment(this, contentFile.getFileName(), getFragmentManager()
                             .findFragmentByTag(DetailsFragment.TAG).getActivity().getString(R.string.email_content),
                             Uri.fromFile(contentFile.getFile()), PublicIntent.REQUESTCODE_DECRYPTED);
                     break;

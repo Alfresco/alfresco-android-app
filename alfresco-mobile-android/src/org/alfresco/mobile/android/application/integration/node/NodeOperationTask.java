@@ -22,7 +22,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationRequestImpl;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationTask;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.Context;
 

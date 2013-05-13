@@ -17,33 +17,20 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.intent;
 
-import org.alfresco.mobile.android.intent.PublicIntent;
 
 public interface IntentIntegrator extends PublicIntent
 {
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SIGNUP PROCESS
+    // ///////////////////////////////////////////////////////////////////////////
     String ALFRESCO_SCHEME_SHORT = "alfresco";
 
     String CLOUD_SIGNUP = "sign_up_cloud";
 
     String CLOUD_SIGNUP_I = "sign_up_cloud_i";
 
-    String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
-
-    String CATEGORY_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH";
-
-    String CATEGORY_REFRESH_ALL = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL";
-
-    String CATEGORY_REFRESH_OTHERS = "org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS";
-
-    String CATEGORY_REMOVE_AND_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_REMOVE_AND_REFRESH";
-
-    String ACCOUNT_TYPE = "org.alfresco.mobile.android/object.account";
-
-    String FILE_TYPE = "org.alfresco.mobile.android/object.file";
-
     String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
-
-    String ACTION_DISPLAY_NODE = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_NODE";
 
     String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
 
@@ -100,17 +87,25 @@ public interface IntentIntegrator extends PublicIntent
     String EXTRA_FAVORITE = "org.alfresco.mobile.android.intent.EXTRA_FAVORITE";
 
     String ACTION_DISPLAY_OPERATIONS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS";
+    
+    String ACTION_PICK_FILE = "org.alfresco.mobile.android.intent.ACTION_PICK_FILE";
 
-    String ACTION_OPERATION_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_OPERATION_COMPLETE";
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // OPERATIONS MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
+    
+    // ACTION
     String ACTION_OPERATION_STOP = "org.alfresco.mobile.android.intent.ACTION_OPERATION_STOP";
 
     String ACTION_OPERATIONS_STOP = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_STOP";
-
-    String ACTION_OPERATIONS_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_COMPLETE";
-
+    
     String ACTION_OPERATIONS_CANCEL = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_CANCEL";
 
+    
+    // BROADCAST
+    String ACTION_OPERATION_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATION_COMPLETE";
+
+    String ACTION_OPERATIONS_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_COMPLETE";
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -122,12 +117,12 @@ public interface IntentIntegrator extends PublicIntent
     /** Create a new session for the specified account. */
     String ACTION_RELOAD_ACCOUNT = "org.alfresco.mobile.android.intent.ACTION_RELOAD_ACCOUNT";
 
-    /** The specified account is inactive. */
-    String ACTION_ACCOUNT_INACTIVE = "org.alfresco.mobile.android.intent.ACTION_ACCOUNT_INACTIVE";
-    
     String ACTION_CREATE_ACCOUNT = "org.alfresco.mobile.android.intent.ACTION_CREATE_ACCOUNT";
 
     // BROADCAST
+    /** The specified account is inactive. */
+    String ACTION_ACCOUNT_INACTIVE = "org.alfresco.mobile.android.intent.ACTION_ACCOUNT_INACTIVE";
+    
     String ACTION_LOAD_ACCOUNT_ERROR = "org.alfresco.mobile.android.intent.ACTION_LOAD_ACCOUNT_ERROR";
     
     String ACTION_LOAD_ACCOUNT_STARTED = "org.alfresco.mobile.android.intent.ACTION_LOAD_ACCOUNT_STARTED";
@@ -164,5 +159,9 @@ public interface IntentIntegrator extends PublicIntent
     String ACTION_UPDATE_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_UPDATE_COMPLETED";
 
     String EXTRA_UPDATED_NODE = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_NODE";
+
+    String EXTRA_UPDATED_FILE = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_FILE";
+
+    String EXTRA_LIBRARY = "org.alfresco.mobile.android.intent.EXTRA_LIBRARY";
 
 }

@@ -17,12 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.preferences;
 
-import java.util.List;
-
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountProvider;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -44,14 +41,14 @@ public class AccountsPreferences
         long id = settings.getLong(ACCOUNT_DEFAULT, -1);
         if (id == -1)
         {
-            return AccountProvider.retrieveFirstAccount(context);
+            return AccountManager.retrieveFirstAccount(context);
         }
         else
         {
-            Account acc = AccountProvider.retrieveAccount(context, id);
+            Account acc = AccountManager.retrieveAccount(context, id);
             if (acc == null)
             {
-                acc = AccountProvider.retrieveFirstAccount(context);
+                acc = AccountManager.retrieveFirstAccount(context);
                 setDefaultAccount(context, acc.getId());
             }
             return acc;
