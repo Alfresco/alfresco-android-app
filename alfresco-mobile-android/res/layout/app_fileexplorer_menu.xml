@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/properties_padding"
+        android:paddingRight="@dimen/properties_padding" >
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dip"
+            android:text="@string/shortcut_alfresco" />
+
+        <Button
+            android:id="@+id/shortcut_alfresco_downloads"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_download_dark"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_alfresco_downloads" />
+
+       <!--   <Button
+            android:id="@+id/shortcut_alfresco_sync"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_refresh"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_alfresco_sync" />-->
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:drawableBottom="@drawable/section_header"
+            android:paddingTop="@dimen/button_padding"
+            android:text="@string/shortcut_local" />
+
+        <Button
+            android:id="@+id/shortcut_local_sdcard"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_sdcard"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_local_sdcard" />
+
+        <Button
+            android:id="@+id/shortcut_local_downloads"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_download_dark"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_local_downloads" />
+        
+         <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:drawableBottom="@drawable/section_header"
+            android:paddingTop="@dimen/button_padding"
+            android:text="@string/shortcut_library" />
+        
+         <Button
+            android:id="@+id/shortcut_library_office"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_office"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_library_office" />
+
+        <Button
+            android:id="@+id/shortcut_library_images"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_pictures"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_library_images" />
+
+        <Button
+            android:id="@+id/shortcut_library_videos"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_videos"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_library_videos" />
+
+        <Button
+            android:id="@+id/shortcut_library_audios"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dip"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:drawableLeft="@drawable/ic_music"
+            android:drawablePadding="5dip"
+            android:gravity="left|center_vertical"
+            android:text="@string/shortcut_library_audios" />
+    </LinearLayout>
+
+</ScrollView>

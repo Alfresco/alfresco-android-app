@@ -33,9 +33,8 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -44,6 +43,7 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.integration.OperationManager;
@@ -52,23 +52,21 @@ import org.alfresco.mobile.android.application.integration.OperationRequestGroup
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.integration.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
-import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
-import org.apache.chemistry.opencmis.commons.impl.MimeTypes;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -449,7 +447,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         intentFilter.addAction(IntentIntegrator.ACTION_LIKE_COMPLETE);
         intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETE);
         intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
-        intentFilter.addAction(IntentIntegrator.ACTION_REFRESH);
+        intentFilter.addAction(ACTION_REFRESH);
         receiver = new UpdateReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
     }

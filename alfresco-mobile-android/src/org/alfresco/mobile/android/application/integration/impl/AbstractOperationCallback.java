@@ -126,7 +126,7 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
                 break;
             case OperationRequest.VISIBILITY_DIALOG:
                 Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction(IntentIntegrator.ACTION_OPERATIONS_COMPLETE);
+                broadcastIntent.setAction(IntentIntegrator.ACTION_OPERATIONS_COMPLETED);
                 LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
                 removeOperationUri(result);
                 break;

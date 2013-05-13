@@ -23,10 +23,11 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.OperationContentProvider;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
@@ -56,21 +57,21 @@ import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 
-public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>, OnMenuItemClickListener
+public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>,
+        OnMenuItemClickListener
 {
     private static final String TAG = ProgressNodeAdapter.class.getName();
 
     protected Node parentNode;
-    
-    private List<Node> selectedOptionItems = new ArrayList<Node>();
 
+    private List<Node> selectedOptionItems = new ArrayList<Node>();
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, listItems, selectedItems, mode);
         this.parentNode = parentNode;
-        context.getLoaderManager().restartLoader(parentNode.hashCode(), null, this);
+        context.getLoaderManager().restartLoader(context.hashCode(), null, this); 
     }
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
@@ -137,7 +138,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             super.updateBottomText(vh, item);
         }
     }
-    
+
     @Override
     protected void updateIcon(GenericViewHolder vh, Node item)
     {
@@ -150,12 +151,12 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             super.updateIcon(vh, item);
         }
-        
+
         if (item.isFolder())
         {
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
 
-            if (mode == ChildrenBrowserFragment.MODE_IMPORT) { return; }
+            if (mode == ListingModeFragment.MODE_IMPORT) { return; }
 
             UIUtils.setBackground(((View) vh.icon),
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
@@ -191,7 +192,12 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 }
             });
         }
+        else
+        {
+            UIUtils.setBackground(((View) vh.icon), null);
+        }
     }
+
     // /////////////////////////////////////////////////////////////
     // INLINE PROGRESS
     // ////////////////////////////////////////////////////////////
@@ -244,6 +250,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     {
         // TODO Auto-generated method stub
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
@@ -293,7 +300,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 break;
             case MenuActionItem.MENU_DELETE_FOLDER:
                 onMenuItemClick = true;
-                Fragment fr = ((Activity) getContext()).getFragmentManager().findFragmentByTag(ChildrenBrowserFragment.TAG);
+                Fragment fr = ((Activity) getContext()).getFragmentManager().findFragmentByTag(
+                        ChildrenBrowserFragment.TAG);
                 NodeActions.delete((Activity) getContext(), fr, selectedOptionItems.get(0));
                 break;
             default:

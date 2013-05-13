@@ -77,7 +77,7 @@ public class OperationManager
     private OperationManager(Context applicationContext)
     {
         mAppContext = applicationContext;
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATION_COMPLETE);
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATION_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATION_STOP);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATIONS_STOP);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATIONS_CANCEL);
@@ -207,7 +207,7 @@ public class OperationManager
 
     public static void notifyCompletion(Context c, String operationId, int status)
     {
-        Intent i = new Intent(IntentIntegrator.ACTION_OPERATION_COMPLETE);
+        Intent i = new Intent(IntentIntegrator.ACTION_OPERATION_COMPLETED);
         i.putExtra(EXTRA_OPERATION_ID, operationId);
         i.putExtra(EXTRA_OPERATION_RESULT, status);
         LocalBroadcastManager.getInstance(c).sendBroadcast(i);
@@ -303,7 +303,7 @@ public class OperationManager
             if (currentOperationGroup == null) { return; }
 
             // ADD
-            if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETE.equals(intent.getAction()))
+            if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETED.equals(intent.getAction()))
             {
                 int operationStatus = (int) intent.getExtras().getInt(EXTRA_OPERATION_RESULT);
                 if (currentOperationGroup.runningRequest.containsKey(operationId))

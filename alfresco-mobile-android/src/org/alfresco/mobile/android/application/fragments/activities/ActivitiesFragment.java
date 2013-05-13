@@ -19,12 +19,12 @@ package org.alfresco.mobile.android.application.fragments.activities;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activitystream.ActivityEventAdapter;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
@@ -76,8 +76,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     {
         ActivityEntry item = (ActivityEntry) l.getItemAtPosition(position);
 
-        if (item.getType() != null && item.getType().startsWith(ActivityEventAdapter.PREFIX_DATALIST)
-                || item.getType().startsWith(ActivityEventAdapter.PREFIX_FOLDER)) { return; }
+        if (item.getType() != null && item.getType().startsWith(ActivityEventAdapter.PREFIX_DATALIST)) { return; }
 
         // Inconsistency between cloud and on premise.
         String identifier = item.getData(CloudConstant.NODEREF_VALUE);

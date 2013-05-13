@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.accounts;
 import java.io.Serializable;
 
 import android.content.Context;
-import android.database.Cursor;
 
 public class Account implements Serializable
 {

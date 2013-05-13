@@ -125,7 +125,7 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/menu_download"
+                android:id="@+id/menu_documents"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
@@ -133,7 +133,7 @@
                 android:drawableRight="@drawable/ic_download_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:text="@string/menu_downloads"
+                android:text="@string/menu_documents"
                 android:textColor="@android:color/white" />
 
             <Button

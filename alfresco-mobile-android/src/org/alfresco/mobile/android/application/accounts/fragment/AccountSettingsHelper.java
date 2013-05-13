@@ -41,7 +41,6 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Environment;

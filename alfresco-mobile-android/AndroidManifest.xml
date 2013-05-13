@@ -42,7 +42,7 @@
         <!-- ALFRESCO APP -->
         <!-- *************************************************************** -->
         <activity
-            android:name="org.alfresco.mobile.android.application.HomeScreenActivity"
+            android:name="org.alfresco.mobile.android.application.activity.HomeScreenActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
             <!-- Internal : Sign up cloud -->
@@ -60,7 +60,7 @@
             android:name="net.hockeyapp.android.UpdateActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="org.alfresco.mobile.android.application.activity.MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
             android:logo="@drawable/ic_alfresco"
@@ -77,32 +77,6 @@
                 <action android:name="android.intent.action.SEARCH" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-
-            <!-- Internal : Used for refresh UI component -->
-            <intent-filter>
-                <action android:name="org.alfresco.mobile.android.intent.ACTION_REFRESH" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_ALL" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_OTHERS" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REMOVE_AND_REFRESH" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_REFRESH_DELETE" />
-
-                <data android:mimeType="org.alfresco.mobile.android/object.account" />
-                <data android:mimeType="org.alfresco.mobile.android/object.node" />
-                <data android:mimeType="org.alfresco.mobile.android/object.file" />
-            </intent-filter>
-
-            <!-- Internal : Used for displaying User Authentication Form -->
-            <intent-filter>
-                <action android:name="org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH" />
-                <category android:name="org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH" />
-
-                <data android:mimeType="org.alfresco.mobile.android/object.account" />
             </intent-filter>
 
             <!-- Internal : Used for Cloud activation. Only for this part we have to use exported = true -->
@@ -141,7 +115,7 @@
 
         <!-- Public : Official entry point for 3rd party application -->
         <activity
-            android:name="org.alfresco.mobile.android.application.PublicDispatcherActivity"
+            android:name="org.alfresco.mobile.android.application.activity.PublicDispatcherActivity"
             android:exported="true"
             android:icon="@drawable/ic_alfresco_logo"
             android:label="@string/app_name"

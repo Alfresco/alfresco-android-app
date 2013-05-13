@@ -22,12 +22,10 @@ import java.util.HashSet;
 
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -197,89 +195,10 @@ public class AccountProvider extends ContentProvider
         if (projection != null)
         {
             HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(AccountSchema.COLUMN_ALL));
+            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(AccountManager.COLUMN_ALL));
             // Check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
         }
-    }
-
-    public static Uri getUri(long id)
-    {
-        return Uri.parse(AccountProvider.CONTENT_URI + "/" + id);
-    }
-
-    public static ContentValues createContentValues(Account acc)
-    {
-        ContentValues updateValues = new ContentValues();
-
-        updateValues.put(AccountSchema.COLUMN_NAME, acc.getDescription());
-        updateValues.put(AccountSchema.COLUMN_URL, acc.getUrl());
-        updateValues.put(AccountSchema.COLUMN_USERNAME, acc.getUsername());
-        updateValues.put(AccountSchema.COLUMN_PASSWORD, acc.getPassword());
-        updateValues.put(AccountSchema.COLUMN_REPOSITORY_ID, acc.getRepositoryId());
-        updateValues.put(AccountSchema.COLUMN_REPOSITORY_TYPE, acc.getTypeId());
-        updateValues.put(AccountSchema.COLUMN_ACTIVATION, acc.getActivation());
-        updateValues.put(AccountSchema.COLUMN_ACCESS_TOKEN, acc.getAccessToken());
-        updateValues.put(AccountSchema.COLUMN_REFRESH_TOKEN, acc.getRefreshToken());
-        updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, acc.getIsPaidAccount());
-        return updateValues;
-    }
-    
-    public static ContentValues createContentValues(String name, String url, String username, String pass,
-            String workspace, Integer type, String activation, String accessToken, String refreshToken,
-            int isPaidAccount)
-    {
-        ContentValues updateValues = new ContentValues();
-
-        updateValues.put(AccountSchema.COLUMN_NAME, name);
-        updateValues.put(AccountSchema.COLUMN_URL, url);
-        updateValues.put(AccountSchema.COLUMN_USERNAME, username);
-        updateValues.put(AccountSchema.COLUMN_PASSWORD, pass);
-        updateValues.put(AccountSchema.COLUMN_REPOSITORY_ID, workspace);
-        updateValues.put(AccountSchema.COLUMN_REPOSITORY_TYPE, type);
-        updateValues.put(AccountSchema.COLUMN_ACTIVATION, activation);
-        updateValues.put(AccountSchema.COLUMN_ACCESS_TOKEN, accessToken);
-        updateValues.put(AccountSchema.COLUMN_REFRESH_TOKEN, refreshToken);
-        updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, isPaidAccount);
-        return updateValues;
-    }
-
-    public static Account createAccount(Cursor c)
-    {
-        Account account = new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
-                c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
-                c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
-                c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
-                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
-                c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
-        c.close();
-        return account;
-    }
-
-    public static Account retrieveAccount(Context context, long id)
-    {
-        Cursor cursor = context.getContentResolver().query(AccountProvider.getUri(id), AccountSchema.COLUMN_ALL, null,
-                null, null);
-        Log.d(TAG, cursor.getCount() + " ");
-        if (cursor.getCount() == 1)
-        {
-            cursor.moveToFirst();
-            return AccountProvider.createAccount(cursor);
-        }
-        cursor.close();
-        return null;
-    }
-
-    public static Account retrieveFirstAccount(Context context)
-    {
-        Cursor cursor = context.getContentResolver().query(CONTENT_URI, AccountSchema.COLUMN_ALL, null, null, null);
-        Log.d(TAG, cursor.getCount() + " ");
-        if (cursor.getCount() == 0){
-            cursor.close();
-            return null;
-        }
-        cursor.moveToFirst();
-        return AccountProvider.createAccount(cursor);
     }
 }

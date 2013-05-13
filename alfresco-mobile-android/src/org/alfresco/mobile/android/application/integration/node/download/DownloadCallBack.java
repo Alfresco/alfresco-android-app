@@ -26,6 +26,8 @@ import org.alfresco.mobile.android.application.integration.impl.AbstractOperatio
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 public class DownloadCallBack extends AbstractOperationCallback<ContentFile> implements BatchOperationCallBack
@@ -50,6 +52,7 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
         NotificationHelper.createIndeterminateNotification(getBaseContext(), ((DownloadTask) task).getDocument()
                 .getName(), getBaseContext().getString(R.string.download_progress), totalItems - pendingItems + "/"
                 + totalItems);
+        getBaseContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results.getFile())));
     }
 
     @Override

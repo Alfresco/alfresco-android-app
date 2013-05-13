@@ -24,11 +24,11 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DatabaseManager
+public class DatabaseManager implements DatabaseVersionNumber
 {
     private static final String DATABASE_NAME = "AlfrescoMobileDataBase";
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = VERSION_1_2_0;
 
     private final GenericDbHelper dbHelper;
 

@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.integration.node.create;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +29,8 @@ import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.integration.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.integration.utils.MapUtil;
-import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 
 public class CreateDocumentRequest extends AbstractUpRequest

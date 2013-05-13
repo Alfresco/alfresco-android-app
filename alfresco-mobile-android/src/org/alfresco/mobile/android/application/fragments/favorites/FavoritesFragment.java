@@ -22,21 +22,22 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.FavoritesLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
-import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.ActionBar;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -47,13 +48,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+@SuppressWarnings("rawtypes")
 public class FavoritesFragment extends BaseListFragment implements
-        LoaderCallbacks<LoaderResult<PagingResult<Document>>>, RefreshFragment
+        LoaderCallbacks<LoaderResult<PagingResult>>, RefreshFragment
 {
     public static final String TAG = FavoritesFragment.class.getName();
 
+    public static final int MODE_DOCUMENTS = FavoritesLoader.MODE_DOCUMENTS;
+
+    public static final int MODE_FOLDERS = FavoritesLoader.MODE_FOLDERS;
+
+    public static final int MODE_BOTH = FavoritesLoader.MODE_BOTH;
+    
+    private static final String PARAM_MODE = "FavoriteMode";
+
+    
     protected List<Node> selectedItems = new ArrayList<Node>(1);
 
+    private int mode = MODE_DOCUMENTS;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
     public FavoritesFragment()
     {
         loaderId = FavoritesLoader.ID;
@@ -61,16 +77,21 @@ public class FavoritesFragment extends BaseListFragment implements
         emptyListMessageId = R.string.empty_favorites;
     }
 
-    public static FavoritesFragment newInstance()
+    public static FavoritesFragment newInstance(int mode)
     {
         FavoritesFragment bf = new FavoritesFragment();
         ListingContext lc = new ListingContext();
-        lc.setMaxItems(30);
+        lc.setMaxItems(50);
         Bundle b = createBundleArgs(lc, LOAD_MANUAL);
+        b.putInt(PARAM_MODE, mode);
         bf.setArguments(b);
         return bf;
     }
 
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
@@ -79,7 +100,6 @@ public class FavoritesFragment extends BaseListFragment implements
         setRetainInstance(true);
     }
 
-    
     @Override
     public void onResume()
     {
@@ -93,8 +113,11 @@ public class FavoritesFragment extends BaseListFragment implements
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LOADER
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Document>>> onCreateLoader(int id, Bundle ba)
+    public Loader<LoaderResult<PagingResult>> onCreateLoader(int id, Bundle ba)
     {
         if (!hasmore)
         {
@@ -111,21 +134,22 @@ public class FavoritesFragment extends BaseListFragment implements
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
             loadState = bundle.getInt(LOAD_STATE);
+            mode  =  bundle.getInt(PARAM_MODE);
         }
         calculateSkipCount(lc);
-        FavoritesLoader loader = new FavoritesLoader(getActivity(), alfSession);
+        FavoritesLoader loader = new FavoritesLoader(getActivity(), alfSession, mode);
         loader.setListingContext(lc);
         return loader;
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Document>>> arg0,
-            LoaderResult<PagingResult<Document>> results)
+    public void onLoadFinished(Loader<LoaderResult<PagingResult>> arg0,
+            LoaderResult<PagingResult> results)
     {
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0),
-                    selectedItems, ChildrenBrowserFragment.MODE_LISTING);
+            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0), selectedItems,
+                    ListingModeFragment.MODE_LISTING);
         }
         if (checkException(results))
         {
@@ -139,12 +163,15 @@ public class FavoritesFragment extends BaseListFragment implements
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Document>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<PagingResult>> arg0)
     {
         // TODO Auto-generated method stub
 
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIST ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -177,7 +204,7 @@ public class FavoritesFragment extends BaseListFragment implements
         {
             if (item.isFolder())
             {
-                ((MainActivity) getActivity()).addNavigationFragment((Folder) item);
+                ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) item).getPropertyValue(PropertyIds.PATH));
             }
             else
             {
@@ -188,7 +215,6 @@ public class FavoritesFragment extends BaseListFragment implements
         }
     }
 
-    
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////

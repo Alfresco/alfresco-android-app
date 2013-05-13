@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
-import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;

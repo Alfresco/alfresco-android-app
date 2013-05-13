@@ -18,17 +18,13 @@
 package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
 import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
-import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;

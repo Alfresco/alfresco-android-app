@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 /**
@@ -59,7 +60,12 @@ public class AccountManager
     private ApplicationManager appManager;
 
     private LocalBroadcastManager broadManager;
+    
+    public static final Uri CONTENT_URI = AccountProvider.CONTENT_URI;
 
+    public static String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
+    
+    
     public static AccountManager getInstance(Context context)
     {
         synchronized (mLock)
@@ -138,14 +144,130 @@ public class AccountManager
         Log.d(TAG, "Default AccountId " + id);
         if (id == -1)
         {
-            return AccountProvider.retrieveFirstAccount(appContext);
+            return retrieveFirstAccount(appContext);
         }
         else
         {
-            return AccountProvider.retrieveAccount(appContext, id);
+            return retrieveAccount(appContext, id);
         }
     }
 
+    public static Account retrieveAccount(Context context, long id)
+    {
+        Cursor cursor = context.getContentResolver().query(getUri(id), COLUMN_ALL, null, null, null);
+        Log.d(TAG, cursor.getCount() + " ");
+        if (cursor.getCount() == 1)
+        {
+            cursor.moveToFirst();
+            return createAccount(cursor);
+        }
+        cursor.close();
+        return null;
+    }
+
+    public static Account createAccount(Cursor c)
+    {
+        Account account = new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
+                c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
+                c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
+                c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
+                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
+                c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
+        c.close();
+        return account;
+    }
+
+    public static Account createAccount(Context context, String name, String url, String username, String pass,
+            String workspace, Integer type, String activation, String accessToken, String refreshToken,
+            int isPaidAccount)
+    {
+        Uri accountUri = context.getContentResolver().insert(
+                AccountProvider.CONTENT_URI,
+                createContentValues(name, url, username, pass, workspace, type, activation, accessToken, refreshToken,
+                        isPaidAccount));
+
+        if (accountUri == null) { return null; }
+
+        return AccountManager.retrieveAccount(context, Long.parseLong(accountUri.getLastPathSegment()));
+    }
+
+    public static Account retrieveFirstAccount(Context context)
+    {
+        Cursor cursor = context.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL, null,
+                null, null);
+        Log.d(TAG, cursor.getCount() + " ");
+        if (cursor.getCount() == 0)
+        {
+            cursor.close();
+            return null;
+        }
+        cursor.moveToFirst();
+        return createAccount(cursor);
+    }
+
+    public Account update(long accountId, String name, String url, String username, String pass, String workspace,
+            Integer type, String activation, String accessToken, String refreshToken, int isPaidAccount)
+    {
+        return update(appContext, accountId, name, url, username, pass, workspace, type, activation, accessToken,
+                refreshToken, isPaidAccount);
+    }
+
+    public static Account update(Context context, long accountId, String name, String url, String username,
+            String pass, String workspace, Integer type, String activation, String accessToken, String refreshToken,
+            int isPaidAccount)
+    {
+        context.getContentResolver().update(
+                getUri(accountId),
+                createContentValues(name, url, username, pass, workspace, type, activation, accessToken, refreshToken,
+                        isPaidAccount), null, null);
+
+        return AccountManager.retrieveAccount(context, accountId);
+    }
+
+    public static Uri getUri(long id)
+    {
+        return Uri.parse(AccountProvider.CONTENT_URI + "/" + id);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ///////////////////////////////////////////////////////////////////////////
+    private static ContentValues createContentValues(Account acc)
+    {
+        ContentValues updateValues = new ContentValues();
+
+        updateValues.put(AccountSchema.COLUMN_NAME, acc.getDescription());
+        updateValues.put(AccountSchema.COLUMN_URL, acc.getUrl());
+        updateValues.put(AccountSchema.COLUMN_USERNAME, acc.getUsername());
+        updateValues.put(AccountSchema.COLUMN_PASSWORD, acc.getPassword());
+        updateValues.put(AccountSchema.COLUMN_REPOSITORY_ID, acc.getRepositoryId());
+        updateValues.put(AccountSchema.COLUMN_REPOSITORY_TYPE, acc.getTypeId());
+        updateValues.put(AccountSchema.COLUMN_ACTIVATION, acc.getActivation());
+        updateValues.put(AccountSchema.COLUMN_ACCESS_TOKEN, acc.getAccessToken());
+        updateValues.put(AccountSchema.COLUMN_REFRESH_TOKEN, acc.getRefreshToken());
+        updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, acc.getIsPaidAccount());
+        return updateValues;
+    }
+
+    private static ContentValues createContentValues(String name, String url, String username, String pass,
+            String workspace, Integer type, String activation, String accessToken, String refreshToken,
+            int isPaidAccount)
+    {
+        ContentValues updateValues = new ContentValues();
+
+        updateValues.put(AccountSchema.COLUMN_NAME, name);
+        updateValues.put(AccountSchema.COLUMN_URL, url);
+        updateValues.put(AccountSchema.COLUMN_USERNAME, username);
+        updateValues.put(AccountSchema.COLUMN_PASSWORD, pass);
+        updateValues.put(AccountSchema.COLUMN_REPOSITORY_ID, workspace);
+        updateValues.put(AccountSchema.COLUMN_REPOSITORY_TYPE, type);
+        updateValues.put(AccountSchema.COLUMN_ACTIVATION, activation);
+        updateValues.put(AccountSchema.COLUMN_ACCESS_TOKEN, accessToken);
+        updateValues.put(AccountSchema.COLUMN_REFRESH_TOKEN, refreshToken);
+        updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, isPaidAccount);
+        return updateValues;
+    }
+    
     private void loadSession(Account acc, OAuthData data)
     {
         if (appManager.hasSession(acc.getId()))
@@ -228,7 +350,7 @@ public class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     private void getCount()
     {
-        Cursor cursor = appContext.getContentResolver().query(AccountProvider.CONTENT_URI, AccountSchema.COLUMN_ALL,
+        Cursor cursor = appContext.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL,
                 null, null, null);
         accountCursor = cursor.getCount();
         cursor.close();
@@ -266,8 +388,7 @@ public class AccountManager
             Account acc = null;
             if (intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
             {
-                acc = AccountProvider.retrieveAccount(appContext,
-                        intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                acc = retrieveAccount(appContext, intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
                 Log.d(TAG, "AccountId : " + acc);
             }
 
@@ -288,9 +409,10 @@ public class AccountManager
             {
                 if (intent.hasExtra(IntentIntegrator.EXTRA_NETWORK_ID))
                 {
-                    ContentValues values = AccountProvider.createContentValues(acc);
-                    values.put(AccountSchema.COLUMN_REPOSITORY_ID, intent.getExtras().getString(IntentIntegrator.EXTRA_NETWORK_ID));
-                    appContext.getContentResolver().update(AccountProvider.getUri(acc.getId()), values, null, null);
+                    ContentValues values = createContentValues(acc);
+                    values.put(AccountSchema.COLUMN_REPOSITORY_ID,
+                            intent.getExtras().getString(IntentIntegrator.EXTRA_NETWORK_ID));
+                    appContext.getContentResolver().update(getUri(acc.getId()), values, null, null);
                 }
                 createSession(acc);
                 return;
