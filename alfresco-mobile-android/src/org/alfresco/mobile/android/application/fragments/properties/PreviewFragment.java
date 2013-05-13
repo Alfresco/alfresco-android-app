@@ -21,13 +21,14 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -90,7 +91,7 @@ public class PreviewFragment extends BaseFragment
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        RenditionManager renditionManager = SessionUtils.getRenditionManager(getActivity());
+        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
@@ -125,7 +126,7 @@ public class PreviewFragment extends BaseFragment
         
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
-            tempFile = IOUtils.makeTempFile(NodeActions.getPreviewFile(getActivity(), node));
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
             b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
         }
         

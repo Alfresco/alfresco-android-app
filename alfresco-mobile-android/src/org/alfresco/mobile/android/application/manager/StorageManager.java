@@ -23,14 +23,14 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
-
-import org.alfresco.mobile.android.application.utils.CipherUtils;
-import org.alfresco.mobile.android.application.utils.IOUtils;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 public class StorageManager extends org.alfresco.mobile.android.ui.manager.StorageManager
 {
@@ -50,7 +50,6 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     public static boolean isTempFile (Context c, File file)
     {
-        if (file == null) return false;
         File tempFolder = StorageManager.getTempFolder(c,
                 SessionUtils.getAccount(c).getUrl(),
                 SessionUtils.getAccount(c).getUsername());
@@ -68,11 +67,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED) == 0);
     }
 
-    public static File getDownloadFolder(Context context, String urlValue, String username)
+    public static File getDownloadFolder(Context context, Account acc)
     {
-        return getPrivateFolder(context, DLDIR, urlValue, username);
+        return getPrivateFolder(context, DLDIR, acc.getUrl(), acc.getUsername());
     }
-
+    
     public static File getTempFolder(Context context, String urlValue, String username)
     {
         return getPrivateFolder(context, TEMPDIR, urlValue, username);

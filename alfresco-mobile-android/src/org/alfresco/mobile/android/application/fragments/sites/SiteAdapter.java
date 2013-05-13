@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.api.asynchronous.SiteFavoriteLoader;
 import org.alfresco.mobile.android.api.asynchronous.SiteMembershipLoader;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
-import org.alfresco.mobile.android.application.MenuActionItem;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -35,7 +35,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -166,6 +165,7 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 onMenuItemClick = false;
                 break;
         }
+        selectedOptionItems.clear();
         return onMenuItemClick;
     }
 

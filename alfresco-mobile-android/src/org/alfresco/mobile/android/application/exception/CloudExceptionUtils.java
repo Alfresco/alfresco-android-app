@@ -20,29 +20,32 @@ package org.alfresco.mobile.android.application.exception;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
 
 import android.app.Activity;
-import android.os.Bundle;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 public final class CloudExceptionUtils
 {
 
     private static final String TAG = CloudExceptionUtils.class.getName();
-    
+
     private CloudExceptionUtils()
     {
     };
 
-    public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
+    public static void handleCloudException(Context context, Long accountId, Exception exception, boolean forceRefresh)
     {
         Log.w(TAG, Log.getStackTraceString(exception));
         if (exception instanceof AlfrescoSessionException)
@@ -52,12 +55,12 @@ public final class CloudExceptionUtils
             {
                 case ErrorCodeRegistry.SESSION_API_KEYS_INVALID:
                 case ErrorCodeRegistry.SESSION_REFRESH_TOKEN_EXPIRED:
-                    manageException(activity, forceRefresh);
+                    manageException(context, forceRefresh);
                     return;
                 default:
                     if (ex.getMessage().contains("No authentication challenges found") || ex.getErrorCode() == 100)
                     {
-                        manageException(activity, forceRefresh);
+                        manageException(context, forceRefresh);
                         return;
                     }
                     break;
@@ -70,7 +73,7 @@ public final class CloudExceptionUtils
             if ((ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
                     "No authentication challenges found"))))
             {
-                manageException(activity, forceRefresh);
+                manageException(context, forceRefresh);
                 return;
             }
         }
@@ -80,7 +83,7 @@ public final class CloudExceptionUtils
             CmisConnectionException ex = ((CmisConnectionException) exception);
             if (ex.getMessage().contains("No authentication challenges found"))
             {
-                manageException(activity, forceRefresh);
+                manageException(context, forceRefresh);
                 return;
             }
         }
@@ -94,21 +97,33 @@ public final class CloudExceptionUtils
             {
                 messageId = R.string.error_session_cloud_unavailable;
             }
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
-            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
-            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, messageId);
-            ActionManager.actionDisplayDialog(activity, b);
-            if (activity instanceof MainActivity)
+
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_MESSAGE, messageId);
+            if (accountId != null)
             {
-                ((MainActivity) activity).setSessionErrorMessageId(messageId);
+                broadcastIntent.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, accountId);
             }
+            LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
             return;
         }
     }
 
-    private static void manageException(Activity activity, boolean forceRefresh)
+    public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
+    {
+        Long accountId = null;
+        if (activity instanceof BaseActivity)
+        {
+            accountId = ((BaseActivity) activity).getCurrentAccount().getId();
+        }
+        handleCloudException(activity, accountId, exception, forceRefresh);
+    }
+
+    private static void manageException(Context activity, boolean forceRefresh)
     {
         if (forceRefresh)
         {

@@ -17,11 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
-import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_ACTION_UPDATE;
-import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_FILE;
-import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_CONTENT_NAME;
-import static org.alfresco.mobile.android.application.fragments.browser.UploadFragment.ARGUMENT_UPDATE_DOCUMENT;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,31 +32,38 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.alfresco.mobile.android.application.MainActivity;
-import org.alfresco.mobile.android.application.MenuActionItem;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
-import org.alfresco.mobile.android.application.fragments.browser.UploadFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.integration.OperationManager;
+import org.alfresco.mobile.android.application.integration.OperationRequest;
+import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
+import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.application.integration.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.loaders.NodeLoader;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
@@ -69,11 +71,14 @@ import org.apache.chemistry.opencmis.commons.enums.Action;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
@@ -97,6 +102,8 @@ import android.widget.TextView;
 public class DetailsFragment extends MetadataFragment implements OnTabChangeListener,
         LoaderCallbacks<LoaderResult<Node>>
 {
+
+    private static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
 
     public static final String TAG = "DetailsFragment";
 
@@ -122,7 +129,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
     }
 
-    private View v;
+    private View vRoot;
 
     public static DetailsFragment newInstance(Node node, Folder parentNode)
     {
@@ -154,7 +161,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
-        v = inflater.inflate(R.layout.app_details, container, false);
+        vRoot = inflater.inflate(R.layout.app_details, container, false);
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
@@ -176,13 +183,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
         }
-        return v;
+        return vRoot;
     }
 
     public void refresh()
     {
-        v.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
-        v.findViewById(R.id.progressbar).setVisibility(View.GONE);
+        vRoot.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
+        vRoot.findViewById(R.id.progressbar).setVisibility(View.GONE);
         display(node);
         getActivity().invalidateOptionsMenu();
     }
@@ -197,43 +204,43 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         node = refreshedNode;
 
-        renditionManager = SessionUtils.getRenditionManager(getActivity());
+        renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
 
         // Header
-        TextView tv = (TextView) v.findViewById(R.id.title);
+        TextView tv = (TextView) vRoot.findViewById(R.id.title);
         tv.setText(node.getName());
-        tv = (TextView) v.findViewById(R.id.details);
+        tv = (TextView) vRoot.findViewById(R.id.details);
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
 
         // Preview + Thumbnail
-        displayIcon(node, R.drawable.mime_folder, (ImageView) v.findViewById(R.id.icon), false);
-        displayIcon(node, R.drawable.mime_256_folder, (ImageView) v.findViewById(R.id.preview), true);
+        displayIcon(node, R.drawable.mime_folder, (ImageView) vRoot.findViewById(R.id.icon), false);
+        displayIcon(node, R.drawable.mime_256_folder, (ImageView) vRoot.findViewById(R.id.preview), true);
 
         // Description
         Integer generalPropertyTitle = null;
-        tv = (TextView) v.findViewById(R.id.description);
+        tv = (TextView) vRoot.findViewById(R.id.description);
         List<String> filter = new ArrayList<String>();
         if (node.getDescription() != null && node.getDescription().length() > 0
-                && v.findViewById(R.id.description_group) != null)
+                && vRoot.findViewById(R.id.description_group) != null)
         {
-            v.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
+            vRoot.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
             tv.setText(node.getDescription());
             generalPropertyTitle = -1;
-            ((TextView) v.findViewById(R.id.prop_name_value)).setText(node.getName());
+            ((TextView) vRoot.findViewById(R.id.prop_name_value)).setText(node.getName());
             filter.add(ContentModel.PROP_NAME);
         }
-        else if (v.findViewById(R.id.description_group) != null)
+        else if (vRoot.findViewById(R.id.description_group) != null)
         {
-            v.findViewById(R.id.description_group).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.description_group).setVisibility(View.GONE);
             generalPropertyTitle = R.string.metadata;
         }
 
-        mTabHost = (TabHost) v.findViewById(android.R.id.tabhost);
+        mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
         setupTabs();
 
         if (mTabHost == null)
         {
-            ViewGroup parent = (ViewGroup) v.findViewById(R.id.metadata);
+            ViewGroup parent = (ViewGroup) vRoot.findViewById(R.id.metadata);
             ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false,
                     generalPropertyTitle, filter);
             addPathProperty(generalGroup, inflater);
@@ -243,7 +250,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         // BUTTONS
-        ImageView b = (ImageView) v.findViewById(R.id.action_openin);
+        ImageView b = (ImageView) vRoot.findViewById(R.id.action_openin);
         if (node.isDocument() && ((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
                 && ((Document) node).getContentStreamLength() > 0)
         {
@@ -261,7 +268,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             b.setVisibility(View.GONE);
         }
 
-        b = (ImageView) v.findViewById(R.id.action_geolocation);
+        b = (ImageView) vRoot.findViewById(R.id.action_geolocation);
         if (node.isDocument() && node.hasAspect(ContentModel.ASPECT_GEOGRAPHIC))
         {
             b.setVisibility(View.VISIBLE);
@@ -281,14 +288,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             b.setVisibility(View.GONE);
         }
 
-        b = (ImageView) v.findViewById(R.id.like);
+        b = (ImageView) vRoot.findViewById(R.id.like);
         if (alfSession != null && alfSession.getRepositoryInfo() != null
                 && alfSession.getRepositoryInfo().getCapabilities() != null
                 && alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
             IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
             lcb.setImageButton(b);
-            lcb.setProgressView(v.findViewById(R.id.like_progress));
+            lcb.setProgressView(vRoot.findViewById(R.id.like_progress));
             lcb.execute(false);
 
             b.setOnClickListener(new OnClickListener()
@@ -303,13 +310,28 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         else
         {
             b.setVisibility(View.GONE);
-            if (v.findViewById(R.id.like_progress) != null)
+            if (vRoot.findViewById(R.id.like_progress) != null)
             {
-                v.findViewById(R.id.like_progress).setVisibility(View.GONE);
+                vRoot.findViewById(R.id.like_progress).setVisibility(View.GONE);
             }
         }
 
-        b = (ImageView) v.findViewById(R.id.action_share);
+        // BUTTONS
+        b = (ImageView) vRoot.findViewById(R.id.action_favorite);
+        IsFavoriteLoaderCallBack lcb = new IsFavoriteLoaderCallBack(alfSession, getActivity(), node);
+        lcb.setImageButton(b);
+        lcb.setProgressView(vRoot.findViewById(R.id.favorite_progress));
+        lcb.execute(false);
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                favorite(v);
+            }
+        });
+
+        b = (ImageView) vRoot.findViewById(R.id.action_share);
         if (node.isDocument())
         {
             b.setOnClickListener(new OnClickListener()
@@ -318,6 +340,23 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 public void onClick(View v)
                 {
                     share();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
+
+        b = (ImageView) vRoot.findViewById(R.id.action_edit_text);
+        if (node.isDocument() && MimeTypeManager.getMIMEType(node.getName()).contentEquals("text/plain"))
+        {
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    editText();
                 }
             });
         }
@@ -397,6 +436,30 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         getActivity().invalidateOptionsMenu();
         ((MainActivity) getActivity()).setCurrentNode(null);
         super.onStop();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_UPDATE_COMPLETE);
+        intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETE);
+        intentFilter.addAction(IntentIntegrator.ACTION_LIKE_COMPLETE);
+        intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETE);
+        intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+        intentFilter.addAction(ACTION_REFRESH);
+        receiver = new UpdateReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onPause()
+    {
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        }
+        super.onPause();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -488,13 +551,34 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
     }
 
+    public void editText()
+    {
+        Bundle b = new Bundle();
+
+        if (CipherUtils.isEncryptionActive(getActivity()))
+        {
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
+            if (replacementPreviewFragment != null)
+            {
+                replacementPreviewFragment.setTempFile(tempFile);
+            }
+            b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
+        }
+
+        b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+        b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EDIT);
+        DialogFragment frag = new DownloadDialogFragment();
+        frag.setArguments(b);
+        frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
+    }
+
     public void openin()
     {
         Bundle b = new Bundle();
 
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
-            tempFile = IOUtils.makeTempFile(NodeActions.getPreviewFile(getActivity(), node));
+            tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
             if (replacementPreviewFragment != null)
             {
                 replacementPreviewFragment.setTempFile(tempFile);
@@ -511,7 +595,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void download()
     {
-        NodeActions.download(getActivity(), node);
+        if (node instanceof Document)
+        {
+            NodeActions.download(getActivity(), (Document) node);
+        }
     }
 
     public void update()
@@ -529,7 +616,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 {
                     tempFile = replacementPreviewFragment.getTempFile();
                 }
-                final File dlFile = (tempFile != null ? tempFile : NodeActions.getPreviewFile(getActivity(), node));
+                final File dlFile = (tempFile != null ? tempFile : NodeActions.getDownloadFile(getActivity(), node));
 
                 long datetime = dlFile.lastModified();
                 Date d = new Date(datetime);
@@ -556,25 +643,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         public void onClick(DialogInterface dialog, int item)
                         {
-                            // File has been changed but is in tmp folder ==> Save to download + encrypt if necessary
-                            File renameFile = IOUtils.renameTimeStampFile(
-                                    StorageManager.getDownloadFolder(getActivity(),
-                                            SessionUtils.getAccount(getActivity()).getUrl(),
-                                            SessionUtils.getAccount(getActivity()).getUsername()), dlFile);
-                            if (renameFile.getName().equals(dlFile.getName()))
-                            {
-                                Log.w(TAG, "Unable to rename the document");
-                            }
-
-                            if (StorageManager.shouldEncryptDecrypt(getActivity(), renameFile.getPath()))
+                            if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
                             {
                                 FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
                                         .beginTransaction();
-                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(renameFile
-                                        .getPath());
+                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
                                 fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
                                 fragmentTransaction.commit();
                             }
+
                             dialog.dismiss();
                         }
                     });
@@ -583,17 +660,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 }
                 else
                 {
-                    // Delete file
-                    if (!dlFile.delete())
+                    if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
                     {
-                        if (StorageManager.shouldEncryptDecrypt(getActivity(), dlFile.getPath()))
-                        {
-                            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager()
-                                    .beginTransaction();
-                            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
-                            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                            fragmentTransaction.commit();
-                        }
+                        FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                        EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(dlFile.getPath());
+                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                        fragmentTransaction.commit();
                     }
                 }
                 break;
@@ -623,20 +695,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void update(File f)
     {
-        Bundle b = new Bundle();
-        b.putSerializable(ARGUMENT_CONTENT_FILE, new ContentFileProgressImpl(f));
-        b.putString(ARGUMENT_CONTENT_NAME, node.getName());
-        b.putBoolean(ARGUMENT_ACTION_UPDATE, true);
-        b.putParcelable(ARGUMENT_UPDATE_DOCUMENT, node);
-
-        if (getActivity() instanceof MainActivity)
-        {
-            // Use UploadFragment to manage upload
-            FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
-            UploadFragment uploadFragment = UploadFragment.newInstance(b);
-            fragmentTransaction.add(uploadFragment, uploadFragment.getFragmentTransactionTag());
-            fragmentTransaction.commit();
-        }
+        OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new UpdateContentRequest(parentNode, (Document) node, new ContentFileProgressImpl(f)));
+        OperationManager.getInstance(getActivity()).enqueue(group);
     }
 
     public void delete()
@@ -646,14 +707,23 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void edit()
     {
-        NodeActions.edit(getActivity(), node);
+        NodeActions.edit(getActivity(), parentNode, node);
     }
 
     public void like(View v)
     {
-        IsLikedLoaderCallBack lcb = new IsLikedLoaderCallBack(alfSession, getActivity(), node);
-        lcb.setImageButton((ImageView) v.findViewById(R.id.like));
-        lcb.setProgressView(((ViewGroup) v.getParent()).findViewById(R.id.like_progress));
+        vRoot.findViewById(R.id.like_progress).setVisibility(View.VISIBLE);
+        OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new LikeNodeRequest(parentNode, node)
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        OperationManager.getInstance(getActivity()).enqueue(group);
+    }
+
+    public void favorite(View v)
+    {
+        IsFavoriteLoaderCallBack lcb = new IsFavoriteLoaderCallBack(alfSession, getActivity(), node);
+        lcb.setImageButton((ImageView) v.findViewById(R.id.action_favorite));
+        lcb.setProgressView(((ViewGroup) v.getParent()).findViewById(R.id.favorite_progress));
         lcb.execute(true);
     }
 
@@ -676,7 +746,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
 
-    public static void getMenu(AlfrescoSession session, Activity activity, Menu menu, Node node)
+    public static void getMenu(AlfrescoSession session, Activity activity, Menu menu, Node node, boolean actionMode)
     {
         MenuItem mi;
 
@@ -740,7 +810,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void getMenu(Menu menu)
     {
-        getMenu(alfSession, getActivity(), menu, node);
+        getMenu(alfSession, getActivity(), menu, node, false);
     }
 
     public Node getCurrentNode()
@@ -754,8 +824,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public Loader<LoaderResult<Node>> onCreateLoader(final int id, Bundle args)
     {
-        v.findViewById(R.id.properties_details).setVisibility(View.GONE);
-        v.findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
+        vRoot.findViewById(R.id.properties_details).setVisibility(View.GONE);
+        vRoot.findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
 
         return new NodeLoader(getActivity(), alfSession, args.getString(ARGUMENT_NODE_ID));
     }
@@ -765,17 +835,15 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (results.hasException())
         {
-            v.findViewById(R.id.progressbar).setVisibility(View.GONE);
-            v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            ((TextView) v.findViewById(R.id.empty_text)).setText(R.string.empty_child);
+            vRoot.findViewById(R.id.progressbar).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.empty).setVisibility(View.VISIBLE);
+            ((TextView) vRoot.findViewById(R.id.empty_text)).setText(R.string.empty_child);
         }
         else if (loader instanceof NodeLoader && getActivity() != null)
         {
             node = results.getData();
             parentNode = ((NodeLoader) loader).getParentFolder();
-            Intent i = new Intent(getActivity(), MainActivity.class);
-            i.setAction(IntentIntegrator.ACTION_DISPLAY_NODE);
-            getActivity().startActivity(i);
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ACTION_REFRESH));
         }
     }
 
@@ -933,5 +1001,161 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void setDownloadDateTime(Date downloadDateTime)
     {
         this.downloadDateTime = downloadDateTime;
+    }
+
+    private UpdateReceiver receiver;
+
+    public class UpdateReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (getActivity() == null) { return; }
+
+            if (intent.getAction().equals(ACTION_REFRESH))
+            {
+                refresh();
+                return;
+            }
+
+            if (intent.getExtras() != null)
+            {
+                DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
+                        DetailsFragment.TAG);
+                if (detailsFragment != null && getActivity() instanceof MainActivity)
+                {
+                    Node n = (Node) detailsFragment.getArguments().get(DetailsFragment.ARGUMENT_NODE);
+                    Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
+                    if (b == null) { return; }
+
+                    Node node = null;
+                    if (b.containsKey(IntentIntegrator.EXTRA_DOCUMENT))
+                    {
+                        node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
+                    }
+                    else if (b.containsKey(IntentIntegrator.EXTRA_NODE))
+                    {
+                        node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
+                    }
+                    if (n != null
+                            && node != null
+                            && NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
+                                    NodeRefUtils.getCleanIdentifier(node.getIdentifier())))
+                    {
+                        if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETE))
+                        {
+                            ((MainActivity) getActivity()).setCurrentNode(null);
+                            if (DisplayUtils.hasCentralPane(getActivity()))
+                            {
+                                FragmentDisplayer.removeFragment(getActivity(), DetailsFragment.TAG);
+                            }
+                            else
+                            {
+                                getFragmentManager().popBackStack(DetailsFragment.TAG,
+                                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            }
+                            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
+                            return;
+                        }
+
+                        ((MainActivity) getActivity()).setCurrentNode(node);
+
+                        if (intent.getAction().equals(IntentIntegrator.ACTION_LIKE_COMPLETE))
+                        {
+                            View progressView = vRoot.findViewById(R.id.like_progress);
+                            ImageView imageView = (ImageView) vRoot.findViewById(R.id.like);
+                            if (progressView != null)
+                            {
+                                progressView.setVisibility(View.GONE);
+                            }
+                            Boolean isLiked = (b.getString(IntentIntegrator.EXTRA_LIKE) != null) ? Boolean
+                                    .parseBoolean(b.getString(IntentIntegrator.EXTRA_LIKE)) : null;
+                            if (isLiked != null)
+                            {
+                                int drawable = isLiked ? R.drawable.ic_like : R.drawable.ic_unlike;
+                                imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                            }
+                            return;
+                        }
+
+                        if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETE))
+                        {
+                            View progressView = vRoot.findViewById(R.id.favorite_progress);
+                            ImageView imageView = (ImageView) vRoot.findViewById(R.id.action_favorite);
+                            if (progressView != null)
+                            {
+                                progressView.setVisibility(View.GONE);
+                            }
+                            Boolean isFavorite = (b.getString(IntentIntegrator.EXTRA_FAVORITE) != null) ? Boolean
+                                    .parseBoolean(b.getString(IntentIntegrator.EXTRA_FAVORITE)) : null;
+                            if (isFavorite != null)
+                            {
+                                int drawable = isFavorite ? R.drawable.ic_favorite_dark : R.drawable.ic_unfavorite_dark;
+                                imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                            }
+                            return;
+                        }
+
+                        if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETE))
+                        {
+                            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
+
+                            Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_DOCUMENT);
+
+                            ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity())
+                                    .removeFromCache(node.getIdentifier());
+                            Boolean backstack = false;
+                            if (!DisplayUtils.hasCentralPane(getActivity()))
+                            {
+                                backstack = true;
+                                getFragmentManager().popBackStack(DetailsFragment.TAG,
+                                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            }
+                            else
+                            {
+                                ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(
+                                        ChildrenBrowserFragment.TAG)).select(updatedNode);
+                            }
+                            Folder pFolder = (Folder) b.getParcelable(IntentIntegrator.EXTRA_FOLDER);
+
+                            ((MainActivity) getActivity()).addPropertiesFragment(updatedNode, pFolder, backstack);
+
+                            MessengerManager.showToast(getActivity(),
+                                    String.format(getResources().getString(R.string.update_sucess), node.getName()));
+
+                            return;
+                        }
+
+                        if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
+                        {
+                            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
+
+                            Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
+
+                            Boolean backstack = false;
+                            if (!DisplayUtils.hasCentralPane(getActivity()))
+                            {
+                                backstack = true;
+                                getFragmentManager().popBackStack(DetailsFragment.TAG,
+                                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                            }
+                            else
+                            {
+                                ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(
+                                        ChildrenBrowserFragment.TAG)).select(updatedNode);
+                            }
+                            Folder pFolder = (Folder) b.getParcelable(IntentIntegrator.EXTRA_FOLDER);
+
+                            ((MainActivity) getActivity()).addPropertiesFragment(updatedNode, pFolder, backstack);
+
+                            MessengerManager.showToast(getActivity(),
+                                    String.format(getResources().getString(R.string.update_sucess), node.getName()));
+
+                            return;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

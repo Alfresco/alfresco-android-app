@@ -17,9 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.signup;
 
-import org.alfresco.mobile.android.application.HomeScreenActivity;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 
 import android.app.DialogFragment;

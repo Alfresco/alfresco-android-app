@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.fragments.sites;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.SiteFavoriteLoader;
 import org.alfresco.mobile.android.api.model.Site;
-import org.alfresco.mobile.android.api.services.impl.AbstractSiteServiceImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;

@@ -18,8 +18,11 @@
 package org.alfresco.mobile.android.application.utils;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
+import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.Display;
 import android.view.View;
 
 /**
@@ -48,6 +51,28 @@ public class UIUtils
         {
             v.setBackgroundDrawable(background);
         }
+    }
+
+    public static int[] getScreenDimension(Activity activity)
+    {
+        int width = 0;
+        int height = 0;
+
+        Display display = activity.getWindowManager().getDefaultDisplay();
+        if (AndroidVersion.isHCMR2OrAbove())
+        {
+            Point size = new Point();
+            display.getSize(size);
+            width = size.x;
+            height = size.y;
+        }
+        else
+        {
+            width = display.getWidth(); // deprecated
+            height = display.getHeight(); // deprecated
+        }
+
+        return new int[] { width, height };
     }
 
 }

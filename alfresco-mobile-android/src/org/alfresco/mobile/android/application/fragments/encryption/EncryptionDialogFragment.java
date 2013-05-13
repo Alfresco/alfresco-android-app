@@ -20,14 +20,14 @@ package org.alfresco.mobile.android.application.fragments.encryption;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
@@ -141,8 +141,15 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
     }
 
     public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
-            String intentAction)
+                                            String intentAction)
     {
+        return decrypt(myFile, mimeType, listener, intentAction, null);
+        
+    }
+    public static EncryptionDialogFragment decrypt(File myFile, String mimeType, ActionManagerListener listener,
+                                                    String intentAction, Runnable r)
+    {
+        finishedRunnable = r;
         EncryptionDialogFragment fragment = new EncryptionDialogFragment(myFile.getName());
         Bundle b = new Bundle();
         b.putSerializable(PARAM_FILE, myFile);

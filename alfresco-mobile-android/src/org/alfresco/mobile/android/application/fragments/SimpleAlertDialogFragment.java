@@ -43,7 +43,7 @@ public class SimpleAlertDialogFragment extends DialogFragment
 
     /** Associated Value must be a String id (int value). */
     public static final String PARAM_MESSAGE = "alertDialogFragment_MessageId";
-
+    
     public static SimpleAlertDialogFragment newInstance(Bundle b)
     {
         SimpleAlertDialogFragment frag = new SimpleAlertDialogFragment();

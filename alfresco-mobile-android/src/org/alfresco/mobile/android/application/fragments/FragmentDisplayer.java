@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.fragments;
 import java.util.Stack;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 
 import android.annotation.TargetApi;
 import android.app.Activity;

@@ -24,22 +24,24 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask;
 import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.editor.TextEditorFragment;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
-import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.CipherUtils;
-import org.alfresco.mobile.android.application.utils.EmailUtils;
+import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.intent.PublicIntent;
-import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -58,6 +60,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final int ACTION_EMAIL = 2;
 
+    public static final int ACTION_EDIT = 3;
+    
     public static final int ACTION_UNDEFINED = 0;
 
     public static final String TAG = "DownloadDialogFragment";
@@ -75,7 +79,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     private ContentFile contentFile;
 
     private int action = ACTION_UNDEFINED;
-
+    
     public static DownloadDialogFragment newInstance()
     {
         return new DownloadDialogFragment();
@@ -118,11 +122,11 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             File dlFile = null;
             if (getArguments().containsKey(ARGUMENT_TEMPFILE))
             {
-                dlFile = new File(getArguments().getString(ARGUMENT_TEMPFILE));
+                dlFile = new File (getArguments().getString(ARGUMENT_TEMPFILE));
             }
             else
             {
-                dlFile = getTempFile();
+                dlFile = getDownloadFile();
             }
 
             if (dlFile != null)
@@ -154,7 +158,6 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         return dialog;
     }
 
-    //TODO Dead code ?
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -166,12 +169,6 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                         GeneralPreferences.REQUIRES_ENCRYPT, "");
                 if (filename != null && filename.length() > 0)
                 {
-                    File f = new File(filename);
-                    if (StorageManager.isTempFile(getActivity(), f))
-                    {
-                        if (f.delete()) { return; }
-                    }
-
                     if (!CipherUtils.encryptFile(getActivity(), filename, true))
                     {
                         MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
@@ -193,10 +190,10 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private File getTempFile()
+    private File getDownloadFile()
     {
         if (SessionUtils.getAccount(getActivity()) == null) { return null; }
-        File tmpFile = NodeActions.getPreviewFile(getActivity(), doc);
+        File tmpFile = NodeActions.getDownloadFile(getActivity(), doc);
         if (tmpFile != null)
         {
             org.alfresco.mobile.android.api.utils.IOUtils.ensureOrCreatePathAndFile(tmpFile);
@@ -229,13 +226,19 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private void executeAction()
     {
+        boolean edit = false;
+        
         if (contentFile != null && contentFile.getFile() != null)
         {
             switch (action)
             {
+                case ACTION_EDIT:
+                    edit = true;
+                    //Drop thru to Open action.
+                    
                 case ACTION_OPEN:
-                    MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete) + " "
-                            + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
+                    MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
+                            + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
 
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
                             DetailsFragment.TAG);
@@ -243,17 +246,61 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     {
                         long datetime = contentFile.getFile().lastModified();
                         detailsFragment.setDownloadDateTime(new Date(datetime));
-                        ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                PublicIntent.REQUESTCODE_SAVE_BACK);
+                        
+                        if (edit)
+                        {
+                            try
+                            {
+                                final FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                                
+                                if (CipherUtils.isEncryptionActive(getActivity()))
+                                {
+                                    final File myFile = IOUtils.makeTempFile(contentFile.getFile());
+                                    String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+                                    
+                                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, null,
+                                        null, new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                //Decryption finished
+                                                
+                                                TextEditorFragment fragment = TextEditorFragment.editFile(myFile);
+                                                fragmentTransaction.add(fragment, fragment.TAG);
+                                                fragmentTransaction.commit();
+                                            }
+                                        });
+                                        
+                                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                    fragmentTransaction.commit();
+                                }
+                                else
+                                {
+                                    TextEditorFragment fragment = TextEditorFragment.editFile(contentFile.getFile());
+                                    fragmentTransaction.add(fragment, fragment.TAG);
+                                    fragmentTransaction.commit();
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                MessengerManager.showToast(getActivity(), R.string.error_unable_open_file);
+                            }
+                        }
+                        else
+                        {
+                            ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                    PublicIntent.REQUESTCODE_SAVE_BACK);
+                        }
                     }
                     break;
 
                 case ACTION_EMAIL:
-                    EmailUtils.createMailWithAttachment(this, contentFile.getFileName(), getFragmentManager()
+                    ActionManager.createMailWithAttachment(this, contentFile.getFileName(), getFragmentManager()
                             .findFragmentByTag(DetailsFragment.TAG).getActivity().getString(R.string.email_content),
                             Uri.fromFile(contentFile.getFile()), PublicIntent.REQUESTCODE_DECRYPTED);
                     break;
-
+                    
                 case ACTION_UNDEFINED:
                     break;
             }

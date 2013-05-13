@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts.fragment;
 
-import org.alfresco.mobile.android.application.MainActivity;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 
@@ -42,17 +42,9 @@ public class AccountTypesFragment extends DialogFragment
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
 
-    @Override
-    public void onStart()
-    {
-        if (getDialog() != null)
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
-        }
-        getActivity().invalidateOptionsMenu();
-        super.onStart();
-    }
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -105,5 +97,16 @@ public class AccountTypesFragment extends DialogFragment
         t2.setMovementMethod(LinkMovementMethod.getInstance());
 
         return v;
+    }
+    
+    @Override
+    public void onStart()
+    {
+        if (getDialog() != null)
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
+        }
+        getActivity().invalidateOptionsMenu();
+        super.onStart();
     }
 }

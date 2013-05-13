@@ -20,22 +20,23 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.alfresco.mobile.android.api.asynchronous.SessionLoader;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.integration.OperationManager;
+import org.alfresco.mobile.android.application.integration.OperationRequest;
+import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
+import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
 
 import android.app.DialogFragment;
-import android.app.LoaderManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -47,7 +48,7 @@ public class AccountEditFragment extends DialogFragment
     public static final String TAG = "AccountEditFragment";
 
     private Button validate;
-    
+
     private String url = null, host = null, username = null, password = null, servicedocument = null,
             description = null;
 
@@ -58,28 +59,9 @@ public class AccountEditFragment extends DialogFragment
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }
 
-    @Override
-    public void onStart()
-    {
-        if (getDialog() != null)
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
-        }
-
-        initForm();
-
-        if (retrieveFormValues())
-        {
-            validate.setEnabled(true);
-        }
-        else
-        {
-            validate.setEnabled(false);
-        }
-
-        super.onStart();
-    }
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -133,22 +115,51 @@ public class AccountEditFragment extends DialogFragment
         return v;
     }
 
+    @Override
+    public void onStart()
+    {
+        if (getDialog() != null)
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
+        }
+
+        initForm();
+
+        if (retrieveFormValues())
+        {
+            validate.setEnabled(true);
+        }
+        else
+        {
+            validate.setEnabled(false);
+        }
+
+        super.onStart();
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ////////////////////////////////////////////////////////////
     private void validateServer(View v)
     {
         if (retrieveFormValues())
         {
-            // Create Session
-            AccountCreationLoaderCallback call = new AccountCreationLoaderCallback(getActivity(), this, url, username,
-                    password, description);
-            LoaderManager lm = getLoaderManager();
-            lm.restartLoader(SessionLoader.ID, null, call);
-            lm.getLoader(SessionLoader.ID).forceLoad();
+            // Remove Keyboard
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+
+            // Create Account + Session
+            OperationRequestGroup group = new OperationRequestGroup(getActivity());
+            group.enqueue(new CreateAccountRequest(url, username, password, description)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+            OperationManager.getInstance(getActivity()).enqueue(group);
         }
     }
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password, R.id.repository_port };
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
+                R.id.repository_port };
         EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
@@ -252,13 +263,6 @@ public class AccountEditFragment extends DialogFragment
         url = u.toString();
 
         return true;
-    }
-
-    public void validateAccount()
-    {
-        ActionManager.actionRefresh(AccountEditFragment.this, IntentIntegrator.CATEGORY_REFRESH_ALL,
-                IntentIntegrator.ACCOUNT_TYPE);
-        getActivity().finish();
     }
 
     private View findViewByIdInternal(int id)
