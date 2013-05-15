@@ -21,8 +21,6 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -40,7 +38,12 @@ public class VideoCapture extends DeviceCapture
 
     public VideoCapture(Activity parent, Folder folder)
     {
-        super(parent, folder);
+        this(parent, folder, null);
+    }
+    
+    public VideoCapture(Activity parent, Folder folder, File parentFolder)
+    {
+        super(parent, folder, parentFolder);
     }
 
     @Override
@@ -57,13 +60,13 @@ public class VideoCapture extends DeviceCapture
         {
             try
             {
-                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
-                        .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
+
+                File folder = parentFolder;
                 if (folder != null)
                 {
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-                    payload = new File(folder.getPath(), createFilename("", "mp4"));
+                    payload = new File(folder.getPath(), createFilename("VID", "mp4"));
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
                     intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);

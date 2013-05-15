@@ -26,8 +26,6 @@ import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -46,10 +44,14 @@ public class AudioCapture extends DeviceCapture
 
     public AudioCapture(Activity parent, Folder folder)
     {
-        super(parent, folder);
-
+        this(parent, folder, null);
+    }
+    
+    public AudioCapture(Activity parent, Folder folder, File parentFolder)
+    {
+        super(parent, folder, parentFolder);
         // Default MIME type if it cannot be retrieved from Uri later.
-        MIMEType = "audio/3gpp";
+        MimeType = "audio/3gpp";
     }
 
     @Override
@@ -90,14 +92,13 @@ public class AudioCapture extends DeviceCapture
 
         try
         {
-            File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
-                    .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
+            File folder = parentFolder;
             if (folder != null)
             {
                 String filePath = getAudioFilePathFromUri(savedUri);
                 String fileType = getAudioFileTypeFromUri(savedUri);
                 String newFilePath = folder.getPath() + "/"
-                        + createFilename("", filePath.substring(filePath.lastIndexOf(".") + 1));
+                        + createFilename("AUDIO", filePath.substring(filePath.lastIndexOf(".") + 1));
 
                 copyFile(filePath, newFilePath);
 
@@ -108,7 +109,7 @@ public class AudioCapture extends DeviceCapture
 
                 if (!fileType.isEmpty())
                 {
-                    MIMEType = fileType;
+                    MimeType = fileType;
                 }
             }
             else

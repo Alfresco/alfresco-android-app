@@ -19,8 +19,14 @@ package org.alfresco.mobile.android.application.fragments.create;
 
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
 
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -30,6 +36,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -44,8 +51,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * This Fragment is responsible to display the list of editors able to create
- * the document type selected previously. <br/>
+ * This Fragment is responsible to display the list of editors able to create the document type selected previously. <br/>
  * This fragment works "like" the "createChooser" Android Intent method.
  * 
  * @author Jean Marie Pascal
@@ -56,15 +62,13 @@ public class EditorsDialogFragment extends DialogFragment
     public static final String TAG = "FileTypePropertiesDialogFragment";
 
     /**
-     * Used for retrieving default storage folder. Value must be a ResolveInfo
-     * object.
+     * Used for retrieving default storage folder. Value must be a ResolveInfo object.
      */
     public static final String PARAM_EDITOR = "editor";
 
     /**
      * @param b : must contains PARAM_DOCUMENT_TYPE key/value
-     * @return Dialog fragment that lists application able to create the
-     *         PARAM_DOCUMENT_TYPE value.
+     * @return Dialog fragment that lists application able to create the PARAM_DOCUMENT_TYPE value.
      */
     public static EditorsDialogFragment newInstance(Bundle b)
     {
@@ -91,6 +95,7 @@ public class EditorsDialogFragment extends DialogFragment
 
         final PackageManager mgr = getActivity().getPackageManager();
         List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
+        Collections.sort(list, new EditorComparator(getActivity(), true));
 
         if (list.isEmpty())
         {
@@ -133,6 +138,18 @@ public class EditorsDialogFragment extends DialogFragment
             return new AlertDialog.Builder(getActivity()).setTitle(title).setView(v).create();
         }
 
+    }
+
+    private static String getLabelString(Context context, ResolveInfo item)
+    {
+        if (item.activityInfo.labelRes != 0)
+        {
+            return (String) item.activityInfo.loadLabel(context.getPackageManager());
+        }
+        else
+        {
+            return (String) item.activityInfo.applicationInfo.loadLabel(context.getPackageManager());
+        }
     }
 
     /**
@@ -179,4 +196,35 @@ public class EditorsDialogFragment extends DialogFragment
         }
     }
 
+    private static class EditorComparator implements Serializable, Comparator<ResolveInfo>
+    {
+        private static final long serialVersionUID = 1L;
+
+        private boolean asc;
+
+        private Context context;
+
+        public EditorComparator(Context c, boolean asc)
+        {
+            super();
+            this.asc = asc;
+            this.context = c;
+        }
+
+        public int compare(ResolveInfo infoA, ResolveInfo infoB)
+        {
+            if (infoA == null || infoB == null) { return 0; }
+
+            int b = 0;
+            b = getLabelString(context, infoA).compareToIgnoreCase(getLabelString(context, infoB));
+            if (asc)
+            {
+                return b;
+            }
+            else
+            {
+                return -b;
+            }
+        }
+    }
 }
