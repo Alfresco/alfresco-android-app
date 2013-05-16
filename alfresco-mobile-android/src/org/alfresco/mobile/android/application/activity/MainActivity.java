@@ -68,6 +68,7 @@ import org.alfresco.mobile.android.application.fragments.versions.VersionFragmen
 import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.integration.capture.AudioCapture;
 import org.alfresco.mobile.android.application.integration.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.integration.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.integration.capture.PhotoCapture;
 import org.alfresco.mobile.android.application.integration.capture.VideoCapture;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -899,47 +900,15 @@ public class MainActivity extends BaseActivity
         return true;
     }
 
-    private boolean isVisible(String tag)
-    {
-        return getFragmentManager().findFragmentByTag(tag) != null
-                && getFragmentManager().findFragmentByTag(tag).isAdded();
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Not in all case we have ChildrenBrowserFragment displayed
-        Folder parentFolder = null;
-        if (((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)) != null)
-        {
-            parentFolder = ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getParent();
-        }
-
         switch (item.getItemId())
         {
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
-                if (parentFolder != null)
-                {
-                    capture = new PhotoCapture(this, parentFolder);
-                    capture.captureData();
-                }
-                return true;
-
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
-
-                if (parentFolder != null)
-                {
-                    capture = new VideoCapture(this, parentFolder);
-                    capture.captureData();
-                }
-                return true;
-
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
-                if (parentFolder != null)
-                {
-                    capture = new AudioCapture(this, parentFolder);
-                    capture.captureData();
-                }
+                capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
@@ -974,7 +943,7 @@ public class MainActivity extends BaseActivity
                     ((FileExplorerFragment) getFragment(FileExplorerFragment.TAG)).createFolder();
                 }
                 return true;
-                
+
             case MenuActionItem.MENU_SHORTCUT:
                 BaseFragment frag = FileExplorerMenuFragment.newInstance();
                 frag.show(getFragmentManager(), FileExplorerMenuFragment.TAG);

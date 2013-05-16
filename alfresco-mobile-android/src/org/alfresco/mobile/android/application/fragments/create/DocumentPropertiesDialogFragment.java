@@ -67,7 +67,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 {
 
     /** Public Fragment TAG. */
-    public static final String TAG = "DocumentPropertiesDialogFragment";
+    public static final String TAG = DocumentPropertiesDialogFragment.class.getName();
 
     public static DocumentPropertiesDialogFragment newInstance(Bundle bundle)
     {

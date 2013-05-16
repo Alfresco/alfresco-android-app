@@ -278,13 +278,6 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         this.uploadFiles = localFile;
     }
-
-    private boolean isVisible(String tag)
-    {
-        return getFragmentManager().findFragmentByTag(tag) != null
-                && getFragmentManager().findFragmentByTag(tag).isAdded();
-    }
-
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////

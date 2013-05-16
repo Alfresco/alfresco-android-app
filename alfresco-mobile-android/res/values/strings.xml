@@ -287,7 +287,7 @@
 
     <!-- Create Document -->
     <string name="open_play_store">Open Google Play Store</string>
-    <string name="create_document">Create Document</string>
+    <string name="create_document">Create&#8230;</string>
     <string name="create_document_title">Create&#8230;</string>
     <string name="create_document_word">Word Document</string>
     <string name="create_document_powerpoint">Powerpoint Presentation</string>
@@ -465,8 +465,6 @@
     <string name="status_successful">Successful</string>
     <string name="status_failed">Failed</string>
     <string name="status_cancelled">Cancelled</string>
-
-    <!-- Operations Status -->
     <string name="session_loaded">Session ready</string>
 
     <!-- Multi selection -->
