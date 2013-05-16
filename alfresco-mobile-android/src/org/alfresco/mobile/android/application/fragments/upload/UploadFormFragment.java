@@ -409,7 +409,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     private static final List<Integer> IMPORT_FOLDER_LIST = new ArrayList<Integer>(3)
     {
         {
-            add(R.string.menu_documents);
+            add(R.string.menu_downloads);
             add(R.string.menu_browse_sites);
             add(R.string.menu_favorites);
             add(R.string.menu_browse_root);
@@ -449,7 +449,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
                 ActionManager.loadAccount(getActivity(), tmpAccount);
 
                 break;
-            case R.string.menu_documents:
+            case R.string.menu_downloads:
                 UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);
                 fr.show(getActivity().getFragmentManager(), UploadLocalDialogFragment.TAG);
                 break;

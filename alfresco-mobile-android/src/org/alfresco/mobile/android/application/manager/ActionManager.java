@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -397,5 +398,46 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
 
         return true;
     }
+
+    public static void actionUpload(Activity activity, File file)
+    {
+        try
+        {
+            String mimeType = MimeTypeManager.getMIMEType(file.getName());
+            if (CipherUtils.isEncryptionActive(activity))
+            {
+                FragmentTransaction fragmentTransaction = activity.getFragmentManager().beginTransaction();
+                EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(file, mimeType, null,
+                        Intent.ACTION_SEND);
+                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                fragmentTransaction.commit();
+            }
+            else
+            {
+                actionUploadDocument(activity, file);
+            }
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showToast(activity, R.string.error_unable_open_file);
+        }
+    }
+    
+    public static void actionUploadDocument(Activity activity, File contentFile)
+    {
+        try
+        {
+            Intent i = new Intent(activity, PublicDispatcherActivity.class);
+            i.setAction(Intent.ACTION_SEND);
+            i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
+            i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+            activity.startActivity(i);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(activity, R.string.error_unable_share_content);
+        }
+    }
+    
 
 }

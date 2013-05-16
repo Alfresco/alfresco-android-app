@@ -27,8 +27,4 @@
     <!-- FRAGMENT DETAILS -->
     <dimen name="properties_details_padding">10dip</dimen>
     
-    <!-- LIST ROW -->
-    <dimen name="row_height">60dp</dimen>
-    <dimen name="thumbnail_height">42dip</dimen>
-
 </resources>

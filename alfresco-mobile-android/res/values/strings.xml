@@ -38,7 +38,6 @@
     <string name="account_wizard_alfresco_help_inside_app">New to Alfresco ? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
-    <string name="account">Account</string>
     <string name="action_add_account">Add</string>
     <string name="account_username">Username</string>
     <string name="account_password">Password</string>
@@ -54,14 +53,10 @@
     <string name="account_wizard_step2_title">Account Authentication Information</string>
     <string name="account_verify">Verifying Account Information&#8230;</string>
     <string name="email_hint">example@acme.com</string>
-    <string name="account_url">URL (hostname + service url)</string>
-    <string name="error_account_form">Please check : </string>
     <string name="account_validate">Save</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone">All Done !</string>
     <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
-    <string name="account_wizard_donee">Done.</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP -->
     <string name="account_wizard_step1">Step 1 of 2</string>
@@ -71,13 +66,11 @@
 
     <!-- ACCOUNTS -->
     <string name="account_not_activated">Your account is not activated. Please check the Manage Account screen.</string>
-    <string name="account_loading">Loading:&#160;</string>
-    <string name="account_not_activated_title">Alfresco in the cloud.</string>
     <string name="account_not_activated_description">Your account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
 
-    <!-- MAIN MENU -->
+    <!-- WAITING SESSION  -->
     <string name="wait_title">Please wait</string>
     <string name="wait_message">Contacting your server&#8230;</string>
 
@@ -110,17 +103,12 @@
 <![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
         Please try again in a few minutes.<br/>]]>
     </string>
-    <string name="error_session_unauthorized_title">Unauthorized.</string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
-    <string name="error_signin_form">We are unable to create a session. Please check your sign in details.</string>
-    <string name="error_signin_form_mandatory">Mandatory fields have not been completed.</string>
 
     <!-- MESSAGE ERROR -->
-    <string name="error_refresh_token">Error during authentication</string>
     <string name="error_general">An error has occurred. Please try again.</string>
     <string name="error_account_url">The URL is incorrect. Please check your account settings.</string>
-    <string name="error_signup_account_confirmation">Unable to find an account to activate.</string>
     <string name="error_unknown_filepath">Failed to find the resource.</string>
 
     <!-- DETAILS -->
@@ -154,14 +142,11 @@
     <string name="menu_browse_activities">Activities</string>
     <string name="menu_search">Search</string>
     <string name="menu_downloads">Downloads</string>
-    <string name="menu_documents">My Documents</string>
+    <string name="menu_documents">Local Files</string>
     <string name="menu_about">About</string>
     <string name="menu_settings">Settings</string>
-    <string name="menu_more">More</string>
     <string name="menu_accounts">Accounts</string>
-    <string name="menu_alfresco">My Alfresco</string>
     <string name="menu_view">Views</string>
-    <string name="menu_account_manage">Manage</string>
     <string name="menu_help">Help</string>
     <string name="menu_prefs">Settings</string>
     <string name="menu_resources">Resources</string>
@@ -172,7 +157,6 @@
     <string name="upload_photos">Photos</string>
     <string name="upload_videos">Videos</string>
     <string name="upload_files">Files</string>
-    <string name="upload_download_folder">Download folder</string>
     <string name="upload_third_application">Another application</string>
 
     <!-- ACCOUNTS -->
@@ -186,7 +170,6 @@
     <string name="preview">Preview</string>
 
     <!-- NETWORKS -->
-    <string name="cloud_networks">Networks</string>
     <string name="cloud_networks_empty">No Networks available</string>
     <string name="manage_accounts">Manage accounts&#8230;</string>
     <string name="cloud_networks_switch">Switch networks&#8230;</string>
@@ -231,10 +214,8 @@
     <!-- OTHER -->
     <string name="unlike">UnLike</string>
     <string name="error_retrieve_likes">The Like/Unlike tag for this document could not be retrieved.</string>
-    <string name="previous">Previous</string>
     <string name="next">Next</string>
     <string name="save">Save</string>
-    <string name="action_ok">OK</string>
     <string name="enter_details">Enter your details</string>
     <string name="share_content">Share Document with&#8230;</string>
 
@@ -242,10 +223,9 @@
     <string name="asset_folder_prefix">en</string>
 
     <!-- About Message -->
+    <string name="about_description_title">Description</string>
     <string name="buildnumber_version">Version: </string>
     <string name="sdknumber_version">SDK: </string>
-
-    <!-- BuildNumber Bamboo -->
     <string name="about_description">
 <![CDATA[
 <p>Alfresco Mobile connects to Alfresco in the cloud and Alfresco on premise servers (3.4 and above) to provide safe access to your corporate documents on the go.</p> 
@@ -255,9 +235,6 @@
     </string>
 
     <!-- Waiting Message -->
-    <string name="dialog_wait">Please wait</string>
-    <string name="contact_server_progress">Contacting your server&#8230;</string>
-    <string name="validation_credentials">Validation of your credentials&#8230;</string>
     <string name="get_pdf_viewer">You need a PDF viewer to display this document.\n\nDo you want to get one now?</string>
     <string name="send_email">Share attachment</string>
     <string name="link_or_attach">Do you want to share this as an attachment, or a clickable link?</string>
@@ -297,10 +274,6 @@
     <string name="create_document_filename_error">This name is already in use.</string>
     <string name="create_document_save">An error occurred: Your document is saved inside "Downloads".</string>
     <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
-    <string name="document_word_extension">.docx</string>
-    <string name="document_powerpoint_extension">.pptx</string>
-    <string name="document_excel_extension">.xlsx</string>
-    <string name="document_text_extension">.txt</string>
     <string name="create_document_editor_title">Complete action using</string>
     <string name="create_document_editor_not_available">No application available</string>
     <string name="create_document_editor_not_available_description">You don\'t have an app that will create this document type.</string>
@@ -329,8 +302,6 @@
     <string name="action_leave_site">Leave</string>
     <string name="action_favorite_site">Favorite</string>
     <string name="action_unfavorite_site">Unfavorite</string>
-    <string name="action_cancel_request">Cancel Request</string>
-    <string name="action_pending_request">Pending Join Site Requests</string>
     <string name="action_join_site_validation">You are now member of \"%s\".</string>
     <string name="action_leave_site_validation">You have left  \"%s\".</string>
     <string name="action_favorite_site_validation">\"%s\" is now a favorite.</string>
@@ -355,7 +326,6 @@
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
-    <string name="error_import">We are unable to upload. Please check your account settings.</string>
 
     <!-- SSL -->
     <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
@@ -366,7 +336,6 @@
     <!-- PIN Code -->
     <string name="passcode_title">Enter Passcode</string>
     <string name="passcode_enable_title">Enable Passcode</string>
-    <string name="passcode_summary">Enter Passcode</string>
     <string name="passcode_preference">Passcode Protection</string>
     <string name="passcode_enable">Enabled</string>
     <string name="passcode_disable">Disabled</string>
@@ -440,7 +409,7 @@
         <item quantity="other">%1$s folders</item>
     </plurals>
 
-    <string name="waiting_operations">Please wait...</string>
+    <string name="waiting_operations">Please wait&#8230;</string>
 
     <!-- Favorites -->
     <string name="menu_favorites">Favorites</string>
@@ -500,9 +469,14 @@
     <string name="shortcut_library_office">Office</string>
     <string name="shortcut_library_pdf">Office</string>
     <string name="shortcut_local">Device Shortcut</string>
-    <string name="shortcut_local_downloads">Downloads</string>
+    <string name="shortcut_local_downloads">Device Downloads</string>
     <string name="shortcut_local_sdcard">SD Card</string>
     
     <string name="action_select">Select</string>
+    
+    <!-- Notification -->
+    <string name="batch_download_complete">%s documents available offline</string>
+    <string name="batch_download_failed">%s download transfer</string>
+    
     
 </resources>

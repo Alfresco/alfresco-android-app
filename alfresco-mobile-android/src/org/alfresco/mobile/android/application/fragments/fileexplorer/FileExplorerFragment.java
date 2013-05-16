@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
@@ -75,6 +76,12 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     private File parent;
 
     private View vroot;
+    
+    private FileActions nActions;
+
+    private File createFile;
+
+    private long lastModifiedDate;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -162,8 +169,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
             if (parent != null)
             {
-                //TextView tv =   ((TextView)vroot.findViewById(R.id.path));
-                //tv.setText(parent.getPath().replaceAll("/", " > "));
+                // TextView tv = ((TextView)vroot.findViewById(R.id.path));
+                // tv.setText(parent.getPath().replaceAll("/", " > "));
                 getLoaderManager().initLoader(FileExplorerLoader.ID, b, this);
                 getLoaderManager().getLoader(FileExplorerLoader.ID).forceLoad();
             }
@@ -184,18 +191,9 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             continueLoading(loaderId, callback);
         }
 
-        vroot.setBackgroundColor(Color.WHITE);
-
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        }
-        
-      
-
         return vroot;
     }
+
 
     @Override
     public void onResume()
@@ -217,8 +215,20 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 createFile.delete();
             }
         }
+        
+        if (getDialog() != null)
+        {
+            // getDialog().setTitle(titleId);
+        }
+        else
+        {
+            getActivity().getActionBar().show();
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        }
         getActivity().invalidateOptionsMenu();
-
+        
+        
         if (receiver == null)
         {
             IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETE);
@@ -262,13 +272,9 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             nActions.finish();
         }
 
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            getActivity().invalidateOptionsMenu();
-
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        }
+        getActivity().invalidateOptionsMenu();
+        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         super.onStop();
     }
 
@@ -301,7 +307,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             {
                 if (file.isDirectory())
                 {
-                    displayNavigation(file, true);
+                    // displayNavigation(file, true);
+                    ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
                 }
                 else
                 {
@@ -332,10 +339,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         else
         {
             selectedItems.clear();
-            if (!hideDetails && file.isFile() && DisplayUtils.hasCentralPane(getActivity()))
-            {
-                selectedItems.add(file);
-            }
         }
 
         if (hideDetails)
@@ -346,8 +349,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             if (file.isDirectory())
             {
-                displayNavigation(file, true);
-                // ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+                // displayNavigation(file, true);
+                ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
             }
             else
             {
@@ -368,23 +371,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         }
         adapter.notifyDataSetChanged();
     }
-
-    private void displayNavigation(File file, boolean backstack)
-    {
-        BaseFragment frag = FileExplorerFragment.newInstance(file);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getMainPaneId(getActivity()),
-                FileExplorerFragment.TAG, backstack);
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // ACTION MODE
-    // //////////////////////////////////////////////////////////////////////
-    private FileActions nActions;
-
-    private File createFile;
-
-    private long lastModifiedDate;
-
+    
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
@@ -439,10 +426,10 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
 
-            MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST + MenuActionItem.MENU_CREATE_FOLDER,
-                    R.string.folder_create);
+            /*MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST
+                    + MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
             mi.setIcon(R.drawable.ic_add_folder);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         }
     }
 
@@ -485,6 +472,21 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
         }
     }
+    
+    public void createFolder()
+    {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag(CreateDirectoryDialogFragment.TAG);
+        if (prev != null)
+        {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        CreateDirectoryDialogFragment.newInstance(getParent()).show(ft, CreateDirectoryDialogFragment.TAG);
+
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
@@ -494,7 +496,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (adapter == null) {return;}
+            if (adapter == null) { return; }
 
             if (intent.getExtras() != null)
             {
@@ -538,20 +540,5 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 lv.setAdapter(adapter);
             }
         }
-    }
-
-    public void createFolder()
-    {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateDirectoryDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        CreateDirectoryDialogFragment.newInstance(getParent()).show(ft, CreateDirectoryDialogFragment.TAG);
-
     }
 }

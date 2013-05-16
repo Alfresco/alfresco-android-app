@@ -5,22 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.CursorLoader;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -43,6 +42,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
     private final String sdcardPath;
 
+    private final String downloadPath;
+
     private String topText;
 
     private int mediaTypeId;
@@ -55,6 +56,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         this.fragment = fr;
         this.selectedItems = selectedItems;
         this.sdcardPath = Environment.getExternalStorageDirectory().getPath();
+        File f = StorageManager.getDownloadFolder(context, ((BaseActivity) fr.getActivity()).getCurrentAccount());
+        this.downloadPath = (f != null) ? f.getPath() : sdcardPath;
         this.mediaTypeId = mediaTypeId;
         this.mode = mode;
     }
@@ -92,7 +95,14 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         }
         else
         {
-            vh.bottomText.setText(data.replace(sdcardPath, ""));
+            if (data.startsWith(downloadPath))
+            {
+                vh.bottomText.setText(data.replace(downloadPath, ""));
+            }
+            else
+            {
+                vh.bottomText.setText(data.replace(sdcardPath, ""));
+            }
         }
 
         if (selectedItems != null && selectedItems.contains(f))
@@ -109,14 +119,14 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
     @Override
     protected void updateIcon(GenericViewHolder vh, Cursor cursor)
     {
-        int myID = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
+        //int myID = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         File f = new File(data);
 
         switch (mediaTypeId)
         {
             case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
-                String[] thumbColumns = { MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Thumbnails.IMAGE_ID };
+                /*String[] thumbColumns = { MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Thumbnails.IMAGE_ID };
                 CursorLoader thumbCursorLoader = new CursorLoader(context,
                         MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbColumns,
                         MediaStore.Images.Thumbnails.IMAGE_ID + "=" + myID, null, null);
@@ -134,7 +144,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
                 {
                     vh.icon.setImageResource(R.drawable.mime_img);
                 }
-                thumbCursor.close();
+                thumbCursor.close();*/
+                vh.icon.setImageResource(R.drawable.mime_img);
                 break;
             case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
                 vh.icon.setImageResource(R.drawable.mime_video);
@@ -150,12 +161,12 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(((View) vh.icon),
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-            vh.choose.setVisibility(View.VISIBLE);
-            vh.choose.setTag(R.id.node_action, f);
-            vh.choose.setOnClickListener(new OnClickListener()
+            vh.icon.setVisibility(View.VISIBLE);
+            vh.icon.setTag(R.id.node_action, f);
+            vh.icon.setOnClickListener(new OnClickListener()
             {
 
                 @Override
@@ -186,7 +197,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(((View) vh.icon), null);
         }
     }
 
@@ -203,7 +214,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        if (f.canWrite())
+        if (f.canWrite() && downloadPath != null && f.getPath().startsWith(downloadPath))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
                     R.string.delete);

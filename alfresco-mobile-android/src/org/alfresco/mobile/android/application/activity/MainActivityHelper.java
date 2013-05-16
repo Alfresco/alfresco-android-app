@@ -57,7 +57,7 @@ public class MainActivityHelper
     }
 
     public static Bundle createBundle(Bundle outState, Stack<String> stackCentral, Account currentAccount,
-            DeviceCapture capture, int fragmentQueue, Site displayFromSite, Folder importParent)
+            DeviceCapture capture, int fragmentQueue, Folder importParent)
     {
         Bundle savedInstanceBundle = new Bundle();
 
@@ -71,11 +71,6 @@ public class MainActivityHelper
         }
 
         outState.putInt(PARAM_FRAGMENT_QUEUE, fragmentQueue);
-
-        if (displayFromSite != null)
-        {
-            savedInstanceBundle.putSerializable(PARAM_DISPLAY_FROM_SITE, displayFromSite);
-        }
 
         if (importParent != null)
         {

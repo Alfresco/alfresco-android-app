@@ -141,7 +141,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
             addAll(tmpNodes);
         }
     }
-
+    
     public List<Node> getNodes()
     {
         return originalNodes;

@@ -46,6 +46,7 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.integration.OperationManager;
 import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
 import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentRequest;
@@ -111,6 +112,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     private static final String PARAM_IS_SHORTCUT = "isShortcut";
 
+    private NodeActions nActions;
+
+    private File tmpFile;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -133,6 +138,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         return newInstance(null, null, site);
     }
 
+    public static ChildrenBrowserFragment newInstance(Site site, Folder folder)
+    {
+        return newInstance(folder, null, site);
+    }
+
     private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site)
     {
         ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
@@ -140,14 +150,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(parentFolder, pathFolder, site);
-        if (pathFolder != null)
-        {
-            b.putBoolean(PARAM_IS_SHORTCUT, true);
-        }
-        else
-        {
-            b.putBoolean(PARAM_IS_SHORTCUT, false);
-        }
+        b.putBoolean(PARAM_IS_SHORTCUT, pathFolder != null);
         b.putAll(createBundleArgs(lc, LOAD_AUTO));
         bf.setArguments(b);
         return bf;
@@ -178,6 +181,34 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
 
         super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = null;
+        // In case of Import mode, we wrap the listing with buttons.
+        if (getActivity() instanceof PublicDispatcherActivity)
+        {
+            v = inflater.inflate(R.layout.app_browser_import, container, false);
+            init(v, emptyListMessageId);
+
+            importButton = (Button) v.findViewById(R.id.action_import);
+        }
+        else
+        {
+            v = super.onCreateView(inflater, container, savedInstanceState);
+
+            ListView listView = (ListView) v.findViewById(R.id.listView);
+            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            listView.setClickable(true);
+
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
+
+            listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
+        }
+        return v;
     }
 
     @Override
@@ -245,34 +276,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        View v = null;
-        // In case of Import mode, we wrap the listing with buttons.
-        if (getActivity() instanceof PublicDispatcherActivity)
-        {
-            v = inflater.inflate(R.layout.app_browser_import, container, false);
-            init(v, emptyListMessageId);
-
-            importButton = (Button) v.findViewById(R.id.action_import);
-        }
-        else
-        {
-            v = super.onCreateView(inflater, container, savedInstanceState);
-
-            ListView listView = (ListView) v.findViewById(R.id.listView);
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-            listView.setClickable(true);
-
-            listView.setDivider(null);
-            listView.setDividerHeight(0);
-
-            listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
-        }
-        return v;
-    }
-
-    @Override
     public void onPause()
     {
         getActivity().invalidateOptionsMenu();
@@ -293,6 +296,16 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     }
 
     @Override
+    public void onStop()
+    {
+        if (nActions != null)
+        {
+            nActions.finish();
+        }
+        super.onStop();
+    }
+
+    @Override
     public void onDestroy()
     {
         if (receiver != null)
@@ -302,6 +315,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         super.onDestroy();
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // PATH
+    // //////////////////////////////////////////////////////////////////////
     private void displayPathShortcut()
     {
         // /QUICK PATH
@@ -314,7 +330,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             boolean fromSite = false;
             if (getActivity() instanceof MainActivity)
             {
-                fromSite = ((MainActivity) getActivity()).isDisplayFromSite() != null;
+                fromSite = currentSiteParameter != null;
             }
 
             List<String> listFolder = getPath(pathValue, fromSite);
@@ -335,7 +351,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         boolean fromSite = false;
                         if (getActivity() instanceof MainActivity)
                         {
-                            fromSite = ((MainActivity) getActivity()).isDisplayFromSite() != null;
+                            fromSite = currentSiteParameter != null;
                         }
 
                         // Determine the path
@@ -379,16 +395,18 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             path = new String[] { "/" };
         }
 
+        String tmpPath = "";
+
         List<String> listFolder = new ArrayList<String>(path.length);
         for (int i = path.length - 1; i > -1; i--)
         {
-            pathValue = path[i];
+            tmpPath = path[i];
 
-            if (pathValue.isEmpty())
+            if (tmpPath.isEmpty())
             {
-                pathValue = "/";
+                tmpPath = "/";
             }
-            listFolder.add(pathValue);
+            listFolder.add(tmpPath);
         }
 
         if (fromSite && listFolder.size() > 3)
@@ -397,13 +415,16 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             {
                 listFolder.remove(listFolder.size() - 1);
             }
-            listFolder.add(listFolder.size() - 1, ((MainActivity) getActivity()).isDisplayFromSite().getTitle());
+            listFolder.add(listFolder.size() - 1, currentSiteParameter.getTitle());
             listFolder.remove(listFolder.size() - 1);
         }
 
         return listFolder;
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // LIST ACTIONS
+    // //////////////////////////////////////////////////////////////////////
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
@@ -459,7 +480,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             if (item.isFolder())
             {
-                addNavigationFragment((Folder) item);
+                addNavigationFragment(currentSiteParameter, (Folder) item);
             }
             else
             {
@@ -470,6 +491,57 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
     }
 
+    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    {
+        // We disable long click during import mode.
+        if (mode == MODE_IMPORT) { return false; }
+
+        Node n = (Node) l.getItemAtPosition(position);
+        boolean b = true;
+        if (n instanceof NodePlaceHolder)
+        {
+            getActivity().startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
+            b = false;
+        }
+        else
+        {
+            l.setItemChecked(position, true);
+            b = startSelection(n);
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+                FragmentDisplayer.removeFragment(getActivity(), android.R.id.tabcontent);
+            }
+        }
+        return b;
+    };
+
+    private boolean startSelection(Node item)
+    {
+        if (nActions != null) { return false; }
+
+        selectedItems.clear();
+        selectedItems.add(item);
+
+        // Start the CAB using the ActionMode.Callback defined above
+        nActions = new NodeActions(ChildrenBrowserFragment.this, selectedItems);
+        nActions.setOnFinishModeListerner(new onFinishModeListerner()
+        {
+            @Override
+            public void onFinish()
+            {
+                nActions = null;
+                unselect();
+                refreshListView();
+            }
+        });
+        getActivity().startActionMode(nActions);
+        return true;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // LOADERS
+    // //////////////////////////////////////////////////////////////////////
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
     {
@@ -506,73 +578,15 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         checkImportButton();
     }
 
-    /**
-     * Helper method to enable/disable the import button depending on mode and permission.
-     */
-    private void checkImportButton()
+    @Override
+    public void onLoaderException(Exception e)
     {
-        if (mode == MODE_IMPORT)
-        {
-            boolean enable = false;
-            if (parentFolder != null)
-            {
-                Permissions permission = alfSession.getServiceRegistry().getDocumentFolderService()
-                        .getPermissions(parentFolder);
-                enable = permission.canAddChildren();
-            }
-            importButton.setEnabled(enable);
-        }
-    }
-
-    private NodeActions nActions;
-
-    private File tmpFile;
-
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
-    {
-        // We disable long click during import mode.
-        if (mode == MODE_IMPORT) { return false; }
-
-        Node n = (Node) l.getItemAtPosition(position);
-        boolean b = true;
-        if (n instanceof NodePlaceHolder)
-        {
-            getActivity().startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
-            b = false;
-        }
-        else
-        {
-            l.setItemChecked(position, true);
-            b = startSelection(n);
-        }
-        return b;
-    };
-
-    private boolean startSelection(Node item)
-    {
-        if (nActions != null) { return false; }
-
-        selectedItems.clear();
-        selectedItems.add(item);
-
-        // Start the CAB using the ActionMode.Callback defined above
-        nActions = new NodeActions(ChildrenBrowserFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
-        {
-            @Override
-            public void onFinish()
-            {
-                nActions = null;
-                unselect();
-                refreshListView();
-            }
-        });
-        getActivity().startActionMode(nActions);
-        return true;
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // ACTION BAR ITEM
+    // ACTIONS
     // //////////////////////////////////////////////////////////////////////
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -788,39 +802,48 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         getMenu(session, menu, parentFolder, false);
     }
 
-    @Override
-    public void onStop()
-    {
-        if (nActions != null)
-        {
-            nActions.finish();
-        }
-        super.onStop();
-    }
-
-    public Folder getImportFolder()
-    {
-        return importFolder;
-    }
-
-    @Override
-    public void onLoaderException(Exception e)
-    {
-        setListShown(true);
-        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
-    }
-
-    public void setCreateFile(File newFile)
-    {
-        this.createFile = newFile;
-        this.lastModifiedDate = newFile.lastModified();
-    }
-
+    // //////////////////////////////////////////////////////////////////////
+    // LIST MANAGEMENT UTILS
+    // //////////////////////////////////////////////////////////////////////
     public void unselect()
     {
         selectedItems.clear();
     }
 
+    /**
+     * Remove a site object inside the listing without requesting an HTTP call.
+     * 
+     * @param site : site to remove
+     */
+    public void remove(Node node)
+    {
+        if (adapter != null)
+        {
+            ((AlphabeticNodeAdapter) adapter).remove(node.getName());
+            if (adapter.isEmpty())
+            {
+                displayEmptyView();
+            }
+        }
+    }
+
+    public void selectAll()
+    {
+        if (nActions != null && adapter != null)
+        {
+            nActions.selectNodes(((AlphabeticNodeAdapter) adapter).getNodes());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    public void select(Node updatedNode)
+    {
+        selectedItems.add(updatedNode);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // //////////////////////////////////////////////////////////////////////
     public class TransfertReceiver extends BroadcastReceiver
     {
         @Override
@@ -888,35 +911,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
     }
 
-    /**
-     * Remove a site object inside the listing without requesting an HTTP call.
-     * 
-     * @param site : site to remove
-     */
-    public void remove(Node node)
+    // //////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////
+    public void search(int fragmentPlaceId)
     {
-        if (adapter != null)
-        {
-            ((AlphabeticNodeAdapter) adapter).remove(node.getName());
-            if (adapter.isEmpty())
-            {
-                displayEmptyView();
-            }
-        }
+        FragmentDisplayer.replaceFragment(getActivity(),
+                KeywordSearch.newInstance(folderParameter, currentSiteParameter), fragmentPlaceId, KeywordSearch.TAG,
+                true);
+    }
+    
+    public void setCreateFile(File newFile)
+    {
+        this.createFile = newFile;
+        this.lastModifiedDate = newFile.lastModified();
     }
 
-    public void selectAll()
+    public Folder getImportFolder()
     {
-        if (nActions != null && adapter != null)
-        {
-            nActions.selectNodes(((AlphabeticNodeAdapter) adapter).getNodes());
-            adapter.notifyDataSetChanged();
-        }
-    }
-
-    public void select(Node updatedNode)
-    {
-        selectedItems.add(updatedNode);
+        return importFolder;
     }
 
     @Override
@@ -925,20 +938,31 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         return mode;
     }
 
+    /**
+     * Helper method to enable/disable the import button depending on mode and permission.
+     */
+    private void checkImportButton()
+    {
+        if (mode == MODE_IMPORT)
+        {
+            boolean enable = false;
+            if (parentFolder != null)
+            {
+                Permissions permission = alfSession.getServiceRegistry().getDocumentFolderService()
+                        .getPermissions(parentFolder);
+                enable = permission.canAddChildren();
+            }
+            importButton.setEnabled(enable);
+        }
+    }
+
     public boolean isShortcut()
     {
         return (Boolean) getArguments().get(PARAM_IS_SHORTCUT);
     }
 
-    private void addNavigationFragment(Folder item)
+    private void addNavigationFragment(Site currentSite, Folder item)
     {
-        if (getActivity() instanceof MainActivity)
-        {
-            ((MainActivity) getActivity()).addNavigationFragment(item);
-        }
-        else if (getActivity() instanceof PublicDispatcherActivity)
-        {
-            ((PublicDispatcherActivity) getActivity()).addNavigationFragment(item);
-        }
+        ((BaseActivity) getActivity()).addNavigationFragment(currentSite, item);
     }
 }

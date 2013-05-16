@@ -93,7 +93,7 @@ public class AlphabeticNodeAdapter extends ProgressNodeAdapter
     {
         return 2;
     }
-
+   
     @Override
     public boolean isEnabled(int position)
     {

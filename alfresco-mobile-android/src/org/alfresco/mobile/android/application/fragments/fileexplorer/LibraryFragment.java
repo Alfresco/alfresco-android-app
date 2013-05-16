@@ -75,7 +75,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
 
         mediaTypeId = (Integer) getArguments().get(PARAM_MEDIATYPE_ID);
 
-        adapter = new LibraryCursorAdapter(this, null, R.layout.app_fileexplorer_row, selectedItems, mediaTypeId,
+        adapter = new LibraryCursorAdapter(this, null, R.layout.app_list_progress_row, selectedItems, mediaTypeId,
                 getMode());
         lv.setAdapter(adapter);
         setListShown(false);
@@ -86,13 +86,9 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         vroot = super.onCreateView(inflater, container, savedInstanceState);
-        vroot.setBackgroundColor(Color.WHITE);
 
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        }
+        FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
 
         return vroot;
     }
@@ -104,12 +100,13 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         retrieveTitle();
         if (getDialog() != null)
         {
-            getDialog().setTitle(titleId);
+           // getDialog().setTitle(titleId);
         }
         else
         {
             getActivity().getActionBar().show();
-            getActivity().setTitle(titleId);
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();
