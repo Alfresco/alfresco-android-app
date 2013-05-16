@@ -51,7 +51,7 @@ public class AudioCapture extends DeviceCapture
     {
         super(parent, folder, parentFolder);
         // Default MIME type if it cannot be retrieved from Uri later.
-        MimeType = "audio/3gpp";
+        mimeType = "audio/3gpp";
     }
 
     @Override
@@ -109,7 +109,7 @@ public class AudioCapture extends DeviceCapture
 
                 if (!fileType.isEmpty())
                 {
-                    MimeType = fileType;
+                    mimeType = fileType;
                 }
             }
             else

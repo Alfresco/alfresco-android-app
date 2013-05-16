@@ -73,6 +73,7 @@ import android.content.IntentFilter;
 import android.content.Loader;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -204,7 +205,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             }
             else
             {
-                createFile.delete();
+                if (!createFile.delete())
+                {
+                    Log.w(TAG, createFile.getName() + "is not deleted.");
+                }
                 createFile = null;
             }
         }

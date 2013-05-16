@@ -51,10 +51,6 @@ public class UploadChooseDialogFragment extends DialogFragment
 {
     public static final String TAG = UploadChooseDialogFragment.class.getName();
 
-    private Account currentAccount;
-
-    private String fragmentTag;
-
     private static final String PARAM_ACCOUNT = "account";
 
     private static final String PARAM_FRAGMENT_TAG = "fragmentTag";

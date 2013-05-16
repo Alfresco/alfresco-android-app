@@ -78,7 +78,7 @@ public final class AccountSchema
 
     public static final int COLUMN_IS_PAID_ACCOUNT_ID =  COLUMN_REFRESH_TOKEN_ID + 1;
     
-    public static String[] COLUMN_ALL = { 
+    public static final String[] COLUMN_ALL = { 
         COLUMN_ID, 
         COLUMN_NAME,
         COLUMN_URL,

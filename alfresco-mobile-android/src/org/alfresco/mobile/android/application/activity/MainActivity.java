@@ -66,11 +66,8 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
-import org.alfresco.mobile.android.application.integration.capture.AudioCapture;
 import org.alfresco.mobile.android.application.integration.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.integration.capture.DeviceCaptureHelper;
-import org.alfresco.mobile.android.application.integration.capture.PhotoCapture;
-import org.alfresco.mobile.android.application.integration.capture.VideoCapture;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -194,12 +191,12 @@ public class MainActivity extends BaseActivity
         if (SessionUtils.getAccount(this) != null)
         {
             currentAccount = SessionUtils.getAccount(this);
-            if (currentAccount.getIsPaidAccount() == true)
+            if (currentAccount.getIsPaidAccount())
             {
                 // Check if we've prompted the user for Data Protection yet.
                 // This is needed on new account creation, as the Activity gets
                 // re-created after the account is created.
-                CipherUtils.EncryptionUserInteraction(this);
+                CipherUtils.encryptionUserInteraction(this);
 
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
@@ -1274,7 +1271,7 @@ public class MainActivity extends BaseActivity
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
                         prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
-                        CipherUtils.EncryptionUserInteraction(activity);
+                        CipherUtils.encryptionUserInteraction(activity);
 
                         currentAccount = accountManager.update(currentAccount.getId(), currentAccount.getDescription(),
                                 currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),

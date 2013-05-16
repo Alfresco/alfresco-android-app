@@ -494,7 +494,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (adapter == null) return;
+            if (adapter == null) {return;}
 
             if (intent.getExtras() != null)
             {

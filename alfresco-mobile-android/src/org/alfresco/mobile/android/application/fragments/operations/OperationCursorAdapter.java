@@ -35,7 +35,7 @@ import android.widget.ProgressBar;
 
 public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 {
-    private static final String TAG = OperationCursorAdapter.class.getName();
+    //private static final String TAG = OperationCursorAdapter.class.getName();
 
     public OperationCursorAdapter(Context context, Cursor c, int layoutResourceId)
     {

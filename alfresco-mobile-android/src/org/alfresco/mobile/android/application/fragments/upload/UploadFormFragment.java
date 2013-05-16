@@ -38,9 +38,6 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -124,7 +121,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         getActivity().setTitle(R.string.import_document_title);
-        
+
         rootView = inflater.inflate(R.layout.app_import, container, false);
         if (rootView.findViewById(R.id.listView) != null)
         {
@@ -172,7 +169,10 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
         Intent intent = getActivity().getIntent();
         String action = intent.getAction();
         String type = intent.getType();
-        files.clear();
+        if (files != null)
+        {
+            files.clear();
+        }
 
         try
         {
@@ -250,7 +250,8 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
                     getActivity().finish();
                     return;
                 }
-                if (!files.contains(file)){
+                if (!files.contains(file))
+                {
                     files.add(file);
                 }
             }
@@ -304,8 +305,8 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL, AccountSchema.COLUMN_ACTIVATION
-                + " IS NULL OR " + AccountSchema.COLUMN_ACTIVATION + "= ''", null, null);
+        return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL,
+                AccountSchema.COLUMN_ACTIVATION + " IS NULL OR " + AccountSchema.COLUMN_ACTIVATION + "= ''", null, null);
     }
 
     public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
@@ -346,7 +347,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             lv.setSelection(selectedPosition);
         }
     }
-    
+
     private void retrieveIntentInfo(Uri uri)
     {
         if (uri == null) { throw new AlfrescoAppException(getString(R.string.import_unsupported_intent), true); }
@@ -374,13 +375,12 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             throw new AlfrescoAppException(getString(R.string.error_unknown_filepath), true);
         }
     }
-    
+
     private void refreshImportFolder()
     {
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
-        UploadFolderAdapter adapter = new UploadFolderAdapter(getActivity(), R.layout.app_list_row,
-                IMPORT_FOLDER_LIST);
-        spinner.setAdapter(adapter);
+        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.app_list_row, IMPORT_FOLDER_LIST);
+        spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
 
@@ -415,7 +415,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             add(R.string.menu_browse_root);
         }
     };
-    
+
     private void next()
     {
         long accountId = selectedAccountCursor.getLong(AccountSchema.COLUMN_ID_ID);
@@ -440,13 +440,14 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
                     ((BaseActivity) getActivity()).setCurrentAccount(tmpAccount);
                     ((BaseActivity) getActivity()).setRenditionManager(null);
                     LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
-                            new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, tmpAccount.getId()));
+                            new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(
+                                    IntentIntegrator.EXTRA_ACCOUNT_ID, tmpAccount.getId()));
                     return;
                 }
 
                 // Session is not used by the application so create one.
                 ActionManager.loadAccount(getActivity(), tmpAccount);
-                
+
                 break;
             case R.string.menu_documents:
                 UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);

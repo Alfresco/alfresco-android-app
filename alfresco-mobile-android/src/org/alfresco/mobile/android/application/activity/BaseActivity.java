@@ -96,9 +96,9 @@ public abstract class BaseActivity extends Activity
     protected void onStop()
     {
         super.onStop();
-        for (BroadcastReceiver receiver : receivers)
+        for (BroadcastReceiver bReceiver : receivers)
         {
-            broadcastManager.unregisterReceiver(receiver);
+            broadcastManager.unregisterReceiver(bReceiver);
         }
         receivers.clear();
     }

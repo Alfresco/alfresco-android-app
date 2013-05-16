@@ -15,8 +15,11 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.provider.MediaStore;
 
-public class FileExplorerHelper
+public final class FileExplorerHelper
 {
+    
+    private FileExplorerHelper(){
+    }
 
     private static final String FILEEXPLORER_PREFS = "org.alfresco.mobile.android.fileexplorer.preferences";
 
@@ -91,7 +94,7 @@ public class FileExplorerHelper
                     SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
                     int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
 
-                    if (backStack == false && itemPosition == currentSelection) { return true; }
+                    if (!backStack && itemPosition == currentSelection) { return true; }
 
                     File currentLocation = null;
                     int mediatype = -1;

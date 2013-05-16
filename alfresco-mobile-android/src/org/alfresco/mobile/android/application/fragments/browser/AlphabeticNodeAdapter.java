@@ -32,8 +32,6 @@ import android.widget.TextView;
 
 public class AlphabeticNodeAdapter extends ProgressNodeAdapter
 {
-    private static final String TAG = AlphabeticNodeAdapter.class.getName();
-
     private static final int ITEM_TYPE = 0;
 
     private static final int HEADING_TYPE = 1;
