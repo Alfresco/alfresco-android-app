@@ -106,7 +106,7 @@ public abstract class BaseActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    protected Fragment getFragment(String tag)
+    public Fragment getFragment(String tag)
     {
         return getFragmentManager().findFragmentByTag(tag);
     }
@@ -130,8 +130,14 @@ public abstract class BaseActivity extends Activity
         }
         return id;
     }
+    
+    protected boolean isVisible(String tag)
+    {
+        return getFragmentManager().findFragmentByTag(tag) != null
+                && getFragmentManager().findFragmentByTag(tag).isAdded();
+    }
 
-    protected void displayWaitingDialog()
+    public void displayWaitingDialog()
     {
         if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
         {
@@ -139,7 +145,7 @@ public abstract class BaseActivity extends Activity
         }
     }
 
-    protected void removeWaitingDialog()
+    public void removeWaitingDialog()
     {
         if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) != null)
         {

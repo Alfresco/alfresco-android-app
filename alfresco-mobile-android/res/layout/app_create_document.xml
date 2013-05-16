@@ -32,11 +32,9 @@
             android:id="@+id/document_name"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="3dip"
-            android:layout_marginRight="3dip"
+            android:layout_margin="5dip"
             android:layout_weight="1"
-            android:hint="@string/create_document_name_hint"
-             >
+            android:hint="@string/create_document_name_hint" >
 
             <requestFocus />
         </EditText>
@@ -45,7 +43,8 @@
             android:id="@+id/document_extension"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="3dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="5dip"
             android:text=".xxxx" />
     </LinearLayout>
 
@@ -58,14 +57,26 @@
         android:textColor="@color/dark_red"
         android:visibility="gone" />
 
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical" />
+
     <LinearLayout
+        style="?android:attr/buttonBarStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:layout_gravity="bottom"
+        android:gravity="bottom"
+        android:measureWithLargestChild="true"
+        android:orientation="horizontal"
+        android:paddingLeft="2dip"
+        android:paddingRight="2dip"
+        android:paddingTop="0dip" >
 
         <Button
             android:id="@+id/cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -73,6 +84,7 @@
 
         <Button
             android:id="@+id/create_document"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"

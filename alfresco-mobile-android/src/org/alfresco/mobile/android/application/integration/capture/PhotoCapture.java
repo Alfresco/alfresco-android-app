@@ -21,8 +21,6 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -40,7 +38,12 @@ public class PhotoCapture extends DeviceCapture
 
     public PhotoCapture(Activity parent, Folder folder)
     {
-        super(parent, folder);
+        this(parent, folder, null);
+    }
+    
+    public PhotoCapture(Activity parent, Folder folder, File parentFolder)
+    {
+        super(parent, folder, parentFolder);
     }
 
     @Override
@@ -59,11 +62,10 @@ public class PhotoCapture extends DeviceCapture
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                File folder = StorageManager.getCaptureFolder(parentActivity, SessionUtils.getAccount(parentActivity)
-                        .getUrl(), SessionUtils.getAccount(parentActivity).getUsername());
+                File folder = parentFolder;
                 if (folder != null)
                 {
-                    payload = new File(folder.getPath(), createFilename("", "jpg"));
+                    payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
 
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
 
