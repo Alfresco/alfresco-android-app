@@ -32,15 +32,15 @@ import android.util.Log;
 
 public class IOUtils
 {
-    static final private String TAG = "IOUtils";
+    private static final String TAG = "IOUtils";
 
-    static Vector<String> filesEncrypted = null;
+    private static Vector<String> filesEncrypted = null;
 
-    static Vector<String> filesDecrypted = null;
+    private static Vector<String> filesDecrypted = null;
 
-    static final String encryptionExtension = ".etmp";
+    private static final String ENCRYPTION_EXTENSION = ".etmp";
 
-    static final String decryptionExtension = ".utmp";
+    private static final String DECRYPTION_EXTENSION = ".utmp";
 
     public static final String TEMP_PREFIX = "Decrypted@";
 
@@ -65,7 +65,7 @@ public class IOUtils
             String name = f.getName();
             File newFile = new File(f.getParent() + "/" + name.substring(TEMP_LEN, name.length()));
 
-            if (f.renameTo(newFile)) return newFile;
+            if (f.renameTo(newFile)) { return newFile; }
         }
 
         return f;
@@ -176,11 +176,14 @@ public class IOUtils
 
                     if (!result)
                     {
-                        Log.e("Alfresco", "File copy failed for " + sourceFile.getName());
+                        Log.e(TAG, "File copy failed for " + sourceFile.getName());
                         break;
                     }
 
-                    if (move) sourceFile.delete();
+                    if (move)
+                    {
+                        sourceFile.delete();
+                    }
                 }
             }
 
@@ -196,8 +199,8 @@ public class IOUtils
     }
 
     /*
-     * Encrypt an entire folder, recursively if required. Rollback is
-     * implemented if any failures occur. NOTE: This method is not thread-safe.
+     * Encrypt an entire folder, recursively if required. Rollback is implemented if any failures occur. NOTE: This
+     * method is not thread-safe.
      */
     public static boolean encryptFiles(Context ctxt, String sourceFolder, boolean recursive)
     {
@@ -223,7 +226,7 @@ public class IOUtils
             for (int i = 0; i < file.length; i++)
             {
                 File sourceFile = file[i];
-                String destFilename = file[i].getPath() + encryptionExtension;
+                String destFilename = file[i].getPath() + ENCRYPTION_EXTENSION;
 
                 if (!sourceFile.isHidden())
                 {
@@ -257,7 +260,7 @@ public class IOUtils
                             Log.i("Alfresco", "Encryption rollback in progress...");
                             for (int j = 0; j < filesEncrypted.size(); j++)
                             {
-                                if (new File(filesEncrypted.get(j) + encryptionExtension).delete())
+                                if (new File(filesEncrypted.get(j) + ENCRYPTION_EXTENSION).delete())
                                     Log.i("Alfresco", "Deleted encrypted version of " + filesEncrypted.get(j));
                             }
                             filesEncrypted.clear();
@@ -277,7 +280,7 @@ public class IOUtils
                 for (int j = 0; j < filesEncrypted.size(); j++)
                 {
                     File src = new File(filesEncrypted.get(j));
-                    File dest = new File(filesEncrypted.get(j) + encryptionExtension);
+                    File dest = new File(filesEncrypted.get(j) + ENCRYPTION_EXTENSION);
 
                     //
                     // Two-stage delete for failsafe operation.
@@ -320,8 +323,8 @@ public class IOUtils
     }
 
     /*
-     * Encrypt an entire folder, recursively if required. Rollback is
-     * implemented if any failures occur. NOTE: This method is not thread-safe.
+     * Encrypt an entire folder, recursively if required. Rollback is implemented if any failures occur. NOTE: This
+     * method is not thread-safe.
      */
     public static boolean decryptFiles(Context ctxt, String sourceFolder, boolean recursive)
     {
@@ -347,7 +350,7 @@ public class IOUtils
             for (int i = 0; i < file.length; i++)
             {
                 File sourceFile = file[i];
-                String destFilename = file[i].getPath() + decryptionExtension;
+                String destFilename = file[i].getPath() + DECRYPTION_EXTENSION;
 
                 if (!sourceFile.isHidden())
                 {
@@ -381,7 +384,7 @@ public class IOUtils
                             Log.i("Alfresco", "Decryption rollback in progress...");
                             for (int j = 0; j < filesDecrypted.size(); j++)
                             {
-                                if (new File(filesDecrypted.get(j) + decryptionExtension).delete())
+                                if (new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION).delete())
                                     Log.i("Alfresco", "Deleted decrypted version of " + filesDecrypted.get(j));
                             }
                             filesDecrypted.clear();
@@ -401,7 +404,7 @@ public class IOUtils
                 for (int j = 0; j < filesDecrypted.size(); j++)
                 {
                     File src = new File(filesDecrypted.get(j));
-                    File dest = new File(filesDecrypted.get(j) + decryptionExtension);
+                    File dest = new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION);
 
                     //
                     // Two-stage delete for failsafe operation.
@@ -438,13 +441,13 @@ public class IOUtils
             return false;
         }
     }
-    
-    public static String extractFileExtension(String fileName) {
+
+    public static String extractFileExtension(String fileName)
+    {
         int dotInd = fileName.lastIndexOf('.');
 
         // if dot is in the first position,
         // we are dealing with a hidden file rather than an extension
-        return (dotInd > 0 && dotInd < fileName.length()) ? fileName
-                .substring(dotInd + 1) : null;
+        return (dotInd > 0 && dotInd < fileName.length()) ? fileName.substring(dotInd + 1) : null;
     }
 }

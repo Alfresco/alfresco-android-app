@@ -28,8 +28,11 @@ import android.content.SharedPreferences;
  * 
  * @author Jean Marie Pascal
  */
-public class AccountsPreferences
+public final class AccountsPreferences
 {
+    private AccountsPreferences(){
+    }
+    
     public static final String ACCOUNT_PREFS = "org.alfresco.mobile.android.account.preferences";
 
     public static final String ACCOUNT_DEFAULT = "org.alfresco.mobile.android.account.preferences.default";

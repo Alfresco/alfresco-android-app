@@ -38,7 +38,6 @@
 
     <style name="alfrescotheme.TextAppearance.Widget.TabWidget" parent="@android:TextAppearance.Widget.TabWidget">
         <item name="android:textColor">@color/tab_indicator_text</item>
-        <item name="android:textAllCaps">true</item>
         <item name="android:textSize">@dimen/browse_toptext_size</item>
     </style>
     

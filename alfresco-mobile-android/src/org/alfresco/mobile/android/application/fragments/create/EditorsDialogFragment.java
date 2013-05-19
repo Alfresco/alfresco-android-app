@@ -22,11 +22,8 @@ import static org.alfresco.mobile.android.application.fragments.create.DocumentT
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;

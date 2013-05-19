@@ -24,8 +24,6 @@ public class FileExplorerMenuFragment extends BaseFragment
 {
     public static final String TAG = FileExplorerMenuFragment.class.getName();
 
-    private View rootView = null;
-
     private View currentSelectedButton = null;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -42,7 +40,7 @@ public class FileExplorerMenuFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.app_fileexplorer_menu, container, false);
+        View rootView = inflater.inflate(R.layout.app_fileexplorer_menu, container, false);
         initClickListener(rootView);
 
         Button b = (Button) rootView.findViewById(R.id.shortcut_alfresco_downloads);

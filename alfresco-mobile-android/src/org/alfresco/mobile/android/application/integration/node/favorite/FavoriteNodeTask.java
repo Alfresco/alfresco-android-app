@@ -68,6 +68,10 @@ public class FavoriteNodeTask extends NodeOperationTask<Boolean>
         catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
+            if (result == null)
+            {
+                result = new LoaderResult<Boolean>();
+            }
             result.setException(e);
         }
 

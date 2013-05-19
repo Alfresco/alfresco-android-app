@@ -27,16 +27,11 @@
     <!-- =============================================================== -->
     <!-- COLOR -->
     <!-- =============================================================== -->
-    <color name="actionbar_grey_top">#A4A4A4</color>
     <color name="actionbar_grey_bottom">#757575</color>
     <color name="emphasis">#31b6e7</color>
-    <color name="grey_darker">#2F3231</color>
-    <color name="grey_dark">#3F4241</color>
     <color name="grey_light">#8C8E8D</color>
     <color name="grey_text">#818282</color>
     <color name="grey_underline">#535554</color>
-    <color name="sliding_grey_dark">#494F57</color>
-    <color name="sliding_grey_darker">#3B4148</color>
     <color name="grey_lighter">#eeeeee</color>
     <color name="sliding_account_background">#282828</color>
     <color name="dark_red">#ffcc0000</color>
@@ -44,6 +39,14 @@
     <!-- =============================================================== -->
     <!-- STYLE -->
     <!-- =============================================================== -->
+    <style name="white_background">
+        <item name="android:background">@android:color/white</item>
+    </style>
+    
+    <style name="background_light">
+        <item name="android:background">@android:color/background_light</item>
+    </style>
+    
     <style name="list_item_icon">
         <item name="android:layout_gravity">center</item>
         <item name="android:adjustViewBounds">false</item>
@@ -60,7 +63,7 @@
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/top_text_size</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
 
@@ -70,7 +73,7 @@
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:textSize">@dimen/bottom_text_size</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
         <item name="android:textColor">@android:color/secondary_text_light</item>
     </style>
 

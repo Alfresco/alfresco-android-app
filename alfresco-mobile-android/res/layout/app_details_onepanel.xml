@@ -36,38 +36,32 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="0dip"
+                android:layout_gravity="center"
                 android:layout_margin="4dip"
-                android:orientation="horizontal" >
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="4dip" >
 
-                <LinearLayout
-                    android:layout_width="0dip"
+                <TextView
+                    android:id="@+id/title"
+                    style="@style/list_item_toptext"
+                    android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingLeft="4dip" >
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:paddingLeft="0dip"
+                    android:paddingRight="@dimen/properties_details_padding"
+                    android:text="Commotus post primos advocatos super decere primos consulens advocatos est sonu perferens vocis fidis securius.JPG" />
 
-                    <TextView
-                        android:id="@+id/title"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="left"
-                        android:layout_margin="0dp"
-                        android:paddingLeft="0dip"
-                        android:paddingRight="@dimen/properties_details_padding"
-                        android:text="Green Grasssd fgsdf gdsf gds fgds fg fdgsdf gsdf gsdf gsd fgdsfg sdf.JPG" />
-
-                    <TextView
-                        android:id="@+id/details"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="0dip"
-                        android:paddingLeft="0dip"
-                        android:text="G419 days ago - 142Kb, version 1.0" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/details"
+                    style="@style/list_item_bottomtext"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="0dip"
+                    android:paddingLeft="0dip"
+                    android:text="G419 days ago - 142Kb, version 1.0" />
             </LinearLayout>
 
             <LinearLayout
@@ -193,18 +187,12 @@
         android:orientation="vertical"
         android:visibility="gone" >
 
-        <ImageView
-            android:id="@+id/empty_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_empty" />
-
         <TextView
             android:id="@+id/empty_text"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center" />
+            android:gravity="center"
+            android:drawableTop="@drawable/ic_empty" />
     </LinearLayout>
 
 </FrameLayout>

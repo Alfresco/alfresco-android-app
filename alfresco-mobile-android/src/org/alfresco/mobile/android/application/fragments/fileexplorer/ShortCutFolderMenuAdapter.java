@@ -63,9 +63,9 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
             case R.string.shortcut_local_sdcard:
                 iconId = R.drawable.ic_sdcard;
                 break;
-            case R.string.shortcut_local_downloads:
-                iconId = R.drawable.ic_download_dark;
-                break;
+            //case R.string.shortcut_local_downloads:
+            //    iconId = R.drawable.ic_download_dark;
+            //    break;
             case R.string.shortcut_library_office:
                 iconId = R.drawable.ic_office;
                 break;
@@ -111,7 +111,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
 
             add(R.string.shortcut_local);
             add(R.string.shortcut_local_sdcard);
-            add(R.string.shortcut_local_downloads);
+            //add(R.string.shortcut_local_downloads);
 
             add(R.string.shortcut_library);
             add(R.string.shortcut_library_office);

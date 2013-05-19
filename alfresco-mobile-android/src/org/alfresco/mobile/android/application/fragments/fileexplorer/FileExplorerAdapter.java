@@ -26,11 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -70,6 +72,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
 
     private int mode = ListingModeFragment.MODE_LISTING;
 
+    private String downloadPath;
+
     public FileExplorerAdapter(Fragment fr, int textViewResourceId, List<File> listItems)
     {
         this(fr, textViewResourceId, ListingModeFragment.MODE_LISTING, listItems, null);
@@ -83,6 +87,12 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         this.selectedItems = selectedItems;
         this.originalFiles = listItems;
         this.mode = mode;
+        if (((BaseActivity) fr.getActivity()).getCurrentAccount() != null)
+        {
+            File f = StorageManager.getDownloadFolder(fr.getActivity(),
+                    ((BaseActivity) fr.getActivity()).getCurrentAccount());
+            this.downloadPath = (f != null) ? f.getPath() : null;
+        }
     }
 
     @Override
@@ -137,14 +147,15 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
         }
 
-        if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity)
+        if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity
+                && ((downloadPath != null && item.getPath().startsWith(downloadPath)) || (item.isFile())))
         {
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(((View) vh.icon),
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-            vh.choose.setVisibility(View.VISIBLE);
-            vh.choose.setTag(R.id.node_action, item);
-            vh.choose.setOnClickListener(new OnClickListener()
+            vh.icon.setVisibility(View.VISIBLE);
+            vh.icon.setTag(R.id.node_action, item);
+            vh.icon.setOnClickListener(new OnClickListener()
             {
 
                 @Override
@@ -175,7 +186,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(((View) vh.icon), null);
         }
     }
 
@@ -271,9 +282,13 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE, R.string.share);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
+                    R.string.upload);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        if (f.canWrite())
+        if (f.canWrite() && downloadPath != null && f.getPath().startsWith(downloadPath))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
                     R.string.action_rename);
@@ -292,6 +307,10 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_UPLOAD:
+                onMenuItemClick = true;
+                ActionManager.actionUpload((Activity) getContext(), selectedOptionItems.get(0));
+                break;
             case MenuActionItem.MENU_SHARE:
                 onMenuItemClick = true;
                 ActionManager.actionShareContent((Activity) getContext(), selectedOptionItems.get(0));

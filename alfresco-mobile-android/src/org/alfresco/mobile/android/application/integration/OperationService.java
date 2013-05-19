@@ -101,8 +101,6 @@ public class OperationService<T> extends Service
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private OperationReceiver receiver;
-
     // ////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////
@@ -117,8 +115,7 @@ public class OperationService<T> extends Service
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATIONS_STOP);
         intentFilter.addAction(OperationManager.ACTION_DATA_CHANGED);
         intentFilter.addAction(IntentIntegrator.ACTION_OPERATIONS_CANCEL);
-        receiver = new OperationReceiver();
-        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(receiver, intentFilter);
+        LocalBroadcastManager.getInstance(getBaseContext()).registerReceiver(new OperationReceiver(), intentFilter);
     }
 
     // ////////////////////////////////////////////////////

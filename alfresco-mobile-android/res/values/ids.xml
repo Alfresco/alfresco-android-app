@@ -23,30 +23,29 @@
     <!-- LOADERS ID -->
     <item name="tab_history" type="id"/>
 
-    <bool name="tablet_middle">false</bool>
-
     <item name="tag_account" type="id"/>
     <item name="tag_action" type="id"/>
-    
     <item name="site_action" type="id"/>
     <item name="node_action" type="id"/>
-    
     <item name="operation_id" type="id"/>
     <item name="operation_status" type="id"/>
+
+    <!-- Account -->
+    <string name="account_service_document">/alfresco</string>
     
-     <!-- Settings -->
+    
+    <!-- Settings -->
     <string name="passcode_enable_key">TurnPasscodeKey</string>
     <string name="favorite_sync">favoriteSync</string>
-    
-    
+
     <!-- HELP -->
     <string name="help_path">Help/</string>
     <string name="help_user_guide">Alfresco_Mobile_Android_App_User_Guide.pdf</string>
-    
+
     <!-- Bamboo Build Number -->
     <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
-    
+
     <!-- Cloud Share URL -->
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
-    
+
 </resources>

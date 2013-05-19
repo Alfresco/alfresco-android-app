@@ -66,11 +66,8 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.integration.OperationSchema;
-import org.alfresco.mobile.android.application.integration.capture.AudioCapture;
 import org.alfresco.mobile.android.application.integration.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.integration.capture.DeviceCaptureHelper;
-import org.alfresco.mobile.android.application.integration.capture.PhotoCapture;
-import org.alfresco.mobile.android.application.integration.capture.VideoCapture;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -134,7 +131,7 @@ public class MainActivity extends BaseActivity
     private Stack<String> stackCentral = new Stack<String>();
 
     // Available objects for fragments
-    private Site displayFromSite = null;
+    // private Site displayFromSite = null;
 
     private Folder importParent;
 
@@ -176,7 +173,7 @@ public class MainActivity extends BaseActivity
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
             currentAccount = helper.getCurrentAccount();
-            displayFromSite = helper.getSite();
+            // displayFromSite = helper.getSite();
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
             if (helper.getDeviceCapture() != null)
@@ -194,12 +191,12 @@ public class MainActivity extends BaseActivity
         if (SessionUtils.getAccount(this) != null)
         {
             currentAccount = SessionUtils.getAccount(this);
-            if (currentAccount.getIsPaidAccount() == true)
+            if (currentAccount.getIsPaidAccount())
             {
                 // Check if we've prompted the user for Data Protection yet.
                 // This is needed on new account creation, as the Activity gets
                 // re-created after the account is created.
-                CipherUtils.EncryptionUserInteraction(this);
+                CipherUtils.encryptionUserInteraction(this);
 
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
@@ -361,7 +358,7 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
 
         outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, stackCentral,
-                currentAccount, capture, fragmentQueue, displayFromSite, importParent));
+                currentAccount, capture, fragmentQueue, importParent));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -445,7 +442,6 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_browse_root:
                 if (!checkSession(R.id.menu_browse_root)) { return; }
-                setDisplayFromSite(null);
                 frag = ChildrenBrowserFragment.newInstance(getCurrentSession().getRootFolder());
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
@@ -467,7 +463,7 @@ public class MainActivity extends BaseActivity
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         FavoritesFragment.TAG, true);
                 break;
-            case R.id.menu_documents:
+            case R.id.menu_downloads:
                 if (currentAccount == null)
                 {
                     MessengerManager.showLongToast(this, getString(R.string.loginfirst));
@@ -579,7 +575,6 @@ public class MainActivity extends BaseActivity
     {
         clearScreen();
         clearCentralPane();
-        setDisplayFromSite(s);
         super.addNavigationFragment(s);
     }
 
@@ -587,30 +582,15 @@ public class MainActivity extends BaseActivity
     {
         clearScreen();
         clearCentralPane();
-
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            BaseFragment frag = FileExplorerMenuFragment.newInstance();
-            FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
-                    FileExplorerMenuFragment.TAG, true);
-        }
-        else
-        {
-            FileExplorerHelper.setSelection(this);
-            FileExplorerHelper.displayNavigationMode(this, ListingModeFragment.MODE_LISTING);
-        }
+        FileExplorerHelper.setSelection(this);
+        FileExplorerHelper.displayNavigationMode(this, ListingModeFragment.MODE_LISTING);
     }
 
     public void addLocalFileNavigationFragment(File file)
     {
-        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            stackCentral.clear();
-            stackCentral.push(FileExplorerFragment.TAG);
-        }
         BaseFragment frag = FileExplorerFragment.newInstance(file);
-        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), FileExplorerFragment.TAG, b);
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), FileExplorerFragment.TAG,
+                true);
     }
 
     public void addLocalFileNavigationFragment(int mediaType)
@@ -923,9 +903,7 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_SEARCH_FOLDER:
-                FragmentDisplayer.replaceFragment(this,
-                        KeywordSearch.newInstance(getImportParent(), isDisplayFromSite()), getFragmentPlace(false),
-                        KeywordSearch.TAG, true);
+                ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).search(getFragmentPlace(false));
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
@@ -942,11 +920,6 @@ public class MainActivity extends BaseActivity
                 {
                     ((FileExplorerFragment) getFragment(FileExplorerFragment.TAG)).createFolder();
                 }
-                return true;
-
-            case MenuActionItem.MENU_SHORTCUT:
-                BaseFragment frag = FileExplorerMenuFragment.newInstance();
-                frag.show(getFragmentManager(), FileExplorerMenuFragment.TAG);
                 return true;
 
             case MenuActionItem.MENU_CREATE_DOCUMENT:
@@ -1037,11 +1010,6 @@ public class MainActivity extends BaseActivity
 
                 boolean backStack = true;
 
-                if (fr instanceof FileExplorerMenuFragment)
-                {
-                    backStack = false;
-                }
-
                 if (fr instanceof AccountsFragment)
                 {
                     ((AccountsFragment) fr).unselect();
@@ -1121,17 +1089,6 @@ public class MainActivity extends BaseActivity
         {
             return true;
         }
-    }
-
-    public Site isDisplayFromSite()
-    {
-        return displayFromSite;
-    }
-
-    // For dropdown view in childrenbrowser
-    public void setDisplayFromSite(Site site)
-    {
-        this.displayFromSite = site;
     }
 
     // For Creating file in childrenbrowser
@@ -1274,7 +1231,7 @@ public class MainActivity extends BaseActivity
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
                         prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
-                        CipherUtils.EncryptionUserInteraction(activity);
+                        CipherUtils.encryptionUserInteraction(activity);
 
                         currentAccount = accountManager.update(currentAccount.getId(), currentAccount.getDescription(),
                                 currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),

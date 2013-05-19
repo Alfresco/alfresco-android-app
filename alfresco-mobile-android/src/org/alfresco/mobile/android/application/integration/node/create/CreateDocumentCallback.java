@@ -42,7 +42,7 @@ import android.content.Context;
  */
 public class CreateDocumentCallback extends AbstractOperationCallback<Document>
 {
-    private static final String TAG = CreateDocumentCallback.class.getName();
+    //private static final String TAG = CreateDocumentCallback.class.getName();
 
     public CreateDocumentCallback(Context context, int totalItems, int pendingItems)
     {
