@@ -21,13 +21,11 @@ import java.util.Stack;
 
 import org.alfresco.mobile.android.application.R;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 
-@TargetApi(13)
-public class FragmentDisplayer
+public final class FragmentDisplayer
 {
 
     private FragmentDisplayer()

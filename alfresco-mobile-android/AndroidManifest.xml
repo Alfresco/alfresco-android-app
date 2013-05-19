@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
@@ -23,7 +23,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -36,7 +36,8 @@
         android:icon="@drawable/ic_alfresco_logo"
         android:label="@string/app_name"
         android:logo="@drawable/ic_alfresco"
-        android:theme="@style/alfrescotheme" >
+        android:theme="@style/alfrescotheme"
+        android:allowBackup="false" >
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->
@@ -45,6 +46,7 @@
             android:name="org.alfresco.mobile.android.application.activity.HomeScreenActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
+
             <!-- Internal : Sign up cloud -->
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
@@ -66,13 +68,11 @@
             android:logo="@drawable/ic_alfresco"
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize" >
-            
-             <intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
 
@@ -124,12 +124,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
-                
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:mimeType="*/*" />
             </intent-filter>
-              <intent-filter>
+            <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -140,17 +140,15 @@
             android:name="org.alfresco.mobile.android.application.integration.OperationContentProvider"
             android:authorities="org.alfresco.mobile.android.provider"
             android:exported="false" />
-        
         <provider
             android:name="org.alfresco.mobile.android.application.accounts.AccountProvider"
             android:authorities="org.alfresco.mobile.android.provider.accounts"
             android:exported="false" />
 
         <!-- Private Services for upload and notification. -->
-         <service
+        <service
             android:name="org.alfresco.mobile.android.application.integration.OperationService"
-            android:exported="false"
-             />
+            android:exported="false" />
     </application>
 
 </manifest>

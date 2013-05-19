@@ -17,15 +17,14 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/white_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/background_light"
-    android:fillViewport="true" >
+    android:fillViewport="true">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <LinearLayout
@@ -57,7 +56,7 @@
                 android:id="@+id/about_description"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:text="Description"
+                android:text="@string/about_description_title"
                 android:textSize="@dimen/about_text_size" />
         </LinearLayout>
 
@@ -74,7 +73,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="0.1"
                 android:textSize="@dimen/about_text_size" />
             
             <TextView
@@ -82,7 +80,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_weight="0.1"
                 android:textSize="@dimen/about_text_size" />
         </LinearLayout>
     </LinearLayout>

@@ -75,23 +75,6 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
         return args;
     }
 
-    @Override
-    public void onStart()
-    {
-        retrieveTitle();
-        if (getDialog() != null)
-        {
-            getDialog().setTitle(titleId);
-        }
-        else
-        {
-            getActivity().getActionBar().show();
-            getActivity().setTitle(titleId);
-        }
-        getActivity().invalidateOptionsMenu();
-        super.onStart();
-    }
-
     private void retrieveTitle()
     {
         switch (getMode())
@@ -177,7 +160,7 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
 
         if (adapter == null)
         {
-            adapter = new FileExplorerAdapter(this, R.layout.app_fileexplorer_row, getMode(), new ArrayList<File>(0),
+            adapter = new FileExplorerAdapter(this, R.layout.app_list_progress_row, getMode(), new ArrayList<File>(0),
                     selectedItems);
         }
 

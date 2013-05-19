@@ -24,183 +24,168 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/account_authentication"
+        style="@style/sectionHeader"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content"
+        android:text="@string/account_authentication"
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/account_authentication"
-            style="@style/sectionHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_authentication"
-            android:visibility="gone" />
+    <TableLayout
+        android:id="@+id/default_server"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="1"
+        android:stretchColumns="1" >
 
-        <TableLayout
-            android:id="@+id/default_server"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:shrinkColumns="1"
-            android:stretchColumns="1" >
+        <TableRow
+            android:id="@+id/repository_username_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-            <TableRow
-                android:id="@+id/repository_username_group"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:text="@string/account_username" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_username" />
-
-                <EditText
-                    android:id="@+id/repository_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/required"
-                    android:inputType="text"
-                    >
-                </EditText>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/repository_password_group"
+            <EditText
+                android:id="@+id/repository_username"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:hint="@string/required"
+                android:inputType="text" >
+            </EditText>
+        </TableRow>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_password" />
+        <TableRow
+            android:id="@+id/repository_password_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-                <EditText
-                    android:id="@+id/repository_password"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/required"
-                    android:inputType="textPassword"
-                   >
-                </EditText>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/repository_hostname_group"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:text="@string/account_password" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_hostname" />
-
-                <EditText
-                    android:id="@+id/repository_hostname"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/account_hostname_hint"
-                    android:inputType="text"
-                     >
-                </EditText>
-            </TableRow>
-
-            <TableRow
+            <EditText
+                android:id="@+id/repository_password"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:hint="@string/required"
+                android:inputType="textPassword" >
+            </EditText>
+        </TableRow>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_description" />
+        <TableRow
+            android:id="@+id/repository_hostname_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-                <EditText
-                    android:id="@+id/repository_description"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/account_description_hint"
-                    android:inputType="text"
-                     >
-                </EditText>
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/repository_https_group"
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:text="@string/account_hostname" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:text="@string/account_https" />
-
-                <CheckBox
-                    android:id="@+id/repository_https"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:checked="true" />
-            </TableRow>
-        </TableLayout>
-
-        <TextView
-            android:id="@+id/advanced"
-            style="@style/sectionHeader"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/account_advanced" />
-
-        <TableLayout
-            android:id="@+id/advanced_settings"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:shrinkColumns="1"
-            android:stretchColumns="1" >
-
-            <TableRow
-                android:id="@+id/tableRow3"
+            <EditText
+                android:id="@+id/repository_hostname"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:hint="@string/account_hostname_hint"
+                android:inputType="text" >
+            </EditText>
+        </TableRow>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_port" />
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
 
-                <EditText
-                    android:id="@+id/repository_port"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/optional"
-                    android:inputType="number"
-                    android:text="80" >
-                </EditText>
-            </TableRow>
-
-            <TableRow
+            <TextView
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content"
+                android:text="@string/account_description" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/account_servicedocument" />
-
-                <EditText
-                    android:id="@+id/repository_servicedocument"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/optional"
-                    android:inputType="text"
-                    android:text="/alfresco" >
-                </EditText>
-            </TableRow>
-
-            <TableRow
+            <EditText
+                android:id="@+id/repository_description"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
+                android:layout_height="wrap_content"
+                android:hint="@string/account_description_hint"
+                android:inputType="text" >
+            </EditText>
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/repository_https_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/account_https" />
+
+            <CheckBox
+                android:id="@+id/repository_https"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:checked="true" />
+        </TableRow>
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/advanced"
+        style="@style/sectionHeader"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/account_advanced" />
+
+    <TableLayout
+        android:id="@+id/advanced_settings"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:shrinkColumns="1"
+        android:stretchColumns="1" >
+
+        <TableRow
+            android:id="@+id/tableRow3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account_port" />
+
+            <EditText
+                android:id="@+id/repository_port"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/optional"
+                android:inputType="number"
+                >
+            </EditText>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/account_servicedocument" />
+
+            <EditText
+                android:id="@+id/repository_servicedocument"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/optional"
+                android:inputType="text"
+                android:text="@string/account_service_document" >
+            </EditText>
+        </TableRow>
+    </TableLayout>
 
 </LinearLayout>

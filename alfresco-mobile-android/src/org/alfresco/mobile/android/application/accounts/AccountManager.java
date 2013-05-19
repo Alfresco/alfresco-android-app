@@ -43,7 +43,7 @@ import android.util.Log;
  * 
  * @author Jean Marie Pascal
  */
-public class AccountManager
+public final class AccountManager
 {
     private static final String TAG = AccountManager.class.getName();
 
@@ -63,7 +63,7 @@ public class AccountManager
     
     public static final Uri CONTENT_URI = AccountProvider.CONTENT_URI;
 
-    public static String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
+    public static final String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
     
     
     public static AccountManager getInstance(Context context)
@@ -93,32 +93,6 @@ public class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC
     // ///////////////////////////////////////////////////////////////////////////
-    private void unregister()
-    {
-        if (receiver != null)
-        {
-            Log.d(TAG, "unregister()");
-            broadManager.unregisterReceiver(receiver);
-        }
-    }
-
-    private void register()
-    {
-        Log.d(TAG, "register()");
-
-        if (receiver != null)
-        {
-            receiver = new AccountManagerReceiver();
-        }
-
-        IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_LOAD_ACCOUNT);
-        filters.addAction(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
-        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
-        filters.addAction(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED);
-        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT);
-        broadManager.registerReceiver(receiver, filters);
-    }
-
     public boolean hasData()
     {
         return (accountCursor != null);
@@ -232,6 +206,23 @@ public class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
+    private void register()
+    {
+        Log.d(TAG, "register()");
+
+        if (receiver != null)
+        {
+            receiver = new AccountManagerReceiver();
+        }
+
+        IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_LOAD_ACCOUNT);
+        filters.addAction(IntentIntegrator.ACTION_RELOAD_ACCOUNT);
+        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT);
+        broadManager.registerReceiver(receiver, filters);
+    }
+    
     private static ContentValues createContentValues(Account acc)
     {
         ContentValues updateValues = new ContentValues();

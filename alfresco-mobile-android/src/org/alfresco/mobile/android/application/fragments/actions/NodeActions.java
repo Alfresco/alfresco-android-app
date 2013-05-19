@@ -101,7 +101,7 @@ public class NodeActions implements ActionMode.Callback
     public boolean onPrepareActionMode(ActionMode mode, Menu menu)
     {
         this.mode = mode;
-        getMenu(menu, selectedNodes);
+        getMenu(menu);
         return false;
     }
     
@@ -232,13 +232,13 @@ public class NodeActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////////////
-    private void getMenu(Menu menu, List<Node> nodes)
+    private void getMenu(Menu menu)
     {
         menu.clear();
-        getMenu(SessionUtils.getSession(activity), activity, menu);
+        getMenu(activity, menu);
     }
 
-    private void getMenu(AlfrescoSession session, Activity activity, Menu menu)
+    private void getMenu(Activity activity, Menu menu)
     {
         MenuItem mi;
         SubMenu createMenu;

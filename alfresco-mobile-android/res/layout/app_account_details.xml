@@ -19,13 +19,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/background_light"
+    style="@style/white_background"
     android:gravity="center_horizontal" >
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical" >
 
         <include layout="@layout/app_account_form" />
@@ -38,7 +37,6 @@
             android:text="@string/browse_documents" />
 
         <LinearLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/edit_account"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

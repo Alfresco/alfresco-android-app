@@ -75,7 +75,7 @@ public class CipherUtils
 
     static SecretKey generateKey(Context ctxt, int bits) throws IOException, NoSuchAlgorithmException
     {
-        if (info != null) return info;
+        if (info != null){ return info;}
 
         SecretKey r;
         FileInputStream fis = null;
@@ -121,9 +121,8 @@ public class CipherUtils
     }
 
     /*
-     * Encrypt file in place, leaving no trace of original unencrypted data.
-     * filename file to encrypt nuke whether to zero the original unencrypted
-     * file before attempting its deletion, for additional security.
+     * Encrypt file in place, leaving no trace of original unencrypted data. filename file to encrypt nuke whether to
+     * zero the original unencrypted file before attempting its deletion, for additional security.
      */
     public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws Exception
     {
@@ -157,7 +156,7 @@ public class CipherUtils
             destFile.flush();
             destFile.close();
 
-            Log.i("Alfresco", "Encryption phase succeeded for file " + source.getName());
+            Log.i(TAG, "Encryption phase succeeded for file " + source.getName());
 
             if (newFilename == null)
             {
@@ -167,11 +166,11 @@ public class CipherUtils
                 {
                     // Rename encrypted file to original name.
                     if (false == (ret = dest.renameTo(source)))
-                        Log.e("Alfresco", "Cannot rename encrypted file " + dest.getName());
+                        Log.e(TAG, "Cannot rename encrypted file " + dest.getName());
                 }
                 else
                 {
-                    Log.e("Alfresco", "Cannot delete original file " + source.getName());
+                    Log.e(TAG, "Cannot delete original file " + source.getName());
 
                     dest.delete();
                     ret = false;
@@ -196,8 +195,8 @@ public class CipherUtils
     }
 
     /*
-     * Decrypt file, either in place, or to a new filename. filename file to
-     * decrypt. newFilename file to decrypt to, or null to decrypt in place.
+     * Decrypt file, either in place, or to a new filename. filename file to decrypt. newFilename file to decrypt to, or
+     * null to decrypt in place.
      */
     public static boolean decryptFile(Context ctxt, String filename, String newFilename) throws Exception
     {
@@ -319,10 +318,9 @@ public class CipherUtils
         pbeCipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec);
 
         /*
-         * Read a predefined data block. If the password is incorrect, we'll get
-         * a security exception here. Without this, we will only get an
-         * IOException later when reading the CipherInputStream, which is not
-         * specific enough for a good error message.
+         * Read a predefined data block. If the password is incorrect, we'll get a security exception here. Without
+         * this, we will only get an IOException later when reading the CipherInputStream, which is not specific enough
+         * for a good error message.
          */
         int count = streamIn.read();
         if (count <= 0 || count > 1024) { throw new IOException("Bad encrypted file"); }
@@ -386,7 +384,7 @@ public class CipherUtils
         destroyFile.close();
     }
 
-    public static void EncryptionUserInteraction(final Activity activity)
+    public static void encryptionUserInteraction(final Activity activity)
     {
         final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
 

@@ -130,6 +130,10 @@ public class UpdateContentTask extends AbstractUpTask
         }
         catch (Exception e)
         {
+            if (result == null)
+            {
+                result = new LoaderResult<Document>();
+            }
             result.setException(e);
             Log.e(TAG, Log.getStackTraceString(e));
         }

@@ -40,19 +40,20 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
     @Override
     public void onPreExecute(Operation<ContentFile> task)
     {
-        NotificationHelper.createProgressNotification(getBaseContext(), ((DownloadTask) task).getDocument()
-                .getName(), getBaseContext().getString(R.string.download_progress), totalItems - pendingItems + "/"
-                + totalItems, 0, 100);
+        NotificationHelper.createProgressNotification(getBaseContext(),
+                getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument().getName(),
+                totalItems - pendingItems + "/" + totalItems, 0, 100);
     }
 
     @Override
     public void onPostExecute(Operation<ContentFile> task, ContentFile results)
     {
         // Improvement : Better notification with share button or open in.
-        NotificationHelper.createIndeterminateNotification(getBaseContext(), ((DownloadTask) task).getDocument()
-                .getName(), getBaseContext().getString(R.string.download_progress), totalItems - pendingItems + "/"
-                + totalItems);
-        getBaseContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results.getFile())));
+        NotificationHelper.createIndeterminateNotification(getBaseContext(),
+                getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument().getName(),
+                totalItems - pendingItems + "/" + totalItems);
+        getBaseContext().sendBroadcast(
+                new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results.getFile())));
     }
 
     @Override
@@ -60,15 +61,16 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
     {
         if (values == 100)
         {
-            NotificationHelper.createIndeterminateNotification(getBaseContext(), ((DownloadTask) task).getDocument()
-                    .getName(), getBaseContext().getString(R.string.download_progress), totalItems - pendingItems + "/"
-                    + totalItems);
+            NotificationHelper.createIndeterminateNotification(getBaseContext(),
+                    getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument()
+                            .getName(), totalItems - pendingItems + "/" + totalItems);
         }
         else
         {
-            NotificationHelper.createProgressNotification(getBaseContext(), ((DownloadTask) task).getDocument()
-                    .getName(), getBaseContext().getString(R.string.download_progress), totalItems - pendingItems + "/"
-                    + totalItems, values, ((DownloadRequest)task.getOperationRequest()).getContentStreamLength());
+            NotificationHelper.createProgressNotification(getBaseContext(),
+                    getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument()
+                            .getName(), totalItems - pendingItems + "/" + totalItems, values, ((DownloadRequest) task
+                            .getOperationRequest()).getContentStreamLength());
         }
     }
 
@@ -84,6 +86,18 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, getBaseContext().getString(R.string.download_complete));
+        if (result.failedRequest.isEmpty())
+        {
+            b.putString(
+                    NotificationHelper.ARGUMENT_DESCRIPTION,
+                    String.format(getBaseContext().getString(R.string.batch_download_complete),
+                            Integer.toString(result.totalRequests)));
+        }
+        else
+        {
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, result.failedRequest.size() + "/"
+                    + result.totalRequests);
+        }
         NotificationHelper.createNotification(getBaseContext(), b);
     }
 }

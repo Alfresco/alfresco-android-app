@@ -56,14 +56,15 @@ public class DeleteFileTask extends FileOperationTask<Void>
             {
                 if (!deleteDirectory(file)) { throw new IOException("Unable to delete the file"); }
             }
-            else if (!file.delete())
-            {
-                throw new IOException("Unable to delete the file");
-            }
+            else if (!file.delete()) { throw new IOException("Unable to delete the file"); }
         }
         catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
+            if (result == null)
+            {
+                result = new LoaderResult<Void>();
+            }
             result.setException(e);
         }
 

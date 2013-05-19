@@ -96,7 +96,7 @@ public class AccountEditFragment extends DialogFragment
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
             {
-                if (sw.isChecked() == false
+                if (!sw.isChecked()
                         && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("443")))
                 {
                     portForm.setText("80");

@@ -30,8 +30,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-public class NotificationHelper
+public final class NotificationHelper
 {
+    private NotificationHelper(){
+    }
+    
     public static final String ARGUMENT_TITLE = "title";
 
     public static final String ARGUMENT_DESCRIPTION = "description";

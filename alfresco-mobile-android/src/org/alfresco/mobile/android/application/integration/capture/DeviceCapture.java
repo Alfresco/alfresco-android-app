@@ -23,11 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.browser.AddContentDialogFragment;
-import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
@@ -50,7 +47,7 @@ public abstract class DeviceCapture implements Serializable
 
     protected File payload = null;
 
-    protected String MimeType = null;
+    protected String mimeType = null;
 
     protected File parentFolder;
 
@@ -123,9 +120,9 @@ public abstract class DeviceCapture implements Serializable
 
         AddContentDialogFragment newFragment;
 
-        if (MimeType != null)
+        if (mimeType != null)
         {
-            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, MimeType, true);
+            newFragment = AddContentDialogFragment.newInstance(repositoryFolder, payload, mimeType, true);
         }
         else
         {

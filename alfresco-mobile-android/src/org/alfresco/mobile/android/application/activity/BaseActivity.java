@@ -96,9 +96,9 @@ public abstract class BaseActivity extends Activity
     protected void onStop()
     {
         super.onStop();
-        for (BroadcastReceiver receiver : receivers)
+        for (BroadcastReceiver bReceiver : receivers)
         {
-            broadcastManager.unregisterReceiver(receiver);
+            broadcastManager.unregisterReceiver(bReceiver);
         }
         receivers.clear();
     }
@@ -227,6 +227,20 @@ public abstract class BaseActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
     }
+    
+    public void addNavigationFragment(Site site, Folder f)
+    {
+        if (f == null) { return; }
+        if (site == null) {addNavigationFragment(f); return;}
+
+        ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
+        if (mFragment != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
+        
+        BaseFragment frag = ChildrenBrowserFragment.newInstance(site, f);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                ChildrenBrowserFragment.TAG, true);
+    }
 
     public void addNavigationFragment(Site s)
     {
@@ -267,6 +281,8 @@ public abstract class BaseActivity extends Activity
         public void onReceive(Context context, Intent intent)
         {
             Activity activity = BaseActivity.this;
+            
+            if (activity.isFinishing()) {return;}
 
             Log.d("UtilsReceiver", intent.getAction());
 

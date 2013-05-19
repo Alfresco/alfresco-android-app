@@ -57,6 +57,10 @@ public class DeleteNodeThread extends NodeOperationThread<Void>
         catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
+            if (result == null)
+            {
+                result = new LoaderResult<Void>();
+            }
             result.setException(e);
         }
         

@@ -15,21 +15,24 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.provider.MediaStore;
 
-public class FileExplorerHelper
+public final class FileExplorerHelper
 {
+
+    private FileExplorerHelper()
+    {
+    }
 
     private static final String FILEEXPLORER_PREFS = "org.alfresco.mobile.android.fileexplorer.preferences";
 
     private static final String FILEEXPLORER_DEFAULT = "org.alfresco.mobile.android.fileexplorer.preferences.default";
 
-    
     public static void setSelection(Activity activity)
     {
         int itemPosition = 1;
         SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
         prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
     }
-    
+
     public static void setSelection(Activity activity, File location)
     {
         int itemPosition = 1;
@@ -78,80 +81,77 @@ public class FileExplorerHelper
 
     public static void displayNavigationMode(final Activity activity, final int mode, final boolean backStack)
     {
-        if (!DisplayUtils.hasCentralPane(activity))
+        activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        ShortCutFolderMenuAdapter adapter = new ShortCutFolderMenuAdapter(activity);
+
+        OnNavigationListener mOnNavigationListener = new OnNavigationListener()
         {
-            activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            ShortCutFolderMenuAdapter adapter = new ShortCutFolderMenuAdapter(activity);
-
-            OnNavigationListener mOnNavigationListener = new OnNavigationListener()
+            @Override
+            public boolean onNavigationItemSelected(int itemPosition, long itemId)
             {
-                @Override
-                public boolean onNavigationItemSelected(int itemPosition, long itemId)
+                SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
+                int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
+
+                if (!backStack && itemPosition == currentSelection) { return true; }
+
+                File currentLocation = null;
+                int mediatype = -1;
+                switch (itemPosition)
                 {
-                    SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-                    int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
-
-                    if (backStack == false && itemPosition == currentSelection) { return true; }
-
-                    File currentLocation = null;
-                    int mediatype = -1;
-                    switch (itemPosition)
-                    {
-                        case 1:
-                            currentLocation = StorageManager.getDownloadFolder(activity,
-                                    ((BaseActivity) activity).getCurrentAccount());
-                            break;
-                        case 3:
-                            currentLocation = Environment.getExternalStorageDirectory();
-                            break;
-                        case 4:
-                            currentLocation = Environment
-                                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                            break;
-                        case 6:
-                            mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
-                            break;
-                        case 7:
-                            mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
-                            break;
-                        case 8:
-                            mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-                            break;
-                        case 9:
-                            mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-                            break;
-                        default:
-                            break;
-                    }
-
-                    if (!backStack)
-                    {
-                        activity.getFragmentManager().popBackStack();
-                    }
-
-                    if (currentLocation != null)
-                    {
-                        BaseFragment frag = FileExplorerFragment.newInstance(currentLocation, mode);
-                        FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
-                                FileExplorerFragment.TAG, true);
-                    }
-                    else if (mediatype >= 0)
-                    {
-                        LibraryFragment frag = LibraryFragment.newInstance(mediatype, mode);
-                        FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
-                                LibraryFragment.TAG, true);
-                    }
-                    prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
-
-                    return true;
+                    case 1:
+                        currentLocation = StorageManager.getDownloadFolder(activity,
+                                ((BaseActivity) activity).getCurrentAccount());
+                        break;
+                    case 3:
+                        currentLocation = Environment.getExternalStorageDirectory();
+                        break;
+                    //case 4:
+                    //    currentLocation = Environment
+                    //            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                    //    break;
+                    case 5:
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
+                        break;
+                    case 6:
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
+                        break;
+                    case 7:
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                        break;
+                    case 8:
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
+                        break;
+                    default:
+                        break;
                 }
 
-            };
-            activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-            SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-            int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
-            activity.getActionBar().setSelectedNavigationItem(currentSelection);
-        }
+                if (!backStack)
+                {
+                    activity.getFragmentManager().popBackStack();
+                }
+
+                if (currentLocation != null)
+                {
+                    BaseFragment frag = FileExplorerFragment.newInstance(currentLocation, mode);
+                    FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
+                            FileExplorerFragment.TAG, true);
+                }
+                else if (mediatype >= 0)
+                {
+                    LibraryFragment frag = LibraryFragment.newInstance(mediatype, mode);
+                    FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
+                            LibraryFragment.TAG, true);
+                }
+                prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
+
+                return true;
+            }
+
+        };
+        activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
+        SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
+        int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
+        activity.getActionBar().setSelectedNavigationItem(currentSelection);
     }
 
 }

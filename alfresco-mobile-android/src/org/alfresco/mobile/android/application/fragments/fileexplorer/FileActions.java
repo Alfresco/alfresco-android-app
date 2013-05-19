@@ -322,10 +322,6 @@ public class FileActions implements ActionMode.Callback
         {
             ((FileExplorerFragment) fragment).selectAll();
         }
-        else
-        {
-
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -333,7 +329,7 @@ public class FileActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public interface onFinishModeListerner
     {
-        public void onFinish();
+        void onFinish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////

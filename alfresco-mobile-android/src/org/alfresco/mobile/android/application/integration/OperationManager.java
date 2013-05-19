@@ -42,6 +42,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
+import android.util.Log;
 
 public class OperationManager
 {
@@ -140,12 +141,19 @@ public class OperationManager
                 break;
         }
 
-        ((AbstractOperationRequestImpl) request).setNotificationUri(uri);
+        if (request != null)
+        {
+            ((AbstractOperationRequestImpl) request).setNotificationUri(uri);
 
-        OperationRequestGroup group = new OperationRequestGroup(mAppContext, request.getAccountId(),
-                request.getNetworkId());
-        group.enqueue(request);
-        enqueue(group);
+            OperationRequestGroup group = new OperationRequestGroup(mAppContext, request.getAccountId(),
+                    request.getNetworkId());
+            group.enqueue(request);
+            enqueue(group);
+        }
+        else
+        {
+            Log.d(TAG, "Unable to retry for" + id);
+        }
         cursor.close();
     }
 
@@ -288,9 +296,9 @@ public class OperationManager
                     currentOperationGroup.failedRequest.add(requestEntry.getValue());
                 }
 
-                for (OperationRequest request : currentOperationGroup.completeRequest)
+                for (OperationRequest operationRequest : currentOperationGroup.completeRequest)
                 {
-                    context.getContentResolver().delete(((AbstractOperationRequestImpl) request).getNotificationUri(),
+                    context.getContentResolver().delete(((AbstractOperationRequestImpl) operationRequest).getNotificationUri(),
                             null, null);
                 }
                 return;
@@ -376,17 +384,17 @@ public class OperationManager
     // ////////////////////////////////////////////////////
     private static class OperationGroupRecord
     {
-        final List<OperationRequest> completeRequest;
+        private final List<OperationRequest> completeRequest;
 
-        final List<OperationRequest> failedRequest;
+        private final List<OperationRequest> failedRequest;
 
-        final HashMap<String, OperationRequest> runningRequest;
+        private final HashMap<String, OperationRequest> runningRequest;
 
-        final HashMap<String, OperationRequest> index;
+        private final HashMap<String, OperationRequest> index;
 
-        final int totalRequests;
+        private final int totalRequests;
 
-        int notificationVisibility;
+        private int notificationVisibility;
 
         OperationGroupRecord(int size)
         {
