@@ -41,7 +41,7 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
     public void onPreExecute(Operation<ContentFile> task)
     {
         NotificationHelper.createProgressNotification(getBaseContext(),
-                getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument().getName(),
+                getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument().getName(),
                 totalItems - pendingItems + "/" + totalItems, 0, 100);
     }
 
@@ -50,7 +50,7 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
     {
         // Improvement : Better notification with share button or open in.
         NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument().getName(),
+                getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument().getName(),
                 totalItems - pendingItems + "/" + totalItems);
         getBaseContext().sendBroadcast(
                 new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results.getFile())));
@@ -62,13 +62,13 @@ public class DownloadCallBack extends AbstractOperationCallback<ContentFile> imp
         if (values == 100)
         {
             NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                    getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument()
+                    getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument()
                             .getName(), totalItems - pendingItems + "/" + totalItems);
         }
         else
         {
             NotificationHelper.createProgressNotification(getBaseContext(),
-                    getBaseContext().getString(R.string.download_progress), ((DownloadTask) task).getDocument()
+                    getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument()
                             .getName(), totalItems - pendingItems + "/" + totalItems, values, ((DownloadRequest) task
                             .getOperationRequest()).getContentStreamLength());
         }

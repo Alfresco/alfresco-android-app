@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.integration.Operation;
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationCallback;
 import org.alfresco.mobile.android.application.integration.node.AbstractUpRequest;
-import org.alfresco.mobile.android.application.integration.node.AbstractUpTask;
+import org.alfresco.mobile.android.application.integration.node.AbstractUpThread;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -60,13 +60,13 @@ public class CreateDocumentCallback extends AbstractOperationCallback<Document>
         if (values == 100)
         {
             NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                    ((AbstractUpTask) task).getDocumentName(), getBaseContext().getString(R.string.action_processing),
+                    ((AbstractUpThread) task).getDocumentName(), getBaseContext().getString(R.string.action_processing),
                     totalItems - pendingItems + "/" + totalItems);
         }
         else
         {
             NotificationHelper.createProgressNotification(getBaseContext(),
-                    ((AbstractUpTask) task).getDocumentName(), getBaseContext().getString(R.string.upload_in_progress),
+                    ((AbstractUpThread) task).getDocumentName(), getBaseContext().getString(R.string.upload_in_progress),
                     totalItems - pendingItems + "/" + totalItems, values,
                     ((AbstractUpRequest) task.getOperationRequest()).getContentStreamLength());
         }
@@ -76,9 +76,9 @@ public class CreateDocumentCallback extends AbstractOperationCallback<Document>
     public void onPostExecute(Operation<Document> task, Document results)
     {
         super.onPostExecute(task, results);
-        if (task instanceof CreateDocumentTask && ((CreateDocumentTask) task).isCreation())
+        if (task instanceof CreateDocumentThread && ((CreateDocumentThread) task).isCreation())
         {
-            ((AbstractUpTask) task).getContentFile().getFile().delete();
+            ((AbstractUpThread) task).getContentFile().getFile().delete();
         }
     }
 
@@ -86,20 +86,20 @@ public class CreateDocumentCallback extends AbstractOperationCallback<Document>
     public void onError(Operation<Document> task, Exception e)
     {
         // An error occurs, notify the user.
-        if (((AbstractUpTask) task).getContentFile() != null)
+        if (((AbstractUpThread) task).getContentFile() != null)
         {
-            NotificationHelper.createSimpleNotification(getBaseContext(), ((AbstractUpTask) task).getDocumentName(),
+            NotificationHelper.createSimpleNotification(getBaseContext(), ((AbstractUpThread) task).getDocumentName(),
                     getBaseContext().getString(R.string.import_error), totalItems - pendingItems + "/" + totalItems);
 
             // During creation process, the content must be available on
             // Download area.
             // The file is move from capture to download.
-            if (task instanceof CreateDocumentTask && ((CreateDocumentTask) task).isCreation())
+            if (task instanceof CreateDocumentThread && ((CreateDocumentThread) task).isCreation())
             {
-                ContentFile contentFile = ((AbstractUpTask) task).getContentFile();
+                ContentFile contentFile = ((AbstractUpThread) task).getContentFile();
                 // TODO Identifier is wrong when switching!
                 final File folderStorage = StorageManager.getDownloadFolder(getBaseContext(),
-                        ((CreateDocumentTask) task).getSession().getBaseUrl(), ((CreateDocumentTask) task).getSession()
+                        ((CreateDocumentThread) task).getSession().getBaseUrl(), ((CreateDocumentThread) task).getSession()
                                 .getPersonIdentifier());
 
                 File dlFile = new File(folderStorage, contentFile.getFileName());

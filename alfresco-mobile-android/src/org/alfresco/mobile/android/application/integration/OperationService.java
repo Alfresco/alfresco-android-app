@@ -44,7 +44,7 @@ import org.alfresco.mobile.android.application.integration.impl.AbstractOperatio
 import org.alfresco.mobile.android.application.integration.impl.AbstractOperationTask;
 import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentCallback;
 import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentRequest;
-import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentTask;
+import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentThread;
 import org.alfresco.mobile.android.application.integration.node.create.CreateFolderCallBack;
 import org.alfresco.mobile.android.application.integration.node.create.CreateFolderRequest;
 import org.alfresco.mobile.android.application.integration.node.create.CreateFolderTask;
@@ -53,13 +53,13 @@ import org.alfresco.mobile.android.application.integration.node.delete.DeleteNod
 import org.alfresco.mobile.android.application.integration.node.delete.DeleteNodeThread;
 import org.alfresco.mobile.android.application.integration.node.download.DownloadCallBack;
 import org.alfresco.mobile.android.application.integration.node.download.DownloadRequest;
-import org.alfresco.mobile.android.application.integration.node.download.DownloadTask;
+import org.alfresco.mobile.android.application.integration.node.download.DownloadThread;
 import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeCallback;
 import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeTask;
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeCallback;
 import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.application.integration.node.like.LikeNodeTask;
+import org.alfresco.mobile.android.application.integration.node.like.LikeNodeThread;
 import org.alfresco.mobile.android.application.integration.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.integration.node.update.UpdateContentTask;
 import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesCallback;
@@ -142,20 +142,23 @@ public class OperationService<T> extends Service
         int totalItems = requestInfo.totalRequests;
         int pendingRequest = requestInfo.pendingRequests;
 
-        Log.d("OperationService", "Start" + requestInfo.request.getNotificationTitle());
+        Log.d("OperationService", "Start : " + requestInfo.request.getNotificationTitle());
 
         Operation<T> task = null;
         OperationCallBack<T> callback = null;
+        int parallelOperation = 1;
         switch (request.getTypeId())
         {
             case DownloadRequest.TYPE_ID:
-                task = (AbstractOperationTask<T>) new DownloadTask(getBaseContext(), request);
+                task = (Operation<T>) new DownloadThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new DownloadCallBack(getBaseContext(), totalItems, pendingRequest);
+                parallelOperation = 4;
                 break;
             case CreateDocumentRequest.TYPE_ID:
-                task = (AbstractOperationTask<T>) new CreateDocumentTask(getBaseContext(), request);
+                task = (Operation<T>) new CreateDocumentThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new CreateDocumentCallback(getBaseContext(), totalItems,
                         pendingRequest);
+                parallelOperation = 4;
                 break;
             case UpdateContentRequest.TYPE_ID:
                 task = (AbstractOperationTask<T>) new UpdateContentTask(getBaseContext(), request);
@@ -163,18 +166,19 @@ public class OperationService<T> extends Service
                         pendingRequest);
                 break;
             case DeleteNodeRequest.TYPE_ID:
-                // Thread or Asynctask : Thats the question !
-                // task = (Operation<T>) new DeleteNodeTask(getBaseContext(), request);
                 task = (Operation<T>) new DeleteNodeThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new DeleteNodeCallback(getBaseContext(), totalItems, pendingRequest);
+                parallelOperation = 4;
                 break;
             case LikeNodeRequest.TYPE_ID:
-                task = (AbstractOperationTask<T>) new LikeNodeTask(getBaseContext(), request);
+                task = (Operation<T>) new LikeNodeThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new LikeNodeCallback(getBaseContext(), totalItems, pendingRequest);
+                parallelOperation = 4;
                 break;
             case FavoriteNodeRequest.TYPE_ID:
                 task = (AbstractOperationTask<T>) new FavoriteNodeTask(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new FavoriteNodeCallback(getBaseContext(), totalItems, pendingRequest);
+                parallelOperation = 2;
                 break;
             case CreateFolderRequest.TYPE_ID:
                 task = (AbstractOperationTask<T>) new CreateFolderTask(getBaseContext(), request);
@@ -227,6 +231,10 @@ public class OperationService<T> extends Service
                 lastOperation.add(task.getOperationId());
             }
             operations.put(task.getOperationId(), task);
+            
+            if (operations.size() < parallelOperation && requestInfo.pendingRequests > 0){
+                executeOperation();
+            }
 
             if (task instanceof Thread)
             {

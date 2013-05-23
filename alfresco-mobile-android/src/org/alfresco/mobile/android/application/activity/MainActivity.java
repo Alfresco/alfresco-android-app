@@ -1286,7 +1286,8 @@ public class MainActivity extends BaseActivity
 
                 if (intent.getCategories().contains(IntentIntegrator.CATEGORY_OAUTH)
                         && getFragment(AccountOAuthFragment.TAG) == null
-                        || getFragment(AccountOAuthFragment.TAG).isAdded())
+                        || (getFragment(AccountOAuthFragment.TAG) != null && getFragment(AccountOAuthFragment.TAG)
+                                .isAdded()))
                 {
                     AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
                     FragmentDisplayer.replaceFragment(activity, newFragment, DisplayUtils.getMainPaneId(activity),

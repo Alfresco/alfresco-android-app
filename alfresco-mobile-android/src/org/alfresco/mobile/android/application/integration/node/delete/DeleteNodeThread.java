@@ -30,7 +30,7 @@ import android.util.Log;
 
 public class DeleteNodeThread extends NodeOperationThread<Void>
 {
-    private static final String TAG = DeleteNodeTask.class.getName();
+    private static final String TAG = DeleteNodeThread.class.getName();
 
     private Folder parent;
     
@@ -63,6 +63,8 @@ public class DeleteNodeThread extends NodeOperationThread<Void>
             }
             result.setException(e);
         }
+        
+        Log.d(TAG, "STOP Delete");
         
         return result;
     }

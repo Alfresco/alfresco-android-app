@@ -691,6 +691,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     // //////////////////////////////////////////////////////////////////////
     public void getMenu(Menu menu)
     {
+        if (parentFolder == null) { return;}
+        
         if (getActivity() instanceof MainActivity)
         {
             getMenu(alfSession, menu, parentFolder);

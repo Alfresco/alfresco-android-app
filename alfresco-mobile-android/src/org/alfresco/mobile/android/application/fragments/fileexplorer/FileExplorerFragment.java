@@ -288,6 +288,13 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         super.onDestroy();
     }
 
+    private void displayNavigation(File file, boolean backstack)
+    {
+        BaseFragment frag = FileExplorerFragment.newInstance(file);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getMainPaneId(getActivity()),
+                FileExplorerFragment.TAG, backstack);
+    }
+    
     // //////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // //////////////////////////////////////////////////////////////////////
@@ -307,8 +314,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             {
                 if (file.isDirectory())
                 {
-                    // displayNavigation(file, true);
-                    ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+                    displayNavigation(file, true);
                 }
                 else
                 {
@@ -349,8 +355,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             if (file.isDirectory())
             {
-                // displayNavigation(file, true);
-                ((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+                displayNavigation(file, true);
+                //((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
             }
             else
             {
