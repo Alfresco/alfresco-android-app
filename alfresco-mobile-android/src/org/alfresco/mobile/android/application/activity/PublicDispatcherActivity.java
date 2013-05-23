@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -128,9 +129,15 @@ public class PublicDispatcherActivity extends BaseActivity
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
                     false, false);
         }
+        
 
         if (IntentIntegrator.ACTION_PICK_FILE.equals(action))
         {
+            if (getIntent().hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+            {
+                currentAccount = AccountManager.retrieveAccount(this, getIntent().getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, 1));
+            }
+            
             File f = Environment.getExternalStorageDirectory();
             if (getIntent().hasExtra(IntentIntegrator.EXTRA_FOLDER))
             {

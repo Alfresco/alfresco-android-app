@@ -20,7 +20,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -39,8 +38,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     private int mediaTypeId;
 
     private View vroot;
-
-    private int titleId;
 
     private static final String PARAM_MEDIATYPE_ID = "org.alfresco.mobile.android.application.param.mediatypeid";
 
@@ -97,7 +94,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
-        retrieveTitle();
         if (getDialog() != null)
         {
            // getDialog().setTitle(titleId);
@@ -249,21 +245,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     {
         Bundle b = getArguments();
         return b.getInt(PARAM_MODE);
-    }
-
-    private void retrieveTitle()
-    {
-        switch (getMode())
-        {
-            case MODE_LISTING:
-                titleId = R.string.menu_documents;
-                break;
-            case MODE_PICK_FILE:
-                titleId = R.string.upload_pick_document;
-                break;
-            default:
-                break;
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
