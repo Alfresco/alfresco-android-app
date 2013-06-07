@@ -20,11 +20,11 @@ package org.alfresco.mobile.android.application.accounts;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.ApplicationManager;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.account.LoadSessionRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionRequest;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -266,10 +266,10 @@ public final class AccountManager
             appManager.removeAccount(acc.getId());
         }
 
-        OperationRequestGroup group = new OperationRequestGroup(appContext, acc);
+        OperationsRequestGroup group = new OperationsRequestGroup(appContext, acc);
         group.enqueue(new LoadSessionRequest(data).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN)
                 .setNotificationTitle(acc.getDescription()));
-        OperationManager.getInstance(appContext).enqueue(group);
+        BatchOperationManager.getInstance(appContext).enqueue(group);
     }
 
     private AlfrescoSession loadSession(Account account)
@@ -330,10 +330,10 @@ public final class AccountManager
             appManager.removeAccount(currentAccount.getId());
         }
 
-        OperationRequestGroup group = new OperationRequestGroup(appContext, currentAccount);
+        OperationsRequestGroup group = new OperationsRequestGroup(appContext, currentAccount);
         group.enqueue(new LoadSessionRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN)
                 .setNotificationTitle(currentAccount.getDescription()));
-        OperationManager.getInstance(appContext).enqueue(group);
+        BatchOperationManager.getInstance(appContext).enqueue(group);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -361,10 +361,10 @@ public final class AccountManager
             {
                 if (intent.hasExtra(IntentIntegrator.EXTRA_CREATE_REQUEST))
                 {
-                    OperationRequestGroup group = new OperationRequestGroup(appContext);
+                    OperationsRequestGroup group = new OperationsRequestGroup(appContext);
                     group.enqueue((OperationRequest) intent.getExtras().getSerializable(
                             IntentIntegrator.EXTRA_CREATE_REQUEST));
-                    OperationManager.getInstance(appContext).enqueue(group);
+                    BatchOperationManager.getInstance(appContext).enqueue(group);
                 }
                 return;
             }

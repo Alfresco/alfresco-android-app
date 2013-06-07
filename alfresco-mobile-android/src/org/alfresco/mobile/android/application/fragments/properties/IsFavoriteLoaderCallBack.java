@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.Activity;
+import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -44,11 +44,14 @@ public class IsFavoriteLoaderCallBack extends BaseLoaderCallback implements Load
 
     private View progressView;
 
-    public IsFavoriteLoaderCallBack(AlfrescoSession session, Activity context, Node node)
+    private Fragment fragment;
+
+    public IsFavoriteLoaderCallBack(AlfrescoSession session, Fragment fr, Node node)
     {
         super();
         this.session = session;
-        this.context = context;
+        this.context = fr.getActivity();
+        this.fragment = fr;
         this.node = node;
     }
 

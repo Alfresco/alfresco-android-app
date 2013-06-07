@@ -478,7 +478,7 @@ public class AccountDetailsFragment extends BaseFragment
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        final File folder = StorageManager.getPrivateFolder(getActivity(), "", "", "");
+        final File folder = StorageManager.getPrivateFolder(getActivity(), "", null);
         if (dataProtectionDeletion && folder != null)
         {
             builder.setTitle(R.string.delete);

@@ -94,7 +94,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         {
             // If creation inside a repository folder, we store temporarly
             // inside the capture.
-            f = StorageManager.getCaptureFolder(getActivity(), currentAccount.getUrl(), currentAccount.getUsername());
+            f = StorageManager.getCaptureFolder(getActivity(), currentAccount);
         }
 
         final File folderStorage = f;

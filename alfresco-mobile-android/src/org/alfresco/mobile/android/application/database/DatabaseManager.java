@@ -18,7 +18,8 @@
 package org.alfresco.mobile.android.application.database;
 
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -79,14 +80,16 @@ public class DatabaseManager implements DatabaseVersionNumber
         public void onCreate(SQLiteDatabase db)
         {
             AccountSchema.onCreate(ctx, db);
-            OperationSchema.onCreate(ctx, db);
+            BatchOperationSchema.onCreate(ctx, db);
+            SynchroSchema.onCreate(ctx, db);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
         {
             AccountSchema.onUpgrade(ctx, db, oldVersion, newVersion);
-            OperationSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+            BatchOperationSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+            SynchroSchema.onUpgrade(ctx, db, oldVersion, newVersion);
         }
     }
 

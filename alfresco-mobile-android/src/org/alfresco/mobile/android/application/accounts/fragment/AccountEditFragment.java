@@ -21,10 +21,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 
 import android.app.DialogFragment;
 import android.content.Context;
@@ -149,10 +149,10 @@ public class AccountEditFragment extends DialogFragment
             imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
 
             // Create Account + Session
-            OperationRequestGroup group = new OperationRequestGroup(getActivity());
+            OperationsRequestGroup group = new OperationsRequestGroup(getActivity());
             group.enqueue(new CreateAccountRequest(url, username, password, description)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
-            OperationManager.getInstance(getActivity()).enqueue(group);
+            BatchOperationManager.getInstance(getActivity()).enqueue(group);
         }
     }
 

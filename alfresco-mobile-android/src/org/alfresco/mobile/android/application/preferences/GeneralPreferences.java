@@ -21,26 +21,33 @@ package org.alfresco.mobile.android.application.preferences;
 import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.onFavoriteChangeListener;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.util.Log;
 
 /**
  * Manage global application preferences.
@@ -62,16 +69,13 @@ public class GeneralPreferences extends PreferenceFragment
 
     private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        if (container == null) { return null; }
-        View v = super.onCreateView(inflater, container, savedInstanceState);
+    private static final String SYNCHRO_PREFIX = "SynchroEnable-";
 
-        v.setBackgroundColor(Color.WHITE);
+    private static final String SYNCHRO_WIFI_PREFIX = "SynchroWifiEnable-";
 
-        return v;
-    }
+    private static final String SYNCHRO_DISPLAY_PREFIX = "SynchroDisplayEnable-";
+
+    private Account account;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -87,12 +91,12 @@ public class GeneralPreferences extends PreferenceFragment
     {
         super.onResume();
 
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
 
         Preference privateFoldersPref = findPreference(PRIVATE_FOLDERS_BUTTON);
 
         // DATA PROTECTION
-        if (/* isDeviceRooted() || */!sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false))
+        if (!sharedPref.getBoolean(HAS_ACCESSED_PAID_SERVICES, false))
         {
             privateFoldersPref.setSelectable(false);
             privateFoldersPref.setEnabled(false);
@@ -115,7 +119,7 @@ public class GeneralPreferences extends PreferenceFragment
                 final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
                 final boolean checked = prefs.getBoolean(PRIVATE_FOLDERS, false);
 
-                final File folder = StorageManager.getPrivateFolder(getActivity(), "", "", "");
+                final File folder = StorageManager.getPrivateFolder(getActivity(), "", null);
                 if (folder != null)
                 {
                     AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -190,31 +194,129 @@ public class GeneralPreferences extends PreferenceFragment
                 return false;
             }
         });
+
+        // FAVORITE SYNC
+        final CheckBoxPreference cpref = (CheckBoxPreference) findPreference(getString(R.string.favorite_sync));
+        final CheckBoxPreference wifiPref = (CheckBoxPreference) findPreference(getString(R.string.favorite_sync_wifi));
+        account = SessionUtils.getAccount(getActivity());
+
+        if (account == null)
+        {
+            cpref.setSelectable(false);
+            wifiPref.setSelectable(false);
+            return;
+        }
+
+        Boolean syncEnable = sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false);
+        cpref.setChecked(syncEnable);
+
+        Boolean syncWifiEnable = sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), false);
+        wifiPref.setChecked(syncWifiEnable);
+
+        cpref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                boolean isSync = ((CheckBoxPreference) preference).isChecked();
+
+                if (isSync)
+                {
+                    sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), isSync).commit();
+                    if (SynchroManager.getInstance(getActivity()).canSync(account))
+                    {
+                        SynchroManager.getInstance(getActivity()).sync(account);
+                    }
+                }
+                else
+                {
+                    onFavoriteChangeListener favListener = new FavoriteAlertDialogFragment.onFavoriteChangeListener()
+                    {
+                        @Override
+                        public void onPositive()
+                        {
+                            sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), false).commit();
+                            cpref.setChecked(false);
+                            SynchroManager.getInstance(getActivity()).unsync(account);
+                        }
+
+                        @Override
+                        public void onNegative()
+                        {
+                            sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), true).commit();
+                            cpref.setChecked(true);
+                        }
+                    };
+                    FavoriteAlertDialogFragment.newInstance(favListener).show(getActivity().getFragmentManager(),
+                            FavoriteAlertDialogFragment.TAG);
+                    return true;
+                }
+
+                return false;
+            }
+        });
+
+        wifiPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        {
+            @Override
+            public boolean onPreferenceClick(Preference preference)
+            {
+                boolean isSync = ((CheckBoxPreference) preference).isChecked();
+                sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isSync).commit();
+                return false;
+            }
+        });
+
     }
 
-    private static final String TEST_KEYS = "test-keys";
-
-    private static final String PATH_SUPERUSER_APK = "/system/app/Superuser.apk";
-
-    public static boolean isDeviceRooted()
+    public static boolean hasWifiOnlySync(Context context, Account account)
     {
-
-        // get from build info
-        String buildTags = android.os.Build.TAGS;
-        if (buildTags != null && buildTags.contains(TEST_KEYS)) { return true; }
-
-        // check if /system/app/Superuser.apk is present
-        try
+        if (account != null)
         {
-            File file = new File(PATH_SUPERUSER_APK);
-            if (file.exists()) { return true; }
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), false);
         }
-        catch (Throwable e1)
-        {
-            // ignore
-        }
-
         return false;
     }
 
+    public static boolean hasActivateSync(Context context, Account account)
+    {
+        if (account != null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false);
+        }
+        return false;
+    }
+
+    public static void setActivateSync(Activity activity, boolean isActive)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), isActive).commit();
+        }
+    }
+
+    public static void setDisplayActivateSync(Activity activity, boolean isActive)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
+        }
+    }
+
+    public static boolean hasDisplayedActivateSync(Activity activity)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false);
+        }
+        return false;
+    }
 }

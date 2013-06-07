@@ -111,7 +111,7 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
             b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.cloud_signup_resend_successfull);
             b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.cloud_signup_resend_body);
             b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-            ActionManager.actionDisplayDialog(fr, b);
+            ActionManager.actionDisplayDialog(fr.getActivity(), b);
         }
         else if (results.hasException())
         {
@@ -131,7 +131,7 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
             b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.cloud_signup_error_email_title);
             b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, errorMessageId);
             b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-            ActionManager.actionDisplayDialog(fr, b);
+            ActionManager.actionDisplayDialog(fr.getActivity(), b);
         }
     }
 

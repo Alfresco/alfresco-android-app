@@ -38,15 +38,18 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ClipData;
 import android.content.ClipData.Item;
@@ -379,7 +382,8 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     private void refreshImportFolder()
     {
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
-        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.app_list_row, IMPORT_FOLDER_LIST);
+        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.app_list_row,
+                IMPORT_FOLDER_LIST);
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
         {
@@ -450,8 +454,28 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
 
                 break;
             case R.string.menu_downloads:
-                UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);
-                fr.show(getActivity().getFragmentManager(), UploadLocalDialogFragment.TAG);
+                if (files.size() == 1)
+                {
+                    UploadLocalDialogFragment fr = UploadLocalDialogFragment.newInstance(tmpAccount, file);
+                    fr.show(getActivity().getFragmentManager(), UploadLocalDialogFragment.TAG);
+                }
+                else
+                {
+                    File f = StorageManager.getDownloadFolder(getActivity(), tmpAccount);
+                    final File folderStorage = f;
+                    File newFile = null;
+                    
+                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    for (File file : files)
+                    {
+                        newFile = new File(folderStorage, file.getName());
+                        EncryptionDialogFragment fragment = (CipherUtils.isEncryptionActive(getActivity())) ? EncryptionDialogFragment
+                                .copyAndEncrypt(file.getPath(), newFile.getPath(), tmpAccount)
+                                : EncryptionDialogFragment.copy(file.getPath(), newFile.getPath(), tmpAccount);
+                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                    }
+                    fragmentTransaction.commit();
+                }
                 break;
             default:
                 break;

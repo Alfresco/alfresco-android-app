@@ -78,6 +78,12 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            
+             <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_SYNCHRO_DISPLAY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
 
             <!-- Internal : Used for Cloud activation. Only for this part we have to use exported = true -->
             <intent-filter>
@@ -137,17 +143,25 @@
         </activity>
 
         <provider
-            android:name="org.alfresco.mobile.android.application.integration.OperationContentProvider"
-            android:authorities="org.alfresco.mobile.android.provider"
+            android:name="org.alfresco.mobile.android.application.operations.sync.SynchroProvider"
+            android:authorities="org.alfresco.mobile.android.provider.sync"
+            android:exported="false" />
+        <provider
+            android:name="org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider"
+            android:authorities="org.alfresco.mobile.android.provider.operations"
             android:exported="false" />
         <provider
             android:name="org.alfresco.mobile.android.application.accounts.AccountProvider"
             android:authorities="org.alfresco.mobile.android.provider.accounts"
             android:exported="false" />
 
-        <!-- Private Services for upload and notification. -->
+        <!-- Private Services for background operations. -->
         <service
-            android:name="org.alfresco.mobile.android.application.integration.OperationService"
+            android:name="org.alfresco.mobile.android.application.operations.batch.BatchOperationService"
+            android:exported="false" />
+        <!-- Private Services for sync. -->
+        <service
+            android:name="org.alfresco.mobile.android.application.operations.sync.SynchroService"
             android:exported="false" />
     </application>
 

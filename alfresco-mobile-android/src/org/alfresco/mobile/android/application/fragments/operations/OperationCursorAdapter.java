@@ -19,23 +19,30 @@ package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.application.integration.Operation;
-import org.alfresco.mobile.android.application.integration.OperationContentProvider;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateFolderRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.delete.DeleteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ProgressBar;
 
 public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 {
-    //private static final String TAG = OperationCursorAdapter.class.getName();
+    // private static final String TAG = OperationCursorAdapter.class.getName();
 
     public OperationCursorAdapter(Context context, Cursor c, int layoutResourceId)
     {
@@ -45,56 +52,69 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.icon.setImageResource(MimeTypeManager.getIcon(cursor.getString(OperationSchema.COLUMN_NOTIFICATION_TITLE_ID)));
+        vh.icon.setImageResource(MimeTypeManager.getIcon(cursor.getString(BatchOperationSchema.COLUMN_TITLE_ID)));
     }
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
     {
-        int status = cursor.getInt(OperationSchema.COLUMN_STATUS_ID);
-        String statusValue = null;
+        int status = cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID);
+        String statusValue = displayType(vh, cursor.getInt(BatchOperationSchema.COLUMN_REQUEST_TYPE_ID)) + " : ";
         vh.progress.setVisibility(View.GONE);
-        vh.choose.setTag(R.id.operation_id, cursor.getInt(OperationSchema.COLUMN_ID_ID));
-        vh.choose.setTag(R.id.operation_status, cursor.getInt(OperationSchema.COLUMN_STATUS_ID));
+        vh.choose.setTag(R.id.operation_id, cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
+        vh.choose.setTag(R.id.operation_status, cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID));
         switch (status)
         {
             case Operation.STATUS_PENDING:
                 vh.choose.setImageResource(R.drawable.ic_cancel);
-                statusValue = context.getString(R.string.status_pending);
+                displayStatut(vh, R.drawable.sync_status_pending);
+                statusValue += context.getString(R.string.status_pending);
                 break;
             case Operation.STATUS_RUNNING:
+                displayStatut(vh, R.drawable.sync_status_loading);
                 vh.choose.setImageResource(R.drawable.ic_cancel);
                 vh.progress.setVisibility(View.VISIBLE);
-                long totalSize = cursor.getLong(OperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                long totalSize = cursor.getLong(BatchOperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                 if (totalSize == -1)
                 {
                     vh.progress.setIndeterminate(true);
                 }
                 else
                 {
-                    long progress = cursor.getLong(OperationSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
+                    long progress = cursor.getLong(BatchOperationSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
                     float value = (((float) progress / ((float) totalSize)) * 100);
                     int percentage = Math.round(value);
-                    vh.progress.setIndeterminate(false);
-                    vh.progress.setMax(100);
-                    vh.progress.setProgress(percentage);
+                    if (percentage == 100)
+                    {
+                        vh.progress.setIndeterminate(true);
+                    }
+                    else
+                    {
+                        vh.progress.setIndeterminate(false);
+                        vh.progress.setProgress(percentage);
+                        vh.progress.setMax(100);
+                    }
                 }
-                statusValue = context.getString(R.string.status_running);
+                statusValue += context.getString(R.string.status_running);
                 break;
             case Operation.STATUS_PAUSED:
+                displayStatut(vh, R.drawable.sync_status_pending);
                 vh.choose.setImageResource(R.drawable.ic_retry);
-                statusValue = context.getString(R.string.status_paused);
+                statusValue += context.getString(R.string.status_paused);
                 break;
             case Operation.STATUS_SUCCESSFUL:
+                displayStatut(vh, R.drawable.sync_status_success);
                 vh.choose.setImageResource(R.drawable.ic_validate);
-                statusValue = context.getString(R.string.status_successful);
+                statusValue += context.getString(R.string.status_successful);
                 break;
             case Operation.STATUS_FAILED:
+                displayStatut(vh, R.drawable.sync_status_failed);
                 vh.choose.setImageResource(R.drawable.ic_retry);
-                statusValue = context.getString(R.string.status_failed);
+                statusValue += context.getString(R.string.status_failed);
                 break;
             case Operation.STATUS_CANCEL:
+                displayStatut(vh, R.drawable.sync_status_failed);
                 vh.choose.setImageResource(R.drawable.ic_retry);
-                statusValue = context.getString(R.string.status_cancelled);
+                statusValue += context.getString(R.string.status_cancelled);
                 break;
             default:
                 break;
@@ -105,23 +125,24 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
             public void onClick(View v)
             {
                 int status = (Integer) v.getTag(R.id.operation_status);
-                int id = (Integer) v.getTag(R.id.operation_id);
+                long id = (Integer) v.getTag(R.id.operation_id);
                 switch (status)
                 {
                     case Operation.STATUS_PENDING:
                     case Operation.STATUS_RUNNING:
-                        //Cancel operation
-                        OperationManager.forceStop(v.getContext(), id);
+                        // Cancel operation
+                        BatchOperationManager.getInstance(context).forceStop((int) id);
                         break;
                     case Operation.STATUS_PAUSED:
                     case Operation.STATUS_FAILED:
                     case Operation.STATUS_CANCEL:
-                        //Retry
-                        OperationManager.getInstance(context).retry(v.getTag(R.id.operation_id)+"");
+                        // Retry
+                        BatchOperationManager.getInstance(context).retry(id);
                         break;
                     case Operation.STATUS_SUCCESSFUL:
-                        //Remove operation
-                        Uri uri = Uri.parse(OperationContentProvider.CONTENT_URI + "/" + v.getTag(R.id.operation_id));
+                        // Remove operation
+                        Uri uri = Uri.parse(BatchOperationContentProvider.CONTENT_URI + "/"
+                                + v.getTag(R.id.operation_id));
                         v.getContext().getContentResolver().delete(uri, null, null);
                         break;
                     default:
@@ -135,18 +156,49 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 
     protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.topText.setText(cursor.getString(OperationSchema.COLUMN_NOTIFICATION_TITLE_ID));
+        vh.topText.setText(cursor.getString(BatchOperationSchema.COLUMN_TITLE_ID));
     }
-}
 
-final class ProgressViewHolder extends GenericViewHolder
-{
-
-    public ProgressBar progress;
-
-    public ProgressViewHolder(View v)
+    protected void displayStatut(ProgressViewHolder vh, int imageResource)
     {
-        super(v);
-        this.progress = (ProgressBar) v.findViewById(R.id.status_progress);
+        vh.iconTopRight.setVisibility(View.VISIBLE);
+        vh.iconTopRight.setImageResource(imageResource);
     }
+
+    protected String displayType(ProgressViewHolder vh, int typeId)
+    {
+
+        int resId = R.string.operation_default;
+        switch (typeId)
+        {
+            case DownloadRequest.TYPE_ID:
+                resId = R.string.DownloadRequest;
+                break;
+            case CreateDocumentRequest.TYPE_ID:
+                resId = R.string.DownloadRequest;
+                break;
+            case UpdateContentRequest.TYPE_ID:
+                resId = R.string.UpdateContentRequest;
+                break;
+            case DeleteNodeRequest.TYPE_ID:
+                resId = R.string.DeleteNodeRequest;
+                break;
+            case LikeNodeRequest.TYPE_ID:
+                resId = R.string.LikeNodeRequest;
+                break;
+            case FavoriteNodeRequest.TYPE_ID:
+                resId = R.string.FavoriteNodeRequest;
+                break;
+            case CreateFolderRequest.TYPE_ID:
+                resId = R.string.CreateFolderRequest;
+                break;
+            case LoadSessionRequest.TYPE_ID:
+                resId = R.string.LoadSessionRequest;
+                break;
+            default:
+                break;
+        }
+        return context.getString(resId);
+    }
+
 }

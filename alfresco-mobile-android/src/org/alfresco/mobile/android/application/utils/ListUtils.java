@@ -41,5 +41,4 @@ public final class ListUtils
         hashMap.put("content", content);
         return hashMap;
     }
-
 }

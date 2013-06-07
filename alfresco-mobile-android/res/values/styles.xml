@@ -42,11 +42,11 @@
     <style name="white_background">
         <item name="android:background">@android:color/white</item>
     </style>
-    
+
     <style name="background_light">
         <item name="android:background">@android:color/background_light</item>
     </style>
-    
+
     <style name="list_item_icon">
         <item name="android:layout_gravity">center</item>
         <item name="android:adjustViewBounds">false</item>
@@ -58,6 +58,7 @@
 
     <style name="list_item_toptext">
         <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingRight">1dip</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">2</item>
@@ -69,6 +70,7 @@
 
     <style name="list_item_bottomtext">
         <item name="android:gravity">bottom</item>
+        <item name="android:paddingRight">1dip</item>
         <item name="android:layout_gravity">bottom|center</item>
         <item name="android:layout_marginLeft">@dimen/browse_margin</item>
         <item name="android:maxLines">3</item>
@@ -147,14 +149,22 @@
         <item name="android:layout_marginRight">@dimen/browse_margin</item>
         <item name="android:indeterminate">true</item>
     </style>
-    
-    
+
     <style name="alfrescotheme_popup" parent="android:Theme.Holo.Light.Dialog">
-	    <item name="android:windowIsFloating">false</item>
-	    <item name="android:windowContentOverlay">@null</item>
-	    <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
-	    <item name="android:windowActionModeOverlay">true</item>
-	    <item name="android:windowIsTranslucent">true</item>
-	</style>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="alfrescotheme_popup_2" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
 </resources>
