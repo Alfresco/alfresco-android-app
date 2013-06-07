@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.intent;
 
+import android.content.Intent;
+
 
 public interface IntentIntegrator extends PublicIntent
 {
@@ -31,23 +33,19 @@ public interface IntentIntegrator extends PublicIntent
     String CLOUD_SIGNUP_I = "sign_up_cloud_i";
 
     String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
-
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // OAUTH MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
     String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
 
     String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
 
     String CATEGORY_OAUTH_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH";
 
-    String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
-
-    String ACTION_DISPLAY_ERROR_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_HOMESCREEN";
-
-    String ACTION_DISPLAY_ERROR_IMPORT = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_IMPORT";
-
-    String DISPLAY_ERROR_DATA = "org.alfresco.mobile.android.intent.DISPLAY_ERROR_DATA";
-
-    String ACTION_DISPLAY_DIALOG_HOMESCREEN = "org.alfresco.mobile.android.intent.DISPLAY_DIALOG_HOMESCREEN";
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // FRAGMENT MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
     String ACTION_REMOVE_FRAGMENT = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT";
 
     String REMOVE_FRAGMENT_TAG = "org.alfresco.mobile.android.intent.REMOVE_FRAGMENT_TAG";
@@ -56,50 +54,20 @@ public interface IntentIntegrator extends PublicIntent
 
     String REMOVE_LOADER_ID = "org.alfresco.mobile.android.intent.REMOVE_LOADER_ID";
 
-    String ACTION_DOWNLOAD_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_DOWNLOAD_COMPLETE";
-
-    String ACTION_DELETE_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_DELETE_COMPLETE";
-
-    String ACTION_UPLOAD_START = "org.alfresco.mobile.android.intent.ACTION_UPLOAD_START";
-
-    String EXTRA_DOCUMENT_NAME = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT_NAME";
-
-    String ACTION_UPLOAD_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_UPLOAD_COMPLETE";
-
-    String ACTION_CREATE_FOLDER_START = "org.alfresco.mobile.android.intent.ACTION_CREATE_FOLDER_START";
-
-    String ACTION_CREATE_FOLDER_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_CREATE_FOLDER_COMPLETE";
-
-    String EXTRA_CREATED_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_CREATED_FOLDER";
-
-    String ACTION_UPDATE_START = "org.alfresco.mobile.android.intent.ACTION_UPDATE_START";
-
-    String ACTION_UPDATE_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_UPDATE_COMPLETE";
-
-    String EXTRA_UPDATED_DOCUMENT = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_DOCUMENT";
-
-    String ACTION_LIKE_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_LIKE_COMPLETE";
-
-    String EXTRA_LIKE = "org.alfresco.mobile.android.intent.EXTRA_LIKE";
-
-    String ACTION_FAVORITE_COMPLETE = "org.alfresco.mobile.android.intent.ACTION_FAVORITE_COMPLETE";
-
-    String EXTRA_FAVORITE = "org.alfresco.mobile.android.intent.EXTRA_FAVORITE";
-
-    String ACTION_DISPLAY_OPERATIONS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS";
-    
-    String ACTION_PICK_FILE = "org.alfresco.mobile.android.intent.ACTION_PICK_FILE";
-
     // ///////////////////////////////////////////////////////////////////////////
     // OPERATIONS MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
     
     // ACTION
+    String ACTION_DISPLAY_OPERATIONS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS";
+    
     String ACTION_OPERATION_STOP = "org.alfresco.mobile.android.intent.ACTION_OPERATION_STOP";
 
     String ACTION_OPERATIONS_STOP = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_STOP";
     
     String ACTION_OPERATIONS_CANCEL = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_CANCEL";
+
+    String ACTION_OPERATION_PAUSE =  "org.alfresco.mobile.android.intent.ACTION_OPERATION_PAUSE";
 
     
     // BROADCAST
@@ -148,20 +116,95 @@ public interface IntentIntegrator extends PublicIntent
     // ///////////////////////////////////////////////////////////////////////////
     // DISPLAY DIALOG
     // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
     /** Display dialog with extra bundle */
     String ACTION_DISPLAY_DIALOG = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_DIALOG";
+    
+    String ACTION_DISPLAY_ERROR = "org.alfresco.mobile.android.intent.DISPLAY_ERROR";
+    
+    String EXTRA_ERROR_DATA = "org.alfresco.mobile.android.intent.EXTRA_ERROR_DATA";
+
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONTENT MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
+    
+    // BROADCAST
     String ACTION_UPDATE_STARTED = "org.alfresco.mobile.android.intent.ACTION_UPDATE_STARTED";
     
     String ACTION_UPDATE_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_UPDATE_COMPLETED";
+    
+    String ACTION_UPLOAD_STARTED = "org.alfresco.mobile.android.intent.ACTION_UPLOAD_STARTED";
+    
+    String ACTION_UPLOAD_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_UPLOAD_COMPLETED";
 
+    String ACTION_DOWNLOAD_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DOWNLOAD_COMPLETED";
+
+    String ACTION_DELETE_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DELETE_COMPLETED";
+    
+    String ACTION_CREATE_FOLDER_STARTED = "org.alfresco.mobile.android.intent.ACTION_CREATE_FOLDER_STARTED";
+
+    String ACTION_CREATE_FOLDER_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_CREATE_FOLDER_COMPLETED";
+    
+    String ACTION_RETRIEVE_NAME_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_RETRIEVE_NAME_COMPLETED";
+
+    // EXTRA
     String EXTRA_UPDATED_NODE = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_NODE";
+    
+    String EXTRA_CREATED_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_CREATED_FOLDER";
+    
+    String EXTRA_DOCUMENT_NAME = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT_NAME";
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // COLLABORATION MANAGMENET
+    // ///////////////////////////////////////////////////////////////////////////
+    
+    // BROADCAST
+    String ACTION_FAVORITE_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_FAVORITE_COMPLETED";
+    
+    String ACTION_LIKE_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_LIKE_COMPLETED";
 
+    // EXTRA
+    String EXTRA_FAVORITE = "org.alfresco.mobile.android.intent.EXTRA_FAVORITE";
+    
+    String EXTRA_LIKE = "org.alfresco.mobile.android.intent.EXTRA_LIKE";
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // FILES MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
+    
+    // ACTION
+    String ACTION_PICK_FILE = "org.alfresco.mobile.android.intent.ACTION_PICK_FILE";
+    
+    // EXTRA
     String EXTRA_UPDATED_FILE = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_FILE";
 
     String EXTRA_LIBRARY = "org.alfresco.mobile.android.intent.EXTRA_LIBRARY";
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SYNC MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
+    
+    // ACTION
+    String ACTION_SYNCHRO_STOP = "org.alfresco.mobile.android.intent.ACTION_SYNCHRO_STOP";
+
+    String ACTION_SYNCHROS_STOP = "org.alfresco.mobile.android.intent.ACTION_SYNCHROS_STOP";
+    
+    String ACTION_SYNCHROS_CANCEL = "org.alfresco.mobile.android.intent.ACTION_SYNCHROS_CANCEL";
+
+    String ACTION_SYNCHRO_DISPLAY = "org.alfresco.mobile.android.intent.ACTION_SYNCHRO_DISPLAY";
+    
+    String ACTION_SYNCHRO_PAUSE = "org.alfresco.mobile.android.intent.ACTION_SYNCHRO_PAUSE";
+
+
+    // BROADCAST
+    String ACTION_SYNCHRO_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_SYNCHRO_COMPLETED";
+
+    String ACTION_SYNCHROS_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_SYNCHROS_COMPLETED";
+
+    String ACTION_SYNC_SCAN_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_SYNC_SCAN_COMPLETED";
+
+
+
 
 }

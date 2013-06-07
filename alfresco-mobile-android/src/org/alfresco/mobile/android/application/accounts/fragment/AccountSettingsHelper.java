@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImp
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.manager.NetworkHttpInvoker;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
@@ -236,6 +237,7 @@ public class AccountSettingsHelper
         settings.put(SessionParameter.READ_TIMEOUT, "60000");
         settings.put(AlfrescoSession.EXTRACT_METADATA, true);
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
+        settings.put(AlfrescoSession.HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
         settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobile"));
         return settings;
     }

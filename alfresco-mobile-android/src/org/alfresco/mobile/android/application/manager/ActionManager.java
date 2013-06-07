@@ -20,16 +20,20 @@ package org.alfresco.mobile.android.application.manager;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
-import org.alfresco.mobile.android.application.integration.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
@@ -38,6 +42,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
@@ -153,28 +158,12 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         LocalBroadcastManager.getInstance(context).sendBroadcast(i);
     }
 
-    public static void actionDisplayDialog(Fragment f, Bundle bundle)
-    {
-        String intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG;
-        if (f.getActivity() instanceof HomeScreenActivity)
-        {
-            intentId = IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN;
-        }
-
-        Intent i = new Intent(intentId);
-        if (bundle != null)
-        {
-            i.putExtras(bundle);
-        }
-        f.startActivity(i);
-    }
-
     public static void actionDisplayError(Fragment f, Exception e)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_ERROR);
         if (e != null)
         {
-            i.putExtra(IntentIntegrator.DISPLAY_ERROR_DATA, e);
+            i.putExtra(IntentIntegrator.EXTRA_ERROR_DATA, e);
         }
         LocalBroadcastManager.getInstance(f.getActivity()).sendBroadcast(i);
     }
@@ -228,7 +217,8 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     }
 
     /**
-     * Open Play Store application or its web version if no play store available.
+     * Open Play Store application or its web version if no play store
+     * available.
      * 
      * @param c : Android Context
      */
@@ -422,7 +412,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(activity, R.string.error_unable_open_file);
         }
     }
-    
+
     public static void actionUploadDocument(Activity activity, File contentFile)
     {
         try
@@ -438,6 +428,4 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(activity, R.string.error_unable_share_content);
         }
     }
-    
-
 }

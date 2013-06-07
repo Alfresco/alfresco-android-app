@@ -32,9 +32,10 @@ import android.widget.RemoteViews;
 
 public final class NotificationHelper
 {
-    private NotificationHelper(){
+    private NotificationHelper()
+    {
     }
-    
+
     public static final String ARGUMENT_TITLE = "title";
 
     public static final String ARGUMENT_DESCRIPTION = "description";
@@ -49,7 +50,10 @@ public final class NotificationHelper
 
     public static final int DEFAULT_NOTIFICATION_ID = 500;
 
-    public static int createSimpleNotification(Context c, String title, String description, String contentInfo)
+    public static final int DEFAULT_NOTIFICATION_SYNC_ID = 510;
+
+    public static int createSimpleNotification(Context c, int notificationId, String title, String description,
+            String contentInfo)
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, title);
@@ -61,10 +65,11 @@ public final class NotificationHelper
         {
             b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, contentInfo);
         }
-        return NotificationHelper.createNotification(c, b);
+        return NotificationHelper.createNotification(c, notificationId, b);
     }
 
-    public static int createIndeterminateNotification(Context c, String title, String description, String contentInfo)
+    public static int createIndeterminateNotification(Context c, int notificationId, String title, String description,
+            String contentInfo)
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, title);
@@ -77,11 +82,11 @@ public final class NotificationHelper
         {
             b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, contentInfo);
         }
-        return NotificationHelper.createNotification(c, b);
+        return NotificationHelper.createNotification(c, notificationId, b);
     }
 
-    public static int createProgressNotification(Context c, String title, String description, String contentInfo,
-            long progress, long maxprogress)
+    public static int createProgressNotification(Context c, int notificationId, String title, String description,
+            String contentInfo, long progress, long maxprogress)
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, title);
@@ -96,13 +101,12 @@ public final class NotificationHelper
         {
             b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, contentInfo);
         }
-        return NotificationHelper.createNotification(c, b);
+        return NotificationHelper.createNotification(c, notificationId, b);
     }
 
-    public static int createNotification(Context c, Bundle params)
+    public static int createNotification(Context c, int notificationId, Bundle params)
     {
         Notification notification = null;
-        
 
         // Get the builder to create notification.
         Builder builder = new Notification.Builder(c.getApplicationContext());
@@ -124,17 +128,29 @@ public final class NotificationHelper
             builder.setContentInfo(params.getString(ARGUMENT_CONTENT_INFO));
         }
 
-        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
-        PendingIntent pIntent = PendingIntent.getActivity(c, 0, i, 0);
+        Intent i = null;
+        PendingIntent pIntent = null;
+        switch (notificationId)
+        {
+            case DEFAULT_NOTIFICATION_SYNC_ID:
+                i = new Intent(IntentIntegrator.ACTION_SYNCHRO_DISPLAY);
+                pIntent = PendingIntent.getActivity(c, 0, i, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                break;
+
+            default:
+                i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
+                pIntent = PendingIntent.getActivity(c, 0, i, 0);
+                break;
+        }
         builder.setContentIntent(pIntent);
-        
+
         if (AndroidVersion.isICSOrAbove())
         {
             if (params.containsKey(ARGUMENT_PROGRESS_MAX) && params.containsKey(ARGUMENT_PROGRESS))
             {
                 long max = params.getLong(ARGUMENT_PROGRESS_MAX);
                 long progress = params.getLong(ARGUMENT_PROGRESS);
-                float value = (((float) progress/ ((float) max)) * 100);
+                float value = (((float) progress / ((float) max)) * 100);
                 int percentage = Math.round(value);
                 builder.setProgress(100, percentage, false);
             }
@@ -153,6 +169,18 @@ public final class NotificationHelper
             builder.setContent(remote);
         }
 
+        /*Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
+        String[] events = new String[]{"test","test","test","test","test","test"};
+        // Sets a title for the Inbox style big view
+        inboxStyle.setBigContentTitle("Event tracker details:");
+        // Moves events into the big view
+        for (int ij = 0; ij < events.length; ij++)
+        {
+            inboxStyle.addLine(events[ij]);
+        }
+        // Moves the big view style object into the notification object.
+        builder.setStyle(inboxStyle);*/
+        
         if (AndroidVersion.isJBOrAbove())
         {
             builder.setPriority(0);
@@ -165,8 +193,7 @@ public final class NotificationHelper
 
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
 
-        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify(DEFAULT_NOTIFICATION_ID,
-                notification);
+        ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationId, notification);
 
         return DEFAULT_NOTIFICATION_ID;
     }

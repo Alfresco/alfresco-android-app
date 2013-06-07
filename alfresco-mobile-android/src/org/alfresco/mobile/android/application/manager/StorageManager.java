@@ -23,6 +23,8 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
@@ -36,11 +38,15 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 {
     private static final String TAG = "StorageManager";
 
+    private static final String CAPTURE_DIRECTORY = "Capture";
+
     public static final String TEMPDIR = "Capture";
 
     public static final String DLDIR = "Download";
 
-    public static final String ASSETDIR = "Assets";
+    private static final String SYNCHRO_DIRECTORY = "Synchro";
+
+    private static final String ASSETDIR = "Assets";
 
     public static boolean isEncryptableLocation(Context context, String filename)
     {
@@ -48,16 +54,14 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return (filename.startsWith(appPath.getPath()));
     }
 
-    public static boolean isTempFile (Context c, File file)
+    public static boolean isTempFile(Context c, File file)
     {
         if (SessionUtils.getAccount(c) == null) return true;
-        File tempFolder = StorageManager.getTempFolder(c,
-                SessionUtils.getAccount(c).getUrl(),
-                SessionUtils.getAccount(c).getUsername());
+        File tempFolder = StorageManager.getTempFolder(c, SessionUtils.getAccount(c));
 
         return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
     }
-    
+
     public static boolean shouldEncryptDecrypt(Context context, String filename)
     {
         return (CipherUtils.isEncryptionActive(context) && isEncryptableLocation(context, filename));
@@ -70,24 +74,48 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     public static File getDownloadFolder(Context context, Account acc)
     {
-        return getPrivateFolder(context, DLDIR, acc.getUrl(), acc.getUsername());
-    }
-    
-    public static File getTempFolder(Context context, String urlValue, String username)
-    {
-        return getPrivateFolder(context, TEMPDIR, urlValue, username);
+        return getPrivateFolder(context, DLDIR, acc);
     }
 
-    public static File getCaptureFolder(Context context, String urlValue, String username)
+    public static File getTempFolder(Context context, Account acc)
     {
-        return getPrivateFolder(context, TEMPDIR, urlValue, username);
+        return getPrivateFolder(context, TEMPDIR, acc);
+    }
+
+    public static File getCaptureFolder(Context context, Account acc)
+    {
+        return getPrivateFolder(context, CAPTURE_DIRECTORY, acc);
+    }
+
+    public static File getSynchroFolder(Context context, Account acc)
+    {
+        return getPrivateFolder(context, SYNCHRO_DIRECTORY, acc);
+    }
+
+    public static File getSynchroFile(Context context, Account acc, Document doc)
+    {
+        if (context != null && doc != null) { return getSynchroFile(context, acc, doc.getName(), doc.getIdentifier()); }
+        return null;
+    }
+
+    public static File getSynchroFile(Context context, Account acc, String documentName, String nodeIdentifier)
+    {
+        if (context != null && acc != null)
+        {
+            File synchroFolder = StorageManager.getSynchroFolder(context, acc);
+            File uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
+            uuidFolder.mkdirs();
+            File t = new File(uuidFolder, documentName);
+            return t;
+        }
+        return null;
     }
 
     public static File getAssetFolder(Context context)
     {
-        return getPrivateFolder(context, ASSETDIR, null, null);
+        return getPrivateFolder(context, ASSETDIR, null);
     }
-    
+
     /**
      * Returns a specific file/folder inside the private area of the
      * application.
@@ -114,7 +142,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return file;
     }
 
-    public static File getPrivateFolder(Context context, String requestedFolder, String urlValue, String username)
+    public static File getPrivateFolder(Context context, String requestedFolder, Account acc)
     {
         File folder = null;
         try
@@ -125,10 +153,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
             {
                 folder = context.getExternalFilesDir(null);
 
-                if (urlValue != null && urlValue.length() > 0 && username != null && username.length() > 0)
+                if (acc != null && acc.getUrl() != null && acc.getUrl().length() > 0 && acc.getUsername() != null
+                        && acc.getUsername().length() > 0)
                 {
-                    folder = IOUtils.createFolder(folder, getAccountFolder(urlValue, username) + File.separator
-                            + requestedFolder);
+                    folder = IOUtils.createFolder(folder, getAccountFolder(acc.getUrl(), acc.getUsername())
+                            + File.separator + requestedFolder);
                 }
                 else
                 {

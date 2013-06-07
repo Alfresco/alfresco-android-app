@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -30,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -127,10 +129,25 @@ public class PublicDispatcherActivity extends BaseActivity
             Fragment f = new OperationsFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
                     false, false);
+            return;
+        }
+        
+        
+        if (IntentIntegrator.ACTION_SYNCHRO_DISPLAY.equals(action))
+        {
+            Fragment f = FavoritesSyncFragment.newInstance(FavoritesSyncFragment.MODE_PROGRESS);
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
+                    false, false);
+            return;
         }
 
         if (IntentIntegrator.ACTION_PICK_FILE.equals(action))
         {
+            if (getIntent().hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+            {
+                currentAccount = AccountManager.retrieveAccount(this, getIntent().getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, 1));
+            }
+            
             File f = Environment.getExternalStorageDirectory();
             if (getIntent().hasExtra(IntentIntegrator.EXTRA_FOLDER))
             {
@@ -256,7 +273,6 @@ public class PublicDispatcherActivity extends BaseActivity
                 {
                     Intent i = new Intent(this, MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
                 }

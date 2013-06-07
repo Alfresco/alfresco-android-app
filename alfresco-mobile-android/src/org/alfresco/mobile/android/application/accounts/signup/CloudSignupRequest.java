@@ -26,13 +26,14 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.api.utils.JsonDataWriter;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils;
-import org.apache.chemistry.opencmis.client.bindings.spi.http.HttpUtils.Response;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Output;
+import org.apache.chemistry.opencmis.client.bindings.spi.http.Response;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 import org.apache.chemistry.opencmis.commons.impl.UrlBuilder;
 import org.apache.chemistry.opencmis.commons.impl.json.JSONObject;
@@ -132,8 +133,8 @@ public class CloudSignupRequest
         final JsonDataWriter formData = new JsonDataWriter(jo);
 
         // send and parse
-        HttpUtils.Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokePOST(url,
-                formData.getContentType(), new HttpUtils.Output()
+        Response resp = NetworkHttpInvoker.invokePOST(url,
+                formData.getContentType(), new Output()
                 {
                     public void write(OutputStream out) throws Exception
                     {
@@ -162,7 +163,7 @@ public class CloudSignupRequest
         headers.add(apiKey);
         fixedHeaders.put("key", headers);
 
-        Response resp = org.alfresco.mobile.android.api.utils.HttpUtils.invokeGET(url, fixedHeaders);
+        Response resp = NetworkHttpInvoker.invokeGET(url, fixedHeaders);
         if (resp.getResponseCode() == HttpStatus.SC_NOT_FOUND)
         {
             return true;

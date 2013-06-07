@@ -18,22 +18,31 @@
 package org.alfresco.mobile.android.application.fragments.properties;
 
 import java.io.File;
+import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.app.DialogFragment;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,17 +58,17 @@ public class PreviewFragment extends BaseFragment
     public static final String ARGUMENT_NODE = "node";
 
     protected File tempFile = null;
-    
+
     public File getTempFile()
     {
         return tempFile;
     }
-    
-    public void setTempFile (File tempFile)
+
+    public void setTempFile(File tempFile)
     {
         this.tempFile = tempFile;
     }
-    
+
     public static Bundle createBundleArgs(Node node)
     {
         Bundle args = new Bundle();
@@ -91,7 +100,8 @@ public class PreviewFragment extends BaseFragment
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
 
-        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
+        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
+                getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
@@ -120,20 +130,50 @@ public class PreviewFragment extends BaseFragment
         return v;
     }
 
-    public void openin()
+    private void openin()
     {
         Bundle b = new Bundle();
-        
+
         if (CipherUtils.isEncryptionActive(getActivity()))
         {
             tempFile = IOUtils.makeTempFile(NodeActions.getDownloadFile(getActivity(), node));
             b.putString(DownloadDialogFragment.ARGUMENT_TEMPFILE, tempFile.getPath());
         }
-        
-        b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
-        b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
-        DialogFragment frag = new DownloadDialogFragment();
-        frag.setArguments(b);
-        frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
+
+        DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
+        if (isSynced() && detailsFragment != null)
+        {
+            File syncFile = getSyncFile();
+            long datetime = syncFile.lastModified();
+            detailsFragment.setDownloadDateTime(new Date(datetime));
+            ActionManager.openIn(detailsFragment, getSyncFile(), MimeTypeManager.getMIMEType(syncFile.getName()),
+                    PublicIntent.REQUESTCODE_SAVE_BACK);
+        }
+        else
+        {
+            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
+            DialogFragment frag = new DownloadDialogFragment();
+            frag.setArguments(b);
+            frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
+        }
+    }
+
+    private boolean isSynced()
+    {
+        if (node.isFolder()) { return false; }
+        Cursor favoriteCursor = getActivity().getContentResolver()
+                .query(SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                                + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
+        return (favoriteCursor.getCount() == 1)
+                && GeneralPreferences.hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
+    }
+
+    private File getSyncFile()
+    {
+        if (node.isFolder()) { return null; }
+        return StorageManager.getSynchroFile(getActivity(), SessionUtils.getAccount(getActivity()), (Document) node);
     }
 }

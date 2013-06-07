@@ -24,7 +24,7 @@ import java.util.Stack;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.integration.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
 
 import android.os.Bundle;
 

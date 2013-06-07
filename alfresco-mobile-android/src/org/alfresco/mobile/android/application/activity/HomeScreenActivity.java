@@ -87,14 +87,6 @@ public class HomeScreenActivity extends BaseActivity
             getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             cloud(null);
         }
-
-        // Intent for Display Dialog
-        if (IntentIntegrator.ACTION_DISPLAY_DIALOG_HOMESCREEN.equals(intent.getAction()))
-        {
-            SimpleAlertDialogFragment.newInstance(intent.getExtras()).show(getFragmentManager(),
-                    SimpleAlertDialogFragment.TAG);
-            return;
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

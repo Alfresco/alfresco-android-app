@@ -164,8 +164,10 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
                     selectedItems);
         }
 
-        PagingResult<File> pagingResultFiles = new PagingResultImpl<File>(results, false, results.size());
-        displayPagingData(pagingResultFiles, loaderId, callback);
+        if (results != null){
+            PagingResult<File> pagingResultFiles = new PagingResultImpl<File>(results, false, results.size());
+            displayPagingData(pagingResultFiles, loaderId, callback);
+        }
     }
 
     @Override

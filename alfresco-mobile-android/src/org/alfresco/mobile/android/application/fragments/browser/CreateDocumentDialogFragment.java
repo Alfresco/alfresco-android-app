@@ -31,22 +31,25 @@ import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentRequest;
-import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.create.RetrieveDocumentNameRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -59,6 +62,7 @@ import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -84,6 +88,21 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
     private List<Tag> selectedTags = new ArrayList<Tag>();
 
+    private CreateDocumentReceiver receiver;
+
+    private String recommandedName = null;
+    
+    private String originalName = null;
+
+    private ContentFile contentFile;
+
+    private View pb;
+
+    private EditText tv;
+
+    // //////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // //////////////////////////////////////////////////////////////////////
     public CreateDocumentDialogFragment()
     {
     }
@@ -102,22 +121,9 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         return args;
     }
 
-    @Override
-    public void onStart()
-    {
-
-        if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
-        {
-            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(f.getFileName()));
-        }
-        else
-        {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_file);
-        }
-        super.onStart();
-    }
-
+    // //////////////////////////////////////////////////////////////////////
+    // LIFE CYCLE
+    // //////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -125,7 +131,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        final EditText tv = (EditText) v.findViewById(R.id.content_name);
+        pb = (TextView) v.findViewById(R.id.document_error);
+        tv = (EditText) v.findViewById(R.id.content_name);
         final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
 
@@ -136,12 +143,12 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         {
             public void onClick(View v)
             {
-                File uploadFile = ((ContentFile)getArguments().getSerializable(ARGUMENT_CONTENT_FILE)).getFile();
-                
-                //If the file is a temporary file, remove it on cancellation of dialog.
-                if (StorageManager.isTempFile(getActivity(), uploadFile))
-                    uploadFile.delete();
-                
+                File uploadFile = ((ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE)).getFile();
+
+                // If the file is a temporary file, remove it on cancellation of
+                // dialog.
+                if (StorageManager.isTempFile(getActivity(), uploadFile)) uploadFile.delete();
+
                 CreateDocumentDialogFragment.this.dismiss();
             }
         });
@@ -157,9 +164,10 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
         if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
         {
-            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            tv.setText(f.getFileName());
-            tsize.setText(Formatter.formatFileSize(getActivity(), f.getLength()));
+            contentFile = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+            originalName = contentFile.getFileName();
+            tv.setText(originalName);
+            tsize.setText(Formatter.formatFileSize(getActivity(), contentFile.getLength()));
             tsize.setVisibility(View.VISIBLE);
             bcreate.setEnabled(true);
         }
@@ -180,6 +188,14 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 {
                     bcreate.setEnabled(true);
                 }
+                if (originalName.equals(tv.getText().toString()))
+                {
+                    pb.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    pb.setVisibility(View.GONE);
+                }
             }
 
             public void beforeTextChanged(CharSequence s, int start, int count, int after)
@@ -188,6 +204,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
             public void onTextChanged(CharSequence s, int start, int before, int count)
             {
+
             }
         });
 
@@ -206,13 +223,56 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             }
         });
 
+        Folder parentFolder = getParent();
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new RetrieveDocumentNameRequest(parentFolder.getIdentifier(), contentFile.getFileName())
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+
         return v;
     }
 
+    @Override
+    public void onStart()
+    {
+
+        if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
+        {
+            ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(f.getFileName()));
+        }
+        else
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_file);
+        }
+        super.onStart();
+    }
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (receiver == null)
+        {
+            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_RETRIEVE_NAME_COMPLETED);
+            receiver = new CreateDocumentReceiver();
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+        }
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // //////////////////////////////////////////////////////////////////////
     private void createDocument(EditText tv, EditText desc, Button bcreate)
     {
         Map<String, Serializable> props = new HashMap<String, Serializable>(3);
         String documentName = tv.getText().toString();
+        
+        if (originalName.equals(documentName) && recommandedName != null && !recommandedName.equals(originalName))
+        {
+            documentName = recommandedName;
+        }
+        
         if (desc.getText() != null && desc.getText().length() > 0)
         {
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
@@ -231,16 +291,17 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         bcreate.setEnabled(false);
         Folder parentFolder = (Folder) getArguments().get(ARGUMENT_FOLDER);
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
-        
-        OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
-        group.enqueue(new CreateDocumentRequest(parentFolder.getIdentifier(), documentName, props, listTagValue,  f, isCreation));
-        OperationManager.getInstance(getActivity()).enqueue(group);
-        
+
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new CreateDocumentRequest(parentFolder.getIdentifier(), documentName, props, listTagValue, f,
+                isCreation));
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+
         if (getActivity() instanceof PublicDispatcherActivity)
         {
             getActivity().finish();
         }
-        
+
         // Dismiss the dialog
         CreateDocumentDialogFragment.this.dismiss();
     }
@@ -258,36 +319,35 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         }
     }
 
-    //TODO Dead code ?
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    // //////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////
+    private Folder getParent()
     {
-        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+        return (Folder) getArguments().get(ARGUMENT_FOLDER);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // //////////////////////////////////////////////////////////////////////
+    public class CreateDocumentReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
         {
-            try
+            Log.d(TAG, intent.getAction());
+
+            if (intent.getExtras() != null
+                    && intent.getAction().equals(IntentIntegrator.ACTION_RETRIEVE_NAME_COMPLETED))
             {
-                String filename = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(
-                        GeneralPreferences.REQUIRES_ENCRYPT, "");
-                if (filename != null && filename.length() > 0)
+                Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
+                recommandedName = b.getString(IntentIntegrator.EXTRA_DOCUMENT_NAME);
+                if (!recommandedName.equals(originalName))
                 {
-                    if (!CipherUtils.encryptFile(getActivity(), filename, true))
-                    {
-                        MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                    }
-                    else
-                    {
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
-                                .putString(GeneralPreferences.REQUIRES_ENCRYPT, "").commit();
-                    }
+                    pb.setVisibility(View.VISIBLE);
                 }
-            }
-            catch (Exception e)
-            {
-                MessengerManager.showLongToast(getActivity(), getString(R.string.encryption_failed));
-                Log.w(TAG, Log.getStackTraceString(e));
+
             }
         }
-
-        super.onActivityResult(requestCode, resultCode, data);
     }
 }

@@ -29,21 +29,25 @@
         android:src="@drawable/mime_file" />
 
     <ImageView
-        android:id="@+id/icon_favorite"
+        android:id="@+id/icon_top_right"
         android:layout_width="20dip"
         android:layout_height="20dip"
         android:layout_gravity="top|right"
         android:scaleType="centerInside"
         android:src="@drawable/btn_star_big_on_pressed"
+        android:layout_marginTop="@dimen/thumbnail_margin_min"
+        android:layout_marginRight="@dimen/thumbnail_margin_min"
         android:visibility="gone" />
 
     <ImageView
-        android:id="@+id/icon_status"
+        android:id="@+id/icon_bottom_right"
         android:layout_width="20dip"
         android:layout_height="20dip"
-        android:layout_gravity="bottom|left"
+        android:layout_gravity="bottom|right"
         android:scaleType="centerInside"
-        android:src="@drawable/ic_error"
+        android:src="@drawable/sync_status_failed"
+        android:layout_marginBottom="@dimen/thumbnail_margin_min"
+        android:layout_marginRight="@dimen/thumbnail_margin_min"
         android:visibility="gone" />
 
 </FrameLayout>

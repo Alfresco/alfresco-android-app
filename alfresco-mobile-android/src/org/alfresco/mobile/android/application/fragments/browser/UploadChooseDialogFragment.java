@@ -132,6 +132,7 @@ public class UploadChooseDialogFragment extends DialogFragment
 
         Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, getActivity(), PublicDispatcherActivity.class);
         i.putExtra(IntentIntegrator.EXTRA_FOLDER, f);
+        i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, ((BaseActivity)getActivity()).getCurrentAccount().getId());
 
         frag.startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
     }
@@ -143,6 +144,7 @@ public class UploadChooseDialogFragment extends DialogFragment
 
         Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, getActivity(), PublicDispatcherActivity.class);
         i.putExtra(IntentIntegrator.EXTRA_LIBRARY, mediatype);
+        i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, ((BaseActivity)getActivity()).getCurrentAccount().getId());
 
         frag.startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
     }

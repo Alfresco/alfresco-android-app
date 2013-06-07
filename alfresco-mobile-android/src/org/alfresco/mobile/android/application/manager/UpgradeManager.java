@@ -122,7 +122,7 @@ public class UpgradeManager implements VersionNumber
             if (!prefs.getBoolean(UPGRADE_MIGRATION_FILES, false))
             {
                 File oldDownloads = StorageManager.getOldDownloadFolder(context);
-                File newDownloads = StorageManager.getPrivateFolder(context, "", "", "");
+                File newDownloads = StorageManager.getPrivateFolder(context, "", null);
 
                 if (IOUtils.isFolderEmpty(oldDownloads) == false)
                 {

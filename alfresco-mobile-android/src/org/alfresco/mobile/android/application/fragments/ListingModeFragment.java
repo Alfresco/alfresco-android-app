@@ -21,11 +21,17 @@ public interface ListingModeFragment
 {
     String PARAM_MODE = "org.alfresco.mobile.android.application.param.mode";
     
+    /** Normal case where user can interact with everything. */
     int MODE_LISTING = 1;
 
+    /** Select one or multiple document.*/
     int MODE_PICK_FILE = 2;
     
+    /** Select a folder */
     int MODE_IMPORT = 4;
+    
+    /** Display progress. */
+    int MODE_PROGRESS = 4;
 
     int getMode();
 

@@ -106,16 +106,20 @@ public class ContentFileProgressImpl extends ContentFileImpl
         }
     }
 
-    public void setReaderListener(ReaderListener listener)
-    {
-        this.listener = listener;
-        segment = (int) (getFile().length() / listener.getSegment());
-    }
-
+  
+    // ///////////////////////////////////////////////////////////////////////////
+    // LISTENERS
+    // ///////////////////////////////////////////////////////////////////////////
     public interface ReaderListener
     {
         void onRead(ContentFileProgressImpl contentFile, Long amountCopied);
 
         int getSegment();
+    }
+    
+    public void setReaderListener(ReaderListener listener)
+    {
+        this.listener = listener;
+        segment = (int) (getFile().length() / listener.getSegment());
     }
 }

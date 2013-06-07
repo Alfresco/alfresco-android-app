@@ -1,0 +1,149 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package org.alfresco.mobile.android.application.operations.batch.node.create;
+
+import java.io.File;
+
+import org.alfresco.mobile.android.api.model.ContentFile;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.NotificationHelper;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
+import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
+import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
+import org.alfresco.mobile.android.application.utils.IOUtils;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+
+import android.content.Context;
+import android.os.Bundle;
+
+/**
+ * UploadService is responsible to upload document from the device to the
+ * repository.
+ * 
+ * @author Jean Marie Pascal
+ */
+public class CreateDocumentCallback extends AbstractBatchOperationCallback<Document>
+{
+    // ////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ////////////////////////////////////////////////////
+    public CreateDocumentCallback(Context context, int totalItems, int pendingItems)
+    {
+        super(context, totalItems, pendingItems);
+        inProgress = getBaseContext().getString(R.string.upload_in_progress);
+        complete = getBaseContext().getString(R.string.upload_complete);
+        finalComplete = R.plurals.upload_complete_description;
+    }
+
+    // ////////////////////////////////////////////////////
+    // LIFE CYCLE
+    // ////////////////////////////////////////////////////
+    @Override
+    public void onProgressUpdate(Operation<Document> task, Long values)
+    {
+        if (values == 100)
+        {
+            NotificationHelper.createIndeterminateNotification(getBaseContext(),
+                    NotificationHelper.DEFAULT_NOTIFICATION_ID, ((AbstractUpThread) task).getDocumentName(),
+                    getBaseContext().getString(R.string.action_processing), totalItems - pendingItems + "/"
+                            + totalItems);
+        }
+        else
+        {
+            NotificationHelper.createProgressNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
+                    ((AbstractUpThread) task).getDocumentName(), inProgress, totalItems - pendingItems + "/"
+                            + totalItems, values,
+                    ((AbstractUpRequest) task.getOperationRequest()).getContentStreamLength());
+        }
+    }
+
+    @Override
+    public void onPostExecute(Operation<Document> task, Document results)
+    {
+        super.onPostExecute(task, results);
+        if (task instanceof CreateDocumentThread && ((CreateDocumentThread) task).isCreation())
+        {
+            ((AbstractUpThread) task).getContentFile().getFile().delete();
+        }
+    }
+
+    @Override
+    public void onError(Operation<Document> task, Exception e)
+    {
+        // An error occurs, notify the user.
+        if (((AbstractUpThread) task).getContentFile() != null)
+        {
+            NotificationHelper.createSimpleNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
+                    ((AbstractUpThread) task).getDocumentName(), getBaseContext().getString(R.string.import_error),
+                    totalItems - pendingItems + "/" + totalItems);
+
+            // During creation process, the content must be available on
+            // Download area.
+            // The file is move from capture to download.
+            if (task instanceof CreateDocumentThread && ((CreateDocumentThread) task).isCreation())
+            {
+                ContentFile contentFile = ((AbstractUpThread) task).getContentFile();
+                // TODO Identifier is wrong when switching!
+                final File folderStorage = StorageManager.getDownloadFolder(getBaseContext(),
+                        ((CreateDocumentThread) task).getSession().getBaseUrl(), ((CreateDocumentThread) task)
+                                .getSession().getPersonIdentifier());
+
+                File dlFile = new File(folderStorage, contentFile.getFileName());
+                if (dlFile.exists())
+                {
+                    dlFile = new File(folderStorage, contentFile.getFileName());
+                    dlFile = IOUtils.createFile(dlFile);
+                }
+
+                if (contentFile.getFile().renameTo(dlFile))
+                {
+                    MessengerManager.showLongToast(getBaseContext(),
+                            getBaseContext().getString(R.string.create_document_save));
+                }
+                else
+                {
+                    MessengerManager.showToast(getBaseContext(), R.string.error_general);
+                }
+            }
+        }
+    }
+
+    // ////////////////////////////////////////////////////
+    // INTERNAL UTILS
+    // ////////////////////////////////////////////////////
+    protected void createNotification(OperationsGroupResult result)
+    {
+        Bundle b = new Bundle();
+        b.putString(NotificationHelper.ARGUMENT_TITLE, complete);
+        if (result.failedRequest.isEmpty())
+        {
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
+                    .getQuantityString(finalComplete, result.totalRequests), result.totalRequests));
+        }
+        else
+        {
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, result.failedRequest.size() + "/"
+                    + result.totalRequests);
+        }
+        NotificationHelper.createNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID, b);
+    }
+}

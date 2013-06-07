@@ -65,7 +65,7 @@ public class FavoritesFragment extends BaseListFragment implements
     
     protected List<Node> selectedItems = new ArrayList<Node>(1);
 
-    private int mode = MODE_DOCUMENTS;
+    private int mode = MODE_DOCUMENTS; 
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR

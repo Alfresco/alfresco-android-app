@@ -14,8 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.
+  -->
 <resources>
 
     <string name="app_name">Alfresco</string>
@@ -70,7 +70,7 @@
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
 
-    <!-- WAITING SESSION  -->
+    <!-- WAITING SESSION -->
     <string name="wait_title">Please wait</string>
     <string name="wait_message">Contacting your server&#8230;</string>
 
@@ -207,10 +207,12 @@
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
     <string name="upload_in_progress">Upload in progress&#8230;</string>
+    <string name="update_complete">Update Complete.</string>
+    <string name="update_in_progress">Update in progress&#8230;</string>
     <string name="error_unable_open_file_title">The document could not be opened.</string>
     <string name="error_unable_open_file">This document format is not supported. You need to install an app that can read it.</string>
     <string name="error_unable_pick_file">There\'s no external application to pick a file.</string>
-    
+
     <!-- OTHER -->
     <string name="unlike">UnLike</string>
     <string name="error_retrieve_likes">The Like/Unlike tag for this document could not be retrieved.</string>
@@ -399,12 +401,12 @@
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
-        <item quantity="one">no document</item>
+        <item quantity="zero">no document</item>
         <item quantity="one">1 document</item>
         <item quantity="other">%1$s documents</item>
     </plurals>
     <plurals name="selected_folders">
-        <item quantity="one">no folder</item>
+        <item quantity="zero">no folder</item>
         <item quantity="one">1 folder</item>
         <item quantity="other">%1$s folders</item>
     </plurals>
@@ -416,6 +418,48 @@
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
+    <string name="favorites_activate">Activate Synchronization</string>
+    <string name="favorites_activate_description">Do you want to activate sync ?</string>
+    <string name="favorites_deactivate">Deactivate Synchronization</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync ?</p> All sync files will be deleted inside your device.]]></string>
+    <string name="sync_error_title">Sync Errors</string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p> <b>%s</b> has been unfavorited since you edited it. <br/> Tap <b>Sync</b> to upload your edited version to the server, or <b>Save</b> to save it to the \"Downloads\" section.</p> Please note that syncing here does not restore to Favorites.]]></string>
+    <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> has been deleted on the server but a copy has been saved to the \"Downloads\" section.]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> You don\'t have the right to upload your edited version of <b>%s</b>. <br/> Tap <b>Save</b> to save it to the \"Downloads\" section, or <b>Overwrite</b> to replace it with the server\'s version.</p> <b>Warning</b>: Overwrite will cause your changes to be lost.]]></string>
+    <string name="sync_error_node_local_modification">Sync Errors</string>
+    <string name="sync_action">Sync</string>
+    <string name="sync_override_action">Overwrite</string>
+    <string name="sync_save_action">Save</string>
+    <string name="sync_resolve_conflict">Resolve conflict</string>
+    <string name="sync_complete">Sync completed</string>
+    <string name="sync_in_progress">Sync in progress&#8230;</string>
+    <string name="upload_await">Waiting to upload&#8230;</string>
+    <string name="download_await">Waiting to download&#8230;</string>
+
+    <plurals name="sync_complete_description">
+        <item quantity="zero">no document synced</item>
+        <item quantity="one">1 document synced</item>
+        <item quantity="other">%1$s documents synced</item>
+    </plurals>
+    <plurals name="download_complete_description">
+        <item quantity="zero">no document downloaded</item>
+        <item quantity="one">1 document available offline</item>
+        <item quantity="other">%1$s documents available offline</item>
+    </plurals>
+    <plurals name="upload_complete_description">
+        <item quantity="zero">no document uploaded.</item>
+        <item quantity="one">1 document uploaded.</item>
+        <item quantity="other">%1$s documents uploaded.</item>
+    </plurals>
+    <plurals name="update_complete_description">
+        <item quantity="zero">no document updated.</item>
+        <item quantity="one">1 document updated.</item>
+        <item quantity="other">%1$s documents updated.</item>
+    </plurals>
+
+    <!-- Handling duplicate name -->
+    <string name="error_duplicate_title">Document already exist</string>
+    <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
 
     <!-- Quick Action Folder -->
     <string name="action_view_properties">View Properties</string>
@@ -436,8 +480,27 @@
     <string name="status_cancelled">Cancelled</string>
     <string name="session_loaded">Session ready</string>
 
+    <!-- Operations Type -->
+    <string name="operation_default">Operation</string>
+    <string name="DownloadRequest">Download</string>
+    <string name="CreateDocumentRequest">Create Document</string>
+    <string name="UpdateContentRequest">Update Document</string>
+    <string name="DeleteNodeRequest">Delete</string>
+    <string name="LikeNodeRequest">Like</string>
+    <string name="FavoriteNodeRequest">Favorite</string>
+    <string name="CreateFolderRequest">Create Folder</string>
+    <string name="LoadSessionRequest">Load Sesion</string>
+    <string name="CreateAccountRequest">Create account</string>
+    <string name="UpdatePropertiesRequest">Update Properties</string>
+    <string name="DeleteFileRequest">Delete file</string>
+    <string name="CreateDirectoryRequest">Create directory</string>
+    <string name="RenameRequest">Rename file</string>
+    <string name="SyncFavoriteRequest">Sync</string>
+    <string name="UnSyncFavoriteRequest">UnSync</string>
+    <string name="RetrieveDocumentNameRequest">Check Document Name</string>
+
     <!-- Multi selection -->
-    <string name="emtpy">Nothing at all</string>
+    <string name="empty">Nothing at all</string>
     <string name="operations_empty">No Operations</string>
     <string name="operations">Operations</string>
     <string name="select_all">Select All</string>
@@ -471,12 +534,10 @@
     <string name="shortcut_local">Device Shortcut</string>
     <string name="shortcut_local_downloads">Device Downloads</string>
     <string name="shortcut_local_sdcard">SD Card</string>
-    
     <string name="action_select">Select</string>
-    
+
     <!-- Notification -->
     <string name="batch_download_complete">%s documents available offline</string>
     <string name="batch_download_failed">%s download transfer</string>
-    
-    
+
 </resources>

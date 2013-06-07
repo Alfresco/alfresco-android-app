@@ -44,10 +44,10 @@ public final class FileExplorerHelper
         {
             itemPosition = 3;
         }
-        else if (location.equals(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)))
+        /*else if (location.equals(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)))
         {
             itemPosition = 4;
-        }
+        }*/
 
         SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
         prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
@@ -59,11 +59,11 @@ public final class FileExplorerHelper
         switch (mediatype)
         {
             case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
-                itemPosition = 9;
+                itemPosition = 8;
                 break;
 
             case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
-                itemPosition = 8;
+                itemPosition = 7;
                 break;
 
             default:

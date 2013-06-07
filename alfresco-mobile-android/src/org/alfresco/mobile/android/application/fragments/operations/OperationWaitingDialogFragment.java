@@ -19,11 +19,11 @@ package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.integration.Operation;
-import org.alfresco.mobile.android.application.integration.OperationContentProvider;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Dialog;
@@ -122,7 +122,9 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
             dialog.setProgress(0);
             dialog.setMax(nbItems);
             indeterminate = false;
-        } else {
+        }
+        else
+        {
             dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         }
         dialog.setIndeterminate(indeterminate);
@@ -154,22 +156,25 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     @Override
     public void onDismiss(DialogInterface dialog)
     {
-        OperationManager.forceStop(getActivity());
+        BatchOperationManager.getInstance(getActivity()).forceStop();
         super.onDismiss(dialog);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        Uri baseUri = OperationContentProvider.CONTENT_URI;
+        Uri baseUri = BatchOperationContentProvider.CONTENT_URI;
 
-        if (parent != null){
-            return new CursorLoader(getActivity(), baseUri, OperationSchema.COLUMN_ALL, OperationSchema.COLUMN_PARENT_ID
-                    + "=\"" + parent.getIdentifier() + "\" AND " + OperationSchema.COLUMN_REQUEST_TYPE + "="
-                    + operationType, null, null);
-        } else {
-            return new CursorLoader(getActivity(), baseUri, OperationSchema.COLUMN_ALL, OperationSchema.COLUMN_REQUEST_TYPE + "="
-                    + operationType, null, null);
+        if (parent != null)
+        {
+            return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL,
+                    BatchOperationSchema.COLUMN_PARENT_ID + "=\"" + parent.getIdentifier() + "\" AND "
+                            + BatchOperationSchema.COLUMN_REQUEST_TYPE + "=" + operationType, null, null);
+        }
+        else
+        {
+            return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL,
+                    BatchOperationSchema.COLUMN_REQUEST_TYPE + "=" + operationType, null, null);
         }
     }
 
@@ -180,7 +185,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         int progress = 0;
         while (cursor.moveToNext())
         {
-            if (cursor.getInt(OperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_SUCCESSFUL)
+            if (cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_SUCCESSFUL)
             {
                 progress++;
             }

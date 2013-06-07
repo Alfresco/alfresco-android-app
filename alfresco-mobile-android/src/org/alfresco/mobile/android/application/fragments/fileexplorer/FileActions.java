@@ -25,12 +25,12 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.file.delete.DeleteFileRequest;
-import org.alfresco.mobile.android.application.integration.file.update.RenameRequest;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileRequest;
+import org.alfresco.mobile.android.application.operations.batch.file.update.RenameRequest;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
@@ -355,11 +355,11 @@ public class FileActions implements ActionMode.Callback
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                OperationRequestGroup group = new OperationRequestGroup(f.getActivity(), SessionUtils.getAccount(f
+                OperationsRequestGroup group = new OperationsRequestGroup(f.getActivity(), SessionUtils.getAccount(f
                         .getActivity()));
                 group.enqueue(new RenameRequest(file, input.getText().toString())
                         .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
-                OperationManager.getInstance(f.getActivity()).enqueue(group);
+                BatchOperationManager.getInstance(f.getActivity()).enqueue(group);
 
                 dialog.dismiss();
             }
@@ -393,7 +393,7 @@ public class FileActions implements ActionMode.Callback
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                OperationRequestGroup group = new OperationRequestGroup(f.getActivity(), SessionUtils.getAccount(f
+                OperationsRequestGroup group = new OperationsRequestGroup(f.getActivity(), SessionUtils.getAccount(f
                         .getActivity()));
 
                 if (files.size() == 1)
@@ -417,7 +417,7 @@ public class FileActions implements ActionMode.Callback
                     }
                 }
 
-                OperationManager.getInstance(f.getActivity()).enqueue(group);
+                BatchOperationManager.getInstance(f.getActivity()).enqueue(group);
 
                 dialog.dismiss();
             }
