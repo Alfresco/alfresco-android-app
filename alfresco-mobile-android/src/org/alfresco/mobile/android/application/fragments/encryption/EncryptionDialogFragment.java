@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.Activity;
@@ -255,16 +254,11 @@ public class EncryptionDialogFragment extends Fragment implements LoaderCallback
         if (results.hasException())
         {
             Log.e(TAG, Log.getStackTraceString(results.getException()));
-            MessengerManager.showToast(getActivity(), R.string.error_general);
         }
         else
         {
             if (loader instanceof EncryptionLoader && ((EncryptionLoader) loader).getCopiedFile() != null)
             {
-                MessengerManager.showLongToast(
-                        getActivity(),
-                        String.format(getString(R.string.import_send_download),
-                                ((Account) getArguments().get(PARAM_ACCOUNT)).getDescription()));
                 getActivity().finish();
             }
             else

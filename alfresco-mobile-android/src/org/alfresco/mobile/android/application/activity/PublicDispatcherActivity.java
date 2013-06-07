@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -128,8 +129,17 @@ public class PublicDispatcherActivity extends BaseActivity
             Fragment f = new OperationsFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
                     false, false);
+            return;
         }
         
+        
+        if (IntentIntegrator.ACTION_SYNCHRO_DISPLAY.equals(action))
+        {
+            Fragment f = FavoritesSyncFragment.newInstance(FavoritesSyncFragment.MODE_PROGRESS);
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
+                    false, false);
+            return;
+        }
 
         if (IntentIntegrator.ACTION_PICK_FILE.equals(action))
         {
@@ -263,7 +273,6 @@ public class PublicDispatcherActivity extends BaseActivity
                 {
                     Intent i = new Intent(this, MainActivity.class);
                     i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(i);
                     finish();
                 }

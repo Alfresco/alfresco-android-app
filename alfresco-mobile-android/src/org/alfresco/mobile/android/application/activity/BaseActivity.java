@@ -303,7 +303,7 @@ public abstract class BaseActivity extends Activity
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
-                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.DISPLAY_ERROR_DATA);
+                Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.EXTRA_ERROR_DATA);
 
                 String errorMessage = getString(R.string.error_general);
                 if (e instanceof AlfrescoAppException && ((AlfrescoAppException) e).isDisplayMessage())

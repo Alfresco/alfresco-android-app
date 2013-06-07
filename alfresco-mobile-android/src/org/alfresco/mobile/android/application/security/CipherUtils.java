@@ -391,7 +391,7 @@ public class CipherUtils
         if (!prefs.getBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, false)
                 && !prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false))
         {
-            final File folder = StorageManager.getPrivateFolder(activity, "", "", "");
+            final File folder = StorageManager.getPrivateFolder(activity, "", null);
             if (folder != null)
             {
                 prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();

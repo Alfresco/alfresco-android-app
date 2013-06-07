@@ -21,10 +21,10 @@ import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.file.create.CreateDirectoryRequest;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.file.create.CreateDirectoryRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
@@ -115,11 +115,11 @@ public class CreateDirectoryDialogFragment extends DialogFragment
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(tv.getWindowToken(), 0);
 
-                OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils
+                OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils
                         .getAccount(getActivity()));
                 group.enqueue(new CreateDirectoryRequest((File) getArguments().get(ARGUMENT_FOLDER), tv.getText()
                         .toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                OperationManager.getInstance(getActivity()).enqueue(group);
+                BatchOperationManager.getInstance(getActivity()).enqueue(group);
 
                 OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID, R.drawable.ic_add_folder,
                         getString(R.string.folder_create), null, null, 0).show(

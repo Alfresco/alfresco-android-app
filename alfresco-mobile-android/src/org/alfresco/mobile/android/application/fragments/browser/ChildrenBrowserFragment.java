@@ -47,13 +47,14 @@ import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.node.create.CreateDocumentRequest;
-import org.alfresco.mobile.android.application.integration.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
+import org.alfresco.mobile.android.application.operations.batch.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -86,7 +87,8 @@ import android.widget.ListView;
 import android.widget.SpinnerAdapter;
 
 /**
- * Display a dialogFragment to retrieve information about the content of a specific folder.
+ * Display a dialogFragment to retrieve information about the content of a
+ * specific folder.
  * 
  * @author Jean Marie Pascal
  */
@@ -262,12 +264,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (receiver == null)
         {
-            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_UPLOAD_COMPLETE);
-            intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETE);
-            intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETE);
-            intentFilter.addAction(IntentIntegrator.ACTION_UPLOAD_START);
-            intentFilter.addAction(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETE);
+            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_UPLOAD_COMPLETED);
             intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_UPLOAD_STARTED);
+            intentFilter.addAction(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED);
             receiver = new TransfertReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
@@ -645,14 +649,14 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
         else
         {
-            OperationRequestGroup group = new OperationRequestGroup(getActivity(),
+            OperationsRequestGroup group = new OperationsRequestGroup(getActivity(),
                     SessionUtils.getAccount(getActivity()));
             for (File file : files)
             {
                 group.enqueue(new CreateDocumentRequest(importFolder.getIdentifier(), file.getName(),
                         new ContentFileProgressImpl(file)));
             }
-            OperationManager.getInstance(getActivity()).enqueue(group);
+            BatchOperationManager.getInstance(getActivity()).enqueue(group);
 
             if (getActivity() instanceof PublicDispatcherActivity)
             {
@@ -691,8 +695,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     // //////////////////////////////////////////////////////////////////////
     public void getMenu(Menu menu)
     {
-        if (parentFolder == null) { return;}
-        
+        if (parentFolder == null) { return; }
+
         if (getActivity() instanceof MainActivity)
         {
             getMenu(alfSession, menu, parentFolder);
@@ -851,6 +855,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         @Override
         public void onReceive(Context context, Intent intent)
         {
+            Log.d(TAG, intent.getAction());
+
             if (adapter == null) return;
 
             if (intent.getExtras() != null)
@@ -863,37 +869,50 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
                 if (pFolder.equals(parentFolder.getIdentifier()))
                 {
-                    if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETE))
+                    if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
                     {
                         remove((Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT));
                         return;
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPLOAD_START))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPLOAD_STARTED))
                     {
                         String documentName = b.getString(IntentIntegrator.EXTRA_DOCUMENT_NAME);
-                        Node node = new NodePlaceHolder(documentName);
+                        Node node = new NodePlaceHolder(documentName, CreateDocumentRequest.TYPE_ID,
+                                Operation.STATUS_RUNNING);
                         ((AlphabeticNodeAdapter) adapter).replaceNode(node);
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPLOAD_COMPLETE))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPLOAD_COMPLETED))
                     {
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
                         ((AlphabeticNodeAdapter) adapter).replaceNode(node);
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETE))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
                     {
-                        Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_DOCUMENT);
+                        if (b.containsKey(IntentIntegrator.EXTRA_DOCUMENT))
+                        {
+                            remove((Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT));
+                        }
+                        else
+                        {
+                            remove((Node) b.getParcelable(IntentIntegrator.EXTRA_NODE));
+                        }
+
+                        Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
                         ((AlphabeticNodeAdapter) adapter).replaceNode(updatedNode);
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETE))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED))
                     {
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_CREATED_FOLDER);
                         ((AlphabeticNodeAdapter) adapter).replaceNode(node);
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                     {
-                        remove((Node) b.getParcelable(IntentIntegrator.EXTRA_NODE));
-                        Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(updatedNode);
+                        ((AlphabeticNodeAdapter) adapter).refreshFavorites();
+                    }
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED))
+                    {
+                        Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
+                        ((AlphabeticNodeAdapter) adapter).replaceNode(node);
                     }
                     refreshList();
                     lv.setSelection(selectedPosition);
@@ -922,7 +941,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                 KeywordSearch.newInstance(folderParameter, currentSiteParameter), fragmentPlaceId, KeywordSearch.TAG,
                 true);
     }
-    
+
     public void setCreateFile(File newFile)
     {
         this.createFile = newFile;
@@ -941,7 +960,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     }
 
     /**
-     * Helper method to enable/disable the import button depending on mode and permission.
+     * Helper method to enable/disable the import button depending on mode and
+     * permission.
      */
     private void checkImportButton()
     {

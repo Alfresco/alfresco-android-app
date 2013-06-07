@@ -24,10 +24,10 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.node.update.UpdatePropertiesRequest;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
 
@@ -92,10 +92,10 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
         }
 
-        OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
         group.enqueue(new UpdatePropertiesRequest(folder, node, props).setNotificationTitle(node.getName())
                 .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
-        OperationManager.getInstance(getActivity()).enqueue(group);
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
         dismiss();
     }
 

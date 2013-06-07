@@ -50,7 +50,7 @@ public abstract class BaseCursorListFragment extends DialogFragment implements L
 
     protected CursorAdapter adapter;
 
-    protected int emptyListMessageId = R.string.emtpy;
+    protected int emptyListMessageId = R.string.empty;
 
     protected int layoutId = R.layout.sdk_list;
 

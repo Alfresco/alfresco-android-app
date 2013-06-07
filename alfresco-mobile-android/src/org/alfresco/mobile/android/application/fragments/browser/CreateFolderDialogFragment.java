@@ -20,10 +20,10 @@ package org.alfresco.mobile.android.application.fragments.browser;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.node.create.CreateFolderRequest;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateFolderRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -105,11 +105,11 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(tv.getWindowToken(), 0);
 
-                OperationRequestGroup group = new OperationRequestGroup(getActivity(), SessionUtils.getAccount(
+                OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(
                         getActivity()));
                 group.enqueue(new CreateFolderRequest((Folder) getArguments().get(ARGUMENT_FOLDER), tv.getText()
                         .toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                OperationManager.getInstance(getActivity()).enqueue(group);
+                BatchOperationManager.getInstance(getActivity()).enqueue(group);
 
                 OperationWaitingDialogFragment.newInstance(CreateFolderRequest.TYPE_ID, R.drawable.ic_add_folder,
                         getString(R.string.folder_create), null, (Folder) getArguments().get(ARGUMENT_FOLDER), 0).show(

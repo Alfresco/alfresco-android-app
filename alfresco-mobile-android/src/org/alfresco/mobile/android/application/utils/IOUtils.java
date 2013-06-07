@@ -199,8 +199,8 @@ public class IOUtils
     }
 
     /*
-     * Encrypt an entire folder, recursively if required. Rollback is implemented if any failures occur. NOTE: This
-     * method is not thread-safe.
+     * Encrypt an entire folder, recursively if required. Rollback is
+     * implemented if any failures occur. NOTE: This method is not thread-safe.
      */
     public static boolean encryptFiles(Context ctxt, String sourceFolder, boolean recursive)
     {
@@ -323,8 +323,8 @@ public class IOUtils
     }
 
     /*
-     * Encrypt an entire folder, recursively if required. Rollback is implemented if any failures occur. NOTE: This
-     * method is not thread-safe.
+     * Encrypt an entire folder, recursively if required. Rollback is
+     * implemented if any failures occur. NOTE: This method is not thread-safe.
      */
     public static boolean decryptFiles(Context ctxt, String sourceFolder, boolean recursive)
     {
@@ -450,4 +450,45 @@ public class IOUtils
         // we are dealing with a hidden file rather than an extension
         return (dotInd > 0 && dotInd < fileName.length()) ? fileName.substring(dotInd + 1) : null;
     }
+
+    private static String getFileExtension(String fileName)
+    {
+        return "." + extractFileExtension(fileName);
+    }
+
+    /* XXX From libcore.io.IoUtils */
+    public static void deleteContents(File dir) throws IOException
+    {
+        File[] files = dir.listFiles();
+        if (files == null) { throw new IllegalArgumentException("not a directory: " + dir); }
+        for (File file : files)
+        {
+            if (file.isDirectory())
+            {
+                deleteContents(file);
+            }
+            if (!file.delete()) { throw new IOException("failed to delete file: " + file); }
+        }
+    }
+
+    private static File createUniqueName(File file)
+    {
+        String fileNameWithoutExtension = file.getName().replaceFirst("[.][^.]+$", "");
+        File tmpFile = file;
+        int index = 0;
+        while (tmpFile.exists())
+        {
+            index++;
+            tmpFile = new File(tmpFile.getParentFile(), fileNameWithoutExtension + "-" + index
+                    + getFileExtension(tmpFile.getName()));
+        }
+        return tmpFile;
+    }
+
+    public static File createFile(File contentFile)
+    {
+        contentFile.getParentFile().mkdirs();
+        return createUniqueName(contentFile);
+    }
+
 }

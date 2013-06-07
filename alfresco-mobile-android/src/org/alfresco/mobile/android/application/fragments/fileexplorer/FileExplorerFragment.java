@@ -231,8 +231,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         
         if (receiver == null)
         {
-            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETE);
-            intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETE);
+            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
             intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
             receiver = new FileExplorerReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
@@ -291,7 +291,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     private void displayNavigation(File file, boolean backstack)
     {
         BaseFragment frag = FileExplorerFragment.newInstance(file);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getMainPaneId(getActivity()),
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                 FileExplorerFragment.TAG, backstack);
     }
     
@@ -514,12 +514,12 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
                 if (pFolder.equals(parentFolder.getPath()))
                 {
-                    if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETE))
+                    if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
                     {
                         remove((File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
                         return;
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETE))
+                    else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED))
                     {
                         File file = (File) b.getSerializable(IntentIntegrator.EXTRA_CREATED_FOLDER);
                         ((FileExplorerAdapter) adapter).replaceFile(file);

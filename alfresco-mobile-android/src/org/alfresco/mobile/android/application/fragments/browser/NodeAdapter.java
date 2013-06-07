@@ -32,10 +32,10 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -47,7 +47,7 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
+public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 {
     protected List<Node> originalNodes;
 
@@ -69,12 +69,14 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
         this.selectedItems = selectedItems;
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.mode = mode;
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
     }
 
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
     }
 
     // /////////////////////////////////////////////////////////////
@@ -163,7 +165,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
     // ////////////////////////////////////////////////////////////
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Node item)
+    protected void updateTopText(ProgressViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
         if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
@@ -177,7 +179,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Node item)
+    protected void updateBottomText(ProgressViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
         if (selectedItems != null && selectedItems.contains(item))
@@ -217,7 +219,7 @@ public class NodeAdapter extends BaseListAdapter<Node, GenericViewHolder>
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Node item)
+    protected void updateIcon(ProgressViewHolder vh, Node item)
     {
         if (item.isDocument())
         {

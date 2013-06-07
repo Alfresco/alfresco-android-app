@@ -56,12 +56,28 @@
                 </EditText>
             </TableRow>
 
-            <TextView
-                android:id="@+id/content_size"
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:text="@string/content_name" />
+                android:gravity="center_horizontal"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/document_error"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/create_document_filename_error"
+                    android:textColor="@color/dark_red"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/content_size"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="right"
+                    android:text="@string/content_name" />
+            </LinearLayout>
 
             <TableRow
                 android:layout_width="wrap_content"

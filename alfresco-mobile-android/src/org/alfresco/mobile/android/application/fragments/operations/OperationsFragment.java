@@ -19,10 +19,13 @@ package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
-import org.alfresco.mobile.android.application.integration.Operation;
-import org.alfresco.mobile.android.application.integration.OperationContentProvider;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.CursorLoader;
@@ -93,7 +96,7 @@ public class OperationsFragment extends BaseCursorListFragment
 
     protected void cancelAll()
     {
-        OperationManager.cancelAll(getActivity());
+        BatchOperationManager.getInstance(getActivity()).cancelAll(getActivity());
     }
 
     protected void dismissAll()
@@ -108,7 +111,7 @@ public class OperationsFragment extends BaseCursorListFragment
         for (int i = 0; i < cursor.getCount(); i++)
         {
             cursor.moveToPosition(i);
-            uri = Uri.parse(OperationContentProvider.CONTENT_URI + "/" + cursor.getInt(OperationSchema.COLUMN_ID_ID));
+            uri = Uri.parse(BatchOperationContentProvider.CONTENT_URI + "/" + cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
             getActivity().getContentResolver().delete(uri, null, null);
         }
         cancel_all.setVisibility(View.GONE);
@@ -132,8 +135,12 @@ public class OperationsFragment extends BaseCursorListFragment
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        Uri baseUri = OperationContentProvider.CONTENT_URI;
-        return new CursorLoader(getActivity(), baseUri, OperationSchema.COLUMN_ALL, null, null, null);
+        Uri baseUri = BatchOperationContentProvider.CONTENT_URI;
+        return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL, BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN (" 
+        + DownloadRequest.TYPE_ID + ","
+        + CreateDocumentRequest.TYPE_ID + "," 
+        + UpdateContentRequest.TYPE_ID 
+        +  ")", null, null);
     }
 
     @Override
@@ -155,8 +162,8 @@ public class OperationsFragment extends BaseCursorListFragment
             boolean isVisible = false;
             while (cursor.moveToNext())
             {
-                if (cursor.getInt(OperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_RUNNING
-                        || cursor.getInt(OperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_PENDING)
+                if (cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_RUNNING
+                        || cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID) == Operation.STATUS_PENDING)
                 {
                     isVisible = true;
                     break;

@@ -53,10 +53,9 @@ import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDia
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
@@ -65,14 +64,16 @@ import org.alfresco.mobile.android.application.fragments.properties.DetailsFragm
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
-import org.alfresco.mobile.android.application.integration.OperationSchema;
-import org.alfresco.mobile.android.application.integration.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.integration.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
+import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCaptureHelper;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -96,6 +97,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -129,9 +131,6 @@ public class MainActivity extends BaseActivity
 
     // MANAGE FRAGMENT STACK CENTRAL
     private Stack<String> stackCentral = new Stack<String>();
-
-    // Available objects for fragments
-    // private Site displayFromSite = null;
 
     private Folder importParent;
 
@@ -216,7 +215,8 @@ public class MainActivity extends BaseActivity
 
         // TODO FIXME Remove it!
         // Clean all operations
-        OperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
     }
 
     @Override
@@ -295,9 +295,21 @@ public class MainActivity extends BaseActivity
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
-
         try
         {
+            //Shortcut to display favorites panel.
+            if (IntentIntegrator.ACTION_SYNCHRO_DISPLAY.equals(intent.getAction()))
+            {
+                if (!isVisible(FavoritesSyncFragment.TAG))
+                {
+                    Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
+                    FragmentDisplayer.replaceFragment(this, syncFrag, DisplayUtils.getLeftFragmentId(this),
+                            FavoritesSyncFragment.TAG, true);
+                    clearCentralPane();
+                }
+                return;
+            }
+
             // Intent for Removing Fragment + eventual associated loader.
             if (IntentIntegrator.ACTION_REMOVE_FRAGMENT.equals(intent.getAction()))
             {
@@ -458,10 +470,9 @@ public class MainActivity extends BaseActivity
                 FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_favorites:
-                if (!checkSession(R.id.menu_favorites)) { return; }
-                frag = FavoritesFragment.newInstance(FavoritesFragment.MODE_DOCUMENTS);
-                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
-                        FavoritesFragment.TAG, true);
+                Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
+                FragmentDisplayer.replaceFragment(this, syncFrag, DisplayUtils.getLeftFragmentId(this),
+                        FavoritesSyncFragment.TAG, true);
                 break;
             case R.id.menu_downloads:
                 if (currentAccount == null)
@@ -732,12 +743,17 @@ public class MainActivity extends BaseActivity
     {
         clearScreen();
         clearCentralPane();
+
         if (getFragment(GeneralPreferences.TAG) != null)
         {
+            findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.TRANSPARENT);
             getFragmentManager().popBackStack(GeneralPreferences.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         else
         {
+            if (DisplayUtils.hasCentralPane(this)){
+                findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.WHITE);
+            }
             Fragment f = new GeneralPreferences();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
             if (DisplayUtils.hasCentralPane(this))
@@ -778,6 +794,11 @@ public class MainActivity extends BaseActivity
     {
         if (DisplayUtils.hasCentralPane(this))
         {
+            findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        if (DisplayUtils.hasCentralPane(this))
+        {
             FragmentDisplayer.removeFragment(this, DisplayUtils.getCentralFragmentId(this));
         }
         if (DisplayUtils.hasLeftPane(this))
@@ -788,6 +809,10 @@ public class MainActivity extends BaseActivity
 
     private void clearCentralPane()
     {
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.TRANSPARENT);
+        }
         FragmentDisplayer.removeFragment(this, stackCentral);
         stackCentral.clear();
     }
@@ -870,10 +895,9 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(FavoritesFragment.TAG))
+        if (isVisible(FavoritesSyncFragment.TAG))
         {
-            getActionBar().setDisplayShowTitleEnabled(false);
-            FavoritesFragment.getMenu(menu);
+            ((FavoritesSyncFragment) getFragment(FavoritesSyncFragment.TAG)).getMenu(menu);
             return true;
         }
 
@@ -1033,7 +1057,7 @@ public class MainActivity extends BaseActivity
                     backStack = false;
                 }
 
-                if (fr instanceof FavoritesFragment)
+                if (fr instanceof FavoritesSyncFragment)
                 {
                     backStack = false;
                 }
@@ -1239,6 +1263,12 @@ public class MainActivity extends BaseActivity
                                 currentAccount.getActivation(), currentAccount.getAccessToken(),
                                 currentAccount.getRefreshToken(), 1);
                     }
+                }
+
+                // Start Sync if active
+                if (GeneralPreferences.hasDisplayedActivateSync(activity))
+                {
+                    SynchroManager.getInstance(activity).sync(currentAccount);
                 }
                 return;
             }

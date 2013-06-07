@@ -38,7 +38,7 @@ import android.widget.ListView;
 
 public class ActivitiesFragment extends ActivityStreamFragment implements RefreshFragment
 {
-    public static final String TAG = "ActivitiesFragment";
+    public static final String TAG = ActivitiesFragment.class.getName();
 
     private static final String TYPE_FILE_DELETE = ActivityEventAdapter.PREFIX_FILE + "-deleted";
 

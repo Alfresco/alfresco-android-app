@@ -109,12 +109,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     }
 
     @Override
-    public void onResume()
-    {
-        super.onResume();
-    }
-
-    @Override
     public void onStop()
     {
         if (nActions != null)

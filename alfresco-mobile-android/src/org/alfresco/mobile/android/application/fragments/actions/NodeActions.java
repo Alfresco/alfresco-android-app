@@ -24,7 +24,6 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -33,17 +32,17 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
-import org.alfresco.mobile.android.application.integration.OperationManager;
-import org.alfresco.mobile.android.application.integration.OperationRequest;
-import org.alfresco.mobile.android.application.integration.OperationRequestGroup;
-import org.alfresco.mobile.android.application.integration.node.delete.DeleteNodeRequest;
-import org.alfresco.mobile.android.application.integration.node.download.DownloadRequest;
-import org.alfresco.mobile.android.application.integration.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.application.integration.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.delete.DeleteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.annotation.TargetApi;
@@ -93,7 +92,7 @@ public class NodeActions implements ActionMode.Callback
             this.parentFolder = ((ChildrenBrowserFragment) fragment).getParent();
         }
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -104,14 +103,14 @@ public class NodeActions implements ActionMode.Callback
         getMenu(menu);
         return false;
     }
-    
+
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu)
     {
         mode.setTitle(createTitle());
         return true;
     }
-    
+
     @Override
     public void onDestroyActionMode(ActionMode mode)
     {
@@ -123,6 +122,7 @@ public class NodeActions implements ActionMode.Callback
     {
         mode.finish();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
@@ -156,6 +156,7 @@ public class NodeActions implements ActionMode.Callback
 
         return title;
     }
+
     // ///////////////////////////////////////////////////////////////////////////////////
     // LIST MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -192,7 +193,7 @@ public class NodeActions implements ActionMode.Callback
         mode.setTitle(createTitle());
         mode.invalidate();
     }
-    
+
     private void addNode(Node n)
     {
         if (n == null) { return; }
@@ -278,12 +279,12 @@ public class NodeActions implements ActionMode.Callback
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
                 R.string.select_all);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-        
+
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_OPERATIONS, Menu.FIRST + MenuActionItem.MENU_OPERATIONS,
                 R.string.operations);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
-    
+
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item)
     {
@@ -333,7 +334,7 @@ public class NodeActions implements ActionMode.Callback
                 b = false;
                 break;
             case MenuActionItem.MENU_OPERATIONS:
-                activity.startActivity( new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
+                activity.startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
                 b = false;
                 break;
             default:
@@ -354,14 +355,14 @@ public class NodeActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////
     private void favorite(boolean doFavorite)
     {
-        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Node node : selectedNodes)
         {
             group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
 
-        OperationManager.getInstance(activity).enqueue(group);
+        BatchOperationManager.getInstance(activity).enqueue(group);
 
         if (fragment instanceof ChildrenBrowserFragment)
         {
@@ -380,13 +381,13 @@ public class NodeActions implements ActionMode.Callback
 
     private void like(boolean doLike)
     {
-        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Node node : selectedNodes)
         {
             group.enqueue(new LikeNodeRequest(parentFolder, node, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        OperationManager.getInstance(activity).enqueue(group);
+        BatchOperationManager.getInstance(activity).enqueue(group);
 
         if (fragment instanceof ChildrenBrowserFragment)
         {
@@ -402,22 +403,32 @@ public class NodeActions implements ActionMode.Callback
                     OperationWaitingDialogFragment.TAG);
         }
     }
-    
-    public static void download(Activity activity, Document doc)
+
+    public static void download(Activity activity, Folder parentFolder, Document doc)
     {
-        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
-        group.enqueue(new DownloadRequest(doc));
-        OperationManager.getInstance(activity).enqueue(group);
+        // Check if File exist
+        File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
+        if (folder != null && new File(folder, doc.getName()).exists())
+        {
+            ResolveNamingConflictFragment.newInstance(parentFolder, doc).show(
+                    activity.getFragmentManager(), ResolveNamingConflictFragment.TAG);
+        }
+        else
+        {
+            OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
+            group.enqueue(new DownloadRequest(parentFolder, doc));
+            BatchOperationManager.getInstance(activity).enqueue(group);
+        }
     }
 
     public void download()
     {
-        OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Document doc : selectedDocument)
         {
             group.enqueue(new DownloadRequest(parentFolder, doc));
         }
-        OperationManager.getInstance(activity).enqueue(group);
+        BatchOperationManager.getInstance(activity).enqueue(group);
     }
 
     public static void delete(final Activity activity, final Fragment f, Node node)
@@ -454,7 +465,7 @@ public class NodeActions implements ActionMode.Callback
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                OperationRequestGroup group = new OperationRequestGroup(activity, SessionUtils.getAccount(activity));
+                OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
 
                 if (nodes.size() == 1)
                 {
@@ -477,7 +488,7 @@ public class NodeActions implements ActionMode.Callback
                     }
                 }
 
-                OperationManager.getInstance(activity).enqueue(group);
+                BatchOperationManager.getInstance(activity).enqueue(group);
 
                 dialog.dismiss();
             }
@@ -531,7 +542,7 @@ public class NodeActions implements ActionMode.Callback
     {
         void onFinish();
     }
-    
+
     public void setOnFinishModeListerner(onFinishModeListerner mListener)
     {
         this.mListener = mListener;

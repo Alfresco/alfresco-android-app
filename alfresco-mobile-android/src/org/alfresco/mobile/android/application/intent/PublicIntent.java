@@ -27,14 +27,20 @@ public interface PublicIntent
     String EXTRA_CONTENT = "org.alfresco.mobile.android.intent.EXTRA_CONTENT";
 
     String EXTRA_FOLDER = "org.alfresco.mobile.android.intent.EXTRA_FOLDER";
+    
+    String EXTRA_FOLDER_ID = "org.alfresco.mobile.android.intent.EXTRA_FOLDER_ID";
 
     String NODE_TYPE = "org.alfresco.mobile.android/object.node";
     
     String EXTRA_DOCUMENT = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT";
     
+    String EXTRA_DOCUMENT_ID = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT_ID";
+    
     String EXTRA_DATA = "org.alfresco.mobile.android.intent.EXTRA_DATA";
     
     String EXTRA_FILE = "org.alfresco.mobile.android.intent.EXTRA_FILE";
+    
+    String EXTRA_FILE_PATH = "org.alfresco.mobile.android.intent.EXTRA_FILE_PATH";
 
 
     // REQUEST CODE
