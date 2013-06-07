@@ -458,7 +458,7 @@
     </plurals>
 
     <!-- Handling duplicate name -->
-    <string name="error_duplicate_title">Document already exist</string>
+    <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
 
     <!-- Quick Action Folder -->

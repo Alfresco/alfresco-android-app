@@ -215,8 +215,8 @@ public class MainActivity extends BaseActivity
 
         // TODO FIXME Remove it!
         // Clean all operations
-        BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        //BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        //SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
     }
 
     @Override
