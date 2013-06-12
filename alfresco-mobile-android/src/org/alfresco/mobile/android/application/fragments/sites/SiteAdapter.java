@@ -71,12 +71,12 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
 
         if (mode == BrowserSitesFragment.MODE_IMPORT) { return; }
 
-        UIUtils.setBackground(((View) vh.icon), getContext().getResources().getDrawable(
+        UIUtils.setBackground(((View) vh.choose), getContext().getResources().getDrawable(
                 R.drawable.quickcontact_badge_overlay_light));
 
-        vh.icon.setVisibility(View.VISIBLE);
-        vh.icon.setTag(R.id.site_action, item);
-        vh.icon.setOnClickListener(new OnClickListener()
+        vh.choose.setVisibility(View.VISIBLE);
+        vh.choose.setTag(R.id.site_action, item);
+        vh.choose.setOnClickListener(new OnClickListener()
         {
 
             @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

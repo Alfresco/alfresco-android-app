@@ -100,7 +100,7 @@ public class DocumentTypesDialogFragment extends DialogFragment
         });
 
         List<DocumentTypeRecord> fileTypes = DocumentTypeRecord.DOCUMENT_TYPES_CREATION_LIST;
-        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.app_list_row, fileTypes);
+        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.sdk_list_row, fileTypes);
         lv.setAdapter(adapter);
 
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();

@@ -297,6 +297,10 @@
     <string name="encryption_title">Activating Data Protection&#8230;</string>
     <string name="copy_file_title">Document copy in progress&#8230;</string>
     <string name="metadata_general">General</string>
+    <string name="create_image">Image</string>
+    <string name="create_audio">Audio</string>
+    <string name="create_video">Video</string>
+    
 
     <!-- SITES ACTION -->
     <string name="action_join_site">Join</string>
@@ -414,6 +418,7 @@
     <string name="waiting_operations">Please wait&#8230;</string>
 
     <!-- Favorites -->
+    <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>

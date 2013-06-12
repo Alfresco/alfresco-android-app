@@ -94,7 +94,7 @@ public class UploadChooseDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.sdk_list, null);
         ListView lv = (ListView) v.findViewById(R.id.listView);
 
-        lv.setAdapter(new UploaderAdapter(getActivity(), R.layout.app_list_row, DOWNLOAD_FROM_LIST));
+        lv.setAdapter(new UploaderAdapter(getActivity(), R.layout.sdk_list_row, DOWNLOAD_FROM_LIST));
 
         lv.setOnItemClickListener(new OnItemClickListener()
         {
@@ -175,8 +175,8 @@ public class UploadChooseDialogFragment extends DialogFragment
         @Override
         protected void updateIcon(GenericViewHolder vh, Integer item)
         {
-            vh.choose.setVisibility(View.VISIBLE);
-            vh.icon.setVisibility(View.GONE);
+            vh.icon.setVisibility(View.VISIBLE);
+            vh.choose.setVisibility(View.GONE);
 
             int iconId = R.drawable.ic_share;
             switch (item)
@@ -193,7 +193,7 @@ public class UploadChooseDialogFragment extends DialogFragment
                 default:
                     break;
             }
-            vh.choose.setImageDrawable(getContext().getResources().getDrawable(iconId));
+            vh.icon.setImageDrawable(getContext().getResources().getDrawable(iconId));
         }
     }
 }

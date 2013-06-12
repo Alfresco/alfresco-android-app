@@ -161,12 +161,12 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(((View) vh.icon),
+            UIUtils.setBackground(((View) vh.choose),
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-            vh.icon.setVisibility(View.VISIBLE);
-            vh.icon.setTag(R.id.node_action, f);
-            vh.icon.setOnClickListener(new OnClickListener()
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setTag(R.id.node_action, f);
+            vh.choose.setOnClickListener(new OnClickListener()
             {
 
                 @Override
@@ -197,7 +197,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         }
         else
         {
-            UIUtils.setBackground(((View) vh.icon), null);
+            UIUtils.setBackground(((View) vh.choose), null);
         }
     }
 
@@ -211,6 +211,10 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         if (f.isFile())
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE, R.string.share);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
+                    R.string.upload);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
@@ -229,6 +233,10 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_UPLOAD:
+                onMenuItemClick = true;
+                ActionManager.actionUpload((Activity) context, selectedOptionItems.get(0));
+                break;
             case MenuActionItem.MENU_SHARE:
                 onMenuItemClick = true;
                 ActionManager.actionShareContent((Activity) context, selectedOptionItems.get(0));

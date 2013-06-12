@@ -150,12 +150,12 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity
                 && ((downloadPath != null && item.getPath().startsWith(downloadPath)) || (item.isFile())))
         {
-            UIUtils.setBackground(((View) vh.icon),
+            UIUtils.setBackground(((View) vh.choose),
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-            vh.icon.setVisibility(View.VISIBLE);
-            vh.icon.setTag(R.id.node_action, item);
-            vh.icon.setOnClickListener(new OnClickListener()
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setTag(R.id.node_action, item);
+            vh.choose.setOnClickListener(new OnClickListener()
             {
 
                 @Override
@@ -186,7 +186,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         }
         else
         {
-            UIUtils.setBackground(((View) vh.icon), null);
+            UIUtils.setBackground(((View) vh.choose), null);
         }
     }
 
