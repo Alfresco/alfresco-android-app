@@ -43,11 +43,9 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
-import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 /**
  * Manage global application preferences.
@@ -267,6 +265,8 @@ public class GeneralPreferences extends PreferenceFragment
             }
         });
 
+        getActivity().invalidateOptionsMenu();
+        
     }
 
     public static boolean hasWifiOnlySync(Context context, Account account)

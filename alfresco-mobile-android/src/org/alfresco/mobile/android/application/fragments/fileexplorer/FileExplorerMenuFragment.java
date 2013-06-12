@@ -18,7 +18,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 public class FileExplorerMenuFragment extends BaseFragment
 {
@@ -43,8 +42,6 @@ public class FileExplorerMenuFragment extends BaseFragment
         View rootView = inflater.inflate(R.layout.app_fileexplorer_menu, container, false);
         initClickListener(rootView);
 
-        Button b = (Button) rootView.findViewById(R.id.shortcut_alfresco_downloads);
-        b.performClick();
 
         return rootView;
     }
@@ -69,7 +66,7 @@ public class FileExplorerMenuFragment extends BaseFragment
 
             add(R.id.shortcut_local_sdcard);
             add(R.id.shortcut_local_downloads);
-            
+
             add(R.id.shortcut_library_office);
             add(R.id.shortcut_library_audios);
             add(R.id.shortcut_library_videos);
@@ -90,10 +87,11 @@ public class FileExplorerMenuFragment extends BaseFragment
                     currentLocation = StorageManager.getDownloadFolder(getActivity(),
                             ((BaseActivity) getActivity()).getCurrentAccount());
                     break;
-                /*case R.id.shortcut_alfresco_sync:
-                    currentLocation = StorageManager.getDownloadFolder(getActivity(),
-                            ((BaseActivity) getActivity()).getCurrentAccount());
-                    break;*/
+                /*
+                 * case R.id.shortcut_alfresco_sync: currentLocation =
+                 * StorageManager.getDownloadFolder(getActivity(),
+                 * ((BaseActivity) getActivity()).getCurrentAccount()); break;
+                 */
                 case R.id.shortcut_local_sdcard:
                     currentLocation = Environment.getExternalStorageDirectory();
                     break;
@@ -118,8 +116,10 @@ public class FileExplorerMenuFragment extends BaseFragment
 
             if (currentSelectedButton != null)
             {
-                UIUtils.setBackground(currentSelectedButton, FileExplorerMenuFragment.this.getResources()
-                        .getDrawable(R.drawable.btn_default_holo_light_underline));
+                UIUtils.setBackground(
+                        currentSelectedButton,
+                        FileExplorerMenuFragment.this.getResources().getDrawable(
+                                R.drawable.btn_default_holo_light_underline));
             }
 
             if (currentLocation != null)
@@ -131,10 +131,8 @@ public class FileExplorerMenuFragment extends BaseFragment
                 ((MainActivity) getActivity()).addLocalFileNavigationFragment(mediatype);
             }
 
-            UIUtils.setBackground(
-                    v,
-                    FileExplorerMenuFragment.this.getResources().getDrawable(
-                            R.drawable.btn_default_focused_holo_light));
+            UIUtils.setBackground(v,
+                    FileExplorerMenuFragment.this.getResources().getDrawable(R.drawable.btn_default_focused_holo_light));
             currentSelectedButton = v;
         }
     };

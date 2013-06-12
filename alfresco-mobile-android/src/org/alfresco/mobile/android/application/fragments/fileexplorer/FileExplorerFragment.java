@@ -221,8 +221,10 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         else
         {
             getActivity().getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            if (!DisplayUtils.hasCentralPane(getActivity())){
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            }
         }
         getActivity().invalidateOptionsMenu();
         

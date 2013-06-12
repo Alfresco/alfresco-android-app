@@ -80,7 +80,7 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
         switch (getMode())
         {
             case MODE_LISTING:
-                titleId = R.string.menu_documents;
+                titleId = R.string.menu_local_files;
                 break;
             case MODE_PICK_FILE:
                 titleId = R.string.upload_pick_document;

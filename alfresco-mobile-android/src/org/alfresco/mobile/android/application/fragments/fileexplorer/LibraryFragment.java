@@ -84,8 +84,11 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     {
         vroot = super.onCreateView(inflater, container, savedInstanceState);
 
-        FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        }
 
         return vroot;
     }
@@ -96,13 +99,16 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         DisplayUtils.hideLeftTitlePane(getActivity());
         if (getDialog() != null)
         {
-           // getDialog().setTitle(titleId);
+            // getDialog().setTitle(titleId);
         }
         else
         {
-            getActivity().getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            if (!DisplayUtils.hasCentralPane(getActivity()))
+            {
+                getActivity().getActionBar().show();
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            }
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();

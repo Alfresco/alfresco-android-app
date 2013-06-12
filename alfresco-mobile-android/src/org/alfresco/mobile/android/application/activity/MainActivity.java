@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
-import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
@@ -56,6 +55,7 @@ import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDi
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
@@ -69,11 +69,9 @@ import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
-import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -215,8 +213,8 @@ public class MainActivity extends BaseActivity
 
         // TODO FIXME Remove it!
         // Clean all operations
-        //BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        //SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        // BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        // SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
     }
 
     @Override
@@ -297,7 +295,7 @@ public class MainActivity extends BaseActivity
         super.onNewIntent(intent);
         try
         {
-            //Shortcut to display favorites panel.
+            // Shortcut to display favorites panel.
             if (IntentIntegrator.ACTION_SYNCHRO_DISPLAY.equals(intent.getAction()))
             {
                 if (!isVisible(FavoritesSyncFragment.TAG))
@@ -593,8 +591,18 @@ public class MainActivity extends BaseActivity
     {
         clearScreen();
         clearCentralPane();
-        FileExplorerHelper.setSelection(this);
-        FileExplorerHelper.displayNavigationMode(this, ListingModeFragment.MODE_LISTING);
+
+        if (!DisplayUtils.hasCentralPane(this))
+        {
+            FileExplorerHelper.setSelection(this);
+            FileExplorerHelper.displayNavigationMode(this, ListingModeFragment.MODE_LISTING);
+        }
+        else
+        {
+            BaseFragment frag = FileExplorerMenuFragment.newInstance();
+            FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                    FileExplorerMenuFragment.TAG, true);
+        }
     }
 
     public void addLocalFileNavigationFragment(File file)
@@ -606,14 +614,8 @@ public class MainActivity extends BaseActivity
 
     public void addLocalFileNavigationFragment(int mediaType)
     {
-        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            stackCentral.clear();
-            stackCentral.push(FileExplorerFragment.TAG);
-        }
         LibraryFragment frag = LibraryFragment.newInstance(mediaType);
-        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), LibraryFragment.TAG, b);
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), LibraryFragment.TAG, true);
     }
 
     public void addPropertiesFragment(Node n, Folder parentFolder, boolean forceBackStack)
@@ -719,49 +721,32 @@ public class MainActivity extends BaseActivity
 
     public void displayAbout()
     {
-        clearScreen();
-        clearCentralPane();
-        if (getFragment(AboutFragment.TAG) != null)
+
+        if (DisplayUtils.hasCentralPane(this))
         {
-            // If reclick on About and if is visible, it removes the
-            // AboutFragment.
-            getFragmentManager().popBackStack(AboutFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            DialogFragment f = new AboutFragment();
+            f.show(getFragmentManager(), AboutFragment.TAG);
         }
         else
         {
             Fragment f = new AboutFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), AboutFragment.TAG, true);
-            if (DisplayUtils.hasCentralPane(this))
-            {
-                stackCentral.push(AboutFragment.TAG);
-            }
         }
-        DisplayUtils.switchSingleOrTwo(this, true);
     }
 
     public void displayPreferences()
     {
-        clearScreen();
-        clearCentralPane();
-
-        if (getFragment(GeneralPreferences.TAG) != null)
+        if (DisplayUtils.hasCentralPane(this))
         {
-            findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.TRANSPARENT);
-            getFragmentManager().popBackStack(GeneralPreferences.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_SETTINGS);
+            i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
+            startActivity(i);
         }
         else
         {
-            if (DisplayUtils.hasCentralPane(this)){
-                findViewById(DisplayUtils.getCentralFragmentId(this)).setBackgroundColor(Color.WHITE);
-            }
             Fragment f = new GeneralPreferences();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getMainPaneId(this), GeneralPreferences.TAG, true);
-            if (DisplayUtils.hasCentralPane(this))
-            {
-                stackCentral.push(GeneralPreferences.TAG);
-            }
         }
-        DisplayUtils.switchSingleOrTwo(this, true);
     }
 
     public void displayMainMenu()
