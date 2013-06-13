@@ -19,6 +19,7 @@
 <resources>
 
     <string name="app_name">Alfresco</string>
+    <string name="app_name_beta">Beta</string>
     <string name="empty_accounts">No account available</string>
 
     <!-- HOME SCREEN -->

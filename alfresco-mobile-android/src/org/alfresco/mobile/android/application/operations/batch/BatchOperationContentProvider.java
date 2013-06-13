@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.operations.batch;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.alfresco.mobile.android.application.AlfrescoContentProvider;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 
@@ -34,9 +35,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class BatchOperationContentProvider extends ContentProvider
+public class BatchOperationContentProvider extends ContentProvider implements AlfrescoContentProvider
 {
-    
+
     private static final String TAG = BatchOperationContentProvider.class.getName();
 
     private DatabaseManager databaseManager;
@@ -45,7 +46,7 @@ public class BatchOperationContentProvider extends ContentProvider
 
     private static final int OPERATION_ID = 1;
 
-    private static final String AUTHORITY = "org.alfresco.mobile.android.provider.operations";
+    private static final String AUTHORITY = AUTHORITY_ALFRESCO_BASE + ".operations";
 
     private static final String BASE_PATH = "operations";
 
@@ -84,12 +85,13 @@ public class BatchOperationContentProvider extends ContentProvider
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection))
                 {
-                    rowsDeleted = db.delete(BatchOperationSchema.TABLENAME, BatchOperationSchema.COLUMN_ID + "=" + id, null);
+                    rowsDeleted = db.delete(BatchOperationSchema.TABLENAME, BatchOperationSchema.COLUMN_ID + "=" + id,
+                            null);
                 }
                 else
                 {
-                    rowsDeleted = db.delete(BatchOperationSchema.TABLENAME, BatchOperationSchema.COLUMN_ID + "=" + id + " and "
-                            + selection, selectionArgs);
+                    rowsDeleted = db.delete(BatchOperationSchema.TABLENAME, BatchOperationSchema.COLUMN_ID + "=" + id
+                            + " and " + selection, selectionArgs);
                 }
                 break;
             default:
@@ -121,7 +123,8 @@ public class BatchOperationContentProvider extends ContentProvider
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        if (id == -1){
+        if (id == -1)
+        {
             Log.e(TAG, uri + " " + values);
         }
         getContext().getContentResolver().notifyChange(uri, null);
@@ -174,12 +177,13 @@ public class BatchOperationContentProvider extends ContentProvider
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection))
                 {
-                    rowsUpdated = sqlDB.update(BatchOperationSchema.TABLENAME, values, BatchOperationSchema.COLUMN_ID + "=" + id, null);
+                    rowsUpdated = sqlDB.update(BatchOperationSchema.TABLENAME, values, BatchOperationSchema.COLUMN_ID
+                            + "=" + id, null);
                 }
                 else
                 {
-                    rowsUpdated = sqlDB.update(BatchOperationSchema.TABLENAME, values, BatchOperationSchema.COLUMN_ID + "=" + id + " and "
-                            + selection, selectionArgs);
+                    rowsUpdated = sqlDB.update(BatchOperationSchema.TABLENAME, values, BatchOperationSchema.COLUMN_ID
+                            + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
             default:

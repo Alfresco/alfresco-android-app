@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.operations.sync;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.alfresco.mobile.android.application.AlfrescoContentProvider;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 
@@ -34,7 +35,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class SynchroProvider extends ContentProvider
+public class SynchroProvider extends ContentProvider implements AlfrescoContentProvider
 {
     
     private static final String TAG = SynchroProvider.class.getName();
@@ -45,7 +46,7 @@ public class SynchroProvider extends ContentProvider
 
     private static final int SYNC_ID = 1;
 
-    private static final String AUTHORITY = "org.alfresco.mobile.android.provider.sync";
+    private static final String AUTHORITY = AUTHORITY_ALFRESCO_BASE + ".sync";
 
     private static final String BASE_PATH = "id";
 
