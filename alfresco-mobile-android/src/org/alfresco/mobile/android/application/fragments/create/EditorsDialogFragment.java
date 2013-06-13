@@ -117,7 +117,7 @@ public class EditorsDialogFragment extends DialogFragment
         }
         else
         {
-            lv.setAdapter(new EditorAdapter(getActivity(), R.layout.app_list_row, list));
+            lv.setAdapter(new EditorAdapter(getActivity(), R.layout.sdk_list_row, list));
 
             lv.setOnItemClickListener(new OnItemClickListener()
             {

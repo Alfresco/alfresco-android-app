@@ -535,6 +535,7 @@ public final class SynchroManager extends OperationManager
 
     public void sync(Account account, boolean forceSync)
     {
+        if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
         group.enqueue(new SyncFavoriteRequest(forceSync).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);

@@ -138,7 +138,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             }
             else
             {
-                actionView(fr.getActivity(), myFile, mimeType);
+                actionView(fr.getActivity(), myFile, mimeType, listener);
             }
         }
         catch (Exception e)
@@ -387,6 +387,35 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         c.startActivity(Intent.createChooser(i, String.format(c.getString(R.string.send_email), link.toString())));
 
         return true;
+    }
+
+    public static void actionUploadFiles(Fragment fr, List<File> files)
+    {
+        if (files.size() == 1)
+        {
+            actionShareContent(fr, files.get(0));
+            return;
+        }
+
+        try
+        {
+            Intent i = new Intent(fr.getActivity(), PublicDispatcherActivity.class);
+            i.setAction(Intent.ACTION_SEND_MULTIPLE);
+            ArrayList<Uri> uris = new ArrayList<Uri>();
+            // convert from paths to Android friendly Parcelable Uri's
+            for (File file : files)
+            {
+                Uri u = Uri.fromFile(file);
+                uris.add(u);
+            }
+            i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+            i.setType(MimeTypeManager.getMIMEType("text/plain"));
+            fr.getActivity().startActivity(i);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            MessengerManager.showToast(fr.getActivity(), R.string.error_unable_share_content);
+        }
     }
 
     public static void actionUpload(Activity activity, File file)

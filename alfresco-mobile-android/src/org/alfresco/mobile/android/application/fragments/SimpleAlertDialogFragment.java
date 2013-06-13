@@ -43,7 +43,10 @@ public class SimpleAlertDialogFragment extends DialogFragment
 
     /** Associated Value must be a String id (int value). */
     public static final String PARAM_MESSAGE = "alertDialogFragment_MessageId";
-    
+
+    /** Associated Value must be a String (String value). */
+    public static final String PARAM_MESSAGE_STRING = "alertDialogFragment_MessageString";
+
     public static SimpleAlertDialogFragment newInstance(Bundle b)
     {
         SimpleAlertDialogFragment frag = new SimpleAlertDialogFragment();
@@ -62,11 +65,18 @@ public class SimpleAlertDialogFragment extends DialogFragment
         int titleId = getArguments().getInt(PARAM_TITLE);
         int iconId = getArguments().getInt(PARAM_ICON);
         int positiveId = getArguments().getInt(PARAM_POSITIVE_BUTTON);
-        int messageId = getArguments().getInt(PARAM_MESSAGE);
+        String message = "";
+        if (getArguments().containsKey(PARAM_MESSAGE))
+        {
+            message = getString(getArguments().getInt(PARAM_MESSAGE));
+        }
+        else if (getArguments().containsKey(PARAM_MESSAGE_STRING))
+        {
+            message = getArguments().getString(PARAM_MESSAGE_STRING);
+        }
 
         Builder builder = new AlertDialog.Builder(getActivity()).setIcon(iconId).setTitle(titleId)
-                .setMessage(Html.fromHtml(getString(messageId)))
-                .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
+                .setMessage(Html.fromHtml(message)).setPositiveButton(positiveId, new DialogInterface.OnClickListener()
                 {
                     public void onClick(DialogInterface dialog, int whichButton)
                     {

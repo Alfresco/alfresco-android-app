@@ -204,7 +204,9 @@ public interface IntentIntegrator extends PublicIntent
 
     String ACTION_SYNC_SCAN_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_SYNC_SCAN_COMPLETED";
 
-
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // SETTINGS
+    // ///////////////////////////////////////////////////////////////////////////
+    String ACTION_DISPLAY_SETTINGS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS";
 
 }

@@ -19,10 +19,10 @@ package org.alfresco.mobile.android.application.operations.impl;
 
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
-import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
 import org.alfresco.mobile.android.application.operations.Operation;
-import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
+import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -30,9 +30,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 
 public abstract class AbstractOperationCallback<T> implements Operation.OperationCallBack<T>, OperationsGroupCallBack
 {
+    private String TAG = AbstractOperationCallback.class.getName();
+
     protected Context context;
 
     protected int totalItems;
@@ -110,7 +113,7 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
     @Override
     public void onError(Operation<T> task, Exception e)
     {
-        //TODO Error Notification
+       Log.e(TAG , Log.getStackTraceString(e));
     }
 
     @Override
