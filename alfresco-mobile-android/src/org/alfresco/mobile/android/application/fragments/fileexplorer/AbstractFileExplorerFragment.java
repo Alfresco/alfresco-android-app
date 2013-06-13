@@ -59,19 +59,8 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
 
     public static Bundle createBundleArgs(File folder)
     {
-        return createBundleArgs(folder, null);
-    }
-
-    public static Bundle createBundleArgs(String folderPath)
-    {
-        return createBundleArgs(null, folderPath);
-    }
-
-    public static Bundle createBundleArgs(File folder, String path)
-    {
         Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_FOLDER, folder);
-        args.putSerializable(ARGUMENT_FOLDERPATH, path);
         return args;
     }
 

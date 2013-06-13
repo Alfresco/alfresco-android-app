@@ -46,6 +46,13 @@ public class FileExplorerMenuFragment extends BaseFragment
         return rootView;
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getActivity().setTitle(R.string.menu_local_files);
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
@@ -87,11 +94,6 @@ public class FileExplorerMenuFragment extends BaseFragment
                     currentLocation = StorageManager.getDownloadFolder(getActivity(),
                             ((BaseActivity) getActivity()).getCurrentAccount());
                     break;
-                /*
-                 * case R.id.shortcut_alfresco_sync: currentLocation =
-                 * StorageManager.getDownloadFolder(getActivity(),
-                 * ((BaseActivity) getActivity()).getCurrentAccount()); break;
-                 */
                 case R.id.shortcut_local_sdcard:
                     currentLocation = Environment.getExternalStorageDirectory();
                     break;

@@ -63,9 +63,6 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
             case R.string.shortcut_local_sdcard:
                 iconId = R.drawable.ic_sdcard;
                 break;
-            //case R.string.shortcut_local_downloads:
-            //    iconId = R.drawable.ic_download_dark;
-            //    break;
             case R.string.shortcut_library_office:
                 iconId = R.drawable.ic_office;
                 break;
@@ -77,6 +74,9 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
                 break;
             case R.string.shortcut_library_audios:
                 iconId = R.drawable.ic_music;
+                break;
+            case R.string.shortcut_thirdparty_applications:
+                iconId = R.drawable.ic_share;
                 break;
             default:
                 vh.topText.setVisibility(View.GONE);
@@ -118,6 +118,10 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
             add(R.string.shortcut_library_audios);
             add(R.string.shortcut_library_videos);
             add(R.string.shortcut_library_images);
+            
+            add(R.string.shortcut_thirdparty_app);
+            add(R.string.shortcut_thirdparty_applications);
+
         }
     };
 }

@@ -297,9 +297,13 @@
     <string name="encryption_title">Activating Data Protection&#8230;</string>
     <string name="copy_file_title">Document copy in progress&#8230;</string>
     <string name="metadata_general">General</string>
-    <string name="create_image">Image</string>
-    <string name="create_audio">Audio</string>
-    <string name="create_video">Video</string>
+    
+   <!-- OPEN AS.. -->
+    <string name="open_as_title">Open as&#8230;</string>
+    <string name="open_as_image">Image</string>
+    <string name="open_as_audio">Audio</string>
+    <string name="open_as_video">Video</string>
+    <string name="open_as_txt">Text Document</string>
     
 
     <!-- SITES ACTION -->
@@ -539,8 +543,11 @@
     <string name="shortcut_local">Device Shortcut</string>
     <string name="shortcut_local_downloads">Device Downloads</string>
     <string name="shortcut_local_sdcard">SD Card</string>
+    <string name="shortcut_thirdparty_app">Applications</string>
+    <string name="shortcut_thirdparty_applications">3rd party applications</string>
+        
     <string name="action_select">Select</string>
-
+    
     <!-- Notification -->
     <string name="batch_download_complete">%s documents available offline</string>
     <string name="batch_download_failed">%s download transfer</string>

@@ -48,13 +48,11 @@ import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.browser.UploadChooseDialogFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
@@ -589,20 +587,9 @@ public class MainActivity extends BaseActivity
 
     public void addLocalFileNavigationFragment()
     {
-        clearScreen();
-        clearCentralPane();
-
-        if (!DisplayUtils.hasCentralPane(this))
-        {
-            FileExplorerHelper.setSelection(this);
-            FileExplorerHelper.displayNavigationMode(this, ListingModeFragment.MODE_LISTING);
-        }
-        else
-        {
-            BaseFragment frag = FileExplorerMenuFragment.newInstance();
-            FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
-                    FileExplorerMenuFragment.TAG, true);
-        }
+        BaseFragment frag = FileExplorerMenuFragment.newInstance();
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                FileExplorerMenuFragment.TAG, true);
     }
 
     public void addLocalFileNavigationFragment(File file)
@@ -943,8 +930,15 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_UPLOAD:
-                UploadChooseDialogFragment dialog = UploadChooseDialogFragment.newInstance(currentAccount);
-                dialog.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
+                if (getFragment(ChildrenBrowserFragment.TAG) != null)
+                {
+                    Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, this, PublicDispatcherActivity.class);
+                    i.putExtra(IntentIntegrator.EXTRA_FOLDER,
+                            StorageManager.getDownloadFolder(this, getCurrentAccount()));
+                    i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
+                    getFragment(ChildrenBrowserFragment.TAG).startActivityForResult(i,
+                            PublicIntent.REQUESTCODE_FILEPICKER);
+                }
                 return true;
             case MenuActionItem.MENU_REFRESH:
                 ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
@@ -961,9 +955,15 @@ public class MainActivity extends BaseActivity
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).download();
                 return true;
             case MenuActionItem.MENU_UPDATE:
-                UploadChooseDialogFragment dialogu = UploadChooseDialogFragment.newInstance(currentAccount,
-                        DetailsFragment.TAG);
-                dialogu.show(getFragmentManager(), UploadChooseDialogFragment.TAG);
+                if (getFragment(DetailsFragment.TAG) != null)
+                {
+                    Intent i = new Intent(IntentIntegrator.ACTION_PICK_FILE, null, this, PublicDispatcherActivity.class);
+                    i.putExtra(IntentIntegrator.EXTRA_FOLDER,
+                            StorageManager.getDownloadFolder(this, getCurrentAccount()));
+                    i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
+                    getFragment(DetailsFragment.TAG).startActivityForResult(i,
+                            PublicIntent.REQUESTCODE_FILEPICKER);
+                }
                 return true;
             case MenuActionItem.MENU_EDIT:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).edit();

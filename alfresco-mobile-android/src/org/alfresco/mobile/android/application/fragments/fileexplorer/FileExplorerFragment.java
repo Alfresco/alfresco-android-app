@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -61,7 +62,8 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 /**
- * LocalFileBrowserFragment is responsible to display the content of Download Folder.
+ * LocalFileBrowserFragment is responsible to display the content of Download
+ * Folder.
  * 
  * @author Jean Marie Pascal
  */
@@ -74,12 +76,16 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     private File parent;
 
     private View vroot;
-    
+
     private FileActions nActions;
 
     private File createFile;
 
     private long lastModifiedDate;
+    
+    private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
+    
+    private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -93,35 +99,22 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         checkSession = false;
     }
 
-    public static FileExplorerFragment newInstance()
-    {
-        return newInstance(null, null, MODE_LISTING);
-    }
-
     public static FileExplorerFragment newInstance(File folder)
     {
-        return newInstance(folder, null, MODE_LISTING);
+        return newInstance(folder, MODE_LISTING, false, 1);
     }
 
-    public static FileExplorerFragment newInstance(String folderPath)
-    {
-        return newInstance(null, folderPath, MODE_LISTING);
-    }
-
-    public static FileExplorerFragment newInstance(File folder, int displayMode)
-    {
-        return newInstance(folder, null, displayMode);
-    }
-
-    public static FileExplorerFragment newInstance(File parentFolder, String pathFolder, int displayMode)
+    public static FileExplorerFragment newInstance(File parentFolder, int displayMode, boolean shortCut, int menuId)
     {
         FileExplorerFragment bf = new FileExplorerFragment();
         ListingContext lc = new ListingContext();
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
         lc.setIsSortAscending(true);
         Bundle b = new Bundle(createBundleArgs(lc, LOAD_AUTO));
-        b.putAll(createBundleArgs(parentFolder, pathFolder));
+        b.putAll(createBundleArgs(parentFolder));
         b.putInt(PARAM_MODE, displayMode);
+        b.putInt(PARAM_MENUID, menuId);
+        b.putBoolean(PARAM_SHORTCUT, shortCut);
         bf.setArguments(b);
         return bf;
     }
@@ -192,7 +185,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         return vroot;
     }
 
-
     @Override
     public void onResume()
     {
@@ -213,7 +205,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 createFile.delete();
             }
         }
-        
+
         if (getDialog() != null)
         {
             // getDialog().setTitle(titleId);
@@ -221,14 +213,14 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         else
         {
             getActivity().getActionBar().show();
-            if (!DisplayUtils.hasCentralPane(getActivity())){
-                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
+            if (getArguments().getBoolean(PARAM_SHORTCUT))
+            {
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, getArguments().getInt(PARAM_MENUID));
                 getActivity().getActionBar().setDisplayShowTitleEnabled(false);
             }
         }
         getActivity().invalidateOptionsMenu();
-        
-        
+
         if (receiver == null)
         {
             IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
@@ -294,14 +286,14 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                 FileExplorerFragment.TAG, backstack);
     }
-    
+
     // //////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // //////////////////////////////////////////////////////////////////////
     @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        File file = (File) l.getItemAtPosition(position);
+        final File file = (File) l.getItemAtPosition(position);
 
         if (getMode() == MODE_PICK_FILE)
         {
@@ -356,7 +348,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             if (file.isDirectory())
             {
                 displayNavigation(file, true);
-                //((MainActivity) getActivity()).addLocalFileNavigationFragment(file);
+                // ((MainActivity)
+                // getActivity()).addLocalFileNavigationFragment(file);
             }
             else
             {
@@ -366,18 +359,14 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
                     {
-                        Bundle b = new Bundle();
-                        b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_unable_open_file_title);
-                        b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_unable_open_file);
-                        b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-                        ActionManager.actionDisplayDialog(getActivity(), b);
+                        OpenAsDialogFragment.newInstance(file).show(getActivity().getFragmentManager(), OpenAsDialogFragment.TAG);
                     }
                 });
             }
         }
         adapter.notifyDataSetChanged();
     }
-    
+
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
@@ -432,10 +421,13 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
 
-            /*MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST
-                    + MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
-            mi.setIcon(R.drawable.ic_add_folder);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
+            /*
+             * MenuItem mi = menu.add(Menu.NONE,
+             * MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST +
+             * MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
+             * mi.setIcon(R.drawable.ic_add_folder);
+             * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+             */
         }
     }
 
@@ -478,7 +470,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
         }
     }
-    
+
     public void createFolder()
     {
         FragmentTransaction ft = getFragmentManager().beginTransaction();

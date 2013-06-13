@@ -88,7 +88,7 @@ public class RetrieveDocumentNameThread extends AbstractBatchOperationThread<Str
         String fileNameWithoutExtension = documentName.replaceFirst("[.][^.]+$", "");
         String fileExtension = getFileExtension(documentName);
 
-        int index = 0;
+        int index = 1;
 
         String tmpName = documentName;
 
