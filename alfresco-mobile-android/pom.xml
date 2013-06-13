@@ -154,6 +154,10 @@
 		</profile>
 		<profile>
 			<id>android-beta-release</id>
+			<properties>
+				<!-- Common -->
+				<packageName.beta>org.alfresco.mobile.android.application.beta</packageName.beta>
+			</properties>
 			<build>
 				<resources>
 					<resource>
@@ -187,10 +191,35 @@
 						</executions>
 					</plugin>
 					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<configuration>
+									<tasks>
+										<replace
+											file="${project.basedir}/src/org/alfresco/mobile/android/application/AlfrescoContentProvider.java"
+											token="org.alfresco.mobile.android.provider" value="${packageName.beta}" />
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="org.alfresco.mobile.android.provider." value="${packageName.beta}." />
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="@drawable/ic_alfresco_logo" value="@drawable/ic_alfresco" />
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="@string/app_name" value="@string/app_name_beta" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
 						<configuration>
 							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
+							<renameManifestPackage>${packageName.beta}</renameManifestPackage>
 							<sign>
 								<debug>both</debug>
 							</sign>
@@ -199,6 +228,7 @@
 								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
 								<outputApk>${project.build.directory}/${project.artifactId}-dev.apk</outputApk>
 							</zipalign>
+							<file>${project.build.directory}/${project.artifactId}-dev.apk</file>
 						</configuration>
 						<executions>
 							<execution>
