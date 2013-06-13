@@ -19,5 +19,5 @@ package org.alfresco.mobile.android.application;
 
 public interface AlfrescoContentProvider
 {
-    String AUTHORITY_ALFRESCO_BASE = "org.alfresco.mobile.android.application.provider";
+    String AUTHORITY_ALFRESCO_BASE = "org.alfresco.mobile.android.provider";
 }
