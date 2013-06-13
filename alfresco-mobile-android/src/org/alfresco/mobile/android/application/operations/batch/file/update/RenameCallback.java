@@ -19,14 +19,21 @@ package org.alfresco.mobile.android.application.operations.batch.file.update;
 
 import java.io.File;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
+import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesThread;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 
 import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.media.MediaScannerConnection.MediaScannerConnectionClient;
 import android.net.Uri;
+import android.os.Bundle;
 import android.webkit.MimeTypeMap;
 
 public class RenameCallback extends AbstractBatchOperationCallback<File>
@@ -39,11 +46,29 @@ public class RenameCallback extends AbstractBatchOperationCallback<File>
     }
 
     @Override
+    public void onError(Operation<File> task, Exception e)
+    {
+        super.onError(task, e);
+        if (e instanceof AlfrescoServiceException)
+        {
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_edit);
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_duplicate_title);
+            b.putString(SimpleAlertDialogFragment.PARAM_MESSAGE_STRING, String.format(
+                    context.getString(R.string.error_duplicate_rename), ((RenameThread) task).getFile().getName()));
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(context, b);
+        }
+    }
+
+    @Override
     public void onPostExecute(Operation<File> task, File results)
     {
         super.onPostExecute(task, results);
         scanFile(context, results.getPath(), MimeTypeMap.getSingleton().getFileExtensionFromUrl(results.getPath()));
-        // context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results)));
+        // context.sendBroadcast(new
+        // Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+        // Uri.fromFile(results)));
     }
 
     public static void scanFile(Context context, String path, String mimeType)

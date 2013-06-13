@@ -49,8 +49,8 @@ public class OpenAsDialogFragment extends DialogFragment
     public static final String TAG = OpenAsDialogFragment.class.getName();
 
     /**
-     * Used for retrieving document information during document creation.
-     * Value must be a DocumentTypeRecord object.
+     * Used for retrieving document information during document creation. Value
+     * must be a DocumentTypeRecord object.
      */
     private static final String PARAM_FILE = "documentType";
 
@@ -83,7 +83,8 @@ public class OpenAsDialogFragment extends DialogFragment
             {
                 DocumentTypeRecord record = (DocumentTypeRecord) l.getItemAtPosition(position);
                 // Show properties
-                org.alfresco.mobile.android.ui.manager.ActionManager.actionView(getActivity(), (File) getArguments().get(PARAM_FILE), record.mimetype, new ActionManagerListener()
+                org.alfresco.mobile.android.ui.manager.ActionManager.actionView(getActivity(), (File) getArguments()
+                        .get(PARAM_FILE), record.mimetype, new ActionManagerListener()
                 {
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
@@ -92,7 +93,8 @@ public class OpenAsDialogFragment extends DialogFragment
                         b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_unable_open_file_title);
                         b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_unable_open_file);
                         b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-                        ActionManager.actionDisplayDialog(getActivity(), b);                    }
+                        ActionManager.actionDisplayDialog(getActivity(), b);
+                    }
                 });
                 dismiss();
             }

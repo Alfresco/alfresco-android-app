@@ -470,7 +470,8 @@
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
-
+    <string name="error_duplicate_rename"><![CDATA[ <b>%s</b> is already in use. <br/> Please retry with another one.]]></string>
+    
     <!-- Quick Action Folder -->
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
