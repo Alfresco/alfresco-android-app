@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.accounts;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import org.alfresco.mobile.android.application.AlfrescoContentProvider;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 
@@ -34,7 +35,7 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class AccountProvider extends ContentProvider
+public class AccountProvider extends ContentProvider implements AlfrescoContentProvider
 {
     private static final String TAG = AccountProvider.class.getName();
 
@@ -44,7 +45,7 @@ public class AccountProvider extends ContentProvider
 
     private static final int ACCOUNT_ID = 1;
 
-    private static final String AUTHORITY = "org.alfresco.mobile.android.provider.accounts";
+    private static final String AUTHORITY = AUTHORITY_ALFRESCO_BASE + ".accounts";
 
     private static final String BASE_PATH = "account";
 

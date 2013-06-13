@@ -37,6 +37,8 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
@@ -45,6 +47,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -76,6 +79,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     private Date downloadDateTime;
 
     private File localFile;
+
+    private Uri favoriteUri;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -174,10 +179,19 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
                 boolean modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
-                if (modified
-                        && SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                if (modified)
                 {
-                    SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                    final Uri lUri = favoriteUri;
+                    // Update to Pending
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+                    getActivity().getContentResolver().update(lUri, cValues, null, null);
+
+                    // Start sync if possible
+                    if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                    {
+                        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                    }
                 }
                 break;
             default:
@@ -274,8 +288,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 localFile = new File(localFileUri.getPath());
             }
+            favoriteUri = SynchroManager.getUri(cursor.getLong(SynchroSchema.COLUMN_ID_ID));
 
-            if (hasSynchroActive)
+            if (hasSynchroActive && localFile != null && localFile.exists())
             {
                 long datetime = localFile.lastModified();
                 setDownloadDateTime(new Date(datetime));
