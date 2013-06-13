@@ -153,8 +153,8 @@ public class ResolveNamingConflictFragment extends DialogFragment
         {
             OperationsRequestGroup group = new OperationsRequestGroup(getActivity(),
                     SessionUtils.getAccount(getActivity()));
-            group.enqueue(new DownloadRequest((Folder)getArguments().getParcelable(IntentIntegrator.EXTRA_FOLDER),
-                    (Document)getArguments().getParcelable(IntentIntegrator.EXTRA_DOCUMENT), true));
+            group.enqueue(new DownloadRequest((Folder) getArguments().getParcelable(IntentIntegrator.EXTRA_FOLDER),
+                    (Document) getArguments().getParcelable(IntentIntegrator.EXTRA_DOCUMENT), true));
             BatchOperationManager.getInstance(getActivity()).enqueue(group);
         }
     }

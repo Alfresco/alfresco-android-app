@@ -55,7 +55,7 @@ public class NodeIdActions implements ActionMode.Callback
 {
     public static final String TAG = "NodeActions";
 
-    private List<String> selectedNodes = new ArrayList<String>();
+    private List<String> selectedNodeIds = new ArrayList<String>();
 
     private onFinishModeListerner mListener;
 
@@ -69,7 +69,7 @@ public class NodeIdActions implements ActionMode.Callback
     {
         this.fragment = f;
         this.activity = f.getActivity();
-        this.selectedNodes = selectedNodes;
+        this.selectedNodeIds = selectedNodes;
         for (String nodeId : selectedNodes)
         {
             addNode(nodeId);
@@ -98,7 +98,7 @@ public class NodeIdActions implements ActionMode.Callback
     public void onDestroyActionMode(ActionMode mode)
     {
         mListener.onFinish();
-        selectedNodes.clear();
+        selectedNodeIds.clear();
     }
 
     public void finish()
@@ -113,7 +113,7 @@ public class NodeIdActions implements ActionMode.Callback
     {
         String title = "";
 
-        int size = selectedNodes.size();
+        int size = selectedNodeIds.size();
         if (size > 0)
         {
             title += String.format(activity.getResources().getQuantityString(R.plurals.selected_document, size), size);
@@ -127,7 +127,7 @@ public class NodeIdActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public void selectNode(String n)
     {
-        if (selectedNodes.contains(n))
+        if (selectedNodeIds.contains(n))
         {
             removeNode(n);
         }
@@ -135,7 +135,7 @@ public class NodeIdActions implements ActionMode.Callback
         {
             addNode(n);
         }
-        if (selectedNodes.isEmpty())
+        if (selectedNodeIds.isEmpty())
         {
             mode.finish();
         }
@@ -148,7 +148,7 @@ public class NodeIdActions implements ActionMode.Callback
 
     public void selectNodes(List<String> nodes)
     {
-        selectedNodes.clear();
+        selectedNodeIds.clear();
         for (String node : nodes)
         {
             addNode(node);
@@ -161,15 +161,15 @@ public class NodeIdActions implements ActionMode.Callback
     {
         if (n == null) { return; }
 
-        if (!selectedNodes.contains(n))
+        if (!selectedNodeIds.contains(n))
         {
-            selectedNodes.add(n);
+            selectedNodeIds.add(n);
         }
     }
 
     private void removeNode(String n)
     {
-        selectedNodes.remove(n);
+        selectedNodeIds.remove(n);
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -190,7 +190,7 @@ public class NodeIdActions implements ActionMode.Callback
                 + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_dark);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
+        
         createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
                 + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
         createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
@@ -246,7 +246,7 @@ public class NodeIdActions implements ActionMode.Callback
         }
         if (b)
         {
-            selectedNodes.clear();
+            selectedNodeIds.clear();
             mode.finish();
         }
         return b;
@@ -258,7 +258,7 @@ public class NodeIdActions implements ActionMode.Callback
     private void favorite(boolean doFavorite)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
-        for (String node : selectedNodes)
+        for (String node : selectedNodeIds)
         {
             group.enqueue(new FavoriteNodeRequest(null, node, doFavorite)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
@@ -276,7 +276,7 @@ public class NodeIdActions implements ActionMode.Callback
                 iconId = R.drawable.ic_favorite_dark;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    fragment.getString(titleId), null, null, selectedNodes.size()).show(
+                    fragment.getString(titleId), null, null, selectedNodeIds.size()).show(
                     fragment.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
@@ -284,7 +284,7 @@ public class NodeIdActions implements ActionMode.Callback
     private void like(boolean doLike)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
-        for (String node : selectedNodes)
+        for (String node : selectedNodeIds)
         {
             group.enqueue(new LikeNodeRequest(null, node, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
@@ -301,7 +301,7 @@ public class NodeIdActions implements ActionMode.Callback
                 iconId = R.drawable.ic_like;
             }
             OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId, fragment.getString(titleId),
-                    null, null, selectedNodes.size()).show(fragment.getActivity().getFragmentManager(),
+                    null, null, selectedNodeIds.size()).show(fragment.getActivity().getFragmentManager(),
                     OperationWaitingDialogFragment.TAG);
         }
     }

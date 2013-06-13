@@ -3,14 +3,18 @@ package org.alfresco.mobile.android.application.fragments.fileexplorer;
 import java.io.File;
 
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.ActionBar.OnNavigationListener;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -44,10 +48,6 @@ public final class FileExplorerHelper
         {
             itemPosition = 3;
         }
-        /*else if (location.equals(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)))
-        {
-            itemPosition = 4;
-        }*/
 
         SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
         prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
@@ -76,10 +76,10 @@ public final class FileExplorerHelper
 
     public static void displayNavigationMode(final Activity activity, int mode)
     {
-        displayNavigationMode(activity, mode, true);
+        displayNavigationMode(activity, mode, true, 1);
     }
 
-    public static void displayNavigationMode(final Activity activity, final int mode, final boolean backStack)
+    public static void displayNavigationMode(final Activity activity, final int mode, final boolean backStack, int menuId)
     {
         activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         ShortCutFolderMenuAdapter adapter = new ShortCutFolderMenuAdapter(activity);
@@ -96,6 +96,7 @@ public final class FileExplorerHelper
 
                 File currentLocation = null;
                 int mediatype = -1;
+                boolean thirdPartyApp = false;
                 switch (itemPosition)
                 {
                     case 1:
@@ -105,10 +106,6 @@ public final class FileExplorerHelper
                     case 3:
                         currentLocation = Environment.getExternalStorageDirectory();
                         break;
-                    //case 4:
-                    //    currentLocation = Environment
-                    //            .getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-                    //    break;
                     case 5:
                         mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
                         break;
@@ -121,6 +118,9 @@ public final class FileExplorerHelper
                     case 8:
                         mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
                         break;
+                    case 10:
+                        thirdPartyApp = true;
+                        break;
                     default:
                         break;
                 }
@@ -130,17 +130,27 @@ public final class FileExplorerHelper
                     activity.getFragmentManager().popBackStack();
                 }
 
-                if (currentLocation != null)
+                if (thirdPartyApp)
                 {
-                    BaseFragment frag = FileExplorerFragment.newInstance(currentLocation, mode);
+                    if (activity instanceof PublicDispatcherActivity)
+                    {
+                        activity.setResult(PublicIntent.REQUESTCODE_FILEPICKER, new Intent(
+                                IntentIntegrator.ACTION_PICK_FILE));
+                        activity.finish();
+                    }
+                    return true;
+                }
+                else if (currentLocation != null)
+                {
+                    BaseFragment frag = FileExplorerFragment.newInstance(currentLocation, mode, true, itemPosition);
                     FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
-                            FileExplorerFragment.TAG, true);
+                            FileExplorerFragment.TAG, false);
                 }
                 else if (mediatype >= 0)
                 {
-                    LibraryFragment frag = LibraryFragment.newInstance(mediatype, mode);
+                    LibraryFragment frag = LibraryFragment.newInstance(mediatype, mode, true, itemPosition);
                     FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
-                            LibraryFragment.TAG, true);
+                            LibraryFragment.TAG, false);
                 }
                 prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
 
@@ -150,8 +160,8 @@ public final class FileExplorerHelper
         };
         activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
         SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-        int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
+        int currentSelection = menuId;
+        //int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
         activity.getActionBar().setSelectedNavigationItem(currentSelection);
     }
-
 }

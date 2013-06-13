@@ -268,7 +268,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
 
         if (adapter == null && files != null)
         {
-            adapter = new FileExplorerAdapter(this, R.layout.app_list_row, files);
+            adapter = new FileExplorerAdapter(this, R.layout.sdk_list_row, files);
             if (lv != null)
             {
                 lv.setAdapter(adapter);
@@ -382,7 +382,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     private void refreshImportFolder()
     {
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
-        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.app_list_row,
+        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.sdk_list_row,
                 IMPORT_FOLDER_LIST);
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
@@ -415,7 +415,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
         {
             add(R.string.menu_downloads);
             add(R.string.menu_browse_sites);
-            add(R.string.menu_favorites);
+            add(R.string.menu_favorites_folder);
             add(R.string.menu_browse_root);
         }
     };
@@ -429,7 +429,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
         {
             case R.string.menu_browse_sites:
             case R.string.menu_browse_root:
-            case R.string.menu_favorites:
+            case R.string.menu_favorites_folder:
 
                 if (getActivity() instanceof PublicDispatcherActivity)
                 {

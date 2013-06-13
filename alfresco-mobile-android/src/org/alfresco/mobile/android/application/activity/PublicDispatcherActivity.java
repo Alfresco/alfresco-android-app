@@ -152,17 +152,9 @@ public class PublicDispatcherActivity extends BaseActivity
             if (getIntent().hasExtra(IntentIntegrator.EXTRA_FOLDER))
             {
                 f = (File) getIntent().getExtras().getSerializable(IntentIntegrator.EXTRA_FOLDER);
-                Fragment fragment = FileExplorerFragment.newInstance(f, ListingModeFragment.MODE_PICK_FILE);
+                Fragment fragment = FileExplorerFragment.newInstance(f, ListingModeFragment.MODE_PICK_FILE, true, 1);
                 FragmentDisplayer.replaceFragment(this, fragment, DisplayUtils.getLeftFragmentId(this),
                         FileExplorerFragment.TAG, false, false);
-            }
-            else if (getIntent().hasExtra(IntentIntegrator.EXTRA_LIBRARY))
-            {
-                LibraryFragment frag = LibraryFragment.newInstance(
-                        getIntent().getExtras().getInt(IntentIntegrator.EXTRA_LIBRARY),
-                        ListingModeFragment.MODE_PICK_FILE);
-                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), LibraryFragment.TAG,
-                        false);
             }
         }
     }

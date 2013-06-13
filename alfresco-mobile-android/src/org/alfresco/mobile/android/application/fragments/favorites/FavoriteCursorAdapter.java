@@ -62,6 +62,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     private int mode;
 
     private List<String> selectedOptionItems = new ArrayList<String>();
+
     private List<Long> selectedOptionItemId = new ArrayList<Long>();
 
     private boolean hasSynchroActive;
@@ -141,18 +142,25 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
         }
 
-        vh.bottomText.setText(createContentBottomText(context, cursor));
-
-        if (mode == FavoritesSyncFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity && hasSynchroActive)
+        if (SyncOperation.STATUS_RUNNING != status)
         {
-            UIUtils.setBackground(((View) vh.icon),
+            vh.bottomText.setVisibility(View.VISIBLE);
+            vh.bottomText.setText(createContentBottomText(context, cursor));
+        } else {
+            vh.bottomText.setVisibility(View.GONE);
+        }
+
+        if (mode == FavoritesSyncFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity
+                && hasSynchroActive)
+        {
+            UIUtils.setBackground(((View) vh.choose),
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-            vh.icon.setVisibility(View.VISIBLE);
-            vh.icon.setTag(R.id.node_action, nodeId);
-            vh.icon.setTag(R.id.favorite_id, favoriteId);
-            vh.icon.setTag(R.id.operation_status, status);
-            vh.icon.setOnClickListener(new OnClickListener()
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setTag(R.id.node_action, nodeId);
+            vh.choose.setTag(R.id.favorite_id, favoriteId);
+            vh.choose.setTag(R.id.operation_status, status);
+            vh.choose.setOnClickListener(new OnClickListener()
             {
 
                 @Override
@@ -161,10 +169,10 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                     String item = (String) v.getTag(R.id.node_action);
                     Integer statut = (Integer) v.getTag(R.id.operation_status);
                     long favoriteId = (Long) v.getTag(R.id.favorite_id);
-                    
+
                     selectedOptionItems.add(item);
                     selectedOptionItemId.add(favoriteId);
-                    
+
                     PopupMenu popup = new PopupMenu(context, v);
                     getMenu(popup.getMenu(), statut);
 
@@ -188,7 +196,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         }
         else
         {
-            UIUtils.setBackground(((View) vh.icon), null);
+            UIUtils.setBackground(((View) vh.choose), null);
         }
     }
 
@@ -214,12 +222,12 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     {
         if (hasSynchroActive)
         {
-            vh.iconTopRight.setVisibility(View.VISIBLE);
-            vh.iconTopRight.setImageResource(imageResource);
+            vh.iconBottomRight.setVisibility(View.VISIBLE);
+            vh.iconBottomRight.setImageResource(imageResource);
         }
         else
         {
-            vh.iconTopRight.setVisibility(View.GONE);
+            vh.iconBottomRight.setVisibility(View.GONE);
         }
     }
 
@@ -229,7 +237,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     public void getMenu(Menu menu, Integer statut)
     {
         MenuItem mi;
-        
+
         switch (statut)
         {
             case SyncOperation.STATUS_HIDDEN:
@@ -247,9 +255,9 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                         + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST
-                        + MenuActionItem.MENU_DETAILS, R.string.action_view_properties);
+
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
+                        R.string.action_view_properties);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
         }
@@ -283,7 +291,8 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 break;
             case MenuActionItem.MENU_RESOLVE_CONFLICT:
                 onMenuItemClick = true;
-                ResolveSyncConflictFragment.newInstance(selectedOptionItemId.get(0)).show(fragment.getActivity().getFragmentManager(), ResolveSyncConflictFragment.TAG);
+                ResolveSyncConflictFragment.newInstance(selectedOptionItemId.get(0)).show(
+                        fragment.getActivity().getFragmentManager(), ResolveSyncConflictFragment.TAG);
                 selectedOptionItemId.clear();
                 break;
             case MenuActionItem.MENU_DETAILS:
@@ -299,5 +308,11 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         }
         selectedOptionItems.clear();
         return onMenuItemClick;
+    }
+
+    public void refresh()
+    {
+        hasSynchroActive = GeneralPreferences.hasActivateSync(context, SessionUtils.getAccount(context));
+
     }
 }

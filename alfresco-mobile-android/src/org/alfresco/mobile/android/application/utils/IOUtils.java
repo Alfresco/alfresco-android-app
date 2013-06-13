@@ -475,7 +475,7 @@ public class IOUtils
     {
         String fileNameWithoutExtension = file.getName().replaceFirst("[.][^.]+$", "");
         File tmpFile = file;
-        int index = 0;
+        int index = 1;
         while (tmpFile.exists())
         {
             index++;

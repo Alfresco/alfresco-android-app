@@ -15,19 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.create;
+package org.alfresco.mobile.android.application.fragments.actions;
 
+import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypeRecord;
+import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,31 +41,18 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 /**
- * This Fragment is responsible to display the list of File that can be created
- * inside the application via third party application.
- * 
  * @author Jean Marie Pascal
  */
-public class DocumentTypesDialogFragment extends DialogFragment
+public class OpenAsDialogFragment extends DialogFragment
 {
     /** Public Fragment TAG. */
-    public static final String TAG = "FileTypePropertiesDialogFragment";
+    public static final String TAG = OpenAsDialogFragment.class.getName();
 
     /**
-     * Used for retrieving default storage folder. Value must be an Account object.
+     * Used for retrieving document information during document creation. Value
+     * must be a DocumentTypeRecord object.
      */
-    public static final String PARAM_ACCOUNT = "account";
-    
-    /**
-     * Used for retrieving from which Fragment the wizard has been started.
-     */
-    public static final String PARAM_FRAGMENT_TAG = "FragmentTag";
-
-    /**
-     * Used for retrieving document information during document creation.
-     * Value must be a DocumentTypeRecord object.
-     */
-    public static final String PARAM_DOCUMENT_TYPE = "documentType";
+    private static final String PARAM_FILE = "documentType";
 
     /**
      * Static constructor.
@@ -68,12 +60,11 @@ public class DocumentTypesDialogFragment extends DialogFragment
      * @param currentAccount : Alfresco Account.
      * @return a dialogfragment to dipslay file type creation list.
      */
-    public static DocumentTypesDialogFragment newInstance(Account currentAccount, String fragmentTag)
+    public static OpenAsDialogFragment newInstance(File f)
     {
-        DocumentTypesDialogFragment fragment = new DocumentTypesDialogFragment();
+        OpenAsDialogFragment fragment = new OpenAsDialogFragment();
         Bundle args = new Bundle();
-        args.putSerializable(PARAM_ACCOUNT, currentAccount);
-        args.putSerializable(PARAM_FRAGMENT_TAG, fragmentTag);
+        args.putSerializable(PARAM_FILE, f);
         fragment.setArguments(args);
         return fragment;
     }
@@ -90,20 +81,30 @@ public class DocumentTypesDialogFragment extends DialogFragment
             @Override
             public void onItemClick(AdapterView<?> l, View v, int position, long id)
             {
-                Bundle b = getArguments();
-                b.putSerializable(PARAM_DOCUMENT_TYPE, (DocumentTypeRecord) l.getItemAtPosition(position));
-                EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);
-                dialogft.show(getFragmentManager(), EditorsDialogFragment.TAG);
-
+                DocumentTypeRecord record = (DocumentTypeRecord) l.getItemAtPosition(position);
+                // Show properties
+                org.alfresco.mobile.android.ui.manager.ActionManager.actionView(getActivity(), (File) getArguments()
+                        .get(PARAM_FILE), record.mimetype, new ActionManagerListener()
+                {
+                    @Override
+                    public void onActivityNotFoundException(ActivityNotFoundException e)
+                    {
+                        Bundle b = new Bundle();
+                        b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_unable_open_file_title);
+                        b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_unable_open_file);
+                        b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                        ActionManager.actionDisplayDialog(getActivity(), b);
+                    }
+                });
                 dismiss();
             }
         });
 
-        List<DocumentTypeRecord> fileTypes = DocumentTypeRecord.DOCUMENT_TYPES_CREATION_LIST;
+        List<DocumentTypeRecord> fileTypes = DocumentTypeRecord.DOCUMENT_TYPES_OPENAS_LIST;
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.sdk_list_row, fileTypes);
         lv.setAdapter(adapter);
 
-        return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();
+        return new AlertDialog.Builder(getActivity()).setTitle(R.string.open_as_title).setView(v).create();
     }
 
     /**

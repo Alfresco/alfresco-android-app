@@ -128,7 +128,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             receiver = new FavoriteSyncReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
-        
+
         if (getMode() != MODE_PROGRESS)
         {
             hasSynchroActive = GeneralPreferences
@@ -138,7 +138,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             hasSynchroActive = true;
         }
-        
+
         super.onResume();
     }
 
@@ -174,7 +174,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
                 boolean modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
-                if (modified && SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                if (modified
+                        && SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                 {
                     SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
                 }
@@ -196,13 +197,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                 @Override
                 public void onPositive()
                 {
-                    refresh();
                     GeneralPreferences.setActivateSync(getActivity(), true);
+                    hasSynchroActive = true;
+                    refresh();
                 }
 
                 @Override
                 public void onNegative()
                 {
+                    hasSynchroActive = false;
                     GeneralPreferences.setActivateSync(getActivity(), false);
                 }
             }).show(getActivity().getFragmentManager(), ActivateSyncDialogFragment.TAG);
@@ -352,6 +355,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             // Display spinning wheel instead of refresh
             mi.setActionView(R.layout.spinning);
         }
+        ((FavoriteCursorAdapter) adapter).refresh();
+        lv.setAdapter(adapter);
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -59,19 +59,8 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
 
     public static Bundle createBundleArgs(File folder)
     {
-        return createBundleArgs(folder, null);
-    }
-
-    public static Bundle createBundleArgs(String folderPath)
-    {
-        return createBundleArgs(null, folderPath);
-    }
-
-    public static Bundle createBundleArgs(File folder, String path)
-    {
         Bundle args = new Bundle();
         args.putSerializable(ARGUMENT_FOLDER, folder);
-        args.putSerializable(ARGUMENT_FOLDERPATH, path);
         return args;
     }
 
@@ -80,7 +69,7 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
         switch (getMode())
         {
             case MODE_LISTING:
-                titleId = R.string.menu_documents;
+                titleId = R.string.menu_local_files;
                 break;
             case MODE_PICK_FILE:
                 titleId = R.string.upload_pick_document;

@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.operations.batch.file.update;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.FileOperationThread;
@@ -62,11 +63,18 @@ public class RenameThread extends FileOperationThread<File>
         try
         {
             originalFile = new File(filePath);
-            
+
             super.doInBackground();
-            
+
             resultFile = new File(parentFile, renamedFileName);
-            file.renameTo(resultFile);
+            if (resultFile.exists())
+            {
+                throw new AlfrescoServiceException("File Already exists");
+            }
+            else
+            {
+                file.renameTo(resultFile);
+            }
         }
         catch (Exception e)
         {

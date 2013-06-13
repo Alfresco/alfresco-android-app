@@ -329,7 +329,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 }
                 break;
             case PublicIntent.REQUESTCODE_FILEPICKER:
-                if (data != null && data.getData() != null)
+                if (data != null && IntentIntegrator.ACTION_PICK_FILE.equals(data.getAction()))
+                {
+                    ActionManager.actionPickFile(getFragmentManager().findFragmentByTag(TAG),
+                            IntentIntegrator.REQUESTCODE_FILEPICKER);
+                }
+                else if (data != null && data.getData() != null)
                 {
                     String tmpPath = ActionManager.getPath(getActivity(), data.getData());
                     if (tmpPath != null)

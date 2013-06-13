@@ -131,7 +131,7 @@
                 android:drawableRight="@drawable/ic_download_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:text="@string/menu_downloads"
+                android:text="@string/menu_local_files"
                 android:textColor="@android:color/white" />
 
             <Button

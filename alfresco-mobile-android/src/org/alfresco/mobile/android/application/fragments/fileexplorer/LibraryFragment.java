@@ -40,6 +40,8 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     private View vroot;
 
     private static final String PARAM_MEDIATYPE_ID = "org.alfresco.mobile.android.application.param.mediatypeid";
+    private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
+    private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
 
     public LibraryFragment()
     {
@@ -58,6 +60,18 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         Bundle settings = new Bundle();
         settings.putInt(PARAM_MEDIATYPE_ID, mediaType);
         settings.putInt(PARAM_MODE, displayMode);
+        bf.setArguments(settings);
+        return bf;
+    }
+    
+    public static LibraryFragment newInstance(int mediaType, int displayMode, boolean displayShortcut, int menuId)
+    {
+        LibraryFragment bf = new LibraryFragment();
+        Bundle settings = new Bundle();
+        settings.putInt(PARAM_MEDIATYPE_ID, mediaType);
+        settings.putInt(PARAM_MODE, displayMode);
+        settings.putBoolean(PARAM_SHORTCUT, displayShortcut);
+        settings.putInt(PARAM_MENUID, menuId);
         bf.setArguments(settings);
         return bf;
     }
@@ -83,10 +97,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         vroot = super.onCreateView(inflater, container, savedInstanceState);
-
-        FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-
         return vroot;
     }
 
@@ -96,13 +106,16 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         DisplayUtils.hideLeftTitlePane(getActivity());
         if (getDialog() != null)
         {
-           // getDialog().setTitle(titleId);
+            // getDialog().setTitle(titleId);
         }
         else
         {
-            getActivity().getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            if (getArguments().getBoolean(PARAM_SHORTCUT))
+            {
+                getActivity().getActionBar().show();
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, getArguments().getInt(PARAM_MENUID));
+                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            }
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();

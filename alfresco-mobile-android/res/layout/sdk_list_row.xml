@@ -21,6 +21,8 @@
     android:layout_height="fill_parent"
     android:orientation="horizontal" >
 
+   <include layout="@layout/app_icon_status" />
+    
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
@@ -41,15 +43,10 @@
             android:layout_height="wrap_content" />
     </LinearLayout>
 
-    <include layout="@layout/app_icon_status" />
-
     <ImageView
         android:id="@+id/choose"
         style="@style/list_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:contentDescription="@string/thumbnail"
-        android:src="@drawable/ic_validate"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
 </LinearLayout>

@@ -60,6 +60,15 @@ public class DocumentTypeRecord implements Serializable
     /** Unique Identifier for text document (txt). */
     public static final int TEXT_ID = 40;
 
+    /** Unique Identifier for text document (txt). */
+    public static final int IMAGE_ID = 50;
+
+    /** Unique Identifier for text document (txt). */
+    public static final int AUDIO_ID = 60;
+
+    /** Unique Identifier for text document (txt). */
+    public static final int VIDEO_ID = 70;
+
     /** Unique Identifier of the file type. */
     public int id;
 
@@ -121,6 +130,18 @@ public class DocumentTypeRecord implements Serializable
                     TEMPLATEFOLDER_PATH.concat(XLSX_EXTENSION)));
             add(new DocumentTypeRecord(TEXT_ID, R.drawable.mime_txt, R.string.create_document_text, TXT_EXTENSION,
                     "text/plain", null));
+        }
+    };
+
+    public static final List<DocumentTypeRecord> DOCUMENT_TYPES_OPENAS_LIST = new ArrayList<DocumentTypeRecord>(4)
+    {
+        private static final long serialVersionUID = 1L;
+        {
+            add(new DocumentTypeRecord(IMAGE_ID, R.drawable.mime_img, R.string.open_as_image, null, "image/jpeg", null));
+            add(new DocumentTypeRecord(VIDEO_ID, R.drawable.mime_video, R.string.open_as_video, null, "video/mpeg", null));
+            add(new DocumentTypeRecord(AUDIO_ID, R.drawable.mime_audio, R.string.open_as_audio, null, "audio/mpeg", null));
+            add(new DocumentTypeRecord(TEXT_ID, R.drawable.mime_txt, R.string.open_as_txt, null, "text/plain",
+                    null));
         }
     };
 }

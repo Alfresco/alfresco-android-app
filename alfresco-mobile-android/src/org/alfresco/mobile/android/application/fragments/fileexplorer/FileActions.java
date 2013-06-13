@@ -86,6 +86,11 @@ public class FileActions implements ActionMode.Callback
     {
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_UPLOAD:
+                upload(fragment, new ArrayList<File>(selectedFiles));
+                mode.finish();
+                selectedFiles.clear();
+                return true;
             case MenuActionItem.MENU_DELETE:
                 delete(fragment, new ArrayList<File>(selectedFiles));
                 mode.finish();
@@ -113,6 +118,11 @@ public class FileActions implements ActionMode.Callback
                 break;
         }
         return false;
+    }
+
+    private void upload(Fragment fr, ArrayList<File> files)
+    {
+        ActionManager.actionUploadFiles(fr, files);
     }
 
     private void send(Fragment fragment, List<File> selectedFiles)
@@ -156,6 +166,11 @@ public class FileActions implements ActionMode.Callback
                 case FileExplorerFragment.MODE_LISTING:
                     if (selectedFolder.isEmpty())
                     {
+                        mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
+                                R.string.upload);
+                        mi.setIcon(R.drawable.ic_upload);
+                        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        
                         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE,
                                 R.string.share);
                         mi.setIcon(R.drawable.ic_share);
