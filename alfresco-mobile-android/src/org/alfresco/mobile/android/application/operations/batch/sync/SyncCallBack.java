@@ -19,8 +19,8 @@ package org.alfresco.mobile.android.application.operations.batch.sync;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.operations.OperationUtils;
+import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationCallback;
 
 import android.content.Context;

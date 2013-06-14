@@ -40,7 +40,9 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     private View vroot;
 
     private static final String PARAM_MEDIATYPE_ID = "org.alfresco.mobile.android.application.param.mediatypeid";
+
     private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
+
     private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
 
     public LibraryFragment()
@@ -63,7 +65,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         bf.setArguments(settings);
         return bf;
     }
-    
+
     public static LibraryFragment newInstance(int mediaType, int displayMode, boolean displayShortcut, int menuId)
     {
         LibraryFragment bf = new LibraryFragment();
@@ -104,18 +106,12 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
-        if (getDialog() != null)
+        if (getDialog() == null && getArguments().getBoolean(PARAM_SHORTCUT))
         {
-            // getDialog().setTitle(titleId);
-        }
-        else
-        {
-            if (getArguments().getBoolean(PARAM_SHORTCUT))
-            {
-                getActivity().getActionBar().show();
-                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, getArguments().getInt(PARAM_MENUID));
-                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-            }
+            getActivity().getActionBar().show();
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false,
+                    getArguments().getInt(PARAM_MENUID));
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
         }
         getActivity().invalidateOptionsMenu();
         super.onStart();

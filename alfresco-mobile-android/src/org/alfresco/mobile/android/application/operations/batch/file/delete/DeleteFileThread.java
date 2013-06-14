@@ -48,7 +48,7 @@ public class DeleteFileThread extends FileOperationThread<Void>
     @Override
     protected LoaderResult<Void> doInBackground()
     {
-        LoaderResult<Void> result = null;
+        LoaderResult<Void> result = new LoaderResult<Void>();
         try
         {
             result = super.doInBackground();

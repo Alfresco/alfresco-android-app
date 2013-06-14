@@ -55,14 +55,14 @@ public final class SynchroSchema extends OperationSchema
     public static final int COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID = COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID + 1;
 
     
-    private static String[] COLUMNS_SYNC = { 
+    private static final String[] COLUMNS_SYNC = { 
         COLUMN_CONTENT_URI,
         COLUMN_ANALYZE_TIMESTAMP,
         COLUMN_SERVER_MODIFICATION_TIMESTAMP,
         COLUMN_LOCAL_MODIFICATION_TIMESTAMP
         };
     
-    public static String[] COLUMN_ALL = join(COLUMNS, COLUMNS_SYNC);
+    public static final String[] COLUMN_ALL = join(COLUMNS, COLUMNS_SYNC);
     
     // ////////////////////////////////////////////////////
     // QUERIES

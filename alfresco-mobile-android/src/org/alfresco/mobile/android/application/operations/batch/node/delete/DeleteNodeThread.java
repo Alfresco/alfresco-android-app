@@ -39,7 +39,7 @@ public class DeleteNodeThread extends NodeOperationThread<Void>
     @Override
     public LoaderResult<Void> doInBackground()
     {
-        LoaderResult<Void> result = null;
+        LoaderResult<Void> result  = new LoaderResult<Void>();
         try
         {
             result = super.doInBackground();

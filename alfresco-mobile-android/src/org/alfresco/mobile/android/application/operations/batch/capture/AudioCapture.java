@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -46,7 +47,7 @@ public class AudioCapture extends DeviceCapture
     {
         this(parent, folder, null);
     }
-    
+
     public AudioCapture(Activity parent, Folder folder, File parentFolder)
     {
         super(parent, folder, parentFolder);
@@ -157,18 +158,30 @@ public class AudioCapture extends DeviceCapture
 
     private void copyFile(String fileName, String newFileName) throws IOException
     {
-        InputStream in = new FileInputStream(fileName);
-        OutputStream out = new FileOutputStream(newFileName);
-
-        // Transfer bytes from in to out
-        byte[] buf = new byte[1024];
-        int len;
-        while ((len = in.read(buf)) > 0)
+        InputStream in = null;
+        OutputStream out = null;
+        try
         {
-            out.write(buf, 0, len);
+            in = new FileInputStream(fileName);
+            out = new FileOutputStream(newFileName);
+
+            // Transfer bytes from in to out
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = in.read(buf)) > 0)
+            {
+                out.write(buf, 0, len);
+            }
+        }
+        catch (Exception e)
+        {
+            
+        }
+        finally
+        {
+            IOUtils.closeStream(in);
+            IOUtils.closeStream(out);
         }
 
-        in.close();
-        out.close();
     }
 }

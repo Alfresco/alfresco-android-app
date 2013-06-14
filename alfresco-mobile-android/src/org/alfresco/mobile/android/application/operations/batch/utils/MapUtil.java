@@ -23,6 +23,7 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class MapUtil
 {
@@ -31,18 +32,18 @@ public class MapUtil
         if (map == null || map.size() <= 0) { return ""; }
         StringBuilder stringBuilder = new StringBuilder();
 
-        for (String key : map.keySet())
+        for (Entry<String, Serializable> entry : map.entrySet())
         {
             if (stringBuilder.length() > 0)
             {
                 stringBuilder.append("&");
             }
-            Serializable value = map.get(key);
             try
             {
-                stringBuilder.append((key != null ? URLEncoder.encode(key, "UTF-8") : ""));
+                stringBuilder.append((entry.getKey() != null ? URLEncoder.encode(entry.getKey(), "UTF-8") : ""));
                 stringBuilder.append("=");
-                stringBuilder.append(value != null ? URLEncoder.encode(value.toString(), "UTF-8") : "");
+                stringBuilder.append(entry.getValue() != null ? URLEncoder.encode(entry.getValue().toString(), "UTF-8")
+                        : "");
             }
             catch (UnsupportedEncodingException e)
             {

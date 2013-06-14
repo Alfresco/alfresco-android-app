@@ -20,15 +20,13 @@ package org.alfresco.mobile.android.application.operations.batch.node.download;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
-import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
 import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
 import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile> implements OperationsGroupCallBack

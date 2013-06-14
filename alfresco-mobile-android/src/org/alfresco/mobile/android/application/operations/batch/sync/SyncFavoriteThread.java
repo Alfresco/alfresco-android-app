@@ -99,7 +99,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     @Override
     protected LoaderResult<Void> doInBackground()
     {
-        LoaderResult<Void> result = null;
+        LoaderResult<Void> result = new LoaderResult<Void>();
         try
         {
             result = super.doInBackground();
@@ -420,7 +420,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     private void addSyncDownloadRequest(Uri localUri, Document doc, long timeStamp)
     {
         // Execution
-        if (!canSync) return;
+        if (!canSync) { return; }
         SyncDownloadRequest dl = new SyncDownloadRequest(doc);
         dl.setNotificationUri(localUri);
         dl.setNotificationTitle(doc.getName());
@@ -429,7 +429,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private void addSyncUpdateRequest(Document doc, Cursor cursorId, File localFile, Uri localUri)
     {
-        if (!canSync) return;
+        if (!canSync) { return; }
         SyncUpdateRequest updateRequest = new SyncUpdateRequest(cursorId.getString(SynchroSchema.COLUMN_PARENT_ID_ID),
                 doc, new ContentFileImpl(localFile));
         updateRequest.setNotificationTitle(doc.getName());
@@ -466,7 +466,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
                 cValues, null, null);
 
         // Execution
-        if (!canSync) return;
+        if (!canSync) { return; }
         SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id,
                 cursorId.getString(SynchroSchema.COLUMN_TITLE_ID), SynchroManager.getUri(cursorId
                         .getLong(SynchroSchema.COLUMN_ID_ID)));

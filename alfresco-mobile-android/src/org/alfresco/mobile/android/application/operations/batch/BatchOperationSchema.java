@@ -17,10 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch;
 
-import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationSchema;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -39,7 +37,7 @@ public final class BatchOperationSchema extends OperationSchema
     // ////////////////////////////////////////////////////
     // EXTRA COLUMNS
     // ////////////////////////////////////////////////////
-    public static String[] COLUMN_ALL = COLUMNS;
+    public static final String[] COLUMN_ALL = COLUMNS;
 
     // ////////////////////////////////////////////////////
     // QUERIES

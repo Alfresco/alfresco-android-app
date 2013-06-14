@@ -21,8 +21,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
-import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -79,12 +77,12 @@ public class PrivateDialogActivity extends BaseActivity
 
         setContentView(R.layout.app_left_panel);
 
-        
         if (getIntent().hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
         {
-            currentAccount = AccountManager.retrieveAccount(this, getIntent().getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, 1));
+            currentAccount = AccountManager.retrieveAccount(this,
+                    getIntent().getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, 1));
         }
-        
+
         String action = getIntent().getAction();
         if (IntentIntegrator.ACTION_DISPLAY_SETTINGS.equals(action))
         {

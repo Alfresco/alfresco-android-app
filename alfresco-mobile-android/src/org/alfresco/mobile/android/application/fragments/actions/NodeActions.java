@@ -58,23 +58,13 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 
 @TargetApi(11)
-public class NodeActions implements ActionMode.Callback
+public class NodeActions extends AbstractActions<Node>
 {
     public static final String TAG = "NodeActions";
-
-    private List<Node> selectedNodes = new ArrayList<Node>();
 
     private List<Folder> selectedFolder = new ArrayList<Folder>();
 
     private List<Document> selectedDocument = new ArrayList<Document>();
-
-    private onFinishModeListerner mListener;
-
-    private ActionMode mode;
-
-    private Activity activity = null;
-
-    private Fragment fragment;
 
     private Folder parentFolder;
 
@@ -82,7 +72,7 @@ public class NodeActions implements ActionMode.Callback
     {
         this.fragment = f;
         this.activity = f.getActivity();
-        this.selectedNodes = selectedNodes;
+        this.selectedItems = selectedNodes;
         for (Node node : selectedNodes)
         {
             addNode(node);
@@ -94,45 +84,15 @@ public class NodeActions implements ActionMode.Callback
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // LIFECYCLE
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public boolean onPrepareActionMode(ActionMode mode, Menu menu)
-    {
-        this.mode = mode;
-        getMenu(menu);
-        return false;
-    }
-
-    @Override
-    public boolean onCreateActionMode(ActionMode mode, Menu menu)
-    {
-        mode.setTitle(createTitle());
-        return true;
-    }
-
-    @Override
-    public void onDestroyActionMode(ActionMode mode)
-    {
-        mListener.onFinish();
-        selectedNodes.clear();
-    }
-
-    public void finish()
-    {
-        mode.finish();
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private String createTitle()
+    protected String createTitle()
     {
         String title = "";
 
-        if (selectedNodes.size() == 1)
+        if (selectedItems.size() == 1)
         {
-            title = selectedNodes.get(0).getName();
+            title = selectedItems.get(0).getName();
         }
         else
         {
@@ -160,48 +120,17 @@ public class NodeActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // LIST MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////////////
-    public void selectNode(Node n)
-    {
-        if (selectedNodes.contains(n))
-        {
-            removeNode(n);
-        }
-        else
-        {
-            addNode(n);
-        }
-        if (selectedNodes.isEmpty())
-        {
-            mode.finish();
-        }
-        else
-        {
-            mode.setTitle(createTitle());
-            mode.invalidate();
-        }
-    }
 
     public void selectNodes(List<Node> nodes)
     {
-        selectedNodes.clear();
         selectedDocument.clear();
         selectedFolder.clear();
-        for (Node node : nodes)
-        {
-            addNode(node);
-        }
-        mode.setTitle(createTitle());
-        mode.invalidate();
+        super.selectNodes(nodes);
     }
 
-    private void addNode(Node n)
+    protected void addNode(Node n)
     {
-        if (n == null) { return; }
-
-        if (!selectedNodes.contains(n))
-        {
-            selectedNodes.add(n);
-        }
+        super.addNode(n);
         if (n.isDocument())
         {
             selectedDocument.add((Document) n);
@@ -212,9 +141,9 @@ public class NodeActions implements ActionMode.Callback
         }
     }
 
-    private void removeNode(Node n)
+    protected void removeNode(Node n)
     {
-        selectedNodes.remove(n);
+        super.removeNode(n);
         if (n.isDocument())
         {
             selectedDocument.remove((Document) n);
@@ -233,13 +162,7 @@ public class NodeActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////////////
-    private void getMenu(Menu menu)
-    {
-        menu.clear();
-        getMenu(activity, menu);
-    }
-
-    private void getMenu(Activity activity, Menu menu)
+    protected void getMenu(Activity activity, Menu menu)
     {
         MenuItem mi;
         SubMenu createMenu;
@@ -292,7 +215,7 @@ public class NodeActions implements ActionMode.Callback
         switch (item.getItemId())
         {
             case MenuActionItem.MENU_DETAILS:
-                ((MainActivity) activity).addPropertiesFragment(selectedNodes.get(0));
+                ((MainActivity) activity).addPropertiesFragment(selectedItems.get(0));
                 DisplayUtils.switchSingleOrTwo(activity, false);
                 break;
             case MenuActionItem.MENU_UPDATE:
@@ -321,12 +244,12 @@ public class NodeActions implements ActionMode.Callback
                 b = true;
                 break;
             case MenuActionItem.MENU_EDIT:
-                edit(activity, parentFolder, selectedNodes.get(0));
+                edit(activity, parentFolder, selectedItems.get(0));
                 b = true;
                 break;
             case MenuActionItem.MENU_DELETE:
             case MenuActionItem.MENU_DELETE_FOLDER:
-                delete(activity, fragment, new ArrayList<Node>(selectedNodes));
+                delete(activity, fragment, new ArrayList<Node>(selectedItems));
                 b = true;
                 break;
             case MenuActionItem.MENU_SELECT_ALL:
@@ -342,7 +265,7 @@ public class NodeActions implements ActionMode.Callback
         }
         if (b)
         {
-            selectedNodes.clear();
+            selectedItems.clear();
             selectedDocument.clear();
             selectedFolder.clear();
             mode.finish();
@@ -356,7 +279,7 @@ public class NodeActions implements ActionMode.Callback
     private void favorite(boolean doFavorite)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
-        for (Node node : selectedNodes)
+        for (Node node : selectedItems)
         {
             group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
@@ -374,7 +297,7 @@ public class NodeActions implements ActionMode.Callback
                 iconId = R.drawable.ic_favorite_dark;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    fragment.getString(titleId), null, parentFolder, selectedNodes.size()).show(
+                    fragment.getString(titleId), null, parentFolder, selectedItems.size()).show(
                     fragment.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
@@ -382,7 +305,7 @@ public class NodeActions implements ActionMode.Callback
     private void like(boolean doLike)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
-        for (Node node : selectedNodes)
+        for (Node node : selectedItems)
         {
             group.enqueue(new LikeNodeRequest(parentFolder, node, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
@@ -399,7 +322,7 @@ public class NodeActions implements ActionMode.Callback
                 iconId = R.drawable.ic_like;
             }
             OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId, fragment.getString(titleId),
-                    null, parentFolder, selectedNodes.size()).show(fragment.getActivity().getFragmentManager(),
+                    null, parentFolder, selectedItems.size()).show(fragment.getActivity().getFragmentManager(),
                     OperationWaitingDialogFragment.TAG);
         }
     }
@@ -410,8 +333,8 @@ public class NodeActions implements ActionMode.Callback
         File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
         if (folder != null && new File(folder, doc.getName()).exists())
         {
-            ResolveNamingConflictFragment.newInstance(parentFolder, doc).show(
-                    activity.getFragmentManager(), ResolveNamingConflictFragment.TAG);
+            ResolveNamingConflictFragment.newInstance(parentFolder, doc).show(activity.getFragmentManager(),
+                    ResolveNamingConflictFragment.TAG);
         }
         else
         {
@@ -431,6 +354,26 @@ public class NodeActions implements ActionMode.Callback
         BatchOperationManager.getInstance(activity).enqueue(group);
     }
 
+    public static void edit(final Activity activity, final Folder folder, final Node node)
+    {
+        FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
+        Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
+        if (prev != null)
+        {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(folder, node);
+        newFragment.show(ft, UpdateDialogFragment.TAG);
+    }
+
+    public static void update(Fragment f)
+    {
+        ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
+    }
+    
     public static void delete(final Activity activity, final Fragment f, Node node)
     {
         List<Node> nodes = new ArrayList<Node>();
@@ -504,47 +447,4 @@ public class NodeActions implements ActionMode.Callback
         alert.show();
     }
 
-    public static void edit(final Activity activity, final Folder folder, final Node node)
-    {
-        FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
-        Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-
-        // Create and show the dialog.
-        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(folder, node);
-        newFragment.show(ft, UpdateDialogFragment.TAG);
-    }
-
-    public static void update(Fragment f)
-    {
-        ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
-    }
-
-    public static File getDownloadFile(final Activity activity, final Node node)
-    {
-        if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
-        {
-            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
-            if (folder != null) { return new File(folder, node.getName()); }
-        }
-
-        return null;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////////////
-    // LISTENER
-    // ///////////////////////////////////////////////////////////////////////////////////
-    public interface onFinishModeListerner
-    {
-        void onFinish();
-    }
-
-    public void setOnFinishModeListerner(onFinishModeListerner mListener)
-    {
-        this.mListener = mListener;
-    }
 }

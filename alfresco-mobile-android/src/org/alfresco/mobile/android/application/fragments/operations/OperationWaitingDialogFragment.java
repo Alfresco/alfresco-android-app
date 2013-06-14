@@ -202,7 +202,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     @Override
     public void onLoaderReset(Loader<Cursor> arg0)
     {
-        // TODO Auto-generated method stub
+        // DO Nothing
     }
 
     @Override

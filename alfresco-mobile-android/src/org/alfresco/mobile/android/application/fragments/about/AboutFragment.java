@@ -39,7 +39,6 @@ public class AboutFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        // TODO Auto-generated method stub
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         return new AlertDialog.Builder(getActivity()).setView(createView(inflater, null)).create();
     }

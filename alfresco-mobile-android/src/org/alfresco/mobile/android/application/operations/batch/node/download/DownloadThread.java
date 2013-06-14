@@ -83,7 +83,7 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
     @Override
     protected LoaderResult<ContentFile> doInBackground()
     {
-        LoaderResult<ContentFile> result = null;
+        LoaderResult<ContentFile> result = new LoaderResult<ContentFile>();
         ContentFile contentFileResult = null;
         try
         {

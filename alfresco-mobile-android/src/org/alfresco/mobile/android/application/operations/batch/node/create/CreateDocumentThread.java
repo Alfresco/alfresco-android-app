@@ -69,7 +69,7 @@ public class CreateDocumentThread extends AbstractUpThread
     @Override
     protected LoaderResult<Document> doInBackground()
     {
-        LoaderResult<Document> result = null;
+        LoaderResult<Document> result = new LoaderResult<Document>();
         try
         {
 

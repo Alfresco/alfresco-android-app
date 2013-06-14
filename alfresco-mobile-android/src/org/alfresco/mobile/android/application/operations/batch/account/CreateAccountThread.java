@@ -48,7 +48,7 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
     private OAuthData oauthData;
 
     private Person userPerson;
-    
+
     public CreateAccountThread(Context context, OperationRequest request)
     {
         super(context, request);
@@ -106,7 +106,7 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
         int type;
         boolean isPaidAccount = false;
         Account acc = null;
-        
+
         if (oauthData == null)
         {
             // Non OAuth login
@@ -130,7 +130,7 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
             acc = AccountManager.createAccount(context, tmpDescription, baseUrl, username, password, session
                     .getRepositoryInfo().getIdentifier(), type, null, null, null, isPaidAccount ? 1 : 0);
         }
-        else if (oauthData != null)
+        else
         {
             // OAuth login
             type = Integer.valueOf(Account.TYPE_ALFRESCO_CLOUD);
@@ -141,11 +141,11 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
 
             isPaidAccount = isPaid(type, session);
 
-           // Save Account
+            // Save Account
             acc = AccountManager.createAccount(context, context.getString(R.string.account_default_cloud), session
-                    .getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo()
-                    .getIdentifier(), type, null, ((CloudSession) session).getOAuthData().getAccessToken(),
-                    oauthData.getRefreshToken(), isPaidAccount ? 1 : 0);
+                    .getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type,
+                    null, ((CloudSession) session).getOAuthData().getAccessToken(), oauthData.getRefreshToken(),
+                    isPaidAccount ? 1 : 0);
         }
 
         return acc;
@@ -196,6 +196,7 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
     {
         return userPerson;
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST EVENT
     // ///////////////////////////////////////////////////////////////////////////

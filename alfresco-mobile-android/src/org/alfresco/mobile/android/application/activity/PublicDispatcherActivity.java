@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
