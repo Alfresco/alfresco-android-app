@@ -102,7 +102,6 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
     @Override
     public String getType(Uri uri)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 

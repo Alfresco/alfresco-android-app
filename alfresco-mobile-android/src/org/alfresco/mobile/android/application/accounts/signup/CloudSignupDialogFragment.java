@@ -184,8 +184,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after)
         {
-            // TODO Auto-generated method stub
-
+            // DO Nothing
         }
 
         @Override

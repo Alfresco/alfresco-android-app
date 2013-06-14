@@ -162,7 +162,7 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
     @Override
     public void onLoaderReset(Loader<List<File>> arg0)
     {
-        // TODO Auto-generated method stub
+        // DO Nothing
     }
 
     public void refresh()

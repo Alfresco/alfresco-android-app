@@ -92,7 +92,7 @@ public abstract class OperationSchema
     // ////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////
-    protected static String[] COLUMNS = { 
+    protected static final String[] COLUMNS = { 
             COLUMN_ID, 
             COLUMN_ACCOUNT_ID,
             COLUMN_TENANT_ID,

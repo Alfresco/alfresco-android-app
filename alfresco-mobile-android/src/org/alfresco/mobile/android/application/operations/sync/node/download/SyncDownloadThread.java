@@ -14,14 +14,11 @@ import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
-import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadThread;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.SyncNodeOperationThread;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.ContentValues;
@@ -66,7 +63,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
     @Override
     protected LoaderResult<ContentFile> doInBackground()
     {
-        LoaderResult<ContentFile> result = null;
+        LoaderResult<ContentFile> result = new LoaderResult<ContentFile>();
         ContentFile contentFileResult = null;
         try
         {

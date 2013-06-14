@@ -294,16 +294,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     break;
                 case Operation.STATUS_SUCCESSFUL:
                     // Update node if not present
-                    if (type == DownloadRequest.TYPE_ID)
+                    if (type != DownloadRequest.TYPE_ID && hasNode(name) && getNode(name) instanceof NodePlaceHolder)
                     {
-
-                    }
-                    else
-                    {
-                        if (hasNode(name) && getNode(name) instanceof NodePlaceHolder)
-                        {
-                            remove(name);
-                        }
+                        remove(name);
                     }
 
                     break;
@@ -320,7 +313,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Cursor> arg0)
     {
-        // TODO Auto-generated method stub
+        // DO Nothing
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -423,7 +416,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             }
             else
             {
-                //Case there's no favorite at all.
+                // Case there's no favorite at all.
                 favoriteNodeRef = new ArrayList<String>(0);
             }
         }

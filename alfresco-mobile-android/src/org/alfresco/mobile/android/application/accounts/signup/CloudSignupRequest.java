@@ -108,8 +108,6 @@ public class CloudSignupRequest
 
     public static final int SESSION_SIGNUP_ERROR = 100000;
 
-    // private static final String SIGNUP_CLOUD_URL = CLOUD_URL;
-
     @SuppressWarnings("unchecked")
     public static CloudSignupRequest signup(String firstName, String lastName, String emailAddress, String password,
             String apiKey)
@@ -122,7 +120,6 @@ public class CloudSignupRequest
         jo.put(CloudConstant.CLOUD_FIRSTNAME_VALUE, firstName);
         jo.put(CloudConstant.CLOUD_LASTNAME_VALUE, lastName);
         jo.put(CloudConstant.CLOUD_PASSWORD_VALUE, password);
-        // jo.put(CloudConstant.CLOUD_KEY, apiKey);
         jo.put(CloudConstant.CLOUD_SOURCE_VALUE, "mobile-android");
 
         Map<String, List<String>> fixedHeaders = new HashMap<String, List<String>>(1);
@@ -186,9 +183,6 @@ public class CloudSignupRequest
     // //////////////////////////////////////////////////////////////////////////////
 
     private static final String CLOUD_SIGNUP = "/alfresco/a/-default-/internal/cloud/accounts/signupqueue";
-
-    // private static final String CLOUD_SIGNUP =
-    // "/internal/cloud/accounts/signupqueue";
 
     private static final String VARIABLE_ACCOUNTID = "{accountid}";
 

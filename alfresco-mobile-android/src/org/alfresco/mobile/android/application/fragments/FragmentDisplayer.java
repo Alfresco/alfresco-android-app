@@ -52,13 +52,7 @@ public final class FragmentDisplayer
             {
                 FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
 
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-                {
-                    // t2.setCustomAnimations(R.anim.slide_in_right,
-                    // R.anim.slide_out_left);
-                }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -158,13 +152,7 @@ public final class FragmentDisplayer
             if (fr != null && fr.isAdded())
             {
                 FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-                {
-                    // t2.setCustomAnimations(R.anim.slide_in_right,//
-                    // R.anim.slide_out_left);
-                }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -211,13 +199,7 @@ public final class FragmentDisplayer
             try
             {
                 FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.HONEYCOMB_MR2)
-                {
-                    // t2.setCustomAnimations(R.anim.slide_in_right,//
-                    // R.anim.slide_out_left);
-                }
-                else if (hasAnimation
+                if (hasAnimation
                         && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {

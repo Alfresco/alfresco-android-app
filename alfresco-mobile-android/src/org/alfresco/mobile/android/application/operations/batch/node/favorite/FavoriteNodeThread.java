@@ -21,7 +21,6 @@ import java.util.GregorianCalendar;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -66,7 +65,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
     @Override
     protected LoaderResult<Boolean> doInBackground()
     {
-        LoaderResult<Boolean> result = null;
+        LoaderResult<Boolean> result = new LoaderResult<Boolean>();
         try
         {
             result = super.doInBackground();
@@ -87,11 +86,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                             SynchroSchema.COLUMN_NODE_ID + " LIKE '"
                                     + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
 
-                    if (cursorId.getCount() > 1)
-                    {
-                        //
-                    }
-                    else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
+                    if (cursorId.getCount() == 1 && cursorId.moveToFirst())
                     {
                         ContentValues cValues = new ContentValues();
                         cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);

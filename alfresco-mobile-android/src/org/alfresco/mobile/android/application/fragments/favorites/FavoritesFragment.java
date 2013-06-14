@@ -165,8 +165,7 @@ public class FavoritesFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult>> arg0)
     {
-        // TODO Auto-generated method stub
-
+        // DO Nothing
     }
 
     // ///////////////////////////////////////////////////////////////////////////

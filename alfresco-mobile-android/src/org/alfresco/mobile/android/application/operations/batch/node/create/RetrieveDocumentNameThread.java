@@ -63,7 +63,7 @@ public class RetrieveDocumentNameThread extends AbstractBatchOperationThread<Str
     @Override
     protected LoaderResult<String> doInBackground()
     {
-        LoaderResult<String> result = null;
+        LoaderResult<String> result = new LoaderResult<String>();
         try
         {
             result = super.doInBackground();

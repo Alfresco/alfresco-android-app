@@ -398,8 +398,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             @Override
             public void onNothingSelected(AdapterView<?> arg0)
             {
-                // TODO Auto-generated method stub
-
+                // DO Nothing
             }
         });
         if (folderImportId == null)

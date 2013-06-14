@@ -285,7 +285,6 @@ public final class AccountManager
             currentAccount = getDefaultAccount();
             if (currentAccount == null)
             {
-                // TODO Change broadcast
                 broadManager.sendBroadcast(new Intent(IntentIntegrator.ACTION_ACCOUNT_INACTIVE));
             }
         }

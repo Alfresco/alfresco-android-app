@@ -95,7 +95,7 @@ public abstract class OperationManager
             currentOperationGroup = operationsGroups.remove(0);
         }
 
-        if (currentOperationGroup.hasPendingRequest())
+        if (currentOperationGroup != null && currentOperationGroup.hasPendingRequest())
         {
             OperationsGroupInfo info = currentOperationGroup.next();
             return info;

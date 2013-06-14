@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -82,9 +81,9 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     private File createFile;
 
     private long lastModifiedDate;
-    
+
     private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
-    
+
     private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -206,16 +205,13 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
         }
 
-        if (getDialog() != null)
-        {
-            // getDialog().setTitle(titleId);
-        }
-        else
+        if (getDialog() == null)
         {
             getActivity().getActionBar().show();
             if (getArguments().getBoolean(PARAM_SHORTCUT))
             {
-                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, getArguments().getInt(PARAM_MENUID));
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false,
+                        getArguments().getInt(PARAM_MENUID));
                 getActivity().getActionBar().setDisplayShowTitleEnabled(false);
             }
         }
@@ -359,7 +355,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
                     {
-                        OpenAsDialogFragment.newInstance(file).show(getActivity().getFragmentManager(), OpenAsDialogFragment.TAG);
+                        OpenAsDialogFragment.newInstance(file).show(getActivity().getFragmentManager(),
+                                OpenAsDialogFragment.TAG);
                     }
                 });
             }

@@ -64,7 +64,7 @@ public class ResolveSyncConflictFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        if (getArguments() == null && !getArguments().containsKey(PARAM_FAVORITEID)) { return createErrorDialog(); }
+        if (getArguments() == null || !getArguments().containsKey(PARAM_FAVORITEID)) { return createErrorDialog(); }
 
         favoriteId = getArguments().getLong(PARAM_FAVORITEID);
         favoriteCursor = getActivity().getContentResolver().query(SynchroManager.getUri(favoriteId),

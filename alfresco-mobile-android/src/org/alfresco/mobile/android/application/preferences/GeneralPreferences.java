@@ -22,7 +22,6 @@ import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
@@ -216,7 +215,11 @@ public class GeneralPreferences extends PreferenceFragment
             @Override
             public boolean onPreferenceClick(Preference preference)
             {
-                boolean isSync = ((CheckBoxPreference) preference).isChecked();
+                boolean isSync = false;
+                if (preference instanceof CheckBoxPreference)
+                {
+                    isSync = ((CheckBoxPreference) preference).isChecked();
+                }
 
                 if (isSync)
                 {
@@ -259,14 +262,18 @@ public class GeneralPreferences extends PreferenceFragment
             @Override
             public boolean onPreferenceClick(Preference preference)
             {
-                boolean isSync = ((CheckBoxPreference) preference).isChecked();
+                boolean isSync = false;
+                if (preference instanceof CheckBoxPreference)
+                {
+                    isSync = ((CheckBoxPreference) preference).isChecked();
+                }
                 sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isSync).commit();
                 return false;
             }
         });
 
         getActivity().invalidateOptionsMenu();
-        
+
     }
 
     public static boolean hasWifiOnlySync(Context context, Account account)
@@ -294,7 +301,7 @@ public class GeneralPreferences extends PreferenceFragment
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         if (SessionUtils.getAccount(activity) != null)
         {
-            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            final Account account = SessionUtils.getAccount(activity);
             sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), isActive).commit();
         }
     }
@@ -304,7 +311,7 @@ public class GeneralPreferences extends PreferenceFragment
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         if (SessionUtils.getAccount(activity) != null)
         {
-            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            final Account account = SessionUtils.getAccount(activity);
             sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
         }
     }
@@ -314,7 +321,7 @@ public class GeneralPreferences extends PreferenceFragment
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
         if (SessionUtils.getAccount(activity) != null)
         {
-            final Account account = ((BaseActivity) activity).getCurrentAccount();
+            final Account account = SessionUtils.getAccount(activity);
             return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false);
         }
         return false;

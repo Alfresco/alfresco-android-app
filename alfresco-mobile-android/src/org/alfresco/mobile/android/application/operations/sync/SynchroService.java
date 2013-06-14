@@ -26,6 +26,7 @@ import java.util.Set;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.Operation.OperationCallBack;
+import org.alfresco.mobile.android.application.operations.OperationsGroupInfo;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationThread;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteCallback;
@@ -37,7 +38,6 @@ import org.alfresco.mobile.android.application.operations.sync.node.download.Syn
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateCallback;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateThread;
-import org.alfresco.mobile.android.application.operations.OperationsGroupInfo;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
