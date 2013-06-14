@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -35,7 +34,6 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,7 +76,6 @@ public class NodeIdActions extends AbstractActions<String>
     // ///////////////////////////////////////////////////////////////////////////////////
     protected void getMenu(Activity activity, Menu menu)
     {
-        MenuItem mi;
         SubMenu createMenu;
 
         createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
@@ -100,14 +97,6 @@ public class NodeIdActions extends AbstractActions<String>
                 Menu.FIRST + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
         createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
                 + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
-
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE, R.string.delete);
-        mi.setIcon(R.drawable.ic_delete);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_OPERATIONS, Menu.FIRST + MenuActionItem.MENU_OPERATIONS,
-                R.string.operations);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
     @Override
@@ -131,10 +120,6 @@ public class NodeIdActions extends AbstractActions<String>
             case MenuActionItem.MENU_LIKE_GROUP_UNLIKE:
                 like(false);
                 b = true;
-                break;
-            case MenuActionItem.MENU_OPERATIONS:
-                activity.startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
-                b = false;
                 break;
             default:
                 break;

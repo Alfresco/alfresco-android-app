@@ -405,8 +405,8 @@
     <string name="settings_favorite">Favorite</string>
     <string name="settings_favorite_sync">Activate Sync</string>
     <string name="settings_favorite_sync_data">Data usage</string>
-    <string name="settings_favorite_sync_data_wifi">Only when on Wi-Fi</string>
-    <string name="settings_favorite_sync_data_all">On any networks</string>
+    <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
+    <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
