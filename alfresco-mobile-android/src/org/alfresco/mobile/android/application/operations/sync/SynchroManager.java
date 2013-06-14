@@ -132,8 +132,6 @@ public final class SynchroManager extends OperationManager
                     break;
             }
 
-            Log.d(TAG, "Retry : " + request.getClass().getName());
-
             if (request != null)
             {
                 ((AbstractSyncOperationRequestImpl) request).setNotificationUri(uri);

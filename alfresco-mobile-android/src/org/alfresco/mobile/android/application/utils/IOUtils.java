@@ -53,7 +53,7 @@ public class IOUtils
         String timeStamp = new SimpleDateFormat(TEMP_FILESTAMP).format(new Date());
         File newFile = new File(f.getParent() + "/" + TEMP_PREFIX + timeStamp + f.getName());
 
-        if (f.renameTo(newFile)) return newFile;
+        if (f.renameTo(newFile)) { return newFile; }
 
         return f;
     }
@@ -237,7 +237,10 @@ public class IOUtils
                             if (item.equals(sourceFile.getParentFile().getName()))
                             {
                                 result = CipherUtils.encryptFile(ctxt, sourceFile.getPath(), destFilename, true);
-                                if (result == true) filesEncrypted.add(sourceFile.getPath());
+                                if (result == true)
+                                {
+                                    filesEncrypted.add(sourceFile.getPath());
+                                }
                             }
                         }
                     }
@@ -261,7 +264,9 @@ public class IOUtils
                             for (int j = 0; j < filesEncrypted.size(); j++)
                             {
                                 if (new File(filesEncrypted.get(j) + ENCRYPTION_EXTENSION).delete())
+                                {
                                     Log.i("Alfresco", "Deleted encrypted version of " + filesEncrypted.get(j));
+                                }
                             }
                             filesEncrypted.clear();
                             filesEncrypted = null;
@@ -361,7 +366,10 @@ public class IOUtils
                             if (item.equals(sourceFile.getParentFile().getName()))
                             {
                                 result = CipherUtils.decryptFile(ctxt, sourceFile.getPath(), destFilename);
-                                if (result == true) filesDecrypted.add(sourceFile.getPath());
+                                if (result == true)
+                                {
+                                    filesDecrypted.add(sourceFile.getPath());
+                                }
                             }
                         }
                     }
@@ -385,7 +393,9 @@ public class IOUtils
                             for (int j = 0; j < filesDecrypted.size(); j++)
                             {
                                 if (new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION).delete())
+                                {
                                     Log.i("Alfresco", "Deleted decrypted version of " + filesDecrypted.get(j));
+                                }
                             }
                             filesDecrypted.clear();
                             filesDecrypted = null;

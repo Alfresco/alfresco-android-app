@@ -59,7 +59,7 @@ public class SyncUpdateThread extends AbstractSyncUpThread
     @Override
     protected LoaderResult<Document> doInBackground()
     {
-        LoaderResult<Document> result = null;
+        LoaderResult<Document> result = new LoaderResult<Document>();
 
         try
         {

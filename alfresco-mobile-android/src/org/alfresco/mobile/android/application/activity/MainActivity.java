@@ -168,7 +168,6 @@ public class MainActivity extends BaseActivity
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
             currentAccount = helper.getCurrentAccount();
-            // displayFromSite = helper.getSite();
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
             if (helper.getDeviceCapture() != null)
@@ -208,11 +207,6 @@ public class MainActivity extends BaseActivity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
-
-        // TODO FIXME Remove it!
-        // Clean all operations
-        // BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        // SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
     }
 
     @Override
@@ -792,7 +786,6 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION BAR
     // ///////////////////////////////////////////////////////////////////////////
-    @TargetApi(14)
     private void initActionBar()
     {
         try
@@ -1207,7 +1200,6 @@ public class MainActivity extends BaseActivity
                 // Save latest position as default future one
                 AccountsPreferences.setDefaultAccount(activity, currentAccount.getId());
 
-                // TODO Move to sessionManager/AccountManager ???
                 // Check Last cloud session creation ==> prevent oauth token
                 // expiration
                 if (getCurrentSession() instanceof CloudSession)

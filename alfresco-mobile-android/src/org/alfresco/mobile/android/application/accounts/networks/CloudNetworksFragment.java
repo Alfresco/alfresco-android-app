@@ -90,7 +90,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<List<CloudNetwork>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // DO Nothing
     }
 
     @Override

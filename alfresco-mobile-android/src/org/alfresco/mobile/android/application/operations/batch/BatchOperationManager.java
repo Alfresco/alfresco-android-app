@@ -177,8 +177,6 @@ public class BatchOperationManager extends OperationManager
                     break;
             }
 
-            Log.d(TAG, "Retry : " + request.getClass().getName());
-
             if (request != null)
             {
                 ((AbstractBatchOperationRequestImpl) request).setNotificationUri(uri);

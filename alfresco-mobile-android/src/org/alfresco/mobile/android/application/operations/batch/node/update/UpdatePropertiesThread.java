@@ -61,7 +61,7 @@ public class UpdatePropertiesThread extends NodeOperationThread<Node>
     @Override
     protected LoaderResult<Node> doInBackground()
     {
-        LoaderResult<Node> result = null;
+        LoaderResult<Node> result = new LoaderResult<Node>();
         try
         {
             result = super.doInBackground();

@@ -55,7 +55,7 @@ public class LikeNodeThread extends NodeOperationThread<Boolean>
     @Override
     protected LoaderResult<Boolean> doInBackground()
     {
-        LoaderResult<Boolean> result = null;
+        LoaderResult<Boolean> result = new LoaderResult<Boolean>();
 
         try
         {

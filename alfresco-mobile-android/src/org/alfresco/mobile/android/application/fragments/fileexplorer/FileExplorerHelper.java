@@ -159,9 +159,7 @@ public final class FileExplorerHelper
 
         };
         activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
         int currentSelection = menuId;
-        //int currentSelection = prefs.getInt(FILEEXPLORER_DEFAULT, 1);
         activity.getActionBar().setSelectedNavigationItem(currentSelection);
     }
 }

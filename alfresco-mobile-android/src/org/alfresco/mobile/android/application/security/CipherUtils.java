@@ -25,6 +25,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
 import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -61,7 +62,7 @@ public class CipherUtils
 
     private static final int COUNT = 10;
 
-    private static final byte[] REFERENCE_DATA = "AlfrescoCrypto".getBytes();
+    private static final byte[] REFERENCE_DATA = "AlfrescoCrypto".getBytes(Charset.forName("UTF-8"));
 
     private static final String ALGORITHM = "PBEWithMD5AndDES";
 
@@ -75,7 +76,7 @@ public class CipherUtils
 
     static SecretKey generateKey(Context ctxt, int bits) throws IOException, NoSuchAlgorithmException
     {
-        if (info != null){ return info;}
+        if (info != null) { return info; }
 
         SecretKey r;
         FileInputStream fis = null;
@@ -96,11 +97,9 @@ public class CipherUtils
         }
         else
         {
-            SecureRandom secureRandom = new SecureRandom(); // Do NOT seed
-                                                            // SecureRandom:
-                                                            // automatically
-                                                            // seeded from
-                                                            // system entropy.
+            // Do NOT seed 
+            // SecureRandom: automatically seeded from system entropy.
+            SecureRandom secureRandom = new SecureRandom();
             KeyGenerator kgen = KeyGenerator.getInstance("AES");
             kgen.init(bits, secureRandom);
             r = kgen.generateKey();
@@ -121,8 +120,9 @@ public class CipherUtils
     }
 
     /*
-     * Encrypt file in place, leaving no trace of original unencrypted data. filename file to encrypt nuke whether to
-     * zero the original unencrypted file before attempting its deletion, for additional security.
+     * Encrypt file in place, leaving no trace of original unencrypted data.
+     * filename file to encrypt nuke whether to zero the original unencrypted
+     * file before attempting its deletion, for additional security.
      */
     public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws Exception
     {
@@ -132,7 +132,7 @@ public class CipherUtils
             File source = new File(filename);
             File dest = new File(newFilename != null ? newFilename : filename + ".etmp");
             InputStream sourceFile = new FileInputStream(source);
-            OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, 128)
+            OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, KEY_LENGTH)
                     .toString());
             int nBytes = 0;
             long size = 0;
@@ -160,13 +160,18 @@ public class CipherUtils
 
             if (newFilename == null)
             {
-                if (nuke) nukeFile(source, size);
+                if (nuke)
+                {
+                    nukeFile(source, size);
+                }
 
                 if (source.delete())
                 {
                     // Rename encrypted file to original name.
                     if (false == (ret = dest.renameTo(source)))
+                    {
                         Log.e(TAG, "Cannot rename encrypted file " + dest.getName());
+                    }
                 }
                 else
                 {
@@ -195,8 +200,8 @@ public class CipherUtils
     }
 
     /*
-     * Decrypt file, either in place, or to a new filename. filename file to decrypt. newFilename file to decrypt to, or
-     * null to decrypt in place.
+     * Decrypt file, either in place, or to a new filename. filename file to
+     * decrypt. newFilename file to decrypt to, or null to decrypt in place.
      */
     public static boolean decryptFile(Context ctxt, String filename, String newFilename) throws Exception
     {
@@ -205,7 +210,7 @@ public class CipherUtils
             boolean ret = true;
             File source = new File(filename);
             File dest = new File(newFilename != null ? newFilename : filename + ".utmp");
-            InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, 128)
+            InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, KEY_LENGTH)
                     .toString());
             OutputStream destFile = new FileOutputStream(dest);
             int nBytes = 0;
@@ -236,7 +241,9 @@ public class CipherUtils
                 {
                     // Rename decrypted file to original name.
                     if (false == (ret = dest.renameTo(source)))
+                    {
                         Log.e("Alfresco", "Cannot rename decrypted file " + dest.getName());
+                    }
                 }
                 else
                 {
@@ -267,7 +274,7 @@ public class CipherUtils
         InputStream sourceFile = null;
         try
         {
-            sourceFile = testInputStream(new FileInputStream(source), generateKey(ctxt, 128).toString());
+            sourceFile = testInputStream(new FileInputStream(source), generateKey(ctxt, KEY_LENGTH).toString());
         }
         catch (NoSuchAlgorithmException e)
         {
@@ -318,9 +325,10 @@ public class CipherUtils
         pbeCipher.init(Cipher.DECRYPT_MODE, pbeKey, pbeParamSpec);
 
         /*
-         * Read a predefined data block. If the password is incorrect, we'll get a security exception here. Without
-         * this, we will only get an IOException later when reading the CipherInputStream, which is not specific enough
-         * for a good error message.
+         * Read a predefined data block. If the password is incorrect, we'll get
+         * a security exception here. Without this, we will only get an
+         * IOException later when reading the CipherInputStream, which is not
+         * specific enough for a good error message.
          */
         int count = streamIn.read();
         if (count <= 0 || count > 1024) { throw new IOException("Bad encrypted file"); }
@@ -371,14 +379,18 @@ public class CipherUtils
      */
     public static void nukeFile(File source, long size) throws Exception
     {
-        if (size <= 0) size = source.length();
+        if (size <= 0)
+        {
+            size = source.length();
+        }
 
         byte zeros[] = new byte[chunkSize];
         OutputStream destroyFile = new FileOutputStream(source);
         long chunks = (size + chunkSize - 1) / chunkSize;
 
-        for (long i = 0; i < chunks; i++)
+        for (long i = 0; i < chunks; i++){
             destroyFile.write(zeros);
+        }
 
         destroyFile.flush();
         destroyFile.close();

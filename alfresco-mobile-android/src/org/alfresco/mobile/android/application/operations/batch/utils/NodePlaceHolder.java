@@ -19,9 +19,9 @@ package org.alfresco.mobile.android.application.operations.batch.utils;
 
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.GUID;
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.NAME;
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
-import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.REQUEST_TYPE;
 import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.REQUEST_STATUS;
+import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.REQUEST_TYPE;
+import static org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds.SIZEINBYTES;
 
 import java.util.GregorianCalendar;
 import java.util.HashMap;
