@@ -402,9 +402,9 @@
     <string name="settings_links_facebook">Like Alfresco on Facebook</string>
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
-    <string name="settings_favorite">Favorite</string>
+    <string name="settings_favorite">Favorites</string>
     <string name="settings_favorite_sync">Activate Sync</string>
-    <string name="settings_favorite_sync_data">Data usage</string>
+    <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
     <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>
 
@@ -493,7 +493,7 @@
     <string name="session_loaded">Session ready</string>
 
     <!-- Operations Type -->
-    <string name="operation_default">Operation</string>
+    <string name="operation_default">Notifications</string>
     <string name="DownloadRequest">Download</string>
     <string name="CreateDocumentRequest">Create Document</string>
     <string name="UpdateContentRequest">Update Document</string>
@@ -518,7 +518,7 @@
     <string name="select_all">Select All</string>
     <string name="unselect_all">Unselect all</string>
     <string name="cancel_all">Cancel All</string>
-    <string name="dismiss_all">Dismiss all</string>
+    <string name="dismiss_all">Clear List</string>
 
     <!-- Creation Folder -->
     <string name="create_folder_in_progress">Create folder in progress</string>
