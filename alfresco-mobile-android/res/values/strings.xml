@@ -274,6 +274,7 @@
     <string name="create_document_excel">Excel Spreadsheet</string>
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
+    <string name="filename_error_character">This name is invalid.</string>
     <string name="create_document_filename_error">This name is already in use.</string>
     <string name="create_document_save">An error occurred: Your document is saved inside "Downloads".</string>
     <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>

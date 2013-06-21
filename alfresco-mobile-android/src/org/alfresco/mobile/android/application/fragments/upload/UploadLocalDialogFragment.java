@@ -90,7 +90,7 @@ public class UploadLocalDialogFragment extends DialogFragment
         ((TextView) v.findViewById(R.id.document_extension)).setVisibility(View.GONE);
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.document_error));
+        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
         final Button validate = (Button) v.findViewById(R.id.create_document);
         final Button cancel = (Button) v.findViewById(R.id.cancel);
 

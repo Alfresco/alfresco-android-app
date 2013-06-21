@@ -17,6 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Point;
@@ -73,6 +76,15 @@ public class UIUtils
         }
 
         return new int[] { width, height };
+    }
+    
+    private static final Pattern NAME_PATTERN = Pattern
+            .compile("(.*[\"\\*\\\\>\\<\\?\\/\\:\\|]+.*)|(.*[\\.]?.*[\\.]+$)|(.*[ ]+$)");
+    
+    
+    public static boolean hasValideName(String name){
+        Matcher matcher = NAME_PATTERN.matcher(name);
+        return matcher.matches();
     }
 
 }
