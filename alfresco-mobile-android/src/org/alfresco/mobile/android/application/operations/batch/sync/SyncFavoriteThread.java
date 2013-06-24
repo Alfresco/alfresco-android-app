@@ -468,7 +468,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     {
 
         // If Favorite listing simply delete the entry.
-        if (canExecuteAction)
+        if (!canExecuteAction)
         {
             context.getContentResolver().delete(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
                     null, null);

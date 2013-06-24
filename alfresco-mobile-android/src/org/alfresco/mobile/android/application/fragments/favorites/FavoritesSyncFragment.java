@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
