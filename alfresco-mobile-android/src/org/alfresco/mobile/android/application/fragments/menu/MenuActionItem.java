@@ -50,8 +50,16 @@ public interface MenuActionItem
     // FILE EXPLORER
     // ///////////////////////////////////////////
     int MENU_SHORTCUT = 5;
-    
+
     int MENU_SEND = 60;
+
+    int MENU_SAVE = 65;
+    
+    int MENU_SPEECH = 66;
+
+    int MENU_ENCODING = 67;
+
+    int MENU_FONT_SIZE = 68;
 
     // ///////////////////////////////////////////
     // DETAILS
@@ -98,7 +106,7 @@ public interface MenuActionItem
     // SELECTION
     // ///////////////////////////////////////////
     int MENU_SELECT_ALL = 198;
-    
+
     int MENU_OPERATIONS = 199;
 
     // ///////////////////////////////////////////

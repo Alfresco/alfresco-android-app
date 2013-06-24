@@ -557,4 +557,21 @@
     <string name="batch_download_complete">%s documents available offline</string>
     <string name="batch_download_failed">%s download transfer</string>
 
+    <!-- FILE Editor Menu -->
+    <string name="file_editor_name">Alfresco Text Editor</string>
+    <string name="file_editor_error_open">Unable to open this file.</string>
+    <string name="file_editor_error_too_large">This file exceeds the size limit to be opened with the Alfresco Text Editor.</string>
+    <string name="file_editor_error_speech">Text To Speech is not available inside your device.</string>
+    <string name="file_editor_save_request">The file has been modified.</string>
+    <string name="file_editor_save_description"><![CDATA[Do you want to quit without saving ? <br/> Any unsaved changes will be lost.]]></string>
+    <string name="file_editor_save">Save</string>
+    <string name="file_editor_discard">Discard</string>
+    <string name="file_editor_save_confirmation">Document has been saved.</string>
+    <string name="file_editor_loading">Please wait a few moments&#8230;</string>
+    <string name="file_editor_encoding">Encoding</string>
+    <string name="file_editor_encoding">Encoding</string>
+    <string name="file_editor_text_size">Text Size</string>
+    <string name="file_editor_speech_to_text">Speech to Text</string>
+    
+
 </resources>

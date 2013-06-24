@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scroll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" 
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/texteditor"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top"
+            android:gravity="top"
+            android:inputType="textMultiLine"
+            android:visibility="gone" >
+        </EditText>
+        
+        <LinearLayout
+            android:id="@+id/empty"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="@dimen/padding_dialog"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible" >
+
+            <ImageView
+                android:id="@+id/empty_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_empty" />
+
+            <TextView
+                android:id="@+id/empty_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/file_editor_loading"/>
+        </LinearLayout>
+    </FrameLayout>
+
+</ScrollView>

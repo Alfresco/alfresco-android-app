@@ -55,7 +55,6 @@ import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSync
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
-import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
