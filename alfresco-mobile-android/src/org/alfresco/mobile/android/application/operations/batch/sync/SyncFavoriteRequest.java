@@ -36,8 +36,6 @@ public class SyncFavoriteRequest extends AbstractBatchOperationRequestImpl
 
     public static final String MIME_SYNC = "SyncAnalyser";
 
-    private boolean forceSync = false;
-    
     protected Map<String, Serializable> persistentProperties;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -45,32 +43,16 @@ public class SyncFavoriteRequest extends AbstractBatchOperationRequestImpl
     // ///////////////////////////////////////////////////////////////////////////
     public SyncFavoriteRequest()
     {
-        this(false);
-    }
-    
-    public SyncFavoriteRequest(boolean forceSync)
-    {
         super();
         requestTypeId = TYPE_ID;
-        this.forceSync = forceSync;
         
         setMimeType(MIME_SYNC);
-        
-        persistentProperties = new HashMap<String, Serializable>();
-        persistentProperties.put(MIME_SYNC, forceSync);
     }
     
     public SyncFavoriteRequest(Cursor cursor)
     {
         super(cursor);
         requestTypeId = TYPE_ID;
-        
-        // PROPERTIES
-        Map<String, String> tmpProperties = retrievePropertiesMap(cursor);
-        if (tmpProperties.containsKey(MIME_SYNC))
-        {
-            this.forceSync = Boolean.parseBoolean(tmpProperties.remove(MIME_SYNC));
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -80,11 +62,6 @@ public class SyncFavoriteRequest extends AbstractBatchOperationRequestImpl
     public String getRequestIdentifier()
     {
         return MIME_SYNC + "_" + getAccountId();
-    }
-    
-    public boolean isForceSync()
-    {
-        return forceSync;
     }
     
     // ///////////////////////////////////////////////////////////////////////////

@@ -28,7 +28,7 @@
     <string name="home_sign_cloud_description">New to Alfresco ? Create a free online account to store your documents and access them from anywhere.</string>
     <string name="home_account">I already have an account</string>
     <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
-    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at our guide in the Help area</string>
+    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
     <string name="account_wizard_alfresco_server">Alfresco Server</string>
@@ -426,6 +426,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
+    <string name="synced_documents">Synced Documents</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>

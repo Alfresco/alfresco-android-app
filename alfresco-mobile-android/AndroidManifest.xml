@@ -57,6 +57,14 @@
                     android:host="sign_up_cloud"
                     android:scheme="alfresco" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+                <data
+                    android:host="view_help_guide"
+                    android:scheme="alfresco" />
+            </intent-filter>
         </activity>
         <activity
             android:name="net.hockeyapp.android.UpdateActivity"
