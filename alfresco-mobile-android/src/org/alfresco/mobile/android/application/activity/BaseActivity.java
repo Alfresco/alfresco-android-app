@@ -130,7 +130,7 @@ public abstract class BaseActivity extends Activity
         }
         return id;
     }
-    
+
     protected boolean isVisible(String tag)
     {
         return getFragmentManager().findFragmentByTag(tag) != null
@@ -214,28 +214,32 @@ public abstract class BaseActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
     }
-    
+
     public void addNavigationFragment(Folder f)
     {
         if (f == null) { return; }
 
         ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
         if (mFragment != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
-        
+
         BaseFragment frag = ChildrenBrowserFragment.newInstance(f);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
     }
-    
+
     public void addNavigationFragment(Site site, Folder f)
     {
         if (f == null) { return; }
-        if (site == null) {addNavigationFragment(f); return;}
+        if (site == null)
+        {
+            addNavigationFragment(f);
+            return;
+        }
 
         ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
         if (mFragment != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
-        
+
         BaseFragment frag = ChildrenBrowserFragment.newInstance(site, f);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
@@ -249,12 +253,13 @@ public abstract class BaseActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
     }
+
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////
     /**
-     * Register a broadcast receiver to this specific activity. If used this methods is responsible to unregister the
-     * receiver during on stop().
+     * Register a broadcast receiver to this specific activity. If used this
+     * methods is responsible to unregister the receiver during on stop().
      * 
      * @param receiver
      * @param filter
@@ -269,9 +274,9 @@ public abstract class BaseActivity extends Activity
     }
 
     /**
-     * Utility BroadcastReceiver for displaying dialog after an error or to display custom message. Use
-     * ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR Action inside an Intent and send it with localBroadcastManager
-     * instance.
+     * Utility BroadcastReceiver for displaying dialog after an error or to
+     * display custom message. Use ACTION_DISPLAY_DIALOG or ACTION_DISPLAY_ERROR
+     * Action inside an Intent and send it with localBroadcastManager instance.
      * 
      * @author Jean Marie Pascal
      */
@@ -281,8 +286,8 @@ public abstract class BaseActivity extends Activity
         public void onReceive(Context context, Intent intent)
         {
             Activity activity = BaseActivity.this;
-            
-            if (activity.isFinishing()) {return;}
+
+            if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
 
             Log.d("UtilsReceiver", intent.getAction());
 

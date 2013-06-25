@@ -363,10 +363,11 @@ public class NodeActions extends AbstractActions<Node>
             ft.remove(prev);
         }
         ft.addToBackStack(null);
+        ft.commit();
 
         // Create and show the dialog.
         UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(folder, node);
-        newFragment.show(ft, UpdateDialogFragment.TAG);
+        newFragment.show(activity.getFragmentManager(), UpdateDialogFragment.TAG);
     }
 
     public static void update(Fragment f)

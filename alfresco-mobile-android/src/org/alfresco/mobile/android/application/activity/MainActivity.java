@@ -55,7 +55,6 @@ import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSync
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
-import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
@@ -78,10 +77,10 @@ import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -481,9 +480,8 @@ public class MainActivity extends BaseActivity
                 displayAbout();
                 break;
             case R.id.menu_help:
-                displayHelp();
+                UIUtils.displayHelp(this);
                 break;
-
             default:
                 break;
         }
@@ -667,37 +665,6 @@ public class MainActivity extends BaseActivity
         }
         BaseFragment frag = AccountDetailsFragment.newInstance(id);
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getMainPaneId(this), AccountDetailsFragment.TAG, b);
-    }
-
-    public void displayHelp()
-    {
-        String pathHelpGuideFile = null;
-        try
-        {
-            long lastUpdate = getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), 0).lastUpdateTime;
-            // Check last update time of the app and compare to an
-            // existing (or not) help guide.
-            File assetFolder = StorageManager.getAssetFolder(this);
-            String helpGuideName = getString(R.string.asset_folder_prefix) + "_" + getString(R.string.help_user_guide);
-            File helpGuideFile = new File(assetFolder, helpGuideName);
-
-            if (!helpGuideFile.exists() || helpGuideFile.lastModified() < lastUpdate)
-            {
-                String assetfilePath = getString(R.string.help_path) + helpGuideName;
-                org.alfresco.mobile.android.api.utils.IOUtils.copyFile(getAssets().open(assetfilePath), helpGuideFile);
-            }
-
-            pathHelpGuideFile = helpGuideFile.getPath();
-
-            if (!ActionManager.launchPDF(this, pathHelpGuideFile))
-            {
-                new HelpDialogFragment().show(getFragmentManager(), HelpDialogFragment.TAG);
-            }
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, "Unable to open help guide.");
-        }
     }
 
     public void displayAbout()

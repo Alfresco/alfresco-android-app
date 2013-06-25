@@ -74,9 +74,10 @@
     <dimen name="top_text_size">18sp</dimen>
     <dimen name="bottom_text_size">12sp</dimen>
     
-    
     <!-- IMPORT MARGIN -->
     <dimen name="margin_top">3dip</dimen>
     
+    <!-- IMAX FILE SIZE -->
+    <integer name="text_editor_max_file_size">204800</integer>
     
 </resources>

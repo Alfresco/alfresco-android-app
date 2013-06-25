@@ -44,6 +44,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 public abstract class CreateFolderDialogFragment extends BaseFragment
 {
@@ -96,6 +97,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
             }
         });
 
+        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
         final Button bcreate = (Button) v.findViewById(R.id.create_folder);
         bcreate.setOnClickListener(new OnClickListener()
         {
@@ -105,8 +107,8 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(tv.getWindowToken(), 0);
 
-                OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(
-                        getActivity()));
+                OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils
+                        .getAccount(getActivity()));
                 group.enqueue(new CreateFolderRequest((Folder) getArguments().get(ARGUMENT_FOLDER), tv.getText()
                         .toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
                 BatchOperationManager.getInstance(getActivity()).enqueue(group);
@@ -126,10 +128,21 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                 if (tv.getText().length() == 0)
                 {
                     bcreate.setEnabled(false);
+                    errorMessage.setVisibility(View.GONE);
                 }
                 else
                 {
                     bcreate.setEnabled(true);
+                    if (UIUtils.hasValideName(tv.getText().toString().trim()))
+                    {
+                        errorMessage.setVisibility(View.VISIBLE);
+                        errorMessage.setText(R.string.filename_error_character);
+                        bcreate.setEnabled(false);
+                    }
+                    else
+                    {
+                        errorMessage.setVisibility(View.GONE);
+                    }
                 }
             }
 

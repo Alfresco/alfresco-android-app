@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
@@ -105,7 +106,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         ((TextView) v.findViewById(R.id.document_extension)).setText(documentType.extension);
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.document_error));
+        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
         final Button validate = (Button) v.findViewById(R.id.create_document);
         final Button cancel = (Button) v.findViewById(R.id.cancel);
 
@@ -118,11 +119,21 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 if (s.length() > 0)
                 {
                     validate.setEnabled(true);
-                    errorMessage.setVisibility(View.GONE);
+                    if (UIUtils.hasValideName(s.toString().trim()))
+                    {
+                        errorMessage.setVisibility(View.VISIBLE);
+                        errorMessage.setText(R.string.filename_error_character);
+                        validate.setEnabled(false);
+                    }
+                    else
+                    {
+                        errorMessage.setVisibility(View.GONE);
+                    }
                 }
                 else
                 {
                     validate.setEnabled(false);
+                    errorMessage.setVisibility(View.GONE);
                 }
             }
 

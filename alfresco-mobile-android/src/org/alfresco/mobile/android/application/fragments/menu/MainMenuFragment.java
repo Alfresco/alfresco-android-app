@@ -26,6 +26,9 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -35,10 +38,14 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -46,6 +53,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.Button;
 import android.widget.Spinner;
 
 public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor>, OnItemSelectedListener
@@ -59,6 +67,12 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     private Cursor accountCursor;
 
     private int accountIndex;
+
+    private MainMenuReceiver receiver;
+
+    private Button menuFavorites;
+
+    private boolean hasSynchroActive;
 
     public static final String TAG = "MainMenuFragment";
 
@@ -74,6 +88,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
         spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(this);
+
+        menuFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
 
         return rootView;
     }
@@ -106,16 +122,16 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         {
             ((MainActivity) getActivity()).clearScreen();
         }
-        
+
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         getActivity().invalidateOptionsMenu();
-        
+
         getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().setTitle(R.string.app_name);
 
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
     }
-    
+
     @Override
     public void onResume()
     {
@@ -123,6 +139,15 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
+        if (receiver == null)
+        {
+            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
+            receiver = new MainMenuReceiver();
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+        }
+
+        displayFavoriteStatut();
     }
 
     @Override
@@ -132,6 +157,11 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         if (!isVisible() && TAG.equals(getTag()))
         {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         }
     }
 
@@ -251,9 +281,48 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             if (goHome)
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                //((MainActivity) getActivity()).clearScreen();
+                // ((MainActivity) getActivity()).clearScreen();
             }
         }
     }
 
+    private void displayFavoriteStatut()
+    {
+        hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
+
+        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
+        Drawable statut = null;
+
+        if (hasSynchroActive)
+        {
+            Cursor statutCursor = getActivity().getContentResolver().query(SynchroProvider.CONTENT_URI,
+                    SynchroSchema.COLUMN_ALL, SynchroSchema.COLUMN_STATUS + " == " + SyncOperation.STATUS_REQUEST_USER,
+                    null, null);
+            if (statutCursor.getCount() > 0)
+            {
+                statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+            }
+            statutCursor.close();
+        }
+        menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    private class MainMenuReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (intent.getAction() == null) { return; }
+
+            if (intent.getAction().equals(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED))
+            {
+                displayFavoriteStatut();
+            }
+        }
+    }
 }
