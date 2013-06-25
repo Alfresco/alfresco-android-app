@@ -28,7 +28,7 @@
     <string name="home_sign_cloud_description">New to Alfresco ? Create a free online account to store your documents and access them from anywhere.</string>
     <string name="home_account">I already have an account</string>
     <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
-    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at our guide in the Help area</string>
+    <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
     <string name="account_wizard_alfresco_server">Alfresco Server</string>
@@ -274,6 +274,7 @@
     <string name="create_document_excel">Excel Spreadsheet</string>
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the document name here</string>
+    <string name="filename_error_character">This name is invalid.</string>
     <string name="create_document_filename_error">This name is already in use.</string>
     <string name="create_document_save">An error occurred: Your document is saved inside "Downloads".</string>
     <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
@@ -402,9 +403,9 @@
     <string name="settings_links_facebook">Like Alfresco on Facebook</string>
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
-    <string name="settings_favorite">Favorite</string>
+    <string name="settings_favorite">Favorites</string>
     <string name="settings_favorite_sync">Activate Sync</string>
-    <string name="settings_favorite_sync_data">Data usage</string>
+    <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
     <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>
 
@@ -425,6 +426,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
+    <string name="synced_documents">Synced Documents</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
@@ -493,7 +495,7 @@
     <string name="session_loaded">Session ready</string>
 
     <!-- Operations Type -->
-    <string name="operation_default">Operation</string>
+    <string name="operation_default">Notifications</string>
     <string name="DownloadRequest">Download</string>
     <string name="CreateDocumentRequest">Create Document</string>
     <string name="UpdateContentRequest">Update Document</string>
@@ -518,7 +520,7 @@
     <string name="select_all">Select All</string>
     <string name="unselect_all">Unselect all</string>
     <string name="cancel_all">Cancel All</string>
-    <string name="dismiss_all">Dismiss all</string>
+    <string name="dismiss_all">Clear List</string>
 
     <!-- Creation Folder -->
     <string name="create_folder_in_progress">Create folder in progress</string>
@@ -554,5 +556,22 @@
     <!-- Notification -->
     <string name="batch_download_complete">%s documents available offline</string>
     <string name="batch_download_failed">%s download transfer</string>
+
+    <!-- FILE Editor Menu -->
+    <string name="file_editor_name">Alfresco Text Editor</string>
+    <string name="file_editor_error_open">Unable to open this file.</string>
+    <string name="file_editor_error_too_large">This file exceeds the size limit to be opened with the Alfresco Text Editor.</string>
+    <string name="file_editor_error_speech">Text To Speech is not available inside your device.</string>
+    <string name="file_editor_save_request">The file has been modified.</string>
+    <string name="file_editor_save_description"><![CDATA[Do you want to quit without saving ? <br/> Any unsaved changes will be lost.]]></string>
+    <string name="file_editor_save">Save</string>
+    <string name="file_editor_discard">Discard</string>
+    <string name="file_editor_save_confirmation">Document has been saved.</string>
+    <string name="file_editor_loading">Please wait a few moments&#8230;</string>
+    <string name="file_editor_encoding">Encoding</string>
+    <string name="file_editor_encoding">Encoding</string>
+    <string name="file_editor_text_size">Text Size</string>
+    <string name="file_editor_speech_to_text">Speech to Text</string>
+    
 
 </resources>

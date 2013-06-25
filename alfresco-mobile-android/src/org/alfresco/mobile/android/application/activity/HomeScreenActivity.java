@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialog
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -64,34 +65,40 @@ public class HomeScreenActivity extends BaseActivity
     @Override
     protected void onStart()
     {
-        //Register the broadcast receiver.
+        // Register the broadcast receiver.
         IntentFilter filters = new IntentFilter();
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED);
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
         registerPrivateReceiver(new HomeScreenReceiver(), filters);
-        
+
         super.onStart();
     }
 
-    //TODO Change signup process ==> use onCreate intent than on newIntent.
+    // TODO Change signup process ==> use onCreate intent than on newIntent.
     @Override
     protected void onNewIntent(Intent intent)
     {
         super.onNewIntent(intent);
 
-        if (intent.getAction() != null && intent.getData() != null && Intent.ACTION_VIEW.equals(intent.getAction())
-                && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
+        if (intent.getAction() == null || intent.getData() == null || !Intent.ACTION_VIEW.equals(intent.getAction())) { return; }
+
+        if (IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                 && IntentIntegrator.CLOUD_SIGNUP.equals(intent.getData().getHost()))
         {
             getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             cloud(null);
+        }
+        else if (IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
+                && IntentIntegrator.HELP_GUIDE.equals(intent.getData().getHost()))
+        {
+            UIUtils.displayHelp(this);
         }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    
+
     public void cloud(View v)
     {
         CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
@@ -118,14 +125,15 @@ public class HomeScreenActivity extends BaseActivity
 
             Log.d(TAG, intent.getAction());
 
-            //Account is currently in creation, display a waiting dialog.
+            // Account is currently in creation, display a waiting dialog.
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT_STARTED.equals(intent.getAction()))
             {
                 displayWaitingDialog();
                 return;
             }
 
-            //Account is created, display the main activity and remove this activity.
+            // Account is created, display the main activity and remove this
+            // activity.
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
                 removeWaitingDialog();

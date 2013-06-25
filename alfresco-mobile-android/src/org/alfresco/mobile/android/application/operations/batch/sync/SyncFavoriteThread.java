@@ -69,7 +69,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private OperationsRequestGroup group;
 
-    private boolean canSync;
+    private boolean canExecuteAction;
 
     private long syncScanningTimeStamp;
 
@@ -79,18 +79,12 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private ArrayList<String> remoteFavoritesId;
 
-    private boolean isForceSync;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     public SyncFavoriteThread(Context context, OperationRequest request)
     {
         super(context, request);
-        if (request instanceof SyncFavoriteRequest)
-        {
-            isForceSync = ((SyncFavoriteRequest) request).isForceSync();
-        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -104,7 +98,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
         {
             result = super.doInBackground();
 
-            canSync = (isForceSync) ? true : SynchroManager.getInstance(context).canSync(acc);
+            canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
 
             group = new OperationsRequestGroup(context, acc);
 
@@ -255,7 +249,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
                 // Content might been deleted with a file explorer
                 localFileUri = Uri.parse(cursorId.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
                 localFile = new File(localFileUri.getPath());
-                if (!localFile.exists())
+                if (!localFile.exists() && canExecuteAction)
                 {
                     // Content is not present, we download content
                     addSyncDownloadRequest(localUri, doc, syncScanningTimeStamp);
@@ -419,8 +413,17 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private void addSyncDownloadRequest(Uri localUri, Document doc, long timeStamp)
     {
+        //If listing mode, update Metadata associated
+        if (!canExecuteAction) { 
+            ContentValues cValues = new ContentValues();
+            cValues.put(SynchroSchema.COLUMN_NODE_ID, doc.getIdentifier());
+            cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt()
+                    .getTimeInMillis());
+            context.getContentResolver().update(localUri, cValues, null, null);
+            return; 
+        }
+        
         // Execution
-        if (!canSync) { return; }
         SyncDownloadRequest dl = new SyncDownloadRequest(doc);
         dl.setNotificationUri(localUri);
         dl.setNotificationTitle(doc.getName());
@@ -429,7 +432,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private void addSyncUpdateRequest(Document doc, Cursor cursorId, File localFile, Uri localUri)
     {
-        if (!canSync) { return; }
+        if (!canExecuteAction) { return; }
         SyncUpdateRequest updateRequest = new SyncUpdateRequest(cursorId.getString(SynchroSchema.COLUMN_PARENT_ID_ID),
                 doc, new ContentFileImpl(localFile));
         updateRequest.setNotificationTitle(doc.getName());
@@ -439,26 +442,40 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private void rename(Document doc, Cursor cursorId, File localFile, Uri localUri)
     {
-        // Doc has been renamed or metadata changes
-        // ==> update properties only
+        // If Favorite listing simply rename the entry.
         ContentValues cValues = new ContentValues();
-        cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        context.getContentResolver().update(localUri, cValues, null, null);
+        if (!canExecuteAction)
+        {
+            // Doc has been renamed or metadata changes
+            // ==> update properties only
+            cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
+            context.getContentResolver().update(localUri, cValues, null, null);
 
-        // Rename file
-        File newLocalFile = new File(localFile.getParentFile(), doc.getName());
-        localFile.renameTo(newLocalFile);
+            // Rename file
+            File newLocalFile = new File(localFile.getParentFile(), doc.getName());
+            localFile.renameTo(newLocalFile);
 
-        // Update Sync Info
-        cValues.clear();
+            // Update Sync Info
+            cValues.clear();
+            cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, Uri.fromFile(newLocalFile).toString());
+            cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
+        }
         cValues.put(BatchOperationSchema.COLUMN_TITLE, doc.getName());
-        cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, Uri.fromFile(newLocalFile).toString());
-        cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
         context.getContentResolver().update(localUri, cValues, null, null);
     }
 
     private void addSyncdeleteRequest(String id, Cursor cursorId)
     {
+
+        // If Favorite listing simply delete the entry.
+        if (!canExecuteAction)
+        {
+            context.getContentResolver().delete(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
+                    null, null);
+            return;
+        }
+
+        // If Synced document
         // Flag the item inside the referential
         ContentValues cValues = new ContentValues();
         cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
@@ -466,10 +483,8 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
                 cValues, null, null);
 
         // Execution
-        if (!canSync) { return; }
-        SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id,
-                cursorId.getString(SynchroSchema.COLUMN_TITLE_ID), SynchroManager.getUri(cursorId
-                        .getLong(SynchroSchema.COLUMN_ID_ID)));
+        SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id, cursorId.getString(SynchroSchema.COLUMN_TITLE_ID),
+                SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)));
         deleteRequest.setNotificationTitle(cursorId.getString(SynchroSchema.COLUMN_TITLE_ID));
         group.enqueue(deleteRequest.setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
     }

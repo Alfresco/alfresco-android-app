@@ -25,8 +25,11 @@ import org.alfresco.mobile.android.api.asynchronous.DownloadTask.DownloadTaskLis
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.TextEditorActivity;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
@@ -34,10 +37,12 @@ import org.alfresco.mobile.android.application.security.CipherUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -56,6 +61,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     public static final int ACTION_EMAIL = 2;
 
+    public static final int ACTION_EDIT = 3;
+    
     public static final int ACTION_UNDEFINED = 0;
 
     public static final String TAG = "DownloadDialogFragment";
@@ -73,7 +80,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
     private ContentFile contentFile;
 
     private int action = ACTION_UNDEFINED;
-
+    
     public static DownloadDialogFragment newInstance()
     {
         return new DownloadDialogFragment();
@@ -220,10 +227,16 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
 
     private void executeAction()
     {
+        boolean edit = false;
+        
         if (contentFile != null && contentFile.getFile() != null)
         {
             switch (action)
             {
+                case ACTION_EDIT:
+                    edit = true;
+                    //Drop thru to Open action.
+                    
                 case ACTION_OPEN:
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete)
                             + " " + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
@@ -234,8 +247,56 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     {
                         long datetime = contentFile.getFile().lastModified();
                         detailsFragment.setDownloadDateTime(new Date(datetime));
-                        ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                PublicIntent.REQUESTCODE_SAVE_BACK);
+                        
+                        if (edit)
+                        {
+                            try
+                            {
+                                final FragmentTransaction fragmentTransaction = getActivity().getFragmentManager().beginTransaction();
+                                
+                                if (CipherUtils.isEncryptionActive(getActivity()))
+                                {
+                                    final File myFile = IOUtils.makeTempFile(contentFile.getFile());
+                                    String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+                                    
+                                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decrypt(myFile, mimeType, null,
+                                        null, new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                //Decryption finished
+                                                Intent intent = new Intent(getActivity(), TextEditorActivity.class);
+                                                intent.setAction(Intent.ACTION_EDIT);
+                                                intent.putExtra(IntentIntegrator.EXTRA_FILE, contentFile.getFile());
+                                                getActivity().startActivity(intent);
+                                            }
+                                        });
+                                        
+                                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                                    fragmentTransaction.commit();
+                                }
+                                else
+                                {
+                                    Intent intent = new Intent(getActivity(), TextEditorActivity.class);
+                                    intent.setAction(Intent.ACTION_EDIT);
+                                    intent.putExtra(IntentIntegrator.EXTRA_FILE, contentFile.getFile());
+                                    getActivity().startActivity(intent);
+                                    /*TextEditorFragment fragment = TextEditorFragment.editFile(contentFile.getFile());
+                                    fragmentTransaction.add(fragment, fragment.TAG);
+                                    fragmentTransaction.commit();*/
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                MessengerManager.showToast(getActivity(), R.string.error_unable_open_file);
+                            }
+                        }
+                        else
+                        {
+                            ActionManager.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                    PublicIntent.REQUESTCODE_SAVE_BACK);
+                        }
                     }
                     break;
 

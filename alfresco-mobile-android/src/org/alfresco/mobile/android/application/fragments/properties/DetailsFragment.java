@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.fragments.comments.CommentsFragme
 import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.onFavoriteChangeListener;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
@@ -754,25 +755,16 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         vRoot.findViewById(R.id.favorite_progress).setVisibility(View.VISIBLE);
-        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
-        group.enqueue(new FavoriteNodeRequest(parentNode, node)
-                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
-        BatchOperationManager.getInstance(getActivity()).enqueue(group);
-    }
+        if (parentNode != null && node != null)
+        {
+            OperationsRequestGroup group = new OperationsRequestGroup(getActivity(),
+                    SessionUtils.getAccount(getActivity()));
+            group.enqueue(new FavoriteNodeRequest(parentNode, node)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+            BatchOperationManager.getInstance(getActivity()).enqueue(group);
+        }
 
-    /*
-     * private boolean isSynced() { if (node.isFolder()) { return false; }
-     * Cursor favoriteCursor = getActivity().getContentResolver()
-     * .query(SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
-     * SynchroSchema.COLUMN_NODE_ID + " LIKE '" +
-     * NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null,
-     * null); return (favoriteCursor.getCount() == 1) &&
-     * GeneralPreferences.hasActivateSync(getActivity(),
-     * SessionUtils.getAccount(getActivity())); } private File getSyncFile() {
-     * if (node.isFolder()) { return null; } return
-     * StorageManager.getSynchroFile(getActivity(),
-     * SessionUtils.getAccount(getActivity()), (Document) node); }
-     */
+    }
 
     public void comment()
     {
@@ -1202,6 +1194,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 ((ChildrenBrowserFragment) getFragmentManager().findFragmentByTag(
                                         ChildrenBrowserFragment.TAG)).select(updatedNode);
+                            }
+                            else if (((FavoritesSyncFragment) getFragmentManager().findFragmentByTag(
+                                    FavoritesSyncFragment.TAG)) != null)
+                            {
+                                ((FavoritesSyncFragment) getFragmentManager().findFragmentByTag(
+                                        FavoritesSyncFragment.TAG)).select(updatedNode);
                             }
                             Folder pFolder = (Folder) b.getParcelable(IntentIntegrator.EXTRA_FOLDER);
 

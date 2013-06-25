@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
@@ -57,10 +57,22 @@
                     android:host="sign_up_cloud"
                     android:scheme="alfresco" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data
+                    android:host="view_help_guide"
+                    android:scheme="alfresco" />
+            </intent-filter>
         </activity>
+        
+        <!-- Internal : Hockeyapp Integration -->
         <activity
             android:name="net.hockeyapp.android.UpdateActivity"
             android:exported="false" />
+        
         <activity
             android:name="org.alfresco.mobile.android.application.activity.MainActivity"
             android:exported="true"
@@ -107,16 +119,35 @@
                     android:scheme="alfresco" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".preferences.Prefs"
-            android:exported="false"
-            android:label="@string/app_name" />
 
         <!-- Private : Passcode Activity -->
         <activity
             android:name=".security.PassCodeActivity"
             android:exported="false"
             android:label="@string/app_name" />
+
+        <!-- Private : Text Editor Activity -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.activity.TextEditorActivity"
+            android:exported="false"
+            android:label="@string/file_editor_name"
+            android:uiOptions="splitActionBarWhenNarrow"
+            android:windowSoftInputMode="adjustResize" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/*" />
+            </intent-filter>
+        </activity>
 
         <!-- Public : Official entry point for 3rd party application -->
         <activity
@@ -140,6 +171,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        
+        <!-- Internal : Activity As a Dialog -->
         <activity
             android:name="org.alfresco.mobile.android.application.activity.PrivateDialogActivity"
             android:exported="false"
@@ -154,6 +187,9 @@
             </intent-filter>
         </activity>
 
+        <!-- *************************************************************** -->
+        <!-- Internal : CONTENT PROVIDER -->
+        <!-- *************************************************************** -->
         <provider
             android:name="org.alfresco.mobile.android.application.operations.sync.SynchroProvider"
             android:authorities="org.alfresco.mobile.android.provider.sync"
@@ -167,11 +203,15 @@
             android:authorities="org.alfresco.mobile.android.provider.accounts"
             android:exported="false" />
 
-        <!-- Private Services for background operations. -->
+        <!-- *************************************************************** -->
+        <!-- Internal : SERVICES         -->
+        <!-- *************************************************************** -->
+        <!-- Private Service for background operations. -->
         <service
             android:name="org.alfresco.mobile.android.application.operations.batch.BatchOperationService"
             android:exported="false" />
-        <!-- Private Services for sync. -->
+        
+        <!-- Private Service for sync. -->
         <service
             android:name="org.alfresco.mobile.android.application.operations.sync.SynchroService"
             android:exported="false" />

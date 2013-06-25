@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
@@ -130,6 +132,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         if (receiver == null)
         {
             IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
             receiver = new FavoriteSyncReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
@@ -142,6 +145,11 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         else
         {
             hasSynchroActive = true;
+        }
+
+        if (hasSynchroActive)
+        {
+            getActivity().setTitle(R.string.synced_documents);
         }
 
         super.onResume();
@@ -374,6 +382,11 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         lv.setAdapter(adapter);
 
     }
+    
+    public void select(Node updatedNode)
+    {
+        selectedItems.add(updatedNode.getIdentifier());
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
@@ -386,10 +399,38 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             Log.d(TAG, intent.getAction());
 
+            if (intent.getAction() == null) { return; }
+
             if (mi != null && intent.getAction().equals(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED))
             {
                 // Hide spinning wheel
                 mi.setActionView(null);
+            }
+
+            if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
+            {
+                Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
+                Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
+                if (updatedNode == null) { return;}
+
+                Cursor favoriteCursor = context.getContentResolver().query(
+                        SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                                + NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier()) + "%'", null, null);
+                boolean hasFavorite = (favoriteCursor.getCount() == 1);
+                if (hasFavorite && !hasSynchroActive)
+                {
+                    favoriteCursor.moveToFirst();
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(SynchroSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
+                    cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
+                            .getTimeInMillis());
+                    context.getContentResolver().update(SynchroManager.getUri(favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null, null);
+                }
+                favoriteCursor.close();
+                
+                
             }
         }
     }

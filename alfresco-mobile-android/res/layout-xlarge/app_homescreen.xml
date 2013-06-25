@@ -79,6 +79,7 @@
             android:textSize="@dimen/home_description_size" />
 
         <TextView
+            android:id="@+id/help_guide"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"

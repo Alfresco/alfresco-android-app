@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationMa
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.create.RetrieveDocumentNameRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
@@ -94,7 +95,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
     private ContentFile contentFile;
 
-    private View pb;
+    private TextView errorMessage;
 
     private EditText tv;
 
@@ -129,7 +130,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        pb = (TextView) v.findViewById(R.id.document_error);
+        errorMessage = (TextView) v.findViewById(R.id.error_message);
         tv = (EditText) v.findViewById(R.id.content_name);
         final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
@@ -181,18 +182,29 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 if (tv.getText().length() == 0)
                 {
                     bcreate.setEnabled(false);
+                    errorMessage.setVisibility(View.GONE);
                 }
                 else
                 {
                     bcreate.setEnabled(true);
+                    if (UIUtils.hasValideName(tv.getText().toString().trim()))
+                    {
+                        errorMessage.setVisibility(View.VISIBLE);
+                        errorMessage.setText(R.string.filename_error_character);
+                        bcreate.setEnabled(false);
+                    }
+                    else
+                    {
+                        errorMessage.setVisibility(View.GONE);
+                    }
                 }
                 if (originalName.equals(tv.getText().toString()))
                 {
-                    pb.setVisibility(View.VISIBLE);
+                    errorMessage.setVisibility(View.VISIBLE);
                 }
                 else
                 {
-                    pb.setVisibility(View.GONE);
+                    errorMessage.setVisibility(View.GONE);
                 }
             }
 
@@ -342,7 +354,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 recommandedName = b.getString(IntentIntegrator.EXTRA_DOCUMENT_NAME);
                 if (!recommandedName.equals(originalName))
                 {
-                    pb.setVisibility(View.VISIBLE);
+                    errorMessage.setVisibility(View.VISIBLE);
                 }
 
             }
