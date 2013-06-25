@@ -29,13 +29,14 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
-import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationThread;
+import org.alfresco.mobile.android.application.operations.batch.node.NodeOperationThread;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
@@ -53,17 +54,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
+public class SyncFavoriteThread extends NodeOperationThread<Void>
 {
-    public static final int MODE_DOCUMENTS = 1;
-
-    public static final int MODE_FOLDERS = 2;
-
-    public static final int MODE_BOTH = 4;
-
     private static final String TAG = SyncFavoriteThread.class.getName();
 
-    private int mode = MODE_DOCUMENTS;
+    private int mode = SyncFavoriteRequest.MODE_DOCUMENTS;
 
     private ListingContext listingContext;
 
@@ -85,7 +80,12 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     public SyncFavoriteThread(Context context, OperationRequest request)
     {
         super(context, request);
+        if (request instanceof SyncFavoriteRequest)
+        {
+            this.mode = ((SyncFavoriteRequest) request).getMode();
+        }
     }
+    
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -97,44 +97,48 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
         try
         {
             result = super.doInBackground();
-
+            
             canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
 
             group = new OperationsRequestGroup(context, acc);
 
+            // Timestamp the scan process
+            syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
+            
             switch (mode)
             {
-                case MODE_DOCUMENTS:
-
-                    // Timestamp the scan process
-                    syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
-
+                case  SyncFavoriteRequest.MODE_DOCUMENT:
+                    List<Document> docs = new ArrayList<Document>(1);
+                    docs.add((Document) node);
+                    remoteFavorites = new PagingResultImpl<Document>(docs, false, 1);
+                
+                case  SyncFavoriteRequest.MODE_DOCUMENTS:
                     // Retrieve list of Favorites
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
                             .getFavoriteDocuments(listingContext);
-
+                    
                     // Retrieve list of local Favorites
                     localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL, null, null, null);
-
-                    // We have favorites
-                    // Update the referential contentProvider
-                    if (!isFirstSync())
-                    {
-                        // Check updated favorites
-                        scanUpdateItem();
-
-                        // Check deleted favorites
-                        scanDeleteItem();
-                    }
-
-                    if (localFavoritesCursor != null)
-                    {
-                        localFavoritesCursor.close();
-                    }
                     break;
                 default:
                     break;
+            }
+            
+            // We have our favorites
+            // Update the referential contentProvider
+            if (!isFirstSync())
+            {
+                // Check updated favorites
+                scanUpdateItem();
+
+                // Check deleted favorites
+                scanDeleteItem();
+            }
+
+            if (localFavoritesCursor != null)
+            {
+                localFavoritesCursor.close();
             }
 
             if (!group.getRequests().isEmpty())
@@ -164,7 +168,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private boolean isFirstSync()
     {
-        if (localFavoritesCursor.getCount() == 0)
+        if (localFavoritesCursor == null || localFavoritesCursor.getCount() == 0)
         {
             // USE CASE : FIRST
             // If 0 ==> Bulk Insert

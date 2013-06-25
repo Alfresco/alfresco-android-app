@@ -131,6 +131,7 @@ public class NodeActions extends AbstractActions<Node>
     protected void addNode(Node n)
     {
         super.addNode(n);
+        if (n == null) { return; }
         if (n.isDocument())
         {
             selectedDocument.add((Document) n);

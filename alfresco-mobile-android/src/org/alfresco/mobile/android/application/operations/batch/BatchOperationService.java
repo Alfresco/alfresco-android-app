@@ -74,8 +74,8 @@ import org.alfresco.mobile.android.application.operations.batch.node.update.Upda
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteThread;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -94,6 +94,8 @@ public class BatchOperationService<T> extends Service
     private Map<String, Operation<T>> operations = new HashMap<String, Operation<T>>();
 
     private Set<String> lastOperation = new HashSet<String>();
+
+    private int parallelOperation;
 
     @Override
     public IBinder onBind(Intent intent)
@@ -161,7 +163,7 @@ public class BatchOperationService<T> extends Service
 
         AbstractBatchOperationThread<T> task = null;
         OperationCallBack<T> callback = null;
-        int parallelOperation = 1;
+        parallelOperation = 1;
         switch (request.getTypeId())
         {
             case DownloadRequest.TYPE_ID:
@@ -227,11 +229,12 @@ public class BatchOperationService<T> extends Service
                 callback = (OperationCallBack<T>) new RenameCallback(getBaseContext(), totalItems, pendingRequest);
                 break;
             case SyncFavoriteRequest.TYPE_ID:
+                parallelOperation = 1;
                 task = (AbstractBatchOperationThread<T>) new SyncFavoriteThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncCallBack(getBaseContext(), totalItems, pendingRequest);
                 break;
-            case UnSyncFavoriteRequest.TYPE_ID:
-                task = (AbstractBatchOperationThread<T>) new UnSyncFavoriteThread(getBaseContext(), request);
+            case CleanSyncFavoriteRequest.TYPE_ID:
+                task = (AbstractBatchOperationThread<T>) new CleanSyncFavoriteThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncCallBack(getBaseContext(), totalItems, pendingRequest);
                 break;
             case RetrieveDocumentNameRequest.TYPE_ID:
@@ -279,7 +282,10 @@ public class BatchOperationService<T> extends Service
             // DATA CHANGED START
             if (BatchOperationManager.ACTION_DATA_CHANGED.equals(intent.getAction()))
             {
-                executeOperation();
+                if (operations.size() < parallelOperation)
+                {
+                    executeOperation();
+                }
                 return;
             }
 

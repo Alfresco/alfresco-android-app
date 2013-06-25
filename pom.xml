@@ -135,7 +135,7 @@
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
-		<okhttp.version>1.0.2</okhttp.version>
+		<okhttp.version>1.1.1</okhttp.version>
 
 		<!-- Alfresco Configuration -->
 		<alfresco.sdk.version>1.2.0-SNAPSHOT</alfresco.sdk.version>
