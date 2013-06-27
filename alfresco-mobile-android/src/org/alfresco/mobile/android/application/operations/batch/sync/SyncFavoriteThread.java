@@ -495,10 +495,13 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
         // If Synced document
         // Flag the item inside the referential
-        ContentValues cValues = new ContentValues();
-        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
-        context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
-                cValues, null, null);
+        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID)){
+            ContentValues cValues = new ContentValues();
+            cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
+            context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
+                    cValues, null, null);
+        }
+       
 
         // Execution
         SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id, cursorId.getString(SynchroSchema.COLUMN_TITLE_ID),

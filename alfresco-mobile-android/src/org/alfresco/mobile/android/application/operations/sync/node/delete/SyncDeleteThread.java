@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.SyncNodeOperationThread;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
@@ -78,7 +79,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                 File dlFile = StorageManager.getSynchroFile(context, acc,
                         cursor.getString(SynchroSchema.COLUMN_TITLE_ID),
                         cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
-                if (dlFile.lastModified() > localTimeStamp)
+                if (dlFile.lastModified() > localTimeStamp && hasLocalModification())
                 {
                     try
                     {
@@ -91,6 +92,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                         {
                             // Unfavorite operation
                             // Request to update
+                            Log.d(TAG, "Unfavorited");
                             requestUserInteraction(request.getNotificationUri(), SyncOperation.REASON_NODE_UNFAVORITED);
                         }
                         else
@@ -135,6 +137,8 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private void move(Cursor c)
     {
+        Log.d(TAG, "Move");
+
         ContentValues cValues = new ContentValues();
         cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
         context.getContentResolver().update(SynchroManager.getUri(favoriteId), cValues, null, null);
@@ -152,6 +156,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         cValues.clear();
         if (localFile.renameTo(newLocalFile))
         {
+            Log.d(TAG, "Deleted");
             requestUserInteraction(request.getNotificationUri(), SyncOperation.REASON_NODE_DELETED);
         }
         else
@@ -163,6 +168,15 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         c.close();
     }
     
+    private boolean hasLocalModification()
+    {
+        if (DataProtectionManager.getInstance(context).isEncryptionEnable())
+        {
+            if (SyncOperation.STATUS_MODIFIED == cursor.getInt(SynchroSchema.COLUMN_STATUS_ID)) { return true; }
+            return false;
+        }
+        return true;
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
