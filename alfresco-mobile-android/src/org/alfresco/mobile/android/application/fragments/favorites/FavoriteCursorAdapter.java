@@ -252,13 +252,13 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
+               mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                         + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
+                /*
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
                         R.string.action_view_properties);
-                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);*/
                 break;
         }
     }

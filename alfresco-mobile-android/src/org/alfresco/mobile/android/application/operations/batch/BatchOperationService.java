@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -39,6 +40,10 @@ import org.alfresco.mobile.android.application.operations.batch.file.create.Crea
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileCallback;
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileThread;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionCallback;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionRequest;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.FileProtectionThread;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.FolderProtectionThread;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameCallback;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameThread;
@@ -71,11 +76,11 @@ import org.alfresco.mobile.android.application.operations.batch.node.update.Upda
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesThread;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteThread;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
-import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -239,7 +244,21 @@ public class BatchOperationService<T> extends Service
                 break;
             case RetrieveDocumentNameRequest.TYPE_ID:
                 task = (AbstractBatchOperationThread<T>) new RetrieveDocumentNameThread(getBaseContext(), request);
-                callback = (OperationCallBack<T>) new RetrieveDocumentNameCallBack(getBaseContext(), totalItems, pendingRequest);
+                callback = (OperationCallBack<T>) new RetrieveDocumentNameCallBack(getBaseContext(), totalItems,
+                        pendingRequest);
+                break;
+            case DataProtectionRequest.TYPE_ID:
+                parallelOperation = 2;
+                if (new File(((DataProtectionRequest) request).getFilePath()).isDirectory())
+                {
+                    task = (AbstractBatchOperationThread<T>) new FolderProtectionThread(getBaseContext(), request);
+                }
+                else
+                {
+                    task = (AbstractBatchOperationThread<T>) new FileProtectionThread(getBaseContext(), request);
+                }
+                callback = (OperationCallBack<T>) new DataProtectionCallback(getBaseContext(), totalItems,
+                        pendingRequest);
                 break;
             default:
                 break;

@@ -63,7 +63,10 @@ public abstract class NodeOperationThread<T> extends AbstractBatchOperationThrea
 
             try
             {
-                node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                if (nodeIdentifier != null)
+                {
+                    node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                }
             }
             catch (AlfrescoServiceException e)
             {

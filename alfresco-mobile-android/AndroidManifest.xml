@@ -215,6 +215,11 @@
         <service
             android:name="org.alfresco.mobile.android.application.operations.sync.SynchroService"
             android:exported="false" />
+        
+        <!-- Private Service for cleaning temporary data. -->
+        <service
+            android:name="org.alfresco.mobile.android.application.security.DataCleanerService"
+            android:exported="false" />
     </application>
 
 </manifest>

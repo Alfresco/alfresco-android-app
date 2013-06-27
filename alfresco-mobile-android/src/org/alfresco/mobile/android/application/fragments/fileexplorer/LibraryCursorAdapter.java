@@ -235,7 +235,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         {
             case MenuActionItem.MENU_UPLOAD:
                 onMenuItemClick = true;
-                ActionManager.actionUpload((Activity) context, selectedOptionItems.get(0));
+                ActionManager.actionSendDocumentToAlfresco((Activity) context, selectedOptionItems.get(0));
                 break;
             case MenuActionItem.MENU_SHARE:
                 onMenuItemClick = true;

@@ -154,6 +154,17 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
 
         return null;
     }
+    
+    public static File getTempFile(final Activity activity, final Node node)
+    {
+        if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
+        {
+            File folder = StorageManager.getTempFolder(activity, SessionUtils.getAccount(activity));
+            if (folder != null) { return new File(folder, node.getName()); }
+        }
+
+        return null;
+    }
 
     // ///////////////////////////////////////////////////////////////////////////////////
     // LISTENER

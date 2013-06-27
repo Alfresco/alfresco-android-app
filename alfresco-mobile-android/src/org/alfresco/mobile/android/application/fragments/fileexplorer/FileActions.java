@@ -122,7 +122,7 @@ public class FileActions implements ActionMode.Callback
 
     private void upload(Fragment fr, ArrayList<File> files)
     {
-        ActionManager.actionUploadFiles(fr, files);
+        ActionManager.actionSendDocumentsToAlfresco(fr, files);
     }
 
     private void send(Fragment fragment, List<File> selectedFiles)
@@ -352,7 +352,7 @@ public class FileActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public static void share(final Fragment fr, final List<File> files)
     {
-        ActionManager.actionShareContent(fr, files);
+        ActionManager.actionSendDocuments(fr, files);
     }
 
     public static void edit(final Fragment f, final File file)

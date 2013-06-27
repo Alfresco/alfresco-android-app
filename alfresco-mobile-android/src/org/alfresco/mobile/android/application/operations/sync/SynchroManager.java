@@ -593,6 +593,23 @@ public final class SynchroManager extends OperationManager
         return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), (Document) node);
     }
 
+    public Uri getUri(Account account, Node node)
+    {
+        Uri b = null;
+        if (node.isFolder()) { return b; }
+        Cursor favoriteCursor = mAppContext.getContentResolver()
+                .query(SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                                + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
+        if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
+        {
+            b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
+        }
+        favoriteCursor.close();
+        return b;
+    }
+
     public boolean canSync(Account account)
     {
         return GeneralPreferences.hasActivateSync(mAppContext, account)

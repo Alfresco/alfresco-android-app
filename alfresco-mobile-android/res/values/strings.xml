@@ -14,8 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
-  -->
+  limitations under the License.
+-->
 <resources>
 
     <string name="app_name">Alfresco</string>
@@ -284,29 +284,32 @@
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
+
+    <!-- DATA PROTECTION -->
     <string name="encrypt_title">Encrypting content</string>
     <string name="content_being_encrypted">Content is being protected. Please wait</string>
     <string name="content_being_decrypted">Content is being unprotected. Please wait</string>
     <string name="data_protection">Data Protection</string>
-    <string name="data_protection_blurb">Data protection is available. Do you want to enable it?  (This will encrypt all downloaded Alfresco content for every account, and will mean these documents cannot be read by other apps, only from within the Alfresco app)</string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>Data protection is available.</b><br/> Do you want to enable it? <p>  This will encrypt all downloaded Alfresco content for every account, and will mean these documents cannot be read by other apps, only from within the Alfresco app. ]]></string>
     <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
-    <string name="protect_question">Would you like to protect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts, and will mean these documents cannot be read by other apps, only from within the Alfresco app.</string>
-    <string name="unprotect_question">Would you like to unprotect all downloaded Alfresco content now?  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts.</string>
+    <string name="protect_question"><![CDATA[<p><b>Would you like to protect all downloaded Alfresco content now?</b><p>  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts, and will mean these documents cannot be read by other apps, only from within the Alfresco app.]]></string>
+    <string name="unprotect_question"><![CDATA[<p><b>Would you like to unprotect all downloaded Alfresco content now?</b><p>  This will be applied to all documents you\'ve downloaded from all your Alfresco accounts.]]></string>
     <string name="already_encrypted">This document is already encrypted!</string>
     <string name="already_decrypted">This document is already decrypted!</string>
     <string name="decryption_title">Deactivating Data Protection&#8230;</string>
     <string name="encryption_title">Activating Data Protection&#8230;</string>
     <string name="copy_file_title">Document copy in progress&#8230;</string>
     <string name="metadata_general">General</string>
-    
-   <!-- OPEN AS.. -->
+    <string name="encrypt_action">Encrypt</string>
+    <string name="decrypt_action">Decrypt</string>
+
+    <!-- OPEN AS.. -->
     <string name="open_as_title">Open as&#8230;</string>
     <string name="open_as_image">Image</string>
     <string name="open_as_audio">Audio</string>
     <string name="open_as_video">Video</string>
     <string name="open_as_txt">Text Document</string>
-    
 
     <!-- SITES ACTION -->
     <string name="action_join_site">Join</string>
@@ -435,7 +438,6 @@
     <string name="favorites_deactivate">Deactivate Synchronization</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync ?</p> All sync files will be deleted inside your device.]]></string>
     <string name="sync_error_title">Sync Errors</string>
-    
     <string name="sync_error_node_unfavorited"><![CDATA[<p>You\'ve unfavorited <b>%s</b> since you started editing it. <br/> <b>Sync</b> your edited version to the server or <b>Save</b> it to your \"Downloads\" folder. </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> has been deleted on the server but a copy has been saved in your \"Downloads\" folder.</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> You don\'t have the required permission to upload your edited version of <b>%s</b>. You can <b>Save</b> it to your Downloads folder, or <b>Overwrite</b> it with the server version which will discard your edits.]]></string>
@@ -474,7 +476,7 @@
     <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
     <string name="error_duplicate_rename"><![CDATA[ <b>%s</b> is already in use. <br/> Please retry with another one.]]></string>
-    
+
     <!-- Quick Action Folder -->
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
@@ -550,9 +552,8 @@
     <string name="shortcut_local_sdcard">SD Card</string>
     <string name="shortcut_thirdparty_app">Applications</string>
     <string name="shortcut_thirdparty_applications">3rd party applications</string>
-        
     <string name="action_select">Select</string>
-    
+
     <!-- Notification -->
     <string name="batch_download_complete">%s documents available offline</string>
     <string name="batch_download_failed">%s download transfer</string>
@@ -572,6 +573,5 @@
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
-    
 
 </resources>

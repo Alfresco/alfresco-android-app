@@ -60,6 +60,10 @@ public interface MenuActionItem
     int MENU_ENCODING = 67;
 
     int MENU_FONT_SIZE = 68;
+    
+    int MENU_ENCRYPT = 70;
+
+    int MENU_DECRYPT = 71;
 
     // ///////////////////////////////////////////
     // DETAILS

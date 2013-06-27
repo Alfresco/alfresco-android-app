@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
@@ -40,38 +40,32 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
     private static final String CAPTURE_DIRECTORY = "Capture";
 
-    public static final String TEMPDIR = "Capture";
+    public static final String TEMPDIR = "Tmp";
 
     public static final String DLDIR = "Download";
 
     private static final String SYNCHRO_DIRECTORY = "Synchro";
+    
+    private static final String SHARE_DIRECTORY = "Share";
 
     private static final String ASSETDIR = "Assets";
-
-    public static boolean isEncryptableLocation(Context context, String filename)
-    {
-        File appPath = context.getExternalFilesDir(null);
-        return (filename.startsWith(appPath.getPath()));
-    }
-
-    public static boolean isTempFile(Context c, File file)
-    {
-        if (SessionUtils.getAccount(c) == null) return true;
-        File tempFolder = StorageManager.getTempFolder(c, SessionUtils.getAccount(c));
-
-        return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
-    }
-
-    public static boolean shouldEncryptDecrypt(Context context, String filename)
-    {
-        return (CipherUtils.isEncryptionActive(context) && isEncryptableLocation(context, filename));
-    }
-
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // STATUS SDCARD
+    // ///////////////////////////////////////////////////////////////////////////
     private static boolean isExternalStorageAccessible()
     {
         return (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED) == 0);
     }
-
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SHORTCUT
+    // ///////////////////////////////////////////////////////////////////////////
+    public static File getShareFolder(Context context, Account acc)
+    {
+        return getPrivateFolder(context, SHARE_DIRECTORY, acc);
+    }
+    
     public static File getDownloadFolder(Context context, Account acc)
     {
         return getPrivateFolder(context, DLDIR, acc);
@@ -188,32 +182,38 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return name + "-" + username;
     }
 
-    /*
-     * Retrieve < v1.1 download folder. Used to migrate to new folder structures
-     * in a one-off operation.
-     */
-    public static File getOldDownloadFolder(Context context)
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    public static boolean isTempFile(Context c, File file)
     {
-        File folder = null;
-        try
-        {
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()))
-            {
-                folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            }
+        if (SessionUtils.getAccount(c) == null) return true;
+        File tempFolder = StorageManager.getTempFolder(c, SessionUtils.getAccount(c));
 
-            folder = createFolder(
-                    folder,
-                    context.getResources()
-                            .getText(
-                                    context.getPackageManager().getPackageInfo(context.getPackageName(), 0).applicationInfo.labelRes)
-                            .toString());
-        }
-        catch (Exception e)
+        return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
+    }
+    
+    public static boolean isSyncFile(Context c, File file)
+    {
+        if (SessionUtils.getAccount(c) == null) return true;
+        File tempFolder = StorageManager.getSynchroFolder(c, SessionUtils.getAccount(c));
+
+        return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
+    }
+    // ///////////////////////////////////////////////////////////////////////////
+    // MANAGE FILE
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void manageFile(Context c, File file)
+    {
+        if (isTempFile(c, file))
         {
-            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+            file.delete();
+            return;
         }
 
-        return folder;
+        if (DataProtectionManager.getInstance(c).isEncryptionEnable())
+        {
+            DataProtectionManager.getInstance(c).checkEncrypt(SessionUtils.getAccount(c), file);
+        }
     }
 }

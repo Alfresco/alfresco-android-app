@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
@@ -31,23 +32,29 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
+import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.onFavoriteChangeListener;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.Operation;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
+import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
 import android.content.Context;
@@ -83,6 +90,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     private File localFile;
 
     private Uri favoriteUri;
+
+    private Date decryptDateTime;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -133,6 +142,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
             intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
             receiver = new FavoriteSyncReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
@@ -177,22 +188,28 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (requestCode != PublicIntent.REQUESTCODE_SAVE_BACK && requestCode != PublicIntent.REQUESTCODE_DECRYPTED) { return; }
+
+        final File dlFile = localFile;
+        
+        if (dlFile == null) return;
+        
+        long datetime = dlFile.lastModified();
+        Date d = new Date(datetime);
+        boolean modified = false;
+        final Uri lUri = favoriteUri;
+
         switch (requestCode)
         {
             case PublicIntent.REQUESTCODE_SAVE_BACK:
-                final File dlFile = localFile;
 
-                long datetime = dlFile.lastModified();
-                Date d = new Date(datetime);
-
-                boolean modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
+                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
                 if (modified)
                 {
-                    final Uri lUri = favoriteUri;
                     // Update to Pending
                     ContentValues cValues = new ContentValues();
-                    cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+                    cValues.put(SynchroSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
                     getActivity().getContentResolver().update(lUri, cValues, null, null);
 
                     // Start sync if possible
@@ -200,7 +217,27 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                     {
                         SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
                     }
+                    else
+                    {
+                        // TODO Save BAck
+                    }
                 }
+                break;
+            case PublicIntent.REQUESTCODE_DECRYPTED:
+
+                modified = (d != null && decryptDateTime != null) ? d.after(decryptDateTime) : false;
+                if (modified)
+                {
+                    // If modified by user, we flag the uri
+                    // The next sync will update the content.
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_MODIFIED);
+                    getActivity().getContentResolver().update(lUri, cValues, null, null);
+                }
+
+                DataProtectionManager.getInstance(getActivity()).checkEncrypt(SessionUtils.getAccount(getActivity()),
+                        dlFile);
+
                 break;
             default:
                 break;
@@ -290,7 +327,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         else if (nActions == null)
         {
 
-            localFile = null;
+            /*localFile = null;
             Uri localFileUri = Uri.parse(cursor.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
             if (localFileUri != null && !localFileUri.getPath().isEmpty())
             {
@@ -302,15 +339,22 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 long datetime = localFile.lastModified();
                 setDownloadDateTime(new Date(datetime));
-                ActionManager.openIn(this, localFile, MimeTypeManager.getMIMEType(localFile.getName()),
-                        PublicIntent.REQUESTCODE_SAVE_BACK);
+                ActionManager.actionView(this, localFile, new ActionManagerListener()
+                {
+                    @Override
+                    public void onActivityNotFoundException(ActivityNotFoundException e)
+                    {
+                        OpenAsDialogFragment.newInstance(localFile).show(getActivity().getFragmentManager(),
+                                OpenAsDialogFragment.TAG);
+                    }
+                });
             }
             else
-            {
+            {*/
                 // Show properties
                 ((MainActivity) getActivity()).addPropertiesFragment(documentId);
                 DisplayUtils.switchSingleOrTwo(getActivity(), true);
-            }
+            //}
         }
         adapter.notifyDataSetChanged();
     }
@@ -357,6 +401,11 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         this.downloadDateTime = downloadDateTime;
     }
 
+    public void setDecryptDateTime(Date decryptDateTime)
+    {
+        this.decryptDateTime = decryptDateTime;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
@@ -382,7 +431,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         lv.setAdapter(adapter);
 
     }
-    
+
     public void select(Node updatedNode)
     {
         selectedItems.add(updatedNode.getIdentifier());
@@ -411,7 +460,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
                 Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
-                if (updatedNode == null) { return;}
+                if (updatedNode == null) { return; }
 
                 Cursor favoriteCursor = context.getContentResolver().query(
                         SynchroProvider.CONTENT_URI,
@@ -426,12 +475,47 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                     cValues.put(SynchroSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
                     cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
                             .getTimeInMillis());
-                    context.getContentResolver().update(SynchroManager.getUri(favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null, null);
+                    context.getContentResolver().update(
+                            SynchroManager.getUri(favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null,
+                            null);
                 }
                 favoriteCursor.close();
-                
-                
             }
+
+            /*if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable() && intent.getExtras() != null)
+            {
+                Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
+                if (b == null) { return; }
+                if (b.getSerializable(IntentIntegrator.EXTRA_FOLDER) instanceof Folder) { return; }
+
+                if (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()))
+                {
+                    int actionIntent = b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION);
+                    if (actionIntent == DataProtectionManager.ACTION_NONE || actionIntent == 0) { return; }
+
+                    File f = (File) b.getSerializable(IntentIntegrator.EXTRA_FILE);
+                    decryptDateTime = new Date(f.lastModified());
+                    DataProtectionManager.executeAction(FavoritesSyncFragment.this, actionIntent, f);
+                    if (getFragment(WaitingDialogFragment.TAG) != null)
+                    {
+                        ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                    }
+                    return;
+                }
+                else if (IntentIntegrator.ACTION_ENCRYPT_COMPLETED.equals(intent.getAction()))
+                {
+                    if (getFragment(WaitingDialogFragment.TAG) != null)
+                    {
+                        ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                    }
+                    return;
+                }
+            }*/
         }
+    }
+
+    protected Fragment getFragment(String tag)
+    {
+        return getActivity().getFragmentManager().findFragmentByTag(tag);
     }
 }

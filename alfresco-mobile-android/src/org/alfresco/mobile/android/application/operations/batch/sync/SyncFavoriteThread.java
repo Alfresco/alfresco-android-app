@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -74,6 +75,8 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private ArrayList<String> remoteFavoritesId;
 
+    private DataProtectionManager dataProtectionManager;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -85,7 +88,6 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
             this.mode = ((SyncFavoriteRequest) request).getMode();
         }
     }
-    
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -97,26 +99,27 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         try
         {
             result = super.doInBackground();
-            
+
             canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
+            dataProtectionManager = DataProtectionManager.getInstance(context);
 
             group = new OperationsRequestGroup(context, acc);
 
             // Timestamp the scan process
             syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
-            
+
             switch (mode)
             {
-                case  SyncFavoriteRequest.MODE_DOCUMENT:
+                case SyncFavoriteRequest.MODE_DOCUMENT:
                     List<Document> docs = new ArrayList<Document>(1);
                     docs.add((Document) node);
                     remoteFavorites = new PagingResultImpl<Document>(docs, false, 1);
-                
-                case  SyncFavoriteRequest.MODE_DOCUMENTS:
+
+                case SyncFavoriteRequest.MODE_DOCUMENTS:
                     // Retrieve list of Favorites
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
                             .getFavoriteDocuments(listingContext);
-                    
+
                     // Retrieve list of local Favorites
                     localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL, null, null, null);
@@ -124,7 +127,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                 default:
                     break;
             }
-            
+
             // We have our favorites
             // Update the referential contentProvider
             if (!isFirstSync())
@@ -265,7 +268,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                 remoteServerTimeStamp = doc.getModifiedAt().getTimeInMillis();
                 hasLocalModification = hasLocalModification(cursorId, localFile);
 
-                // Check if it's a modification in server side
+                // Check if there's a modification in server side
                 if (remoteServerTimeStamp > localServerTimeStamp)
                 {
                     // Server side modification
@@ -388,6 +391,13 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private boolean hasLocalModification(Cursor cursor, File localFile)
     {
+
+        if (dataProtectionManager.isEncryptionEnable())
+        {
+            if (SyncOperation.STATUS_MODIFIED == cursor.getInt(SynchroSchema.COLUMN_STATUS_ID)) { return true; }
+            return false;
+        }
+
         // Check modification Date and local modification
         long localSyncTimeStamp = cursor.getLong(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
         return (localSyncTimeStamp != -1 && localFile != null && localFile.lastModified() > localSyncTimeStamp);
@@ -395,11 +405,15 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private boolean hasLocalModification(Cursor cursor)
     {
+        if (dataProtectionManager.isEncryptionEnable())
+        {
+            if (SyncOperation.STATUS_MODIFIED == cursor.getInt(SynchroSchema.COLUMN_STATUS_ID)) { return true; }
+            return false;
+        }
         // Check modification Date and local modification
         Uri localFileUri = Uri.parse(cursor.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
-        long localSyncTimeStamp = cursor.getLong(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
-        return (localSyncTimeStamp != -1 && localFile != null && localFile.lastModified() > localSyncTimeStamp);
+        return hasLocalModification(cursor, localFile);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -417,16 +431,16 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private void addSyncDownloadRequest(Uri localUri, Document doc, long timeStamp)
     {
-        //If listing mode, update Metadata associated
-        if (!canExecuteAction) { 
+        // If listing mode, update Metadata associated
+        if (!canExecuteAction)
+        {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_NODE_ID, doc.getIdentifier());
-            cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt()
-                    .getTimeInMillis());
+            cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
             context.getContentResolver().update(localUri, cValues, null, null);
-            return; 
+            return;
         }
-        
+
         // Execution
         SyncDownloadRequest dl = new SyncDownloadRequest(doc);
         dl.setNotificationUri(localUri);

@@ -19,6 +19,7 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.SyncNodeOperationThread;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.ContentValues;
@@ -68,18 +69,20 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
         try
         {
             result = super.doInBackground();
-            
+
             destFile = StorageManager.getSynchroFile(context, acc, (Document) node);
 
-            //Download content
-            ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService().getContentStream((Document) node);
+            // Download content
+            ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
+                    .getContentStream((Document) node);
             totalLength = contentStream.getLength();
             segment = (int) (contentStream.getLength() / SEGMENT) + 1;
             copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
             contentFileResult = new ContentFileImpl(destFile);
-            
+
             // Delete previous versioned file (name.txt, new.txt)
-            cursor = context.getContentResolver().query(request.getNotificationUri(), SynchroSchema.COLUMN_ALL,null, null, null);
+            cursor = context.getContentResolver().query(request.getNotificationUri(), SynchroSchema.COLUMN_ALL, null,
+                    null, null);
             if (cursor != null && cursor.moveToFirst())
             {
                 Uri localFileUri = Uri.parse(cursor.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
@@ -92,7 +95,12 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
                     }
                 }
             }
-            
+
+            if (DataProtectionManager.getInstance(context).isEncryptionEnable())
+            {
+                DataProtectionManager.getInstance(context).encrypt(acc, destFile);
+            }
+
             // Update Sync Info
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
@@ -215,11 +223,12 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
     {
         return (Document) node;
     }
-    
+
     public long getTotalLength()
     {
         return totalLength;
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
