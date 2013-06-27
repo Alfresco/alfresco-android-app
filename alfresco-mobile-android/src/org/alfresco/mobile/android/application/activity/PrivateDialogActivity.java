@@ -40,7 +40,7 @@ import android.view.WindowManager;
  */
 public class PrivateDialogActivity extends BaseActivity
 {
-    private static final String TAG = PrivateDialogActivity.class.getName();
+    //private static final String TAG = PrivateDialogActivity.class.getName();
 
     private boolean activateCheckPasscode = false;
 

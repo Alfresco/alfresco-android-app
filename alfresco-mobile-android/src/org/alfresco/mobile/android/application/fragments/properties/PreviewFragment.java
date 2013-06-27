@@ -22,6 +22,7 @@ import java.util.Date;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.impl.NodeImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
@@ -37,6 +38,7 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -108,13 +110,17 @@ public class PreviewFragment extends BaseFragment
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
-        if (node.isDocument())
+        if (node.isDocument() && node instanceof NodeImpl)
         {
             iconId = MimeTypeManager.getIcon(node.getName(), true);
             if (((Document) node).isLatestVersion())
             {
                 renditionManager.preview((ImageView) preview, node, iconId, DisplayUtils.getWidth(getActivity()));
             }
+        }
+        else if (node.isDocument() && node instanceof NodeSyncPlaceHolder)
+        {
+            preview.setImageResource(MimeTypeManager.getIcon(node.getName(), true));
         }
         else
         {
@@ -133,7 +139,6 @@ public class PreviewFragment extends BaseFragment
         return v;
     }
 
-    
     public void openin()
     {
         Bundle b = new Bundle();
@@ -143,7 +148,7 @@ public class PreviewFragment extends BaseFragment
         Account acc = SessionUtils.getAccount(getActivity());
 
         DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-        
+
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
             final File syncFile = syncManager.getSyncFile(acc, node);
@@ -180,28 +185,23 @@ public class PreviewFragment extends BaseFragment
             frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
         }
     }
-    
-    /*private void openin()
-    {
-        Bundle b = new Bundle();
-        DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(DetailsFragment.TAG);
-        if (isSynced() && detailsFragment != null)
-        {
-            File syncFile = getSyncFile();
-            long datetime = syncFile.lastModified();
-            detailsFragment.setDownloadDateTime(new Date(datetime));
-            ActionManager.openIn(detailsFragment, getSyncFile(), MimeTypeManager.getMIMEType(syncFile.getName()),
-                    PublicIntent.REQUESTCODE_SAVE_BACK);
-        }
-        else
-        {
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
-            b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
-            DialogFragment frag = new DownloadDialogFragment();
-            frag.setArguments(b);
-            frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
-        }
-    }*/
+
+    /*
+     * private void openin() { Bundle b = new Bundle(); DetailsFragment
+     * detailsFragment = (DetailsFragment)
+     * getFragmentManager().findFragmentByTag(DetailsFragment.TAG); if
+     * (isSynced() && detailsFragment != null) { File syncFile = getSyncFile();
+     * long datetime = syncFile.lastModified();
+     * detailsFragment.setDownloadDateTime(new Date(datetime));
+     * ActionManager.openIn(detailsFragment, getSyncFile(),
+     * MimeTypeManager.getMIMEType(syncFile.getName()),
+     * PublicIntent.REQUESTCODE_SAVE_BACK); } else {
+     * b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document)
+     * node); b.putInt(DownloadDialogFragment.ARGUMENT_ACTION,
+     * DownloadDialogFragment.ACTION_OPEN); DialogFragment frag = new
+     * DownloadDialogFragment(); frag.setArguments(b);
+     * frag.show(getFragmentManager(), DownloadDialogFragment.TAG); } }
+     */
 
     private boolean isSynced()
     {

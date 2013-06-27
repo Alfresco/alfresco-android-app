@@ -66,14 +66,16 @@ import org.alfresco.mobile.android.application.operations.batch.node.update.Upda
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolderFormatter;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
@@ -363,7 +365,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 Date da = new Date(date);
                 boolean modified2 = false;
                 final Uri lUri = SynchroManager.getInstance(getActivity()).getUri(
-                        SessionUtils.getAccount(getActivity()), node);
+                        SessionUtils.getAccount(getActivity()), node.getIdentifier());
 
                 modified2 = (da != null && decryptDateTime != null) ? da.after(decryptDateTime) : false;
                 if (modified2)
@@ -391,7 +393,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         vRoot.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
         vRoot.findViewById(R.id.progressbar).setVisibility(View.GONE);
-        display(node);
+        if (node instanceof Document)
+        {
+            display(node);
+        }
+        else if (node instanceof NodeSyncPlaceHolder)
+        {
+            display((NodeSyncPlaceHolder) node);
+        }
         getActivity().invalidateOptionsMenu();
     }
 
@@ -595,6 +604,82 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             iv.setImageResource(defaultIconId);
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // DISPLAY OFFLINE SYNC MODE
+    // ///////////////////////////////////////////////////////////////////////////
+    private void display(NodeSyncPlaceHolder refreshedNode)
+    {
+        node = refreshedNode;
+
+        // Header
+        TextView tv = (TextView) vRoot.findViewById(R.id.title);
+        tv.setText(node.getName());
+        tv = (TextView) vRoot.findViewById(R.id.details);
+        tv.setText(NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), refreshedNode, true));
+
+        // Preview + Thumbnail
+        if (vRoot.findViewById(R.id.icon) != null)
+        {
+            ((ImageView) vRoot.findViewById(R.id.icon))
+                    .setImageResource(MimeTypeManager.getIcon(node.getName(), false));
+        }
+        if (vRoot.findViewById(R.id.preview) != null)
+        {
+            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(node.getName(),
+                    true));
+        }
+
+        // Tabs
+        mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
+        if (mTabHost != null)
+        {
+            mTabHost.setup(); // you must call this before adding your tabs!
+            mTabHost.setOnTabChangedListener(this);
+            if (refreshedNode.isDocument()
+                    && Boolean.parseBoolean((String) refreshedNode.getPropertyValue(PropertyIds.IS_LATEST_VERSION)))
+            {
+                mTabHost.addTab(newTab(TAB_PREVIEW, R.string.preview, android.R.id.tabcontent));
+            }
+            mTabHost.addTab(newTab(TAB_METADATA, R.string.metadata, android.R.id.tabcontent));
+            if (tabSelection != null)
+            {
+                if (tabSelection == 0) { return; }
+                int index = (node.isDocument()) ? tabSelection : tabSelection - 1;
+                mTabHost.setCurrentTab(index);
+            }
+        }
+
+        // Hide Buttons
+        ImageView b = (ImageView) vRoot.findViewById(R.id.action_openin);
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                openin();
+            }
+        });
+
+        b = (ImageView) vRoot.findViewById(R.id.action_share);
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                share();
+            }
+        });
+
+        b = (ImageView) vRoot.findViewById(R.id.like);
+        vRoot.findViewById(R.id.like_progress).setVisibility(View.GONE);
+        b.setVisibility(View.GONE);
+
+        b = (ImageView) vRoot.findViewById(R.id.action_favorite);
+        b.setImageResource(R.drawable.ic_favorite_dark);
+        vRoot.findViewById(R.id.favorite_progress).setVisibility(View.GONE);
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -828,6 +913,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         MenuItem mi;
 
         if (node == null) { return; }
+        if (node instanceof NodeSyncPlaceHolder) { return; }
 
         if (node.isDocument())
         {

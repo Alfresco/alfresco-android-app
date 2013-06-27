@@ -41,6 +41,7 @@ import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSync
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -573,35 +574,40 @@ public final class SynchroManager extends OperationManager
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
-    public boolean isSynced(Account account, Node node)
+    public boolean isSynced(Account account, String nodeIdentifier)
     {
-        if (node.isFolder()) { return false; }
         Cursor favoriteCursor = mAppContext.getContentResolver()
                 .query(SynchroProvider.CONTENT_URI,
                         SynchroSchema.COLUMN_ALL,
                         SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
+                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1)
                 && GeneralPreferences.hasActivateSync(mAppContext, SessionUtils.getAccount(mAppContext));
         favoriteCursor.close();
         return b;
     }
+    
+    public boolean isSynced(Account account, Node node)
+    {
+        if (node.isFolder()) { return false; }
+        return isSynced(account, node.getIdentifier());
+    }
 
     public File getSyncFile(Account account, Node node)
     {
         if (node.isFolder()) { return null; }
+        if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), node.getName(), node.getIdentifier()); }
         return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), (Document) node);
     }
 
-    public Uri getUri(Account account, Node node)
+    public Uri getUri(Account account, String nodeIdentifier)
     {
         Uri b = null;
-        if (node.isFolder()) { return b; }
         Cursor favoriteCursor = mAppContext.getContentResolver()
                 .query(SynchroProvider.CONTENT_URI,
                         SynchroSchema.COLUMN_ALL,
                         SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
+                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
         {
             b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));

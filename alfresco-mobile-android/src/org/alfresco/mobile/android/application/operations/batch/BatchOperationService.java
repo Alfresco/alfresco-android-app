@@ -269,7 +269,8 @@ public class BatchOperationService<T> extends Service
             task.setOperationCallBack(callback);
         }
 
-        if (ConnectivityUtils.hasInternetAvailable(getBaseContext()))
+        if ((task.requireNetwork() && ConnectivityUtils.hasInternetAvailable(getBaseContext()))
+                || !task.requireNetwork())
         {
             if (pendingRequest == 0)
             {

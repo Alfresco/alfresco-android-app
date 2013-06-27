@@ -53,7 +53,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
 {
-    private static final String TAG = FavoriteCursorAdapter.class.getName();
+    //private static final String TAG = FavoriteCursorAdapter.class.getName();
 
     private Fragment fragment;
 
@@ -114,6 +114,9 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 }
                 break;
             case SyncOperation.STATUS_PAUSED:
+                displayStatut(vh, R.drawable.sync_status_pending);
+                break;
+            case SyncOperation.STATUS_MODIFIED:
                 displayStatut(vh, R.drawable.sync_status_pending);
                 break;
             case SyncOperation.STATUS_SUCCESSFUL:
