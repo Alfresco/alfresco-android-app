@@ -1182,6 +1182,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         @Override
         public void onReceive(Context context, Intent intent)
         {
+            Log.d(TAG, intent.getAction());
+
             if (getActivity() == null) { return; }
 
             if (intent.getAction().equals(ACTION_REFRESH))
@@ -1197,7 +1199,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 if (detailsFragment != null && getActivity() instanceof MainActivity)
                 {
 
-                    if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable())
+                    if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable()
+                            && (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()) || IntentIntegrator.ACTION_ENCRYPT_COMPLETED
+                                    .equals(intent.getAction())))
                     {
                         Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
                         if (b == null) { return; }
