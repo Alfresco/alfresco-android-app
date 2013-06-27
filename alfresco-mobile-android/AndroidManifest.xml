@@ -128,7 +128,7 @@
 
         <!-- Private : Text Editor Activity -->
         <activity
-            android:name="org.alfresco.mobile.android.application.activity.TextEditorActivity"
+            android:name="org.alfresco.mobile.android.application.fragments.editor.TextEditorActivity"
             android:exported="false"
             android:label="@string/file_editor_name"
             android:uiOptions="splitActionBarWhenNarrow"
