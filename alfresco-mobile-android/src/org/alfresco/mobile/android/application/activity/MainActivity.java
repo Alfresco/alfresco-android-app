@@ -538,7 +538,7 @@ public class MainActivity extends BaseActivity
                 fragmentQueue = actionMainMenuId;
                 return false;
             default:
-                if (!hasNetwork())
+                if (!ConnectivityUtils.hasNetwork(this))
                 {
                     return false;
                 }
@@ -1039,23 +1039,6 @@ public class MainActivity extends BaseActivity
     public void setCurrentNode(Node currentNode)
     {
         this.currentNode = currentNode;
-    }
-
-    private boolean hasNetwork()
-    {
-        if (!ConnectivityUtils.hasInternetAvailable(this))
-        {
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_network_title);
-            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_network_details);
-            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-            ActionManager.actionDisplayDialog(this, b);
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 
     // For Creating file in childrenbrowser

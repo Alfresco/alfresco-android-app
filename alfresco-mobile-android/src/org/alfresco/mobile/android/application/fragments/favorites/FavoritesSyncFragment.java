@@ -25,6 +25,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -44,6 +45,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -184,9 +186,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         if (requestCode != PublicIntent.REQUESTCODE_SAVE_BACK && requestCode != PublicIntent.REQUESTCODE_DECRYPTED) { return; }
 
         final File dlFile = localFile;
-        
+
         if (dlFile == null) return;
-        
+
         long datetime = dlFile.lastModified();
         Date d = new Date(datetime);
         boolean modified = false;
@@ -319,35 +321,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         }
         else if (nActions == null)
         {
-
-            /*localFile = null;
-            Uri localFileUri = Uri.parse(cursor.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
-            if (localFileUri != null && !localFileUri.getPath().isEmpty())
-            {
-                localFile = new File(localFileUri.getPath());
-            }
-            favoriteUri = SynchroManager.getUri(cursor.getLong(SynchroSchema.COLUMN_ID_ID));
-
-            if (hasSynchroActive && localFile != null && localFile.exists())
-            {
-                long datetime = localFile.lastModified();
-                setDownloadDateTime(new Date(datetime));
-                ActionManager.actionView(this, localFile, new ActionManagerListener()
-                {
-                    @Override
-                    public void onActivityNotFoundException(ActivityNotFoundException e)
-                    {
-                        OpenAsDialogFragment.newInstance(localFile).show(getActivity().getFragmentManager(),
-                                OpenAsDialogFragment.TAG);
-                    }
-                });
-            }
-            else
-            {*/
-                // Show properties
-                ((MainActivity) getActivity()).addPropertiesFragment(documentId);
-                DisplayUtils.switchSingleOrTwo(getActivity(), true);
-            //}
+            // Show properties
+            ((MainActivity) getActivity()).addPropertiesFragment(documentId);
+            DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
     }
@@ -414,6 +390,12 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     @Override
     public void refresh()
     {
+        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity()))
+        {
+            mi.setActionView(null);
+            return;
+        }
+
         SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), true);
         if (mi != null)
         {
@@ -474,36 +456,6 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                 }
                 favoriteCursor.close();
             }
-
-            /*if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable() && intent.getExtras() != null)
-            {
-                Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
-                if (b == null) { return; }
-                if (b.getSerializable(IntentIntegrator.EXTRA_FOLDER) instanceof Folder) { return; }
-
-                if (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()))
-                {
-                    int actionIntent = b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION);
-                    if (actionIntent == DataProtectionManager.ACTION_NONE || actionIntent == 0) { return; }
-
-                    File f = (File) b.getSerializable(IntentIntegrator.EXTRA_FILE);
-                    decryptDateTime = new Date(f.lastModified());
-                    DataProtectionManager.executeAction(FavoritesSyncFragment.this, actionIntent, f);
-                    if (getFragment(WaitingDialogFragment.TAG) != null)
-                    {
-                        ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                    }
-                    return;
-                }
-                else if (IntentIntegrator.ACTION_ENCRYPT_COMPLETED.equals(intent.getAction()))
-                {
-                    if (getFragment(WaitingDialogFragment.TAG) != null)
-                    {
-                        ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                    }
-                    return;
-                }
-            }*/
         }
     }
 
