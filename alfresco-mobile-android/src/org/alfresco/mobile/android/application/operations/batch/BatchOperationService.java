@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.Operation.OperationCallBack;
 import org.alfresco.mobile.android.application.operations.OperationsGroupInfo;
+import org.alfresco.mobile.android.application.operations.OperationsGroupRecord;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountCallBack;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountThread;
@@ -342,6 +343,7 @@ public class BatchOperationService<T> extends Service
             {
                 if (batchManager.isLastOperation(operationId) && operations.get(operationId) != null)
                 {
+                    OperationsGroupRecord group = batchManager.getOperationGroup(operationId);
                     ((AbstractBatchOperationThread) operations.get(operationId)).executeGroupCallback(batchManager
                             .getResult(operationId));
                 }
