@@ -22,8 +22,10 @@ import org.alfresco.mobile.android.application.operations.Operation;
 public interface SyncOperation<T> extends Operation<T>
 {
     int STATUS_HIDDEN = 64;
-
+    
     int STATUS_REQUEST_USER = 128;
+    
+    int STATUS_MODIFIED = 256;
 
     /** Local Document has modification but remote document has been unfavorited. */
     int REASON_NODE_UNFAVORITED = 100;

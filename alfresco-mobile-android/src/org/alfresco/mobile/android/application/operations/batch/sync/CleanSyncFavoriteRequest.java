@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.operations.batch.sync;
 
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 
-public class UnSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
+public class CleanSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
 {
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class UnSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public UnSyncFavoriteRequest()
+    public CleanSyncFavoriteRequest()
     {
         super();
         requestTypeId = TYPE_ID;

@@ -36,11 +36,12 @@ import org.alfresco.mobile.android.application.operations.OperationsGroupRecord;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -241,6 +242,7 @@ public final class SynchroManager extends OperationManager
         intentFilter.addAction(IntentIntegrator.ACTION_SYNCHRO_PAUSE);
         intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETED);
         return intentFilter;
     }
 
@@ -259,12 +261,29 @@ public final class SynchroManager extends OperationManager
         {
             Log.d(TAG, intent.getAction());
 
-            if ((IntentIntegrator.ACTION_DELETE_COMPLETED.equals(intent.getAction()) || IntentIntegrator.ACTION_UPDATE_COMPLETED
-                    .equals(intent.getAction())) && intent.getExtras() != null)
+            if (intent.getExtras() != null
+                    && (IntentIntegrator.ACTION_DELETE_COMPLETED.equals(intent.getAction())
+                            || IntentIntegrator.ACTION_UPDATE_COMPLETED.equals(intent.getAction()) || IntentIntegrator.ACTION_FAVORITE_COMPLETED
+                                .equals(intent.getAction())))
             {
                 Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
                 if (b == null) { return; }
                 if (b.getSerializable(IntentIntegrator.EXTRA_FOLDER) instanceof File) { return; }
+
+                if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
+                {
+                    Boolean isFavorite = (b.getString(IntentIntegrator.EXTRA_FAVORITE) != null) ? Boolean
+                            .parseBoolean(b.getString(IntentIntegrator.EXTRA_FAVORITE)) : null;
+                    Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
+
+                    Account acc = SessionUtils.getAccount(mAppContext);
+
+                    if (acc != null && node != null && canSync(acc))
+                    {
+                        sync(acc, node.getIdentifier());
+                    }
+                    return;
+                }
 
                 if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
                 {
@@ -539,31 +558,62 @@ public final class SynchroManager extends OperationManager
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
-    public void unsync(Account account)
+    public void sync(Account account, String nodeIdentifier)
     {
+        if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
-        group.enqueue(new UnSyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        group.enqueue(new SyncFavoriteRequest(nodeIdentifier)
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
-    public boolean isSynced(Account account, Node node)
+    public void unsync(Account account)
     {
-        if (node.isFolder()) { return false; }
+        OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
+        group.enqueue(new CleanSyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        BatchOperationManager.getInstance(mAppContext).enqueue(group);
+    }
+
+    public boolean isSynced(Account account, String nodeIdentifier)
+    {
         Cursor favoriteCursor = mAppContext.getContentResolver()
                 .query(SynchroProvider.CONTENT_URI,
                         SynchroSchema.COLUMN_ALL,
                         SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
+                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1)
                 && GeneralPreferences.hasActivateSync(mAppContext, SessionUtils.getAccount(mAppContext));
         favoriteCursor.close();
         return b;
     }
+    
+    public boolean isSynced(Account account, Node node)
+    {
+        if (node.isFolder()) { return false; }
+        return isSynced(account, node.getIdentifier());
+    }
 
     public File getSyncFile(Account account, Node node)
     {
         if (node.isFolder()) { return null; }
+        if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), node.getName(), node.getIdentifier()); }
         return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), (Document) node);
+    }
+
+    public Uri getUri(Account account, String nodeIdentifier)
+    {
+        Uri b = null;
+        Cursor favoriteCursor = mAppContext.getContentResolver()
+                .query(SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
+        if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
+        {
+            b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
+        }
+        favoriteCursor.close();
+        return b;
     }
 
     public boolean canSync(Account account)

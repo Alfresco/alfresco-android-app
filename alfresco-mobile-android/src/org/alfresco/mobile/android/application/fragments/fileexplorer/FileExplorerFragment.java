@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -35,6 +36,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -43,6 +45,7 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
@@ -222,6 +225,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
             intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
             intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
+            intentFilter.addAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
             receiver = new FileExplorerReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
@@ -349,7 +354,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
             else
             {
-                // Show properties
                 ActionManager.actionView(this, file, new ActionManagerListener()
                 {
                     @Override
@@ -501,19 +505,43 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 if (b.getSerializable(IntentIntegrator.EXTRA_FOLDER) instanceof Folder) { return; }
                 String pFolder = ((File) b.getSerializable(IntentIntegrator.EXTRA_FOLDER)).getPath();
 
+                if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable())
+                {
+                    if (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()))
+                    {
+                        DataProtectionManager.executeAction(getActivity(), b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION),
+                                (File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
+                        if (getFragment(WaitingDialogFragment.TAG) != null)
+                        {
+                            ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                        }
+                        refreshList();
+                        return;
+                    }
+                    else if (IntentIntegrator.ACTION_ENCRYPT_COMPLETED.equals(intent.getAction()))
+                    {
+                        if (getFragment(WaitingDialogFragment.TAG) != null)
+                        {
+                            ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                        }
+                        refreshList();
+                        return;
+                    }
+                }
+
                 if (pFolder.equals(parentFolder.getPath()))
                 {
-                    if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
+                    if (IntentIntegrator.ACTION_DELETE_COMPLETED.equals(intent.getAction()))
                     {
                         remove((File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
                         return;
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED))
+                    else if (IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED.equals(intent.getAction()))
                     {
                         File file = (File) b.getSerializable(IntentIntegrator.EXTRA_CREATED_FOLDER);
                         ((FileExplorerAdapter) adapter).replaceFile(file);
                     }
-                    else if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
+                    else if (IntentIntegrator.ACTION_UPDATE_COMPLETED.equals(intent.getAction()))
                     {
                         remove((File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
                         File updatedFile = (File) b.getSerializable(IntentIntegrator.EXTRA_UPDATED_FILE);

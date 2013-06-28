@@ -85,5 +85,10 @@ public abstract class FileOperationThread<T> extends AbstractBatchOperationThrea
     {
         return parentFile;
     }
+    
+    public boolean requireNetwork()
+    {
+        return false;
+    }
 
 }

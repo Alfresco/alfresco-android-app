@@ -63,9 +63,6 @@ public class RenameCallback extends AbstractBatchOperationCallback<File>
     {
         super.onPostExecute(task, results);
         scanFile(context, results.getPath(), MimeTypeMap.getSingleton().getFileExtensionFromUrl(results.getPath()));
-        // context.sendBroadcast(new
-        // Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-        // Uri.fromFile(results)));
     }
 
     public static void scanFile(Context context, String path, String mimeType)

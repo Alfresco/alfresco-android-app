@@ -17,19 +17,25 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.activitystream.ActivityEventAdapter;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
+import android.content.Loader;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,6 +47,8 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public static final String TAG = ActivitiesFragment.class.getName();
 
     private static final String TYPE_FILE_DELETE = ActivityEventAdapter.PREFIX_FILE + "-deleted";
+
+    protected List<ActivityEntry> selectedEntry = new ArrayList<ActivityEntry>(1);
 
     public ActivitiesFragment()
     {
@@ -76,20 +84,46 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     {
         ActivityEntry item = (ActivityEntry) l.getItemAtPosition(position);
 
-        if (item.getType() != null && item.getType().startsWith(ActivityEventAdapter.PREFIX_DATALIST)) { return; }
-
-        // Inconsistency between cloud and on premise.
-        String identifier = item.getData(CloudConstant.NODEREF_VALUE);
-        if (identifier == null)
+        Boolean hideDetails = false;
+        if (!selectedEntry.isEmpty())
         {
-            identifier = item.getData(CloudConstant.OBJECTID_VALUE);
+            hideDetails = selectedEntry.get(0).equals(item);
+            selectedEntry.clear();
+        }
+        l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        l.setItemChecked(position, true);
+        v.setSelected(true);
+
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            selectedEntry.add(item);
         }
 
-        // Not necessary to enable touch on delete file.
-        if (identifier != null && !TYPE_FILE_DELETE.equals(item.getType()))
+        if (hideDetails)
         {
-            ((MainActivity) getActivity()).addPropertiesFragment(identifier);
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+            }
+            selectedEntry.clear();
+        }
+        else
+        {
+            if (item.getType() != null && item.getType().startsWith(ActivityEventAdapter.PREFIX_DATALIST)) { return; }
+
+            // Inconsistency between cloud and on premise.
+            String identifier = item.getData(CloudConstant.NODEREF_VALUE);
+            if (identifier == null)
+            {
+                identifier = item.getData(CloudConstant.OBJECTID_VALUE);
+            }
+
+            // Not necessary to enable touch on delete file.
+            if (identifier != null && !TYPE_FILE_DELETE.equals(item.getType()))
+            {
+                ((MainActivity) getActivity()).addPropertiesFragment(identifier);
+                DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            }
         }
     }
 
@@ -108,6 +142,30 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public void refresh()
     {
         refresh(loaderId, callback);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // LOADER
+    // //////////////////////////////////////////////////////////////////////
+    @SuppressWarnings("rawtypes")
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<ActivityEntry>>> arg0,
+            LoaderResult<PagingResult<ActivityEntry>> results)
+    {
+        if (adapter == null)
+        {
+            adapter = new ActivityEventAdapter(getActivity(), alfSession, R.layout.sdk_list_row,
+                    new ArrayList<ActivityEntry>(0), selectedEntry);
+            ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
+        }
+
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
+        {
+            displayPagingData(results.getData(), loaderId, callback);
+        }
     }
 
     @Override

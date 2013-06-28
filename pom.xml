@@ -132,10 +132,11 @@
 		<!-- Android Dependencies -->
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
+		<android.maven.plugin.version>3.6.0</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
-		<okhttp.version>1.0.2</okhttp.version>
+		<okhttp.version>1.1.1</okhttp.version>
 
 		<!-- Alfresco Configuration -->
 		<alfresco.sdk.version>1.2.0-SNAPSHOT</alfresco.sdk.version>
@@ -190,7 +191,7 @@
 				<plugin>
 					<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 					<artifactId>android-maven-plugin</artifactId>
-					<version>3.4.1</version>
+					<version>${android.maven.plugin.version}</version>
 					<extensions>true</extensions>
 					<configuration>
 						<sdk>

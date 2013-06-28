@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.data.ContentStream;
@@ -69,15 +69,16 @@ public class UpdateContentThread extends AbstractUpThread
         try
         {
             result = super.doInBackground();
-            
+
             originalDocument = (Document) session.getServiceRegistry().getDocumentFolderService()
                     .getNodeByIdentifier(originalIdentifier);
 
             if (contentFile != null)
             {
-                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
+                if (!StorageManager.isTempFile(context, contentFile.getFile())
+                        && DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
                 {
-                    CipherUtils.decryptFile(context, contentFile.getFile().getPath());
+                    DataProtectionManager.getInstance(context).checkDecrypt(acc, contentFile.getFile());
                 }
 
                 Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
@@ -131,10 +132,8 @@ public class UpdateContentThread extends AbstractUpThread
                 updatedDocument = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
 
-                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
-                {
-                    CipherUtils.encryptFile(context, contentFile.getFile().getPath(), true);
-                }
+                // Encrypt if necessary / Delete otherwise
+                StorageManager.manageFile(context, contentFile.getFile());
             }
         }
         catch (Exception e)

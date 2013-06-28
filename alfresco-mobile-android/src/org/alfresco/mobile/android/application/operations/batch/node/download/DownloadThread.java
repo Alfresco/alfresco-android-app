@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.node.NodeOperationThread;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.content.Context;
@@ -97,6 +98,8 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
             segment = (int) (contentStream.getLength() / SEGMENT);
             copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
             contentFileResult = new ContentFileImpl(destFile);
+
+            DataProtectionManager.getInstance(context).checkEncrypt(acc, destFile);
         }
         catch (Exception e)
         {
@@ -135,6 +138,8 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
 
             while (size - downloaded > 0)
             {
+                if (isInterrupted()) { throw new IOException(); }
+
                 if (size - downloaded < MAX_BUFFER_SIZE)
                 {
                     buffer = new byte[(int) (size - downloaded)];

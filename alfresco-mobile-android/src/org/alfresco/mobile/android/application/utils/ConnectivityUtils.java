@@ -17,9 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.utils;
 
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 
 public final class ConnectivityUtils
 {
@@ -38,5 +44,22 @@ public final class ConnectivityUtils
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo != null && wifiInfo.isConnected()) { return true; }
         return false;
+    }
+    
+    public static boolean hasNetwork(BaseActivity activity)
+    {
+        if (!ConnectivityUtils.hasInternetAvailable(activity))
+        {
+            Bundle b = new Bundle();
+            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_network_title);
+            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_network_details);
+            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            ActionManager.actionDisplayDialog(activity, b);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 }

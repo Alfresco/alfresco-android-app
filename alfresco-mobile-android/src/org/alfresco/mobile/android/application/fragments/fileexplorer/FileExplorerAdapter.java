@@ -33,11 +33,13 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -53,11 +55,12 @@ import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 /**
- * Provides access to files and displays them as a view based on GenericViewHolder.
+ * Provides access to files and displays them as a view based on
+ * GenericViewHolder.
  * 
  * @author Jean Marie Pascal
  */
-public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder> implements OnMenuItemClickListener
+public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolder> implements OnMenuItemClickListener
 {
 
     protected List<File> originalFiles;
@@ -93,6 +96,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
                     ((BaseActivity) fr.getActivity()).getCurrentAccount());
             this.downloadPath = (f != null) ? f.getPath() : null;
         }
+
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
     }
 
     @Override
@@ -102,13 +107,13 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, File item)
+    protected void updateTopText(ProgressViewHolder vh, File item)
     {
         vh.topText.setText(item.getName());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, File item)
+    protected void updateBottomText(ProgressViewHolder vh, File item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
 
@@ -120,6 +125,16 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         else
         {
             UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+        }
+
+        if (DataProtectionManager.getInstance(getContext()).isEncrypted(item.getPath()))
+        {
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_encrypt));
+        }
+        else
+        {
+            vh.favoriteIcon.setVisibility(View.GONE);
         }
     }
 
@@ -135,7 +150,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, File item)
+    protected void updateIcon(ProgressViewHolder vh, File item)
     {
         if (item.isFile())
         {
@@ -299,6 +314,22 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
+        if (DataProtectionManager.getInstance(getContext()).isEncryptionEnable())
+        {
+            if (DataProtectionManager.getInstance(getContext()).isEncrypted(f.getPath()))
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_DECRYPT, Menu.FIRST + MenuActionItem.MENU_DECRYPT,
+                        R.string.decrypt_action);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            }
+            else
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_ENCRYPT, Menu.FIRST + MenuActionItem.MENU_ENCRYPT,
+                        R.string.encrypt_action);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            }
+        }
+
     }
 
     @Override
@@ -309,7 +340,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
         {
             case MenuActionItem.MENU_UPLOAD:
                 onMenuItemClick = true;
-                ActionManager.actionUpload((Activity) getContext(), selectedOptionItems.get(0));
+                ActionManager.actionSendDocumentToAlfresco((Activity) getContext(), selectedOptionItems.get(0));
                 break;
             case MenuActionItem.MENU_SHARE:
                 onMenuItemClick = true;
@@ -322,6 +353,14 @@ public class FileExplorerAdapter extends BaseListAdapter<File, GenericViewHolder
             case MenuActionItem.MENU_DELETE:
                 onMenuItemClick = true;
                 FileActions.delete(fragment, new ArrayList<File>(selectedOptionItems));
+                break;
+            case MenuActionItem.MENU_ENCRYPT:
+                onMenuItemClick = true;
+                DataProtectionManager.getInstance(getContext()).checkEncrypt(SessionUtils.getAccount(fragment.getActivity()), selectedOptionItems.get(0));
+                break;
+            case MenuActionItem.MENU_DECRYPT:
+                onMenuItemClick = true;
+                DataProtectionManager.getInstance(getContext()).checkDecrypt(SessionUtils.getAccount(fragment.getActivity()), selectedOptionItems.get(0));
                 break;
             default:
                 onMenuItemClick = false;

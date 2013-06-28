@@ -1,6 +1,7 @@
 package org.alfresco.mobile.android.application.operations.batch.node;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ContentFile;
@@ -84,15 +85,16 @@ public abstract class AbstractUpThread extends AbstractBatchOperationThread<Docu
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onRead(ContentFileProgressImpl contentFile, Long amountCopied)
+    public void onRead(ContentFileProgressImpl contentFile, Long amountCopied) throws IOException
     {
+        if (isInterrupted()) { throw new IOException(); }
+
         // We limit progress notification to one per 10%
         if (listener != null)
         {
             saveProgress(amountCopied);
             listener.onProgressUpdate(this, amountCopied);
         }
-        // super.onProgressUpdate(amountCopied);
     }
 
     protected void saveProgress(long progress)

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch.node.create;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +25,10 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.security.EncryptionUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.content.Context;
@@ -79,7 +80,7 @@ public class CreateDocumentThread extends AbstractUpThread
             setOperationCallBack(tmpListener);
 
             String filename = getContentFile().getFile().getPath();
-            boolean encdec = StorageManager.shouldEncryptDecrypt(context, filename);
+            boolean encdec = DataProtectionManager.getInstance(context).isEncryptable(acc, new File(filename));
             finalDocumentName = createUniqueName();
 
             if (listener != null)
@@ -89,7 +90,7 @@ public class CreateDocumentThread extends AbstractUpThread
 
             if (encdec)
             {
-                CipherUtils.decryptFile(context, filename);
+                EncryptionUtils.decryptFile(context, filename);
             }
 
             if (parentFolder != null)
@@ -107,7 +108,7 @@ public class CreateDocumentThread extends AbstractUpThread
 
             if (encdec)
             {
-                CipherUtils.encryptFile(context, filename, true);
+                EncryptionUtils.encryptFile(context, filename, true);
             }
         }
         catch (Exception e)

@@ -29,13 +29,14 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
-import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationThread;
+import org.alfresco.mobile.android.application.operations.batch.node.NodeOperationThread;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
@@ -43,6 +44,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -53,17 +55,11 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
+public class SyncFavoriteThread extends NodeOperationThread<Void>
 {
-    public static final int MODE_DOCUMENTS = 1;
-
-    public static final int MODE_FOLDERS = 2;
-
-    public static final int MODE_BOTH = 4;
-
     private static final String TAG = SyncFavoriteThread.class.getName();
 
-    private int mode = MODE_DOCUMENTS;
+    private int mode = SyncFavoriteRequest.MODE_DOCUMENTS;
 
     private ListingContext listingContext;
 
@@ -79,12 +75,18 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private ArrayList<String> remoteFavoritesId;
 
+    private DataProtectionManager dataProtectionManager;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     public SyncFavoriteThread(Context context, OperationRequest request)
     {
         super(context, request);
+        if (request instanceof SyncFavoriteRequest)
+        {
+            this.mode = ((SyncFavoriteRequest) request).getMode();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -99,16 +101,21 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
             result = super.doInBackground();
 
             canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
+            dataProtectionManager = DataProtectionManager.getInstance(context);
 
             group = new OperationsRequestGroup(context, acc);
 
+            // Timestamp the scan process
+            syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
+
             switch (mode)
             {
-                case MODE_DOCUMENTS:
+                case SyncFavoriteRequest.MODE_DOCUMENT:
+                    List<Document> docs = new ArrayList<Document>(1);
+                    docs.add((Document) node);
+                    remoteFavorites = new PagingResultImpl<Document>(docs, false, 1);
 
-                    // Timestamp the scan process
-                    syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
-
+                case SyncFavoriteRequest.MODE_DOCUMENTS:
                     // Retrieve list of Favorites
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
                             .getFavoriteDocuments(listingContext);
@@ -116,25 +123,25 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
                     // Retrieve list of local Favorites
                     localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL, null, null, null);
-
-                    // We have favorites
-                    // Update the referential contentProvider
-                    if (!isFirstSync())
-                    {
-                        // Check updated favorites
-                        scanUpdateItem();
-
-                        // Check deleted favorites
-                        scanDeleteItem();
-                    }
-
-                    if (localFavoritesCursor != null)
-                    {
-                        localFavoritesCursor.close();
-                    }
                     break;
                 default:
                     break;
+            }
+
+            // We have our favorites
+            // Update the referential contentProvider
+            if (!isFirstSync())
+            {
+                // Check updated favorites
+                scanUpdateItem();
+
+                // Check deleted favorites
+                scanDeleteItem();
+            }
+
+            if (localFavoritesCursor != null)
+            {
+                localFavoritesCursor.close();
             }
 
             if (!group.getRequests().isEmpty())
@@ -164,7 +171,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private boolean isFirstSync()
     {
-        if (localFavoritesCursor.getCount() == 0)
+        if (localFavoritesCursor == null || localFavoritesCursor.getCount() == 0)
         {
             // USE CASE : FIRST
             // If 0 ==> Bulk Insert
@@ -261,7 +268,7 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
                 remoteServerTimeStamp = doc.getModifiedAt().getTimeInMillis();
                 hasLocalModification = hasLocalModification(cursorId, localFile);
 
-                // Check if it's a modification in server side
+                // Check if there's a modification in server side
                 if (remoteServerTimeStamp > localServerTimeStamp)
                 {
                     // Server side modification
@@ -384,6 +391,13 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private boolean hasLocalModification(Cursor cursor, File localFile)
     {
+
+        if (dataProtectionManager.isEncryptionEnable())
+        {
+            if (SyncOperation.STATUS_MODIFIED == cursor.getInt(SynchroSchema.COLUMN_STATUS_ID)) { return true; }
+            return false;
+        }
+
         // Check modification Date and local modification
         long localSyncTimeStamp = cursor.getLong(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
         return (localSyncTimeStamp != -1 && localFile != null && localFile.lastModified() > localSyncTimeStamp);
@@ -391,11 +405,15 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private boolean hasLocalModification(Cursor cursor)
     {
+        if (dataProtectionManager.isEncryptionEnable())
+        {
+            if (SyncOperation.STATUS_MODIFIED == cursor.getInt(SynchroSchema.COLUMN_STATUS_ID)) { return true; }
+            return false;
+        }
         // Check modification Date and local modification
         Uri localFileUri = Uri.parse(cursor.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
-        long localSyncTimeStamp = cursor.getLong(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
-        return (localSyncTimeStamp != -1 && localFile != null && localFile.lastModified() > localSyncTimeStamp);
+        return hasLocalModification(cursor, localFile);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -413,16 +431,16 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
     private void addSyncDownloadRequest(Uri localUri, Document doc, long timeStamp)
     {
-        //If listing mode, update Metadata associated
-        if (!canExecuteAction) { 
+        // If listing mode, update Metadata associated
+        if (!canExecuteAction)
+        {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_NODE_ID, doc.getIdentifier());
-            cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt()
-                    .getTimeInMillis());
+            cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
             context.getContentResolver().update(localUri, cValues, null, null);
-            return; 
+            return;
         }
-        
+
         // Execution
         SyncDownloadRequest dl = new SyncDownloadRequest(doc);
         dl.setNotificationUri(localUri);
@@ -477,10 +495,13 @@ public class SyncFavoriteThread extends AbstractBatchOperationThread<Void>
 
         // If Synced document
         // Flag the item inside the referential
-        ContentValues cValues = new ContentValues();
-        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
-        context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
-                cValues, null, null);
+        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID)){
+            ContentValues cValues = new ContentValues();
+            cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
+            context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
+                    cValues, null, null);
+        }
+       
 
         // Execution
         SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id, cursorId.getString(SynchroSchema.COLUMN_TITLE_ID),

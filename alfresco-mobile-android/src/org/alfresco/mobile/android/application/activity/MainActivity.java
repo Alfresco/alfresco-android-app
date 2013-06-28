@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -50,7 +51,6 @@ import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFr
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment;
@@ -69,10 +69,12 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
@@ -86,7 +88,6 @@ import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -184,12 +185,14 @@ public class MainActivity extends BaseActivity
         if (SessionUtils.getAccount(this) != null)
         {
             currentAccount = SessionUtils.getAccount(this);
-            if (currentAccount.getIsPaidAccount())
+            if (currentAccount.getIsPaidAccount()
+                    && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
                 // Check if we've prompted the user for Data Protection yet.
                 // This is needed on new account creation, as the Activity gets
                 // re-created after the account is created.
-                CipherUtils.encryptionUserInteraction(this);
+                DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                        DataProtectionUserDialogFragment.TAG);
 
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
@@ -206,6 +209,9 @@ public class MainActivity extends BaseActivity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
+
+        // TODO REMOVE
+        //SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
     }
 
     @Override
@@ -255,10 +261,10 @@ public class MainActivity extends BaseActivity
         {
             String filename = PreferenceManager.getDefaultSharedPreferences(this).getString(
                     GeneralPreferences.REQUIRES_ENCRYPT, "");
-            FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-            EncryptionDialogFragment fragment = EncryptionDialogFragment.encrypt(filename);
-            fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-            fragmentTransaction.commit();
+            if (!StorageManager.isSyncFile(this, new File(filename)))
+            {
+                DataProtectionManager.getInstance(this).checkEncrypt(getCurrentAccount(), new File(filename));
+            }
         }
 
         if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
@@ -296,13 +302,6 @@ public class MainActivity extends BaseActivity
                             FavoritesSyncFragment.TAG, true);
                     clearCentralPane();
                 }
-                return;
-            }
-
-            // Intent for Removing Fragment + eventual associated loader.
-            if (IntentIntegrator.ACTION_REMOVE_FRAGMENT.equals(intent.getAction()))
-            {
-                EncryptionDialogFragment.removeFragment(this, intent);
                 return;
             }
 
@@ -456,7 +455,8 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
-                FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
+                frag = KeywordSearch.newInstance();
+                FragmentDisplayer.replaceFragment(this,  frag, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
@@ -539,7 +539,7 @@ public class MainActivity extends BaseActivity
                 fragmentQueue = actionMainMenuId;
                 return false;
             default:
-                if (!hasNetwork())
+                if (!ConnectivityUtils.hasNetwork(this))
                 {
                     return false;
                 }
@@ -921,8 +921,7 @@ public class MainActivity extends BaseActivity
                     i.putExtra(IntentIntegrator.EXTRA_FOLDER,
                             StorageManager.getDownloadFolder(this, getCurrentAccount()));
                     i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
-                    getFragment(DetailsFragment.TAG).startActivityForResult(i,
-                            PublicIntent.REQUESTCODE_FILEPICKER);
+                    getFragment(DetailsFragment.TAG).startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
                 }
                 return true;
             case MenuActionItem.MENU_EDIT:
@@ -1041,23 +1040,6 @@ public class MainActivity extends BaseActivity
     public void setCurrentNode(Node currentNode)
     {
         this.currentNode = currentNode;
-    }
-
-    private boolean hasNetwork()
-    {
-        if (!ConnectivityUtils.hasInternetAvailable(this))
-        {
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_network_title);
-            b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_network_details);
-            b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-            ActionManager.actionDisplayDialog(this, b);
-            return false;
-        }
-        else
-        {
-            return true;
-        }
     }
 
     // For Creating file in childrenbrowser
@@ -1199,7 +1181,8 @@ public class MainActivity extends BaseActivity
                         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
                         prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
-                        CipherUtils.encryptionUserInteraction(activity);
+                        DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                                DataProtectionUserDialogFragment.TAG);
 
                         currentAccount = accountManager.update(currentAccount.getId(), currentAccount.getDescription(),
                                 currentAccount.getUrl(), currentAccount.getUsername(), currentAccount.getPassword(),

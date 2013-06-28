@@ -38,13 +38,13 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -268,7 +268,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
 
         if (adapter == null && files != null)
         {
-            adapter = new FileExplorerAdapter(this, R.layout.sdk_list_row, files);
+            adapter = new FileExplorerAdapter(this, R.layout.app_list_progress_row, files);
             if (lv != null)
             {
                 lv.setAdapter(adapter);
@@ -468,10 +468,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
                     for (File file : files)
                     {
                         newFile = new File(folderStorage, file.getName());
-                        EncryptionDialogFragment fragment = (CipherUtils.isEncryptionActive(getActivity())) ? EncryptionDialogFragment
-                                .copyAndEncrypt(file.getPath(), newFile.getPath(), tmpAccount)
-                                : EncryptionDialogFragment.copy(file.getPath(), newFile.getPath(), tmpAccount);
-                        fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
+                        DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(SessionUtils.getAccount(getActivity()), file, newFile);
                     }
                     fragmentTransaction.commit();
                 }

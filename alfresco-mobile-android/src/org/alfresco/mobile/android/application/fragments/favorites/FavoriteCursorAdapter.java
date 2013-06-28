@@ -53,7 +53,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
 {
-    private static final String TAG = FavoriteCursorAdapter.class.getName();
+    //private static final String TAG = FavoriteCursorAdapter.class.getName();
 
     private Fragment fragment;
 
@@ -114,6 +114,9 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 }
                 break;
             case SyncOperation.STATUS_PAUSED:
+                displayStatut(vh, R.drawable.sync_status_pending);
+                break;
+            case SyncOperation.STATUS_MODIFIED:
                 displayStatut(vh, R.drawable.sync_status_pending);
                 break;
             case SyncOperation.STATUS_SUCCESSFUL:
@@ -252,13 +255,13 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
+               mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                         + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
+                /*
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
                         R.string.action_view_properties);
-                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);*/
                 break;
         }
     }

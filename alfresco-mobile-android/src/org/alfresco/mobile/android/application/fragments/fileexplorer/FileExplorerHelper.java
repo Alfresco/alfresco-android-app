@@ -30,55 +30,6 @@ public final class FileExplorerHelper
 
     private static final String FILEEXPLORER_DEFAULT = "org.alfresco.mobile.android.fileexplorer.preferences.default";
 
-    public static void setSelection(Activity activity)
-    {
-        int itemPosition = 1;
-        SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-        prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
-    }
-
-    public static void setSelection(Activity activity, File location)
-    {
-        int itemPosition = 1;
-        if (location.equals(StorageManager.getDownloadFolder(activity, ((BaseActivity) activity).getCurrentAccount())))
-        {
-            itemPosition = 1;
-        }
-        else if (location.equals(Environment.getExternalStorageDirectory()))
-        {
-            itemPosition = 3;
-        }
-
-        SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-        prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
-    }
-
-    public static void setSelection(Activity activity, int mediatype)
-    {
-        int itemPosition = 1;
-        switch (mediatype)
-        {
-            case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
-                itemPosition = 8;
-                break;
-
-            case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:
-                itemPosition = 7;
-                break;
-
-            default:
-                break;
-        }
-
-        SharedPreferences prefs = activity.getSharedPreferences(FILEEXPLORER_PREFS, 0);
-        prefs.edit().putInt(FILEEXPLORER_DEFAULT, itemPosition).commit();
-    }
-
-    public static void displayNavigationMode(final Activity activity, int mode)
-    {
-        displayNavigationMode(activity, mode, true, 1);
-    }
-
     public static void displayNavigationMode(final Activity activity, final int mode, final boolean backStack, int menuId)
     {
         activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
@@ -106,19 +57,22 @@ public final class FileExplorerHelper
                     case 3:
                         currentLocation = Environment.getExternalStorageDirectory();
                         break;
-                    case 5:
-                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
+                    case 4:
+                        currentLocation = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
                         break;
                     case 6:
-                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_NONE;
                         break;
                     case 7:
-                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO;
                         break;
                     case 8:
+                        mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
+                        break;
+                    case 9:
                         mediatype = MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
                         break;
-                    case 10:
+                    case 11:
                         thirdPartyApp = true;
                         break;
                     default:

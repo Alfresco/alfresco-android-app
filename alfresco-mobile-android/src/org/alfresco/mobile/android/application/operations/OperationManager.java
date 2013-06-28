@@ -27,6 +27,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 
 public abstract class OperationManager
 {
@@ -60,22 +61,6 @@ public abstract class OperationManager
 
     public abstract void retry(long id);
 
-    public boolean isLastOperationGroup()
-    {
-        if (currentOperationGroup == null && operationsGroups.isEmpty()) { return true; }
-
-        if (currentOperationGroup != null && !currentOperationGroup.hasPendingRequest()
-                && !currentOperationGroup.hasRunningRequest())
-        {
-            currentOperationGroup = null;
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
     public boolean isLastOperation(String operationId)
     {
         if (indexOperationGroup.get(operationId) != null)
@@ -85,25 +70,39 @@ public abstract class OperationManager
         }
         return true;
     }
-
-    public OperationsGroupInfo next()
+    
+    public OperationsGroupRecord getOperationGroup(String operationId)
     {
-        if (currentOperationGroup == null && operationsGroups.isEmpty()) { return null; }
-
-        if (currentOperationGroup == null && !operationsGroups.isEmpty())
+        return indexOperationGroup.get(operationId);
+    }
+    
+    public OperationsGroupRecord removeOperationGroup(String operationId)
+    {
+        return indexOperationGroup.get(operationId);
+    }
+    
+    public OperationsGroupInfo next(){
+        OperationsGroupRecord group = null;
+        ArrayList<Integer> ints = new ArrayList<Integer>();
+        for (int i = 0; i < operationsGroups.size(); i++)
         {
-            currentOperationGroup = operationsGroups.remove(0);
+            group = operationsGroups.get(i);
+            if (group.hasPendingRequest())
+            {
+                return group.next();
+            }
+            if (!group.hasPendingRequest() && !group.hasRunningRequest())
+            {
+                ints.add(i);
+            }
         }
-
-        if (currentOperationGroup != null && currentOperationGroup.hasPendingRequest())
+        
+        for (Integer index : ints)
         {
-            OperationsGroupInfo info = currentOperationGroup.next();
-            return info;
+            operationsGroups.remove(index);
         }
-        else
-        {
-            return null;
-        }
+       
+       return null;
     }
 
     public OperationsGroupResult getResult(String operationId)
@@ -148,7 +147,7 @@ public abstract class OperationManager
         i.putExtra(EXTRA_OPERATION_ID, operationId + "");
         LocalBroadcastManager.getInstance(mAppContext).sendBroadcast(i);
     }
-    
+
     public void pause(int operationId)
     {
         Intent i = new Intent(IntentIntegrator.ACTION_OPERATION_PAUSE);

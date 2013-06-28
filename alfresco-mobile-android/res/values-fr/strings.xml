@@ -312,11 +312,11 @@
     <string name="content_being_encrypted">La protection du contenu est en cours. Veuillez patienter</string>
     <string name="content_being_decrypted">L\'annulation de la protection du contenu est en cours. Veuillez patienter</string>
     <string name="data_protection">Protection des données</string>
-    <string name="data_protection_blurb">Souhaitez vous activer la protection des données ? (Cette opération chiffre toutes les données Alfresco téléchargées pour chaque compte. Seules les applications Alfresco ont accès à ces documents.)</string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>Souhaitez vous activer la protection des données ?</b></p> Cette opération chiffre toutes les données Alfresco téléchargées pour chaque compte. <br/> Seules les applications Alfresco ont accès à ces documents.]]></string>
     <string name="encryption_failed">Echec du chiffrement</string>
     <string name="decryption_failed">Echec du déchiffrement</string>
-	<string name="protect_question">Protéger dès maintenant toutes les données Alfresco téléchargées ?  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco. Seules les applications Alfresco ont accès à ces documents.</string>
-	<string name="unprotect_question">Annuler dès maintenant la protection de toutes les données Alfresco téléchargées ?  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco.</string>
+	<string name="protect_question"><![CDATA[<p><b>Protéger dès maintenant toutes les données Alfresco téléchargées ?</b></p>  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco. Seules les applications Alfresco ont accès à ces documents.]]></string>
+	<string name="unprotect_question"><![CDATA[<p><b>Annuler dès maintenant la protection de toutes les données Alfresco téléchargées ?</b></p>  Cette opération s\'applique à tous les documents que vous avez téléchargés à partir de vos comptes Alfresco.]]></string>
 	<string name="already_encrypted">Ce document est déjà chiffré.</string>
 	<string name="already_decrypted">Ce document est déjà déchiffré.</string>
 	<string name="decryption_title">Désactivation de la protection des données en cours&#8230;</string>

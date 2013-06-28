@@ -23,11 +23,10 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.AbstractSyncUpThread;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -67,10 +66,7 @@ public class SyncUpdateThread extends AbstractSyncUpThread
 
             if (contentFile != null)
             {
-                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
-                {
-                    CipherUtils.decryptFile(context, contentFile.getFile().getPath());
-                }
+                DataProtectionManager.getInstance(context).checkDecrypt(acc, contentFile.getFile());
 
                 Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
                 AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(document.getIdentifier());
@@ -123,10 +119,7 @@ public class SyncUpdateThread extends AbstractSyncUpThread
                 updatedNode = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
 
-                if (StorageManager.shouldEncryptDecrypt(context, contentFile.getFile().getPath()))
-                {
-                    CipherUtils.encryptFile(context, contentFile.getFile().getPath(), true);
-                }
+                DataProtectionManager.getInstance(context).checkEncrypt(acc, contentFile.getFile());
             }
         }
         catch (Exception e)

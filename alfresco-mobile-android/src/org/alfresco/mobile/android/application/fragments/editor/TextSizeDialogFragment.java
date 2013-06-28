@@ -22,7 +22,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.TextEditorActivity;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;

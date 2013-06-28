@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -168,5 +169,10 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
     public void refresh()
     {
         refresh(loaderId, callback);
+    }
+    
+    protected Fragment getFragment(String tag)
+    {
+        return getActivity().getFragmentManager().findFragmentByTag(tag);
     }
 }

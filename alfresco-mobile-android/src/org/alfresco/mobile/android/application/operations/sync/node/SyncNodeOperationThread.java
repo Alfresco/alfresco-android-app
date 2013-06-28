@@ -72,13 +72,13 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             try
             {
                 node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                parentFolder = retrieveParentFolder();
             }
             catch (AlfrescoServiceException e)
             {
                 // Do Nothing
             }
             
-            parentFolder = retrieveParentFolder();
 
             if (listener != null)
             {

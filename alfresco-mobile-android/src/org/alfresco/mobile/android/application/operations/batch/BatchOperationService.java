@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -27,6 +28,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.Operation.OperationCallBack;
 import org.alfresco.mobile.android.application.operations.OperationsGroupInfo;
+import org.alfresco.mobile.android.application.operations.OperationsGroupRecord;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountCallBack;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountThread;
@@ -39,6 +41,10 @@ import org.alfresco.mobile.android.application.operations.batch.file.create.Crea
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileCallback;
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileThread;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionCallback;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionRequest;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.FileProtectionThread;
+import org.alfresco.mobile.android.application.operations.batch.file.encryption.FolderProtectionThread;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameCallback;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.update.RenameThread;
@@ -71,11 +77,11 @@ import org.alfresco.mobile.android.application.operations.batch.node.update.Upda
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesThread;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteThread;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -94,6 +100,8 @@ public class BatchOperationService<T> extends Service
     private Map<String, Operation<T>> operations = new HashMap<String, Operation<T>>();
 
     private Set<String> lastOperation = new HashSet<String>();
+
+    private int parallelOperation;
 
     @Override
     public IBinder onBind(Intent intent)
@@ -161,7 +169,7 @@ public class BatchOperationService<T> extends Service
 
         AbstractBatchOperationThread<T> task = null;
         OperationCallBack<T> callback = null;
-        int parallelOperation = 1;
+        parallelOperation = 1;
         switch (request.getTypeId())
         {
             case DownloadRequest.TYPE_ID:
@@ -227,16 +235,31 @@ public class BatchOperationService<T> extends Service
                 callback = (OperationCallBack<T>) new RenameCallback(getBaseContext(), totalItems, pendingRequest);
                 break;
             case SyncFavoriteRequest.TYPE_ID:
+                parallelOperation = 1;
                 task = (AbstractBatchOperationThread<T>) new SyncFavoriteThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncCallBack(getBaseContext(), totalItems, pendingRequest);
                 break;
-            case UnSyncFavoriteRequest.TYPE_ID:
-                task = (AbstractBatchOperationThread<T>) new UnSyncFavoriteThread(getBaseContext(), request);
+            case CleanSyncFavoriteRequest.TYPE_ID:
+                task = (AbstractBatchOperationThread<T>) new CleanSyncFavoriteThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncCallBack(getBaseContext(), totalItems, pendingRequest);
                 break;
             case RetrieveDocumentNameRequest.TYPE_ID:
                 task = (AbstractBatchOperationThread<T>) new RetrieveDocumentNameThread(getBaseContext(), request);
-                callback = (OperationCallBack<T>) new RetrieveDocumentNameCallBack(getBaseContext(), totalItems, pendingRequest);
+                callback = (OperationCallBack<T>) new RetrieveDocumentNameCallBack(getBaseContext(), totalItems,
+                        pendingRequest);
+                break;
+            case DataProtectionRequest.TYPE_ID:
+                parallelOperation = 2;
+                if (new File(((DataProtectionRequest) request).getFilePath()).isDirectory())
+                {
+                    task = (AbstractBatchOperationThread<T>) new FolderProtectionThread(getBaseContext(), request);
+                }
+                else
+                {
+                    task = (AbstractBatchOperationThread<T>) new FileProtectionThread(getBaseContext(), request);
+                }
+                callback = (OperationCallBack<T>) new DataProtectionCallback(getBaseContext(), totalItems,
+                        pendingRequest);
                 break;
             default:
                 break;
@@ -247,7 +270,8 @@ public class BatchOperationService<T> extends Service
             task.setOperationCallBack(callback);
         }
 
-        if (ConnectivityUtils.hasInternetAvailable(getBaseContext()))
+        if ((task.requireNetwork() && ConnectivityUtils.hasInternetAvailable(getBaseContext()))
+                || !task.requireNetwork())
         {
             if (pendingRequest == 0)
             {
@@ -279,7 +303,10 @@ public class BatchOperationService<T> extends Service
             // DATA CHANGED START
             if (BatchOperationManager.ACTION_DATA_CHANGED.equals(intent.getAction()))
             {
-                executeOperation();
+                if (operations.size() < parallelOperation)
+                {
+                    executeOperation();
+                }
                 return;
             }
 
@@ -316,6 +343,7 @@ public class BatchOperationService<T> extends Service
             {
                 if (batchManager.isLastOperation(operationId) && operations.get(operationId) != null)
                 {
+                    OperationsGroupRecord group = batchManager.getOperationGroup(operationId);
                     ((AbstractBatchOperationThread) operations.get(operationId)).executeGroupCallback(batchManager
                             .getResult(operationId));
                 }

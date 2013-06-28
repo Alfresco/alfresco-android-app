@@ -80,4 +80,9 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
     {
         saveStatus(Operation.STATUS_CANCEL);
     }
+    
+    public boolean requireNetwork()
+    {
+        return true;
+    }
 }
