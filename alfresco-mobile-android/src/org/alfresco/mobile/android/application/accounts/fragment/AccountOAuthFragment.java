@@ -20,16 +20,24 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
 
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +52,8 @@ public class AccountOAuthFragment extends OAuthFragment
     public static final String TAG = "AccountOAuthFragment";
 
     private static final String PARAM_ACCOUNT = "account";
+    
+    private AccountsReceiver receiver;
 
     public static AccountOAuthFragment newInstance()
     {
@@ -196,10 +206,24 @@ public class AccountOAuthFragment extends OAuthFragment
     @Override
     public void onStart()
     {
+        if (receiver == null)
+        {
+            receiver = new AccountsReceiver();
+            IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filters);
+        }
+        
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
 
+    @Override
+    public void onPause()
+    {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        super.onPause();
+    }
+    
     @Override
     public void onStop()
     {
@@ -230,6 +254,35 @@ public class AccountOAuthFragment extends OAuthFragment
         {
             ActionManager.createAccount(getActivity(), (CreateAccountRequest) new CreateAccountRequest(oauthData)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+    }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    private class AccountsReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()) && getActivity() instanceof MainActivity)
+            {
+                getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                if (intent.getExtras() != null && intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+                {
+                    long accountId = intent.getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, -1);
+
+                    AccountsFragment frag = (AccountsFragment) getActivity().getFragmentManager().findFragmentByTag(
+                            AccountsFragment.TAG);
+                    if (frag != null)
+                    {
+                        frag.select(accountId);
+                    }
+                    ((BaseActivity) getActivity()).setCurrentAccount(accountId);
+                }
+            }
         }
     }
 }

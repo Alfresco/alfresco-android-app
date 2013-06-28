@@ -455,7 +455,8 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
-                FragmentDisplayer.replaceFragment(this, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
+                frag = KeywordSearch.newInstance();
+                FragmentDisplayer.replaceFragment(this,  frag, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
