@@ -21,13 +21,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -53,6 +63,8 @@ public class AccountEditFragment extends DialogFragment
             description = null;
 
     private int port;
+
+    private AccountsReceiver receiver;
 
     public AccountEditFragment()
     {
@@ -118,6 +130,13 @@ public class AccountEditFragment extends DialogFragment
     @Override
     public void onStart()
     {
+        if (receiver == null)
+        {
+            receiver = new AccountsReceiver();
+            IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filters);
+        }
+
         if (getDialog() != null)
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
@@ -137,6 +156,13 @@ public class AccountEditFragment extends DialogFragment
         super.onStart();
     }
 
+    @Override
+    public void onPause()
+    {
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        super.onPause();
+    }
+
     // /////////////////////////////////////////////////////////////
     // INTERNALS
     // ////////////////////////////////////////////////////////////
@@ -151,8 +177,15 @@ public class AccountEditFragment extends DialogFragment
             // Create Account + Session
             OperationsRequestGroup group = new OperationsRequestGroup(getActivity());
             group.enqueue(new CreateAccountRequest(url, username, password, description)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
             BatchOperationManager.getInstance(getActivity()).enqueue(group);
+
+            if (getActivity() instanceof MainActivity)
+            {
+                OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, R.drawable.ic_onpremise,
+                        getString(R.string.account), getString(R.string.account_verify), null, -1).show(
+                        getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            }
         }
     }
 
@@ -274,6 +307,35 @@ public class AccountEditFragment extends DialogFragment
         else
         {
             return getActivity().findViewById(id);
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    private class AccountsReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()) && getActivity() instanceof MainActivity)
+            {
+                getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
+                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+                if (intent.getExtras() != null && intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
+                {
+                    long accountId = intent.getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, -1);
+
+                    AccountsFragment frag = (AccountsFragment) getActivity().getFragmentManager().findFragmentByTag(
+                            AccountsFragment.TAG);
+                    if (frag != null)
+                    {
+                        frag.select(accountId);
+                    }
+                    ((BaseActivity) getActivity()).setCurrentAccount(accountId);
+                }
+            }
         }
     }
 }

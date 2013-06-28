@@ -39,6 +39,7 @@
     <string name="account_wizard_alfresco_help_inside_app">New to Alfresco ? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <string name="account">Account</string>
     <string name="action_add_account">Add</string>
     <string name="account_username">Username</string>
     <string name="account_password">Password</string>
