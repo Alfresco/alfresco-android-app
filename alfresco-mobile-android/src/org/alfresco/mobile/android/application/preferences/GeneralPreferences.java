@@ -24,20 +24,17 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.onFavoriteChangeListener;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
@@ -113,48 +110,10 @@ public class GeneralPreferences extends PreferenceFragment
             @Override
             public boolean onPreferenceClick(Preference preference)
             {
-                final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                final boolean checked = prefs.getBoolean(PRIVATE_FOLDERS, false);
-
                 final File folder = StorageManager.getPrivateFolder(getActivity(), "", null);
                 if (folder != null)
                 {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.data_protection));
-                    builder.setMessage(getString(checked ? R.string.unprotect_question : R.string.protect_question));
-                    builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int item)
-                        {
-                            dialog.dismiss();
-
-                            if (checked)
-                            {
-                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                                EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder);
-                                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                                fragmentTransaction.commit();
-                            }
-                            else
-                            {
-                                FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                                EncryptionDialogFragment fragment = EncryptionDialogFragment.encryptAll(folder
-                                        .getPath());
-                                fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                                fragmentTransaction.commit();
-                            }
-                        }
-                    });
-                    builder.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener()
-                    {
-                        public void onClick(DialogInterface dialog, int item)
-                        {
-                            dialog.dismiss();
-                        }
-                    });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    DataProtectionUserDialogFragment.newInstance(false).show(getActivity().getFragmentManager(), DataProtectionUserDialogFragment.TAG);
                 }
                 else
                 {

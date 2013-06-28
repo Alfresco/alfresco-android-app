@@ -434,7 +434,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         Node item = (Node) l.getItemAtPosition(position);
 
-        if (item instanceof NodePlaceHolder) { return; }
+        if (item instanceof NodePlaceHolder)
+        {
+            l.setItemChecked(position, false);
+            return;
+        }
 
         // In case of import mode, we disable selection of document.
         // It's only possible to select a folder for navigation purpose.

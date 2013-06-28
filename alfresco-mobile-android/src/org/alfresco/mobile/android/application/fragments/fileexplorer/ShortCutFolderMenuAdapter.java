@@ -78,6 +78,9 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
             case R.string.shortcut_thirdparty_applications:
                 iconId = R.drawable.ic_share;
                 break;
+            case R.string.shortcut_local_downloads:
+                iconId = R.drawable.ic_download_dark;
+                break;
             default:
                 vh.topText.setVisibility(View.GONE);
                 vh.bottomText.setVisibility(View.VISIBLE);
@@ -111,7 +114,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
 
             add(R.string.shortcut_local);
             add(R.string.shortcut_local_sdcard);
-            //add(R.string.shortcut_local_downloads);
+            add(R.string.shortcut_local_downloads);
 
             add(R.string.shortcut_library);
             add(R.string.shortcut_library_office);

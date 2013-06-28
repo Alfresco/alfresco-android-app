@@ -66,11 +66,9 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
         {
             case Operation.STATUS_PENDING:
                 vh.choose.setImageResource(R.drawable.ic_cancel);
-                displayStatut(vh, R.drawable.sync_status_pending);
                 statusValue += context.getString(R.string.status_pending);
                 break;
             case Operation.STATUS_RUNNING:
-                displayStatut(vh, R.drawable.sync_status_loading);
                 vh.choose.setImageResource(R.drawable.ic_cancel);
                 vh.progress.setVisibility(View.VISIBLE);
                 long totalSize = cursor.getLong(BatchOperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
@@ -97,22 +95,18 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
                 statusValue += context.getString(R.string.status_running);
                 break;
             case Operation.STATUS_PAUSED:
-                displayStatut(vh, R.drawable.sync_status_pending);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_paused);
                 break;
             case Operation.STATUS_SUCCESSFUL:
-                displayStatut(vh, R.drawable.sync_status_success);
                 vh.choose.setImageResource(R.drawable.ic_validate);
                 statusValue += context.getString(R.string.status_successful);
                 break;
             case Operation.STATUS_FAILED:
-                displayStatut(vh, R.drawable.sync_status_failed);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_failed);
                 break;
             case Operation.STATUS_CANCEL:
-                displayStatut(vh, R.drawable.sync_status_failed);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_cancelled);
                 break;
@@ -175,7 +169,7 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
                 resId = R.string.DownloadRequest;
                 break;
             case CreateDocumentRequest.TYPE_ID:
-                resId = R.string.DownloadRequest;
+                resId = R.string.CreateDocumentRequest;
                 break;
             case UpdateContentRequest.TYPE_ID:
                 resId = R.string.UpdateContentRequest;

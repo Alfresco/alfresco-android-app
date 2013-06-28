@@ -23,21 +23,13 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -51,8 +43,6 @@ public class AccountsFragment extends BaseCursorListFragment
     public static final String TAG = AccountsFragment.class.getName();
 
     protected List<Long> selectedAccounts = new ArrayList<Long>(1);
-
-    private AccountsReceiver receiver;
 
     public AccountsFragment()
     {
@@ -77,24 +67,10 @@ public class AccountsFragment extends BaseCursorListFragment
     @Override
     public void onStart()
     {
-        if (receiver == null)
-        {
-            receiver = new AccountsReceiver();
-            IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filters);
-        }
-
         DisplayUtils.hideLeftTitlePane(getActivity());
         getActivity().setTitle(R.string.accounts_manage);
         getActivity().invalidateOptionsMenu();
         super.onStart();
-    }
-
-    @Override
-    public void onPause()
-    {
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
-        super.onPause();
     }
 
     // /////////////////////////////////////////////////////////////
@@ -148,6 +124,17 @@ public class AccountsFragment extends BaseCursorListFragment
     {
         selectedAccounts.clear();
     }
+    
+    public void select(long accountId)
+    {
+        selectedAccounts.clear();
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            selectedAccounts.add(accountId);
+            refreshListView();
+            displayAccountDetails(accountId);
+        }
+    }
 
     private void displayAccountDetails(long accountId)
     {
@@ -181,36 +168,4 @@ public class AccountsFragment extends BaseCursorListFragment
         setListShown(false);
         return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL, null, null, null);
     }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // BROADCAST RECEIVER
-    // ///////////////////////////////////////////////////////////////////////////
-    private class AccountsReceiver extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
-            {
-                selectedAccounts.clear();
-                getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
-                        FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-                if (intent.getExtras() != null && intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
-                {
-                    long accountId = intent.getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, -1);
-                    
-                    ((BaseActivity)getActivity()).setCurrentAccount(accountId);
-                    
-                    if (DisplayUtils.hasCentralPane(getActivity()))
-                    {
-                        selectedAccounts.add(accountId);
-                        refreshListView();
-                    }
-                    displayAccountDetails(accountId);
-                }
-            }
-        }
-    }
-
 }

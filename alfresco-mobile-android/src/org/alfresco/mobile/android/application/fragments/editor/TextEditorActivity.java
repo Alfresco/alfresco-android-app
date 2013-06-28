@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.activity;
+package org.alfresco.mobile.android.application.fragments.editor;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,9 +28,7 @@ import java.util.Locale;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.editor.EncodingDialogFragment;
-import org.alfresco.mobile.android.application.fragments.editor.TextEditorLoader;
-import org.alfresco.mobile.android.application.fragments.editor.TextSizeDialogFragment;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -104,7 +102,7 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
             textSize = savedInstanceState.getInt(PARAM_TEXT_SIZE);
             defaultCharset = savedInstanceState.getString(PARAM_CHARSET);
         }
-        
+
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
         List<ResolveInfo> list = getPackageManager().queryIntentActivities(intent, 0);
@@ -490,8 +488,8 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
     {
         try
         {
-                originalLength = results.getData().length();
-                displayText(results.getData());
+            originalLength = results.getData().length();
+            displayText(results.getData());
         }
         catch (Exception e)
         {

@@ -65,6 +65,8 @@ public class OperationsFragment extends BaseCursorListFragment
         lv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
+        
+        getActivity().setTitle(R.string.operations);
     }
 
     // /////////////////////////////////////////////////////////////

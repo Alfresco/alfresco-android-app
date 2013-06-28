@@ -43,7 +43,7 @@ import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNo
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.UnSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 
 import android.content.BroadcastReceiver;
@@ -167,7 +167,7 @@ public class BatchOperationManager extends OperationManager
                 case SyncFavoriteRequest.TYPE_ID:
                     request = new SyncFavoriteRequest(cursor);
                     break;
-                case UnSyncFavoriteRequest.TYPE_ID:
+                case CleanSyncFavoriteRequest.TYPE_ID:
                     // request = new UnSyncFavoriteRequest(cursor);
                     break;
                 case RetrieveDocumentNameRequest.TYPE_ID:
@@ -304,76 +304,78 @@ public class BatchOperationManager extends OperationManager
 
             String operationId = (String) intent.getExtras().get(EXTRA_OPERATION_ID);
 
-            if (currentOperationGroup == null) { return; }
-
+            OperationsGroupRecord currentGroup = getOperationGroup(operationId);
+            
             // ADD
             if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETED.equals(intent.getAction()))
             {
                 int operationStatus = (int) intent.getExtras().getInt(EXTRA_OPERATION_RESULT);
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    OperationRequest op = currentOperationGroup.runningRequest.remove(operationId);
+                    OperationRequest op = currentGroup.runningRequest.remove(operationId);
                     switch (operationStatus)
                     {
                         case Operation.STATUS_SUCCESSFUL:
-                            currentOperationGroup.completeRequest.add(op);
+                            currentGroup.completeRequest.add(op);
                             break;
                         case Operation.STATUS_PAUSED:
                         case Operation.STATUS_CANCEL:
                         case Operation.STATUS_FAILED:
-                            currentOperationGroup.failedRequest.add(op);
+                            currentGroup.failedRequest.add(op);
                             break;
                         default:
                             break;
                     }
                 }
 
-                if (currentOperationGroup.index.isEmpty() && currentOperationGroup.runningRequest.isEmpty())
+                /*if (currentGroup.index.isEmpty() && currentGroup.runningRequest.isEmpty())
                 {
-                    currentOperationGroup = null;
-                }
+                    currentGroup = null;
+                }*/
                 return;
             }
 
             // STOP & DISPATCH
             if (operationId != null && IntentIntegrator.ACTION_OPERATION_STOP.equals(intent.getAction()))
             {
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    request = currentOperationGroup.runningRequest.remove(operationId);
+                    request = currentGroup.runningRequest.remove(operationId);
                 }
-                else if (currentOperationGroup.index.containsKey(operationId))
+                else if (currentGroup.index.containsKey(operationId))
                 {
-                    request = currentOperationGroup.index.remove(operationId);
+                    request = currentGroup.index.remove(operationId);
                 }
 
                 context.getContentResolver().update(getNotificationUri(request),
                         ((AbstractBatchOperationRequestImpl) request).createContentValues(Operation.STATUS_CANCEL),
                         null, null);
-                currentOperationGroup.failedRequest.add(request);
+                currentGroup.failedRequest.add(request);
+                return;
             }
 
             // PAUSE
             if (operationId != null && IntentIntegrator.ACTION_OPERATION_PAUSE.equals(intent.getAction()))
             {
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    request = currentOperationGroup.runningRequest.remove(operationId);
+                    request = currentGroup.runningRequest.remove(operationId);
                 }
-                else if (currentOperationGroup.index.containsKey(operationId))
+                else if (currentGroup.index.containsKey(operationId))
                 {
-                    request = currentOperationGroup.index.remove(operationId);
+                    request = currentGroup.index.remove(operationId);
                 }
 
-                Log.d(TAG, "PAUSED" + getNotificationUri(request));
+                Log.d(TAG, "PAUSED : " + getNotificationUri(request));
                 context.getContentResolver().update(getNotificationUri(request),
                         ((AbstractBatchOperationRequestImpl) request).createContentValues(Operation.STATUS_PAUSED),
                         null, null);
-                currentOperationGroup.index.put(operationId, request);
-                if (!currentOperationGroup.hasRunningRequest())
+                currentGroup.index.put(operationId, request);
+                if (!currentGroup.hasRunningRequest())
                 {
-                    currentOperationGroup = null;
+                    currentGroup = null;
                 }
+                return;
             }
         }
     }

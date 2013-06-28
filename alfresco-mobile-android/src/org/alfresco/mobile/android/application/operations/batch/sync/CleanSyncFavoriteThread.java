@@ -36,21 +36,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-public class UnSyncFavoriteThread extends AbstractBatchOperationThread<Void>
+public class CleanSyncFavoriteThread extends AbstractBatchOperationThread<Void>
 {
-    private static final String TAG = UnSyncFavoriteThread.class.getName();
+    private static final String TAG = CleanSyncFavoriteThread.class.getName();
 
     private Account acc;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public UnSyncFavoriteThread(Context context, OperationRequest request)
+    public CleanSyncFavoriteThread(Context context, OperationRequest request)
     {
         super(context, request);
-        if (request instanceof UnSyncFavoriteRequest)
+        if (request instanceof CleanSyncFavoriteRequest)
         {
-            this.accountId = ((UnSyncFavoriteRequest) request).getAccountId();
+            this.accountId = ((CleanSyncFavoriteRequest) request).getAccountId();
         }
     }
 

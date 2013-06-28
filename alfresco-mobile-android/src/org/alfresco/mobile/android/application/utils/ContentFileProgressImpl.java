@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.utils;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 
@@ -70,7 +71,7 @@ public class ContentFileProgressImpl extends ContentFileImpl
     }
 
     @Override
-    public void fileReadCallback(int nBytes)
+    public void fileReadCallback(int nBytes) throws IOException
     {
         amountCopied += nBytes;
 
@@ -112,7 +113,7 @@ public class ContentFileProgressImpl extends ContentFileImpl
     // ///////////////////////////////////////////////////////////////////////////
     public interface ReaderListener
     {
-        void onRead(ContentFileProgressImpl contentFile, Long amountCopied);
+        void onRead(ContentFileProgressImpl contentFile, Long amountCopied) throws IOException;
 
         int getSegment();
     }

@@ -34,19 +34,18 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -488,18 +487,8 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    EncryptionDialogFragment fragment = EncryptionDialogFragment.decryptAll(folder, new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            deleteAccount();
-                        }
-                    });
-                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                    fragmentTransaction.commit();
-
+                    DataProtectionManager.getInstance(getActivity()).decrypt(acc);
+                    
                     Editor edit = prefs.edit();
 
                     // Unflag this so that on next (first) addition of a new
@@ -511,6 +500,8 @@ public class AccountDetailsFragment extends BaseFragment
                     // Turn off data protection
                     edit.putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
                     edit.commit();
+                    
+                    deleteAccount(); 
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()

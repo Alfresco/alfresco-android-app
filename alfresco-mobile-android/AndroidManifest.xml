@@ -128,7 +128,7 @@
 
         <!-- Private : Text Editor Activity -->
         <activity
-            android:name="org.alfresco.mobile.android.application.activity.TextEditorActivity"
+            android:name="org.alfresco.mobile.android.application.fragments.editor.TextEditorActivity"
             android:exported="false"
             android:label="@string/file_editor_name"
             android:uiOptions="splitActionBarWhenNarrow"
@@ -214,6 +214,11 @@
         <!-- Private Service for sync. -->
         <service
             android:name="org.alfresco.mobile.android.application.operations.sync.SynchroService"
+            android:exported="false" />
+        
+        <!-- Private Service for cleaning temporary data. -->
+        <service
+            android:name="org.alfresco.mobile.android.application.security.DataCleanerService"
             android:exported="false" />
     </application>
 

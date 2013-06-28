@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +38,17 @@ import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
+import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
+import android.database.Cursor;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -128,7 +138,29 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         }
         catch (Exception e)
         {
-            result.setException(e);
+            Account acc = SessionUtils.getAccount(getContext());
+            SynchroManager syncManager = SynchroManager.getInstance(getContext());
+            if (!ConnectivityUtils.hasInternetAvailable(getContext()) && syncManager.isSynced(acc, identifier))
+            {
+                // Retrieve Sync Cursor for the specified node
+                Uri uri = syncManager.getUri(acc, identifier);
+                Cursor syncCursor = getContext().getContentResolver().query(uri, SynchroSchema.COLUMN_ALL, null, null,
+                        null);
+                if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
+                {
+                    //syncCursor.getString(BatchOperationSchema.COLUMN_PROPERTIES_ID)
+                    Map<String, String> properties = retrievePropertiesMap(syncCursor);
+                    n = new NodeSyncPlaceHolder(properties);
+                }
+                else
+                {
+                    result.setException(e);
+                }
+            }
+            else
+            {
+                result.setException(e);
+            }
         }
 
         result.setData(n);
@@ -232,14 +264,28 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         if (url == null) { throw new AlfrescoServiceException("This information is not a valid url"); }
         return url;
     }
-    
+
+    protected Map<String, String> retrievePropertiesMap(Cursor cursor)
+    {
+        // PROPERTIES
+        String rawProperties = cursor.getString(BatchOperationSchema.COLUMN_PROPERTIES_ID);
+        if (rawProperties != null)
+        {
+            return MapUtil.stringToMap(rawProperties);
+        }
+        else
+        {
+            return new HashMap<String, String>();
+        }
+    }
+
     // /////////////////////////////////////////////////////////////////////
     // UTILS
     // ////////////////////////////////////////////////////////////////////
     private static final String NODEREF = "noderef=";
 
     private static final String NODE_ID = "id=";
-    
+
     private static final List<String> PATTERNS = new ArrayList<String>(2);
     static
     {

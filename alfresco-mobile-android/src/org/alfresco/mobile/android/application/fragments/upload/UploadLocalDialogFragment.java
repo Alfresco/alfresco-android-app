@@ -21,14 +21,13 @@ import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.fragments.encryption.EncryptionDialogFragment;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.security.CipherUtils;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -153,12 +152,15 @@ public class UploadLocalDialogFragment extends DialogFragment
                             Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
 
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    EncryptionDialogFragment fragment = (CipherUtils.isEncryptionActive(getActivity())) ? EncryptionDialogFragment
+                    DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(SessionUtils.getAccount(getActivity()), file, newFile);
+                    
+                    
+                    /*FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                    EncryptionDialogFragment fragment = (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable()) ? EncryptionDialogFragment
                             .copyAndEncrypt(file.getPath(), newFile.getPath(), currentAccount)
                             : EncryptionDialogFragment.copy(file.getPath(), newFile.getPath(), currentAccount);
                     fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                    fragmentTransaction.commit();
+                    fragmentTransaction.commit();*/
                 }
                 dismiss();
             }

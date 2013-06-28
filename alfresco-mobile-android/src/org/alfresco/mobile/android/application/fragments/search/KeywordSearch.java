@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -77,14 +78,23 @@ public class KeywordSearch extends SearchFragment
         Bundle b = new Bundle();
         b.putSerializable(FOLDER, parentFolder);
         b.putSerializable(PARAM_SITE, site);
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty("");
+        lc.setIsSortAscending(true);
+        b.putAll(createBundleArgs(lc, LOAD_MANUAL));
         ssf.setArguments(b);
         return ssf;
     }
 
-    public static KeywordSearch newInstance(String keywords)
+    public static KeywordSearch newInstance()
     {
         KeywordSearch ssf = new KeywordSearch();
-        ssf.setArguments(createBundleArgs(keywords));
+        Bundle b = new Bundle();
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty("");
+        lc.setIsSortAscending(true);
+        b.putAll(createBundleArgs(lc, LOAD_MANUAL));
+        ssf.setArguments(b);
         return ssf;
     }
 
@@ -146,6 +156,7 @@ public class KeywordSearch extends SearchFragment
     protected void search(Folder parentFolder, String keywords, boolean fullText, boolean isExact)
     {
         Bundle b = new Bundle();
+        b.putAll(getArguments());
         b.putString(KEYWORDS, keywords);
         b.putBoolean(INCLUDE_CONTENT, fullText);
         b.putBoolean(EXACTMATCH, isExact);
@@ -269,6 +280,7 @@ public class KeywordSearch extends SearchFragment
         }
         else
         {
+            Log.d(TAG, "Result : " + results.getData().getTotalItems());
             displayPagingData(results.getData(), loaderId, callback);
         }
     }
