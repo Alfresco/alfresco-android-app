@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity
         DisplayUtils.switchSingleOrTwo(this, false);
 
         // TODO REMOVE
-        SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
+        //SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
     }
 
     @Override
