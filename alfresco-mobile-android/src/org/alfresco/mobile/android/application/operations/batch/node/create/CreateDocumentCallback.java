@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
@@ -36,9 +37,6 @@ import android.content.Context;
 import android.os.Bundle;
 
 /**
- * UploadService is responsible to upload document from the device to the
- * repository.
- * 
  * @author Jean Marie Pascal
  */
 public class CreateDocumentCallback extends AbstractBatchOperationCallback<Document>
@@ -60,19 +58,23 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
     @Override
     public void onProgressUpdate(Operation<Document> task, Long values)
     {
-        if (values == 100)
+        groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+        if (groupRecord.totalRequests == 1)
         {
-            NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                    NotificationHelper.DEFAULT_NOTIFICATION_ID, ((AbstractUpThread) task).getDocumentName(),
-                    getBaseContext().getString(R.string.action_processing), totalItems - pendingItems + "/"
-                            + totalItems);
-        }
-        else
-        {
-            NotificationHelper.createProgressNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
-                    ((AbstractUpThread) task).getDocumentName(), inProgress, totalItems - pendingItems + "/"
-                            + totalItems, values,
-                    ((AbstractUpRequest) task.getOperationRequest()).getContentStreamLength());
+            if (values == ((AbstractUpRequest) task.getOperationRequest()).getContentStreamLength())
+            {
+                NotificationHelper.createIndeterminateNotification(getBaseContext(), getNotificationId(),
+                        ((AbstractUpThread) task).getDocumentName(),
+                        getBaseContext().getString(R.string.action_processing), groupRecord.completeRequest.size()
+                                + "/" + totalItems);
+            }
+            else
+            {
+                NotificationHelper.createProgressNotification(getBaseContext(), getNotificationId(),
+                        ((AbstractUpThread) task).getDocumentName(), inProgress, groupRecord.completeRequest.size()
+                                + "/" + groupRecord.totalRequests, values,
+                        ((AbstractUpRequest) task.getOperationRequest()).getContentStreamLength());
+            }
         }
     }
 
@@ -92,7 +94,7 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
         // An error occurs, notify the user.
         if (((AbstractUpThread) task).getContentFile() != null)
         {
-            NotificationHelper.createSimpleNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
+            NotificationHelper.createSimpleNotification(getBaseContext(), getNotificationId(),
                     ((AbstractUpThread) task).getDocumentName(), getBaseContext().getString(R.string.import_error),
                     totalItems - pendingItems + "/" + totalItems);
 
@@ -127,6 +129,11 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
         }
     }
 
+    protected int getNotificationId()
+    {
+        return NotificationHelper.UPLOAD_NOTIFICATION_ID;
+    }
+
     // ////////////////////////////////////////////////////
     // INTERNAL UTILS
     // ////////////////////////////////////////////////////
@@ -141,9 +148,12 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
         }
         else
         {
-            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, result.failedRequest.size() + "/"
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
+                    .getQuantityString(R.plurals.batch_failed, result.failedRequest.size()), result.failedRequest.size()));
+            b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
                     + result.totalRequests);
+            b.putInt(NotificationHelper.ARGUMENT_SMALL_ICON, R.drawable.ic_warning_light);
         }
-        NotificationHelper.createNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID, b);
+        NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
     }
 }

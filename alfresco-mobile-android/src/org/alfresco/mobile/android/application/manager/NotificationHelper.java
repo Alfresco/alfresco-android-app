@@ -27,6 +27,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
@@ -45,12 +46,18 @@ public final class NotificationHelper
     public static final String ARGUMENT_INDETERMINATE = "indeterminate";
 
     public static final String ARGUMENT_CONTENT_INFO = "contentInfo";
+    
+    public static final String ARGUMENT_SMALL_ICON = "smallIcon";
 
     public static final String ARGUMENT_PROGRESS = "progress";
 
     public static final int DEFAULT_NOTIFICATION_ID = 500;
+    
+    public static final int UPLOAD_NOTIFICATION_ID = 501;
 
-    public static final int DEFAULT_NOTIFICATION_SYNC_ID = 510;
+    public static final int DOWNLOAD_NOTIFICATION_ID = 502;
+
+    public static final int SYNC_NOTIFICATION_ID = 510;
 
     public static int createSimpleNotification(Context c, int notificationId, String title, String description,
             String contentInfo)
@@ -127,18 +134,24 @@ public final class NotificationHelper
         {
             builder.setContentInfo(params.getString(ARGUMENT_CONTENT_INFO));
         }
+        
+        if (params.containsKey(ARGUMENT_SMALL_ICON))
+        {
+            builder.setSmallIcon(params.getInt(ARGUMENT_SMALL_ICON));
+        }
 
         Intent i = null;
         PendingIntent pIntent = null;
         switch (notificationId)
         {
-            case DEFAULT_NOTIFICATION_SYNC_ID:
+            case SYNC_NOTIFICATION_ID:
                 i = new Intent(IntentIntegrator.ACTION_SYNCHRO_DISPLAY);
                 pIntent = PendingIntent.getActivity(c, 0, i, Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 break;
 
             default:
                 i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
+                i.putExtra(IntentIntegrator.EXTRA_OPERATIONS_TYPE, notificationId);
                 pIntent = PendingIntent.getActivity(c, 0, i, 0);
                 break;
         }
@@ -195,7 +208,7 @@ public final class NotificationHelper
 
         ((NotificationManager) c.getSystemService(Context.NOTIFICATION_SERVICE)).notify(notificationId, notification);
 
-        return DEFAULT_NOTIFICATION_ID;
+        return notificationId;
     }
 
 }

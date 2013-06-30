@@ -76,12 +76,11 @@ public abstract class AbstractBatchOperationCallback<T> extends AbstractOperatio
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, complete);
-        NotificationHelper.createNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID, b);
+        NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
     }
 
     protected int getNotificationId()
     {
         return NotificationHelper.DEFAULT_NOTIFICATION_ID;
     }
-
 }
