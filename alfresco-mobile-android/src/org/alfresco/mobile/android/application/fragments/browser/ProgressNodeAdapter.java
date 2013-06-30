@@ -128,7 +128,18 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
                     if (percentage == 100)
                     {
-                        progressView.setIndeterminate(true);
+                        if ((Integer) item.getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
+                        {
+                            progressView.setVisibility(View.GONE);
+                            super.updateTopText(vh, item);
+                            vh.bottomText.setVisibility(View.VISIBLE);
+                            super.updateBottomText(vh, item);
+                            super.updateIcon(vh, item);
+                        }
+                        else
+                        {
+                            progressView.setIndeterminate(true);
+                        }
                     }
                     else
                     {
@@ -173,6 +184,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                         resId = R.string.download_await;
                         break;
                     case CreateDocumentRequest.TYPE_ID:
+                    case UpdateContentRequest.TYPE_ID:
                         resId = R.string.upload_await;
                         break;
 
@@ -296,9 +308,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     // Update node if not present
                     if (type != DownloadRequest.TYPE_ID && hasNode(name) && getNode(name) instanceof NodePlaceHolder)
                     {
-                        remove(name);
+                        // remove(name);
+                        notifyDataSetChanged();
                     }
-
                     break;
                 default:
                     if (hasNode(name) && getNode(name) instanceof NodePlaceHolder)
