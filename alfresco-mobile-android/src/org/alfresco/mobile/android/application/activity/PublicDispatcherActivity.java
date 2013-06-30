@@ -123,15 +123,6 @@ public class PublicDispatcherActivity extends BaseActivity
             return;
         }
 
-        if (IntentIntegrator.ACTION_DISPLAY_OPERATIONS.equals(action))
-        {
-            Fragment f = new OperationsFragment();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
-                    false, false);
-            return;
-        }
-        
-        
         if (IntentIntegrator.ACTION_SYNCHRO_DISPLAY.equals(action))
         {
             Fragment f = FavoritesSyncFragment.newInstance(FavoritesSyncFragment.MODE_PROGRESS);

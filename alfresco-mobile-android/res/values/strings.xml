@@ -472,7 +472,17 @@
         <item quantity="one">1 document updated.</item>
         <item quantity="other">%1$s documents updated.</item>
     </plurals>
-
+    <plurals name="batch_failed">
+        <item quantity="zero">no transfert failed.</item>
+        <item quantity="one">1 transfert failed.</item>
+        <item quantity="other">%1$s transferts failed.</item>
+    </plurals>
+    <plurals name="batch_in_progress">
+        <item quantity="zero">no transfert in progress.</item>
+        <item quantity="one">1 transfert in progress.</item>
+        <item quantity="other">%1$s transferts in progress.</item>
+    </plurals>
+    
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
@@ -554,10 +564,6 @@
     <string name="shortcut_thirdparty_app">Applications</string>
     <string name="shortcut_thirdparty_applications">3rd party applications</string>
     <string name="action_select">Select</string>
-
-    <!-- Notification -->
-    <string name="batch_download_complete">%s documents available offline</string>
-    <string name="batch_download_failed">%s download transfer</string>
 
     <!-- FILE Editor Menu -->
     <string name="file_editor_name">Alfresco Text Editor</string>

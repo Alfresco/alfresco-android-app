@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.operations.batch.node.update;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentCallback;
 
 import android.content.Context;
@@ -36,4 +37,8 @@ public class UpdateContentCallback extends CreateDocumentCallback
         finalComplete = R.plurals.update_complete_description;
     }
     
+    protected int getNotificationId()
+    {
+        return NotificationHelper.UPLOAD_NOTIFICATION_ID;
+    }
 }
