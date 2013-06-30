@@ -17,12 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.impl;
 
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
+import org.alfresco.mobile.android.application.operations.OperationsGroupRecord;
 import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -47,6 +50,8 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
     protected String complete;
 
     protected int notificationVisibility;
+
+    protected OperationsGroupRecord groupRecord;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -75,9 +80,23 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
         switch (notificationVisibility)
         {
             case OperationRequest.VISIBILITY_NOTIFICATIONS:
-                NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                        getNotificationId(), task.getOperationRequest().getNotificationTitle(),
-                        inProgress, totalItems - pendingItems + "/" + totalItems);
+                groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+                if (groupRecord.totalRequests == 1)
+                {
+                    NotificationHelper.createProgressNotification(getBaseContext(), getNotificationId(), task
+                            .getOperationRequest().getNotificationTitle(), inProgress,
+                            groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests, 0, 100);
+                }
+                else
+                {
+                    NotificationHelper
+                            .createIndeterminateNotification(getBaseContext(), getNotificationId(), inProgress, String
+                                    .format(getBaseContext().getResources().getQuantityString(
+                                            R.plurals.batch_in_progress, groupRecord.runningRequest.size()),
+                                            groupRecord.runningRequest.size() + ""), groupRecord.completeRequest.size()
+                                    + "/" + groupRecord.totalRequests);
+                }
+
                 break;
             default:
                 break;
@@ -95,9 +114,22 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
         switch (notificationVisibility)
         {
             case OperationRequest.VISIBILITY_NOTIFICATIONS:
-                NotificationHelper.createIndeterminateNotification(getBaseContext(),
-                        getNotificationId(), task.getOperationRequest().getNotificationTitle(),
-                        complete, totalItems - pendingItems + "/" + totalItems);
+                groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+                if (groupRecord.totalRequests == 1)
+                {
+                    NotificationHelper.createIndeterminateNotification(getBaseContext(), getNotificationId(), task
+                            .getOperationRequest().getNotificationTitle(), complete, totalItems - pendingItems + "/"
+                            + totalItems);
+                }
+                else
+                {
+                    NotificationHelper
+                            .createIndeterminateNotification(getBaseContext(), getNotificationId(), inProgress, String
+                                    .format(getBaseContext().getResources().getQuantityString(
+                                            R.plurals.batch_in_progress, groupRecord.runningRequest.size()),
+                                            groupRecord.runningRequest.size() + ""), groupRecord.completeRequest.size()
+                                    + "/" + groupRecord.totalRequests);
+                }
                 break;
             default:
                 break;
@@ -113,13 +145,13 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
     @Override
     public void onError(Operation<T> task, Exception e)
     {
-       Log.e(TAG , Log.getStackTraceString(e));
+        Log.e(TAG, Log.getStackTraceString(e));
     }
 
     @Override
     public void onPostExecution(OperationsGroupResult result)
     {
-        //TODO Error Notification
+        // TODO Error Notification
         switch (result.notificationVisibility)
         {
             case OperationRequest.VISIBILITY_NOTIFICATIONS:
@@ -166,6 +198,11 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
             context.getContentResolver().delete(operationUri, null, null);
         }
     }
-    
+
+    protected String formatText(int textId, String text)
+    {
+        return String.format(getBaseContext().getString(textId), text);
+    }
+
     protected abstract int getNotificationId();
 }

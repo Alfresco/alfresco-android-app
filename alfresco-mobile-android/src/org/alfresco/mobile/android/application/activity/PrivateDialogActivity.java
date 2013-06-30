@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -40,7 +41,7 @@ import android.view.WindowManager;
  */
 public class PrivateDialogActivity extends BaseActivity
 {
-    //private static final String TAG = PrivateDialogActivity.class.getName();
+    // private static final String TAG = PrivateDialogActivity.class.getName();
 
     private boolean activateCheckPasscode = false;
 
@@ -88,6 +89,14 @@ public class PrivateDialogActivity extends BaseActivity
         {
             Fragment f = new GeneralPreferences();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), GeneralPreferences.TAG,
+                    false, false);
+            return;
+        }
+
+        if (IntentIntegrator.ACTION_DISPLAY_OPERATIONS.equals(action))
+        {
+            Fragment f = new OperationsFragment();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
                     false, false);
             return;
         }

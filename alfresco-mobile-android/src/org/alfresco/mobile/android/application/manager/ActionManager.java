@@ -417,16 +417,6 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(f.getActivity(), R.string.error_unable_open_file);
         }
     }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // OPERATIONS
-    // ///////////////////////////////////////////////////////////////////////////
-    public static void actionDisplayOperations(Activity activity)
-    {
-        Intent i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
-        activity.startActivity(i);
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // AUTHENTICATION
     // ///////////////////////////////////////////////////////////////////////////

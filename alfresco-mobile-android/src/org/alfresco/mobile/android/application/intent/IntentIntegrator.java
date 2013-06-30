@@ -63,6 +63,9 @@ public interface IntentIntegrator extends PublicIntent
     String ACTION_OPERATION_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATION_COMPLETE";
 
     String ACTION_OPERATIONS_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_COMPLETE";
+    
+    // BROADCAST
+    String EXTRA_OPERATIONS_TYPE = "org.alfresco.mobile.android.intent.EXTRA_OPERATIONS_TYPE";
 
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT MANAGEMENT

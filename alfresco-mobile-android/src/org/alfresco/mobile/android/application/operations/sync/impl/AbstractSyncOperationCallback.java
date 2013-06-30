@@ -65,7 +65,7 @@ public abstract class AbstractSyncOperationCallback<T> extends AbstractOperation
     // ///////////////////////////////////////////////////////////////////////////
     protected int getNotificationId()
     {
-        return NotificationHelper.DEFAULT_NOTIFICATION_SYNC_ID;
+        return NotificationHelper.SYNC_NOTIFICATION_ID;
     }
 
 }

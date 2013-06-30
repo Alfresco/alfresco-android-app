@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
 import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -34,14 +35,54 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
     public DownloadCallBack(Context context, int totalItems, int pendingItems)
     {
         super(context, totalItems, pendingItems);
+        inProgress = getBaseContext().getString(R.string.download_progress);
+        complete = getBaseContext().getString(R.string.download_complete);
+        finalComplete = R.plurals.download_complete_description;
     }
 
     @Override
     public void onPreExecute(Operation<ContentFile> task)
     {
-        NotificationHelper.createProgressNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
-                getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument().getName(),
-                totalItems - pendingItems + "/" + totalItems, 0, 100);
+        groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+        if (groupRecord.totalRequests == 1)
+        {
+            NotificationHelper.createProgressNotification(getBaseContext(), getNotificationId(), inProgress,
+                    ((DownloadThread) task).getDocument().getName(), groupRecord.completeRequest.size() + "/"
+                            + groupRecord.totalRequests, 0, 100);
+        }
+        else
+        {
+            NotificationHelper.createIndeterminateNotification(
+                    getBaseContext(),
+                    getNotificationId(),
+                    inProgress,
+                    String.format(
+                            getBaseContext().getResources().getQuantityString(R.plurals.batch_in_progress,
+                                    groupRecord.runningRequest.size()), groupRecord.runningRequest.size() + ""),
+                    groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests);
+        }
+    }
+
+    @Override
+    public void onProgressUpdate(Operation<ContentFile> task, Long values)
+    {
+        groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+        if (groupRecord.totalRequests == 1)
+        {
+            if (values == 100)
+            {
+                NotificationHelper.createIndeterminateNotification(getBaseContext(), getNotificationId(), inProgress,
+                        ((DownloadThread) task).getDocument().getName(), groupRecord.completeRequest.size() + "/"
+                                + groupRecord.totalRequests);
+            }
+            else
+            {
+                NotificationHelper.createProgressNotification(getBaseContext(), getNotificationId(), inProgress,
+                        ((DownloadThread) task).getDocument().getName(), groupRecord.completeRequest.size() + "/"
+                                + groupRecord.totalRequests, values,
+                        ((DownloadRequest) task.getOperationRequest()).getContentStreamLength());
+            }
+        }
     }
 
     @Override
@@ -51,30 +92,24 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
         {
             LocalBroadcastManager.getInstance(context).sendBroadcast(task.getCompleteBroadCastIntent());
         }
-        
-        // Improvement : Better notification with share button or open in.
-        NotificationHelper.createIndeterminateNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID,
-                getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument().getName(),
-                totalItems - pendingItems + "/" + totalItems);
-        /*getBaseContext().sendBroadcast(
-                new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(results.getFile())));*/
-    }
 
-    @Override
-    public void onProgressUpdate(Operation<ContentFile> task, Long values)
-    {
-        if (values == 100)
+        groupRecord = BatchOperationManager.getInstance(context).getOperationGroup(task.getOperationId());
+        if (groupRecord.totalRequests == 1)
         {
-            NotificationHelper.createIndeterminateNotification(getBaseContext(),NotificationHelper.DEFAULT_NOTIFICATION_ID,
-                    getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument()
-                            .getName(), totalItems - pendingItems + "/" + totalItems);
+            NotificationHelper.createIndeterminateNotification(getBaseContext(), getNotificationId(), getBaseContext()
+                    .getString(R.string.download_progress), ((DownloadThread) task).getDocument().getName(),
+                    groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests);
         }
         else
         {
-            NotificationHelper.createProgressNotification(getBaseContext(),NotificationHelper.DEFAULT_NOTIFICATION_ID,
-                    getBaseContext().getString(R.string.download_progress), ((DownloadThread) task).getDocument()
-                            .getName(), totalItems - pendingItems + "/" + totalItems, values, ((DownloadRequest) task
-                            .getOperationRequest()).getContentStreamLength());
+            NotificationHelper.createIndeterminateNotification(
+                    getBaseContext(),
+                    getNotificationId(),
+                    inProgress,
+                    String.format(
+                            getBaseContext().getResources().getQuantityString(R.plurals.batch_in_progress,
+                                    groupRecord.runningRequest.size()), groupRecord.runningRequest.size() + ""),
+                    groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests);
         }
     }
 
@@ -92,16 +127,27 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
         b.putString(NotificationHelper.ARGUMENT_TITLE, getBaseContext().getString(R.string.download_complete));
         if (result.failedRequest.isEmpty())
         {
-            b.putString(
-                    NotificationHelper.ARGUMENT_DESCRIPTION,
-                    String.format(getBaseContext().getString(R.string.batch_download_complete),
-                            Integer.toString(result.totalRequests)));
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
+                    .getQuantityString(finalComplete, result.totalRequests), result.totalRequests));
         }
         else
         {
-            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, result.failedRequest.size() + "/"
+            b.putString(
+                    NotificationHelper.ARGUMENT_DESCRIPTION,
+                    String.format(
+                            getBaseContext().getResources().getQuantityString(R.plurals.batch_failed,
+                                    result.failedRequest.size()), result.failedRequest.size()));
+            b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
                     + result.totalRequests);
+            b.putInt(NotificationHelper.ARGUMENT_SMALL_ICON, R.drawable.ic_warning_light);
         }
-        NotificationHelper.createNotification(getBaseContext(), NotificationHelper.DEFAULT_NOTIFICATION_ID, b);
+        b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
+                + result.totalRequests);
+        NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
+    }
+
+    protected int getNotificationId()
+    {
+        return NotificationHelper.DOWNLOAD_NOTIFICATION_ID;
     }
 }

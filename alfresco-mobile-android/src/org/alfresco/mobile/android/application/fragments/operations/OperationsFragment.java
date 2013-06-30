@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -52,7 +54,7 @@ public class OperationsFragment extends BaseCursorListFragment
         layoutId = R.layout.app_operations_list;
         title = R.string.operations;
     }
-    
+
     // /////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////////////
@@ -65,8 +67,20 @@ public class OperationsFragment extends BaseCursorListFragment
         lv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
-        
+
         getActivity().setTitle(R.string.operations);
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // LIST MANAGEMENT
+    // ////////////////////////////////////////////////////////////
+    public void onListItemClick(ListView l, View v, int position, long id)
+    {
+    }
+
+    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    {
+        return false;
     }
 
     // /////////////////////////////////////////////////////////////
@@ -113,36 +127,53 @@ public class OperationsFragment extends BaseCursorListFragment
         for (int i = 0; i < cursor.getCount(); i++)
         {
             cursor.moveToPosition(i);
-            uri = Uri.parse(BatchOperationContentProvider.CONTENT_URI + "/" + cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
+            uri = Uri.parse(BatchOperationContentProvider.CONTENT_URI + "/"
+                    + cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
             getActivity().getContentResolver().delete(uri, null, null);
         }
         cancel_all.setVisibility(View.GONE);
         dismiss_all.setVisibility(View.GONE);
     }
 
-    public void onListItemClick(ListView l, View v, int position, long id)
-    {
-        MessengerManager.showToast(getActivity(), TAG);
-    }
-
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
-    {
-        return false;
-    }
-
     // /////////////////////////////////////////////////////////////
     // CURSOR ADAPTER
     // ////////////////////////////////////////////////////////////
+    private static final String UPLOAD_REQUESTS = BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN ("
+            + CreateDocumentRequest.TYPE_ID + "," + UpdateContentRequest.TYPE_ID + ")";
+
+    private static final String DOWNLOAD_REQUESTS = BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN ("
+            + DownloadRequest.TYPE_ID + ")";
+
+    private static final String ALL_REQUESTS = BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN ("
+            + DownloadRequest.TYPE_ID + "," + CreateDocumentRequest.TYPE_ID + "," + UpdateContentRequest.TYPE_ID + ")";
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
+
+        int filter = -1;
+        if (getArguments() != null)
+        {
+            filter = getArguments().getInt(IntentIntegrator.EXTRA_OPERATIONS_TYPE);
+            getArguments().remove(IntentIntegrator.EXTRA_OPERATIONS_TYPE);
+        }
+
+        String request = ALL_REQUESTS;
+        switch (filter)
+        {
+            case NotificationHelper.DOWNLOAD_NOTIFICATION_ID:
+                request = DOWNLOAD_REQUESTS;
+                break;
+            case NotificationHelper.UPLOAD_NOTIFICATION_ID:
+                request = UPLOAD_REQUESTS;
+                break;
+            default:
+                break;
+        }
+
         Uri baseUri = BatchOperationContentProvider.CONTENT_URI;
-        return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL, BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN (" 
-        + DownloadRequest.TYPE_ID + ","
-        + CreateDocumentRequest.TYPE_ID + "," 
-        + UpdateContentRequest.TYPE_ID 
-        +  ")", null, null);
+        return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL, request, null, null);
     }
 
     @Override

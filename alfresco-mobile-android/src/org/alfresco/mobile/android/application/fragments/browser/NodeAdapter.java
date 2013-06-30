@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.impl.NodeImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
@@ -39,6 +41,7 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.widget.LinearLayout;
 
 /**
@@ -51,9 +54,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 {
     protected List<Node> originalNodes;
 
+    protected List<Node> refNodes = new ArrayList<Node>();
+
     protected List<Node> selectedItems;
 
-    protected HashMap<String, Node> nodeNameIndexer = new HashMap<String, Node>();
+    protected LinkedHashMap<String, Node> nodeNameIndexer = new LinkedHashMap<String, Node>();
 
     private Boolean activateThumbnail = Boolean.FALSE;
 
@@ -109,27 +114,23 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             add(objects[i]);
         }
+        Log.d("NodeAdapter", size + "");
     }
 
     public synchronized void replaceNode(Node node)
     {
         if (nodeNameIndexer.containsKey(node.getName()))
         {
-            int position = getPosition(nodeNameIndexer.get(node.getName()));
-            originalNodes.remove(position);
-            originalNodes.add(node);
+            originalNodes.remove(getPosition(nodeNameIndexer.get(node.getName())));
         }
-        else
-        {
-            originalNodes.add(node);
-        }
-
+        originalNodes.add(node);
         originalNodes.removeAll(Collections.singleton(null));
         Collections.sort(originalNodes, new NodeComparator(true, DocumentFolderService.SORT_PROPERTY_NAME));
 
         List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
         clear();
         addAll(tmpNodes);
+        notifyDataSetChanged();
     }
 
     public synchronized void remove(String nodeName)
@@ -141,15 +142,16 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             List<Node> tmpNodes = new ArrayList<Node>(originalNodes);
             clear();
             addAll(tmpNodes);
+            notifyDataSetChanged();
         }
     }
-    
+
     public List<Node> getNodes()
     {
         return originalNodes;
     }
 
-    public boolean hasNode(String indexValue)
+    public synchronized boolean hasNode(String indexValue)
     {
         return nodeNameIndexer.containsKey(indexValue);
     }
