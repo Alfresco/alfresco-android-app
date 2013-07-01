@@ -151,7 +151,6 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
     @Override
     public void onPostExecution(OperationsGroupResult result)
     {
-        // TODO Error Notification
         switch (result.notificationVisibility)
         {
             case OperationRequest.VISIBILITY_NOTIFICATIONS:

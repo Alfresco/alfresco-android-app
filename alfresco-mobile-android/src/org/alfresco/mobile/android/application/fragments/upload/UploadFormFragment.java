@@ -460,17 +460,9 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
                 }
                 else
                 {
-                    File f = StorageManager.getDownloadFolder(getActivity(), tmpAccount);
-                    final File folderStorage = f;
-                    File newFile = null;
-                    
-                    FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    for (File file : files)
-                    {
-                        newFile = new File(folderStorage, file.getName());
-                        DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(SessionUtils.getAccount(getActivity()), file, newFile);
-                    }
-                    fragmentTransaction.commit();
+                    File folderStorage = StorageManager.getDownloadFolder(getActivity(), tmpAccount);
+                    DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(tmpAccount, files, folderStorage);
+                    getActivity().finish(); 
                 }
                 break;
             default:

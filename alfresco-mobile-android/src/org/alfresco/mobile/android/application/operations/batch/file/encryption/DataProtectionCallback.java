@@ -18,7 +18,9 @@
 package org.alfresco.mobile.android.application.operations.batch.file.encryption;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
 
 import android.content.Context;
 
@@ -32,5 +34,25 @@ public class DataProtectionCallback extends AbstractBatchOperationCallback<Void>
         super(context, totalItems, pendingItems);
         inProgress = getBaseContext().getString(R.string.data_protection);
         complete = getBaseContext().getString(R.string.data_protection);
+    }
+    
+    
+    @Override
+    public void onPreExecute(Operation<Void> task)
+    {
+        if (task.getOperationRequest() instanceof DataProtectionRequest){
+            int intentAction = ((DataProtectionRequest)task.getOperationRequest()).getIntentAction();
+            switch (intentAction)
+            {
+                case DataProtectionManager.ACTION_COPY:
+                    inProgress = getBaseContext().getString(R.string.copy_file_title);
+                    complete = getBaseContext().getString(R.string.copy_file_completed);
+                    finalComplete = R.plurals.download_complete_description;
+                    break;
+                default:
+                    break;
+            }
+        }
+        super.onPreExecute(task);
     }
 }

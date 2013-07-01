@@ -127,7 +127,7 @@ public class CreateDocumentThread extends AbstractUpThread
         String fileNameWithoutExtension = documentName.replaceFirst("[.][^.]+$", "");
         String fileExtension = getFileExtension(documentName);
 
-        int index = 0;
+        int index = 1;
 
         String tmpName = documentName;
 
