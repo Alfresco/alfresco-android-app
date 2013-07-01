@@ -133,27 +133,4 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
     {
         return NotificationHelper.UPLOAD_NOTIFICATION_ID;
     }
-
-    // ////////////////////////////////////////////////////
-    // INTERNAL UTILS
-    // ////////////////////////////////////////////////////
-    protected void createNotification(OperationsGroupResult result)
-    {
-        Bundle b = new Bundle();
-        b.putString(NotificationHelper.ARGUMENT_TITLE, complete);
-        if (result.failedRequest.isEmpty())
-        {
-            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
-                    .getQuantityString(finalComplete, result.totalRequests), result.totalRequests));
-        }
-        else
-        {
-            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
-                    .getQuantityString(R.plurals.batch_failed, result.failedRequest.size()), result.failedRequest.size()));
-            b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
-                    + result.totalRequests);
-            b.putInt(NotificationHelper.ARGUMENT_SMALL_ICON, R.drawable.ic_warning_light);
-        }
-        NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
-    }
 }

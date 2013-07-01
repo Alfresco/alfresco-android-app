@@ -140,9 +140,9 @@ public class IOUtils
         int index = 1;
         while (tmpFile.exists())
         {
-            index++;
             tmpFile = new File(tmpFile.getParentFile(), fileNameWithoutExtension + "-" + index
                     + getFileExtension(tmpFile.getName()));
+            index++;
         }
         return tmpFile;
     }

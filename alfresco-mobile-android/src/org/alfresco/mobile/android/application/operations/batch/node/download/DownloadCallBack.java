@@ -120,32 +120,6 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
 
     }
 
-    @Override
-    public void onPostExecution(OperationsGroupResult result)
-    {
-        Bundle b = new Bundle();
-        b.putString(NotificationHelper.ARGUMENT_TITLE, getBaseContext().getString(R.string.download_complete));
-        if (result.failedRequest.isEmpty())
-        {
-            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
-                    .getQuantityString(finalComplete, result.totalRequests), result.totalRequests));
-        }
-        else
-        {
-            b.putString(
-                    NotificationHelper.ARGUMENT_DESCRIPTION,
-                    String.format(
-                            getBaseContext().getResources().getQuantityString(R.plurals.batch_failed,
-                                    result.failedRequest.size()), result.failedRequest.size()));
-            b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
-                    + result.totalRequests);
-            b.putInt(NotificationHelper.ARGUMENT_SMALL_ICON, R.drawable.ic_warning_light);
-        }
-        b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
-                + result.totalRequests);
-        NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
-    }
-
     protected int getNotificationId()
     {
         return NotificationHelper.DOWNLOAD_NOTIFICATION_ID;
