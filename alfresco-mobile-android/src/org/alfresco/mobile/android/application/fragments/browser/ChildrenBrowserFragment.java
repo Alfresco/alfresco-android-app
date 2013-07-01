@@ -56,6 +56,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationMa
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
@@ -117,6 +118,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     private NodeActions nActions;
 
     private File tmpFile;
+
+    private MenuItem refreshMenuItem;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -692,6 +695,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     public void refresh()
     {
+        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity()))
+        {
+            return;
+        }
+        
         if (parentFolder == null)
         {
             parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
