@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch.impl;
 
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
@@ -32,7 +33,7 @@ import android.os.Bundle;
 
 public abstract class AbstractBatchOperationCallback<T> extends AbstractOperationCallback<T>
 {
-    protected int finalComplete;
+    protected int finalComplete = 0;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -60,7 +61,7 @@ public abstract class AbstractBatchOperationCallback<T> extends AbstractOperatio
                 OperationUtils.removeOperationUri(context, result);
                 break;
             case OperationRequest.VISIBILITY_TOAST:
-                MessengerManager.showToast(getBaseContext(), "Operation complete");
+                MessengerManager.showToast(getBaseContext(), complete);
                 OperationUtils.removeOperationUri(context, result);
                 break;
             default:
@@ -76,6 +77,19 @@ public abstract class AbstractBatchOperationCallback<T> extends AbstractOperatio
     {
         Bundle b = new Bundle();
         b.putString(NotificationHelper.ARGUMENT_TITLE, complete);
+        if (result.failedRequest.isEmpty() && finalComplete != 0)
+        {
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
+                    .getQuantityString(finalComplete, result.totalRequests), result.totalRequests));
+        }
+        else
+        {
+            b.putString(NotificationHelper.ARGUMENT_DESCRIPTION, String.format(getBaseContext().getResources()
+                    .getQuantityString(R.plurals.batch_failed, result.failedRequest.size()), result.failedRequest.size()));
+            b.putString(NotificationHelper.ARGUMENT_CONTENT_INFO, result.completeRequest.size() + "/"
+                    + result.totalRequests);
+            b.putInt(NotificationHelper.ARGUMENT_SMALL_ICON, R.drawable.ic_warning_light);
+        }
         NotificationHelper.createNotification(getBaseContext(), getNotificationId(), b);
     }
 

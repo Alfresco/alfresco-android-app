@@ -132,7 +132,7 @@ public class FileActions implements ActionMode.Callback
         {
             pickResult.setData(Uri.fromFile(selectedFiles.get(0)));
         }
-        else if (selectedFiles.size() > 1)
+        else if (selectedFiles.size() > 0)
         {
             ArrayList<Uri> uris = new ArrayList<Uri>();
             for (File file : selectedFiles)

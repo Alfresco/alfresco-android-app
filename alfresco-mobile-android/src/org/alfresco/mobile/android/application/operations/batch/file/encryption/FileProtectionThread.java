@@ -165,6 +165,21 @@ public class FileProtectionThread extends FileOperationThread<Void>
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // INTERNALS
+    // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
+    public boolean isDoEncrypt()
+    {
+        return doEncrypt;
+    }
+
+    public int getIntentAction()
+    {
+        return intentAction;
+    }
+
+    public File getTmpFile()
+    {
+        return tmpFile;
+    }
+
 }

@@ -95,7 +95,7 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
             ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
                     .getContentStream((Document) node);
             totalLength = contentStream.getLength();
-            segment = (int) (contentStream.getLength() / SEGMENT);
+            segment = (int) (contentStream.getLength() / SEGMENT) + 1;
             copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
             contentFileResult = new ContentFileImpl(destFile);
 

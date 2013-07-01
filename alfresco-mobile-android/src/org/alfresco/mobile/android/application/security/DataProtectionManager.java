@@ -2,6 +2,7 @@ package org.alfresco.mobile.android.application.security;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.alfresco.mobile.android.application.VersionNumber;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -14,6 +15,7 @@ import org.alfresco.mobile.android.application.operations.OperationsRequestGroup
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionRequest;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Activity;
@@ -82,6 +84,31 @@ public class DataProtectionManager implements VersionNumber
     // ////////////////////////////////////////////////////
     // ENCRYPTION
     // ////////////////////////////////////////////////////
+    public void copyAndEncrypt(Account account, List<File> sourceFiles, File folderStorage)
+    {
+        if (account == null) { return; }
+        OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
+
+        File destinationFile = null;
+        for (File sourceFile : sourceFiles)
+        {
+            destinationFile = new File(folderStorage, sourceFile.getName());
+            destinationFile = IOUtils.createFile(destinationFile);
+            if (isEncryptionEnable())
+            {
+                group.enqueue(new DataProtectionRequest(sourceFile, destinationFile, true, ACTION_NONE)
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            }
+            else
+            {
+                group.enqueue(new DataProtectionRequest(sourceFile, destinationFile, true, ACTION_COPY)
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            }
+        }
+
+        BatchOperationManager.getInstance(mAppContext).enqueue(group);
+    }
+
     public void copyAndEncrypt(Account account, File sourceFile, File destinationFile)
     {
         if (account == null) { return; }
@@ -89,12 +116,12 @@ public class DataProtectionManager implements VersionNumber
         if (isEncryptionEnable())
         {
             group.enqueue(new DataProtectionRequest(sourceFile, destinationFile, true, ACTION_NONE)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
         else
         {
             group.enqueue(new DataProtectionRequest(sourceFile, destinationFile, true, ACTION_COPY)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }

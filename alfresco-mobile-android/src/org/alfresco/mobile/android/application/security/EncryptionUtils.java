@@ -29,7 +29,6 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -60,9 +59,9 @@ public class EncryptionUtils
 
     private static final String INFO_FILE = "tmp.qzv";
 
-    private static int chunkSize = 0;
-
     private static SecretKey info = null;
+
+    private static final int MAX_BUFFER_SIZE = 10240;
 
     // ///////////////////////////////////////////////////////////////////////////
     // DETECTION
@@ -103,26 +102,34 @@ public class EncryptionUtils
         {
             boolean ret = true;
             File source = new File(filename);
+            long size = source.length();
+            long copied = 0;
             File dest = new File(newFilename != null ? newFilename : filename + ".utmp");
             InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, KEY_LENGTH)
                     .toString());
             OutputStream destFile = new FileOutputStream(dest);
             int nBytes = 0;
 
-            chunkSize = 10240;
-            byte buffer[] = new byte[chunkSize];
+            byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
             Log.i(TAG, "Decrypting file " + filename);
 
-            do
+            while (size - copied > 0)
             {
+                if (size - copied < MAX_BUFFER_SIZE)
+                {
+                    buffer = new byte[(int) (size - copied)];
+                }
                 nBytes = sourceFile.read(buffer);
-
-                if (nBytes > 0)
+                if (nBytes == -1)
+                {
+                    break;
+                }
+                else if (nBytes > 0)
                 {
                     destFile.write(buffer);
                 }
-            } while (nBytes > 0);
+            }
 
             sourceFile.close();
             destFile.close();
@@ -283,7 +290,7 @@ public class EncryptionUtils
     {
         return encryptFile(ctxt, filename, null, nuke);
     }
- 
+
     /*
      * Encrypt file in place, leaving no trace of original unencrypted data.
      * filename file to encrypt nuke whether to zero the original unencrypted
@@ -295,27 +302,37 @@ public class EncryptionUtils
         {
             boolean ret = true;
             File source = new File(filename);
+            long size = source.length();
+            long copied = 0;
             File dest = new File(newFilename != null ? newFilename : filename + ".etmp");
             InputStream sourceFile = new FileInputStream(source);
             OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, KEY_LENGTH)
                     .toString());
             int nBytes = 0;
-            long size = 0;
+            //long size = 0;
 
-            chunkSize = 10240;
-            byte buffer[] = new byte[chunkSize];
+            //chunkSize = 10240;
+            byte buffer[] = new byte[MAX_BUFFER_SIZE];
 
             Log.i(TAG, "Encrypting file " + filename);
-
-            do
+            
+            
+            while (size - copied > 0)
             {
-                size += (nBytes = sourceFile.read(buffer));
-
-                if (nBytes > 0)
+                if (size - copied < MAX_BUFFER_SIZE)
+                {
+                    buffer = new byte[(int) (size - copied)];
+                }
+                nBytes = sourceFile.read(buffer);
+                if (nBytes == -1)
+                {
+                    break;
+                }
+                else if (nBytes > 0)
                 {
                     destFile.write(buffer);
                 }
-            } while (nBytes > 0);
+            }
 
             sourceFile.close();
             destFile.flush();
@@ -617,9 +634,9 @@ public class EncryptionUtils
             size = source.length();
         }
 
-        byte zeros[] = new byte[chunkSize];
+        byte zeros[] = new byte[MAX_BUFFER_SIZE];
         OutputStream destroyFile = new FileOutputStream(source);
-        long chunks = (size + chunkSize - 1) / chunkSize;
+        long chunks = (size + MAX_BUFFER_SIZE - 1) / MAX_BUFFER_SIZE;
 
         for (long i = 0; i < chunks; i++)
         {
