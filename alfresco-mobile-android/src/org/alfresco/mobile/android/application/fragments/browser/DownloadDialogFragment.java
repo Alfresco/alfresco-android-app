@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -182,7 +181,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             {
                 case ACTION_OPEN:
                     MessengerManager.showToast(getActivity(), getActivity().getText(R.string.download_complete) + " "
-                            + IOUtils.getOriginalFromTempFilename(contentFile.getFileName()));
+                            + contentFile.getFileName());
 
                     DetailsFragment detailsFragment = (DetailsFragment) getFragmentManager().findFragmentByTag(
                             DetailsFragment.TAG);

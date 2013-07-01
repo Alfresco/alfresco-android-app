@@ -64,7 +64,7 @@ public class AlfrescoAppException extends AlfrescoException
     {
         super(errorCode, e);
     }
-
+    
     public boolean isDisplayMessage()
     {
         return displayMessage;

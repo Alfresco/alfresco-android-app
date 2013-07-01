@@ -16,22 +16,19 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationMa
 import org.alfresco.mobile.android.application.operations.batch.file.encryption.DataProtectionRequest;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.IOUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class DataProtectionManager implements VersionNumber
 {
-    private static final String TAG = DataProtectionManager.class.getName();
+    //private static final String TAG = DataProtectionManager.class.getName();
 
     public static final int ACTION_NONE = -1;
 
@@ -49,16 +46,14 @@ public class DataProtectionManager implements VersionNumber
 
     protected final Context mAppContext;
 
-    protected static final Object mLock = new Object();
-
-    protected LocalBroadcastManager localBroadcastManager;
+    protected static final Object LOCK = new Object();
 
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ////////////////////////////////////////////////////
     public static DataProtectionManager getInstance(Context context)
     {
-        synchronized (mLock)
+        synchronized (LOCK)
         {
             if (mInstance == null)
             {
@@ -72,9 +67,6 @@ public class DataProtectionManager implements VersionNumber
     private DataProtectionManager(Context applicationContext)
     {
         mAppContext = applicationContext;
-        IntentFilter intentFilter = getIntentFilter();
-        localBroadcastManager = LocalBroadcastManager.getInstance(mAppContext);
-        localBroadcastManager.registerReceiver(getReceiver(), intentFilter);
     }
 
     // ////////////////////////////////////////////////////
@@ -221,20 +213,6 @@ public class DataProtectionManager implements VersionNumber
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETED);
         return intentFilter;
-    }
-
-    protected BroadcastReceiver getReceiver()
-    {
-        return new SecurityReceiver();
-    }
-
-    private class SecurityReceiver extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            Log.d(TAG, intent.getAction());
-        }
     }
 
     private static Intent createActionIntent(Activity activity, int intentAction, File f)

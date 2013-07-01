@@ -27,9 +27,12 @@ import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-public class UpgradeVersion110
+public final class UpgradeVersion110
 {
 
+    private UpgradeVersion110(){
+    }
+    
     private static final String TAG = UpgradeVersion110.class.getName();
 
     public static void transferFilesBackground(final String sourceFolder, final String destFolder,

@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.Operation;
-import org.alfresco.mobile.android.application.operations.OperationsGroupResult;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
@@ -34,7 +33,6 @@ import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.Context;
-import android.os.Bundle;
 
 /**
  * @author Jean Marie Pascal

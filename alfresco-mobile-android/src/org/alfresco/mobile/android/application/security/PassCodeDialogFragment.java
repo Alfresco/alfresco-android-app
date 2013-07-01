@@ -65,6 +65,8 @@ public class PassCodeDialogFragment extends DialogFragment
     public static final int MODE_DELETE = 3;
 
     public static final int MODE_USER_REQUEST = 4;
+    
+    private static final int PASSCODE_LENGTH = 4;
 
     /** Public Fragment TAG. */
     public static final String TAG = "PassCodeDialogFragment";
@@ -79,9 +81,9 @@ public class PassCodeDialogFragment extends DialogFragment
 
     private EditText focusValue;
 
-    private int[] passcode = new int[4];
+    private int[] passcode = new int[PASSCODE_LENGTH];
 
-    private int[] confirmPasscode = new int[4];
+    private int[] confirmPasscode = new int[PASSCODE_LENGTH];
 
     private boolean needConfirmation = false;
 
@@ -429,7 +431,7 @@ public class PassCodeDialogFragment extends DialogFragment
             }
         }
 
-        if (passcodeValue.length() != 4)
+        if (passcodeValue.length() != PASSCODE_LENGTH)
         {
             passcodeValue = null;
         }

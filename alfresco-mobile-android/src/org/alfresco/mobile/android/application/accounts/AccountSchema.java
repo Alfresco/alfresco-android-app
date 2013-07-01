@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
+import org.alfresco.mobile.android.application.database.DatabaseVersionNumber;
+
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -153,13 +155,13 @@ public final class AccountSchema
     {
         // Update database to add the Paid Account flag. This was introduced in
         // DB version 3.
-        if (oldVersion <= 2)
+        if (oldVersion <= DatabaseVersionNumber.VERSION_1_0_0)
         {
             db.execSQL(QUERY_ADD_PAID_ACCOUNT_COLUM);
         }
         
         // Update database to create account content provider
-        if (oldVersion <= 3)
+        if (oldVersion <= DatabaseVersionNumber.VERSION_1_1_0)
         {
             //Rename old table
             db.execSQL(QUERY_RENAME_TABLE_OLD);

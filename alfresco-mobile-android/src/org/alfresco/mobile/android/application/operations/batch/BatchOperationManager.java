@@ -42,8 +42,8 @@ import org.alfresco.mobile.android.application.operations.batch.node.favorite.Fa
 import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 
 import android.content.BroadcastReceiver;

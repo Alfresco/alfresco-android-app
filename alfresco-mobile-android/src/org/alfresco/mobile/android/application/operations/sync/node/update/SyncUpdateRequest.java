@@ -30,7 +30,7 @@ public class SyncUpdateRequest extends AbstractSyncUpRequest
 
     public static final int TYPE_ID = 30;
     
-    public boolean doRemove = false;
+    private boolean doRemove = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS

@@ -29,6 +29,7 @@ import java.security.GeneralSecurityException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -39,6 +40,9 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 
 import android.content.Context;
 import android.util.Log;
@@ -62,6 +66,18 @@ public class EncryptionUtils
     private static SecretKey info = null;
 
     private static final int MAX_BUFFER_SIZE = 10240;
+
+    private static ArrayList<String> filesDecrypted = null;
+
+    private static final String DECRYPTION_EXTENSION = ".utmp";
+    
+    private static ArrayList<String> filesEncrypted = null;
+
+    private static final String ENCRYPTION_EXTENSION = ".etmp";
+
+    private EncryptionUtils()
+    {
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // DETECTION
@@ -91,81 +107,83 @@ public class EncryptionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // DECRYPTION
     // ///////////////////////////////////////////////////////////////////////////
-    public static boolean decryptFile(Context ctxt, String filename) throws Exception
+    public static boolean decryptFile(Context ctxt, String filename) throws AlfrescoAppException
     {
         return decryptFile(ctxt, filename, null);
     }
 
-    public static boolean decryptFile(Context ctxt, String filename, String newFilename) throws Exception
+    public static boolean decryptFile(Context ctxt, String filename, String newFilename) throws AlfrescoAppException
     {
-        if (isEncrypted(ctxt, filename))
+        boolean ret = true;
+        OutputStream destStream = null;
+        InputStream sourceStream = null;
+        try
         {
-            boolean ret = true;
-            File source = new File(filename);
-            long size = source.length();
-            long copied = 0;
-            File dest = new File(newFilename != null ? newFilename : filename + ".utmp");
-            InputStream sourceFile = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, KEY_LENGTH)
-                    .toString());
-            OutputStream destFile = new FileOutputStream(dest);
-            int nBytes = 0;
-
-            byte[] buffer = new byte[MAX_BUFFER_SIZE];
-
-            Log.i(TAG, "Decrypting file " + filename);
-
-            while (size - copied > 0)
+            if (isEncrypted(ctxt, filename))
             {
-                if (size - copied < MAX_BUFFER_SIZE)
-                {
-                    buffer = new byte[(int) (size - copied)];
-                }
-                nBytes = sourceFile.read(buffer);
-                if (nBytes == -1)
-                {
-                    break;
-                }
-                else if (nBytes > 0)
-                {
-                    destFile.write(buffer);
-                }
-            }
+                File source = new File(filename);
+                long size = source.length();
+                long copied = 0;
+                File dest = new File(newFilename != null ? newFilename : filename + ".utmp");
+                sourceStream = wrapCipherInputStream(new FileInputStream(source), generateKey(ctxt, KEY_LENGTH)
+                        .toString());
+                destStream = new FileOutputStream(dest);
+                int nBytes = 0;
 
-            sourceFile.close();
-            destFile.close();
+                byte[] buffer = new byte[MAX_BUFFER_SIZE];
 
-            Log.i("Alfresco", "Decryption phase succeeded for file " + source.getName());
-
-            if (newFilename == null)
-            {
-                if (source.delete())
+                while (size - copied > 0)
                 {
-                    // Rename decrypted file to original name.
-                    if (false == (ret = dest.renameTo(source)))
+                    if (size - copied < MAX_BUFFER_SIZE)
                     {
-                        Log.e("Alfresco", "Cannot rename decrypted file " + dest.getName());
+                        buffer = new byte[(int) (size - copied)];
+                    }
+                    nBytes = sourceStream.read(buffer);
+                    if (nBytes == -1)
+                    {
+                        break;
+                    }
+                    else if (nBytes > 0)
+                    {
+                        destStream.write(buffer);
                     }
                 }
-                else
+
+                sourceStream.close();
+                destStream.close();
+
+                if (newFilename == null)
                 {
-                    Log.e("Alfresco", "Cannot delete original file " + source.getName());
-                    dest.delete();
-                    ret = false;
+                    if (source.delete())
+                    {
+                        // Rename decrypted file to original name.
+                        if (!(ret = dest.renameTo(source)))
+                        {
+                            Log.e(TAG, "Cannot rename decrypted file " + dest.getName());
+                        }
+                    }
+                    else
+                    {
+                        Log.e(TAG, "Cannot delete original file " + source.getName());
+                        dest.delete();
+                        ret = false;
+                    }
                 }
             }
-
-            return ret;
+            else
+            {
+                Log.w(TAG, "File is already decrypted: " + filename);
+                return true;
+            }
         }
-        else
+        catch (Exception e)
         {
-            Log.w(TAG, "File is already decrypted: " + filename);
-            return true;
+            IOUtils.closeStream(sourceStream);
+            IOUtils.closeStream(destStream);
+            throw new AlfrescoAppException(-1, e);
         }
+        return ret;
     }
-
-    private static ArrayList<String> filesDecrypted = null;
-
-    private static final String DECRYPTION_EXTENSION = ".utmp";
 
     /*
      * Encrypt an entire folder, recursively if required. Rollback is
@@ -196,7 +214,7 @@ public class EncryptionUtils
                     if (sourceFile.isFile())
                     {
                         result = decryptFile(ctxt, sourceFile.getPath(), destFilename);
-                        if (result == true)
+                        if (result)
                         {
                             filesDecrypted.add(sourceFile.getPath());
                         }
@@ -273,9 +291,7 @@ public class EncryptionUtils
         }
         catch (Exception e)
         {
-            Log.e("Alfresco", "Error during folder decryption: " + e.getMessage());
             Log.d(TAG, Log.getStackTraceString(e));
-
             return false;
         }
     }
@@ -286,7 +302,7 @@ public class EncryptionUtils
     /*
      * Encrypt file in place, leaving original file unencrypted.
      */
-    public static boolean encryptFile(Context ctxt, String filename, boolean nuke) throws Exception
+    public static boolean encryptFile(Context ctxt, String filename, boolean nuke) throws AlfrescoAppException
     {
         return encryptFile(ctxt, filename, null, nuke);
     }
@@ -296,86 +312,88 @@ public class EncryptionUtils
      * filename file to encrypt nuke whether to zero the original unencrypted
      * file before attempting its deletion, for additional security.
      */
-    public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws Exception
+    public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws AlfrescoAppException
     {
-        if (!isEncrypted(ctxt, filename))
+        boolean ret = true;
+        OutputStream destStream = null;
+        InputStream sourceStream = null;
+        try
         {
-            boolean ret = true;
-            File source = new File(filename);
-            long size = source.length();
-            long copied = 0;
-            File dest = new File(newFilename != null ? newFilename : filename + ".etmp");
-            InputStream sourceFile = new FileInputStream(source);
-            OutputStream destFile = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, KEY_LENGTH)
-                    .toString());
-            int nBytes = 0;
-            //long size = 0;
 
-            //chunkSize = 10240;
-            byte buffer[] = new byte[MAX_BUFFER_SIZE];
-
-            Log.i(TAG, "Encrypting file " + filename);
-            
-            
-            while (size - copied > 0)
+            if (!isEncrypted(ctxt, filename))
             {
-                if (size - copied < MAX_BUFFER_SIZE)
-                {
-                    buffer = new byte[(int) (size - copied)];
-                }
-                nBytes = sourceFile.read(buffer);
-                if (nBytes == -1)
-                {
-                    break;
-                }
-                else if (nBytes > 0)
-                {
-                    destFile.write(buffer);
-                }
-            }
+                File source = new File(filename);
+                long size = source.length();
+                long copied = 0;
+                File dest = new File(newFilename != null ? newFilename : filename + ".etmp");
+                sourceStream = new FileInputStream(source);
+                destStream = wrapCipherOutputStream(new FileOutputStream(dest),
+                        generateKey(ctxt, KEY_LENGTH).toString());
+                int nBytes = 0;
+                byte buffer[] = new byte[MAX_BUFFER_SIZE];
 
-            sourceFile.close();
-            destFile.flush();
-            destFile.close();
+                Log.i(TAG, "Encrypting file " + filename);
 
-            Log.i(TAG, "Encryption phase succeeded for file " + source.getName());
-
-            if (newFilename == null)
-            {
-                if (nuke)
+                while (size - copied > 0)
                 {
-                    nukeFile(source, size);
-                }
-
-                if (source.delete())
-                {
-                    // Rename encrypted file to original name.
-                    if (false == (ret = dest.renameTo(source)))
+                    if (size - copied < MAX_BUFFER_SIZE)
                     {
-                        Log.e(TAG, "Cannot rename encrypted file " + dest.getName());
+                        buffer = new byte[(int) (size - copied)];
+                    }
+                    nBytes = sourceStream.read(buffer);
+                    if (nBytes == -1)
+                    {
+                        break;
+                    }
+                    else if (nBytes > 0)
+                    {
+                        destStream.write(buffer);
                     }
                 }
-                else
+
+                sourceStream.close();
+                destStream.flush();
+                destStream.close();
+
+                if (newFilename == null)
                 {
-                    Log.e(TAG, "Cannot delete original file " + source.getName());
+                    if (nuke)
+                    {
+                        nukeFile(source, size);
+                    }
 
-                    dest.delete();
-                    ret = false;
+                    if (source.delete())
+                    {
+                        // Rename encrypted file to original name.
+                        if (!(ret = dest.renameTo(source)))
+                        {
+                            Log.e(TAG, "Cannot rename encrypted file " + dest.getName());
+                        }
+                    }
+                    else
+                    {
+                        Log.e(TAG, "Cannot delete original file " + source.getName());
+
+                        dest.delete();
+                        ret = false;
+                    }
                 }
-            }
 
-            return ret;
+                return ret;
+            }
+            else
+            {
+                Log.w(TAG, "File is already encrypted: " + filename);
+                return true;
+            }
         }
-        else
+        catch (Exception e)
         {
-            Log.w(TAG, "File is already encrypted: " + filename);
-            return true;
+            IOUtils.closeStream(sourceStream);
+            IOUtils.closeStream(destStream);
+            throw new AlfrescoAppException(-1, e);
         }
     }
-
-    private static ArrayList<String> filesEncrypted = null;
-
-    private static final String ENCRYPTION_EXTENSION = ".etmp";
 
     /*
      * Encrypt an entire folder, recursively if required. Rollback is
@@ -406,7 +424,7 @@ public class EncryptionUtils
                     if (sourceFile.isFile())
                     {
                         result = encryptFile(ctxt, sourceFile.getPath(), destFilename, true);
-                        if (result == true)
+                        if (result)
                         {
                             filesEncrypted.add(sourceFile.getPath());
                         }
@@ -515,7 +533,7 @@ public class EncryptionUtils
 
             byte[] input = new byte[count];
             streamIn.read(input);
-            pbeCipher.doFinal(input).toString().contains(REFERENCE_DATA.toString());
+            pbeCipher.doFinal(input).toString().contains(Arrays.toString(REFERENCE_DATA));
 
             return new CipherInputStream(streamIn, pbeCipher);
         }

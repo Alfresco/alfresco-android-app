@@ -272,8 +272,6 @@ public final class SynchroManager extends OperationManager
 
                 if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                 {
-                    Boolean isFavorite = (b.getString(IntentIntegrator.EXTRA_FAVORITE) != null) ? Boolean
-                            .parseBoolean(b.getString(IntentIntegrator.EXTRA_FAVORITE)) : null;
                     Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
 
                     Account acc = SessionUtils.getAccount(mAppContext);

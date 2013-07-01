@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.operations.batch.sync;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
@@ -39,8 +38,6 @@ import android.util.Log;
 public class CleanSyncFavoriteThread extends AbstractBatchOperationThread<Void>
 {
     private static final String TAG = CleanSyncFavoriteThread.class.getName();
-
-    private Account acc;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
