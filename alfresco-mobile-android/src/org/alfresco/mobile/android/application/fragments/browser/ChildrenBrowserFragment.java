@@ -622,11 +622,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         // Error case : Unable to find the file path associated
                         // to user pick.
                         // Sample : Picasa image case
-                        ActionManager.actionDisplayError(ChildrenBrowserFragment.this, new AlfrescoAppException(
+                        ActionManager.actionDisplayError(this, new AlfrescoAppException(
                                 getString(R.string.error_unknown_filepath), true));
                     }
                 }
-                else if (data != null && data.getExtras().containsKey(Intent.EXTRA_STREAM))
+                else if (data != null && data.getExtras() != null && data.getExtras().containsKey(Intent.EXTRA_STREAM))
                 {
                     List<File> files = new ArrayList<File>();
                     List<Uri> uris = data.getExtras().getParcelableArrayList(Intent.EXTRA_STREAM);

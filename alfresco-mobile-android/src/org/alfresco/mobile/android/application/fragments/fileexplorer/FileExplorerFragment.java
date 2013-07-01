@@ -129,10 +129,10 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     {
         super.onActivityCreated(savedInstanceState);
 
+        Account acc = ((BaseActivity) getActivity()).getCurrentAccount();
         Bundle b = getArguments();
         if (b == null)
         {
-            Account acc = ((BaseActivity) getActivity()).getCurrentAccount();
             if (acc != null)
             {
                 File folder = StorageManager.getDownloadFolder(getActivity(), acc);
@@ -162,8 +162,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
             if (parent != null)
             {
-                // TextView tv = ((TextView)vroot.findViewById(R.id.path));
-                // tv.setText(parent.getPath().replaceAll("/", " > "));
                 getLoaderManager().initLoader(FileExplorerLoader.ID, b, this);
                 getLoaderManager().getLoader(FileExplorerLoader.ID).forceLoad();
             }
@@ -509,7 +507,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 {
                     if (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()))
                     {
-                        DataProtectionManager.executeAction(getActivity(), b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION),
+                        DataProtectionManager.executeAction(getActivity(),
+                                b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION),
                                 (File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
                         if (getFragment(WaitingDialogFragment.TAG) != null)
                         {
