@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.VersionNumber;
 import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -22,7 +21,6 @@ import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -208,13 +206,6 @@ public class DataProtectionManager implements VersionNumber
     // ////////////////////////////////////////////////////
     // Broadcast Receiver
     // ////////////////////////////////////////////////////
-    protected IntentFilter getIntentFilter()
-    {
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
-        intentFilter.addAction(IntentIntegrator.ACTION_FAVORITE_COMPLETED);
-        return intentFilter;
-    }
-
     private static Intent createActionIntent(Activity activity, int intentAction, File f)
     {
         Intent intentI = null;

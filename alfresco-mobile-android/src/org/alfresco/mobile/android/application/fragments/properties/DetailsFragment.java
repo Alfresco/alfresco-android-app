@@ -292,16 +292,28 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 if (modified
                         && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
                 {
-                    if (SynchroManager.getInstance(getActivity())
-                            .isSynced(SessionUtils.getAccount(getActivity()), node))
+                    // Syncrho available.
+                    if (isSynced)
                     {
+                        //Update statut of the sync operation
                         ContentValues cValues = new ContentValues();
                         cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
-                        getActivity().getContentResolver().update(SynchroManager.getInstance(getActivity()).getUri(SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null, null);
-                        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), node.getIdentifier());
+                        getActivity().getContentResolver().update(
+                                SynchroManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+
+                        //Sync if it's possible.
+                        if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                        {
+                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                                    node.getIdentifier());
+                        }
                     }
                     else
                     {
+                        //Favorites listing. 
+                        //Save back pop up.
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(R.string.save_back);
                         builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
@@ -1307,7 +1319,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isFavorite ? R.drawable.ic_favorite_dark : R.drawable.ic_unfavorite_dark;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
-
                             }
                             return;
                         }

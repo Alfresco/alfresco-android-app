@@ -421,10 +421,12 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private void addSyncDownloadRequest(Document doc, long timeStamp)
     {
-        // Flag the item inside the referential
-        Uri uri = context.getContentResolver().insert(SynchroProvider.CONTENT_URI,
-                SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc, timeStamp));
-
+        Uri uri = SynchroManager.getInstance(context).getUri(acc, doc.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(SynchroProvider.CONTENT_URI,
+                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc, timeStamp));
+        }
         // Execution
         addSyncDownloadRequest(uri, doc);
     }
@@ -495,13 +497,13 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
         // If Synced document
         // Flag the item inside the referential
-        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID)){
+        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID))
+        {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
             context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
                     cValues, null, null);
         }
-       
 
         // Execution
         SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id, cursorId.getString(SynchroSchema.COLUMN_TITLE_ID),

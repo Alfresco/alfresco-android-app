@@ -119,10 +119,6 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
                     MessengerManager.showLongToast(getBaseContext(),
                             getBaseContext().getString(R.string.create_document_save));
                 }
-                else
-                {
-                    MessengerManager.showToast(getBaseContext(), R.string.error_general);
-                }
             }
         }
     }

@@ -30,13 +30,11 @@ import android.content.IntentFilter;
 
 public abstract class OperationManager
 {
-    private static final String TAG = OperationManager.class.getName();
+    //private static final String TAG = OperationManager.class.getName();
 
     protected final Context mAppContext;
 
     protected final ArrayList<OperationsGroupRecord> operationsGroups = new ArrayList<OperationsGroupRecord>();
-
-    protected OperationsGroupRecord currentOperationGroup;
 
     protected static final Object mLock = new Object();
 
