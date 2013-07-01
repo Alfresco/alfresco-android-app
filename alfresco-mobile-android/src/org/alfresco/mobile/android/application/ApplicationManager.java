@@ -36,15 +36,15 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public class ApplicationManager
+public final class ApplicationManager
 {
-    private static final String TAG = ApplicationManager.class.getName();
+    //private static final String TAG = ApplicationManager.class.getName();
 
     private static ApplicationManager mInstance;
 
     private final Context appContext;
 
-    private static final Object mLock = new Object();
+    private static final Object LOCK = new Object();
 
     private DatabaseManager databaseManager;
 
@@ -71,7 +71,7 @@ public class ApplicationManager
 
     public static ApplicationManager getInstance(Context context)
     {
-        synchronized (mLock)
+        synchronized (LOCK)
         {
             if (mInstance == null)
             {

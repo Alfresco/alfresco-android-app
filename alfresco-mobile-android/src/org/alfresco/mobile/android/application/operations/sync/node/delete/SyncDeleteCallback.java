@@ -18,14 +18,11 @@
 package org.alfresco.mobile.android.application.operations.sync.node.delete;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.manager.NotificationHelper;
-import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationCallback;
 
 import android.content.Context;
 
 /**
- * 
  * @author Jean Marie Pascal
  */
 public class SyncDeleteCallback extends AbstractSyncOperationCallback<Void>
@@ -35,14 +32,5 @@ public class SyncDeleteCallback extends AbstractSyncOperationCallback<Void>
         super(context, totalItems, pendingItems);
         inProgress = getBaseContext().getString(R.string.sync_in_progress);
         complete = getBaseContext().getString(R.string.sync_complete);
-    }
-    
-    
-    @Override
-    public void onPreExecute(Operation<Void> task)
-    {
-        NotificationHelper.createProgressNotification(getBaseContext(),
-                getNotificationId(),
-                getBaseContext().getString(R.string.download_progress), ((SyncDeleteThread) task).getDocumentName(), totalItems - pendingItems + "/" + totalItems, 0, 100);
     }
 }

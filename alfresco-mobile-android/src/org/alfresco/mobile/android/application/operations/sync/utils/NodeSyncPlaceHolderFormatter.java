@@ -25,8 +25,10 @@ import android.content.Context;
 /**
  * @author Jean Marie Pascal
  */
-public class NodeSyncPlaceHolderFormatter
+public final class NodeSyncPlaceHolderFormatter
 {
+    private NodeSyncPlaceHolderFormatter(){
+    }
 
     public static String createContentBottomText(Context context, NodeSyncPlaceHolder node, boolean extended)
     {

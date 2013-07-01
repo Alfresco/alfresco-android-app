@@ -19,8 +19,6 @@ package org.alfresco.mobile.android.application.accounts;
 
 import java.io.Serializable;
 
-import android.content.Context;
-
 public class Account implements Serializable
 {
 
@@ -53,8 +51,6 @@ public class Account implements Serializable
     private String accessToken;
 
     private String refreshToken;
-
-    protected Context context;
 
     private int isPaidAccount;
     

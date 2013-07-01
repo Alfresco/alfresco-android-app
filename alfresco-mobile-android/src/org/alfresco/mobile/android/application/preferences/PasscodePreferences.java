@@ -64,6 +64,8 @@ public class PasscodePreferences extends PreferenceFragment
     public static final String TAG = "PasscodePreferencesFragment";
 
     private static final String DEFAULT_TIMEOUT = "300000";
+    
+    private static final int ONE_MINUTE = 60000;
 
     private static final long DEFAULT_ACTIVATION_TIME = -1;
 
@@ -174,7 +176,7 @@ public class PasscodePreferences extends PreferenceFragment
 
         // TIMEOUT
         pref = findPreference(getString(R.string.passcode_timeout));
-        int minutes = Math.round(timeout / 60000);
+        int minutes = Math.round(timeout / ONE_MINUTE);
         pref.setSummary(String.format(getString(R.string.passcode_timeout_summary), minutes + ""));
         pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
         {
@@ -182,7 +184,7 @@ public class PasscodePreferences extends PreferenceFragment
             public boolean onPreferenceChange(Preference preference, Object newValue)
             {
                 sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).commit();
-                int minutes = Math.round(Long.parseLong((String) newValue) / 60000);
+                int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
                 preference.setSummary(String.format(getString(R.string.passcode_timeout_summary), minutes + ""));
                 return true;
             }

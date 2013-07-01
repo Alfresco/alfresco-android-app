@@ -55,11 +55,11 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
 
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/account";
 
-    private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+    private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     static
     {
-        uriMatcher.addURI(AUTHORITY, BASE_PATH, ACCOUNTS);
-        uriMatcher.addURI(AUTHORITY, BASE_PATH + "/#", ACCOUNT_ID);
+        URI_MATCHER.addURI(AUTHORITY, BASE_PATH, ACCOUNTS);
+        URI_MATCHER.addURI(AUTHORITY, BASE_PATH + "/#", ACCOUNT_ID);
     }
 
     @Override
@@ -72,7 +72,7 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
-        int uriType = uriMatcher.match(uri);
+        int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase db = databaseManager.getWriteDb();
         int rowsDeleted = 0;
         switch (uriType)
@@ -108,7 +108,7 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
     @Override
     public Uri insert(Uri uri, ContentValues values)
     {
-        int uriType = uriMatcher.match(uri);
+        int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase db = databaseManager.getWriteDb();
         long id = 0;
 
@@ -138,7 +138,7 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
 
         queryBuilder.setTables(AccountSchema.TABLENAME);
 
-        int uriType = uriMatcher.match(uri);
+        int uriType = URI_MATCHER.match(uri);
         switch (uriType)
         {
             case ACCOUNTS:
@@ -162,7 +162,7 @@ public class AccountProvider extends ContentProvider implements AlfrescoContentP
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
     {
-        int uriType = uriMatcher.match(uri);
+        int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase sqlDB = databaseManager.getWriteDb();
         int rowsUpdated = 0;
         switch (uriType)

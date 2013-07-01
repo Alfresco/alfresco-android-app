@@ -29,6 +29,8 @@ import android.os.Bundle;
 
 public final class ConnectivityUtils
 {
+    private ConnectivityUtils(){
+    }
 
     public static boolean hasInternetAvailable(Context context)
     {

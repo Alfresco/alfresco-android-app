@@ -42,7 +42,7 @@ public class AccountsFragment extends BaseCursorListFragment
 {
     public static final String TAG = AccountsFragment.class.getName();
 
-    protected List<Long> selectedAccounts = new ArrayList<Long>(1);
+    private List<Long> selectedAccounts = new ArrayList<Long>(1);
 
     public AccountsFragment()
     {

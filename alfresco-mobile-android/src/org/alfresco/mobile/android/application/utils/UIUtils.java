@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;

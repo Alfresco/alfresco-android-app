@@ -114,7 +114,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     List<Document> docs = new ArrayList<Document>(1);
                     docs.add((Document) node);
                     remoteFavorites = new PagingResultImpl<Document>(docs, false, 1);
-
+                    break;
                 case SyncFavoriteRequest.MODE_DOCUMENTS:
                     // Retrieve list of Favorites
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
@@ -247,7 +247,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     {
                         // No local change
                         // We download the new content
-                        addSyncDownloadRequest(localUri, doc, syncScanningTimeStamp);
+                        addSyncDownloadRequest(localUri, doc);
                     }
                     continue;
                 }
@@ -259,7 +259,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                 if (!localFile.exists() && canExecuteAction)
                 {
                     // Content is not present, we download content
-                    addSyncDownloadRequest(localUri, doc, syncScanningTimeStamp);
+                    addSyncDownloadRequest(localUri, doc);
                     continue;
                 }
 
@@ -294,7 +294,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         // Document metadata has changed
                         // Content is still the same
                         // We rename the document.
-                        rename(doc, cursorId, localFile, localUri);
+                        rename(doc, localFile, localUri);
                     }
                     continue;
                 }
@@ -421,15 +421,17 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private void addSyncDownloadRequest(Document doc, long timeStamp)
     {
-        // Flag the item inside the referential
-        Uri uri = context.getContentResolver().insert(SynchroProvider.CONTENT_URI,
-                SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc, timeStamp));
-
+        Uri uri = SynchroManager.getInstance(context).getUri(acc, doc.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(SynchroProvider.CONTENT_URI,
+                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc, timeStamp));
+        }
         // Execution
-        addSyncDownloadRequest(uri, doc, timeStamp);
+        addSyncDownloadRequest(uri, doc);
     }
 
-    private void addSyncDownloadRequest(Uri localUri, Document doc, long timeStamp)
+    private void addSyncDownloadRequest(Uri localUri, Document doc)
     {
         // If listing mode, update Metadata associated
         if (!canExecuteAction)
@@ -458,7 +460,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         group.enqueue(updateRequest.setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
     }
 
-    private void rename(Document doc, Cursor cursorId, File localFile, Uri localUri)
+    private void rename(Document doc, File localFile, Uri localUri)
     {
         // If Favorite listing simply rename the entry.
         ContentValues cValues = new ContentValues();
@@ -495,13 +497,13 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
         // If Synced document
         // Flag the item inside the referential
-        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID)){
+        if (SyncOperation.STATUS_MODIFIED != cursorId.getInt(SynchroSchema.COLUMN_STATUS_ID))
+        {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
             context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
                     cValues, null, null);
         }
-       
 
         // Execution
         SyncDeleteRequest deleteRequest = new SyncDeleteRequest(id, cursorId.getString(SynchroSchema.COLUMN_TITLE_ID),

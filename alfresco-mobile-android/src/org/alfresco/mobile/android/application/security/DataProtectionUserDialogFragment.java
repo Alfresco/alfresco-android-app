@@ -137,9 +137,9 @@ public class DataProtectionUserDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     public interface onDataProtectionListener
     {
-        public void onPositive();
+        void onPositive();
 
-        public void onNegative();
+        void onNegative();
     }
 
     private onDataProtectionListener dataProtectionListener = new onDataProtectionListener()

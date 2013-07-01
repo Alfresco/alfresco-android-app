@@ -37,7 +37,9 @@ import android.util.Log;
 
 public abstract class AbstractOperationCallback<T> implements Operation.OperationCallBack<T>, OperationsGroupCallBack
 {
-    private String TAG = AbstractOperationCallback.class.getName();
+    private static final String TAG = AbstractOperationCallback.class.getName();
+    
+    protected static final int PROGRESS_MAX = 100;
 
     protected Context context;
 
@@ -85,7 +87,7 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
                 {
                     NotificationHelper.createProgressNotification(getBaseContext(), getNotificationId(), task
                             .getOperationRequest().getNotificationTitle(), inProgress,
-                            groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests, 0, 100);
+                            groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests, 0, PROGRESS_MAX);
                 }
                 else
                 {

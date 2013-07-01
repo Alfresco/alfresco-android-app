@@ -41,6 +41,8 @@ import android.widget.TextView;
 public class CloudSignupDialogFragment extends DialogFragment
 {
     public static final String TAG = "SignupCloudDialogFragment";
+    
+    private static final int PASSWORD_LENGTH_MIN = 6;
 
     private String firstName;
 
@@ -143,7 +145,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
         String confirm = formValue.getText().toString();
 
-        if (password.length() < 6 || confirm.length() < 6 || !confirm.equals(password)) { return false; }
+        if (password.length() < PASSWORD_LENGTH_MIN || confirm.length() < PASSWORD_LENGTH_MIN || !confirm.equals(password)) { return false; }
 
         formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
         emailAddress = formValue.getText().toString();

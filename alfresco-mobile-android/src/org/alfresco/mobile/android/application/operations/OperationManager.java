@@ -27,17 +27,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 public abstract class OperationManager
 {
-    private static final String TAG = OperationManager.class.getName();
+    //private static final String TAG = OperationManager.class.getName();
 
     protected final Context mAppContext;
 
     protected final ArrayList<OperationsGroupRecord> operationsGroups = new ArrayList<OperationsGroupRecord>();
-
-    protected OperationsGroupRecord currentOperationGroup;
 
     protected static final Object mLock = new Object();
 

@@ -51,7 +51,7 @@ public final class AccountManager
 
     private final Context appContext;
 
-    private static final Object mLock = new Object();
+    private static final Object LOCK = new Object();
 
     private Integer accountCursor;
 
@@ -68,7 +68,7 @@ public final class AccountManager
     
     public static AccountManager getInstance(Context context)
     {
-        synchronized (mLock)
+        synchronized (LOCK)
         {
             if (mInstance == null)
             {

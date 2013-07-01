@@ -25,6 +25,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -35,6 +36,7 @@ import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsGroupRecord;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
@@ -272,15 +274,12 @@ public final class SynchroManager extends OperationManager
 
                 if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                 {
-                    Boolean isFavorite = (b.getString(IntentIntegrator.EXTRA_FAVORITE) != null) ? Boolean
-                            .parseBoolean(b.getString(IntentIntegrator.EXTRA_FAVORITE)) : null;
                     Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
-
                     Account acc = SessionUtils.getAccount(mAppContext);
 
                     if (acc != null && node != null && canSync(acc))
                     {
-                        sync(acc, node.getIdentifier());
+                        sync(acc);
                     }
                     return;
                 }
@@ -337,50 +336,89 @@ public final class SynchroManager extends OperationManager
                 }
             }
 
-            if (IntentIntegrator.ACTION_SYNCHROS_CANCEL.equals(intent.getAction()) && currentOperationGroup != null)
+            if (IntentIntegrator.ACTION_SYNCHROS_CANCEL.equals(intent.getAction()))
             {
-                for (Entry<String, OperationRequest> requestEntry : currentOperationGroup.index.entrySet())
+                OperationsGroupRecord group = null;
+                for (int i = 0; i < operationsGroups.size(); i++)
                 {
-                    try
+                    group = operationsGroups.get(i);
+                    for (Entry<String, OperationRequest> requestEntry : group.runningRequest.entrySet())
                     {
-                        context.getContentResolver().update(
-                                getNotificationUri(requestEntry.getValue()),
-                                ((AbstractSyncOperationRequestImpl) requestEntry.getValue())
-                                        .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        try
+                        {
+                            context.getContentResolver().update(
+                                    getNotificationUri(requestEntry.getValue()),
+                                    ((AbstractSyncOperationRequestImpl) requestEntry.getValue())
+                                            .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
                     }
-                    catch (Exception e)
+
+                    for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
-                        continue;
+                        try
+                        {
+                            context.getContentResolver().update(
+                                    getNotificationUri(requestEntry.getValue()),
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue())
+                                            .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
                     }
-                    currentOperationGroup.failedRequest.add(requestEntry.getValue());
                 }
-                // TODO Send to callback ?
-                operationsGroups.clear();
-                currentOperationGroup = null;
                 return;
             }
 
-            if (IntentIntegrator.ACTION_SYNCHROS_STOP.equals(intent.getAction()) && currentOperationGroup != null)
+            if (IntentIntegrator.ACTION_SYNCHROS_STOP.equals(intent.getAction()))
             {
-                for (Entry<String, OperationRequest> requestEntry : currentOperationGroup.index.entrySet())
+                OperationsGroupRecord group = null;
+                for (int i = 0; i < operationsGroups.size(); i++)
                 {
-                    try
+                    group = operationsGroups.get(i);
+                    for (Entry<String, OperationRequest> requestEntry : group.runningRequest.entrySet())
+                    {
+                        try
+                        {
+                            context.getContentResolver().delete(
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
+                                    null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
+                    }
+
+                    for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
+                    {
+                        try
+                        {
+                            context.getContentResolver().delete(
+                                    ((AbstractSyncOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
+                                    null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
+                    }
+
+                    for (OperationRequest operationRequest : group.completeRequest)
                     {
                         context.getContentResolver().delete(
-                                ((AbstractSyncOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
-                                null, null);
+                                ((AbstractSyncOperationRequestImpl) operationRequest).getNotificationUri(), null, null);
                     }
-                    catch (IllegalArgumentException e)
-                    {
-                        continue;
-                    }
-                    currentOperationGroup.failedRequest.add(requestEntry.getValue());
-                }
 
-                for (OperationRequest operationRequest : currentOperationGroup.completeRequest)
-                {
-                    context.getContentResolver().delete(
-                            ((AbstractSyncOperationRequestImpl) operationRequest).getNotificationUri(), null, null);
                 }
                 return;
             }
@@ -389,33 +427,28 @@ public final class SynchroManager extends OperationManager
 
             String operationId = (String) intent.getExtras().get(EXTRA_SYNCHRO_ID);
 
-            if (currentOperationGroup == null) { return; }
+            OperationsGroupRecord currentGroup = getOperationGroup(operationId);
 
             // ADD
             if (operationId != null && IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction()))
             {
                 int operationStatus = (int) intent.getExtras().getInt(EXTRA_SYNCHRO_RESULT);
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    OperationRequest op = currentOperationGroup.runningRequest.remove(operationId);
+                    OperationRequest op = currentGroup.runningRequest.remove(operationId);
                     switch (operationStatus)
                     {
                         case Operation.STATUS_SUCCESSFUL:
-                            currentOperationGroup.completeRequest.add(op);
+                            currentGroup.completeRequest.add(op);
                             break;
                         case Operation.STATUS_PAUSED:
                         case Operation.STATUS_CANCEL:
                         case Operation.STATUS_FAILED:
-                            currentOperationGroup.failedRequest.add(op);
+                            currentGroup.failedRequest.add(op);
                             break;
                         default:
                             break;
                     }
-                }
-
-                if (currentOperationGroup.index.isEmpty() && currentOperationGroup.runningRequest.isEmpty())
-                {
-                    currentOperationGroup = null;
                 }
                 return;
             }
@@ -423,41 +456,41 @@ public final class SynchroManager extends OperationManager
             // STOP & DISPATCH
             if (operationId != null && IntentIntegrator.ACTION_SYNCHRO_STOP.equals(intent.getAction()))
             {
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    request = currentOperationGroup.runningRequest.remove(operationId);
+                    request = currentGroup.runningRequest.remove(operationId);
                 }
-                else if (currentOperationGroup.index.containsKey(operationId))
+                else if (currentGroup.index.containsKey(operationId))
                 {
-                    request = currentOperationGroup.index.remove(operationId);
+                    request = currentGroup.index.remove(operationId);
                 }
 
                 context.getContentResolver().update(getNotificationUri(request),
                         ((AbstractSyncOperationRequestImpl) request).createContentValues(Operation.STATUS_CANCEL),
                         null, null);
-                currentOperationGroup.failedRequest.add(request);
+                currentGroup.failedRequest.add(request);
             }
 
             // PAUSE
             if (operationId != null && IntentIntegrator.ACTION_SYNCHRO_PAUSE.equals(intent.getAction()))
             {
-                if (currentOperationGroup.runningRequest.containsKey(operationId))
+                if (currentGroup.runningRequest.containsKey(operationId))
                 {
-                    request = currentOperationGroup.runningRequest.remove(operationId);
+                    request = currentGroup.runningRequest.remove(operationId);
                 }
-                else if (currentOperationGroup.index.containsKey(operationId))
+                else if (currentGroup.index.containsKey(operationId))
                 {
-                    request = currentOperationGroup.index.remove(operationId);
+                    request = currentGroup.index.remove(operationId);
                 }
 
                 Log.d(TAG, "PAUSED" + getNotificationUri(request));
                 context.getContentResolver().update(getNotificationUri(request),
                         ((AbstractSyncOperationRequestImpl) request).createContentValues(Operation.STATUS_PAUSED),
                         null, null);
-                currentOperationGroup.index.put(operationId, request);
-                if (!currentOperationGroup.hasRunningRequest())
+                currentGroup.index.put(operationId, request);
+                if (!currentGroup.hasRunningRequest())
                 {
-                    currentOperationGroup = null;
+                    currentGroup = null;
                 }
             }
         }
@@ -547,11 +580,6 @@ public final class SynchroManager extends OperationManager
 
     public void sync(Account account)
     {
-        sync(account, false);
-    }
-
-    public void sync(Account account, boolean forceSync)
-    {
         if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
         group.enqueue(new SyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
@@ -576,17 +604,16 @@ public final class SynchroManager extends OperationManager
 
     public boolean isSynced(Account account, String nodeIdentifier)
     {
-        Cursor favoriteCursor = mAppContext.getContentResolver()
-                .query(SynchroProvider.CONTENT_URI,
-                        SynchroSchema.COLUMN_ALL,
-                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
+        Cursor favoriteCursor = mAppContext.getContentResolver().query(SynchroProvider.CONTENT_URI,
+                SynchroSchema.COLUMN_ALL,
+                SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'",
+                null, null);
         boolean b = (favoriteCursor.getCount() == 1)
                 && GeneralPreferences.hasActivateSync(mAppContext, SessionUtils.getAccount(mAppContext));
         favoriteCursor.close();
         return b;
     }
-    
+
     public boolean isSynced(Account account, Node node)
     {
         if (node.isFolder()) { return false; }
@@ -596,18 +623,18 @@ public final class SynchroManager extends OperationManager
     public File getSyncFile(Account account, Node node)
     {
         if (node.isFolder()) { return null; }
-        if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), node.getName(), node.getIdentifier()); }
+        if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext,
+                SessionUtils.getAccount(mAppContext), node.getName(), node.getIdentifier()); }
         return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), (Document) node);
     }
 
     public Uri getUri(Account account, String nodeIdentifier)
     {
         Uri b = null;
-        Cursor favoriteCursor = mAppContext.getContentResolver()
-                .query(SynchroProvider.CONTENT_URI,
-                        SynchroSchema.COLUMN_ALL,
-                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
+        Cursor favoriteCursor = mAppContext.getContentResolver().query(SynchroProvider.CONTENT_URI,
+                SynchroSchema.COLUMN_ALL,
+                SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'",
+                null, null);
         if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
         {
             b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
