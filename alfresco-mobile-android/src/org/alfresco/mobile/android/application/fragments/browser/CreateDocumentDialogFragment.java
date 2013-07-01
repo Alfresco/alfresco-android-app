@@ -276,7 +276,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
     private void createDocument(EditText tv, EditText desc, Button bcreate)
     {
         Map<String, Serializable> props = new HashMap<String, Serializable>(3);
-        String documentName = tv.getText().toString();
+        String documentName = tv.getText().toString().trim();
         
         if (originalName.equals(documentName) && recommandedName != null && !recommandedName.equals(originalName))
         {
