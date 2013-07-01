@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
-import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -69,7 +68,6 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
-import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;

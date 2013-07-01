@@ -22,21 +22,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.documentfolder.actions.UpdateNodeDialogFragment;
+import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 public class UpdateDialogFragment extends UpdateNodeDialogFragment
 {
@@ -73,10 +86,118 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
-        View v = super.onCreateView(inflater, container, savedInstanceState);
-
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
         folder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
+        
+        getDialog().setTitle(R.string.edit_metadata);
+        getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+
+        View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
+        final EditText tv = (EditText) v.findViewById(R.id.content_name);
+        final EditText desc = (EditText) v.findViewById(R.id.content_description);
+        TextView tsize = (TextView) v.findViewById(R.id.content_size);
+
+        v.findViewById(R.id.tags_line).setVisibility(View.GONE);
+        desc.setImeOptions(EditorInfo.IME_ACTION_DONE);
+
+        Button button = (Button) v.findViewById(R.id.cancel);
+        button.setOnClickListener(new OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                UpdateDialogFragment.this.dismiss();
+            }
+        });
+
+        final Button bcreate = (Button) v.findViewById(R.id.create_content);
+        bcreate.setText(R.string.update);
+        bcreate.setOnClickListener(new OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                updateNode(tv, desc, bcreate);
+            }
+        });
+
+        desc.setOnEditorActionListener(new OnEditorActionListener()
+        {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE)
+                {
+                    updateNode(tv, desc, bcreate);
+                    handled = true;
+                }
+                return handled;
+            }
+        });
+
+        if (node != null)
+        {
+            tv.setText(node.getName());
+            if (node.isDocument())
+            {
+                tsize.setText(Formatter.formatFileSize(getActivity(), ((Document) node).getContentStreamLength()));
+                tsize.setVisibility(View.VISIBLE);
+            }
+
+            if (RepositoryVersionHelper.isAlfrescoProduct(alfSession)
+                    && node.getProperty(ContentModel.PROP_DESCRIPTION) != null
+                    && node.getProperty(ContentModel.PROP_DESCRIPTION).getValue() != null)
+            {
+                desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
+            }
+
+            bcreate.setEnabled(true);
+
+        }
+        else
+        {
+            tsize.setVisibility(View.GONE);
+        }
+        
+        final EditText textName = ((EditText) v.findViewById(R.id.content_name));
+        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
+        final Button validate = (Button) v.findViewById(R.id.create_content);
+
+        // This Listener is responsible to enable or not the validate button and
+        // error message.
+        textName.addTextChangedListener(new TextWatcher()
+        {
+            public void afterTextChanged(Editable s)
+            {
+                if (s.length() > 0)
+                {
+                    validate.setEnabled(true);
+                    if (UIUtils.hasValideName(s.toString().trim()))
+                    {
+                        errorMessage.setVisibility(View.VISIBLE);
+                        errorMessage.setText(R.string.filename_error_character);
+                        validate.setEnabled(false);
+                    }
+                    else
+                    {
+                        errorMessage.setVisibility(View.GONE);
+                    }
+                }
+                else
+                {
+                    validate.setEnabled(false);
+                    errorMessage.setVisibility(View.GONE);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after)
+            {
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count)
+            {
+            }
+        });
+        
 
         return v;
     }
@@ -86,7 +207,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         bcreate.setEnabled(false);
 
         Map<String, Serializable> props = new HashMap<String, Serializable>(2);
-        props.put(ContentModel.PROP_NAME, tv.getText().toString());
+        props.put(ContentModel.PROP_NAME, tv.getText().toString().trim());
         if (desc.getText() != null && desc.getText().length() > 0)
         {
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());

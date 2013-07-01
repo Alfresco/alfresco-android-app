@@ -396,7 +396,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             return;
         }
 
-        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), true);
+        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
         if (mi != null)
         {
             // Display spinning wheel instead of refresh

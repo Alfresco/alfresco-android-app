@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.AsyncTaskLoader;
@@ -61,7 +60,7 @@ public class FileExplorerLoader extends AsyncTaskLoader<List<File>>
         {
             ArrayList<File> fileList = new ArrayList<File>();
             if (folder == null) return fileList;
-            
+
             if (folder.isDirectory())
             {
                 File[] childs = folder.listFiles();
@@ -69,17 +68,15 @@ public class FileExplorerLoader extends AsyncTaskLoader<List<File>>
                 {
                     for (File child : childs)
                     {
-                        if (!child.isHidden() && 
-                            !child.getName().startsWith(".") &&
-                            !child.getName().startsWith(IOUtils.TEMP_PREFIX))
+                        if (!child.isHidden() && !child.getName().startsWith("."))
                         {
                             fileList.add(child);
                         }
                     }
                 }
-                
+
                 Collections.sort(fileList, new FileComparator(true));
-                
+
                 return fileList;
             }
         }
@@ -90,7 +87,7 @@ public class FileExplorerLoader extends AsyncTaskLoader<List<File>>
 
         return null;
     }
-    
+
     public File getFolder()
     {
         return folder;

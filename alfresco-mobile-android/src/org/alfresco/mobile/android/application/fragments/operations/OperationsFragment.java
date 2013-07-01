@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.CursorLoader;
 import android.content.Loader;

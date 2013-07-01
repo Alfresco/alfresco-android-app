@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
@@ -69,9 +68,8 @@ public class PrivateDialogActivity extends BaseActivity
         params.width = (int) Math
                 .round(width
                         * (Float.parseFloat(getResources().getString(android.R.dimen.dialog_min_width_minor).replace(
-                                "%", "")) * 0.01)); // fixed width
+                                "%", "")) * 0.01));
 
-        // getWindow().
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
@@ -142,12 +140,6 @@ public class PrivateDialogActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        return super.onCreateOptionsMenu(menu);
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

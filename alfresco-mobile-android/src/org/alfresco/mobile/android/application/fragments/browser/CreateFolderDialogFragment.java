@@ -110,7 +110,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                 OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils
                         .getAccount(getActivity()));
                 group.enqueue(new CreateFolderRequest((Folder) getArguments().get(ARGUMENT_FOLDER), tv.getText()
-                        .toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                        .toString().trim()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
                 BatchOperationManager.getInstance(getActivity()).enqueue(group);
 
                 OperationWaitingDialogFragment.newInstance(CreateFolderRequest.TYPE_ID, R.drawable.ic_add_folder,

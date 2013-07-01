@@ -160,7 +160,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                String fileName = textName.getText().toString().concat(documentType.extension);
+                String fileName = textName.getText().toString().trim().concat(documentType.extension);
 
                 File newFile = new File(folderStorage, fileName);
 

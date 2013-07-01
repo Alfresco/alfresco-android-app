@@ -42,8 +42,8 @@ import org.alfresco.mobile.android.application.operations.batch.node.favorite.Fa
 import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 
 import android.content.BroadcastReceiver;
@@ -252,50 +252,90 @@ public class BatchOperationManager extends OperationManager
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (IntentIntegrator.ACTION_OPERATIONS_CANCEL.equals(intent.getAction()) && currentOperationGroup != null)
+            if (IntentIntegrator.ACTION_OPERATIONS_CANCEL.equals(intent.getAction()))
             {
-                for (Entry<String, OperationRequest> requestEntry : currentOperationGroup.index.entrySet())
+                OperationsGroupRecord group = null;
+                for (int i = 0; i < operationsGroups.size(); i++)
                 {
-                    try
+                    group = operationsGroups.get(i);
+                    for (Entry<String, OperationRequest> requestEntry : group.runningRequest.entrySet())
                     {
-                        context.getContentResolver().update(
-                                getNotificationUri(requestEntry.getValue()),
-                                ((AbstractBatchOperationRequestImpl) requestEntry.getValue())
-                                        .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        try
+                        {
+                            context.getContentResolver().update(
+                                    getNotificationUri(requestEntry.getValue()),
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue())
+                                            .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
                     }
-                    catch (Exception e)
+
+                    for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
-                        continue;
+                        try
+                        {
+                            context.getContentResolver().update(
+                                    getNotificationUri(requestEntry.getValue()),
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue())
+                                            .createContentValues(Operation.STATUS_CANCEL), null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
                     }
-                    currentOperationGroup.failedRequest.add(requestEntry.getValue());
                 }
-                // TODO Send to callback ?
-                operationsGroups.clear();
-                currentOperationGroup = null;
                 return;
             }
 
-            if (IntentIntegrator.ACTION_OPERATIONS_STOP.equals(intent.getAction()) && currentOperationGroup != null)
+            if (IntentIntegrator.ACTION_OPERATIONS_STOP.equals(intent.getAction()))
             {
-                for (Entry<String, OperationRequest> requestEntry : currentOperationGroup.index.entrySet())
+                OperationsGroupRecord group = null;
+                for (int i = 0; i < operationsGroups.size(); i++)
                 {
-                    try
+                    group = operationsGroups.get(i);
+                    for (Entry<String, OperationRequest> requestEntry : group.runningRequest.entrySet())
                     {
-                        context.getContentResolver().delete(
-                                ((AbstractBatchOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
-                                null, null);
+                        try
+                        {
+                            context.getContentResolver().delete(
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
+                                    null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
                     }
-                    catch (IllegalArgumentException e)
-                    {
-                        continue;
-                    }
-                    currentOperationGroup.failedRequest.add(requestEntry.getValue());
-                }
 
-                for (OperationRequest operationRequest : currentOperationGroup.completeRequest)
-                {
-                    context.getContentResolver().delete(
-                            ((AbstractBatchOperationRequestImpl) operationRequest).getNotificationUri(), null, null);
+                    for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
+                    {
+                        try
+                        {
+                            context.getContentResolver().delete(
+                                    ((AbstractBatchOperationRequestImpl) requestEntry.getValue()).getNotificationUri(),
+                                    null, null);
+                        }
+                        catch (Exception e)
+                        {
+                            continue;
+                        }
+                        group.failedRequest.add(requestEntry.getValue());
+                    }
+
+                    for (OperationRequest operationRequest : group.completeRequest)
+                    {
+                        context.getContentResolver()
+                                .delete(((AbstractBatchOperationRequestImpl) operationRequest).getNotificationUri(),
+                                        null, null);
+                    }
+
                 }
                 return;
             }
@@ -305,7 +345,7 @@ public class BatchOperationManager extends OperationManager
             String operationId = (String) intent.getExtras().get(EXTRA_OPERATION_ID);
 
             OperationsGroupRecord currentGroup = getOperationGroup(operationId);
-            
+
             // ADD
             if (operationId != null && IntentIntegrator.ACTION_OPERATION_COMPLETED.equals(intent.getAction()))
             {
@@ -327,11 +367,6 @@ public class BatchOperationManager extends OperationManager
                             break;
                     }
                 }
-
-                /*if (currentGroup.index.isEmpty() && currentGroup.runningRequest.isEmpty())
-                {
-                    currentGroup = null;
-                }*/
                 return;
             }
 
@@ -390,7 +425,7 @@ public class BatchOperationManager extends OperationManager
             {
                 if (ConnectivityUtils.isWifiAvailable(context))
                 {
-                    //BATCH OPERATIONS
+                    // BATCH OPERATIONS
                     String[] projection = { BatchOperationSchema.COLUMN_ID };
                     String selection = BatchOperationSchema.COLUMN_STATUS + "=" + Operation.STATUS_PAUSED;
                     cursor = context.getContentResolver().query(BatchOperationContentProvider.CONTENT_URI, projection,

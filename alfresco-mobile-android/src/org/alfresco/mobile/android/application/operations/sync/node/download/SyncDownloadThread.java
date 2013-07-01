@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.ContentStream;
 import org.alfresco.mobile.android.api.model.Document;
@@ -49,8 +48,6 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
 
     private long totalDownloaded;
 
-    private File destFile;
-
     private int segment;
 
     private int currentSegment = 0;
@@ -79,7 +76,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
         {
             result = super.doInBackground();
 
-            destFile = StorageManager.getSynchroFile(context, acc, (Document) node);
+            File destFile = StorageManager.getSynchroFile(context, acc, (Document) node);
 
             // Download content
             ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
@@ -171,7 +168,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    private void publishProgress(Long... values)
+    private void publishProgress()
     {
         if (listener != null && (totalDownloaded / segment > currentSegment) || totalDownloaded == totalLength)
         {
@@ -209,7 +206,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
                 os.write(buffer, 0, read);
                 downloaded += read;
                 totalDownloaded += read;
-                publishProgress(totalDownloaded);
+                publishProgress();
             }
 
         }

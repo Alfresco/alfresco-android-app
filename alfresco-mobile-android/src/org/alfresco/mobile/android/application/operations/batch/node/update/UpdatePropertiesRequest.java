@@ -85,7 +85,7 @@ public class UpdatePropertiesRequest extends NodeOperationRequest
         // PROPERTIES
         Map<String, String> tmpProperties = retrievePropertiesMap(cursor);
 
-        List<String> tags = new ArrayList<String>();
+        tags = new ArrayList<String>();
         List<String> keys = new ArrayList<String>();
         for (Entry<String, String> entry : tmpProperties.entrySet())
         {
@@ -103,7 +103,6 @@ public class UpdatePropertiesRequest extends NodeOperationRequest
 
         Map<String, Serializable> finalProperties = new HashMap<String, Serializable>(tmpProperties);
         this.properties = finalProperties;
-        this.tags = tags;
     }
     
     // ///////////////////////////////////////////////////////////////////////////

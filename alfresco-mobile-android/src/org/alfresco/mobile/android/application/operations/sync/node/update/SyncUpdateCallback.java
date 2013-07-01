@@ -45,7 +45,7 @@ public class SyncUpdateCallback extends AbstractSyncOperationCallback<Document>
     @Override
     public void onProgressUpdate(Operation<Document> task, Long values)
     {
-        if (values == 100)
+        if (values == PROGRESS_MAX)
         {
             NotificationHelper.createIndeterminateNotification(getBaseContext(), getNotificationId(),
                     ((AbstractSyncUpThread) task).getDocumentName(),

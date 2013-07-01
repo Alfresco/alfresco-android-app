@@ -39,7 +39,7 @@ public class SyncDownloadCallBack extends AbstractSyncOperationCallback<ContentF
         NotificationHelper.createProgressNotification(getBaseContext(),
                 getNotificationId(),
                 getBaseContext().getString(R.string.download_progress), ((SyncDownloadThread) task).getDocument()
-                        .getName(), totalItems - pendingItems + "/" + totalItems, 0, 100);
+                        .getName(), totalItems - pendingItems + "/" + totalItems, 0, PROGRESS_MAX);
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SyncDownloadCallBack extends AbstractSyncOperationCallback<ContentF
     @Override
     public void onProgressUpdate(Operation<ContentFile> task, Long values)
     {
-        if (values == 100)
+        if (values == PROGRESS_MAX)
         {
             NotificationHelper.createIndeterminateNotification(getBaseContext(),
                     getNotificationId(),

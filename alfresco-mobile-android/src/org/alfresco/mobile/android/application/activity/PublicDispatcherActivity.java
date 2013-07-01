@@ -105,9 +105,8 @@ public class PublicDispatcherActivity extends BaseActivity
         params.width = (int) Math
                 .round(width
                         * (Float.parseFloat(getResources().getString(android.R.dimen.dialog_min_width_minor).replace(
-                                "%", "")) * 0.01)); // fixed width
+                                "%", "")) * 0.01));
 
-        // getWindow().
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);

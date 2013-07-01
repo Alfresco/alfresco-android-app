@@ -21,57 +21,16 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class IOUtils
+public final class IOUtils
 {
-    private static final String TAG = "IOUtils";
+    //private static final String TAG = "IOUtils";
 
     public static final String TEMP_PREFIX = "Decrypted@";
 
-    private static final String TEMP_FILESTAMP = "HH-mm MM-dd-yy ";
-
-    private static final int TEMP_LEN = TEMP_PREFIX.length() + TEMP_FILESTAMP.length();
-
-    public static File makeTempFile(File f)
-    {
-        String timeStamp = new SimpleDateFormat(TEMP_FILESTAMP).format(new Date());
-        File newFile = new File(f.getParent() + "/" + TEMP_PREFIX + timeStamp + f.getName());
-
-        if (f.renameTo(newFile)) { return newFile; }
-
-        return f;
+    private IOUtils(){
     }
-
-    public static File returnTempFileToOriginal(File f)
-    {
-        if (f.getName().startsWith(TEMP_PREFIX))
-        {
-            String name = f.getName();
-            File newFile = new File(f.getParent() + "/" + name.substring(TEMP_LEN, name.length()));
-
-            if (f.renameTo(newFile)) { return newFile; }
-        }
-
-        return f;
-    }
-
-    public static String getOriginalFromTempFilename(String filename)
-    {
-        File origFile = new File(filename);
-        String name = origFile.getName();
-
-        if (name.startsWith(TEMP_PREFIX))
-        {
-            return origFile.getParent() + "/" + name.substring(TEMP_LEN, name.length());
-        }
-        else
-        {
-            return filename;
-        }
-    }
-
+    
     public static File createFolder(File f, String extendedPath)
     {
         File tmpFolder = null;
