@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
-import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
@@ -110,11 +109,6 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
             switch (mode)
             {
-                case SyncFavoriteRequest.MODE_DOCUMENT:
-                    List<Document> docs = new ArrayList<Document>(1);
-                    docs.add((Document) node);
-                    remoteFavorites = new PagingResultImpl<Document>(docs, false, 1);
-                    break;
                 case SyncFavoriteRequest.MODE_DOCUMENTS:
                     // Retrieve list of Favorites
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
@@ -171,7 +165,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private boolean isFirstSync()
     {
-        if (localFavoritesCursor == null || localFavoritesCursor.getCount() == 0)
+        if ((localFavoritesCursor == null || localFavoritesCursor.getCount() == 0) && mode == SyncFavoriteRequest.MODE_DOCUMENTS)
         {
             // USE CASE : FIRST
             // If 0 ==> Bulk Insert
@@ -329,6 +323,8 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private void scanDeleteItem()
     {
+        if (localFavoritesCursor == null) return;
+        
         // USE CASE : DELETE
         // Compare referential and list of favorite Ids
         if (!localFavoritesCursor.isBeforeFirst())

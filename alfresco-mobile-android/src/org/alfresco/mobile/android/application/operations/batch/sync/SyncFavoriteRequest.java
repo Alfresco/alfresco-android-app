@@ -67,16 +67,6 @@ public class SyncFavoriteRequest extends NodeOperationRequest
         persistentProperties.put(PROP_MODE, mode);
     }
     
-    public SyncFavoriteRequest(String documentIdentifier)
-    {
-        super(null, documentIdentifier);
-        requestTypeId = TYPE_ID;
-        setMimeType(MIME_SYNC);
-
-        persistentProperties = new HashMap<String, Serializable>(1);
-        persistentProperties.put(PROP_MODE, MODE_DOCUMENT);
-    }
-    
     public SyncFavoriteRequest(Cursor cursor)
     {
         super(cursor);
