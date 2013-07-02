@@ -586,15 +586,6 @@ public final class SynchroManager extends OperationManager
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
-    public void sync(Account account, String nodeIdentifier)
-    {
-        if (account == null) { return; }
-        OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
-        group.enqueue(new SyncFavoriteRequest(nodeIdentifier)
-                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
-        BatchOperationManager.getInstance(mAppContext).enqueue(group);
-    }
-
     public void unsync(Account account)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
