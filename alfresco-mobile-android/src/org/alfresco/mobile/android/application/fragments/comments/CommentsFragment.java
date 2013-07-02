@@ -49,8 +49,9 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class CommentsFragment extends CommentFragment
 {
-
     public static final String TAG = "CommentsFragment";
+    
+    private static final int MAX_COMMENT = 15;
 
     private EditText commentText;
 
@@ -64,7 +65,7 @@ public class CommentsFragment extends CommentFragment
     {
         CommentsFragment bf = new CommentsFragment();
         ListingContext lc = new ListingContext();
-        lc.setMaxItems(15);
+        lc.setMaxItems(MAX_COMMENT);
         lc.setSortProperty(CommentService.SORT_PROPERTY_CREATED_AT);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(lc, LOAD_MANUAL);

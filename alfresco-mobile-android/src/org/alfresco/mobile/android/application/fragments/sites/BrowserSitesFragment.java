@@ -126,7 +126,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
 
     private void setupTabs()
     {
-        mTabHost.setup(); // you must call this before adding your tabs!
+        mTabHost.setup();
         
         mTabHost.addTab(newTab(TAB_FAV_SITES, R.string.menu_browse_favorite_sites, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_MY_SITES, R.string.menu_browse_my_sites, android.R.id.tabcontent));

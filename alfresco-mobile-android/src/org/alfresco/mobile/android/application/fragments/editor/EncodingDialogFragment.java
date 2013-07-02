@@ -50,8 +50,6 @@ public class EncodingDialogFragment extends DialogFragment
 
     private static final String PARAM_DEFAULT_CHARSET = "EncodingDialogFragmentDefaultCharset";
 
-    private SortedMap<String, Charset> map;
-
     private ArrayList<String> list;
 
     private String defaultCharset = "UTF-8";
@@ -82,7 +80,7 @@ public class EncodingDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.sdk_list, null);
         ListView lv = (ListView) v.findViewById(R.id.listView);
 
-        map = Charset.availableCharsets();
+        SortedMap<String, Charset> map = Charset.availableCharsets();
         list = new ArrayList<String>(map.keySet());
         
         if (list.isEmpty())

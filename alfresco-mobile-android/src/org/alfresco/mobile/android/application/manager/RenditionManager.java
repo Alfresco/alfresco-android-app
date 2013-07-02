@@ -74,7 +74,8 @@ public class RenditionManager
 
     private DiskLruCache mDiskCache;
 
-    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; // 10MB
+    // 10MB
+    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; 
 
     private static final String DISK_CACHE_SUBDIR = "renditions";
 

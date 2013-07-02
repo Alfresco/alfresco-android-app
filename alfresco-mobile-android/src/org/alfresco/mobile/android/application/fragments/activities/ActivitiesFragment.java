@@ -48,7 +48,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
 
     private static final String TYPE_FILE_DELETE = ActivityEventAdapter.PREFIX_FILE + "-deleted";
 
-    protected List<ActivityEntry> selectedEntry = new ArrayList<ActivityEntry>(1);
+    private List<ActivityEntry> selectedEntry = new ArrayList<ActivityEntry>(1);
 
     public ActivitiesFragment()
     {

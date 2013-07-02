@@ -48,7 +48,7 @@ public class TextSizeDialogFragment extends DialogFragment
     /** Public Fragment TAG. */
     public static final String TAG = TextSizeDialogFragment.class.getName();
 
-    private static final LinkedHashMap<String, Integer> map = new LinkedHashMap<String, Integer>(10)
+    private static final LinkedHashMap<String, Integer> SIZE_MAP = new LinkedHashMap<String, Integer>(10)
     {
         private static final long serialVersionUID = 1L;
         {
@@ -89,8 +89,6 @@ public class TextSizeDialogFragment extends DialogFragment
 
     private static final String PARAM_DEFAULT_SIZE = "TextSizeDialogFragmentSize";
 
-    private ArrayList<Integer> list;
-
     private int textSize = DEFAULT_TEXT_SIZE;
 
     public TextSizeDialogFragment()
@@ -119,7 +117,7 @@ public class TextSizeDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.sdk_list, null);
         ListView lv = (ListView) v.findViewById(R.id.listView);
 
-        list = new ArrayList<Integer>(map.values());
+        ArrayList<Integer> list = new ArrayList<Integer>(SIZE_MAP.values());
 
         if (list.isEmpty())
         {

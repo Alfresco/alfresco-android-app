@@ -56,7 +56,7 @@ public class PreviewFragment extends BaseFragment
 
     public static final String ARGUMENT_NODE = "node";
 
-    protected File tempFile = null;
+    private File tempFile = null;
 
     public File getTempFile()
     {

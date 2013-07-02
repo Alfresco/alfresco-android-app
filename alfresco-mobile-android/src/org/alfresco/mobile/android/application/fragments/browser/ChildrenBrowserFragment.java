@@ -93,7 +93,6 @@ import android.widget.SpinnerAdapter;
  * 
  * @author Jean Marie Pascal
  */
-@TargetApi(11)
 public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment, ListingModeFragment
 {
     public static final String TAG = "ChildrenBrowserFragment";

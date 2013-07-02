@@ -34,7 +34,7 @@ import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
-import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.onFavoriteChangeListener;
+import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
@@ -187,7 +187,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
         final File dlFile = localFile;
 
-        if (dlFile == null) return;
+        if (dlFile == null) { return; }
 
         long datetime = dlFile.lastModified();
         Date d = new Date(datetime);
@@ -211,10 +211,6 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                     if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                     {
                         SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-                    }
-                    else
-                    {
-                        // TODO Save BAck
                     }
                 }
                 break;
@@ -246,7 +242,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         if (!GeneralPreferences.hasDisplayedActivateSync(getActivity()) && getMode() != MODE_PROGRESS)
         {
-            ActivateSyncDialogFragment.newInstance(new onFavoriteChangeListener()
+            ActivateSyncDialogFragment.newInstance(new OnSyncChangeListener()
             {
                 @Override
                 public void onPositive()

@@ -68,8 +68,7 @@ public class AlphabeticNodeAdapter extends ProgressNodeAdapter
             alphaIndexer.put(key, idx);
             positionIndexer.put(idx, key);
 
-            super.add(null); // Add a dummy at the point of the header to keep
-                             // in sync.
+            super.add(null); 
         }
 
         // Add the real new item

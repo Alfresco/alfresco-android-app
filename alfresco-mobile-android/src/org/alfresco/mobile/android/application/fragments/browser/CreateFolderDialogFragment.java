@@ -169,12 +169,6 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);

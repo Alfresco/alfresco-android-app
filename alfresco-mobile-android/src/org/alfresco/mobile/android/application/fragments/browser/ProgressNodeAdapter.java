@@ -68,11 +68,11 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 {
     private static final String TAG = ProgressNodeAdapter.class.getName();
 
+    private static final int MAX_PROGRESS = 100;
+
     protected Node parentNode;
 
     private List<Node> selectedOptionItems = new ArrayList<Node>();
-
-    private Cursor favoriteCursor;
 
     private List<String> favoriteNodeRef;
 
@@ -117,16 +117,16 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 progressView.setIndeterminate(false);
                 if (totalSize == -1)
                 {
-                    progressView.setMax(100);
+                    progressView.setMax(MAX_PROGRESS);
                     progressView.setProgress(0);
                 }
                 else
                 {
                     long progress = ((NodePlaceHolder) item).getProgress();
-                    float value = (((float) progress / ((float) totalSize)) * 100);
+                    float value = (((float) progress / ((float) totalSize)) * MAX_PROGRESS);
                     int percentage = Math.round(value);
 
-                    if (percentage == 100)
+                    if (percentage == MAX_PROGRESS)
                     {
                         if ((Integer) item.getPropertyValue(PublicAPIPropertyIds.REQUEST_TYPE) == DownloadRequest.TYPE_ID)
                         {
@@ -144,7 +144,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     else
                     {
                         progressView.setIndeterminate(false);
-                        progressView.setMax(100);
+                        progressView.setMax(MAX_PROGRESS);
                         progressView.setProgress(percentage);
                     }
                 }
@@ -308,7 +308,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     // Update node if not present
                     if (type != DownloadRequest.TYPE_ID && hasNode(name) && getNode(name) instanceof NodePlaceHolder)
                     {
-                        // remove(name);
                         notifyDataSetChanged();
                     }
                     break;
@@ -394,9 +393,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshFavorites()
     {
-        if (parentNode == null) return;
+        if (parentNode == null) { return; }
         // Favorite
-        favoriteCursor = getContext().getContentResolver().query(
+        Cursor favoriteCursor = getContext().getContentResolver().query(
                 SynchroProvider.CONTENT_URI,
                 SynchroSchema.COLUMN_ALL,
                 SynchroSchema.COLUMN_PARENT_ID + " LIKE '" + parentNode.getIdentifier() + "' AND "

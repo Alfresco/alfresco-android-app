@@ -60,7 +60,11 @@ public class SiteFavoriteLoaderCallback implements LoaderCallbacks<LoaderResult<
     public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        Site site = ((SiteFavoriteLoader) loader).getOldSite();
+        Site site = null;
+        if (loader instanceof SiteFavoriteLoader)
+        {
+            site = ((SiteFavoriteLoader) loader).getOldSite();
+        }
         if (!result.hasException())
         {
             Site updatedSite = result.getData();

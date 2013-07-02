@@ -64,7 +64,11 @@ public class SiteMembershipLoaderCallback implements LoaderCallbacks<LoaderResul
     public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        Site site = ((SiteMembershipLoader) loader).getOldSite();
+        Site site = null;
+        if (loader instanceof SiteMembershipLoader)
+        {
+            site = ((SiteMembershipLoader) loader).getOldSite();
+        }
         if (!result.hasException())
         {
             Site updatedSite = result.getData();

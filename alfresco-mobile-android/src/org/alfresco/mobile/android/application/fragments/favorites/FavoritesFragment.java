@@ -62,8 +62,7 @@ public class FavoritesFragment extends BaseListFragment implements
     
     private static final String PARAM_MODE = "FavoriteMode";
 
-    
-    protected List<Node> selectedItems = new ArrayList<Node>(1);
+    private List<Node> selectedItems = new ArrayList<Node>(1);
 
     private int mode = MODE_DOCUMENTS; 
 

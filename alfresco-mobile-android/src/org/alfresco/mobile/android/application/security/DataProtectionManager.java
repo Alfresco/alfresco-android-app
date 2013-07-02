@@ -212,7 +212,7 @@ public class DataProtectionManager implements VersionNumber
         switch (intentAction)
         {
             case DataProtectionManager.ACTION_SEND_ALFRESCO:
-                intentI = ActionManager.CreateSendFileToAlfrescoIntent(activity, f);
+                intentI = ActionManager.createSendFileToAlfrescoIntent(activity, f);
                 break;
             case DataProtectionManager.ACTION_SEND:
                 intentI = ActionManager.createSendIntent(activity, f);
