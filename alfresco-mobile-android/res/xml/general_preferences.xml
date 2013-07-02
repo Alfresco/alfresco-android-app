@@ -28,7 +28,7 @@
             android:key="@string/passcode_title"
             android:title="@string/passcode_preference" />
     </PreferenceCategory>
-    <PreferenceCategory android:title="@string/settings_favorite" >
+    <PreferenceCategory android:key="@string/favorite_sync_group" android:title="@string/settings_favorite" >
         <CheckBoxPreference
             android:key="@string/favorite_sync"
             android:title="@string/settings_favorite_sync" />

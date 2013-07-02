@@ -37,6 +37,7 @@
     
     <!-- Settings -->
     <string name="passcode_enable_key">TurnPasscodeKey</string>
+    <string name="favorite_sync_group">favoriteSyncGroup</string>
     <string name="favorite_sync">favoriteSync</string>
     <string name="favorite_sync_wifi">favoriteSyncWifi</string>
     

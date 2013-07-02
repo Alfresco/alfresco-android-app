@@ -25,6 +25,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
@@ -88,6 +89,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
     private Date decryptDateTime;
 
+    private Account acc;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
@@ -114,6 +117,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         super.onActivityCreated(savedInstanceState);
 
+        acc = SessionUtils.getAccount(getActivity());
+
         adapter = new FavoriteCursorAdapter(this, null, R.layout.app_list_progress_row, selectedItems, getMode());
         lv.setAdapter(adapter);
         setListShown(false);
@@ -123,6 +128,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     @Override
     public void onStart()
     {
+        acc = SessionUtils.getAccount(getActivity());
+
         getActivity().setTitle(R.string.menu_favorites);
         getActivity().invalidateOptionsMenu();
         super.onStart();
@@ -145,8 +152,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
         if (getMode() != MODE_PROGRESS)
         {
-            hasSynchroActive = GeneralPreferences
-                    .hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
+            hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
         }
         else
         {
@@ -208,9 +214,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                     getActivity().getContentResolver().update(lUri, cValues, null, null);
 
                     // Start sync if possible
-                    if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                    if (SynchroManager.getInstance(getActivity()).canSync(acc))
                     {
-                        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                        SynchroManager.getInstance(getActivity()).sync(acc);
                     }
                 }
                 break;
@@ -226,8 +232,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                     getActivity().getContentResolver().update(lUri, cValues, null, null);
                 }
 
-                DataProtectionManager.getInstance(getActivity()).checkEncrypt(SessionUtils.getAccount(getActivity()),
-                        dlFile);
+                DataProtectionManager.getInstance(getActivity()).checkEncrypt(acc, dlFile);
 
                 break;
             default:
@@ -270,8 +275,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL, null, null,
-                SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
+        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
+                SynchroProvider.getAccountFilter(acc), null, SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -392,7 +397,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             return;
         }
 
-        SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+        SynchroManager.getInstance(getActivity()).sync(acc);
         if (mi != null)
         {
             // Display spinning wheel instead of refresh
@@ -436,7 +441,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                 Cursor favoriteCursor = context.getContentResolver().query(
                         SynchroProvider.CONTENT_URI,
                         SynchroSchema.COLUMN_ALL,
-                        SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                        SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
                                 + NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier()) + "%'", null, null);
                 boolean hasFavorite = (favoriteCursor.getCount() == 1);
                 if (hasFavorite && !hasSynchroActive)

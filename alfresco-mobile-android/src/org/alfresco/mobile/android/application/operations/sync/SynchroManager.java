@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
-import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -565,8 +564,11 @@ public final class SynchroManager extends OperationManager
         cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES, doc.getContentStreamLength());
         cValues.put(SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, -1);
         cValues.put(SynchroSchema.COLUMN_LOCAL_URI, "");
-        cValues.put(SynchroSchema.COLUMN_CONTENT_URI, (String) doc.getProperty(PropertyIds.CONTENT_STREAM_ID)
-                .getValue());
+        if (doc.getProperty(PropertyIds.CONTENT_STREAM_ID) != null)
+        {
+            cValues.put(SynchroSchema.COLUMN_CONTENT_URI, (String) doc.getProperty(PropertyIds.CONTENT_STREAM_ID)
+                    .getValue());
+        }
         cValues.put(SynchroSchema.COLUMN_ANALYZE_TIMESTAMP, time);
         cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
         cValues.put(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, time);
@@ -595,10 +597,11 @@ public final class SynchroManager extends OperationManager
 
     public boolean isSynced(Account account, String nodeIdentifier)
     {
-        Cursor favoriteCursor = mAppContext.getContentResolver().query(SynchroProvider.CONTENT_URI,
+        Cursor favoriteCursor = mAppContext.getContentResolver().query(
+                SynchroProvider.CONTENT_URI,
                 SynchroSchema.COLUMN_ALL,
-                SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'",
-                null, null);
+                SynchroProvider.getAccountFilter(account) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1)
                 && GeneralPreferences.hasActivateSync(mAppContext, SessionUtils.getAccount(mAppContext));
         favoriteCursor.close();
@@ -622,10 +625,11 @@ public final class SynchroManager extends OperationManager
     public Uri getUri(Account account, String nodeIdentifier)
     {
         Uri b = null;
-        Cursor favoriteCursor = mAppContext.getContentResolver().query(SynchroProvider.CONTENT_URI,
+        Cursor favoriteCursor = mAppContext.getContentResolver().query(
+                SynchroProvider.CONTENT_URI,
                 SynchroSchema.COLUMN_ALL,
-                SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'",
-                null, null);
+                SynchroProvider.getAccountFilter(account) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
         {
             b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));

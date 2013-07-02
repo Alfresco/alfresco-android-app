@@ -22,6 +22,7 @@ import java.util.HashSet;
 
 import org.alfresco.mobile.android.application.AlfrescoContentProvider;
 import org.alfresco.mobile.android.application.ApplicationManager;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 
 import android.content.ContentProvider;
@@ -37,7 +38,6 @@ import android.util.Log;
 
 public class SynchroProvider extends ContentProvider implements AlfrescoContentProvider
 {
-    
     private static final String TAG = SynchroProvider.class.getName();
 
     private DatabaseManager databaseManager;
@@ -121,7 +121,8 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
-        if (id == -1){
+        if (id == -1)
+        {
             Log.e(TAG, uri + " " + values);
         }
         getContext().getContentResolver().notifyChange(uri, null);
@@ -174,12 +175,13 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection))
                 {
-                    rowsUpdated = sqlDB.update(SynchroSchema.TABLENAME, values, SynchroSchema.COLUMN_ID + "=" + id, null);
+                    rowsUpdated = sqlDB.update(SynchroSchema.TABLENAME, values, SynchroSchema.COLUMN_ID + "=" + id,
+                            null);
                 }
                 else
                 {
-                    rowsUpdated = sqlDB.update(SynchroSchema.TABLENAME, values, SynchroSchema.COLUMN_ID + "=" + id + " and "
-                            + selection, selectionArgs);
+                    rowsUpdated = sqlDB.update(SynchroSchema.TABLENAME, values, SynchroSchema.COLUMN_ID + "=" + id
+                            + " and " + selection, selectionArgs);
                 }
                 break;
             default:
@@ -199,6 +201,11 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
         }
+    }
+
+    public static String getAccountFilter(Account acc)
+    {
+        return SynchroSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
 
 }

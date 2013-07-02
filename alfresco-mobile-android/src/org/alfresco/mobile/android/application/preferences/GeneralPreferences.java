@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlert
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -40,6 +41,7 @@ import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceClickListener;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 
@@ -113,7 +115,8 @@ public class GeneralPreferences extends PreferenceFragment
                 final File folder = StorageManager.getPrivateFolder(getActivity(), "", null);
                 if (folder != null)
                 {
-                    DataProtectionUserDialogFragment.newInstance(false).show(getActivity().getFragmentManager(), DataProtectionUserDialogFragment.TAG);
+                    DataProtectionUserDialogFragment.newInstance(false).show(getActivity().getFragmentManager(),
+                            DataProtectionUserDialogFragment.TAG);
                 }
                 else
                 {
@@ -224,6 +227,13 @@ public class GeneralPreferences extends PreferenceFragment
             }
         });
 
+        // Check if 3G Present
+        if (!ConnectivityUtils.hasMobileConnectivity(getActivity()))
+        {
+            PreferenceCategory mCategory = (PreferenceCategory) findPreference(getString(R.string.favorite_sync_group));
+            mCategory.removePreference(wifiPref);
+        }
+
         wifiPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
         {
             @Override
@@ -235,7 +245,7 @@ public class GeneralPreferences extends PreferenceFragment
                     isWifiOnly = ((CheckBoxPreference) preference).isChecked();
                 }
                 sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
-                
+
                 if (isWifiOnly)
                 {
                     wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
@@ -244,7 +254,7 @@ public class GeneralPreferences extends PreferenceFragment
                 {
                     wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
                 }
-                
+
                 return false;
             }
         });

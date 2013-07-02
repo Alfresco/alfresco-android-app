@@ -67,7 +67,7 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             super.doInBackground();
 
             cursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
-                    SynchroSchema.COLUMN_NODE_ID + " LIKE '" + nodeIdentifier + "%'", null, null);
+                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '" + nodeIdentifier + "%'", null, null);
 
             try
             {

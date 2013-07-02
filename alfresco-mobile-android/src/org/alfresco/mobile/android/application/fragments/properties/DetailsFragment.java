@@ -94,7 +94,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -144,7 +143,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private UpdateReceiver receiver;
 
-    private Date decryptDateTime;
+    //private Date decryptDateTime;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -265,39 +264,60 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        File tmpFile = null;
+        boolean isSynced = SynchroManager.getInstance(getActivity()).isSynced(
+                SessionUtils.getAccount(getActivity()), node);
+        boolean modified = false;
+        Date d = null;
+        
         switch (requestCode)
         {
+        // Save Back : When a file has been opened by 3rd party app.
             case PublicIntent.REQUESTCODE_SAVE_BACK:
+            case PublicIntent.REQUESTCODE_DECRYPTED:
+                // File opened when user tap the preview
+                // Retrieve the File
                 if (replacementPreviewFragment != null)
                 {
                     tempFile = replacementPreviewFragment.getTempFile();
                 }
 
-                File tmpFile = (tempFile != null ? tempFile : NodeActions.getTempFile(getActivity(), node));
-                boolean isSynced = SynchroManager.getInstance(getActivity()).isSynced(
-                        SessionUtils.getAccount(getActivity()), node);
+                // Check if SYNC is ON
                 if (isSynced)
                 {
+                    // We use the sync file stored locally
                     tmpFile = SynchroManager.getInstance(getActivity()).getSyncFile(
                             SessionUtils.getAccount(getActivity()), node);
                 }
+                else
+                {
+                    // We retrieve the temporary file
+                    tmpFile = (tempFile != null ? tempFile : NodeActions.getTempFile(getActivity(), node));
+                }
 
+                // Keep the file reference final
                 final File dlFile = tmpFile;
 
+                // Check if the file has been modified (lastmodificationDate)
                 long datetime = dlFile.lastModified();
-                Date d = new Date(datetime);
-
-                boolean modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
+                d = new Date(datetime);
+                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
                 if (modified
                         && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
                 {
-                    // Syncrho available.
+                    // File modified + Sync File
                     if (isSynced)
                     {
-                        // Update statut of the sync operation
+                        // Update statut of the sync reference
                         ContentValues cValues = new ContentValues();
-                        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
+                        
+                        int operationStatut = SyncOperation.STATUS_PENDING;
+                        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED){
+                            operationStatut = SyncOperation.STATUS_MODIFIED;
+                        }
+                        
+                        cValues.put(SynchroSchema.COLUMN_STATUS, operationStatut);
                         getActivity().getContentResolver().update(
                                 SynchroManager.getInstance(getActivity()).getUri(
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
@@ -311,8 +331,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     }
                     else
                     {
-                        // Favorites listing.
-                        // Save back pop up.
+                        // File is temporary (after dl from server)
+                        // We request the user if he wants to save back
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(R.string.save_back);
                         builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
@@ -340,7 +360,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 }
                 else
                 {
-                    // Encrypt if necessary / Delete otherwise
+                    // File with no modification
+                    // Encrypt sync file if necessary
+                    // Delete otherwise
                     StorageManager.manageFile(getActivity(), dlFile);
                 }
                 break;
@@ -368,33 +390,94 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     }
                 }
                 break;
-            case PublicIntent.REQUESTCODE_DECRYPTED:
+            // Save Back : a file has been opened by 3rd party app 
+            // DATA Encryption ON
+            /*case PublicIntent.REQUESTCODE_DECRYPTED:
 
-                File file = SynchroManager.getInstance(getActivity()).getSyncFile(
-                        SessionUtils.getAccount(getActivity()), node);
-
-                if (file == null) { return; }
-
-                long date = file.lastModified();
-                Date da = new Date(date);
-                boolean modified2 = false;
-                final Uri lUri = SynchroManager.getInstance(getActivity()).getUri(
-                        SessionUtils.getAccount(getActivity()), node.getIdentifier());
-
-                modified2 = (da != null && decryptDateTime != null) ? da.after(decryptDateTime) : false;
-                if (modified2)
+                // File opened when user tap the preview
+                // Retrieve the File
+                if (replacementPreviewFragment != null)
                 {
-                    // If modified by user, we flag the uri
-                    // The next sync will update the content.
-                    ContentValues cValues = new ContentValues();
-                    cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_MODIFIED);
-                    getActivity().getContentResolver().update(lUri, cValues, null, null);
+                    tempFile = replacementPreviewFragment.getTempFile();
                 }
 
-                DataProtectionManager.getInstance(getActivity()).checkEncrypt(SessionUtils.getAccount(getActivity()),
-                        file);
+                // Check if SYNC is ON
+                if (isSynced)
+                {
+                    // We use the sync file stored locally
+                    tmpFile = SynchroManager.getInstance(getActivity()).getSyncFile(
+                            SessionUtils.getAccount(getActivity()), node);
+                }
+                else
+                {
+                    // We retrieve the temporary file
+                    tmpFile = (tempFile != null ? tempFile : NodeActions.getTempFile(getActivity(), node));
+                }
 
-                break;
+                // Keep the file reference final
+                final File dlFile2 = tmpFile;
+
+                // Check if the file has been modified (lastmodificationDate)
+                d = new Date(dlFile2.lastModified());
+                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
+
+                if (modified
+                        && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+                {
+                    // File modified + Sync File
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+                        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_MODIFIED);
+                        getActivity().getContentResolver().update(
+                                SynchroManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+
+                        // Sync if it's possible.
+                        if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+                        {
+                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                        }
+                    }
+                    else
+                    {
+                        // File is temporary (after dl from server)
+                        // We request the user if he wants to save back
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.save_back);
+                        builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
+                                node.getName()));
+                        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int item)
+                            {
+                                update(dlFile2);
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int item)
+                            {
+                                DataProtectionManager.getInstance(getActivity()).checkEncrypt(
+                                        SessionUtils.getAccount(getActivity()), dlFile2);
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                }
+                else
+                {
+                    // File with no modification
+                    // Encrypt sync file if necessary
+                    // Delete otherwise
+                    StorageManager.manageFile(getActivity(), dlFile2);
+                }
+                break;*/
             default:
                 break;
         }
@@ -1222,7 +1305,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             if (actionIntent == DataProtectionManager.ACTION_NONE || actionIntent == 0) { return; }
 
                             File f = (File) b.getSerializable(IntentIntegrator.EXTRA_FILE);
-                            decryptDateTime = new Date(f.lastModified());
+                            downloadDateTime = new Date(f.lastModified());
                             DataProtectionManager.executeAction(detailsFragment, actionIntent, f);
                             if (getFragment(WaitingDialogFragment.TAG) != null)
                             {

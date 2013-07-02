@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
@@ -28,21 +29,30 @@ import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
+import android.app.DialogFragment;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 /**
  * @author Jean Marie Pascal
  */
 public class PrivateDialogActivity extends BaseActivity
 {
-    // private static final String TAG = PrivateDialogActivity.class.getName();
+    private static final String TAG = PrivateDialogActivity.class.getName();
 
     private boolean activateCheckPasscode = false;
+
+    private boolean doubleBackToExitPressedOnce = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -122,6 +132,13 @@ public class PrivateDialogActivity extends BaseActivity
     protected void onStart()
     {
         getActionBar().setDisplayHomeAsUpEnabled(true);
+        if (receiver == null)
+        {
+            receiver = new PrivateDialogActivityReceiver();
+            IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
+            filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
+            broadcastManager.registerReceiver(receiver, filters);
+        }
         super.onStart();
         PassCodeActivity.requestUserPasscode(this);
         activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
@@ -135,6 +152,16 @@ public class PrivateDialogActivity extends BaseActivity
         {
             PasscodePreferences.updateLastActivityDisplay(this);
         }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        if (receiver != null)
+        {
+            broadcastManager.unregisterReceiver(receiver);
+        }
+        super.onStop();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -160,6 +187,56 @@ public class PrivateDialogActivity extends BaseActivity
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    // ////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////
+    private class PrivateDialogActivityReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
+            {
+                if (getFragment(WaitingDialogFragment.TAG) != null)
+                {
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+                return;
+            }
+
+        }
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (getFragment(WaitingDialogFragment.TAG) != null)
+        {
+            if (doubleBackToExitPressedOnce)
+            {
+                ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                return;
+            }
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    doubleBackToExitPressedOnce = false;
+                }
+            }, 2000);
+        }
+        else
+        {
+            super.onBackPressed();
         }
     }
 }

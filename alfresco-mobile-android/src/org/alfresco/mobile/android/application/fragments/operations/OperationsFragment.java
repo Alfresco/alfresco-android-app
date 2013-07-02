@@ -51,7 +51,7 @@ public class OperationsFragment extends BaseCursorListFragment
     {
         emptyListMessageId = R.string.operations_empty;
         layoutId = R.layout.app_operations_list;
-        title = R.string.operations;
+        title = R.string.operation_default;
     }
 
     // /////////////////////////////////////////////////////////////
@@ -67,7 +67,7 @@ public class OperationsFragment extends BaseCursorListFragment
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
 
-        getActivity().setTitle(R.string.operations);
+        getActivity().setTitle(R.string.operation_default);
     }
 
     // /////////////////////////////////////////////////////////////

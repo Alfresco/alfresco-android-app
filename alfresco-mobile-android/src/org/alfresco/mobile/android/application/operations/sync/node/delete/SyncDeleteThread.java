@@ -85,7 +85,8 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                     try
                     {
                         // Check if it's a delete or unfavorite
-                        //Remove cache to be sure we check directly from server.
+                        // Remove cache to be sure we check directly from
+                        // server.
                         ((AbstractAlfrescoSessionImpl) session).getCmisSession().removeObjectFromCache(nodeIdentifier);
                         Document docServer = (Document) session.getServiceRegistry().getDocumentFolderService()
                                 .getNodeByIdentifier(nodeIdentifier);
@@ -130,6 +131,13 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
             }
             result.setException(e);
         }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
 
         return result;
     }
@@ -152,7 +160,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         File downloadFolder = StorageManager.getDownloadFolder(context, SessionUtils.getAccount(context));
         File newLocalFile = new File(downloadFolder, c.getString(SynchroSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
-        
+
         // Move to "Download" and delete parent folder
         cValues.clear();
         if (localFile.renameTo(newLocalFile) && parentFolder.delete())
