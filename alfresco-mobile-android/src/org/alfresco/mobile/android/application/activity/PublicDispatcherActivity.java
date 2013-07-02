@@ -339,7 +339,7 @@ public class PublicDispatcherActivity extends BaseActivity
                 {
                     addNavigationFragment(getCurrentSession().getRootFolder());
                 }
-                else if (getCurrentSession() != null && uploadFolder == R.string.menu_favorites)
+                else if (getCurrentSession() != null && uploadFolder == R.string.menu_favorites_folder)
                 {
                     frag = FavoritesFragment.newInstance(FavoritesFragment.MODE_FOLDERS);
                     FragmentDisplayer.replaceFragment(activity, frag, DisplayUtils.getLeftFragmentId(activity),
