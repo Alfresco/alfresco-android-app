@@ -21,6 +21,7 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
@@ -84,7 +85,8 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                     try
                     {
                         // Check if it's a delete or unfavorite
-                        // operation
+                        //Remove cache to be sure we check directly from server.
+                        ((AbstractAlfrescoSessionImpl) session).getCmisSession().removeObjectFromCache(nodeIdentifier);
                         Document docServer = (Document) session.getServiceRegistry().getDocumentFolderService()
                                 .getNodeByIdentifier(nodeIdentifier);
 
@@ -137,8 +139,6 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private void move(Cursor c)
     {
-        Log.d(TAG, "Move");
-
         ContentValues cValues = new ContentValues();
         cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
         context.getContentResolver().update(SynchroManager.getUri(favoriteId), cValues, null, null);
@@ -146,17 +146,17 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         // Current File
         Uri localFileUri = Uri.parse(c.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
+        File parentFolder = localFile.getParentFile();
 
         // New File
-        File parentFolder = StorageManager.getDownloadFolder(context, SessionUtils.getAccount(context));
-        File newLocalFile = new File(parentFolder, c.getString(SynchroSchema.COLUMN_TITLE_ID));
+        File downloadFolder = StorageManager.getDownloadFolder(context, SessionUtils.getAccount(context));
+        File newLocalFile = new File(downloadFolder, c.getString(SynchroSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
         
-        // Move to "Download"
+        // Move to "Download" and delete parent folder
         cValues.clear();
-        if (localFile.renameTo(newLocalFile))
+        if (localFile.renameTo(newLocalFile) && parentFolder.delete())
         {
-            Log.d(TAG, "Deleted");
             requestUserInteraction(request.getNotificationUri(), SyncOperation.REASON_NODE_DELETED);
         }
         else
@@ -167,7 +167,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
 
         c.close();
     }
-    
+
     private boolean hasLocalModification()
     {
         if (DataProtectionManager.getInstance(context).isEncryptionEnable())
@@ -177,6 +177,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         }
         return true;
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
