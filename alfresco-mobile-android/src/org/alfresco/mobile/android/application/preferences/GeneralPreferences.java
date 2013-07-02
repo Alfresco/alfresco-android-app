@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.onFavoriteChangeListener;
+import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.OnFavoriteChangeListener;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
@@ -198,7 +198,7 @@ public class GeneralPreferences extends PreferenceFragment
                 }
                 else
                 {
-                    onFavoriteChangeListener favListener = new FavoriteAlertDialogFragment.onFavoriteChangeListener()
+                    OnFavoriteChangeListener favListener = new FavoriteAlertDialogFragment.OnFavoriteChangeListener()
                     {
                         @Override
                         public void onPositive()

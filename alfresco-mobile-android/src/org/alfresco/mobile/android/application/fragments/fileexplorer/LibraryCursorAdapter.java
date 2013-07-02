@@ -44,8 +44,6 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
     private final String downloadPath;
 
-    private String topText;
-
     private int mediaTypeId;
 
     private int mode = ListingModeFragment.MODE_LISTING;
@@ -65,7 +63,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
     @Override
     protected void updateTopText(GenericViewHolder vh, Cursor cursor)
     {
-        topText = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
+        String topText = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
         if (topText != null)
         {
             topText = topText.replace(sdcardPath, "");
@@ -119,32 +117,12 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
     @Override
     protected void updateIcon(GenericViewHolder vh, Cursor cursor)
     {
-        //int myID = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID));
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         File f = new File(data);
 
         switch (mediaTypeId)
         {
             case MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE:
-                /*String[] thumbColumns = { MediaStore.Images.Thumbnails.DATA, MediaStore.Images.Thumbnails.IMAGE_ID };
-                CursorLoader thumbCursorLoader = new CursorLoader(context,
-                        MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, thumbColumns,
-                        MediaStore.Images.Thumbnails.IMAGE_ID + "=" + myID, null, null);
-                Cursor thumbCursor = thumbCursorLoader.loadInBackground();
-
-                Bitmap myBitmap = null;
-                if (thumbCursor.moveToFirst())
-                {
-                    int thCulumnIndex = thumbCursor.getColumnIndex(MediaStore.Images.Thumbnails.DATA);
-                    String thumbPath = thumbCursor.getString(thCulumnIndex);
-                    myBitmap = BitmapFactory.decodeFile(thumbPath);
-                    vh.icon.setImageBitmap(myBitmap);
-                }
-                else
-                {
-                    vh.icon.setImageResource(R.drawable.mime_img);
-                }
-                thumbCursor.close();*/
                 vh.icon.setImageResource(R.drawable.mime_img);
                 break;
             case MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO:

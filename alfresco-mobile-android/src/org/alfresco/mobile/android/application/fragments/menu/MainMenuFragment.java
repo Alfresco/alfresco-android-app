@@ -58,8 +58,6 @@ import android.widget.Spinner;
 
 public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor>, OnItemSelectedListener
 {
-    private View rootView = null;
-
     private AccountCursorAdapter cursorAdapter;
 
     private Spinner spinnerAccount;
@@ -72,8 +70,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private Button menuFavorites;
 
-    private boolean hasSynchroActive;
-
     public static final String TAG = "MainMenuFragment";
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
@@ -84,7 +80,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.app_main_menu, container, false);
+        View rootView = inflater.inflate(R.layout.app_main_menu, container, false);
 
         spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(this);
@@ -281,14 +277,13 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             if (goHome)
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                // ((MainActivity) getActivity()).clearScreen();
             }
         }
     }
 
     private void displayFavoriteStatut()
     {
-        hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
+        Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
 
         Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
         Drawable statut = null;

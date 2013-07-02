@@ -40,7 +40,7 @@ public class ResolveNamingConflictFragment extends DialogFragment
 {
     public static final String TAG = ResolveNamingConflictFragment.class.getName();
 
-    private onFavoriteChangeListener onFavoriteChangeListener;
+    private OnNameChangeListener onFavoriteChangeListener;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -122,14 +122,14 @@ public class ResolveNamingConflictFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LISTENERS
     // ///////////////////////////////////////////////////////////////////////////
-    public interface onFavoriteChangeListener
+    public interface OnNameChangeListener
     {
-        public void onPositive();
+        void onPositive();
 
-        public void onNegative();
+        void onNegative();
     }
 
-    private onFavoriteChangeListener downloadListener = new onFavoriteChangeListener()
+    private OnNameChangeListener downloadListener = new OnNameChangeListener()
     {
         @Override
         public void onPositive()

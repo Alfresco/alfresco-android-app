@@ -166,12 +166,6 @@ public class CreateDirectoryDialogFragment extends DialogFragment
     }
 
     @Override
-    public void onDismiss(DialogInterface dialog)
-    {
-        super.onDismiss(dialog);
-    }
-
-    @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
         super.onConfigurationChanged(newConfig);

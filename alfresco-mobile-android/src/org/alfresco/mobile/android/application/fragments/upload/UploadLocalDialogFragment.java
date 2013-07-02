@@ -153,14 +153,6 @@ public class UploadLocalDialogFragment extends DialogFragment
                     imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
 
                     DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(SessionUtils.getAccount(getActivity()), file, newFile);
-                    
-                    
-                    /*FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-                    EncryptionDialogFragment fragment = (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable()) ? EncryptionDialogFragment
-                            .copyAndEncrypt(file.getPath(), newFile.getPath(), currentAccount)
-                            : EncryptionDialogFragment.copy(file.getPath(), newFile.getPath(), currentAccount);
-                    fragmentTransaction.add(fragment, fragment.getFragmentTransactionTag());
-                    fragmentTransaction.commit();*/
                 }
                 dismiss();
             }

@@ -181,7 +181,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     @Override
     public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
     {
-        if (getDialog() == null) return;
+        if (getDialog() == null) { return; }
         int progress = 0;
         while (cursor.moveToNext())
         {

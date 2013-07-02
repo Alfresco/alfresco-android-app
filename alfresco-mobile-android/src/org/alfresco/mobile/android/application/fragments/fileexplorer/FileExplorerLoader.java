@@ -59,7 +59,7 @@ public class FileExplorerLoader extends AsyncTaskLoader<List<File>>
         try
         {
             ArrayList<File> fileList = new ArrayList<File>();
-            if (folder == null) return fileList;
+            if (folder == null) { return fileList; }
 
             if (folder.isDirectory())
             {

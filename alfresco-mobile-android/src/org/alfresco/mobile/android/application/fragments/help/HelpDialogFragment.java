@@ -33,8 +33,6 @@ public class HelpDialogFragment extends DialogFragment
 {
     public static final String TAG = HelpDialogFragment.class.getName();
 
-    boolean displayHelp = false;
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {

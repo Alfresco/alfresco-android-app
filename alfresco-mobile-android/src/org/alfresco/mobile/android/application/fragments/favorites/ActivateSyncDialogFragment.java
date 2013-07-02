@@ -33,20 +33,20 @@ public class ActivateSyncDialogFragment extends DialogFragment
 {
     public static final String TAG = ActivateSyncDialogFragment.class.getName();
 
-    private onFavoriteChangeListener onFavoriteChangeListener;
+    private OnSyncChangeListener onFavoriteChangeListener;
 
     public ActivateSyncDialogFragment()
     {
     }
 
-    public static ActivateSyncDialogFragment newInstance(onFavoriteChangeListener listener)
+    public static ActivateSyncDialogFragment newInstance(OnSyncChangeListener listener)
     {
         ActivateSyncDialogFragment frag = new ActivateSyncDialogFragment();
         frag.setOnFavoriteChangeListener(listener);
         return frag;
     }
 
-    private void setOnFavoriteChangeListener(onFavoriteChangeListener listener)
+    private void setOnFavoriteChangeListener(OnSyncChangeListener listener)
     {
         this.onFavoriteChangeListener = listener;
     }
@@ -87,11 +87,11 @@ public class ActivateSyncDialogFragment extends DialogFragment
         return builder.create();
     }
 
-    public interface onFavoriteChangeListener
+    public interface OnSyncChangeListener
     {
-        public void onPositive();
+        void onPositive();
 
-        public void onNegative();
+        void onNegative();
     }
 
     @Override

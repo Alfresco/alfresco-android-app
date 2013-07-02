@@ -34,7 +34,7 @@ public class ResolveSyncConflictFragment extends DialogFragment
 {
     public static final String TAG = ResolveSyncConflictFragment.class.getName();
 
-    private onFavoriteChangeListener onFavoriteChangeListener;
+    private OnChangeListener onFavoriteChangeListener;
 
     private static final String PARAM_FAVORITEID = "favoriteId";
 
@@ -155,14 +155,14 @@ public class ResolveSyncConflictFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     // LISTENERS
     // ///////////////////////////////////////////////////////////////////////////
-    public interface onFavoriteChangeListener
+    public interface OnChangeListener
     {
-        public void onPositive(Cursor cursor);
+        void onPositive(Cursor cursor);
 
-        public void onNegative(Cursor cursor);
+        void onNegative(Cursor cursor);
     }
 
-    private onFavoriteChangeListener unfavoriteListener = new onFavoriteChangeListener()
+    private OnChangeListener unfavoriteListener = new OnChangeListener()
     {
         @Override
         public void onPositive(Cursor cursor)
@@ -177,7 +177,7 @@ public class ResolveSyncConflictFragment extends DialogFragment
         }
     };
 
-    private onFavoriteChangeListener deletedFavoriteListener = new onFavoriteChangeListener()
+    private OnChangeListener deletedFavoriteListener = new OnChangeListener()
     {
         @Override
         public void onPositive(Cursor cursor)
@@ -191,7 +191,7 @@ public class ResolveSyncConflictFragment extends DialogFragment
         }
     };
     
-    private onFavoriteChangeListener overrideListener = new onFavoriteChangeListener()
+    private OnChangeListener overrideListener = new OnChangeListener()
     {
         @Override
         public void onPositive(Cursor cursor)

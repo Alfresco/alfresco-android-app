@@ -46,7 +46,7 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.comments.CommentsFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment;
-import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.onFavoriteChangeListener;
+import org.alfresco.mobile.android.application.fragments.favorites.ActivateSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragment;
@@ -295,7 +295,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     // Syncrho available.
                     if (isSynced)
                     {
-                        //Update statut of the sync operation
+                        // Update statut of the sync operation
                         ContentValues cValues = new ContentValues();
                         cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
                         getActivity().getContentResolver().update(
@@ -303,7 +303,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
                                 null);
 
-                        //Sync if it's possible.
+                        // Sync if it's possible.
                         if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                         {
                             SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
@@ -311,8 +311,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     }
                     else
                     {
-                        //Favorites listing. 
-                        //Save back pop up.
+                        // Favorites listing.
+                        // Save back pop up.
                         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                         builder.setTitle(R.string.save_back);
                         builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
@@ -373,7 +373,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 File file = SynchroManager.getInstance(getActivity()).getSyncFile(
                         SessionUtils.getAccount(getActivity()), node);
 
-                if (file == null) return;
+                if (file == null) { return; }
 
                 long date = file.lastModified();
                 Date da = new Date(date);
@@ -649,7 +649,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
         if (mTabHost != null)
         {
-            mTabHost.setup(); // you must call this before adding your tabs!
+            mTabHost.setup();
             mTabHost.setOnTabChangedListener(this);
             if (refreshedNode.isDocument()
                     && Boolean.parseBoolean((String) refreshedNode.getPropertyValue(PropertyIds.IS_LATEST_VERSION)))
@@ -724,7 +724,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 public void onClick(DialogInterface dialog, int item)
                 {
-                    // TODO Change it !
                     Bundle b = new Bundle();
                     b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
                     b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
@@ -744,14 +743,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         {
                             if (path.startsWith("/Sites/"))
                             {
-                                String sub1 = path.substring(7); // Get
-                                                                 // past
-                                                                 // the
-                                                                 // '/Sites/'
-                                int idx = sub1.indexOf('/'); // Find end
-                                                             // of
-                                                             // site
-                                                             // name
+                                // Get past the '/Sites/'
+                                String sub1 = path.substring(7);
+                                // Find end of site name
+                                int idx = sub1.indexOf('/');
                                 if (idx == -1)
                                 {
                                     idx = sub1.length();
@@ -873,7 +868,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (!GeneralPreferences.hasDisplayedActivateSync(getActivity()))
         {
-            ActivateSyncDialogFragment.newInstance(new onFavoriteChangeListener()
+            ActivateSyncDialogFragment.newInstance(new OnSyncChangeListener()
             {
                 @Override
                 public void onPositive()
@@ -1057,7 +1052,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         if (mTabHost == null) { return; }
 
-        mTabHost.setup(); // you must call this before adding your tabs!
+        mTabHost.setup();
         mTabHost.setOnTabChangedListener(this);
 
         if (node.isDocument() && ((Document) node).isLatestVersion())
