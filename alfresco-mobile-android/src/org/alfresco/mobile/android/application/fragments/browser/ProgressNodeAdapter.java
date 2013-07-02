@@ -393,29 +393,16 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshFavorites()
     {
-        if (parentNode == null) { return; }
-        // Favorite
-        Cursor favoriteCursor = getContext().getContentResolver().query(
-                SynchroProvider.CONTENT_URI,
-                SynchroSchema.COLUMN_ALL,
-                SynchroSchema.COLUMN_PARENT_ID + " LIKE '" + parentNode.getIdentifier() + "' AND "
-                        + SynchroSchema.COLUMN_STATUS + " != " + SyncOperation.STATUS_HIDDEN, null, null);
-        if (favoriteCursor.getCount() > 0)
+        Cursor favoriteCursor = null;
+        try
         {
-            hasFavorite = true;
-            favoriteNodeRef = new ArrayList<String>(favoriteCursor.getCount());
-            while (favoriteCursor.moveToNext())
-            {
-                favoriteNodeRef.add(favoriteCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
-            }
-        }
-        else
-        {
+            if (parentNode == null) { return; }
+            // Favorite
             favoriteCursor = getContext().getContentResolver().query(
                     SynchroProvider.CONTENT_URI,
                     SynchroSchema.COLUMN_ALL,
-                    SynchroSchema.COLUMN_PARENT_ID + " LIKE '' AND " + SynchroSchema.COLUMN_STATUS + " != "
-                            + SyncOperation.STATUS_HIDDEN, null, null);
+                    SynchroSchema.COLUMN_PARENT_ID + " LIKE '" + parentNode.getIdentifier() + "' AND "
+                            + SynchroSchema.COLUMN_STATUS + " != " + SyncOperation.STATUS_HIDDEN, null, null);
             if (favoriteCursor.getCount() > 0)
             {
                 hasFavorite = true;
@@ -427,10 +414,38 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             }
             else
             {
-                // Case there's no favorite at all.
-                favoriteNodeRef = new ArrayList<String>(0);
+                favoriteCursor = getContext().getContentResolver().query(
+                        SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroSchema.COLUMN_PARENT_ID + " LIKE '' AND " + SynchroSchema.COLUMN_STATUS + " != "
+                                + SyncOperation.STATUS_HIDDEN, null, null);
+                if (favoriteCursor.getCount() > 0)
+                {
+                    hasFavorite = true;
+                    favoriteNodeRef = new ArrayList<String>(favoriteCursor.getCount());
+                    while (favoriteCursor.moveToNext())
+                    {
+                        favoriteNodeRef.add(favoriteCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                    }
+                }
+                else
+                {
+                    // Case there's no favorite at all.
+                    favoriteNodeRef = new ArrayList<String>(0);
+                }
             }
         }
-        favoriteCursor.close();
+        catch (Exception e)
+        {
+            Log.w(TAG, Log.getStackTraceString(e));
+        }
+        finally
+        {
+            if (favoriteCursor != null)
+            {
+                favoriteCursor.close();
+            }
+        }
+
     }
 }

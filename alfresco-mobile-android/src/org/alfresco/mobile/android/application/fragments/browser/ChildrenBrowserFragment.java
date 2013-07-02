@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
@@ -64,7 +65,6 @@ import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Fragment;
@@ -152,7 +152,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(parentFolder, pathFolder, site);
-        b.putBoolean(PARAM_IS_SHORTCUT, pathFolder != null);
+        b.putBoolean(PARAM_IS_SHORTCUT, pathFolder != null || parentFolder instanceof CloudFolderImpl);
         b.putAll(createBundleArgs(lc, LOAD_AUTO));
         bf.setArguments(b);
         return bf;
@@ -329,7 +329,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             //
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            String pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
+            String pathValue = parentFolder.getName();
+            if (parentFolder.getProperty(PropertyIds.PATH) != null){
+                pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
+            }
 
             boolean fromSite = false;
             if (getActivity() instanceof MainActivity)

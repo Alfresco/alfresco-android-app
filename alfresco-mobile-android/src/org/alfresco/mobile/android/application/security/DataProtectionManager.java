@@ -250,6 +250,7 @@ public class DataProtectionManager implements VersionNumber
     {
         try
         {
+            if (intentAction == DataProtectionManager.ACTION_NONE || intentAction == 0) { return; }
             fragment.startActivityForResult(createActionIntent(fragment.getActivity(), intentAction, f),
                     PublicIntent.REQUESTCODE_DECRYPTED);
         }

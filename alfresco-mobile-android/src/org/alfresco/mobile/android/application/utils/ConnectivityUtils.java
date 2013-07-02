@@ -29,7 +29,8 @@ import android.os.Bundle;
 
 public final class ConnectivityUtils
 {
-    private ConnectivityUtils(){
+    private ConnectivityUtils()
+    {
     }
 
     public static boolean hasInternetAvailable(Context context)
@@ -47,7 +48,7 @@ public final class ConnectivityUtils
         if (wifiInfo != null && wifiInfo.isConnected()) { return true; }
         return false;
     }
-    
+
     public static boolean hasNetwork(BaseActivity activity)
     {
         if (!ConnectivityUtils.hasInternetAvailable(activity))
@@ -64,4 +65,19 @@ public final class ConnectivityUtils
             return true;
         }
     }
+
+    public static boolean hasMobileConnectivity(Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (mobileInfo != null)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

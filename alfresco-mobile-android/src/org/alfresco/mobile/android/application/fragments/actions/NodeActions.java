@@ -203,7 +203,7 @@ public class NodeActions extends AbstractActions<Node>
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_OPERATIONS, Menu.FIRST + MenuActionItem.MENU_OPERATIONS,
-                R.string.operations);
+                R.string.operation_default);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 

@@ -26,8 +26,6 @@ public final class IOUtils
 {
     //private static final String TAG = "IOUtils";
 
-    public static final String TEMP_PREFIX = "Decrypted@";
-
     private IOUtils(){
     }
     

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.security.EncryptionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.AsyncTaskLoader;
@@ -68,7 +69,8 @@ public class FileExplorerLoader extends AsyncTaskLoader<List<File>>
                 {
                     for (File child : childs)
                     {
-                        if (!child.isHidden() && !child.getName().startsWith("."))
+                        if (!child.isHidden() && !child.getName().startsWith(".")
+                                && !EncryptionUtils.isEncrypted(child.getName()))
                         {
                             fileList.add(child);
                         }

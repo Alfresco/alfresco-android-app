@@ -283,7 +283,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void displayFavoriteStatut()
     {
-        Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), SessionUtils.getAccount(getActivity()));
+        Account acc = SessionUtils.getAccount(getActivity());
+        Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
 
         Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
         Drawable statut = null;
@@ -291,7 +292,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         if (hasSynchroActive)
         {
             Cursor statutCursor = getActivity().getContentResolver().query(SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL, SynchroSchema.COLUMN_STATUS + " == " + SyncOperation.STATUS_REQUEST_USER,
+                    SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc) + " AND " +   SynchroSchema.COLUMN_STATUS + " == " + SyncOperation.STATUS_REQUEST_USER,
                     null, null);
             if (statutCursor.getCount() > 0)
             {

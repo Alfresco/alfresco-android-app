@@ -197,7 +197,15 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         if (SessionUtils.getAccount(c) == null) { return true; }
         File tempFolder = StorageManager.getSynchroFolder(c, SessionUtils.getAccount(c));
 
-        return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
+        return (tempFolder != null && file.getParentFile().getParent().compareTo(tempFolder.getPath()) == 0);
+    }
+    
+    public static boolean isSynchroFile(Context c, File file)
+    {
+        File tempFolder = c.getExternalFilesDir(null);
+        String path = file.getPath();
+        String[] pathS = path.split("/");
+        return (tempFolder != null && file.getPath().startsWith(tempFolder.getPath()) &&  pathS[pathS.length - 3].contains(SYNCHRO_DIRECTORY));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
