@@ -199,6 +199,8 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
                 }
                 break;
             }
+            default:
+                break;
         }
     }
 
@@ -383,7 +385,7 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
         try
         {
             sourceFile = new FileOutputStream(file);
-            sourceFile.write(view.getText().toString().getBytes());
+            sourceFile.write(view.getText().toString().getBytes("UTF-8"));
             sourceFile.close();
 
             changed = false;
@@ -409,7 +411,7 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
                 }
                 catch (IOException e)
                 {
-                    e.printStackTrace();
+                    Log.w(TAG, Log.getStackTraceString(e));
                 }
             }
         }

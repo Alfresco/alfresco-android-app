@@ -104,7 +104,7 @@ public class UpgradeManager implements VersionNumber
     // ///////////////////////////////////////////////////////////////////////////
     // UPGRADE PROCESS
     // ///////////////////////////////////////////////////////////////////////////
-    public void upgrade()
+    private void upgrade()
     {
         if (canUpgrade)
         {
@@ -117,7 +117,7 @@ public class UpgradeManager implements VersionNumber
         }
     }
 
-    public boolean canUpgrade()
+    private boolean canUpgrade()
     {
         return canUpgrade;
     }

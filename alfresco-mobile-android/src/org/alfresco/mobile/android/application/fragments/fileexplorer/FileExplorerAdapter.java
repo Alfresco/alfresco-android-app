@@ -62,8 +62,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  */
 public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolder> implements OnMenuItemClickListener
 {
-
-    protected List<File> originalFiles;
+    private List<File> originalFiles;
 
     private List<File> selectedItems;
 
@@ -71,7 +70,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
 
     private Fragment fragment;
 
-    protected HashMap<String, File> nodeNameIndexer = new HashMap<String, File>();
+    private HashMap<String, File> nodeNameIndexer = new HashMap<String, File>();
 
     private int mode = ListingModeFragment.MODE_LISTING;
 

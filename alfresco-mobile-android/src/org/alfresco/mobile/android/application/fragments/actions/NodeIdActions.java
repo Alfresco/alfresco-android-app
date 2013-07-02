@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.operations.batch.node.favorite.Fa
 import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.view.ActionMode;
@@ -39,7 +38,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 
-@TargetApi(11)
 public class NodeIdActions extends AbstractActions<String>
 {
     public static final String TAG = "NodeActions";

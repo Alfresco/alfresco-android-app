@@ -90,7 +90,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
     private CreateDocumentReceiver receiver;
 
     private String recommandedName = null;
-    
+
     private String originalName = null;
 
     private ContentFile contentFile;
@@ -146,7 +146,10 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
                 // If the file is a temporary file, remove it on cancellation of
                 // dialog.
-                if (StorageManager.isTempFile(getActivity(), uploadFile)) uploadFile.delete();
+                if (StorageManager.isTempFile(getActivity(), uploadFile))
+                {
+                    uploadFile.delete();
+                }
 
                 CreateDocumentDialogFragment.this.dismiss();
             }
@@ -275,14 +278,14 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
     // //////////////////////////////////////////////////////////////////////
     private void createDocument(EditText tv, EditText desc, Button bcreate)
     {
-        Map<String, Serializable> props = new HashMap<String, Serializable>(3);
+        Map<String, Serializable> props = new HashMap<String, Serializable>();
         String documentName = tv.getText().toString().trim();
-        
+
         if (originalName.equals(documentName) && recommandedName != null && !recommandedName.equals(originalName))
         {
             documentName = recommandedName;
         }
-        
+
         if (desc.getText() != null && desc.getText().length() > 0)
         {
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());

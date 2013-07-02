@@ -44,14 +44,11 @@ public class IsFavoriteLoaderCallBack extends BaseLoaderCallback implements Load
 
     private View progressView;
 
-    private Fragment fragment;
-
     public IsFavoriteLoaderCallBack(AlfrescoSession session, Fragment fr, Node node)
     {
         super();
         this.session = session;
         this.context = fr.getActivity();
-        this.fragment = fr;
         this.node = node;
     }
 

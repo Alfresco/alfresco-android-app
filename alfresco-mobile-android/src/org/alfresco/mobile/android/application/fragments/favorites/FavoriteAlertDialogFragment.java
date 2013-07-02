@@ -33,20 +33,20 @@ public class FavoriteAlertDialogFragment extends DialogFragment
 {
     public static final String TAG = FavoriteAlertDialogFragment.class.getName();
 
-    private onFavoriteChangeListener onFavoriteChangeListener;
+    private OnFavoriteChangeListener onFavoriteChangeListener;
 
     public FavoriteAlertDialogFragment()
     {
     }
 
-    public static FavoriteAlertDialogFragment newInstance(onFavoriteChangeListener listener)
+    public static FavoriteAlertDialogFragment newInstance(OnFavoriteChangeListener listener)
     {
         FavoriteAlertDialogFragment frag = new FavoriteAlertDialogFragment();
         frag.setOnFavoriteChangeListener(listener);
         return frag;
     }
 
-    private void setOnFavoriteChangeListener(onFavoriteChangeListener listener)
+    private void setOnFavoriteChangeListener(OnFavoriteChangeListener listener)
     {
         this.onFavoriteChangeListener = listener;
     }
@@ -87,11 +87,11 @@ public class FavoriteAlertDialogFragment extends DialogFragment
         return builder.create();
     }
 
-    public interface onFavoriteChangeListener
+    public interface OnFavoriteChangeListener
     {
-        public void onPositive();
+        void onPositive();
 
-        public void onNegative();
+        void onNegative();
     }
 
     @Override

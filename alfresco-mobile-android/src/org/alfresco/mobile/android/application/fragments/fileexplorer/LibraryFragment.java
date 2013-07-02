@@ -37,8 +37,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
 
     private int mediaTypeId;
 
-    private View vroot;
-
     private static final String PARAM_MEDIATYPE_ID = "org.alfresco.mobile.android.application.param.mediatypeid";
 
     private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
@@ -98,8 +96,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        vroot = super.onCreateView(inflater, container, savedInstanceState);
-        return vroot;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -273,21 +270,22 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     {
         mediaTypeId = (Integer) getArguments().get(PARAM_MEDIATYPE_ID);
 
-        String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?";
+        //String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?";
+        StringBuilder selection = new StringBuilder(MediaStore.Files.FileColumns.MEDIA_TYPE + "=?");
+        String selectionFinal = selection.toString();
         List<String> argumentsList = new ArrayList<String>();
         argumentsList.add(Integer.toString(mediaTypeId));
-
         if (mediaTypeId == 0)
         {
             String mimeType = null;
-            selection += " AND " + MediaStore.Files.FileColumns.MIME_TYPE + " IN (";
+            selection.append(" AND " + MediaStore.Files.FileColumns.MIME_TYPE + " IN (");
             for (String extension : OFFICE_EXTENSION)
             {
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                 argumentsList.add(mimeType);
-                selection += " ? ,";
+                selection.append( " ? ,");
             }
-            selection = selection.substring(0, selection.lastIndexOf(",")) + ")";
+            selectionFinal = selection.toString().substring(0, selection.lastIndexOf(",")) + ")";
         }
         String[] arguments = new String[argumentsList.size()];
         arguments = argumentsList.toArray(arguments);
@@ -297,7 +295,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
                 MediaStore.Files.FileColumns.DISPLAY_NAME, MediaStore.Files.FileColumns.MIME_TYPE,
                 MediaStore.Files.FileColumns.DATA };
         Uri baseUri = MediaStore.Files.getContentUri("external");
-        return new CursorLoader(getActivity(), baseUri, projection, selection, arguments,
+        return new CursorLoader(getActivity(), baseUri, projection, selectionFinal, arguments,
                 MediaStore.Files.FileColumns.DATA + " ASC");
     }
 

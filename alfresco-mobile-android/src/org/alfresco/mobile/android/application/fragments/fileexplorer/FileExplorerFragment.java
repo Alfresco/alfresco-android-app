@@ -77,8 +77,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
     private File parent;
 
-    private View vroot;
-
     private FileActions nActions;
 
     private File createFile;
@@ -135,12 +133,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             if (acc != null)
             {
-                File folder = StorageManager.getDownloadFolder(getActivity(), acc);
-                if (folder != null)
-                {
-                    b = createBundleArgs(folder);
-                }
-                else
+                parent = StorageManager.getDownloadFolder(getActivity(), acc);
+                if (parent == null)
                 {
                     MessengerManager.showLongToast(getActivity(), getString(R.string.sdinaccessible));
                     return;
@@ -171,8 +165,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        vroot = inflater.inflate(R.layout.app_filexplorer_list, container, false);
-        if (vroot == null) return null;
+        View vroot = inflater.inflate(R.layout.app_filexplorer_list, container, false);
+        if (vroot == null) { return null; }
 
         init(vroot, emptyListMessageId);
 
@@ -347,8 +341,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             if (file.isDirectory())
             {
                 displayNavigation(file, true);
-                // ((MainActivity)
-                // getActivity()).addLocalFileNavigationFragment(file);
             }
             else
             {
@@ -419,14 +411,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
-
-            /*
-             * MenuItem mi = menu.add(Menu.NONE,
-             * MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST +
-             * MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
-             * mi.setIcon(R.drawable.ic_add_folder);
-             * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-             */
         }
     }
 

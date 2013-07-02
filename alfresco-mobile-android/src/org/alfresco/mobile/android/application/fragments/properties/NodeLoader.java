@@ -143,8 +143,8 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             if (!ConnectivityUtils.hasInternetAvailable(getContext()) && syncManager.isSynced(acc, identifier))
             {
                 // Retrieve Sync Cursor for the specified node
-                Uri uri = syncManager.getUri(acc, identifier);
-                Cursor syncCursor = getContext().getContentResolver().query(uri, SynchroSchema.COLUMN_ALL, null, null,
+                Uri localUri = syncManager.getUri(acc, identifier);
+                Cursor syncCursor = getContext().getContentResolver().query(localUri, SynchroSchema.COLUMN_ALL, null, null,
                         null);
                 if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
                 {
@@ -156,6 +156,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
                 {
                     result.setException(e);
                 }
+                syncCursor.close();
             }
             else
             {

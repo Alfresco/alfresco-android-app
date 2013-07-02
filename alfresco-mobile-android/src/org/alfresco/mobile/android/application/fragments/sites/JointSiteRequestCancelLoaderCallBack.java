@@ -72,7 +72,11 @@ public class JointSiteRequestCancelLoaderCallBack implements LoaderCallbacks<Loa
     public void onLoadFinished(Loader<LoaderResult<Site>> loader, LoaderResult<Site> result)
     {
         int messageId = R.string.error_general;
-        Site joinSiteRequest = ((JoinSiteRequestCancelLoader) loader).getJoinSiteRequest();
+        Site joinSiteRequest = null;
+        if (loader instanceof JoinSiteRequestCancelLoader)
+        {
+            joinSiteRequest = ((JoinSiteRequestCancelLoader) loader).getJoinSiteRequest();
+        }
         if (!result.hasException())
         {
             messageId = R.string.action_cancel_join_site_request;

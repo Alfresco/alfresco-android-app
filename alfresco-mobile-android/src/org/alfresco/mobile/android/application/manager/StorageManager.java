@@ -45,11 +45,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     public static final String DLDIR = "Download";
 
     private static final String SYNCHRO_DIRECTORY = "Synchro";
-    
+
     private static final String SHARE_DIRECTORY = "Share";
 
     private static final String ASSETDIR = "Assets";
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // STATUS SDCARD
     // ///////////////////////////////////////////////////////////////////////////
@@ -57,7 +57,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     {
         return (Environment.getExternalStorageState().compareTo(Environment.MEDIA_MOUNTED) == 0);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // SHORTCUT
     // ///////////////////////////////////////////////////////////////////////////
@@ -65,7 +65,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     {
         return getPrivateFolder(context, SHARE_DIRECTORY, acc);
     }
-    
+
     public static File getDownloadFolder(Context context, Account acc)
     {
         return getPrivateFolder(context, DLDIR, acc);
@@ -99,8 +99,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
             File synchroFolder = StorageManager.getSynchroFolder(context, acc);
             File uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
             uuidFolder.mkdirs();
-            File t = new File(uuidFolder, documentName);
-            return t;
+            return new File(uuidFolder, documentName);
         }
         return null;
     }
@@ -187,19 +186,20 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     // ///////////////////////////////////////////////////////////////////////////
     public static boolean isTempFile(Context c, File file)
     {
-        if (SessionUtils.getAccount(c) == null) return true;
+        if (SessionUtils.getAccount(c) == null) { return true; }
         File tempFolder = StorageManager.getTempFolder(c, SessionUtils.getAccount(c));
 
         return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
     }
-    
+
     public static boolean isSyncFile(Context c, File file)
     {
-        if (SessionUtils.getAccount(c) == null) return true;
+        if (SessionUtils.getAccount(c) == null) { return true; }
         File tempFolder = StorageManager.getSynchroFolder(c, SessionUtils.getAccount(c));
 
         return (tempFolder != null && file.getParent().compareTo(tempFolder.getPath()) == 0);
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // MANAGE FILE
     // ///////////////////////////////////////////////////////////////////////////

@@ -180,18 +180,6 @@ public final class NotificationHelper
             remote.setProgressBar(R.id.status_progress, params.getInt(ARGUMENT_PROGRESS_MAX), 0, false);
             builder.setContent(remote);
         }
-
-        /*Notification.InboxStyle inboxStyle = new Notification.InboxStyle();
-        String[] events = new String[]{"test","test","test","test","test","test"};
-        // Sets a title for the Inbox style big view
-        inboxStyle.setBigContentTitle("Event tracker details:");
-        // Moves events into the big view
-        for (int ij = 0; ij < events.length; ij++)
-        {
-            inboxStyle.addLine(events[ij]);
-        }
-        // Moves the big view style object into the notification object.
-        builder.setStyle(inboxStyle);*/
         
         if (AndroidVersion.isJBOrAbove())
         {

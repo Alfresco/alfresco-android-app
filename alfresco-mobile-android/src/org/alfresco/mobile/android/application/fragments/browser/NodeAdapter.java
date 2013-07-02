@@ -52,8 +52,6 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 {
     protected List<Node> originalNodes;
 
-    protected List<Node> refNodes = new ArrayList<Node>();
-
     protected List<Node> selectedItems;
 
     protected LinkedHashMap<String, Node> nodeNameIndexer = new LinkedHashMap<String, Node>();

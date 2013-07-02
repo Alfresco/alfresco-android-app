@@ -43,9 +43,9 @@ public class OperationsFragment extends BaseCursorListFragment
 {
     public static final String TAG = OperationsFragment.class.getName();
 
-    private Button cancel_all;
+    private Button cancelAll;
 
-    private Button dismiss_all;
+    private Button dismissAll;
 
     public OperationsFragment()
     {
@@ -88,8 +88,8 @@ public class OperationsFragment extends BaseCursorListFragment
     protected void init(View v, int estring)
     {
         super.init(v, estring);
-        cancel_all = (Button) v.findViewById(R.id.cancel_all);
-        cancel_all.setOnClickListener(new OnClickListener()
+        cancelAll = (Button) v.findViewById(R.id.cancel_all);
+        cancelAll.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -98,8 +98,8 @@ public class OperationsFragment extends BaseCursorListFragment
             }
         });
 
-        dismiss_all = (Button) v.findViewById(R.id.dismiss_all);
-        dismiss_all.setOnClickListener(new OnClickListener()
+        dismissAll = (Button) v.findViewById(R.id.dismiss_all);
+        dismissAll.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -130,8 +130,8 @@ public class OperationsFragment extends BaseCursorListFragment
                     + cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
             getActivity().getContentResolver().delete(uri, null, null);
         }
-        cancel_all.setVisibility(View.GONE);
-        dismiss_all.setVisibility(View.GONE);
+        cancelAll.setVisibility(View.GONE);
+        dismissAll.setVisibility(View.GONE);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -181,11 +181,11 @@ public class OperationsFragment extends BaseCursorListFragment
         super.onLoadFinished(arg0, cursor);
         if (cursor.getCount() == 0)
         {
-            dismiss_all.setVisibility(View.GONE);
+            dismissAll.setVisibility(View.GONE);
         }
         else
         {
-            dismiss_all.setVisibility(View.VISIBLE);
+            dismissAll.setVisibility(View.VISIBLE);
             if (!cursor.isFirst())
             {
                 cursor.moveToPosition(-1);
@@ -202,10 +202,10 @@ public class OperationsFragment extends BaseCursorListFragment
                 }
             }
 
-            cancel_all.setVisibility(View.GONE);
+            cancelAll.setVisibility(View.GONE);
             if (isVisible)
             {
-                cancel_all.setVisibility(View.VISIBLE);
+                cancelAll.setVisibility(View.VISIBLE);
             }
         }
     }

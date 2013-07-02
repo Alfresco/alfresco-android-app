@@ -298,7 +298,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         try
         {
-            activity.startActivity(CreateSendFileToAlfrescoIntent(activity, contentFile));
+            activity.startActivity(createSendFileToAlfrescoIntent(activity, contentFile));
         }
         catch (ActivityNotFoundException e)
         {
@@ -306,7 +306,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         }
     }
 
-    public static Intent CreateSendFileToAlfrescoIntent(Activity activity, File contentFile)
+    public static Intent createSendFileToAlfrescoIntent(Activity activity, File contentFile)
     {
         Intent i = new Intent(activity, PublicDispatcherActivity.class);
         i.setAction(Intent.ACTION_SEND);
