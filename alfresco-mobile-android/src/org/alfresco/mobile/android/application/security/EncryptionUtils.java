@@ -43,8 +43,15 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.util.Log;
 
 public class EncryptionUtils
@@ -70,7 +77,7 @@ public class EncryptionUtils
     private static ArrayList<String> filesDecrypted = null;
 
     private static final String DECRYPTION_EXTENSION = ".utmp";
-    
+
     private static ArrayList<String> filesEncrypted = null;
 
     private static final String ENCRYPTION_EXTENSION = ".etmp";
@@ -82,6 +89,11 @@ public class EncryptionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // DETECTION
     // ///////////////////////////////////////////////////////////////////////////
+    public static boolean isEncrypted(String filename)
+    {
+        return (filename.endsWith(DECRYPTION_EXTENSION) || filename.endsWith(ENCRYPTION_EXTENSION));
+    }
+
     public static boolean isEncrypted(Context ctxt, String filename) throws IOException
     {
         File source = new File(filename);
@@ -232,15 +244,15 @@ public class EncryptionUtils
                     {
                         if (filesDecrypted != null)
                         {
-                            Log.e("Alfresco", "Folder decryption failed for " + sourceFile.getName());
+                            Log.e(TAG, "Folder decryption failed for " + sourceFile.getName());
 
                             // Remove the decrypted versions done so far.
-                            Log.i("Alfresco", "Decryption rollback in progress...");
+                            Log.d(TAG, "Decryption rollback in progress...");
                             for (int j = 0; j < filesDecrypted.size(); j++)
                             {
                                 if (new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION).delete())
                                 {
-                                    Log.i("Alfresco", "Deleted decrypted version of " + filesDecrypted.get(j));
+                                    Log.w(TAG, "Deleted decrypted version of " + filesDecrypted.get(j));
                                 }
                             }
                             filesDecrypted.clear();
@@ -256,16 +268,21 @@ public class EncryptionUtils
             {
                 // Whole folder decrypt succeeded. Move over to new decrypted
                 // versions.
+                File src = null, dest = null, tempSrc = null;
+                Uri uri = null;
+                Cursor favoriteCursor = null;
+                ContentValues cValues = null;
+                int statut = 0;
 
                 for (int j = 0; j < filesDecrypted.size(); j++)
                 {
-                    File src = new File(filesDecrypted.get(j));
-                    File dest = new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION);
+                    src = new File(filesDecrypted.get(j));
+                    dest = new File(filesDecrypted.get(j) + DECRYPTION_EXTENSION);
 
                     //
                     // Two-stage delete for failsafe operation.
                     //
-                    File tempSrc = new File(filesDecrypted.get(j) + ".mov");
+                    tempSrc = new File(filesDecrypted.get(j) + ".mov");
                     if (src.renameTo(tempSrc))
                     {
                         // Put decrypted version in originals place.
@@ -274,7 +291,47 @@ public class EncryptionUtils
                             // Delete the original decrypted temp file.
                             if (!tempSrc.delete())
                             {
-                                Log.w("Alfresco", "Could not delete original file " + tempSrc.getPath());
+                                Log.w(TAG, "Could not delete original file " + tempSrc.getPath());
+                            }
+
+                            // If the file lives in Sync folder
+                            if (StorageManager.isSynchroFile(ctxt, src))
+                            {
+                                try
+                                {
+                                    favoriteCursor = ctxt.getContentResolver().query(
+                                            SynchroProvider.CONTENT_URI,
+                                            SynchroSchema.COLUMN_ALL,
+                                            SynchroSchema.COLUMN_LOCAL_URI + " LIKE '" + Uri.fromFile(src).toString()
+                                                    + "%'", null, null);
+
+                                    if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
+                                    {
+                                        statut = favoriteCursor.getInt(SynchroSchema.COLUMN_STATUS_ID);
+                                        if (statut != SyncOperation.STATUS_MODIFIED)
+                                        {
+                                            uri = Uri.parse(SynchroProvider.CONTENT_URI + "/"
+                                                    + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
+                                            if (cValues == null)
+                                            {
+                                                cValues = new ContentValues();
+                                            }
+                                            cValues.put(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP,
+                                                    src.lastModified());
+                                            ctxt.getContentResolver().update(uri, cValues, null, null);
+                                        }
+                                    }
+                                }
+                                catch (Exception e)
+                                {
+                                }
+                                finally
+                                {
+                                    if (favoriteCursor != null)
+                                    {
+                                        favoriteCursor.close();
+                                    }
+                                }
                             }
                         }
                         else
@@ -312,7 +369,8 @@ public class EncryptionUtils
      * filename file to encrypt nuke whether to zero the original unencrypted
      * file before attempting its deletion, for additional security.
      */
-    public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke) throws AlfrescoAppException
+    public static boolean encryptFile(Context ctxt, String filename, String newFilename, boolean nuke)
+            throws AlfrescoAppException
     {
         boolean ret = true;
         OutputStream destStream = null;
@@ -327,8 +385,8 @@ public class EncryptionUtils
                 long copied = 0;
                 File dest = new File(newFilename != null ? newFilename : filename + ".etmp");
                 sourceStream = new FileInputStream(source);
-                destStream = wrapCipherOutputStream(new FileOutputStream(dest),
-                        generateKey(ctxt, KEY_LENGTH).toString());
+                destStream = wrapCipherOutputStream(new FileOutputStream(dest), generateKey(ctxt, KEY_LENGTH)
+                        .toString());
                 int nBytes = 0;
                 byte buffer[] = new byte[MAX_BUFFER_SIZE];
 
@@ -442,15 +500,15 @@ public class EncryptionUtils
                     {
                         if (filesEncrypted != null)
                         {
-                            Log.e("Alfresco", "Folder encryption failed for " + sourceFile.getName());
+                            Log.e(TAG, "Folder encryption failed for " + sourceFile.getName());
 
                             // Remove the encrypted versions done so far.
-                            Log.i("Alfresco", "Encryption rollback in progress...");
+                            Log.i(TAG, "Encryption rollback in progress...");
                             for (int j = 0; j < filesEncrypted.size(); j++)
                             {
                                 if (new File(filesEncrypted.get(j) + ENCRYPTION_EXTENSION).delete())
                                 {
-                                    Log.i("Alfresco", "Deleted encrypted version of " + filesEncrypted.get(j));
+                                    Log.i(TAG, "Deleted encrypted version of " + filesEncrypted.get(j));
                                 }
                             }
                             filesEncrypted.clear();
@@ -486,7 +544,7 @@ public class EncryptionUtils
                             {
                                 // At least rename it out of the way with a temp
                                 // extension, and nuke its content.
-                                Log.w("Alfresco",
+                                Log.w(TAG,
                                         "Could not delete original file. Nuking and renaming it " + tempSrc.getPath());
                                 nukeFile(tempSrc, -1);
                             }
@@ -505,7 +563,7 @@ public class EncryptionUtils
         }
         catch (Exception e)
         {
-            Log.e("Alfresco", "Error during folder encryption: " + e.getMessage());
+            Log.e(TAG, "Error during folder encryption: " + e.getMessage());
             Log.d(TAG, Log.getStackTraceString(e));
 
             return false;

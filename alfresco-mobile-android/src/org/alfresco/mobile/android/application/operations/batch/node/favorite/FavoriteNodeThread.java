@@ -66,6 +66,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
     protected LoaderResult<Boolean> doInBackground()
     {
         LoaderResult<Boolean> result = new LoaderResult<Boolean>();
+        Cursor cursorId = null;
         try
         {
             result = super.doInBackground();
@@ -80,10 +81,10 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                 // Update Sync Info
                 if (node instanceof Document)
                 {
-                    Cursor cursorId = context.getContentResolver().query(
+                    cursorId = context.getContentResolver().query(
                             SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL,
-                            SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                            SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
                                     + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
 
                     if (cursorId.getCount() == 1 && cursorId.moveToFirst())
@@ -105,7 +106,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                 if (node instanceof Document)
                 {
 
-                    Cursor cursorId = context.getContentResolver().query(
+                    cursorId = context.getContentResolver().query(
                             SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL,
                             SynchroSchema.COLUMN_NODE_ID + " LIKE '"
@@ -136,6 +137,13 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
         {
             Log.e(TAG, Log.getStackTraceString(e));
             result.setException(e);
+        }
+        finally
+        {
+            if (cursorId != null)
+            {
+                cursorId.close();
+            }
         }
 
         result.setData(isFavorite);

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -202,7 +203,11 @@ public class FavoritesFragment extends BaseListFragment implements
         {
             if (item.isFolder())
             {
-                ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) item).getPropertyValue(PropertyIds.PATH));
+                if (item instanceof CloudFolderImpl){
+                    ((BaseActivity) getActivity()).addNavigationFragment((Folder)item);
+                } else {
+                    ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) item).getPropertyValue(PropertyIds.PATH));
+                }
             }
             else
             {

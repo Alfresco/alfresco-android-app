@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.security;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
@@ -147,6 +148,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         @Override
         public void onPositive()
         {
+            int localMessageId  = R.string.decryption_title;
             if (firstTime)
             {
                 prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();
@@ -158,11 +160,18 @@ public class DataProtectionUserDialogFragment extends DialogFragment
                 if (checked)
                 {
                     DataProtectionManager.getInstance(getActivity()).decrypt(SessionUtils.getAccount(getActivity()));
+                    localMessageId = R.string.encryption_title;
                 }
                 else
                 {
                     DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
+                    localMessageId = R.string.decryption_title;
                 }
+            }
+            if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
+            {
+                WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection, localMessageId, false);
+                dialog.show(getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
             }
         }
 

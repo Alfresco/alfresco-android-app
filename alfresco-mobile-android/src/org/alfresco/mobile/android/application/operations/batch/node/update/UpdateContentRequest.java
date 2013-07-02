@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 
 import android.database.Cursor;
+import android.net.Uri;
 
 public class UpdateContentRequest extends AbstractUpRequest
 {
@@ -35,15 +36,15 @@ public class UpdateContentRequest extends AbstractUpRequest
     // ///////////////////////////////////////////////////////////////////////////
     public UpdateContentRequest(Folder parentFolder, Document document, ContentFile contentFile)
     {
-        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), contentFile.getFile()
-                .getPath(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), Uri.fromFile(
+                contentFile.getFile()).toString(), contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
 
     public UpdateContentRequest(String parentFolderId, String documentId, String documentName, ContentFile contentFile)
     {
-        super(parentFolderId, documentId, documentName, contentFile.getFile().getPath(), contentFile.getMimeType(),
-                contentFile.getLength());
+        super(parentFolderId, documentId, documentName, Uri.fromFile(contentFile.getFile()).toString(), contentFile
+                .getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
 

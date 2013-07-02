@@ -209,7 +209,7 @@ public class MainActivity extends BaseActivity
         DisplayUtils.switchSingleOrTwo(this, false);
 
         // TODO REMOVE
-        //SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
+        // SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
     }
 
     @Override
@@ -226,6 +226,7 @@ public class MainActivity extends BaseActivity
         filters.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
         filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
+        
         registerPrivateReceiver(new MainActivityReceiver(), filters);
 
         super.onStart();
@@ -454,7 +455,8 @@ public class MainActivity extends BaseActivity
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
                 frag = KeywordSearch.newInstance();
-                FragmentDisplayer.replaceFragment(this,  frag, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG, true);
+                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG,
+                        true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);

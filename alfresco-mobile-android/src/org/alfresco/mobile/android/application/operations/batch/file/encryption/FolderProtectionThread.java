@@ -100,11 +100,11 @@ public class FolderProtectionThread extends FileOperationThread<Void>
         Intent broadcastIntent = new Intent();
         if (doEncrypt)
         {
-            broadcastIntent.setAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
+            broadcastIntent.setAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
         }
         else
         {
-            broadcastIntent.setAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
+            broadcastIntent.setAction(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
         }
         Bundle b = new Bundle();
         if (intentAction != DataProtectionManager.ACTION_NONE)

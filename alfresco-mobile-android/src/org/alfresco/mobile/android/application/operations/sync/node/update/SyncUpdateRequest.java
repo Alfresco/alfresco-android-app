@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.operations.sync.node.AbstractSyncUpRequest;
 
 import android.database.Cursor;
+import android.net.Uri;
 
 public class SyncUpdateRequest extends AbstractSyncUpRequest
 {
@@ -37,22 +38,22 @@ public class SyncUpdateRequest extends AbstractSyncUpRequest
     // ///////////////////////////////////////////////////////////////////////////
     public SyncUpdateRequest(Folder parentFolder, Document document, ContentFile contentFile)
     {
-        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), contentFile.getFile()
-                .getPath(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), Uri.fromFile(contentFile.getFile())
+                .toString(), contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
     
     public SyncUpdateRequest(String parentIdentifier, Document document, ContentFile contentFile)
     {
-        super(parentIdentifier, document.getIdentifier(), document.getName(), contentFile.getFile()
-                .getPath(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentIdentifier, document.getIdentifier(), document.getName(), Uri.fromFile(contentFile.getFile())
+                .toString(), contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
     
     public SyncUpdateRequest(String parentIdentifier, String nodeIdentifier, String documentName, ContentFile contentFile, boolean remove)
     {
-        super(parentIdentifier, nodeIdentifier, documentName, contentFile.getFile()
-                .getPath(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentIdentifier, nodeIdentifier, documentName, Uri.fromFile(contentFile.getFile())
+                .toString(), contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
         doRemove = remove;
     }

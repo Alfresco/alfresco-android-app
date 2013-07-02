@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;

@@ -177,7 +177,6 @@ public class PublicDispatcherActivity extends BaseActivity
             filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT);
             filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
             broadcastManager.registerReceiver(receiver, filters);
-            Log.d(TAG, "REGISTER");
         }
 
         super.onStart();

@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.net.Uri;
 
 public abstract class AbstractSyncUpRequest extends SyncNodeOperationRequest
 {
@@ -111,7 +112,7 @@ public abstract class AbstractSyncUpRequest extends SyncNodeOperationRequest
         {
             cValues.put(BatchOperationSchema.COLUMN_PROPERTIES, MapUtil.mapToString(persistentProperties));
         }
-        cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, localFilePath);
+        cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, Uri.fromFile(new File(localFilePath)).toString() );
         return cValues;
     }
 

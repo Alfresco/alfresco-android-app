@@ -116,7 +116,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
                     // Retrieve list of local Favorites
                     localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
-                            SynchroSchema.COLUMN_ALL, null, null, null);
+                            SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc), null, null);
                     break;
                 default:
                     break;
@@ -133,11 +133,6 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                 scanDeleteItem();
             }
 
-            if (localFavoritesCursor != null)
-            {
-                localFavoritesCursor.close();
-            }
-
             if (!group.getRequests().isEmpty())
             {
                 SynchroManager.getInstance(context).enqueue(group);
@@ -147,6 +142,13 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         {
             Log.e(TAG, Log.getStackTraceString(e));
             result.setException(e);
+        }
+        finally
+        {
+            if (localFavoritesCursor != null)
+            {
+                localFavoritesCursor.close();
+            }
         }
         return result;
     }
@@ -165,7 +167,8 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     // ///////////////////////////////////////////////////////////////////////////
     private boolean isFirstSync()
     {
-        if ((localFavoritesCursor == null || localFavoritesCursor.getCount() == 0) && mode == SyncFavoriteRequest.MODE_DOCUMENTS)
+        if ((localFavoritesCursor == null || localFavoritesCursor.getCount() == 0)
+                && mode == SyncFavoriteRequest.MODE_DOCUMENTS)
         {
             // USE CASE : FIRST
             // If 0 ==> Bulk Insert
@@ -205,8 +208,8 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
             cursorId = context.getContentResolver().query(
                     SynchroProvider.CONTENT_URI,
                     SynchroSchema.COLUMN_ALL,
-                    SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(doc.getIdentifier())
-                            + "%'", null, null);
+                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                            + NodeRefUtils.getCleanIdentifier(doc.getIdentifier()) + "%'", null, null);
 
             if (cursorId.moveToFirst())
             {
@@ -324,7 +327,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     private void scanDeleteItem()
     {
         if (localFavoritesCursor == null) return;
-        
+
         // USE CASE : DELETE
         // Compare referential and list of favorite Ids
         if (!localFavoritesCursor.isBeforeFirst())
@@ -354,9 +357,11 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         // If nodeIds present, favorite are no longer in repo
         for (String id : favoriteLocalNode)
         {
-            localFavoriteCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
+            localFavoriteCursor = context.getContentResolver().query(
+                    SynchroProvider.CONTENT_URI,
                     SynchroSchema.COLUMN_ALL,
-                    SynchroSchema.COLUMN_NODE_ID + " LIKE '" + NodeRefUtils.getCleanIdentifier(id) + "%'", null, null);
+                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                            + NodeRefUtils.getCleanIdentifier(id) + "%'", null, null);
 
             if (localFavoriteCursor.getCount() > 1)
             {
@@ -482,7 +487,6 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private void addSyncdeleteRequest(String id, Cursor cursorId)
     {
-
         // If Favorite listing simply delete the entry.
         if (!canExecuteAction)
         {
