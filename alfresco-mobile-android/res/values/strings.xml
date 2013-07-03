@@ -485,6 +485,11 @@
         <item quantity="one">1 transfert in progress.</item>
         <item quantity="other">%1$s transferts in progress.</item>
     </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">no download in progress.</item>
+        <item quantity="one">1 download in progress.</item>
+        <item quantity="other">%1$s downloads in progress.</item>
+    </plurals>
     
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>

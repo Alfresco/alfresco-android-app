@@ -55,7 +55,7 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
                     getNotificationId(),
                     inProgress,
                     String.format(
-                            getBaseContext().getResources().getQuantityString(R.plurals.batch_in_progress,
+                            getBaseContext().getResources().getQuantityString(R.plurals.download_in_progress,
                                     groupRecord.runningRequest.size()), groupRecord.runningRequest.size() + ""),
                     groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests);
         }
@@ -105,7 +105,7 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
                     getNotificationId(),
                     inProgress,
                     String.format(
-                            getBaseContext().getResources().getQuantityString(R.plurals.batch_in_progress,
+                            getBaseContext().getResources().getQuantityString(R.plurals.download_in_progress,
                                     groupRecord.runningRequest.size()), groupRecord.runningRequest.size() + ""),
                     groupRecord.completeRequest.size() + "/" + groupRecord.totalRequests);
         }
