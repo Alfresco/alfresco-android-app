@@ -44,6 +44,7 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -121,7 +122,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        getActivity().setTitle(R.string.import_document_title);
+        UIUtils.displayTitle(getActivity(), R.string.import_document_title);
 
         rootView = inflater.inflate(R.layout.app_import, container, false);
         if (rootView.findViewById(R.id.listView) != null)

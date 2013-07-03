@@ -160,12 +160,12 @@ public class DataProtectionUserDialogFragment extends DialogFragment
                 if (checked)
                 {
                     DataProtectionManager.getInstance(getActivity()).decrypt(SessionUtils.getAccount(getActivity()));
-                    localMessageId = R.string.encryption_title;
+                    localMessageId = R.string.decryption_title;
                 }
                 else
                 {
                     DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
-                    localMessageId = R.string.decryption_title;
+                    localMessageId = R.string.encryption_title;
                 }
             }
             if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)

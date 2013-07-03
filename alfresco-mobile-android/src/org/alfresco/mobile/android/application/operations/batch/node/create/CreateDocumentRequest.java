@@ -143,4 +143,17 @@ public class CreateDocumentRequest extends AbstractUpRequest
     {
         return tags;
     }
+
+    // ////////////////////////////////////////////////////
+    // SETTERS
+    // ////////////////////////////////////////////////////
+    public void setDocumentName(String name)
+    {
+        documentName = name;
+        setNotificationTitle(name);
+        if (persistentProperties != null)
+        {
+            persistentProperties.put(ContentModel.PROP_NAME, name);
+        }
+    }
 }

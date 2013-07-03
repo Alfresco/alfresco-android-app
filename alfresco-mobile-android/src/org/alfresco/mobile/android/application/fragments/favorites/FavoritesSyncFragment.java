@@ -48,6 +48,7 @@ import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Fragment;
@@ -129,8 +130,6 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public void onStart()
     {
         acc = SessionUtils.getAccount(getActivity());
-
-        getActivity().setTitle(R.string.menu_favorites);
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -149,7 +148,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             receiver = new FavoriteSyncReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
-
+        
         if (getMode() != MODE_PROGRESS)
         {
             hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
@@ -159,11 +158,13 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             hasSynchroActive = true;
         }
 
+        int titleId = R.string.menu_favorites;
         if (hasSynchroActive)
         {
-            getActivity().setTitle(R.string.synced_documents);
+            titleId = R.string.synced_documents;
         }
-
+        UIUtils.displayTitle(getActivity(), getString(titleId));
+        
         super.onResume();
     }
 

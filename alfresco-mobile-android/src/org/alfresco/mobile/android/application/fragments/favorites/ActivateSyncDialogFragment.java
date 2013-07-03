@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.application.fragments.favorites;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -54,13 +56,15 @@ public class ActivateSyncDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        int titleId = R.string.favorites_activate;
+        Account acc = SessionUtils.getAccount(getActivity());
+        
+        String title = String.format(getString(R.string.favorites_activate), acc.getDescription());
         int iconId = R.drawable.ic_alfresco_logo;
-        int positiveId = android.R.string.yes;
+        int positiveId = R.string.yes;
         int messageId = R.string.favorites_activate_description;
-        int negativeId = android.R.string.no;
+        int negativeId = R.string.no;
 
-        Builder builder = new AlertDialog.Builder(getActivity()).setIcon(iconId).setTitle(titleId)
+        Builder builder = new AlertDialog.Builder(getActivity()).setIcon(iconId).setTitle(title)
                 .setMessage(Html.fromHtml(getString(messageId))).setCancelable(false)
                 .setPositiveButton(positiveId, new DialogInterface.OnClickListener()
                 {

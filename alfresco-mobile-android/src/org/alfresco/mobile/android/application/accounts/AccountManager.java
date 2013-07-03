@@ -103,6 +103,12 @@ public final class AccountManager
         if (accountCursor == null) { return false; }
         return (accountCursor > 0);
     }
+    
+    public boolean hasMultipleAccount()
+    {
+        if (accountCursor == null) { return false; }
+        return (accountCursor > 1);
+    }
 
     public boolean isEmpty()
     {
@@ -277,8 +283,6 @@ public final class AccountManager
         AlfrescoSession session = null;
         Account currentAccount = appManager.getCurrentAccount();
 
-        Log.d(TAG, account + " " + currentAccount);
-
         // First Session Loading
         if (account == null && currentAccount == null)
         {
@@ -293,8 +297,9 @@ public final class AccountManager
             // User has choose a specific account to load
             currentAccount = account;
         }
+        
+        if (currentAccount == null){ return null;}
 
-        Log.d(TAG, "Accounts " + account + " " + currentAccount);
         if (currentAccount.getActivation() != null)
         {
             // SEND broadcast : account is not active !

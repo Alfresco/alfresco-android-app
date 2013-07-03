@@ -43,6 +43,7 @@ import org.alfresco.mobile.android.application.operations.batch.node.delete.Dele
 import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
@@ -130,6 +131,7 @@ public class NodeActions extends AbstractActions<Node>
     {
         super.addNode(n);
         if (n == null) { return; }
+        if (n instanceof NodePlaceHolder) { return; }
         if (n.isDocument())
         {
             selectedDocument.add((Document) n);

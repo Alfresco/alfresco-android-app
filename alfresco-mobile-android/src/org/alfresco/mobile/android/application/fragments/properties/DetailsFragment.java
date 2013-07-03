@@ -72,6 +72,7 @@ import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
@@ -211,25 +212,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().setTitle(R.string.details);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
+            UIUtils.displayTitle(getActivity(), R.string.details);
         }
-        else
-        {
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        }
-        super.onStart();
-    }
-
-    @Override
-    public void onResume()
-    {
         super.onResume();
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_UPDATE_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);

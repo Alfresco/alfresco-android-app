@@ -411,7 +411,7 @@
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favorites</string>
-    <string name="settings_favorite_sync">Activate Sync</string>
+    <string name="settings_favorite_sync">Enable Sync for \"%s\"</string>
     <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
     <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>
@@ -437,7 +437,7 @@
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
-    <string name="favorites_activate">Activate Synchronization</string>
+    <string name="favorites_activate">Sync documents for \"%s\"</string>
     <string name="favorites_activate_description">Do you want to activate sync ?</string>
     <string name="favorites_deactivate">Deactivate Synchronization</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync ?</p> All sync files will be deleted inside your device.]]></string>
@@ -484,6 +484,11 @@
         <item quantity="zero">no transfert in progress.</item>
         <item quantity="one">1 transfert in progress.</item>
         <item quantity="other">%1$s transferts in progress.</item>
+    </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">no download in progress.</item>
+        <item quantity="one">1 download in progress.</item>
+        <item quantity="other">%1$s downloads in progress.</item>
     </plurals>
     
     <!-- Handling duplicate name -->
@@ -583,5 +588,9 @@
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
-
+    
+     <!-- Simple -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
 </resources>

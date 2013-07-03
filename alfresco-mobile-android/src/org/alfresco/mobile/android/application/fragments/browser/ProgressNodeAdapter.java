@@ -434,6 +434,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     favoriteNodeRef = new ArrayList<String>(0);
                 }
             }
+            favoriteCursor.close();
         }
         catch (Exception e)
         {

@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -350,15 +351,15 @@ public class AccountDetailsFragment extends BaseFragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().setTitle(getText(R.string.accounts_details) + " : " + acc.getDescription());
+            UIUtils.displayTitle(getActivity(), getText(R.string.accounts_details) + " : " + acc.getDescription());
         }
         getActivity().invalidateOptionsMenu();
-        super.onStart();
+        super.onResume();
     }
 
     private void initForm()

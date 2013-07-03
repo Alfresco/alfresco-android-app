@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -357,37 +358,16 @@ public class FileActions implements ActionMode.Callback
 
     public static void edit(final Fragment f, final File file)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(f.getActivity());
-        builder.setTitle(R.string.action_rename);
-        builder.setMessage(String.format(f.getActivity().getResources().getString(R.string.action_rename_desc),
-                file.getName()));
-        // Set an EditText view to get user input
-        final EditText input = new EditText(f.getActivity());
-        input.setText("." + IOUtils.extractFileExtension(file.getName()));
-        builder.setView(input);
-
-        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+        FragmentTransaction ft = f.getActivity().getFragmentManager().beginTransaction();
+        Fragment prev = f.getActivity().getFragmentManager().findFragmentByTag(FileNameDialogFragment.TAG);
+        if (prev != null)
         {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                OperationsRequestGroup group = new OperationsRequestGroup(f.getActivity(), SessionUtils.getAccount(f
-                        .getActivity()));
-                group.enqueue(new RenameRequest(file, input.getText().toString())
-                        .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
-                BatchOperationManager.getInstance(f.getActivity()).enqueue(group);
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
 
-                dialog.dismiss();
-            }
-        });
-        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-        {
-            public void onClick(DialogInterface dialog, int item)
-            {
-                dialog.dismiss();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+        // Create and show the dialog.
+        FileNameDialogFragment.newInstance(file.getParentFile(), file).show(ft, FileNameDialogFragment.TAG);
     }
 
     public static void delete(final Fragment f, final List<File> files)

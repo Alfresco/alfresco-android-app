@@ -254,7 +254,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
         if (getActivity().getActionBar() != null)
         {
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActivity().getActionBar().setDisplayShowCustomEnabled(false);
             getActivity().setTitle(titleId);
             if (shortcutAlreadyVisible)
             {
@@ -277,26 +278,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
 
         refreshListView();
-    }
-
-    @Override
-    public void onPause()
-    {
-        getActivity().invalidateOptionsMenu();
-
-        int titleId = R.string.app_name;
-        if (getActivity() instanceof PublicDispatcherActivity)
-        {
-            titleId = R.string.import_document_title;
-        }
-        getActivity().setTitle(titleId);
-        if (getActivity().getActionBar() != null)
-        {
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        }
-
-        super.onPause();
     }
 
     @Override
@@ -330,7 +311,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             //
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
             String pathValue = parentFolder.getName();
-            if (parentFolder.getProperty(PropertyIds.PATH) != null){
+            if (parentFolder.getProperty(PropertyIds.PATH) != null)
+            {
                 pathValue = parentFolder.getProperty(PropertyIds.PATH).getValue();
             }
 
@@ -695,11 +677,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
 
     public void refresh()
     {
-        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity()))
-        {
-            return;
-        }
-        
+        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity())) { return; }
+
         if (parentFolder == null)
         {
             parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();

@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -503,19 +504,17 @@ public class PassCodeDialogFragment extends DialogFragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
-        super.onStart();
+        super.onResume();
         if (getActivity() instanceof MainActivity)
         {
-            getActivity().setTitle(R.string.menu_settings);
+            UIUtils.displayTitle(getActivity(), R.string.menu_settings);
         }
         else
         {
-            getActivity().setTitle(R.string.passcode_preference);
+            UIUtils.displayTitle(getActivity(), R.string.passcode_preference);
         }
-
-        getActivity().invalidateOptionsMenu();
         if (getDialog() != null)
         {
             getActivity().getWindow().setSoftInputMode(

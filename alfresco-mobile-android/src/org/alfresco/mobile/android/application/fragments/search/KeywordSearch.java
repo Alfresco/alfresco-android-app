@@ -34,11 +34,11 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.search.SearchFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.ActionBar;
 import android.content.Loader;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -221,10 +221,7 @@ public class KeywordSearch extends SearchFragment
 
     private void setTitle()
     {
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-
-        title = getString(R.string.search);
+        UIUtils.displayTitle(getActivity(), R.string.search);
         if (tmpParentFolder != null)
         {
             String pathValue = (String) tmpParentFolder.getPropertyValue(PropertyIds.PATH);
@@ -247,7 +244,6 @@ public class KeywordSearch extends SearchFragment
             }
             pathView.setText(pathValue);
         }
-        getActivity().setTitle(title);
     }
 
     public void onPause()

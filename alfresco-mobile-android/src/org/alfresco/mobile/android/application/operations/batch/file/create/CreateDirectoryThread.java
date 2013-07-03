@@ -62,9 +62,9 @@ public class CreateDirectoryThread extends FileOperationThread<File>
         {
             super.doInBackground();
             
-            if (parentFile != null)
+            if (file != null)
             {
-                newFolderFile = new File(parentFile, folderName);
+                newFolderFile = new File(file, folderName);
                 newFolderFile.mkdirs();
             }
         }
@@ -94,7 +94,7 @@ public class CreateDirectoryThread extends FileOperationThread<File>
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(IntentIntegrator.ACTION_CREATE_FOLDER_STARTED);
         Bundle b = new Bundle();
-        b.putSerializable(IntentIntegrator.EXTRA_FOLDER, getParentFile());
+        b.putSerializable(IntentIntegrator.EXTRA_FOLDER, file);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_DATA, b);
         return broadcastIntent;
     }
@@ -104,7 +104,7 @@ public class CreateDirectoryThread extends FileOperationThread<File>
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
         Bundle b = new Bundle();
-        b.putSerializable(IntentIntegrator.EXTRA_FOLDER, getParentFile());
+        b.putSerializable(IntentIntegrator.EXTRA_FOLDER, file);
         b.putSerializable(IntentIntegrator.EXTRA_CREATED_FOLDER, newFolderFile);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_DATA, b);
         return broadcastIntent;

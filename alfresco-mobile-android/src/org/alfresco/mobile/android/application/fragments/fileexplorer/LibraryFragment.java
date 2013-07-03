@@ -13,7 +13,6 @@ import org.alfresco.mobile.android.application.fragments.fileexplorer.FileAction
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
@@ -120,13 +119,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         if (nActions != null)
         {
             nActions.finish();
-        }
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            getActivity().invalidateOptionsMenu();
-
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         }
         super.onStop();
     }

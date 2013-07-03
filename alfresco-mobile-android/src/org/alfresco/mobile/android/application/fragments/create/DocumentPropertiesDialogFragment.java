@@ -119,7 +119,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 if (s.length() > 0)
                 {
                     validate.setEnabled(true);
-                    if (UIUtils.hasValideName(s.toString().trim()))
+                    if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
                         errorMessage.setVisibility(View.VISIBLE);
                         errorMessage.setText(R.string.filename_error_character);

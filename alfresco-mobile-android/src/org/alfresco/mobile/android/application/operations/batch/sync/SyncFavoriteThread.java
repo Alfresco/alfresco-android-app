@@ -26,9 +26,13 @@ import java.util.TimeZone;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Permissions;
+import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
@@ -114,6 +118,27 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
                             .getFavoriteDocuments(listingContext);
 
+                    if (session instanceof CloudSession)
+                    {
+                        // Objects don't contain enough information
+                        // We request all node object with a search query 
+                        // to retrieve ContentStreamId and permissions.
+                        List<Document> favoriteDocumentsList = new ArrayList<Document>(remoteFavorites.getTotalItems());
+
+                        StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
+                        join(builder, " OR cmis:objectId=", remoteFavorites.getList());
+                        List<Node> nodes = session.getServiceRegistry().getSearchService()
+                                .search(builder.toString(), SearchLanguage.CMIS);
+
+                        for (Node node : nodes)
+                        {
+                            favoriteDocumentsList.add((Document) node);
+                        }
+
+                        remoteFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
+                                remoteFavorites.hasMoreItems(), remoteFavorites.getTotalItems());
+                    }
+
                     // Retrieve list of local Favorites
                     localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc), null, null);
@@ -137,6 +162,9 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
             {
                 SynchroManager.getInstance(context).enqueue(group);
             }
+
+            // Flag the execution of last sync
+            SynchroManager.updateLastActivity(context);
         }
         catch (Exception e)
         {
@@ -532,5 +560,29 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         cValues.put(BatchOperationSchema.COLUMN_STATUS, SyncOperation.STATUS_REQUEST_USER);
         cValues.put(BatchOperationSchema.COLUMN_REASON, reasonId);
         context.getContentResolver().update(localUri, cValues, null, null);
+    }
+
+    /**
+     * Utility method to help creating a default cmis query.
+     * 
+     * @param sb
+     * @param delimiter
+     * @param tokens
+     */
+    private static void join(StringBuilder sb, CharSequence delimiter, List<Document> tokens)
+    {
+        boolean firstTime = true;
+        for (Document token : tokens)
+        {
+            if (firstTime)
+            {
+                firstTime = false;
+            }
+            else
+            {
+                sb.append(delimiter);
+            }
+            sb.append("'" + token.getIdentifier() + "'");
+        }
     }
 }
