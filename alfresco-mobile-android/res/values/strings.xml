@@ -411,7 +411,7 @@
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favorites</string>
-    <string name="settings_favorite_sync">Activate Sync</string>
+    <string name="settings_favorite_sync">Enable Sync for \"%s\"</string>
     <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
     <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>

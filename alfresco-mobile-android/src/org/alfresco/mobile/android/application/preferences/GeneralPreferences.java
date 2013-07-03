@@ -168,6 +168,7 @@ public class GeneralPreferences extends PreferenceFragment
 
         Boolean syncEnable = sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false);
         cpref.setChecked(syncEnable);
+        cpref.setTitle(String.format(getString(R.string.settings_favorite_sync), account.getDescription()));
 
         Boolean syncWifiEnable = sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), true);
         wifiPref.setChecked(syncWifiEnable);
