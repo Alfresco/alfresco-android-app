@@ -91,8 +91,8 @@ public class UIUtils
 
     private static final Pattern NAME_PATTERN = Pattern
             .compile("(.*[\"\\*\\\\>\\<\\?\\/\\:\\|]+.*)|(.*[\\.]?.*[\\.]+$)|(.*[ ]+$)");
-
-    public static boolean hasValideName(String name)
+    
+    public static boolean hasInvalidName(String name)
     {
         Matcher matcher = NAME_PATTERN.matcher(name);
         return matcher.matches();

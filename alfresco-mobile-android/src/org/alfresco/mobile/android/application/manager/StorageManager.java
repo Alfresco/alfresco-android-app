@@ -134,6 +134,24 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
         return file;
     }
+    
+    public static File getRootPrivateFolder(Context context)
+    {
+        File file = null;
+        try
+        {
+            if (isExternalStorageAccessible())
+            {
+                file = context.getExternalFilesDir(null);
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return file;
+    }
 
     public static File getPrivateFolder(Context context, String requestedFolder, Account acc)
     {

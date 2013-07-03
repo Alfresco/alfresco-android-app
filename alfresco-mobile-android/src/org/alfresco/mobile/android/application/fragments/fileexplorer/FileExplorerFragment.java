@@ -54,6 +54,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -73,6 +74,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     public static final String TAG = FileExplorerFragment.class.getName();
 
     private FileExplorerReceiver receiver;
+
+    private File privateFolder;
 
     private File parent;
 
@@ -159,6 +162,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 getLoaderManager().getLoader(FileExplorerLoader.ID).forceLoad();
             }
         }
+
+        privateFolder = StorageManager.getRootPrivateFolder(getActivity()).getParentFile();
     }
 
     @Override
@@ -387,6 +392,15 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     {
         if (getMode() == MODE_LISTING)
         {
+
+            if (parent != null && privateFolder != null && !parent.getPath().startsWith(privateFolder.getPath()))
+            {
+                MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST
+                        + MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
+                mi.setIcon(R.drawable.ic_add_folder);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
+
             SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
@@ -406,6 +420,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
+
         }
     }
 
@@ -452,7 +467,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     public void createFolder()
     {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateDirectoryDialogFragment.TAG);
+        Fragment prev = getFragmentManager().findFragmentByTag(FileNameDialogFragment.TAG);
         if (prev != null)
         {
             ft.remove(prev);
@@ -460,7 +475,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        CreateDirectoryDialogFragment.newInstance(getParent()).show(ft, CreateDirectoryDialogFragment.TAG);
+        FileNameDialogFragment.newInstance(getParent()).show(ft, FileNameDialogFragment.TAG);
 
     }
 
@@ -473,6 +488,8 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         public void onReceive(Context context, Intent intent)
         {
             if (adapter == null) { return; }
+            
+            Log.d(TAG, intent.getAction());
 
             if (intent.getExtras() != null)
             {
@@ -533,7 +550,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
         private void refreshList()
         {
-            if (((FileExplorerAdapter) adapter).getCount() >= 1)
+            if (adapter != null && ((FileExplorerAdapter) adapter).getCount() >= 1)
             {
                 lv.setVisibility(View.VISIBLE);
                 ev.setVisibility(View.GONE);
