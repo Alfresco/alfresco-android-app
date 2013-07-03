@@ -283,23 +283,41 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void displayFavoriteStatut()
     {
-        Account acc = SessionUtils.getAccount(getActivity());
-        Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
-
+        Cursor statutCursor = null;
         Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
         Drawable statut = null;
-
-        if (hasSynchroActive)
+        
+        try
         {
-            Cursor statutCursor = getActivity().getContentResolver().query(SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc) + " AND " +   SynchroSchema.COLUMN_STATUS + " == " + SyncOperation.STATUS_REQUEST_USER,
-                    null, null);
-            if (statutCursor.getCount() > 0)
+            Account acc = SessionUtils.getAccount(getActivity());
+            Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
+
+            if (hasSynchroActive)
             {
-                statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                statutCursor = getActivity().getContentResolver().query(
+                        SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_STATUS + " == "
+                                + SyncOperation.STATUS_REQUEST_USER, null, null);
+                if (statutCursor.getCount() > 0)
+                {
+                    statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                }
+                statutCursor.close();
             }
-            statutCursor.close();
         }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            if (statutCursor != null)
+            {
+                statutCursor.close();
+            }
+        }
+
         menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
     }
 

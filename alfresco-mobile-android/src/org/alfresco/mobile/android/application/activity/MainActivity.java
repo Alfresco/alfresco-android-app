@@ -233,6 +233,7 @@ public class MainActivity extends BaseActivity
         OAuthRefreshTokenCallback.requestRefreshToken(getCurrentSession(), this);
         PassCodeActivity.requestUserPasscode(this);
         activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
+        SynchroManager.getInstance(this).cronSync(currentAccount);
     }
 
     @Override
@@ -251,6 +252,7 @@ public class MainActivity extends BaseActivity
         {
             PasscodePreferences.updateLastActivity(this);
         }
+        SynchroManager.updateLastActivity(this);
     }
 
     @Override
