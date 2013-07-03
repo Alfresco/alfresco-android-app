@@ -41,7 +41,6 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.ActionBar;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;

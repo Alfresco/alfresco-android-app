@@ -13,7 +13,6 @@ import org.alfresco.mobile.android.application.fragments.fileexplorer.FileAction
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;

@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.search.SearchFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
-import android.app.ActionBar;
 import android.content.Loader;
 import android.content.res.Configuration;
 import android.os.Bundle;
