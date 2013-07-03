@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -104,15 +105,8 @@ public class FavoritesFragment extends BaseListFragment implements
     public void onResume()
     {
         super.onResume();
-        int titleId = R.string.menu_favorites;
-        if (getActivity().getActionBar() != null)
-        {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-            getActivity().setTitle(titleId);
-        }
+        UIUtils.displayTitle(getActivity(), R.string.menu_favorites);
     }
-
     // ///////////////////////////////////////////////////////////////////////////
     // LOADER
     // ///////////////////////////////////////////////////////////////////////////

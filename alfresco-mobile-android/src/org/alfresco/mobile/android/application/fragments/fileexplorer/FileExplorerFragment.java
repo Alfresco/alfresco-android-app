@@ -256,10 +256,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             nActions.finish();
         }
-
-        getActivity().invalidateOptionsMenu();
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         super.onStop();
     }
 

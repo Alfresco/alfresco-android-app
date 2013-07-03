@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.ActionBar;
@@ -119,12 +120,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             ((MainActivity) getActivity()).clearScreen();
         }
 
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getActivity().invalidateOptionsMenu();
-
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().setTitle(R.string.app_name);
-
+        UIUtils.displayTitle(getActivity(), R.string.app_name);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -132,7 +128,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     public void onResume()
     {
         super.onResume();
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 

@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -50,13 +51,12 @@ public class AccountTypesFragment extends DialogFragment
     {
         if (getDialog() != null)
         {
-            getDialog().setTitle("Select Account");
+            getDialog().setTitle(R.string.account_wizard_step1_description);
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
         }
         else
         {
-            getActivity().getActionBar().show();
-            getActivity().setTitle("Select Account");
+            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step1_description);
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step1, container, false);

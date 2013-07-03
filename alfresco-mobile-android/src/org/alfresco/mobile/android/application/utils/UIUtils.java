@@ -22,18 +22,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 
 import android.annotation.TargetApi;
+import android.app.ActionBar;
 import android.app.Activity;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * Utility around UI Management.
@@ -84,18 +88,19 @@ public class UIUtils
 
         return new int[] { width, height };
     }
-    
+
     private static final Pattern NAME_PATTERN = Pattern
             .compile("(.*[\"\\*\\\\>\\<\\?\\/\\:\\|]+.*)|(.*[\\.]?.*[\\.]+$)|(.*[ ]+$)");
-    
-    
-    public static boolean hasValideName(String name){
+
+    public static boolean hasValideName(String name)
+    {
         Matcher matcher = NAME_PATTERN.matcher(name);
         return matcher.matches();
     }
-    
+
     /**
      * Display PDF User Guide.
+     * 
      * @param activity
      */
     public static void displayHelp(Activity activity)
@@ -103,17 +108,20 @@ public class UIUtils
         String pathHelpGuideFile = null;
         try
         {
-            long lastUpdate = activity.getPackageManager().getPackageInfo(activity.getApplicationContext().getPackageName(), 0).lastUpdateTime;
+            long lastUpdate = activity.getPackageManager().getPackageInfo(
+                    activity.getApplicationContext().getPackageName(), 0).lastUpdateTime;
             // Check last update time of the app and compare to an
             // existing (or not) help guide.
             File assetFolder = StorageManager.getAssetFolder(activity);
-            String helpGuideName = activity.getString(R.string.asset_folder_prefix) + "_" + activity.getString(R.string.help_user_guide);
+            String helpGuideName = activity.getString(R.string.asset_folder_prefix) + "_"
+                    + activity.getString(R.string.help_user_guide);
             File helpGuideFile = new File(assetFolder, helpGuideName);
 
             if (!helpGuideFile.exists() || helpGuideFile.lastModified() < lastUpdate)
             {
                 String assetfilePath = activity.getString(R.string.help_path) + helpGuideName;
-                org.alfresco.mobile.android.api.utils.IOUtils.copyFile(activity.getAssets().open(assetfilePath), helpGuideFile);
+                org.alfresco.mobile.android.api.utils.IOUtils.copyFile(activity.getAssets().open(assetfilePath),
+                        helpGuideFile);
             }
 
             pathHelpGuideFile = helpGuideFile.getPath();
@@ -129,4 +137,55 @@ public class UIUtils
         }
     }
 
+    public static void displayTitle(Activity activity, int titleId)
+    {
+        displayTitle(activity, activity.getString(titleId));
+    }
+
+    public static void displayTitle(Activity activity, String title)
+    {
+        if (activity.getActionBar() != null)
+        {
+            ActionBar bar = activity.getActionBar();
+
+            bar.setDisplayShowTitleEnabled(false);
+            bar.setDisplayShowCustomEnabled(true);
+            bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+            bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO, ActionBar.DISPLAY_USE_LOGO);
+            bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+
+            if (AndroidVersion.isICSOrAbove())
+            {
+                bar.setHomeButtonEnabled(true);
+            }
+            activity.getActionBar().setDisplayHomeAsUpEnabled(true);
+
+            View v = bar.getCustomView();
+            if (v == null)
+            {
+                LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+                v = inflater.inflate(R.layout.app_title, null);
+            }
+
+            TextView tv = (TextView) v.findViewById(R.id.toptext);
+            if (SessionUtils.getAccount(activity) != null && AccountManager.getInstance(activity).hasMultipleAccount())
+            {
+                tv.setText(SessionUtils.getAccount(activity).getDescription());
+                tv.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                tv.setVisibility(View.GONE);
+            }
+            tv = (TextView) v.findViewById(R.id.bottomtext);
+            tv.setText(title);
+
+            if (bar.getCustomView() == null)
+            {
+                bar.setCustomView(v);
+            }
+            
+            activity.invalidateOptionsMenu();
+        }
+    }
 }

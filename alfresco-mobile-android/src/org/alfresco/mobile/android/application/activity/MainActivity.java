@@ -74,14 +74,12 @@ import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
@@ -93,6 +91,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
@@ -196,7 +195,6 @@ public class MainActivity extends BaseActivity
             }
         }
 
-        initActionBar();
         checkForUpdates();
 
         // REDIRECT To Accounts Fragment if signup process
@@ -226,7 +224,7 @@ public class MainActivity extends BaseActivity
         filters.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
         filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
-        
+
         registerPrivateReceiver(new MainActivityReceiver(), filters);
 
         super.onStart();
@@ -403,6 +401,23 @@ public class MainActivity extends BaseActivity
         slideMenu.setVisibility(View.GONE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_out_to_left));
         getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // We await the end of sliding menu animation to display the bottom bar
+        if (!DisplayUtils.hasCentralPane(this))
+        {
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    invalidateOptionsMenu();
+                }
+            }, 250);
+        }
+        else
+        {
+            invalidateOptionsMenu();
+        }
     }
 
     private boolean isSlideMenuVisible()
@@ -416,6 +431,7 @@ public class MainActivity extends BaseActivity
         slideMenu.setVisibility(View.VISIBLE);
         slideMenu.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rbm_in_from_left));
         getActionBar().setDisplayHomeAsUpEnabled(false);
+        invalidateOptionsMenu();
     }
 
     private void doMainMenuAction(int id)
@@ -755,37 +771,12 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION BAR
     // ///////////////////////////////////////////////////////////////////////////
-    private void initActionBar()
-    {
-        try
-        {
-            ActionBar bar = getActionBar();
-            bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME);
-
-            if (DisplayUtils.hasCentralPane(this))
-            {
-                bar.setDisplayOptions(ActionBar.DISPLAY_USE_LOGO, ActionBar.DISPLAY_USE_LOGO);
-            }
-            else
-            {
-                bar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE, ActionBar.DISPLAY_USE_LOGO);
-            }
-
-            if (AndroidVersion.isICSOrAbove())
-            {
-                bar.setHomeButtonEnabled(true);
-            }
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, Log.getStackTraceString(e));
-        }
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         super.onCreateOptionsMenu(menu);
+
+        if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
 
         if (isVisible(FileExplorerFragment.TAG))
         {
@@ -824,7 +815,6 @@ public class MainActivity extends BaseActivity
 
         if (isVisible(ChildrenBrowserFragment.TAG))
         {
-            getActionBar().setDisplayShowTitleEnabled(false);
             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
             return true;
         }
@@ -1094,6 +1084,10 @@ public class MainActivity extends BaseActivity
                 // Display progress
                 activity.setProgressBarIndeterminateVisibility(true);
 
+                // Add accountName in actionBar
+                UIUtils.displayTitle(activity, getString(R.string.app_name));
+                activity.getActionBar().setDisplayHomeAsUpEnabled(false);
+
                 return;
             }
 
@@ -1116,9 +1110,6 @@ public class MainActivity extends BaseActivity
 
                 setSessionState(SESSION_ACTIVE);
                 setProgressBarIndeterminateVisibility(false);
-
-                // Affect session
-                // currentSession = getCurrentSession()
 
                 if (getCurrentSession() instanceof RepositorySession)
                 {

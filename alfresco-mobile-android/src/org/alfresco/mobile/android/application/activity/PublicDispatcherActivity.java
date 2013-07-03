@@ -228,7 +228,6 @@ public class PublicDispatcherActivity extends BaseActivity
 
         if (isVisible(ChildrenBrowserFragment.TAG))
         {
-            getActionBar().setDisplayShowTitleEnabled(false);
             ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).getMenu(menu);
             return true;
         }

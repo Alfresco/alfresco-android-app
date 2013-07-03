@@ -49,8 +49,8 @@ public class FileExplorerMenuFragment extends BaseFragment
     @Override
     public void onResume()
     {
+        UIUtils.displayTitle(getActivity(), getString(R.string.menu_local_files));
         super.onResume();
-        getActivity().setTitle(R.string.menu_local_files);
     }
     
     // ///////////////////////////////////////////////////////////////////////////

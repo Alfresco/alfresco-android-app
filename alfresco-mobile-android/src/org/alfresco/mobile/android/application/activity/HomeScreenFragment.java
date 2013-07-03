@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -64,7 +65,7 @@ public class HomeScreenFragment extends DialogFragment
         }
         else
         {
-            getActivity().setTitle(R.string.app_name);
+            UIUtils.displayTitle(getActivity(), R.string.app_name);
         }
 
         View v = inflater.inflate(R.layout.app_homescreen, container, false);

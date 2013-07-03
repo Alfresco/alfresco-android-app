@@ -121,13 +121,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         {
             nActions.finish();
         }
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-            getActivity().invalidateOptionsMenu();
-
-            getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        }
         super.onStop();
     }
 

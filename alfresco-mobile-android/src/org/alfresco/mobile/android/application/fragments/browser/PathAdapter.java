@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
@@ -74,7 +75,16 @@ public class PathAdapter extends ArrayAdapter<String>
         item = getItem(position);
         if (item != null && v != null)
         {
-            ((TextView) v.findViewById(R.id.toptext)).setText(getLabel(account) + "  ");
+            if (AccountManager.getInstance(getContext()).hasMultipleAccount())
+            {
+                ((TextView) v.findViewById(R.id.toptext)).setText(getLabel(account) + "  ");
+                v.findViewById(R.id.toptext).setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                v.findViewById(R.id.toptext).setVisibility(View.GONE);
+            }
+
             ((TextView) v.findViewById(R.id.bottomtext)).setText(getItem(position) + "  ");
             ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.GONE);
         }

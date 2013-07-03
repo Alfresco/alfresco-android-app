@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.comment.CommentFragment;
 import org.alfresco.mobile.android.ui.comment.actions.CommentCreateLoaderCallback;
 import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
@@ -200,21 +201,20 @@ public class CommentsFragment extends CommentFragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().setTitle(getString(R.string.document_comments_header));
+            UIUtils.displayTitle(getActivity(), getString(R.string.document_comments_header));
         }
-        getActivity().invalidateOptionsMenu();
         
         if (!alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit()){
             commentText.setVisibility(View.GONE);
             bAdd.setVisibility(View.GONE);
         }
         
-        super.onStart();
+        super.onResume();
     }
 
     @Override

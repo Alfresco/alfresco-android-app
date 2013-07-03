@@ -103,6 +103,12 @@ public final class AccountManager
         if (accountCursor == null) { return false; }
         return (accountCursor > 0);
     }
+    
+    public boolean hasMultipleAccount()
+    {
+        if (accountCursor == null) { return false; }
+        return (accountCursor > 1);
+    }
 
     public boolean isEmpty()
     {

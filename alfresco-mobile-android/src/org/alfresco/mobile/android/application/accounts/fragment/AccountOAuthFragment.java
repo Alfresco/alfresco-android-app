@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
@@ -128,8 +129,7 @@ public class AccountOAuthFragment extends OAuthFragment
         }
         else
         {
-            getActivity().getActionBar().show();
-            getActivity().setTitle(R.string.account_wizard_step2_title);
+            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step2_title);
         }
 
         final View v = super.onCreateView(inflater, container, savedInstanceState);
@@ -224,16 +224,6 @@ public class AccountOAuthFragment extends OAuthFragment
         super.onPause();
     }
     
-    @Override
-    public void onStop()
-    {
-        if (getDialog() == null)
-        {
-            getActivity().setTitle(R.string.app_name);
-        }
-        super.onStop();
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // Actions
     // ///////////////////////////////////////////////////////////////////////////
