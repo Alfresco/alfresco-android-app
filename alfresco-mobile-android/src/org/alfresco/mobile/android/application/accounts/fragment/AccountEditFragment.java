@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.operations.OperationsRequestGroup
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.DialogFragment;
@@ -84,8 +85,7 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
-            getActivity().getActionBar().show();
-            getActivity().setTitle(R.string.account_authentication);
+            UIUtils.displayTitle(getActivity(), R.string.account_authentication);
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);

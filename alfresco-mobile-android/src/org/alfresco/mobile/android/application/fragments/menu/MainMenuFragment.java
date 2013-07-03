@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.ActionBar;
@@ -119,12 +120,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             ((MainActivity) getActivity()).clearScreen();
         }
 
-        getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        getActivity().invalidateOptionsMenu();
-
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
-        getActivity().setTitle(R.string.app_name);
-
+        UIUtils.displayTitle(getActivity(), R.string.app_name);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
@@ -132,7 +128,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     public void onResume()
     {
         super.onResume();
-        getActivity().getActionBar().setDisplayShowTitleEnabled(true);
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
@@ -283,23 +278,41 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void displayFavoriteStatut()
     {
-        Account acc = SessionUtils.getAccount(getActivity());
-        Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
-
+        Cursor statutCursor = null;
         Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
         Drawable statut = null;
-
-        if (hasSynchroActive)
+        
+        try
         {
-            Cursor statutCursor = getActivity().getContentResolver().query(SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc) + " AND " +   SynchroSchema.COLUMN_STATUS + " == " + SyncOperation.STATUS_REQUEST_USER,
-                    null, null);
-            if (statutCursor.getCount() > 0)
+            Account acc = SessionUtils.getAccount(getActivity());
+            Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
+
+            if (hasSynchroActive)
             {
-                statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                statutCursor = getActivity().getContentResolver().query(
+                        SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_STATUS + " == "
+                                + SyncOperation.STATUS_REQUEST_USER, null, null);
+                if (statutCursor.getCount() > 0)
+                {
+                    statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                }
+                statutCursor.close();
             }
-            statutCursor.close();
         }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            if (statutCursor != null)
+            {
+                statutCursor.close();
+            }
+        }
+
         menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
     }
 

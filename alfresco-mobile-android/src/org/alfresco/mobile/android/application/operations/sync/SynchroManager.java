@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.operations.sync;
 
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -54,10 +55,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public final class SynchroManager extends OperationManager
@@ -190,6 +194,8 @@ public final class SynchroManager extends OperationManager
     public static final String EXTRA_SYNCHRO_RESULT = "synchroResult";
 
     public static final String ACTION_START_SYNC = "startSyncService";
+
+    private static final String LAST_SYNC_ACTIVATED_AT = "LastSyncDateTime";
 
     public void notifyCompletion(Context c, String operationId, int status)
     {
@@ -643,5 +649,32 @@ public final class SynchroManager extends OperationManager
         return GeneralPreferences.hasActivateSync(mAppContext, account)
                 && ((GeneralPreferences.hasWifiOnlySync(mAppContext, account) && ConnectivityUtils
                         .isWifiAvailable(mAppContext)) || !GeneralPreferences.hasWifiOnlySync(mAppContext, account));
+    }
+
+    /**
+     * Flag the activity time.
+     * 
+     * @param context
+     */
+    public static void updateLastActivity(Context context)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = sharedPref.edit();
+        editor.putLong(LAST_SYNC_ACTIVATED_AT, new Date().getTime());
+        editor.commit();
+    }
+
+    /**
+     * Start a sync if the last activity time is greater than 1 hour.
+     */
+    public void cronSync(Account account)
+    {
+        long now = new Date().getTime();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mAppContext);
+        long lastTime = sharedPref.getLong(LAST_SYNC_ACTIVATED_AT, now);
+        if ((lastTime + 3600000) < now && canSync(account))
+        {
+            sync(account);
+        }
     }
 }

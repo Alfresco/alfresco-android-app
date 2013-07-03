@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.app.LoaderManager;
@@ -92,8 +93,7 @@ public class CloudSignupDialogFragment extends DialogFragment
         }
         else
         {
-            getActivity().getActionBar().show();
-            getActivity().setTitle(R.string.sign_up_cloud);
+            UIUtils.displayTitle(getActivity(), R.string.sign_up_cloud);
         }
 
         View v = inflater.inflate(R.layout.app_cloud_signup, container, false);

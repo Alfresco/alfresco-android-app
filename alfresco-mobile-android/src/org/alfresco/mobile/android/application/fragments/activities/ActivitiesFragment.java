@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
@@ -72,11 +73,10 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
-        getActivity().setTitle(R.string.menu_browse_activities);
-        getActivity().invalidateOptionsMenu();
-        super.onStart();
+        UIUtils.displayTitle(getActivity(), getString(R.string.menu_browse_activities));
+        super.onResume();
     }
 
     @Override

@@ -190,7 +190,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 else
                 {
                     bcreate.setEnabled(true);
-                    if (UIUtils.hasValideName(tv.getText().toString().trim()))
+                    if (UIUtils.hasInvalidName(tv.getText().toString().trim()))
                     {
                         errorMessage.setVisibility(View.VISIBLE);
                         errorMessage.setText(R.string.filename_error_character);

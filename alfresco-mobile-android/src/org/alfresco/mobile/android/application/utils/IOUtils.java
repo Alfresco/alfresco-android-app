@@ -67,7 +67,7 @@ public final class IOUtils
 
         // if dot is in the first position,
         // we are dealing with a hidden file rather than an extension
-        return (dotInd > 0 && dotInd < fileName.length()) ? fileName.substring(dotInd + 1) : null;
+        return (dotInd > 0 && dotInd < fileName.length()) ? fileName.substring(dotInd + 1) : "";
     }
 
     private static String getFileExtension(String fileName)

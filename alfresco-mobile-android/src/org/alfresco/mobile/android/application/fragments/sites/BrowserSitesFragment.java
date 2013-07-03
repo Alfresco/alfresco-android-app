@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
 import android.content.Loader;
@@ -104,7 +105,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         int titleId = R.string.menu_browse_sites;
         if (getActivity() instanceof PublicDispatcherActivity)
@@ -114,9 +115,9 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
         }
 
         mTabHost.setCurrentTabByTag(currentTabId);
-        getActivity().invalidateOptionsMenu();
-        getActivity().setTitle(titleId);
-        super.onStart();
+        UIUtils.displayTitle(getActivity(), titleId);
+
+        super.onResume();
     }
 
     public String getCurrentTabId()

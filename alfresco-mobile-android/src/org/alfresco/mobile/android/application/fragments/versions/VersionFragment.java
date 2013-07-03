@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
@@ -79,14 +80,14 @@ public class VersionFragment extends VersionsFragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().setTitle(getString(R.string.document_version_header) + " : " + node.getName());
+            UIUtils.displayTitle(getActivity(), R.string.document_version_header);
         }
         getActivity().invalidateOptionsMenu();
-        super.onStart();
+        super.onResume();
     }
 
     @Override

@@ -25,12 +25,15 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.Operation;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.security.EncryptionUtils;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -67,6 +70,12 @@ public class CreateDocumentThread extends AbstractUpThread
     // ////////////////////////////////////////////////////
     // LIFE CYCLE
     // ////////////////////////////////////////////////////
+    public void run()
+    {
+        LoaderResult<Document> result = doInBackground();
+        onPostExecute(result);
+    }
+
     @Override
     protected LoaderResult<Document> doInBackground()
     {
@@ -82,6 +91,18 @@ public class CreateDocumentThread extends AbstractUpThread
             String filename = getContentFile().getFile().getPath();
             boolean encdec = DataProtectionManager.getInstance(context).isEncryptable(acc, new File(filename));
             finalDocumentName = createUniqueName();
+
+            // Update Request
+            if (request instanceof CreateDocumentRequest)
+            {
+                ((CreateDocumentRequest) request).setDocumentName(finalDocumentName);
+            }
+
+            // Update the document Name with the final name
+            ContentValues cValues = new ContentValues();
+            cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
+            cValues.put(BatchOperationSchema.COLUMN_TITLE, finalDocumentName);
+            context.getContentResolver().update(request.getNotificationUri(), cValues, null, null);
 
             if (listener != null)
             {

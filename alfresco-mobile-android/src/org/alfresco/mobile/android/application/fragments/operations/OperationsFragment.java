@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -66,8 +67,13 @@ public class OperationsFragment extends BaseCursorListFragment
         lv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
-
-        getActivity().setTitle(R.string.operation_default);
+    }
+    
+    @Override
+    public void onResume()
+    {
+        UIUtils.displayTitle(getActivity(), getString(R.string.operation_default));
+        super.onResume();
     }
 
     // /////////////////////////////////////////////////////////////

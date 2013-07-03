@@ -22,6 +22,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.tag.TagsNodeFragment;
 
 import android.os.Bundle;
@@ -54,14 +55,14 @@ public class TagsListNodeFragment extends TagsNodeFragment
     }
 
     @Override
-    public void onStart()
+    public void onResume()
     {
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getActivity().setTitle(getString(R.string.document_tags_header) + " : " + node.getName());
+            UIUtils.displayTitle(getActivity(), R.string.document_tags_header);
         }
         getActivity().invalidateOptionsMenu();
-        super.onStart();
+        super.onResume();
     }
 
     @Override

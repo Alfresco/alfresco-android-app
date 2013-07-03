@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.content.CursorLoader;
 import android.content.Loader;
@@ -68,8 +69,7 @@ public class AccountsFragment extends BaseCursorListFragment
     public void onStart()
     {
         DisplayUtils.hideLeftTitlePane(getActivity());
-        getActivity().setTitle(R.string.accounts_manage);
-        getActivity().invalidateOptionsMenu();
+        UIUtils.displayTitle(getActivity(), R.string.accounts_manage);
         super.onStart();
     }
 
