@@ -437,7 +437,7 @@
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
-    <string name="favorites_activate">Activate Synchronization</string>
+    <string name="favorites_activate">Sync documents for \"%s\"</string>
     <string name="favorites_activate_description">Do you want to activate sync ?</string>
     <string name="favorites_deactivate">Deactivate Synchronization</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync ?</p> All sync files will be deleted inside your device.]]></string>
@@ -583,5 +583,9 @@
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
-
+    
+     <!-- Simple -->
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
 </resources>
