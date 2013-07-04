@@ -144,17 +144,17 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/menu_browse_tags"
+                android:id="@+id/menu_notifications"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
                 android:background="@drawable/btn_default_holo_light_underline"
-                android:drawableLeft="@drawable/mime_file"
+                android:drawableLeft="@drawable/ic_events"
                 android:drawablePadding="8dip"
+                android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
-                android:text="@string/menu_browse_tags"
-                android:textColor="@android:color/white"
-                android:visibility="gone" />
+                android:text="@string/notifications"
+                android:textColor="@android:color/white" />
 
             <TextView
                 android:id="@+id/TextView01"

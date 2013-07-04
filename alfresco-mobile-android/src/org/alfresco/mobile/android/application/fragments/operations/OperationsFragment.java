@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.content.CursorLoader;
@@ -68,7 +69,7 @@ public class OperationsFragment extends BaseCursorListFragment
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
     }
-    
+
     @Override
     public void onResume()
     {
@@ -177,7 +178,14 @@ public class OperationsFragment extends BaseCursorListFragment
                 break;
         }
 
+        if (SessionUtils.getAccount(getActivity()) != null)
+        {
+            request = BatchOperationContentProvider.getAccountFilter(SessionUtils.getAccount(getActivity())) + " AND "
+                    + request;
+        }
+
         Uri baseUri = BatchOperationContentProvider.CONTENT_URI;
+
         return new CursorLoader(getActivity(), baseUri, BatchOperationSchema.COLUMN_ALL, request, null, null);
     }
 

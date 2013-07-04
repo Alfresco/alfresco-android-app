@@ -493,6 +493,17 @@ public class MainActivity extends BaseActivity
                     addLocalFileNavigationFragment();
                 }
                 break;
+            case R.id.menu_notifications:
+                if (currentAccount == null)
+                {
+                    MessengerManager.showLongToast(this, getString(R.string.loginfirst));
+                }
+                else
+                {
+                    startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS).putExtra(
+                            IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId()));
+                }
+                break;
             case R.id.menu_prefs:
                 displayPreferences();
                 break;
@@ -1067,7 +1078,7 @@ public class MainActivity extends BaseActivity
             Log.d(TAG, intent.getAction());
 
             Activity activity = MainActivity.this;
-            
+
             if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
                     || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
             {

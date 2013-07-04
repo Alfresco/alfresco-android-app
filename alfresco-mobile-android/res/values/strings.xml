@@ -516,6 +516,7 @@
     <string name="session_loaded">Session ready</string>
 
     <!-- Operations Type -->
+    <string name="notifications">Notifications</string>
     <string name="operation_default">Notifications</string>
     <string name="DownloadRequest">Download</string>
     <string name="CreateDocumentRequest">Create Document</string>
