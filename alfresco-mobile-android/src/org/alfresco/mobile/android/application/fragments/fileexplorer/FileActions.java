@@ -30,8 +30,6 @@ import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileRequest;
-import org.alfresco.mobile.android.application.operations.batch.file.update.RenameRequest;
-import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
@@ -44,7 +42,6 @@ import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
 /**
  * Manage all local file actions like a sdcard file manager.
