@@ -438,7 +438,7 @@
     <string name="favorites_document">Favorites Documents</string>
     <string name="error_retrieve_favorite">Favorite info for this document could not be retrieved.</string>
     <string name="favorites_activate">Sync documents for \"%s\"</string>
-    <string name="favorites_activate_description">Do you want to activate sync ?</string>
+    <string name="favorites_activate_description">Would you like to automatically keep your favorite documents in sync with this device?</string>
     <string name="favorites_deactivate">Deactivate Synchronization</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync ?</p> All sync files will be deleted inside your device.]]></string>
     <string name="sync_error_title">Sync Errors</string>
@@ -516,6 +516,7 @@
     <string name="session_loaded">Session ready</string>
 
     <!-- Operations Type -->
+    <string name="notifications">Notifications</string>
     <string name="operation_default">Notifications</string>
     <string name="DownloadRequest">Download</string>
     <string name="CreateDocumentRequest">Create Document</string>

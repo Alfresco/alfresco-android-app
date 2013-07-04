@@ -267,7 +267,11 @@ public class KeywordSearch extends SearchFragment
         {
             adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0), selectedItems, -1);
         }
-        ((NodeAdapter) adapter).setActivateThumbnail(true);
+        if(alfSession instanceof CloudSession){
+            ((NodeAdapter) adapter).setActivateThumbnail(false);
+        } else {
+            ((NodeAdapter) adapter).setActivateThumbnail(true);
+        }
 
         if (checkException(results))
         {

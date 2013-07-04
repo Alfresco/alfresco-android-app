@@ -493,7 +493,9 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         boolean b = true;
         if (n instanceof NodePlaceHolder)
         {
-            getActivity().startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
+            getActivity().startActivity(
+                    new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS).putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID,
+                            SessionUtils.getAccount(getActivity()).getId()));
             b = false;
         }
         else

@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.manager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Notification;
 import android.app.Notification.Builder;
@@ -45,13 +46,13 @@ public final class NotificationHelper
     public static final String ARGUMENT_INDETERMINATE = "indeterminate";
 
     public static final String ARGUMENT_CONTENT_INFO = "contentInfo";
-    
+
     public static final String ARGUMENT_SMALL_ICON = "smallIcon";
 
     public static final String ARGUMENT_PROGRESS = "progress";
 
     public static final int DEFAULT_NOTIFICATION_ID = 500;
-    
+
     public static final int UPLOAD_NOTIFICATION_ID = 501;
 
     public static final int DOWNLOAD_NOTIFICATION_ID = 502;
@@ -133,7 +134,7 @@ public final class NotificationHelper
         {
             builder.setContentInfo(params.getString(ARGUMENT_CONTENT_INFO));
         }
-        
+
         if (params.containsKey(ARGUMENT_SMALL_ICON))
         {
             builder.setSmallIcon(params.getInt(ARGUMENT_SMALL_ICON));
@@ -151,6 +152,10 @@ public final class NotificationHelper
             default:
                 i = new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS);
                 i.putExtra(IntentIntegrator.EXTRA_OPERATIONS_TYPE, notificationId);
+                if (SessionUtils.getAccount(c) != null)
+                {
+                    i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, SessionUtils.getAccount(c).getId());
+                }
                 pIntent = PendingIntent.getActivity(c, 0, i, 0);
                 break;
         }
@@ -180,7 +185,7 @@ public final class NotificationHelper
             remote.setProgressBar(R.id.status_progress, params.getInt(ARGUMENT_PROGRESS_MAX), 0, false);
             builder.setContent(remote);
         }
-        
+
         if (AndroidVersion.isJBOrAbove())
         {
             builder.setPriority(0);

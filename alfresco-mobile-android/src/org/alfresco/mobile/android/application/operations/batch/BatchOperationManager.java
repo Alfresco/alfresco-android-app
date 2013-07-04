@@ -273,6 +273,7 @@ public class BatchOperationManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.runningRequest.clear();
 
                     for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
@@ -289,7 +290,9 @@ public class BatchOperationManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.index.clear();
                 }
+                operationsGroups.clear();
                 return;
             }
 
@@ -313,6 +316,7 @@ public class BatchOperationManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.runningRequest.clear();
 
                     for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
@@ -328,6 +332,8 @@ public class BatchOperationManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.index.clear();
+
 
                     for (OperationRequest operationRequest : group.completeRequest)
                     {
@@ -408,8 +414,9 @@ public class BatchOperationManager extends OperationManager
                 currentGroup.index.put(operationId, request);
                 if (!currentGroup.hasRunningRequest())
                 {
-                    currentGroup = null;
+                    operationsGroups.remove(currentGroup);
                 }
+                
                 return;
             }
         }

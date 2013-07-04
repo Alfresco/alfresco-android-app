@@ -224,6 +224,8 @@ public class MainActivity extends BaseActivity
         filters.addCategory(IntentIntegrator.CATEGORY_OAUTH_REFRESH);
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
         filters.addAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
+        filters.addAction(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
 
         registerPrivateReceiver(new MainActivityReceiver(), filters);
 
@@ -489,6 +491,17 @@ public class MainActivity extends BaseActivity
                 else
                 {
                     addLocalFileNavigationFragment();
+                }
+                break;
+            case R.id.menu_notifications:
+                if (currentAccount == null)
+                {
+                    MessengerManager.showLongToast(this, getString(R.string.loginfirst));
+                }
+                else
+                {
+                    startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS).putExtra(
+                            IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId()));
                 }
                 break;
             case R.id.menu_prefs:
@@ -1065,6 +1078,16 @@ public class MainActivity extends BaseActivity
             Log.d(TAG, intent.getAction());
 
             Activity activity = MainActivity.this;
+
+            if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
+            {
+                if (getFragment(WaitingDialogFragment.TAG) != null)
+                {
+                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                }
+                return;
+            }
 
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT.equals(intent.getAction())
                     || IntentIntegrator.ACTION_RELOAD_ACCOUNT.equals(intent.getAction()))

@@ -75,7 +75,7 @@ public class RenditionManager
     private DiskLruCache mDiskCache;
 
     // 10MB
-    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10; 
+    private static final int DISK_CACHE_SIZE = 1024 * 1024 * 10;
 
     private static final String DISK_CACHE_SUBDIR = "renditions";
 
@@ -265,6 +265,10 @@ public class RenditionManager
         if (bitmap != null)
         {
             iv.setImageBitmap(bitmap);
+            if (preview != null)
+            {
+                addShadow(iv, bitmap);
+            }
             // Log.d(TAG, "Cache : " + identifier);
         }
         else if (cancelPotentialWork(identifier, iv))
@@ -547,7 +551,7 @@ public class RenditionManager
             }
             catch (Exception e)
             {
-               //Continue
+                // Continue
             }
         }
 
@@ -594,12 +598,7 @@ public class RenditionManager
                     // We create preview with a shadow effect around the image.
                     if (preview != null)
                     {
-                        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-                        imageView.setBackgroundResource(R.drawable.shadow_picture);
-                        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageView.getLayoutParams();
-                        params.width = bitmap.getWidth();
-                        params.height = bitmap.getHeight();
-                        imageView.setLayoutParams(params);
+                        addShadow(imageView, bitmap);
                         // Log.d(TAG, "W:" + bitmap.getWidth() + " H:" +
                         // bitmap.getHeight());
                     }
@@ -667,5 +666,18 @@ public class RenditionManager
             }
         }
         return null;
+    }
+
+    // //////////////////////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // //////////////////////////////////////////////////////////////////////////////////////////
+    private void addShadow(ImageView imageView, Bitmap bitmap)
+    {
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        imageView.setBackgroundResource(R.drawable.shadow_picture);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) imageView.getLayoutParams();
+        params.width = bitmap.getWidth();
+        params.height = bitmap.getHeight();
+        imageView.setLayoutParams(params);
     }
 }
