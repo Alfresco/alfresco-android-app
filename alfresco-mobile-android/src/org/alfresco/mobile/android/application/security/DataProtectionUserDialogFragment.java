@@ -154,6 +154,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
                 prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                 DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
+                localMessageId = R.string.encryption_title;
             }
             else
             {

@@ -22,7 +22,9 @@ import java.util.HashSet;
 
 import org.alfresco.mobile.android.application.AlfrescoContentProvider;
 import org.alfresco.mobile.android.application.ApplicationManager;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
+import org.alfresco.mobile.android.application.operations.OperationSchema;
 
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -203,6 +205,11 @@ public class BatchOperationContentProvider extends ContentProvider implements Al
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
         }
+    }
+    
+    public static String getAccountFilter(Account acc)
+    {
+        return OperationSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
 
 }

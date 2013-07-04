@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -51,7 +50,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -203,10 +201,6 @@ public class NodeActions extends AbstractActions<Node>
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
                 R.string.select_all);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_OPERATIONS, Menu.FIRST + MenuActionItem.MENU_OPERATIONS,
-                R.string.operation_default);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
     @Override
@@ -255,10 +249,6 @@ public class NodeActions extends AbstractActions<Node>
                 break;
             case MenuActionItem.MENU_SELECT_ALL:
                 selectAll();
-                b = false;
-                break;
-            case MenuActionItem.MENU_OPERATIONS:
-                activity.startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS));
                 b = false;
                 break;
             default:

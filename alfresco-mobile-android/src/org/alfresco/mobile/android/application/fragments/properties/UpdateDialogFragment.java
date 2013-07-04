@@ -88,7 +88,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         alfSession = SessionUtils.getSession(getActivity());
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
         folder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
-        
+
         getDialog().setTitle(R.string.edit_metadata);
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
@@ -157,7 +157,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         {
             tsize.setVisibility(View.GONE);
         }
-        
+
         final EditText textName = ((EditText) v.findViewById(R.id.content_name));
         final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
         final Button validate = (Button) v.findViewById(R.id.create_content);
@@ -197,9 +197,18 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
             {
             }
         });
-        
 
         return v;
+    }
+
+    @Override
+    public void onStart()
+    {
+        if (getDialog() != null)
+        {
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_edit);
+        }
+        super.onStart();
     }
 
     protected void updateNode(EditText tv, EditText desc, Button bcreate)

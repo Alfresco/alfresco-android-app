@@ -101,6 +101,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         LoaderResult<Void> result = new LoaderResult<Void>();
         try
         {
+            Log.d(TAG, "Sync Scan Started");
             result = super.doInBackground();
 
             canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
@@ -125,6 +126,8 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         // to retrieve ContentStreamId and permissions.
                         List<Document> favoriteDocumentsList = new ArrayList<Document>(remoteFavorites.getTotalItems());
 
+                        Log.d(TAG, "Sync Query");
+                        
                         StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
                         join(builder, " OR cmis:objectId=", remoteFavorites.getList());
                         List<Node> nodes = session.getServiceRegistry().getSearchService()
@@ -134,6 +137,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         {
                             favoriteDocumentsList.add((Document) node);
                         }
+                        Log.d(TAG, "Sync Query END");
 
                         remoteFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
                                 remoteFavorites.hasMoreItems(), remoteFavorites.getTotalItems());

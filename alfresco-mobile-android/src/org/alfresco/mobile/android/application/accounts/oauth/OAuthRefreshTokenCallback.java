@@ -26,12 +26,12 @@ import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
-import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -121,18 +121,21 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-                acc = AccountManager.update(activity, acc.getId(), acc.getDescription(), acc.getUrl(), acc.getUsername(),
-                        acc.getPassword(), acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
-                        loader.getData().getAccessToken(), loader.getData().getRefreshToken(),
-                        acc.getIsPaidAccount() ? 1 : 0);
+                acc = AccountManager.update(activity, acc.getId(), acc.getDescription(), acc.getUrl(), acc
+                        .getUsername(), acc.getPassword(), acc.getRepositoryId(),
+                        Integer.valueOf((int) acc.getTypeId()), null, loader.getData().getAccessToken(), loader
+                                .getData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
                 break;
             default:
                 break;
         }
-        //TODO FIXME Use broadcast instead
-        Intent i = new Intent(activity, MainActivity.class);
-        i.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
-        activity.startActivity(i);
+
+        Intent broadcastIntent = new Intent();
+        broadcastIntent.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
+        broadcastIntent.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, acc.getId());
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(
+                new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID,
+                        acc.getId()));
     }
 
     /**

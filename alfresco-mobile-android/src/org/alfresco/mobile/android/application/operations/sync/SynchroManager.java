@@ -362,6 +362,7 @@ public final class SynchroManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.runningRequest.clear();
 
                     for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
@@ -378,7 +379,9 @@ public final class SynchroManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.index.clear();
                 }
+                operationsGroups.clear();
                 return;
             }
 
@@ -402,6 +405,7 @@ public final class SynchroManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.runningRequest.clear();
 
                     for (Entry<String, OperationRequest> requestEntry : group.index.entrySet())
                     {
@@ -417,6 +421,7 @@ public final class SynchroManager extends OperationManager
                         }
                         group.failedRequest.add(requestEntry.getValue());
                     }
+                    group.index.clear();
 
                     for (OperationRequest operationRequest : group.completeRequest)
                     {
@@ -495,7 +500,7 @@ public final class SynchroManager extends OperationManager
                 currentGroup.index.put(operationId, request);
                 if (!currentGroup.hasRunningRequest())
                 {
-                    currentGroup = null;
+                    operationsGroups.remove(currentGroup);
                 }
             }
         }
