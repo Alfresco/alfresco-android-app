@@ -171,14 +171,18 @@ public class GeneralPreferences extends PreferenceFragment
         cpref.setTitle(String.format(getString(R.string.settings_favorite_sync), account.getDescription()));
 
         Boolean syncWifiEnable = sharedPref.getBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), true);
-        wifiPref.setChecked(syncWifiEnable);
-        if (syncWifiEnable)
+
+        if (wifiPref != null)
         {
-            wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
-        }
-        else
-        {
-            wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
+            wifiPref.setChecked(syncWifiEnable);
+            if (syncWifiEnable)
+            {
+                wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
+            }
+            else
+            {
+                wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
+            }
         }
 
         cpref.setOnPreferenceClickListener(new OnPreferenceClickListener()
@@ -229,36 +233,39 @@ public class GeneralPreferences extends PreferenceFragment
         });
 
         // Check if 3G Present
-        if (!ConnectivityUtils.hasMobileConnectivity(getActivity()))
+        if (!ConnectivityUtils.hasMobileConnectivity(getActivity()) && wifiPref != null)
         {
             PreferenceCategory mCategory = (PreferenceCategory) findPreference(getString(R.string.favorite_sync_group));
             mCategory.removePreference(wifiPref);
         }
 
-        wifiPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+        if (wifiPref != null)
         {
-            @Override
-            public boolean onPreferenceClick(Preference preference)
+            wifiPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
             {
-                boolean isWifiOnly = false;
-                if (preference instanceof CheckBoxPreference)
+                @Override
+                public boolean onPreferenceClick(Preference preference)
                 {
-                    isWifiOnly = ((CheckBoxPreference) preference).isChecked();
-                }
-                sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
+                    boolean isWifiOnly = false;
+                    if (preference instanceof CheckBoxPreference)
+                    {
+                        isWifiOnly = ((CheckBoxPreference) preference).isChecked();
+                    }
+                    sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
 
-                if (isWifiOnly)
-                {
-                    wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
-                }
-                else
-                {
-                    wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
-                }
+                    if (isWifiOnly)
+                    {
+                        wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
+                    }
+                    else
+                    {
+                        wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
+                    }
 
-                return false;
-            }
-        });
+                    return false;
+                }
+            });
+        }
 
         getActivity().invalidateOptionsMenu();
 

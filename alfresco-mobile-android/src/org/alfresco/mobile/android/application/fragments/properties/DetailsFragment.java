@@ -144,7 +144,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private UpdateReceiver receiver;
 
-    //private Date decryptDateTime;
+    // private Date decryptDateTime;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -255,11 +255,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         File tmpFile = null;
-        boolean isSynced = SynchroManager.getInstance(getActivity()).isSynced(
-                SessionUtils.getAccount(getActivity()), node);
+        boolean isSynced = SynchroManager.getInstance(getActivity()).isSynced(SessionUtils.getAccount(getActivity()),
+                node);
         boolean modified = false;
         Date d = null;
-        
+
         switch (requestCode)
         {
         // Save Back : When a file has been opened by 3rd party app.
@@ -301,12 +301,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     {
                         // Update statut of the sync reference
                         ContentValues cValues = new ContentValues();
-                        
+
                         int operationStatut = SyncOperation.STATUS_PENDING;
-                        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED){
+                        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+                        {
                             operationStatut = SyncOperation.STATUS_MODIFIED;
                         }
-                        
+
                         cValues.put(SynchroSchema.COLUMN_STATUS, operationStatut);
                         getActivity().getContentResolver().update(
                                 SynchroManager.getInstance(getActivity()).getUri(
@@ -380,94 +381,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     }
                 }
                 break;
-            // Save Back : a file has been opened by 3rd party app 
-            // DATA Encryption ON
-            /*case PublicIntent.REQUESTCODE_DECRYPTED:
-
-                // File opened when user tap the preview
-                // Retrieve the File
-                if (replacementPreviewFragment != null)
-                {
-                    tempFile = replacementPreviewFragment.getTempFile();
-                }
-
-                // Check if SYNC is ON
-                if (isSynced)
-                {
-                    // We use the sync file stored locally
-                    tmpFile = SynchroManager.getInstance(getActivity()).getSyncFile(
-                            SessionUtils.getAccount(getActivity()), node);
-                }
-                else
-                {
-                    // We retrieve the temporary file
-                    tmpFile = (tempFile != null ? tempFile : NodeActions.getTempFile(getActivity(), node));
-                }
-
-                // Keep the file reference final
-                final File dlFile2 = tmpFile;
-
-                // Check if the file has been modified (lastmodificationDate)
-                d = new Date(dlFile2.lastModified());
-                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
-
-                if (modified
-                        && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
-                {
-                    // File modified + Sync File
-                    if (isSynced)
-                    {
-                        // Update statut of the sync reference
-                        ContentValues cValues = new ContentValues();
-                        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_MODIFIED);
-                        getActivity().getContentResolver().update(
-                                SynchroManager.getInstance(getActivity()).getUri(
-                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
-                                null);
-
-                        // Sync if it's possible.
-                        if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
-                        {
-                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-                        }
-                    }
-                    else
-                    {
-                        // File is temporary (after dl from server)
-                        // We request the user if he wants to save back
-                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                        builder.setTitle(R.string.save_back);
-                        builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
-                                node.getName()));
-                        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int item)
-                            {
-                                update(dlFile2);
-                                dialog.dismiss();
-                            }
-                        });
-                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
-                        {
-                            public void onClick(DialogInterface dialog, int item)
-                            {
-                                DataProtectionManager.getInstance(getActivity()).checkEncrypt(
-                                        SessionUtils.getAccount(getActivity()), dlFile2);
-                                dialog.dismiss();
-                            }
-                        });
-                        AlertDialog alert = builder.create();
-                        alert.show();
-                    }
-                }
-                else
-                {
-                    // File with no modification
-                    // Encrypt sync file if necessary
-                    // Delete otherwise
-                    StorageManager.manageFile(getActivity(), dlFile2);
-                }
-                break;*/
             default:
                 break;
         }
@@ -718,6 +631,25 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     true));
         }
 
+        // Description
+        Integer generalPropertyTitle = null;
+        tv = (TextView) vRoot.findViewById(R.id.description);
+        List<String> filter = new ArrayList<String>();
+        if (node.getDescription() != null && node.getDescription().length() > 0
+                && vRoot.findViewById(R.id.description_group) != null)
+        {
+            vRoot.findViewById(R.id.description_group).setVisibility(View.VISIBLE);
+            tv.setText(node.getDescription());
+            ((TextView) vRoot.findViewById(R.id.prop_name_value)).setText(node.getName());
+            filter.add(ContentModel.PROP_NAME);
+            generalPropertyTitle = -1;
+        }
+        else if (vRoot.findViewById(R.id.description_group) != null)
+        {
+            vRoot.findViewById(R.id.description_group).setVisibility(View.GONE);
+            generalPropertyTitle = R.string.metadata;
+        }
+
         // Tabs
         mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
         if (mTabHost != null)
@@ -736,6 +668,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 int index = (node.isDocument()) ? tabSelection : tabSelection - 1;
                 mTabHost.setCurrentTab(index);
             }
+        }
+        else
+        {
+            LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            ViewGroup parent = (ViewGroup) vRoot.findViewById(R.id.metadata);
+            ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false,
+                    generalPropertyTitle, filter);
+            addPathProperty(generalGroup, inflater);
         }
 
         // Hide Buttons
@@ -767,6 +707,26 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         b.setImageResource(R.drawable.ic_favorite_dark);
         vRoot.findViewById(R.id.favorite_progress).setVisibility(View.GONE);
 
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            vRoot.findViewById(R.id.icon).setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
+        } else {
+            vRoot.findViewById(R.id.preview).setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

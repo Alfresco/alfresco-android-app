@@ -608,6 +608,8 @@ public final class SynchroManager extends OperationManager
 
     public boolean isSynced(Account account, String nodeIdentifier)
     {
+        if (account == null) { return false; }
+        
         Cursor favoriteCursor = mAppContext.getContentResolver().query(
                 SynchroProvider.CONTENT_URI,
                 SynchroSchema.COLUMN_ALL,
@@ -635,6 +637,8 @@ public final class SynchroManager extends OperationManager
 
     public Uri getUri(Account account, String nodeIdentifier)
     {
+        if (account == null) { return null; }
+        
         Uri b = null;
         Cursor favoriteCursor = mAppContext.getContentResolver().query(
                 SynchroProvider.CONTENT_URI,

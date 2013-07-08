@@ -67,11 +67,14 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
 
     private Activity activity;
 
+    private Context appContext;
+
     private CloudSession session;
 
     public OAuthRefreshTokenCallback(Activity activity, Account acc, CloudSession session)
     {
         this.activity = activity;
+        this.appContext = activity.getApplicationContext();
         this.acc = acc;
         this.session = session;
     }
@@ -79,16 +82,23 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
     @Override
     public Loader<LoaderResult<OAuthData>> onCreateLoader(final int id, Bundle args)
     {
-        activity.setProgressBarIndeterminateVisibility(true);
-        WaitingDialogFragment.newInstance(R.string.app_name, R.string.error_session_refresh, true).show(
-                activity.getFragmentManager(), WaitingDialogFragment.TAG);
+        if (activity != null)
+        {
+            activity.setProgressBarIndeterminateVisibility(true);
+            WaitingDialogFragment.newInstance(R.string.app_name, R.string.error_session_refresh, true).show(
+                    activity.getFragmentManager(), WaitingDialogFragment.TAG);
+        }
         return new OAuthRefreshTokenLoader(activity, session);
     }
 
     @Override
     public void onLoadFinished(Loader<LoaderResult<OAuthData>> loader, LoaderResult<OAuthData> results)
     {
-        OAuthRefreshTokenCallback.saveLastCloudLoadingTime(activity);
+        if (activity != null)
+        {
+            OAuthRefreshTokenCallback.saveLastCloudLoadingTime(activity);
+            activity.setProgressBarIndeterminateVisibility(false);
+        }
         if (!results.hasException())
         {
             saveNewOauthData(results);
@@ -106,7 +116,6 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
             }
             Log.e(TAG, Log.getStackTraceString(results.getException()));
         }
-        activity.setProgressBarIndeterminateVisibility(false);
     }
 
     @Override
@@ -121,7 +130,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-                acc = AccountManager.update(activity, acc.getId(), acc.getDescription(), acc.getUrl(), acc
+                acc = AccountManager.update(appContext, acc.getId(), acc.getDescription(), acc.getUrl(), acc
                         .getUsername(), acc.getPassword(), acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, loader.getData().getAccessToken(), loader
                                 .getData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
@@ -133,7 +142,7 @@ public class OAuthRefreshTokenCallback implements LoaderCallbacks<LoaderResult<O
         Intent broadcastIntent = new Intent();
         broadcastIntent.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, acc.getId());
-        LocalBroadcastManager.getInstance(activity).sendBroadcast(
+        LocalBroadcastManager.getInstance(appContext).sendBroadcast(
                 new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID,
                         acc.getId()));
     }
