@@ -287,7 +287,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             Account acc = SessionUtils.getAccount(getActivity());
             Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
 
-            if (hasSynchroActive)
+            if (hasSynchroActive && acc != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
                         SynchroProvider.CONTENT_URI,
