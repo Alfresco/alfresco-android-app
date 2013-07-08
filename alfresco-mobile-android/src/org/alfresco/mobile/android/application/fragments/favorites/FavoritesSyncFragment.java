@@ -148,7 +148,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             receiver = new FavoriteSyncReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
-        
+
         if (getMode() != MODE_PROGRESS)
         {
             hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
@@ -164,7 +164,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             titleId = R.string.synced_documents;
         }
         UIUtils.displayTitle(getActivity(), getString(titleId));
-        
+
         super.onResume();
     }
 
@@ -276,8 +276,13 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
-                SynchroProvider.getAccountFilter(acc), null, SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
+        String selection = null;
+        if (acc != null)
+        {
+            selection = SynchroProvider.getAccountFilter(acc);
+        }
+        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL, selection, null,
+                SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -432,6 +437,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                 // Hide spinning wheel
                 mi.setActionView(null);
             }
+
+            if (acc == null) { return; }
 
             if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
             {
