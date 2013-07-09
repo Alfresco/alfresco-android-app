@@ -540,7 +540,7 @@ public class MainActivity extends BaseActivity
 
     private void checkSession()
     {
-        if (accountManager.isEmpty() && accountManager.hasData())
+        if (accountManager == null || (accountManager.isEmpty() && accountManager.hasData()))
         {
             startActivity(new Intent(this, HomeScreenActivity.class));
             finish();

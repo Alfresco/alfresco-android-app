@@ -21,8 +21,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
@@ -56,9 +59,20 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
             Editor editor = sharedPref.edit();
             editor.clear();
             editor.commit();
+            SharedPreferences settings = activity.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            editor = settings.edit();
+            editor.clear();
+            editor.commit();
+            SharedPreferences prefs = activity.getSharedPreferences(FileExplorerHelper.FILEEXPLORER_PREFS, 0);
+            editor = prefs.edit();
+            editor.clear();
+            editor.commit();
 
             // Remove All Accounts
             activity.getContentResolver().delete(AccountManager.CONTENT_URI, null, null);
+            
+            //Delete loaded accounts
+            ApplicationManager.getInstance(activity).clear();
 
             // Find folders
             File cache = activity.getCacheDir();

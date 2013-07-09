@@ -32,13 +32,14 @@ import android.app.Activity;
 import android.content.Context;
 
 /**
- * Provides high level service and responsible to manage sessions across activities.
+ * Provides high level service and responsible to manage sessions across
+ * activities.
  * 
  * @author Jean Marie Pascal
  */
 public final class ApplicationManager
 {
-    //private static final String TAG = ApplicationManager.class.getName();
+    // private static final String TAG = ApplicationManager.class.getName();
 
     private static ApplicationManager mInstance;
 
@@ -55,9 +56,8 @@ public final class ApplicationManager
     private RenditionManager renditionManager;
 
     private AccountManager accountManager;
-    
-    private UpgradeManager upgradeManager;
 
+    private UpgradeManager upgradeManager;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -117,13 +117,18 @@ public final class ApplicationManager
 
     public AccountManager getAccountManager()
     {
+        if (accountManager == null)
+        {
+            accountManager = AccountManager.getInstance(appContext);
+        }
         return accountManager;
     }
-    
+
     public UpgradeManager getUpgradeManager()
     {
         return upgradeManager;
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT / SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -170,5 +175,14 @@ public final class ApplicationManager
     public AlfrescoSession getSession(Long accountId)
     {
         return sessionIndex.get(accountId);
+    }
+
+    public void clear()
+    {
+        currentAccount = null;
+        renditionManager = null;
+        sessionIndex.clear();
+        accountManager.clear();
+        mInstance = null;
     }
 }
