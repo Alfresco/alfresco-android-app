@@ -30,15 +30,17 @@ import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBat
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
 import org.alfresco.mobile.android.application.utils.IOUtils;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * @author Jean Marie Pascal
  */
 public class CreateDocumentCallback extends AbstractBatchOperationCallback<Document>
 {
+    private static final String TAG = CreateDocumentCallback.class.getName();
+    
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ////////////////////////////////////////////////////
@@ -102,7 +104,6 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
             if (task instanceof CreateDocumentThread && ((CreateDocumentThread) task).isCreation())
             {
                 ContentFile contentFile = ((AbstractUpThread) task).getContentFile();
-                // TODO Identifier is wrong when switching!
                 final File folderStorage = StorageManager.getDownloadFolder(getBaseContext(),
                         ((CreateDocumentThread) task).getSession().getBaseUrl(), ((CreateDocumentThread) task)
                                 .getSession().getPersonIdentifier());
@@ -114,10 +115,9 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
                     dlFile = IOUtils.createFile(dlFile);
                 }
 
-                if (contentFile.getFile().renameTo(dlFile))
+                if (!contentFile.getFile().renameTo(dlFile))
                 {
-                    MessengerManager.showLongToast(getBaseContext(),
-                            getBaseContext().getString(R.string.create_document_save));
+                    Log.e(TAG, "Unable to rename file");
                 }
             }
         }

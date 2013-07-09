@@ -53,19 +53,18 @@ public final class AccountManager
 
     private static final Object LOCK = new Object();
 
-    private Integer accountCursor;
+    private Integer accountsSize;
 
     private AccountManagerReceiver receiver;
 
     private ApplicationManager appManager;
 
     private LocalBroadcastManager broadManager;
-    
+
     public static final Uri CONTENT_URI = AccountProvider.CONTENT_URI;
 
     public static final String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
-    
-    
+
     public static AccountManager getInstance(Context context)
     {
         synchronized (LOCK)
@@ -95,25 +94,25 @@ public final class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasData()
     {
-        return (accountCursor != null);
+        return (accountsSize != null);
     }
 
     public boolean hasAccount()
     {
-        if (accountCursor == null) { return false; }
-        return (accountCursor > 0);
+        if (accountsSize == null) { return false; }
+        return (accountsSize > 0);
     }
-    
+
     public boolean hasMultipleAccount()
     {
-        if (accountCursor == null) { return false; }
-        return (accountCursor > 1);
+        if (accountsSize == null) { return false; }
+        return (accountsSize > 1);
     }
 
     public boolean isEmpty()
     {
-        if (accountCursor == null) { return true; }
-        return (accountCursor == 0);
+        if (accountsSize == null) { return true; }
+        return (accountsSize == 0);
     }
 
     public Account getDefaultAccount()
@@ -173,8 +172,7 @@ public final class AccountManager
 
     public static Account retrieveFirstAccount(Context context)
     {
-        Cursor cursor = context.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL, null,
-                null, null);
+        Cursor cursor = context.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL, null, null, null);
         Log.d(TAG, cursor.getCount() + " ");
         if (cursor.getCount() == 0)
         {
@@ -228,7 +226,7 @@ public final class AccountManager
         filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT);
         broadManager.registerReceiver(receiver, filters);
     }
-    
+
     private static ContentValues createContentValues(Account acc)
     {
         ContentValues updateValues = new ContentValues();
@@ -264,7 +262,7 @@ public final class AccountManager
         updateValues.put(AccountSchema.COLUMN_IS_PAID_ACCOUNT, isPaidAccount);
         return updateValues;
     }
-    
+
     private void loadSession(Account acc, OAuthData data)
     {
         if (appManager.hasSession(acc.getId()))
@@ -297,8 +295,8 @@ public final class AccountManager
             // User has choose a specific account to load
             currentAccount = account;
         }
-        
-        if (currentAccount == null){ return null;}
+
+        if (currentAccount == null) { return null; }
 
         if (currentAccount.getActivation() != null)
         {
@@ -345,10 +343,16 @@ public final class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     private void getCount()
     {
-        Cursor cursor = appContext.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL,
-                null, null, null);
-        accountCursor = cursor.getCount();
+        Cursor cursor = appContext.getContentResolver()
+                .query(AccountProvider.CONTENT_URI, COLUMN_ALL, null, null, null);
+        accountsSize = cursor.getCount();
         cursor.close();
+    }
+
+    public void clear()
+    {
+        accountsSize = null;
+        mInstance = null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

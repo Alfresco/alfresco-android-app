@@ -74,9 +74,7 @@ public class DownloadRequest extends NodeOperationRequest
     {
         this(folder, document);
         this.overwrite = overwrite;
-        
-        persistentProperties = new HashMap<String, Serializable>();
-        persistentProperties.put(PROP_OVERWRITE, overwrite);
+        save();
     }
     
     public DownloadRequest(Cursor cursor)
@@ -90,8 +88,13 @@ public class DownloadRequest extends NodeOperationRequest
         {
             this.overwrite = Boolean.parseBoolean(tmpProperties.remove(PROP_OVERWRITE));
         }
+        save();
     }
     
+    private void save(){
+        persistentProperties = new HashMap<String, Serializable>();
+        persistentProperties.put(PROP_OVERWRITE, overwrite);
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
