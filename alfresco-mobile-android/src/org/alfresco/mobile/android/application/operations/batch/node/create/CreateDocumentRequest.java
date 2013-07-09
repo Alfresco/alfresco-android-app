@@ -63,20 +63,7 @@ public class CreateDocumentRequest extends AbstractUpRequest
         this.properties = properties;
         this.tags = tags;
 
-        persistentProperties = new HashMap<String, Serializable>();
-        if (properties != null)
-        {
-            persistentProperties.putAll(properties);
-        }
-        persistentProperties.put(ContentModel.PROP_NAME, documentName);
-        persistentProperties.put(PROP_ISCREATION, isCreation);
-        if (tags == null) { return; }
-        int i = 0;
-        for (String tagValue : tags)
-        {
-            persistentProperties.put(PROP_TAG + i, tagValue);
-            i++;
-        }
+        save();
     }
 
     public CreateDocumentRequest(Cursor cursor)
@@ -91,6 +78,7 @@ public class CreateDocumentRequest extends AbstractUpRequest
         if (tmpProperties.containsKey(ContentModel.PROP_NAME))
         {
             documentName = tmpProperties.remove(ContentModel.PROP_NAME);
+            setNotificationTitle(documentName);
         }
 
         this.isCreation = false;
@@ -118,6 +106,24 @@ public class CreateDocumentRequest extends AbstractUpRequest
         Map<String, Serializable> finalProperties = new HashMap<String, Serializable>(tmpProperties);
         this.properties = finalProperties;
         this.tags = tags;
+        save();
+    }
+    
+    private void save(){
+        persistentProperties = new HashMap<String, Serializable>();
+        if (properties != null)
+        {
+            persistentProperties.putAll(properties);
+        }
+        persistentProperties.put(ContentModel.PROP_NAME, documentName);
+        persistentProperties.put(PROP_ISCREATION, isCreation);
+        if (tags == null) { return; }
+        int i = 0;
+        for (String tagValue : tags)
+        {
+            persistentProperties.put(PROP_TAG + i, tagValue);
+            i++;
+        }
     }
 
     // ////////////////////////////////////////////////////
