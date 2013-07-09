@@ -33,7 +33,7 @@ public abstract class AbstractUpThread extends AbstractBatchOperationThread<Docu
     private int segment = 0;
 
     private long totalLength = 0;
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -87,7 +87,7 @@ public abstract class AbstractUpThread extends AbstractBatchOperationThread<Docu
     @Override
     public void onRead(ContentFileProgressImpl contentFile, Long amountCopied) throws IOException
     {
-        if (isInterrupted()) { throw new IOException(); }
+        if (isInterrupted()) { hasCancelled = true; throw new IOException(EXCEPTION_OPERATION_CANCEL); }
 
         // We limit progress notification to one per 10%
         if (listener != null)
@@ -185,5 +185,10 @@ public abstract class AbstractUpThread extends AbstractBatchOperationThread<Docu
     public Folder getParentFolder()
     {
         return parentFolder;
+    }
+    
+    public boolean hasCancelled()
+    {
+        return hasCancelled;
     }
 }

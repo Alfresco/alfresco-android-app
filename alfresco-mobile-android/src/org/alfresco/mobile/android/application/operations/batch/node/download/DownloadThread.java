@@ -138,7 +138,7 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
 
             while (size - downloaded > 0)
             {
-                if (isInterrupted()) { throw new IOException(); }
+                if (isInterrupted()) { hasCancelled = true; throw new IOException(EXCEPTION_OPERATION_CANCEL); }
 
                 if (size - downloaded < MAX_BUFFER_SIZE)
                 {

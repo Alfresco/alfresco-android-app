@@ -26,7 +26,7 @@ public final class FileExplorerHelper
     {
     }
 
-    private static final String FILEEXPLORER_PREFS = "org.alfresco.mobile.android.fileexplorer.preferences";
+    public  static final String FILEEXPLORER_PREFS = "org.alfresco.mobile.android.fileexplorer.preferences";
 
     private static final String FILEEXPLORER_DEFAULT = "org.alfresco.mobile.android.fileexplorer.preferences.default";
 

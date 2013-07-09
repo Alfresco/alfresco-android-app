@@ -540,7 +540,7 @@ public class MainActivity extends BaseActivity
 
     private void checkSession()
     {
-        if (accountManager.isEmpty() && accountManager.hasData())
+        if (accountManager == null || (accountManager.isEmpty() && accountManager.hasData()))
         {
             startActivity(new Intent(this, HomeScreenActivity.class));
             finish();
@@ -1216,6 +1216,24 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
+            {
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
+                Account tmpAccount = AccountManager.retrieveAccount(activity, intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                if (tmpAccount.getIsPaidAccount()
+                        && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
+                {
+                    // Check if we've prompted the user for Data Protection yet.
+                    // This is needed on new account creation, as the Activity gets
+                    // re-created after the account is created.
+                    DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
+                            DataProtectionUserDialogFragment.TAG);
+
+                    prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
+                }
+                return;
+            }
+            
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
@@ -1248,7 +1266,7 @@ public class MainActivity extends BaseActivity
                 MessengerManager.showLongToast(activity, getString(R.string.account_not_activated));
                 return;
             }
-
+            
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }

@@ -31,6 +31,10 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
 {
     private static final String TAG = AbstractBatchOperationThread.class.getName();
 
+    protected static final String EXCEPTION_OPERATION_CANCEL = "Operation Cancelled";
+    
+    protected boolean hasCancelled = false;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -56,7 +60,7 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
         }
         return new LoaderResult<T>();
     }
-    
+
     protected void onPostExecute(LoaderResult<T> result)
     {
         int resultStatus = Operation.STATUS_SUCCESSFUL;
@@ -66,6 +70,10 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
             {
                 listener.onError(this, result.getException());
                 resultStatus = STATUS_FAILED;
+                if (hasCancelled)
+                {
+                    resultStatus = STATUS_CANCEL;
+                }
             }
             else
             {
@@ -80,7 +88,7 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
     {
         saveStatus(Operation.STATUS_CANCEL);
     }
-    
+
     public boolean requireNetwork()
     {
         return true;
