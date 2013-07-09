@@ -369,7 +369,7 @@
     <string name="passcode_unknown">Your passcode is incorrect.</string>
     <string name="passcode_erase_data_complete">All local data has been removed.</string>
     <string name="passcode_timeout_title">Passcode timeout</string>
-    <string name="passcode_timeout_1min">1 minutes</string>
+    <string name="passcode_timeout_1min">1 minute</string>
     <string name="passcode_timeout_2min">2 minutes</string>
     <string name="passcode_timeout_5min">5 minutes</string>
     <string name="passcode_timeout_10min">10 minutes</string>
