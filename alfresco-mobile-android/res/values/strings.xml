@@ -30,7 +30,7 @@
     <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
     <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP 1 -->
+    <!-- ACCOUNT WIZARD SCRE STEP 1 -->
     <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_alfresco_server_description">Connect to an Alfresco Server</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
@@ -369,7 +369,7 @@
     <string name="passcode_unknown">Your passcode is incorrect.</string>
     <string name="passcode_erase_data_complete">All local data has been removed.</string>
     <string name="passcode_timeout_title">Passcode timeout</string>
-    <string name="passcode_timeout_1min">1 minutes</string>
+    <string name="passcode_timeout_1min">1 minute</string>
     <string name="passcode_timeout_2min">2 minutes</string>
     <string name="passcode_timeout_5min">5 minutes</string>
     <string name="passcode_timeout_10min">10 minutes</string>
@@ -590,7 +590,7 @@
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
     
-     <!-- Simple -->
+    <!-- Simple -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
     

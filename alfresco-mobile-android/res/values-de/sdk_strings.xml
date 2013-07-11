@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of the Alfresco Mobile SDK.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+-->
+<resources>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK MANUAL -->
+    <!-- ************************** -->
+    <string name="name">UI Lib</string>
+
+    <!-- Relative Date -->
+    <string name="relative_date_just_now">Jetzt</string>
+    <string name="relative_date_less_than_a_minute_ago">Vor weniger als einer Minute</string>
+
+    <plurals name="relative_date_minutes_ago">
+        <item quantity="one">Vor %1$s Minute</item>
+        <item quantity="other">Vor %1$s Minuten</item>
+    </plurals>
+    <plurals name="relative_date_hours_ago">
+        <item quantity="one">Vor %1$s Stunde</item>
+        <item quantity="other">Vor %1$s Stunden</item>
+    </plurals>
+    <plurals name="relative_date_days_ago">
+        <item quantity="one">Vor %1$s Tag</item>
+        <item quantity="other">Vor %1$s Tagen</item>
+    </plurals>
+    <plurals name="relative_date_years_ago">
+        <item quantity="one">Vor %1$s Jahr</item>
+        <item quantity="other">Vor %1$s Jahren</item>
+    </plurals>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK AUTO -->
+    <!-- ************************** -->
+    <!-- Generic -->
+    <string name="required">Pflichtfeld</string>
+    <string name="actions">Aktionen</string>
+    <string name="confirm">Bestätigen</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <!-- Listing -->
+    <string name="load_more">Mehr laden...</string>
+    <string name="load_more_progress">Ladevorgang wird durchgeführt...</string>
+    <string name="listing_nodata">Keine Daten.</string>
+    <!-- Dialog -->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Abbrechen</string>
+    <string name="dialog_wait">Bitte warten</string>
+    <!-- Activities -->
+    <string name="activities">Aktivitäten</string>
+    <string name="org_alfresco_blog_post_created">{0} Blog Post erstellt von {1}</string>
+    <string name="org_alfresco_blog_post_updated">{0} Blog Post aktualisiert von {1}</string>
+    <string name="org_alfresco_blog_post_deleted">{0} Blog Post gelöscht von {1}</string>
+    <string name="org_alfresco_comments_comment_created">{1} kommentierte {0}</string>
+    <string name="org_alfresco_comments_comment_updated">{1} aktualisierte Kommentar am {0}</string>
+    <string name="org_alfresco_comments_comment_deleted">{1} löschte Kommentar aus {0}</string>
+    <string name="org_alfresco_discussions_post_created">{0} Diskussion begonnen von {1}</string>
+    <string name="org_alfresco_discussions_post_updated">{0} Diskussion aktualisiert von {1}</string>
+    <string name="org_alfresco_discussions_post_deleted">{0} Diskussion gelöscht von {1}</string>
+    <string name="org_alfresco_discussions_reply_created">{1} antwortete auf Diskussion {0}</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} aktualisierte eine Antwort auf {0}</string>
+    <string name="org_alfresco_calendar_event_created">{0} Kalenderereignis erzeugt von {1}</string>
+    <string name="org_alfresco_calendar_event_updated">{0} Kalenderereignis aktualisiert von {1}</string>
+    <string name="org_alfresco_calendar_event_deleted">{0} Kalenderereignis gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">{0} Dokument hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">{0} Dokumente hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">{0} Dokument angelegt von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_deleted">{0} wurde gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{0} Dokumente gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">{0} Dokument aktualisiert von {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{0} Dokumente aktualisiert von {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_added">{0} Ordner hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_added">{0} Ordner hinzugefügt von {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_deleted">{0} wurde gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">{0} Ordner gelöscht von {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} Dokument von {1} nach Google Docs ausgecheckt</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} Dokument von {1} von Google Docs eingecheckt</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">{0} Dokument bearbeitet von {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} gefällt Dokument {0}</string>
+    <string name="org_alfresco_documentlibrary_folder_liked">{1} gefällt Ordner {0}</string>
+    <string name="org_alfresco_wiki_page_created">{0} Wiki Seite erstellt von {1}</string>
+    <string name="org_alfresco_wiki_page_edited">{0} Wiki Seite aktualisiert von {1}</string>
+    <string name="org_alfresco_wiki_page_renamed">{2} Wiki Seite umbenannt in {0} von {1}</string>
+    <string name="org_alfresco_wiki_page_deleted">{0} Wiki Seite gelöscht von {1}</string>
+    <string name="org_alfresco_site_group_added">{1} Gruppe zur Site {4} mit Rolle {2} hinzugefügt</string>
+    <string name="org_alfresco_site_group_removed">{1} Gruppe von Site {4} entfernt</string>
+    <string name="org_alfresco_site_group_role_changed">{1} Rolle der Gruppe in {2} geändert</string>
+    <string name="org_alfresco_site_user_joined">{1} trat der Site {4} mit der Rolle {2} bei</string>
+    <string name="org_alfresco_site_user_left">{1} hat Site {4} verlassen</string>
+    <string name="org_alfresco_site_user_role_changed">{1} Rolle geändert in {2}</string>
+    <string name="org_alfresco_links_link_created">{0} Link erstellt von {1}</string>
+    <string name="org_alfresco_links_link_updated">{0} Link aktualisiert von {1}</string>
+    <string name="org_alfresco_links_link_deleted">{0} Link gelöscht von {1}</string>
+    <string name="org_alfresco_datalists_list_created">{0} Datenliste erstellt von {1}</string>
+    <string name="org_alfresco_datalists_list_updated">{0} Datenliste aktualisiert von {1}</string>
+    <string name="org_alfresco_datalists_list_deleted">{0} Datenliste gelöscht von {1}</string>
+    <string name="org_alfresco_subscriptions_followed">{1} folgt jetzt {5}</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} hat {2} abonniert</string>
+    <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <!-- Metadata -->
+    <string name="metadata">Eigenschaften</string>
+    <string name="thumbnail">Thumbnail</string>
+    <string name="metadata_prop_name">Name</string>
+    <string name="metadata_prop_path">Pfad</string>
+    <string name="metadata_prop_type">Typ</string>
+    <string name="metadata_prop_content_mimetype">Mimetyp</string>
+    <string name="metadata_prop_content_size">Größe</string>
+    <!-- Metadata Titled -->
+    <string name="metadata_aspect_titled">Betitelt</string>
+    <string name="metadata_prop_title">Titel</string>
+    <string name="metadata_prop_description">Beschreibung</string>
+    <!-- Metadata Auditable -->
+    <string name="metadata_aspect_auditable">Audit-fähig</string>
+    <string name="metadata_prop_creator">Ersteller</string>
+    <string name="metadata_prop_creationdate">Erstellt am</string>
+    <string name="metadata_prop_modifier">Geändert von</string>
+    <string name="metadata_prop_modificationdate">Geändert am</string>
+    <!-- Metadata Author -->
+    <string name="metadata_aspect_author">Autor</string>
+    <string name="metadata_prop_author">Autor</string>
+    <!-- Metadata EXIF -->
+    <string name="metadata_aspect_exif">EXIF</string>
+    <string name="metadata_prop_datetime_original">Datum und Uhrzeit</string>
+    <string name="metadata_prop_pixelx_dimension">Bildbreite</string>
+    <string name="metadata_prop_pixely_dimension">Bildhöhe</string>
+    <string name="metadata_prop_exposure_time">Belichtungszeit</string>
+    <string name="metadata_prop_fnumber">Blende</string>
+    <string name="metadata_prop_flash_activated">Blitz eingeschaltet</string>
+    <string name="metadata_prop_focal_length">Brennweite</string>
+    <string name="metadata_prop_iso_speed">ISO-Empfindlichkeit</string>
+    <string name="metadata_prop_manufacturer">Hersteller der Kamera</string>
+    <string name="metadata_prop_model">Kameramodell</string>
+    <string name="metadata_prop_software">Kamerasoftware</string>
+    <string name="metadata_prop_orientation">Orientierung</string>
+    <string name="metadata_prop_xresolution">Horizontale Auflösung</string>
+    <string name="metadata_prop_yresolution">Vertikale Auflösung</string>
+    <string name="metadata_prop_resolution_unit">Auflösungseinheit</string>
+    <!-- Metadata Geographic -->
+    <string name="metadata_aspect_geographic">Geografisch</string>
+    <string name="metadata_prop_latitude">Breitengrad</string>
+    <string name="metadata_prop_longitude">Längengrad</string>
+    <!-- Metadata Audio -->
+    <string name="metadata_aspect_audio">Audio</string>
+    <string name="metadata_prop_album">Album</string>
+    <string name="metadata_prop_artist">Interpret</string>
+    <string name="metadata_prop_composer">Komponist</string>
+    <string name="metadata_prop_engineer">Entwickler</string>
+    <string name="metadata_prop_genre">Genre</string>
+    <string name="metadata_prop_track_number">Titelnummer</string>
+    <string name="metadata_prop_release_date">Veröffentlichungsdatum</string>
+    <string name="metadata_prop_sample_rate">Samplerate</string>
+    <string name="metadata_prop_sample_type">Samplingtyp</string>
+    <string name="metadata_prop_channel_type">Kanaltyp</string>
+    <string name="metadata_prop_compressor">Kompressor</string>
+    <!-- Metadata Version -->
+    <string name="metadata_prop_version">Version</string>
+    <string name="metadata_prop_version_modification_date">Geändert am</string>
+    <string name="metadata_prop_version_modified_by">Zuletzt geändert von</string>
+    <string name="metadata_prop_version_comment">Kommentar</string>
+    <string name="metadata_prop_version_current">Aktuelle Version</string>
+    <!-- Upload/Create Content -->
+    <string name="content_app_pick_file">Anwendung für Dateiauswahl wählen</string>
+    <string name="content_upload">Datei hochladen</string>
+    <string name="content_name">Name</string>
+    <string name="content_name_hint">Namen eingeben (erforderlich)</string>
+    <string name="content_description">Beschreibung</string>
+    <string name="content_description_hint">Beschreibung eingeben (optional)</string>
+    <string name="content_tags">Tags</string>
+    <string name="content_tags_hint">Kommagetrennte Tag-Werte (optional)</string>
+    <string name="content_title">Titel</string>
+    <!-- Create Folder -->
+    <string name="folder_create">Neuen Ordner anlegen</string>
+    <string name="folder_name">Name</string>
+    <string name="folder_name_hint">Ordnernamen hier eingeben...</string>
+    <!-- Update Properties -->
+    <string name="edit">Bearbeiten</string>
+    <string name="update">Aktualisieren</string>
+    <string name="edit_metadata">Eigenschaften bearbeiten</string>
+    <!-- Download -->
+    <string name="download">Herunterladen</string>
+    <string name="download_complete">Download abgeschlossen</string>
+    <string name="download_error">Beim Herunterladen ist ein Fehler aufgetreten</string>
+    <string name="download_progress">Download wird durchgeführt...</string>
+    <!-- Empty -->
+    <string name="empty_child">Kein Dokument gefunden</string>
+    <string name="empty_site">Keine Sites verfügbar</string>
+    <string name="empty_version">Keine Versionshistorie verfügbar</string>
+    <string name="empty_session">Keine Sitzung verfügbar</string>
+    <string name="empty_actvity">Keine Aktivitäten gefunden</string>
+    <string name="empty_tag">Kein Tag gefunden</string>
+    <string name="empty_comment">Keine Kommentare gefunden</string>
+    <string name="empty_search">Kein Dokument gefunden</string>
+    <!-- Size -->
+    <string name="file_size_empty">0 Byte</string>
+    <string name="file_size_bytes">Bytes</string>
+    <string name="file_size_kilobytes">KB</string>
+    <string name="file_size_megabytes">MB</string>
+    <string name="file_size_gigabytes">GB</string>
+    <!-- Search -->
+    <string name="search">Suche</string>
+    <string name="search_hint">Suchbegriff eingeben</string>
+    <!-- Comments -->
+    <string name="comments">Kommentare</string>
+    <string name="comment_create_hint">Kommentar hier eingeben...</string>
+    <!-- Actions -->
+    <string name="create">Erzeugen</string>
+    <string name="add">Hinzufügen</string>
+    <string name="like">Gefällt mir</string>
+    <string name="open_in">Öffnen mit</string>
+    <string name="take_photo">Foto aufnehmen</string>
+    <string name="make_video">Video aufnehmen</string>
+    <string name="record_audio">Audio aufnehmen</string>
+    <string name="version_history">Versionshistorie</string>
+    <string name="tags">Tags</string>
+    <string name="share">Freigeben</string>
+    <string name="refresh">Aktualisieren</string>
+    <string name="delete">Löschen</string>
+    <string name="save_back">Zurückspeichern</string>
+    <!-- Errors -->
+    <string name="error_unable_open_file">Diese Datei konnte nicht geöffnet werden.</string>
+    <string name="error_unable_share_link">Link konnte nicht freigegeben werden.</string>
+    <string name="error_unable_share_content">Inhalt konnte nicht freigegeben werden.</string>
+    <!-- Share -->
+    <string name="share_url">Link freigeben</string>
+    <string name="share_content">Inhalt freigeben</string>
+    <string name="share_url_long">Link von Alfresco Android Mobile wird freigegeben</string>
+
+</resources>
