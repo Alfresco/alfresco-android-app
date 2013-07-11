@@ -176,6 +176,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -186,7 +187,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         vRoot = inflater.inflate(R.layout.app_details, container, false);
+        
+        if (alfSession == null) { return vRoot; }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);

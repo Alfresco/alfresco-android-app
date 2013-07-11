@@ -41,6 +41,7 @@ public class AddFolderDialogFragment extends CreateFolderDialogFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 }
