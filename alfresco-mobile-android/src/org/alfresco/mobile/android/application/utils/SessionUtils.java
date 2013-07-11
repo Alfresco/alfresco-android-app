@@ -22,6 +22,8 @@ import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 
+import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Context;
 
 public final class SessionUtils
@@ -58,4 +60,13 @@ public final class SessionUtils
     {
         return ApplicationManager.getInstance(c).getSession(accountId);
     }
+
+    public static void checkSession(Activity activity, AlfrescoSession alfSession)
+    {
+        if (alfSession == null)
+        {
+            activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
 }

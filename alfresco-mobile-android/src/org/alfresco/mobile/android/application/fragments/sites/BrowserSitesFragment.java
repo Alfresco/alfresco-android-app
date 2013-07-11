@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
+import android.app.FragmentManager;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
@@ -88,6 +89,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -128,7 +130,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     private void setupTabs()
     {
         mTabHost.setup();
-        
+
         mTabHost.addTab(newTab(TAB_FAV_SITES, R.string.menu_browse_favorite_sites, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_MY_SITES, R.string.menu_browse_my_sites, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_ALL_SITES, R.string.menu_browse_all_sites, android.R.id.tabcontent));
@@ -279,8 +281,11 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     @Override
     public void refresh()
     {
-        alfSession.getServiceRegistry().getSiteService().clear();
-        reloadTab();
+        alfSession = SessionUtils.getSession(getActivity());
+        if (alfSession != null)
+        {
+            alfSession.getServiceRegistry().getSiteService().clear();
+            reloadTab();
+        }
     }
-
 }

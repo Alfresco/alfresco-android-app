@@ -69,6 +69,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 

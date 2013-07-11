@@ -93,6 +93,21 @@ public abstract class BaseActivity extends Activity
     }
 
     @Override
+    protected void onStart()
+    {
+        if (accountManager == null)
+        {
+            accountManager = applicationManager.getAccountManager();
+        }
+        if (applicationManager == null)
+        {
+            applicationManager = ApplicationManager.getInstance(this);
+            applicationManager.setAccountManager(accountManager);
+        }
+        super.onStart();
+    }
+
+    @Override
     protected void onStop()
     {
         super.onStop();

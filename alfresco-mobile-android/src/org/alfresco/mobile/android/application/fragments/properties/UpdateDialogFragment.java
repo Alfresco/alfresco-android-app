@@ -79,6 +79,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -86,6 +87,8 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
+
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
         folder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
 
@@ -93,6 +96,8 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
+        if (alfSession == null) { return v; }
+
         final EditText tv = (EditText) v.findViewById(R.id.content_name);
         final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
