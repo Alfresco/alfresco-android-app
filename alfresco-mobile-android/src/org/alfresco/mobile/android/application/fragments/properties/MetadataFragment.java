@@ -91,6 +91,7 @@ public class MetadataFragment extends BaseFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -103,12 +104,15 @@ public class MetadataFragment extends BaseFragment
             container.setVisibility(View.VISIBLE);
         }
         alfSession = SessionUtils.getSession(getActivity());
+
         node = (Node) getArguments().get(ARGUMENT_NODE);
         parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
 
         ScrollView sv = new ScrollView(getActivity());
         sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         sv.setPadding(5, 5, 5, 0);
+        
+        if (alfSession == null) { return sv; }
 
         LinearLayout v = new LinearLayout(getActivity());
         v.setOrientation(LinearLayout.VERTICAL);

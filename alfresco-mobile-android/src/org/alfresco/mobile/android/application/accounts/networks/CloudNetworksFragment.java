@@ -56,6 +56,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
     }

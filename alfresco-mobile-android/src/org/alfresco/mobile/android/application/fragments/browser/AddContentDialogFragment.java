@@ -85,15 +85,18 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
     {
         setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
+
 
     @Override
     public void onDestroyView()

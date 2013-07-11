@@ -166,6 +166,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         if (alfSession == null)
         {
 

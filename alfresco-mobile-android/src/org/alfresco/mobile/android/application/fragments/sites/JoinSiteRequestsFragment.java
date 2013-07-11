@@ -61,6 +61,8 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements Loader
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
+
         title = getString(R.string.joinsiterequest_list_title);
         Dialog d = super.onCreateDialog(savedInstanceState);
 

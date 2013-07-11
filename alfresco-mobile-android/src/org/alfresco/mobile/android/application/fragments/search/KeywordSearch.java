@@ -101,8 +101,11 @@ public class KeywordSearch extends SearchFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
+
         setActivateThumbnail(false);
         View v = inflater.inflate(R.layout.app_search, container, false);
+        if (alfSession == null) { return v; }
 
         init(v, R.string.empty_child);
 

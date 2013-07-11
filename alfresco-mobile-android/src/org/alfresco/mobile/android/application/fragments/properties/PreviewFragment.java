@@ -94,7 +94,10 @@ public class PreviewFragment extends BaseFragment
             container.setVisibility(View.VISIBLE);
         }
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
+
         View v = inflater.inflate(R.layout.app_preview, container, false);
+        if (alfSession == null) { return v; }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }

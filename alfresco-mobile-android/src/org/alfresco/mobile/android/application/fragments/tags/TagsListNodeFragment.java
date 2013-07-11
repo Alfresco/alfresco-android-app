@@ -51,6 +51,7 @@ public class TagsListNodeFragment extends TagsNodeFragment
     {
         setRetainInstance(false);
         alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
