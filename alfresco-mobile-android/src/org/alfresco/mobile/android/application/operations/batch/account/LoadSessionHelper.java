@@ -75,7 +75,7 @@ public class LoadSessionHelper
         if (settingsHelper.isCloud())
         {
             // CLOUD
-            settings.putAll(settingsHelper.prepareCloudSettings(false));
+            settings.putAll(settingsHelper.prepareCloudSettings());
             oauthData = settingsHelper.getData();
 
             if (settingsHelper.getNewToken())

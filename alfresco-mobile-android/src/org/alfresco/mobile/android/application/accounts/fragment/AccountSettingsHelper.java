@@ -242,7 +242,7 @@ public class AccountSettingsHelper
         return settings;
     }
 
-    public Map<String, Serializable> prepareCloudSettings(boolean createAccount)
+    public Map<String, Serializable> prepareCloudSettings()
     {
         HashMap<String, Serializable> settings = new HashMap<String, Serializable>();
         // Specific for Test Instance server
@@ -286,7 +286,7 @@ public class AccountSettingsHelper
             }
             else if (oauthUrl != null && !oauthUrl.isEmpty())
             {
-                settings.put(BASE_URL, ((createAccount) ? oauthUrl : baseUrl));
+                settings.put(BASE_URL, ((baseUrl == null) ? oauthUrl : baseUrl));
             }
 
             if (repositoryId != null && !repositoryId.isEmpty())
