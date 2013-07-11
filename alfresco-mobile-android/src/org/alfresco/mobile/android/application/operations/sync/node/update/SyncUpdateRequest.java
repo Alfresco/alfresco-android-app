@@ -30,7 +30,7 @@ public class SyncUpdateRequest extends AbstractSyncUpRequest
     private static final long serialVersionUID = 1L;
 
     public static final int TYPE_ID = 30;
-    
+
     private boolean doRemove = false;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -38,22 +38,23 @@ public class SyncUpdateRequest extends AbstractSyncUpRequest
     // ///////////////////////////////////////////////////////////////////////////
     public SyncUpdateRequest(Folder parentFolder, Document document, ContentFile contentFile)
     {
-        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), Uri.fromFile(contentFile.getFile())
-                .toString(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentFolder.getIdentifier(), document.getIdentifier(), document.getName(), contentFile.getFile()
+                .getPath(), contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
-    
+
     public SyncUpdateRequest(String parentIdentifier, Document document, ContentFile contentFile)
     {
-        super(parentIdentifier, document.getIdentifier(), document.getName(), Uri.fromFile(contentFile.getFile())
-                .toString(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentIdentifier, document.getIdentifier(), document.getName(), contentFile.getFile().getPath(),
+                contentFile.getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
     }
-    
-    public SyncUpdateRequest(String parentIdentifier, String nodeIdentifier, String documentName, ContentFile contentFile, boolean remove)
+
+    public SyncUpdateRequest(String parentIdentifier, String nodeIdentifier, String documentName,
+            ContentFile contentFile, boolean remove)
     {
-        super(parentIdentifier, nodeIdentifier, documentName, Uri.fromFile(contentFile.getFile())
-                .toString(), contentFile.getMimeType(), contentFile.getLength());
+        super(parentIdentifier, nodeIdentifier, documentName, contentFile.getFile().getPath(), contentFile
+                .getMimeType(), contentFile.getLength());
         requestTypeId = TYPE_ID;
         doRemove = remove;
     }
@@ -72,7 +73,7 @@ public class SyncUpdateRequest extends AbstractSyncUpRequest
     {
         return nodeIdentifier;
     }
-    
+
     public boolean doRemove()
     {
         return doRemove;
