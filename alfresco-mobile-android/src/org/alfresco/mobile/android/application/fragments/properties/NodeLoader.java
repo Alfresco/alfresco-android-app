@@ -190,7 +190,7 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
         if (settingsHelper.isCloud())
         {
-            settings.putAll(settingsHelper.prepareCloudSettings(false));
+            settings.putAll(settingsHelper.prepareCloudSettings());
             session = CloudSession.connect(settingsHelper.getData(), settings);
         }
         else
