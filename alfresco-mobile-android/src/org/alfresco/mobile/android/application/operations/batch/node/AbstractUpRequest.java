@@ -72,7 +72,7 @@ public abstract class AbstractUpRequest extends NodeOperationRequest
                 cursor.getString(BatchOperationSchema.COLUMN_LOCAL_URI_ID)));
         this.contentStreamLength = contentFile.getLength();
         this.localFilePath = contentFile.getFile().getPath();
-        this.documentName = contentFile.getFileName();
+        this.documentName = cursor.getString(BatchOperationSchema.COLUMN_TITLE_ID);
 
         setNotificationTitle(documentName);
         setMimeType(contentFile.getMimeType());
