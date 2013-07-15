@@ -83,19 +83,15 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
     private String uri;
 
     private Account selectAccount;
-
-    public NodeLoader(Activity context, List<Account> accounts, String url)
-    {
-        super(context);
-        this.accounts = accounts;
-        this.uri = url;
-    }
-
-    public NodeLoader(Activity context, AlfrescoSession session, String nodeIdentifier)
+    
+    private Account acc;
+    
+    public NodeLoader(Activity context, Account acc, AlfrescoSession session, String nodeIdentifier)
     {
         super(context);
         this.session = session;
         this.uri = nodeIdentifier;
+        this.acc = acc;
     }
 
     @Override
@@ -138,7 +134,6 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         }
         catch (Exception e)
         {
-            Account acc = SessionUtils.getAccount(getContext());
             SynchroManager syncManager = SynchroManager.getInstance(getContext());
             if (!ConnectivityUtils.hasInternetAvailable(getContext()) && syncManager.isSynced(acc, identifier))
             {

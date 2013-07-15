@@ -1036,7 +1036,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         vRoot.findViewById(R.id.properties_details).setVisibility(View.GONE);
         vRoot.findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
 
-        return new NodeLoader(getActivity(), alfSession, args.getString(ARGUMENT_NODE_ID));
+        return new NodeLoader(getActivity(), SessionUtils.getAccount(getActivity()), alfSession, args.getString(ARGUMENT_NODE_ID));
     }
 
     @Override
