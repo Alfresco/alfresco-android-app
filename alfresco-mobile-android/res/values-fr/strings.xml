@@ -154,7 +154,7 @@
     <string name="menu_resources">Ressources</string>
 
     <!-- UPLOAD -->
-    <string name="upload_title">Ajout en cours.</string>
+    <string name="upload_title">Ajouter&#8230;</string>
     <string name="upload_pick_document">Choisissez un document&#8230;</string>
     <string name="upload_photos">Photos</string>
     <string name="upload_videos">Vidéos</string>

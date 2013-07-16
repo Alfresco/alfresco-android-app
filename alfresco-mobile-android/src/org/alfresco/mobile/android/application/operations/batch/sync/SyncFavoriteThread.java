@@ -510,7 +510,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
             // Update Sync Info
             cValues.clear();
-            cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, Uri.fromFile(newLocalFile).toString());
+            cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, newLocalFile.getPath());
             cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
         }
         cValues.put(BatchOperationSchema.COLUMN_TITLE, doc.getName());
