@@ -1101,6 +1101,14 @@ public class MainActivity extends BaseActivity
                 currentAccount = AccountManager.retrieveAccount(context,
                         intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
 
+                if (getFragment(MainMenuFragment.TAG) != null){
+                    ((MainMenuFragment)getFragment(MainMenuFragment.TAG)).displayFavoriteStatut();
+                }
+                
+                if (getFragment(MainMenuFragment.SLIDING_TAG) != null){
+                    ((MainMenuFragment)getFragment(MainMenuFragment.SLIDING_TAG)).displayFavoriteStatut();
+                }
+                
                 // Return to root screen
                 activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 

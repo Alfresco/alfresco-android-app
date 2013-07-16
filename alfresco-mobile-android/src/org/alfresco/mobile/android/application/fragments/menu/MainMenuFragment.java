@@ -71,6 +71,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private Button menuFavorites;
 
+    private Button menuSlidingFavorites;
+
     public static final String TAG = "MainMenuFragment";
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
@@ -87,6 +89,11 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         spinnerAccount.setOnItemSelectedListener(this);
 
         menuFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
+
+        if (SLIDING_TAG.equals(getTag()))
+        {
+            menuSlidingFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
+        }
 
         return rootView;
     }
@@ -133,7 +140,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
         if (receiver == null)
         {
-            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
+            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
             receiver = new MainMenuReceiver();
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
         }
@@ -162,6 +169,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     public void refreshData()
     {
         refresh();
+        displayFavoriteStatut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -260,7 +268,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             }
         }
 
-        Log.d(TAG, getTag() + " : " + accountIndex);
         spinnerAccount.setSelection(accountIndex);
     }
 
@@ -276,12 +283,12 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         }
     }
 
-    private void displayFavoriteStatut()
+    public void displayFavoriteStatut()
     {
         Cursor statutCursor = null;
         Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
         Drawable statut = null;
-        
+
         try
         {
             Account acc = SessionUtils.getAccount(getActivity());
@@ -299,6 +306,12 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
                 statutCursor.close();
+
+                if (menuSlidingFavorites != null)
+                {
+                    menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+                }
+                menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
             }
         }
         catch (Exception e)
@@ -312,8 +325,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                 statutCursor.close();
             }
         }
-
-        menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -325,13 +336,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         public void onReceive(Context context, Intent intent)
         {
             Log.d(TAG, intent.getAction());
-
             if (intent.getAction() == null) { return; }
-
-            if (intent.getAction().equals(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED))
-            {
-                displayFavoriteStatut();
-            }
+            displayFavoriteStatut();
         }
     }
 }
