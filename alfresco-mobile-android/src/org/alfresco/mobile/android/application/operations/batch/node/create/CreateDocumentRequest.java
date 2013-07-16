@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch.node.create;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +27,9 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
+import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 
 import android.database.Cursor;
 
@@ -149,7 +152,7 @@ public class CreateDocumentRequest extends AbstractUpRequest
     {
         return tags;
     }
-
+    
     // ////////////////////////////////////////////////////
     // SETTERS
     // ////////////////////////////////////////////////////
@@ -161,5 +164,16 @@ public class CreateDocumentRequest extends AbstractUpRequest
         {
             persistentProperties.put(ContentModel.PROP_NAME, name);
         }
+    }
+    
+    public void setContentFile(File f)
+    {
+        ContentFile contentFile = new ContentFileProgressImpl(f);
+        this.contentStreamLength = contentFile.getLength();
+        this.localFilePath = contentFile.getFile().getPath();
+        this.documentName = f.getName();
+
+        setNotificationTitle(documentName);
+        setMimeType(contentFile.getMimeType());
     }
 }
