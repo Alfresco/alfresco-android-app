@@ -176,7 +176,7 @@ public abstract class AbstractUpThread extends AbstractBatchOperationThread<Docu
     {
         return contentFile;
     }
-
+    
     public String getDocumentName()
     {
         return documentName;

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.operations.batch.impl;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
@@ -32,7 +33,7 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
     private static final String TAG = AbstractBatchOperationThread.class.getName();
 
     protected static final String EXCEPTION_OPERATION_CANCEL = "Operation Cancelled";
-    
+
     protected boolean hasCancelled = false;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -92,5 +93,10 @@ public abstract class AbstractBatchOperationThread<T> extends AbstractOperationT
     public boolean requireNetwork()
     {
         return true;
+    }
+
+    public Account getAccount()
+    {
+        return acc;
     }
 }

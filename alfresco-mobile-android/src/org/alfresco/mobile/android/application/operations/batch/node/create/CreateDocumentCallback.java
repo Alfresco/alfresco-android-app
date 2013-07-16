@@ -26,11 +26,14 @@ import org.alfresco.mobile.android.application.manager.NotificationHelper;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
+import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.util.Log;
 
@@ -40,7 +43,7 @@ import android.util.Log;
 public class CreateDocumentCallback extends AbstractBatchOperationCallback<Document>
 {
     private static final String TAG = CreateDocumentCallback.class.getName();
-    
+
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ////////////////////////////////////////////////////
@@ -105,8 +108,7 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
             {
                 ContentFile contentFile = ((AbstractUpThread) task).getContentFile();
                 final File folderStorage = StorageManager.getDownloadFolder(getBaseContext(),
-                        ((CreateDocumentThread) task).getSession().getBaseUrl(), ((CreateDocumentThread) task)
-                                .getSession().getPersonIdentifier());
+                        ((CreateDocumentThread) task).getAccount());
 
                 File dlFile = new File(folderStorage, contentFile.getFileName());
                 if (dlFile.exists())
@@ -118,6 +120,16 @@ public class CreateDocumentCallback extends AbstractBatchOperationCallback<Docum
                 if (!contentFile.getFile().renameTo(dlFile))
                 {
                     Log.e(TAG, "Unable to rename file");
+                }
+                else
+                {
+                    // Update Referential with the new file
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(BatchOperationSchema.COLUMN_LOCAL_URI, dlFile.getPath());
+                    context.getContentResolver().update(
+                            ((CreateDocumentThread) task).getOperationRequest().getNotificationUri(), cValues, null,
+                            null);
+                   ((CreateDocumentRequest)((CreateDocumentThread) task).getOperationRequest()).setContentFile(dlFile);
                 }
             }
         }
