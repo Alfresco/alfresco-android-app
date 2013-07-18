@@ -111,7 +111,6 @@
                 android:background="@drawable/btn_default_holo_light_underline"
                 android:drawableLeft="@drawable/ic_favorite"
                 android:drawablePadding="8dip"
-                android:drawableRight="@drawable/ic_warning_light"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_favorites"
