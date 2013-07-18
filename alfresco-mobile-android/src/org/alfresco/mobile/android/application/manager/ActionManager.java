@@ -114,7 +114,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(contentFile);
-        intent.setDataAndType(data, MimeTypeManager.getMIMEType(contentFile.getName()));
+        intent.setDataAndType(data, MimeTypeManager.getMIMEType(contentFile.getName()).toLowerCase());
         return intent;
     }
 

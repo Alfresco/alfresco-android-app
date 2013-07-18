@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.AbstractSyncUpThread;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.security.EncryptionUtils;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -66,7 +67,11 @@ public class SyncUpdateThread extends AbstractSyncUpThread
 
             if (contentFile != null)
             {
-                DataProtectionManager.getInstance(context).checkDecrypt(acc, contentFile.getFile());
+                if (DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
+                {
+                    //Decrypt now !
+                    EncryptionUtils.decryptFile(context, contentFile.getFile().getPath());
+                }
 
                 Session cmisSession = ((AbstractAlfrescoSessionImpl) session).getCmisSession();
                 AlfrescoDocument cmisDoc = (AlfrescoDocument) cmisSession.getObject(document.getIdentifier());
