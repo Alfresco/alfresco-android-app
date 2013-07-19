@@ -30,7 +30,7 @@ import android.os.Bundle;
 public class PassCodeActivity extends Activity
 {
     public static final int REQUEST_CODE_PASSCODE = 48976;
-    
+
     // ///////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////
@@ -53,7 +53,17 @@ public class PassCodeActivity extends Activity
             activity.startActivityForResult(new Intent(activity, PassCodeActivity.class), REQUEST_CODE_PASSCODE);
         }
     }
-    
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE && resultCode == RESULT_CANCELED)
+        {
+            setResult(Activity.RESULT_CANCELED);
+            finish();
+        }
+    }
+
     @Override
     public void onBackPressed()
     {
