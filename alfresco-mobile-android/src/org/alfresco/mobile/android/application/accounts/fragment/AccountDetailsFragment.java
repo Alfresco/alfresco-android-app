@@ -38,8 +38,10 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -210,10 +212,10 @@ public class AccountDetailsFragment extends BaseFragment
             @Override
             public void onClick(View view)
             {
-                //Affect new account to activity
+                // Affect new account to activity
                 ((BaseActivity) getActivity()).setCurrentAccount(acc);
-                
-                //Request or create new session for the account.
+
+                // Request or create new session for the account.
                 ActionManager.reloadAccount(getActivity(), acc);
             }
         });
@@ -425,7 +427,7 @@ public class AccountDetailsFragment extends BaseFragment
             {
                 isEditable = false;
                 retrieveFormValues();
-                
+
                 acc = AccountManager.update(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID), description,
                         (url != null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(),
@@ -489,7 +491,7 @@ public class AccountDetailsFragment extends BaseFragment
                 public void onClick(DialogInterface dialog, int item)
                 {
                     DataProtectionManager.getInstance(getActivity()).decrypt(acc);
-                    
+
                     Editor edit = prefs.edit();
 
                     // Unflag this so that on next (first) addition of a new
@@ -501,8 +503,8 @@ public class AccountDetailsFragment extends BaseFragment
                     // Turn off data protection
                     edit.putBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
                     edit.commit();
-                    
-                    deleteAccount(); 
+
+                    deleteAccount();
                 }
             });
             builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
@@ -542,11 +544,24 @@ public class AccountDetailsFragment extends BaseFragment
     private void deleteAccount()
     {
         getActivity().getContentResolver().delete(AccountManager.getUri(acc.getId()), null, null);
-        
-        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED));
+
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
+                new Intent(IntentIntegrator.ACTION_DELETE_ACCOUNT_COMPLETED));
 
         // In case where currentAccount is the one deleted.
         ApplicationManager.getInstance(getActivity()).removeAccount(acc.getId());
+
+        if (SessionUtils.getAccount(getActivity()) != null
+                && SessionUtils.getAccount(getActivity()).getId() == acc.getId())
+        {
+            ((BaseActivity) getActivity()).setCurrentAccount(null);
+            SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
+            long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
+            if (id == acc.getId()){
+                settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).commit();
+            }
+            ((BaseActivity) getActivity()).setCurrentAccount(AccountManager.getInstance(getActivity()).getDefaultAccount());
+        }
 
         Cursor cursor = getActivity().getContentResolver().query(AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL,
                 null, null, null);
