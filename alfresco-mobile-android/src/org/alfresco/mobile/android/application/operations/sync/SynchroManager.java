@@ -616,7 +616,7 @@ public final class SynchroManager extends OperationManager
                 SynchroProvider.getAccountFilter(account) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
                         + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1)
-                && GeneralPreferences.hasActivateSync(mAppContext, SessionUtils.getAccount(mAppContext));
+                && GeneralPreferences.hasActivateSync(mAppContext, account);
         favoriteCursor.close();
         return b;
     }
@@ -631,8 +631,8 @@ public final class SynchroManager extends OperationManager
     {
         if (node.isFolder()) { return null; }
         if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext,
-                SessionUtils.getAccount(mAppContext), node.getName(), node.getIdentifier()); }
-        return StorageManager.getSynchroFile(mAppContext, SessionUtils.getAccount(mAppContext), (Document) node);
+                account, node.getName(), node.getIdentifier()); }
+        return StorageManager.getSynchroFile(mAppContext, account, (Document) node);
     }
 
     public Uri getUri(Account account, String nodeIdentifier)

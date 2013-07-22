@@ -149,6 +149,7 @@ public class PreviewFragment extends BaseFragment
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
             final File syncFile = syncManager.getSyncFile(acc, node);
+            if (syncFile == null) { return; }
             long datetime = syncFile.lastModified();
             detailsFragment.setDownloadDateTime(new Date(datetime));
 
