@@ -828,6 +828,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
             final File syncFile = syncManager.getSyncFile(acc, node);
+            if (syncFile == null) { return; }
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
