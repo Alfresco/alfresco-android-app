@@ -278,7 +278,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         try
         {
-            if (DataProtectionManager.getInstance(activity).isEncryptionEnable())
+            if (DataProtectionManager.getInstance(activity).isEncryptable(SessionUtils.getAccount(activity), file))
             {
                 DataProtectionManager.getInstance(activity).decrypt(SessionUtils.getAccount(activity), file,
                         DataProtectionManager.ACTION_SEND_ALFRESCO);
