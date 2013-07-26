@@ -273,7 +273,7 @@ public class RenditionManager
         }
         else if (cancelPotentialWork(identifier, iv))
         {
-            final BitmapThread thread = new BitmapThread(session, iv, identifier, type, preview);
+            final BitmapThread thread = new BitmapThread(context, session, iv, identifier, type, preview);
             thread.setPriority(Thread.MIN_PRIORITY);
             if (preview != null)
             {
@@ -429,21 +429,25 @@ public class RenditionManager
 
         private AlfrescoSession session;
 
+        private Activity ctxt;
+
         private String username;
 
         private Integer preview;
 
-        public BitmapThread(AlfrescoSession session, ImageView imageView, String identifier, int type)
+        public BitmapThread(Activity ctxt, AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
-            this(session, imageView, identifier, type, null);
+            this(ctxt, session, imageView, identifier, type, null);
         }
 
-        public BitmapThread(AlfrescoSession session, ImageView imageView, String identifier, int type, Integer preview)
+        public BitmapThread(Activity ctxt, AlfrescoSession session, ImageView imageView, String identifier, int type,
+                Integer preview)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
             this.imageViewReference = new WeakReference<ImageView>(imageView);
             this.session = session;
+            this.ctxt = ctxt;
 
             if (type == TYPE_NODE)
             {
@@ -544,9 +548,16 @@ public class RenditionManager
                     addBitmapToMemoryCache(key, bm);
                     if (!isInterrupted())
                     {
+
                         ((Activity) imageViewReference.get().getContext()).runOnUiThread(new BitmapDisplayer(bm,
                                 preview, imageViewReference, this));
                     }
+                }
+                else if (imageViewReference != null && imageViewReference.get() != null
+                        && ctxt != null)
+                {
+                    imageViewReference.get().setScaleType(ImageView.ScaleType.FIT_XY);
+                    ctxt.runOnUiThread(new BitmapDisplayer(bm, preview, imageViewReference, this));
                 }
             }
             catch (Exception e)
@@ -643,7 +654,6 @@ public class RenditionManager
             final String bitmapData = bitmapWorkerTask.identifier;
             if (bitmapData != null && !bitmapData.equals(data))
             {
-                // Log.d(TAG, "Cancel : " + data);
                 bitmapWorkerTask.interrupt();
             }
             else

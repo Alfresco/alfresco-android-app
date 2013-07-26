@@ -24,6 +24,10 @@ package org.alfresco.mobile.android.application.fragments.menu;
  */
 public interface MenuActionItem
 {
+    // ///////////////////////////////////////////
+    // PROFILE
+    // ///////////////////////////////////////////
+    int MENU_PROFILE = 1;
 
     // ///////////////////////////////////////////
     // BROWSER
@@ -54,13 +58,13 @@ public interface MenuActionItem
     int MENU_SEND = 60;
 
     int MENU_SAVE = 65;
-    
+
     int MENU_SPEECH = 66;
 
     int MENU_ENCODING = 67;
 
     int MENU_FONT_SIZE = 68;
-    
+
     int MENU_ENCRYPT = 70;
 
     int MENU_DECRYPT = 71;
@@ -146,12 +150,32 @@ public interface MenuActionItem
     int MENU_SITE_UNFAVORITE = 405;
 
     int MENU_SITE_LIST_REQUEST = 406;
+    
+    int MENU_SITE_MEMBERS = 400;
 
     // ///////////////////////////////////////////
     // SYNC
     // ///////////////////////////////////////////
     int MENU_RESOLVE_CONFLICT = 500;
 
+    // ///////////////////////////////////////////
+    // SKYPE
+    // ///////////////////////////////////////////
+    int MENU_CHAT = 600;
+
+    int MENU_CALL = 601;
+
+    int MENU_VIDEOCALL = 602;
+
+    int MENU_EMAIL = 603;
+
+    int MENU_COMPANY_EMAIL = 604;
+
+    int MENU_COMPANY_TEL = 605;
+
+    int MENU_TEL = 606;
+
+    int MENU_MOBILE = 607;
     // ///////////////////////////////////////////
     // GENERAL
     // ///////////////////////////////////////////

@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.asynchronous.SiteMembershipLoader;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -71,8 +72,8 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
 
         if (mode == BrowserSitesFragment.MODE_IMPORT) { return; }
 
-        UIUtils.setBackground(((View) vh.choose), getContext().getResources().getDrawable(
-                R.drawable.quickcontact_badge_overlay_light));
+        UIUtils.setBackground(((View) vh.choose),
+                getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
         vh.choose.setVisibility(View.VISIBLE);
         vh.choose.setTag(R.id.site_action, item);
@@ -88,7 +89,8 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 PopupMenu popup = new PopupMenu(getContext(), v);
                 getMenu(popup.getMenu(), item);
 
-                if (AndroidVersion.isICSOrAbove()){
+                if (AndroidVersion.isICSOrAbove())
+                {
                     popup.setOnDismissListener(new OnDismissListener()
                     {
                         @Override
@@ -134,6 +136,9 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
             menu.add(Menu.NONE, MenuActionItem.MENU_SITE_FAVORITE, Menu.FIRST + MenuActionItem.MENU_SITE_FAVORITE,
                     R.string.action_favorite_site);
         }
+
+        menu.add(Menu.NONE, MenuActionItem.MENU_SITE_MEMBERS, Menu.FIRST + MenuActionItem.MENU_SITE_MEMBERS,
+                R.string.members);
     }
 
     @Override
@@ -143,6 +148,13 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
         Bundle b = new Bundle();
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_SITE_MEMBERS:
+                if (fragment.getActivity() instanceof MainActivity)
+                {
+                    ((MainActivity) fragment.getActivity()).addMembersFragment(selectedOptionItems.get(0));
+                }
+                onMenuItemClick = true;
+                break;
             case MenuActionItem.MENU_SITE_LEAVE:
                 b.putBoolean(SiteMembershipLoaderCallback.PARAM_ISJOINING, false);
                 b.putSerializable(SiteMembershipLoaderCallback.PARAM_SITE, selectedOptionItems.get(0));

@@ -117,7 +117,6 @@ import android.widget.TextView;
 public class DetailsFragment extends MetadataFragment implements OnTabChangeListener,
         LoaderCallbacks<LoaderResult<Node>>
 {
-
     private static final String ACTION_REFRESH = "org.alfresco.mobile.android.intent.ACTION_REFRESH";
 
     public static final String TAG = DetailsFragment.class.getName();

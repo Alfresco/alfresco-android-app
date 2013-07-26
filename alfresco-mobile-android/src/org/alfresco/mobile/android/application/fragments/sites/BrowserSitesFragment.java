@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.site.SitesFragment;
 
-import android.app.FragmentManager;
 import android.content.Loader;
 import android.os.Bundle;
 import android.util.Log;
