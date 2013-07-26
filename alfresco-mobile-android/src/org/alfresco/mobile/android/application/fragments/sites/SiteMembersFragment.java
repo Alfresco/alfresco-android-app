@@ -184,7 +184,7 @@ public class SiteMembersFragment extends BaseListFragment implements
         else
         {
             // Show properties
-            ((MainActivity) getActivity()).addUserProfilFragment(item.getIdentifier());
+            ((MainActivity) getActivity()).addPersonProfileFragment(item.getIdentifier());
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
     }

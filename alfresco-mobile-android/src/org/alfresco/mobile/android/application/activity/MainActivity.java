@@ -610,7 +610,7 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addNavigationFragment(s);
     }
-
+    
     public void addLocalFileNavigationFragment()
     {
         BaseFragment frag = FileExplorerMenuFragment.newInstance();
@@ -659,7 +659,7 @@ public class MainActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
 
-    public void addUserProfilFragment(String userIdentifier)
+    public void addPersonProfileFragment(String userIdentifier)
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         clearCentralPane();

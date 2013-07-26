@@ -150,7 +150,7 @@ public interface MenuActionItem
     int MENU_SITE_UNFAVORITE = 405;
 
     int MENU_SITE_LIST_REQUEST = 406;
-    
+
     int MENU_SITE_MEMBERS = 400;
 
     // ///////////////////////////////////////////
@@ -159,7 +159,16 @@ public interface MenuActionItem
     int MENU_RESOLVE_CONFLICT = 500;
 
     // ///////////////////////////////////////////
-    // SKYPE
+    // ACTIVITY DETAILS
+    // ///////////////////////////////////////////
+    int MENU_ACTIVITY_SITE = 550;
+
+    int MENU_ACTIVITY_PROFILE = 551;
+
+    int MENU_ACTIVITY_PROFILE_2ND = 552;
+
+    // ///////////////////////////////////////////
+    // USER PROFILE
     // ///////////////////////////////////////////
     int MENU_CHAT = 600;
 
@@ -176,6 +185,7 @@ public interface MenuActionItem
     int MENU_TEL = 606;
 
     int MENU_MOBILE = 607;
+
     // ///////////////////////////////////////////
     // GENERAL
     // ///////////////////////////////////////////

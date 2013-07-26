@@ -625,5 +625,11 @@
     <!-- MEMBERS -->
     <string name="members">List of Members</string>
     <string name="members_of">Members of %s</string>
+    
+    <!-- Activities -->
+    <string name="activity_site">Site details</string>
+    <string name="activity_profile">Profile of %s</string>
+    <string name="activity_profile2">Profile of %s</string>
+    
 
 </resources>
