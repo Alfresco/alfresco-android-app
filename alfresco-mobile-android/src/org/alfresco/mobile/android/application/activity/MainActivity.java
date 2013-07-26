@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.model.workflow.Task;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
@@ -62,6 +63,8 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.TasksFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -486,6 +489,11 @@ public class MainActivity extends BaseActivity
                 FragmentDisplayer.replaceFragment(this, syncFrag, DisplayUtils.getLeftFragmentId(this),
                         FavoritesSyncFragment.TAG, true);
                 break;
+            case R.id.menu_workflow:
+                Fragment taskFragment = TasksFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, taskFragment, DisplayUtils.getLeftFragmentId(this),
+                        TasksFragment.TAG, true);
+                break;
             case R.id.menu_downloads:
                 if (currentAccount == null)
                 {
@@ -679,6 +687,20 @@ public class MainActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), SiteMembersFragment.TAG,
                 true);
     }
+    
+    public void addTaskDetailsFragment(Task task)
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        TaskDetailsFragment frag = TaskDetailsFragment.newInstance(task);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), TaskDetailsFragment.TAG, b);
+    }
 
     public void addPropertiesFragment(Node n)
     {
@@ -815,6 +837,12 @@ public class MainActivity extends BaseActivity
 
         if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
 
+        if (isVisible(TasksFragment.TAG))
+        {
+            TasksFragment.getMenu(menu);
+            return true;
+        }
+        
         if (isVisible(FileExplorerFragment.TAG))
         {
             ((FileExplorerFragment) getFragment(FileExplorerFragment.TAG)).getMenu(menu);

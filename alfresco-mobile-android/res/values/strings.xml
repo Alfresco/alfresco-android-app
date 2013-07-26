@@ -631,5 +631,17 @@
     <string name="activity_profile">Profile of %s</string>
     <string name="activity_profile2">Profile of %s</string>
     
+    <!-- Workflow -->
+    <string name="my_tasks">My Tasks</string>
+    <string name="empty_tasks">No Tasks</string>
+    <string name="workflow_start">Start a workflow</string>
+    
+    <!-- Multi Selection -->
+    <plurals name="selected_task">
+        <item quantity="zero">no task</item>
+        <item quantity="one">1 task</item>
+        <item quantity="other">%1$s tasks</item>
+    </plurals>
+    
 
 </resources>
