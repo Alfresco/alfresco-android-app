@@ -56,9 +56,11 @@ import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplor
 import org.alfresco.mobile.android.application.fragments.fileexplorer.LibraryFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
+import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
@@ -205,9 +207,6 @@ public class MainActivity extends BaseActivity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
-
-        // TODO REMOVE
-        // SynchroSchema.reset(DatabaseManager.newInstance(this).getWriteDb());
     }
 
     @Override
@@ -453,6 +452,10 @@ public class MainActivity extends BaseActivity
 
         switch (id)
         {
+            case R.id.menu_myprofile:
+                frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
+                frag.show(getFragmentManager(), PersonProfileFragment.TAG);
+                break;
             case R.id.menu_browse_my_sites:
                 if (!checkSession(R.id.menu_browse_my_sites)) { return; }
                 frag = BrowserSitesFragment.newInstance();
@@ -656,6 +659,27 @@ public class MainActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
 
+    public void addUserProfilFragment(String userIdentifier)
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        BaseFragment frag = PersonProfileFragment.newInstance(userIdentifier);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), PersonProfileFragment.TAG, b);
+    }
+
+    public void addMembersFragment(Site site)
+    {
+        BaseFragment frag = SiteMembersFragment.newInstance(site);
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), SiteMembersFragment.TAG,
+                true);
+    }
+
     public void addPropertiesFragment(Node n)
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
@@ -846,6 +870,10 @@ public class MainActivity extends BaseActivity
     {
         switch (item.getItemId())
         {
+            case MenuActionItem.MENU_PROFILE:
+                PersonProfileFragment frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
+                frag.show(getFragmentManager(), PersonProfileFragment.TAG);
+                return true;
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
@@ -1101,14 +1129,16 @@ public class MainActivity extends BaseActivity
                 currentAccount = AccountManager.retrieveAccount(context,
                         intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
 
-                if (getFragment(MainMenuFragment.TAG) != null){
-                    ((MainMenuFragment)getFragment(MainMenuFragment.TAG)).displayFavoriteStatut();
+                if (getFragment(MainMenuFragment.TAG) != null)
+                {
+                    ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFavoriteStatut();
                 }
-                
-                if (getFragment(MainMenuFragment.SLIDING_TAG) != null){
-                    ((MainMenuFragment)getFragment(MainMenuFragment.SLIDING_TAG)).displayFavoriteStatut();
+
+                if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
+                {
+                    ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displayFavoriteStatut();
                 }
-                
+
                 // Return to root screen
                 activity.getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
@@ -1227,12 +1257,14 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(activity);
-                Account tmpAccount = AccountManager.retrieveAccount(activity, intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+                Account tmpAccount = AccountManager.retrieveAccount(activity,
+                        intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
                 if (tmpAccount.getIsPaidAccount()
                         && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
                 {
                     // Check if we've prompted the user for Data Protection yet.
-                    // This is needed on new account creation, as the Activity gets
+                    // This is needed on new account creation, as the Activity
+                    // gets
                     // re-created after the account is created.
                     DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
@@ -1241,7 +1273,7 @@ public class MainActivity extends BaseActivity
                 }
                 return;
             }
-            
+
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }
@@ -1274,7 +1306,7 @@ public class MainActivity extends BaseActivity
                 MessengerManager.showLongToast(activity, getString(R.string.account_not_activated));
                 return;
             }
-            
+
             if (IntentIntegrator.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
             {
                 if (!isCurrentAccountToLoad(intent)) { return; }

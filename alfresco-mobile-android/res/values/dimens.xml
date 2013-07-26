@@ -80,4 +80,12 @@
     <!-- IMAX FILE SIZE -->
     <integer name="text_editor_max_file_size">204800</integer>
     
+    <!-- PROFILE -->
+    <dimen name="name_size">26sp</dimen>
+    <dimen name="location_size">16sp</dimen>
+    <dimen name="profile_row_padding">5dip</dimen>
+    <dimen name="profile_minwidth">150dip</dimen>
+    <dimen name="profile_icon_size">100dip</dimen>
+    
+    
 </resources>

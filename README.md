@@ -19,9 +19,9 @@ Alternatively, use one of the [tags](https://github.com/Alfresco/alfresco-androi
 License
 -------
 
-Alfresco Mobile for Android 1.0 
+Alfresco Mobile for Android 1.2 
 
-Copyright © 2012 Alfresco Software, Ltd. and others. 
+Copyright © 2013 Alfresco Software, Ltd. and others. 
 
 This product distribution is made available under the [Apache 2.0 license] (http://www.apache.org/licenses/LICENSE-2.0.html). 
 
