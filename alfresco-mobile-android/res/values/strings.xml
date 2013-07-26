@@ -490,7 +490,7 @@
         <item quantity="one">1 download in progress.</item>
         <item quantity="other">%1$s downloads in progress.</item>
     </plurals>
-    
+
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
@@ -589,9 +589,41 @@
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
-    
+
     <!-- Simple -->
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <!-- People -->
+    <string name="my_profile">My Profile</string>
+    <string name="about">About</string>
+    <string name="firstName">First Name</string>
+    <string name="lastName">Last Name</string>
+    <string name="work_at">%1$s at %2$s</string>
+    <string name="jobTitle">Job Title</string>
+    <string name="location">Location</string>
+    <string name="summary">Summary</string>
+    <string name="contactInformation">Contact Information</string>
+    <string name="email">Email</string>
+    <string name="telephone">Telephone</string>
+    <string name="mobile">Mobile</string>
+    <string name="skypeId">Skype</string>
+    <string name="instantMessagingId">IM</string>
+    <string name="googleId">Google Username</string>
+    <string name="company">Company</string>
+    <string name="companyDetails">Company Details</string>
+    <string name="companyName">Name</string>
+    <string name="companyAdress">Address</string>
+    <string name="companyPostCode">Post Code</string>
+    <string name="companyTelephone">Telephone</string>
+    <string name="companyFax">Fax</string>
+    <string name="companyEmail">Email</string>
+    <string name="start_chat">Start a chat</string>
+    <string name="start_call">Start a call</string>
+    <string name="start_video_call">Start a video call</string>
     
+    <!-- MEMBERS -->
+    <string name="members">List of Members</string>
+    <string name="members_of">Members of %s</string>
+
 </resources>
