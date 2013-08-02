@@ -19,40 +19,42 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractPagingLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * @author jpascal
  */
-public class TasksLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Task>>>
+public class ItemsLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Node>>>
 {
     /** Unique SitesLoader identifier. */
-    public static final int ID = TasksLoader.class.hashCode();
+    public static final int ID = ItemsLoader.class.hashCode();
+    
+    private Task task;
 
-    public TasksLoader(Context context, AlfrescoSession session)
+    public ItemsLoader(Context context, AlfrescoSession session, Task task)
     {
         super(context);
         this.session = session;
+        this.task = task;
     }
 
     @Override
-    public LoaderResult<PagingResult<Task>> loadInBackground()
+    public LoaderResult<PagingResult<Node>> loadInBackground()
     {
-        LoaderResult<PagingResult<Task>> result = new LoaderResult<PagingResult<Task>>();
-        PagingResult<Task> pagingResult = null;
+        LoaderResult<PagingResult<Node>> result = new LoaderResult<PagingResult<Node>>();
+        PagingResult<Node> pagingResult = null;
 
         try
         {
-            pagingResult = session.getServiceRegistry().getWorkflowService().getTasks(listingContext);
+            pagingResult = session.getServiceRegistry().getWorkflowService().getDocuments(task, listingContext);
         }
         catch (Exception e)
         {
-            Log.d("TasksLoader", Log.getStackTraceString(e));
             result.setException(e);
         }
 

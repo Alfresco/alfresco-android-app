@@ -17,10 +17,12 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.workflow.Task;
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -28,7 +30,9 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.Html;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * @author Jean Marie Pascal
@@ -51,13 +55,34 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
     @Override
     protected void updateTopText(GenericViewHolder vh, Task item)
     {
-        vh.topText.setText(item.getName());
+        vh.topText.setText(item.getDescription());
     }
 
     @Override
     protected void updateBottomText(GenericViewHolder vh, Task item)
     {
-        vh.bottomText.setText(item.getDescription());
+        StringBuilder bottomText = new StringBuilder(item.getName());
+        
+        if (item.getDueAt() != null && item.getDueAt().before(calendar))
+        {
+            bottomText.append(" - ");
+            bottomText.append("<b>");
+            bottomText.append("<font color='#9F000F'>");
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
+            bottomText.append(formatter.format(item.getDueAt().getTime()));
+            bottomText.append("</font>");
+            bottomText.append("</b>");
+        }
+        
+        if (item.getAssigneeIdentifier() == null)
+        {
+            bottomText.append(" - ");
+            bottomText.append("<b>");
+            bottomText.append(getContext().getString(R.string.tasks_assignee_unassigned));
+            bottomText.append("</b>");
+        }
+        
+        vh.bottomText.setText(Html.fromHtml(bottomText.toString()), TextView.BufferType.SPANNABLE);
 
         if (selectedItems != null && selectedItems.contains(item))
         {

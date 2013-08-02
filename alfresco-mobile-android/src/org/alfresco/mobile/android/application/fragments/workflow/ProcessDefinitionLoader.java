@@ -20,39 +20,36 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 import org.alfresco.mobile.android.api.asynchronous.AbstractPagingLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * @author jpascal
  */
-public class TasksLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Task>>>
+public class ProcessDefinitionLoader extends AbstractPagingLoader<LoaderResult<PagingResult<ProcessDefinition>>>
 {
-    /** Unique SitesLoader identifier. */
-    public static final int ID = TasksLoader.class.hashCode();
+    public static final int ID = ProcessDefinitionLoader.class.hashCode();
 
-    public TasksLoader(Context context, AlfrescoSession session)
+    public ProcessDefinitionLoader(Context context, AlfrescoSession session)
     {
         super(context);
         this.session = session;
     }
 
     @Override
-    public LoaderResult<PagingResult<Task>> loadInBackground()
+    public LoaderResult<PagingResult<ProcessDefinition>> loadInBackground()
     {
-        LoaderResult<PagingResult<Task>> result = new LoaderResult<PagingResult<Task>>();
-        PagingResult<Task> pagingResult = null;
+        LoaderResult<PagingResult<ProcessDefinition>> result = new LoaderResult<PagingResult<ProcessDefinition>>();
+        PagingResult<ProcessDefinition> pagingResult = null;
 
         try
         {
-            pagingResult = session.getServiceRegistry().getWorkflowService().getTasks(listingContext);
+            pagingResult = session.getServiceRegistry().getWorkflowService().getProcessDefinitions(listingContext);
         }
         catch (Exception e)
         {
-            Log.d("TasksLoader", Log.getStackTraceString(e));
             result.setException(e);
         }
 

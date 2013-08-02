@@ -22,21 +22,20 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.ListingFilter;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -45,43 +44,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class TasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>, RefreshFragment
+public class ItemsFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Node>>>
 {
+    public static final String TAG = ItemsFragment.class.getName();
 
-    private static final String PARAM_FILTER = "TaskFragmentFilter";
+    private static final String PARAM_TASK = "taskObject";
 
-    public static final String TAG = TasksFragment.class.getName();
+    protected List<Node> selectedItems = new ArrayList<Node>(1);
 
-    protected List<Task> selectedItems = new ArrayList<Task>(1);
+    private NodeActions nActions;
 
-    private TaskActions nActions;
+    private Task currentTask;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public TasksFragment()
+    public ItemsFragment()
     {
-        loaderId = TasksLoader.ID;
+        loaderId = ItemsLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.empty_tasks;
+        emptyListMessageId = R.string.empty_items;
         initLoader = false;
         checkSession = false;
     }
 
-    public static TasksFragment newInstance()
+    public static ItemsFragment newInstance(Task task)
     {
-        TasksFragment bf = new TasksFragment();
-        return bf;
-    }
-
-    public static Fragment newInstance(ListingFilter f)
-    {
-        TasksFragment bf = new TasksFragment();
+        ItemsFragment bf = new ItemsFragment();
         Bundle b = new Bundle();
-        b.putSerializable(PARAM_FILTER, f);
+        b.putSerializable(PARAM_TASK, task);
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -92,13 +86,13 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(TasksLoader.ID, null, this);
+        getLoaderManager().restartLoader(ItemsLoader.ID, null, this);
     }
 
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        UIUtils.displayTitle(getActivity(), getString(R.string.task_items));
         getActivity().invalidateOptionsMenu();
         super.onResume();
     }
@@ -107,43 +101,34 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     // LOADERS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Task>>> onCreateLoader(int id, Bundle ba)
+    public Loader<LoaderResult<PagingResult<Node>>> onCreateLoader(int id, Bundle ba)
     {
         setListShown(false);
 
         bundle = (ba == null) ? getArguments() : ba;
 
+        currentTask = (Task) bundle.get(PARAM_TASK);
+
         ListingContext lc = null, lcorigin = null;
-        ListingFilter lf = null;
-        TasksLoader st = null;
+        ItemsLoader st = null;
         if (bundle != null)
         {
-            lf = (ListingFilter) bundle.getSerializable(PARAM_FILTER);
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            if (lc == null && lf != null)
-            {
-                lc = new ListingContext();
-            }
-            lc.setFilter(lf);
             loadState = bundle.getInt(LOAD_STATE);
-            st = new TasksLoader(getActivity(), alfSession);
         }
-        else
-        {
-            st = new TasksLoader(getActivity(), alfSession);
-        }
+        st = new ItemsLoader(getActivity(), alfSession, currentTask);
         calculateSkipCount(lc);
         st.setListingContext(lc);
         return st;
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Task>>> arg0, LoaderResult<PagingResult<Task>> results)
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> arg0, LoaderResult<PagingResult<Node>> results)
     {
         if (adapter == null)
         {
-            adapter = new TasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0), selectedItems);
+            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0), selectedItems, -1);
         }
         if (checkException(results))
         {
@@ -157,7 +142,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
     {
         // TODO Auto-generated method stub
     }
@@ -174,11 +159,6 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
                 R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.refresh);
-        mi.setIcon(R.drawable.ic_refresh);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -186,7 +166,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     // ///////////////////////////////////////////////////////////////////////////
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        Task item = (Task) l.getItemAtPosition(position);
+        Node item = (Node) l.getItemAtPosition(position);
 
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
@@ -214,16 +194,12 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
 
         if (hideDetails)
         {
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
-            }
             selectedItems.clear();
         }
         else if (nActions == null)
         {
             // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item);
+            ((MainActivity) getActivity()).addPropertiesFragment(item.getIdentifier(), true);
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
@@ -233,13 +209,13 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     {
         if (nActions != null) { return false; }
 
-        Task item = (Task) l.getItemAtPosition(position);
+        Node item = (Node) l.getItemAtPosition(position);
 
         selectedItems.clear();
         selectedItems.add(item);
 
         // Start the CAB using the ActionMode.Callback defined above
-        nActions = new TaskActions(TasksFragment.this, selectedItems);
+        nActions = new NodeActions(ItemsFragment.this, selectedItems);
         nActions.setOnFinishModeListerner(new onFinishModeListerner()
         {
             @Override
@@ -253,11 +229,5 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
         return true;
-    }
-
-    @Override
-    public void refresh()
-    {
-        reload(bundle, loaderId, this);
-    }
+    };
 }

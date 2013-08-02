@@ -18,25 +18,18 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.RefreshFragment;
-import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -45,43 +38,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class TasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>, RefreshFragment
+public class ProcessesDefinitionFragment extends BaseListFragment implements
+        LoaderCallbacks<LoaderResult<PagingResult<ProcessDefinition>>>
 {
 
-    private static final String PARAM_FILTER = "TaskFragmentFilter";
-
-    public static final String TAG = TasksFragment.class.getName();
-
-    protected List<Task> selectedItems = new ArrayList<Task>(1);
-
-    private TaskActions nActions;
+    public static final String TAG = ProcessesDefinitionFragment.class.getName();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public TasksFragment()
+    public ProcessesDefinitionFragment()
     {
-        loaderId = TasksLoader.ID;
+        loaderId = ProcessDefinitionLoader.ID;
         callback = this;
         emptyListMessageId = R.string.empty_tasks;
         initLoader = false;
         checkSession = false;
     }
 
-    public static TasksFragment newInstance()
+    public static ProcessesDefinitionFragment newInstance()
     {
-        TasksFragment bf = new TasksFragment();
+        ProcessesDefinitionFragment bf = new ProcessesDefinitionFragment();
         return bf;
     }
-
-    public static Fragment newInstance(ListingFilter f)
-    {
-        TasksFragment bf = new TasksFragment();
-        Bundle b = new Bundle();
-        b.putSerializable(PARAM_FILTER, f);
-        bf.setArguments(b);
-        return bf;
-    };
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -92,7 +71,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(TasksLoader.ID, null, this);
+        getLoaderManager().restartLoader(ProcessDefinitionLoader.ID, null, this);
     }
 
     @Override
@@ -107,31 +86,24 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     // LOADERS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Task>>> onCreateLoader(int id, Bundle ba)
+    public Loader<LoaderResult<PagingResult<ProcessDefinition>>> onCreateLoader(int id, Bundle ba)
     {
         setListShown(false);
 
         bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
-        ListingFilter lf = null;
-        TasksLoader st = null;
+        ProcessDefinitionLoader st = null;
         if (bundle != null)
         {
-            lf = (ListingFilter) bundle.getSerializable(PARAM_FILTER);
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
-            if (lc == null && lf != null)
-            {
-                lc = new ListingContext();
-            }
-            lc.setFilter(lf);
             loadState = bundle.getInt(LOAD_STATE);
-            st = new TasksLoader(getActivity(), alfSession);
+            st = new ProcessDefinitionLoader(getActivity(), alfSession);
         }
         else
         {
-            st = new TasksLoader(getActivity(), alfSession);
+            st = new ProcessDefinitionLoader(getActivity(), alfSession);
         }
         calculateSkipCount(lc);
         st.setListingContext(lc);
@@ -139,11 +111,13 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Task>>> arg0, LoaderResult<PagingResult<Task>> results)
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0,
+            LoaderResult<PagingResult<ProcessDefinition>> results)
     {
         if (adapter == null)
         {
-            adapter = new TasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0), selectedItems);
+            adapter = new ProcessesDefinitionAdapter(getActivity(), R.layout.sdk_list_row,
+                    new ArrayList<ProcessDefinition>(0));
         }
         if (checkException(results))
         {
@@ -157,7 +131,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
         // TODO Auto-generated method stub
     }
@@ -174,11 +148,6 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
                 R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.refresh);
-        mi.setIcon(R.drawable.ic_refresh);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -186,78 +155,9 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     // ///////////////////////////////////////////////////////////////////////////
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        Task item = (Task) l.getItemAtPosition(position);
-
-        Boolean hideDetails = false;
-        if (!selectedItems.isEmpty())
-        {
-            hideDetails = selectedItems.get(0).equals(item);
-        }
-        l.setItemChecked(position, true);
-
-        if (nActions != null)
-        {
-            nActions.selectNode(item);
-            if (selectedItems.size() == 0)
-            {
-                hideDetails = true;
-            }
-        }
-        else
-        {
-            selectedItems.clear();
-            if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
-            {
-                selectedItems.add(item);
-            }
-        }
-
-        if (hideDetails)
-        {
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
-            }
-            selectedItems.clear();
-        }
-        else if (nActions == null)
-        {
-            // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item);
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
-        }
-        adapter.notifyDataSetChanged();
-    }
-
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
-    {
-        if (nActions != null) { return false; }
-
-        Task item = (Task) l.getItemAtPosition(position);
-
-        selectedItems.clear();
-        selectedItems.add(item);
-
-        // Start the CAB using the ActionMode.Callback defined above
-        nActions = new TaskActions(TasksFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
-        {
-            @Override
-            public void onFinish()
-            {
-                nActions = null;
-                selectedItems.clear();
-                refreshListView();
-            }
-        });
-        getActivity().startActionMode(nActions);
-        adapter.notifyDataSetChanged();
-        return true;
-    }
-
-    @Override
-    public void refresh()
-    {
-        reload(bundle, loaderId, this);
+        ProcessDefinition item = (ProcessDefinition) l.getItemAtPosition(position);
+        // Show properties
+        StartProcessFragment.newInstance().show(getFragmentManager(),  StartProcessFragment.TAG);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
     }
 }

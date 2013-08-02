@@ -634,7 +634,34 @@
     <!-- Workflow -->
     <string name="my_tasks">My Tasks</string>
     <string name="empty_tasks">No Tasks</string>
+    <string name="empty_items">No Attachments</string>
+    <string name="task_items">Item(s)</string>
+    <string name="empty_process_definition">No Process</string>
     <string name="workflow_start">Start a workflow</string>
+    
+    <string name="task_actions">Response</string>
+    <string name="tasks">Tasks</string>
+    <string name="task_items">Documents</string>
+    <string name="task_workflow">Process</string>
+    
+    <!-- Workflow FILTERS -->
+    <string name="tasks_title">Tasks</string>
+    <string name="tasks_active">Active</string>
+    <string name="tasks_completed">Completed</string>
+    <string name="tasks_due">Due</string>
+    <string name="tasks_due_today">Today</string>
+    <string name="tasks_due_tomorrow">Tomorrow</string>
+    <string name="tasks_due_week">Next 7 days</string>
+    <string name="tasks_due_over">Overdue</string>
+    <string name="tasks_due_no_date">No Date</string>
+    <string name="tasks_priority">Priority</string>
+    <string name="tasks_priority_low">Low</string>
+    <string name="tasks_priority_medium">Medium</string>
+    <string name="tasks_priority_high">High</string>
+    <string name="tasks_assignee">Assignee</string>
+    <string name="tasks_assignee_me">Me</string>
+    <string name="tasks_assignee_unassigned">Unassigned</string>
+    
     
     <!-- Multi Selection -->
     <plurals name="selected_task">
@@ -642,6 +669,39 @@
         <item quantity="one">1 task</item>
         <item quantity="other">%1$s tasks</item>
     </plurals>
+    
+    <!-- Tasks -->
+    <string name="workflow_priority_low">Low priority</string>
+    <string name="workflow_priority_medium">Medium priority</string>
+    <string name="workflow_priority_high">High priority</string>
+    <string name="task_user_approved">%s approved the documents</string>
+    <string name="task_user_rejected">%s rejected the documents</string>
+    <string name="task_user_commented">and commented:</string>
+    <string name="task_user_no_comment">, but did not provide a comment</string>
+    <string name="task_user_completed"><![CDATA[<b>%s</b> completed this task]]></string>
+    <string name="task_user_not_completed"><![CDATA[<b>%s</b> did not complete this task yet]]></string>
+    
+    <string name="task_approve">Approve</string>
+    <string name="task_reject">Reject</string>
+    <string name="task_comment">Comment</string>
+    <string name="task_response">Response</string>
+    <string name="task_done">Done</string>
+    <string name="task_completing">Completing Task</string>
+    <string name="task_reassign">Reassign</string>
+    
+    <!-- Process Start -->
+    <string name="process_start_title">Start Process</string>
+    <string name="process_title">Title</string>
+    <string name="process_title_hint">New task</string>
+    <string name="process_due_on">Due on</string>
+    <string name="process_no_date">No date</string>
+    <string name="process_assignee">Assignee</string>
+    <string name="process_no_assignee">No assignee</string>
+    <string name="process_attachments">Attachments</string>
+    <string name="process_no_attachments">No attachments</string>
+    <string name="process_priority">Priority</string>
+    <string name="process_notification">Email notification</string>
+    
     
 
 </resources>

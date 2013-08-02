@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.workflow.Task;
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
