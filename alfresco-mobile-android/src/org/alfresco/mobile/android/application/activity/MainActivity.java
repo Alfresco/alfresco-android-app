@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
@@ -62,6 +63,8 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.TasksFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -486,6 +489,12 @@ public class MainActivity extends BaseActivity
                 FragmentDisplayer.replaceFragment(this, syncFrag, DisplayUtils.getLeftFragmentId(this),
                         FavoritesSyncFragment.TAG, true);
                 break;
+            case R.id.menu_workflow:
+                if (!checkSession(R.id.menu_workflow)) { return; }
+                Fragment taskFragment = TasksFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, taskFragment, DisplayUtils.getLeftFragmentId(this),
+                        TasksFragment.TAG, true);
+                break;
             case R.id.menu_downloads:
                 if (currentAccount == null)
                 {
@@ -659,7 +668,14 @@ public class MainActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
 
-    public void addUserProfilFragment(String userIdentifier)
+    public void addPropertiesFragment(String nodeIdentifier, boolean backstack)
+    {
+        BaseFragment frag = DetailsFragment.newInstance(nodeIdentifier);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, backstack);
+    }
+
+    public void addPersonProfileFragment(String userIdentifier)
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         clearCentralPane();
@@ -678,6 +694,21 @@ public class MainActivity extends BaseActivity
         BaseFragment frag = SiteMembersFragment.newInstance(site);
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), SiteMembersFragment.TAG,
                 true);
+    }
+
+    public void addTaskDetailsFragment(Task task, boolean backStack)
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        TaskDetailsFragment frag = TaskDetailsFragment.newInstance(task);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), TaskDetailsFragment.TAG,
+                (b != backStack) ? backStack : b);
     }
 
     public void addPropertiesFragment(Node n)
@@ -814,6 +845,18 @@ public class MainActivity extends BaseActivity
         super.onCreateOptionsMenu(menu);
 
         if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
+
+        if (isVisible(TaskDetailsFragment.TAG))
+        {
+            ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).getMenu(menu);
+            return true;
+        }
+
+        if (isVisible(TasksFragment.TAG))
+        {
+            TasksFragment.getMenu(menu);
+            return true;
+        }
 
         if (isVisible(FileExplorerFragment.TAG))
         {
@@ -975,6 +1018,13 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_SITE_LIST_REQUEST:
                 ((BrowserSitesFragment) getFragment(BrowserSitesFragment.TAG)).displayJoinSiteRequests();
                 return true;
+            case MenuActionItem.MENU_WORKFLOW_ADD:
+                Intent i = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, this, PrivateDialogActivity.class);
+                getFragment(TasksFragment.TAG).startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
+
+                // ProcessesDefinitionFragment.newInstance().show(getFragmentManager(),
+                // ProcessesDefinitionFragment.TAG);
+                return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
@@ -1035,6 +1085,11 @@ public class MainActivity extends BaseActivity
                 }
 
                 if (fr instanceof FavoritesSyncFragment)
+                {
+                    backStack = false;
+                }
+                
+                if (fr instanceof TasksFragment)
                 {
                     backStack = false;
                 }

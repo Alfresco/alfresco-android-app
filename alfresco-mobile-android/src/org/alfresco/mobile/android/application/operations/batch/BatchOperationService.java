@@ -82,6 +82,9 @@ import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFa
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
+import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskCallback;
+import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
@@ -246,6 +249,12 @@ public class BatchOperationService<T> extends Service
             case RetrieveDocumentNameRequest.TYPE_ID:
                 task = (AbstractBatchOperationThread<T>) new RetrieveDocumentNameThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new RetrieveDocumentNameCallBack(getBaseContext(), totalItems,
+                        pendingRequest);
+                break;
+            case CompleteTaskRequest.TYPE_ID:
+                parallelOperation = 1;
+                task = (AbstractBatchOperationThread<T>) new CompleteTaskThread(getBaseContext(), request);
+                callback = (OperationCallBack<T>) new CompleteTaskCallback(getBaseContext(), totalItems,
                         pendingRequest);
                 break;
             case DataProtectionRequest.TYPE_ID:

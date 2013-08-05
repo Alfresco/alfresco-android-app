@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.CloudConstant;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.application.R;
@@ -119,6 +120,13 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
                 identifier = item.getData(CloudConstant.OBJECTID_VALUE);
             }
 
+            // User Profile
+            if (item.getType().startsWith(ActivityEventAdapter.PREFIX_USER))
+            {
+                ((MainActivity) getActivity()).addPersonProfileFragment(item
+                        .getData(OnPremiseConstant.MEMEBERUSERNAME_VALUE));
+            }
+
             // Not necessary to enable touch on delete file.
             if (identifier != null && !TYPE_FILE_DELETE.equals(item.getType()))
             {
@@ -154,7 +162,7 @@ public class ActivitiesFragment extends ActivityStreamFragment implements Refres
     {
         if (adapter == null)
         {
-            adapter = new ActivityEventAdapter(getActivity(), alfSession, R.layout.sdk_list_row,
+            adapter = new ActivityEventAdapter(this, alfSession, R.layout.sdk_list_row,
                     new ArrayList<ActivityEntry>(0), selectedEntry);
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }

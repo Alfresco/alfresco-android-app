@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2012 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -15,64 +15,52 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.sites;
+package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Person;
-import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
+import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-/**
- * @since 1.3.0
- * @author jpascal
- *
- */
-public class SiteMembersFragment extends BaseListFragment implements
-        LoaderCallbacks<LoaderResult<PagingResult<Person>>>
+public class ProcessesDefinitionFragment extends BaseListFragment implements
+        LoaderCallbacks<LoaderResult<PagingResult<ProcessDefinition>>>
 {
-    private static final String PARAM_SITE = "site";
 
-    public static final String TAG = SiteMembersFragment.class.getName();
-
-    private List<Person> selectedItems = new ArrayList<Person>(1);
-
-    private Site site;
+    public static final String TAG = ProcessesDefinitionFragment.class.getName();
 
     // ///////////////////////////////////////////////////////////////////////////
-    // CONSTRUCTOR
+    // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public SiteMembersFragment()
+    public ProcessesDefinitionFragment()
     {
-        loaderId = SiteMembersLoader.ID;
+        loaderId = ProcessDefinitionLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.empty_site;
+        emptyListMessageId = R.string.empty_tasks;
+        initLoader = false;
+        checkSession = false;
     }
 
-    public static SiteMembersFragment newInstance(Site site)
+    public static ProcessesDefinitionFragment newInstance()
     {
-        SiteMembersFragment bf = new SiteMembersFragment();
-        ListingContext lc = new ListingContext();
-        lc.setMaxItems(50);
-        Bundle b = createBundleArgs(lc, LOAD_MANUAL);
-        b.putSerializable(PARAM_SITE, site);
-        bf.setArguments(b);
+        ProcessesDefinitionFragment bf = new ProcessesDefinitionFragment();
         return bf;
     }
 
@@ -85,54 +73,53 @@ public class SiteMembersFragment extends BaseListFragment implements
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
-        
-        site = (Site) bundle.getSerializable(PARAM_SITE);
+        getLoaderManager().restartLoader(ProcessDefinitionLoader.ID, null, this);
     }
 
     @Override
     public void onResume()
     {
+        UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        getActivity().invalidateOptionsMenu();
         super.onResume();
-        UIUtils.displayTitle(getActivity(), String.format(getString(R.string.members_of), site.getTitle()));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // LOADER
+    // LOADERS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Person>>> onCreateLoader(int id, Bundle ba)
+    public Loader<LoaderResult<PagingResult<ProcessDefinition>>> onCreateLoader(int id, Bundle ba)
     {
-        if (!hasmore)
-        {
-            setListShown(false);
-        }
+        setListShown(false);
 
-        // Case Init & case Reload
         bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
-
+        ProcessDefinitionLoader st = null;
         if (bundle != null)
         {
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
             loadState = bundle.getInt(LOAD_STATE);
-            site = (Site) bundle.getSerializable(PARAM_SITE);
+            st = new ProcessDefinitionLoader(getActivity(), alfSession);
+        }
+        else
+        {
+            st = new ProcessDefinitionLoader(getActivity(), alfSession);
         }
         calculateSkipCount(lc);
-        SiteMembersLoader loader = new SiteMembersLoader(getActivity(), alfSession, site);
-        loader.setListingContext(lc);
-        return loader;
+        st.setListingContext(lc);
+        return st;
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Person>>> arg0,
-            LoaderResult<PagingResult<Person>> results)
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0,
+            LoaderResult<PagingResult<ProcessDefinition>> results)
     {
         if (adapter == null)
         {
-            adapter = new SiteMembersAdapter(this, R.layout.sdk_list_row, new ArrayList<Person>(0), selectedItems);
+            adapter = new ProcessesDefinitionAdapter(getActivity(), R.layout.sdk_list_row,
+                    new ArrayList<ProcessDefinition>(0));
         }
         if (checkException(results))
         {
@@ -142,51 +129,40 @@ public class SiteMembersFragment extends BaseListFragment implements
         {
             displayPagingData(results.getData(), loaderId, callback);
         }
+        setListShown(true);
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Person>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
+        // TODO Auto-generated method stub
+    }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+
+    public static void getMenu(Menu menu)
+    {
+        MenuItem mi;
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
+                R.string.workflow_start);
+        mi.setIcon(android.R.drawable.ic_menu_add);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
     public void onListItemClick(ListView l, View v, int position, long id)
     {
-        Person item = (Person) l.getItemAtPosition(position);
-
-        Boolean hideDetails = false;
-        if (!selectedItems.isEmpty())
-        {
-            hideDetails = selectedItems.get(0).equals(item);
-            selectedItems.clear();
-        }
-        l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-        l.setItemChecked(position, true);
-        v.setSelected(true);
-
-        if (DisplayUtils.hasCentralPane(getActivity()))
-        {
-            selectedItems.add(item);
-        }
-
-        if (hideDetails)
-        {
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
-            }
-            selectedItems.clear();
-        }
-        else
-        {
-            // Show properties
-            ((MainActivity) getActivity()).addPersonProfileFragment(item.getIdentifier());
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
-        }
+        ProcessDefinition item = (ProcessDefinition) l.getItemAtPosition(position);
+        // Show properties
+        Fragment f = StartProcessFragment.newInstance(item);
+        FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()), StartProcessFragment.TAG,
+                true, true);
+        DisplayUtils.switchSingleOrTwo(getActivity(), true);
+        
     }
-
 }

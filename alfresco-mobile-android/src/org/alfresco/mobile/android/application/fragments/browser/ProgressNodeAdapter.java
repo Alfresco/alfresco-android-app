@@ -23,7 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
-import org.alfresco.mobile.android.api.model.impl.cloud.PublicAPIPropertyIds;
+import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
