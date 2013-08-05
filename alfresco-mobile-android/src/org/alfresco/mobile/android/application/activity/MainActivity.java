@@ -63,11 +63,8 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.ProcessesDefinitionFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.StartProcessFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.TasksFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.TasksMenuFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -494,12 +491,9 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_workflow:
                 if (!checkSession(R.id.menu_workflow)) { return; }
-                Fragment taskFragment  = TasksMenuFragment.newInstance();
+                Fragment taskFragment = TasksFragment.newInstance();
                 FragmentDisplayer.replaceFragment(this, taskFragment, DisplayUtils.getLeftFragmentId(this),
-                        TasksMenuFragment.TAG, true);
-                //Fragment taskFragment = TasksFragment.newInstance();
-                //FragmentDisplayer.replaceFragment(this, taskFragment, DisplayUtils.getLeftFragmentId(this),
-                //        TasksFragment.TAG, true);
+                        TasksFragment.TAG, true);
                 break;
             case R.id.menu_downloads:
                 if (currentAccount == null)
@@ -625,7 +619,7 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addNavigationFragment(s);
     }
-    
+
     public void addLocalFileNavigationFragment()
     {
         BaseFragment frag = FileExplorerMenuFragment.newInstance();
@@ -673,7 +667,7 @@ public class MainActivity extends BaseActivity
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
-    
+
     public void addPropertiesFragment(String nodeIdentifier, boolean backstack)
     {
         BaseFragment frag = DetailsFragment.newInstance(nodeIdentifier);
@@ -701,8 +695,8 @@ public class MainActivity extends BaseActivity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), SiteMembersFragment.TAG,
                 true);
     }
-    
-    public void addTaskDetailsFragment(Task task)
+
+    public void addTaskDetailsFragment(Task task, boolean backStack)
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         clearCentralPane();
@@ -713,7 +707,8 @@ public class MainActivity extends BaseActivity
         }
         TaskDetailsFragment frag = TaskDetailsFragment.newInstance(task);
         frag.setSession(SessionUtils.getSession(this));
-        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), TaskDetailsFragment.TAG, b);
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), TaskDetailsFragment.TAG,
+                (b != backStack) ? backStack : b);
     }
 
     public void addPropertiesFragment(Node n)
@@ -856,13 +851,13 @@ public class MainActivity extends BaseActivity
             ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(TasksFragment.TAG))
         {
             TasksFragment.getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(FileExplorerFragment.TAG))
         {
             ((FileExplorerFragment) getFragment(FileExplorerFragment.TAG)).getMenu(menu);
@@ -1024,7 +1019,11 @@ public class MainActivity extends BaseActivity
                 ((BrowserSitesFragment) getFragment(BrowserSitesFragment.TAG)).displayJoinSiteRequests();
                 return true;
             case MenuActionItem.MENU_WORKFLOW_ADD:
-                ProcessesDefinitionFragment.newInstance().show(getFragmentManager(),  ProcessesDefinitionFragment.TAG);
+                Intent i = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, this, PrivateDialogActivity.class);
+                getFragment(TasksFragment.TAG).startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
+
+                // ProcessesDefinitionFragment.newInstance().show(getFragmentManager(),
+                // ProcessesDefinitionFragment.TAG);
                 return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();
@@ -1086,6 +1085,11 @@ public class MainActivity extends BaseActivity
                 }
 
                 if (fr instanceof FavoritesSyncFragment)
+                {
+                    backStack = false;
+                }
+                
+                if (fr instanceof TasksFragment)
                 {
                     backStack = false;
                 }

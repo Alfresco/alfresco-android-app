@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -31,8 +32,12 @@ import android.view.ViewGroup;
 public class StartProcessFragment extends BaseFragment
 {
     public static final String TAG = StartProcessFragment.class.getName();
+
+    private static final String PARAM_PROCESS_DEFINITION = "processDefinition";
     
     private View vRoot;
+    
+    private ProcessDefinition processDefinition;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -41,9 +46,12 @@ public class StartProcessFragment extends BaseFragment
     {
     }
     
-    public static StartProcessFragment newInstance()
+    public static StartProcessFragment newInstance(ProcessDefinition processDefinition)
     {
         StartProcessFragment bf = new StartProcessFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_PROCESS_DEFINITION, processDefinition);
+        bf.setArguments(b);
         return bf;
     }
     
@@ -53,10 +61,15 @@ public class StartProcessFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        //Retrieve parameters
+        if (getArguments() == null  && !getArguments().containsKey(PARAM_PROCESS_DEFINITION))  { return null;}
+        processDefinition = (ProcessDefinition) getArguments().getSerializable(PARAM_PROCESS_DEFINITION);
+        
+        
         setRetainInstance(false);
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
-        vRoot = inflater.inflate(R.layout.app_start_process, container, false);
+        vRoot = inflater.inflate(R.layout.app_start_process_tablet, container, false);
         if (alfSession == null) { return vRoot; }
         return vRoot;
     }

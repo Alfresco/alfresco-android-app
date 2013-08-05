@@ -92,7 +92,10 @@ public class ItemsFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.task_items));
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.task_items));
+        }
         getActivity().invalidateOptionsMenu();
         super.onResume();
     }

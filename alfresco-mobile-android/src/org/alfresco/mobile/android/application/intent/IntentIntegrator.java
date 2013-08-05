@@ -225,7 +225,10 @@ public interface IntentIntegrator extends PublicIntent
     // ///////////////////////////////////////////////////////////////////////////
     // WORKFLOW MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
+    String ACTION_START_PROCESS = "org.alfresco.mobile.android.intent.ACTION_START_PROCESS";
 
+    
     // BROADCAST
     String ACTION_TASK_COMPLETE_STARTED = "org.alfresco.mobile.android.intent.ACTION_TASK_COMPLETE_STARTED";
 

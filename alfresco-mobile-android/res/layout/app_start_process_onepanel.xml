@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.  -->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/left_pane"
     android:layout_width="fill_parent"
@@ -26,9 +26,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:fillViewport="true"
-            android:layout_margin="@dimen/wizard_main_margin"
-        >
+        android:fillViewport="true" >
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -144,6 +142,41 @@
                 style="@style/workflowSectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:text="@string/process_approvers" />
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:baselineAligned="true"
+                android:orientation="horizontal" >
+
+                <EditText
+                    android:id="@+id/process_assignee"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="false"
+                    android:hint="@string/process_no_approvers" />
+
+                <ImageButton
+                    android:id="@+id/action_process_assignee"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_remove" />
+
+                <ImageButton
+                    android:id="@+id/action_process_assignee"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_add" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/workflowSectionHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/process_priority" />
 
             <LinearLayout
@@ -198,10 +231,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"
-                android:checked="true"
-                android:layout_marginBottom="10dip" />
+                android:layout_marginBottom="10dip"
+                android:checked="true" />
         </LinearLayout>
-        
     </ScrollView>
 
     <View

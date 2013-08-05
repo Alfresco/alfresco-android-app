@@ -96,7 +96,10 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        }
         getActivity().invalidateOptionsMenu();
         super.onResume();
     }
@@ -213,7 +216,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         else if (nActions == null)
         {
             // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item);
+            ((MainActivity) getActivity()).addTaskDetailsFragment(item, true);
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();

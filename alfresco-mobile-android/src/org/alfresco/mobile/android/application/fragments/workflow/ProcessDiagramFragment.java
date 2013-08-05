@@ -20,8 +20,10 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.os.Bundle;
@@ -83,5 +85,16 @@ public class ProcessDiagramFragment extends BaseFragment
                 getActivity());
         renditionManager.displayDiagram((ImageView) preview, iconId, task.getProcessIdentifier());
         return v;
+    }
+    
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), R.string.process_start_title);
+        }
+        super.onResume();
     }
 }

@@ -24,6 +24,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
@@ -81,6 +82,9 @@ public class TaskActionFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        task = (Task) getArguments().get(ARGUMENT_TASK);
+        if (task == null) { return null; }
+
         setRetainInstance(false);
 
         if (container != null)
@@ -90,44 +94,51 @@ public class TaskActionFragment extends BaseFragment
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
 
-        View v = inflater.inflate(R.layout.app_task_actions, container, false);
-        if (alfSession == null) { return v; }
-
-        task = (Task) getArguments().get(ARGUMENT_TASK);
-        if (task == null) { return null; }
-
-        Button validation = (Button) v.findViewById(R.id.action_approve);
-        Button reject = (Button) v.findViewById(R.id.action_reject);
-        comment = (EditText) v.findViewById(R.id.task_comment);
-
-        if (WorkflowModel.TASK_REVIEW.equals(task.getKey()) || WorkflowModel.TASK_ACTIVITI_REVIEW.equals(task.getKey()))
+        View v = null;
+        if (task.getEndedAt() == null)
         {
-            isReviewTask = true;
-            reject.setVisibility(View.VISIBLE);
+            v = inflater.inflate(R.layout.app_task_actions, container, false);
+
+            Button validation = (Button) v.findViewById(R.id.action_approve);
+            Button reject = (Button) v.findViewById(R.id.action_reject);
+            comment = (EditText) v.findViewById(R.id.task_comment);
+
+            if (WorkflowModel.TASK_REVIEW.equals(task.getKey())
+                    || WorkflowModel.TASK_ACTIVITI_REVIEW.equals(task.getKey()))
+            {
+                isReviewTask = true;
+                reject.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                reject.setVisibility(View.GONE);
+                validation.setText(R.string.task_done);
+            }
+
+            validation.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    completeTask(task, isReviewTask, true);
+                }
+            });
+
+            reject.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    completeTask(task, isReviewTask, false);
+                }
+            });
         }
         else
         {
-            reject.setVisibility(View.GONE);
-            validation.setText(R.string.task_done);
+            v = inflater.inflate(R.layout.app_task_properties, container, false);
         }
 
-        validation.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                completeTask(task, isReviewTask, true);
-            }
-        });
-
-        reject.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                completeTask(task, isReviewTask, false);
-            }
-        });
+        if (alfSession == null) { return v; }
 
         return v;
     }
@@ -140,10 +151,10 @@ public class TaskActionFragment extends BaseFragment
         {
             String outcome = (isApprove) ? WorkflowModel.REVIEW_TASK_TRANSITION_APPROVE
                     : WorkflowModel.REVIEW_TASK_TRANSITION_REJECT;
-            outcome = (task.getKey().startsWith(WorkflowModel.SUFFIX_ACTIVITI)) ? outcome : outcome.toLowerCase();
+            outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.SUFFIX_ACTIVITI)) ? outcome : outcome.toLowerCase();
             variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
         }
-        
+
         if (comment.getText().length() > 0)
         {
             variables.put(WorkflowModel.PROP_COMMENT, comment.getText().toString());
@@ -171,7 +182,10 @@ public class TaskActionFragment extends BaseFragment
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        }
         getActivity().invalidateOptionsMenu();
         super.onResume();
     }

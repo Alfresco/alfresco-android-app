@@ -1,5 +1,8 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
+import java.text.SimpleDateFormat;
+import java.util.GregorianCalendar;
+
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -10,6 +13,7 @@ import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -17,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,13 +92,52 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         TextView tv = (TextView) vRoot.findViewById(R.id.title);
         tv.setText(currentTask.getDescription());
         tv = (TextView) vRoot.findViewById(R.id.details);
-        tv.setText(currentTask.getName() + "        Review & Approve " + "     High Priority");
+        createBottomHeader(currentTask, tv);
 
         // TabHost
         mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
         setupTabs();
 
         return vRoot;
+    }
+
+    private void createBottomHeader(Task currentTask, TextView tv)
+    {
+        StringBuilder builder = new StringBuilder();
+        switch (currentTask.getPriority())
+        {
+            case 1:
+                builder.append(getString(R.string.workflow_priority_high));
+                break;
+            case 2:
+                builder.append(getString(R.string.workflow_priority_medium));
+                break;
+            case 3:
+                builder.append(getString(R.string.workflow_priority_low));
+                break;
+            default:
+                break;
+        }
+        builder.append("   -   ");
+        builder.append(currentTask.getName());
+        if (currentTask.getDueAt() != null)
+        {
+            builder.append("   -   ");
+            if (currentTask.getDueAt().before(new GregorianCalendar()))
+            {
+                builder.append("<b>");
+                builder.append("<font color='#9F000F'>");
+                builder.append(Formatter.formatToRelativeDate(getActivity(), currentTask.getDueAt().getTime()));
+                builder.append("</font>");
+                builder.append("</b>");
+            }
+            else
+            {
+                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
+                builder.append(formatter.format(currentTask.getDueAt().getTime()));
+            }
+        }
+        tv.setText(Html.fromHtml(builder.toString()), TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -155,7 +199,12 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         mTabHost.setup();
         mTabHost.setOnTabChangedListener(this);
 
-        mTabHost.addTab(newTab(TAB_ACTIONS, R.string.task_actions, android.R.id.tabcontent));
+        int stringId = R.string.task_actions;
+        if (currentTask.getEndedAt() != null)
+        {
+            stringId = R.string.variables;
+        }
+        mTabHost.addTab(newTab(TAB_ACTIONS, stringId, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_ITEMS, R.string.task_items, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_TASKS, R.string.tasks, android.R.id.tabcontent));
         mTabHost.addTab(newTab(TAB_WORKFLOW, R.string.task_workflow, android.R.id.tabcontent));
@@ -279,8 +328,8 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
                     }
                     else
                     {
-                        getFragmentManager()
-                                .popBackStack(TaskDetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                        getFragmentManager().popBackStack(TaskDetailsFragment.TAG,
+                                FragmentManager.POP_BACK_STACK_INCLUSIVE);
                     }
                     LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(this);
                     return;

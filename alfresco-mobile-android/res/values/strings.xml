@@ -632,6 +632,7 @@
     <string name="activity_profile2">Profile of %s</string>
     
     <!-- Workflow -->
+    <string name="variables">Variables</string>
     <string name="my_tasks">My Tasks</string>
     <string name="empty_tasks">No Tasks</string>
     <string name="empty_items">No Attachments</string>
@@ -689,6 +690,15 @@
     <string name="task_completing">Completing Task</string>
     <string name="task_reassign">Reassign</string>
     
+    <!-- Tasks Filters -->
+    <string name="task_filter_active">Active Tasks</string>
+    <string name="task_filter_completed">Completed Tasks</string>
+    <string name="task_filter_high_priority">Hight Priority Tasks</string>
+    <string name="task_filter_due_today">Task Due Today</string>
+    <string name="task_filter_overdue">Overdue Tasks</string>
+    <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
+    <string name="task_filter_custom">Custom filter...</string>
+    
     <!-- Process Start -->
     <string name="process_start_title">Start Process</string>
     <string name="process_title">Title</string>
@@ -701,7 +711,6 @@
     <string name="process_no_attachments">No attachments</string>
     <string name="process_priority">Priority</string>
     <string name="process_notification">Email notification</string>
-    
-    
-
+    <string name="process_approvers">Approvers</string>
+    <string name="process_no_approvers">No Approvers</string>
 </resources>

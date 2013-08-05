@@ -25,11 +25,13 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
+import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
@@ -157,7 +159,10 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     {
         ProcessDefinition item = (ProcessDefinition) l.getItemAtPosition(position);
         // Show properties
-        StartProcessFragment.newInstance().show(getFragmentManager(),  StartProcessFragment.TAG);
+        Fragment f = StartProcessFragment.newInstance(item);
+        FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()), StartProcessFragment.TAG,
+                true, true);
         DisplayUtils.switchSingleOrTwo(getActivity(), true);
+        
     }
 }

@@ -33,6 +33,7 @@ import android.content.Context;
 import android.text.Html;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.ImageView.ScaleType;
 
 /**
  * @author Jean Marie Pascal
@@ -63,7 +64,7 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
     {
         StringBuilder bottomText = new StringBuilder(item.getName());
         
-        if (item.getDueAt() != null && item.getDueAt().before(calendar))
+        if (item.getEndedAt() == null && item.getDueAt() != null && item.getDueAt().before(calendar))
         {
             bottomText.append(" - ");
             bottomText.append("<b>");
@@ -117,9 +118,10 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
 
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(iconId));
 
-        if (item.getDueAt() != null && item.getDueAt().before(calendar))
+        if (item.getEndedAt() == null && item.getDueAt() != null && item.getDueAt().before(calendar))
         {
             vh.choose.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_warning));
+            vh.choose.setScaleType(ScaleType.CENTER_INSIDE);
         }
         else
         {

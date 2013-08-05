@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -32,21 +33,30 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
-import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class TasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>, RefreshFragment
+public class TasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>,
+        RefreshFragment
 {
+
+    private static final String PARAM_MENUID = "menuId";
 
     private static final String PARAM_FILTER = "TaskFragmentFilter";
 
@@ -55,6 +65,8 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     protected List<Task> selectedItems = new ArrayList<Task>(1);
 
     private TaskActions nActions;
+
+    private TasksFragmentReceiver receiver;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -70,15 +82,26 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
 
     public static TasksFragment newInstance()
     {
-        TasksFragment bf = new TasksFragment();
-        return bf;
+        ListingFilter lf = new ListingFilter();
+        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+        return newInstance(lf, 0);
     }
 
-    public static Fragment newInstance(ListingFilter f)
+    public static TasksFragment newInstance(ListingFilter f)
     {
         TasksFragment bf = new TasksFragment();
         Bundle b = new Bundle();
         b.putSerializable(PARAM_FILTER, f);
+        bf.setArguments(b);
+        return bf;
+    };
+
+    public static TasksFragment newInstance(ListingFilter f, int menuId)
+    {
+        TasksFragment bf = new TasksFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_FILTER, f);
+        b.putInt(PARAM_MENUID, menuId);
         bf.setArguments(b);
         return bf;
     };
@@ -98,8 +121,23 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        if (getArguments().containsKey(PARAM_MENUID))
+        {
+            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(PARAM_MENUID));
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
+            getActivity().getActionBar().setCustomView(null);
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
+        }
         getActivity().invalidateOptionsMenu();
+
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_TASK_COMPLETED);
+        receiver = new TasksFragmentReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+
         super.onResume();
     }
 
@@ -174,9 +212,8 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
                 R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.refresh);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, 1000 + MenuActionItem.MENU_REFRESH, R.string.refresh);
         mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
@@ -223,7 +260,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         else if (nActions == null)
         {
             // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item);
+            ((MainActivity) getActivity()).addTaskDetailsFragment(item, !DisplayUtils.hasCentralPane(getActivity()));
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
@@ -259,5 +296,31 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     public void refresh()
     {
         reload(bundle, loaderId, this);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    public class TasksFragmentReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (getActivity() == null) { return; }
+
+            if (intent.getExtras() != null)
+            {
+                TasksFragment tasksFragment = (TasksFragment) getFragmentManager().findFragmentByTag(TasksFragment.TAG);
+
+                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED))
+                {
+                    tasksFragment.refresh();
+                    return;
+                }
+
+            }
+        }
     }
 }
