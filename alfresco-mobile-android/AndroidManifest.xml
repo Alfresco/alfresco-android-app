@@ -185,6 +185,11 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_START_PROCESS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- *************************************************************** -->

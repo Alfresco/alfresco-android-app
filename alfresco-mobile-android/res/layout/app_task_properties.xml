@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <LinearLayout
+        android:id="@+id/description_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/properties_details_padding"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/properties_details_padding"
+        android:paddingRight="@dimen/properties_details_padding" >
+
+        <TextView
+            android:id="@+id/description_title"
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/metadata" />
+        
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/prop_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="150dip"
+                android:textStyle="bold"
+                android:text="@string/metadata_prop_name" />
+
+            <TextView
+                android:id="@+id/prop_name_value"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_margin="2dip"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:textIsSelectable="true"
+                 />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/description_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="150dip"
+            android:text="@string/metadata_prop_description"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="1000"
+            android:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf"
+            android:gravity="right"
+            android:textIsSelectable="true"
+             />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/metadata"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/properties_details_padding"
+        android:layout_marginTop="@dimen/properties_details_padding"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/properties_details_padding"
+        android:paddingRight="@dimen/properties_details_padding" >
+    </LinearLayout>
+
+</LinearLayout>

@@ -82,6 +82,8 @@ public class RenditionManager
     public static final int TYPE_NODE = 0;
 
     public static final int TYPE_PERSON = 1;
+    
+    public static final int TYPE_WORKFLOW = 2;
 
     public RenditionManager(Activity context, AlfrescoSession session)
     {
@@ -243,6 +245,11 @@ public class RenditionManager
     {
         display(iv, username, initDrawableId, TYPE_PERSON, null);
     }
+    
+    public void displayDiagram(ImageView iv, int initDrawableId, String workflowId)
+    {
+        display(iv, workflowId, initDrawableId, TYPE_WORKFLOW, null);
+    }
 
     public void preview(ImageView iv, Node n, int initDrawableId, Integer size)
     {
@@ -253,7 +260,7 @@ public class RenditionManager
     {
         display(iv, identifier, initDrawableId, TYPE_NODE, null);
     }
-
+    
     private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
     {
         String imageKey = identifier;
@@ -432,6 +439,8 @@ public class RenditionManager
         private Activity ctxt;
 
         private String username;
+        
+        private String processId;
 
         private Integer preview;
 
@@ -456,6 +465,10 @@ public class RenditionManager
             else if (type == TYPE_PERSON)
             {
                 this.username = identifier;
+            }
+            else if (type == TYPE_WORKFLOW)
+            {
+                this.processId = identifier;
             }
             this.preview = preview;
         }
@@ -521,6 +534,17 @@ public class RenditionManager
                             cf = ((AbstractPersonService) session.getServiceRegistry().getPersonService())
                                     .getAvatarStream(username);
                             key = username;
+                        }
+                        catch (AlfrescoServiceException e)
+                        {
+                            cf = null;
+                        }
+                    } else if (processId != null)
+                    {
+                        try
+                        {
+                            cf = session.getServiceRegistry().getWorkflowService().getProcessDiagram(processId);
+                            key = processId;
                         }
                         catch (AlfrescoServiceException e)
                         {

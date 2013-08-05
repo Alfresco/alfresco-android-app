@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.activities;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,17 +28,28 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
-import android.app.Activity;
+import android.annotation.TargetApi;
+import android.app.Fragment;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.Html;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnDismissListener;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
 /**
  * Provides access to activity entries and displays them as a view based on
@@ -45,19 +57,25 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, GenericViewHolder>
+public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, GenericViewHolder> implements
+        OnMenuItemClickListener
 {
     private List<ActivityEntry> selectedItems;
-    
+
     private RenditionManager renditionManager;
 
-    public ActivityEventAdapter(Activity context, AlfrescoSession session, int textViewResourceId,
+    private List<ActivityEntry> selectedOptionItems = new ArrayList<ActivityEntry>();
+
+    private Fragment fr;
+
+    public ActivityEventAdapter(Fragment fr, AlfrescoSession session, int textViewResourceId,
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
-        super(context, textViewResourceId, listItems);
+        super(fr.getActivity(), textViewResourceId, listItems);
         this.vhClassName = GenericViewHolder.class.getCanonicalName();
-        this.renditionManager = new RenditionManager(context, session);
+        this.renditionManager = new RenditionManager(fr.getActivity(), session);
         this.selectedItems = selectedItems;
+        this.fr = fr;
     }
 
     @Override
@@ -77,16 +95,53 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             s = formatDate(getContext(), item.getCreatedAt().getTime());
         }
         vh.bottomText.setText(s);
-        
+
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
-                    getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), getContext().getResources()
+                    .getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
             UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
         }
+
+        /* Uncomment to activate people & site shortcut*/
+        // Add support for people & sites
+        UIUtils.setBackground(((View) vh.choose),
+                getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+
+        vh.choose.setVisibility(View.VISIBLE);
+        vh.choose.setTag(R.id.entry_action, item);
+        vh.choose.setOnClickListener(new OnClickListener()
+        {
+
+            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+            @Override
+            public void onClick(View v)
+            {
+                ActivityEntry item = (ActivityEntry) v.getTag(R.id.entry_action);
+                selectedOptionItems.add(item);
+                PopupMenu popup = new PopupMenu(getContext(), v);
+                getMenu(popup.getMenu(), item);
+
+                if (AndroidVersion.isICSOrAbove())
+                {
+                    popup.setOnDismissListener(new OnDismissListener()
+                    {
+                        @Override
+                        public void onDismiss(PopupMenu menu)
+                        {
+                            selectedOptionItems.clear();
+                        }
+                    });
+                }
+
+                popup.setOnMenuItemClickListener(ActivityEventAdapter.this);
+
+                popup.show();
+            }
+        });
     }
 
     @Override
@@ -168,6 +223,50 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         return drawable;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    public void getMenu(Menu menu, ActivityEntry entry)
+    {
+        /*if (entry.getSiteShortName() != null)
+        {
+            menu.add(Menu.NONE, MenuActionItem.MENU_ACTIVITY_SITE, Menu.FIRST + MenuActionItem.MENU_ACTIVITY_SITE,
+                    R.string.activity_site);
+        }*/
+        
+        if (entry.getCreatedBy() != null)
+        {
+            menu.add(Menu.NONE, MenuActionItem.MENU_ACTIVITY_PROFILE,
+                    Menu.FIRST + MenuActionItem.MENU_ACTIVITY_PROFILE,
+                    String.format(getContext().getString(R.string.activity_profile), entry.getCreatedBy()));
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item)
+    {
+        boolean onMenuItemClick = true;
+        switch (item.getItemId())
+        {
+            case MenuActionItem.MENU_ACTIVITY_SITE:
+                ((MainActivity) fr.getActivity()).addNavigationFragment(selectedOptionItems.get(0).getSiteShortName());
+                onMenuItemClick = true;
+                break;
+            case MenuActionItem.MENU_ACTIVITY_PROFILE:
+                ((MainActivity) fr.getActivity()).addPersonProfileFragment(selectedOptionItems.get(0).getCreatedBy());
+                onMenuItemClick = true;
+                break;
+            default:
+                onMenuItemClick = false;
+                break;
+        }
+        selectedOptionItems.clear();
+        return onMenuItemClick;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // TYPE
+    // ///////////////////////////////////////////////////////////////////////////
     public static final String PREFIX_LINK = "org.alfresco.links.link";
 
     public static final String PREFIX_EVENT = "org.alfresco.calendar.event";
@@ -219,7 +318,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private static final String PARAM_CUSTOM = "{2}";
 
     private static final String PARAM_SITE_LINK = "{4}";
-    
+
     private static final String PARAM_SUBSCRIBER = "{5}";
 
     private static final String PARAM_STATUS = "{6}";

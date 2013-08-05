@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:fillViewport="true" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/properties_padding"
+        android:paddingRight="@dimen/properties_padding" >
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dip"
+            android:text="@string/tasks_title" />
+
+        <Button
+            android:id="@+id/tasks_active"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_active" />
+
+        <Button
+            android:id="@+id/tasks_completed"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_completed" />
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:drawableBottom="@drawable/section_header"
+            android:paddingTop="@dimen/button_padding"
+            android:text="@string/tasks_due" />
+
+        <Button
+            android:id="@+id/tasks_due_today"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_due_today" />
+
+        <Button
+            android:id="@+id/tasks_due_tomorrow"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_due_tomorrow" />
+
+        <Button
+            android:id="@+id/tasks_due_week"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_due_week" />
+
+        <Button
+            android:id="@+id/tasks_due_over"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_due_over" />
+
+        <Button
+            android:id="@+id/tasks_due_no_date"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_due_no_date" />
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:drawableBottom="@drawable/section_header"
+            android:paddingTop="@dimen/button_padding"
+            android:text="@string/tasks_priority" />
+
+        <Button
+            android:id="@+id/tasks_priority_high"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_priority_high" />
+
+        <Button
+            android:id="@+id/tasks_priority_medium"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_priority_medium" />
+
+        <Button
+            android:id="@+id/tasks_priority_low"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_priority_low" />
+
+        <TextView
+            style="@style/sectionHeader"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/properties_padding"
+            android:layout_marginRight="@dimen/properties_padding"
+            android:drawableBottom="@drawable/section_header"
+            android:paddingTop="@dimen/button_padding"
+            android:text="@string/tasks_assignee" />
+
+        <Button
+            android:id="@+id/tasks_assignee_me"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_assignee_me" />
+
+        <Button
+            android:id="@+id/tasks_assignee_unassigned"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_default_holo_light_underline"
+            android:gravity="left|center_vertical"
+            android:text="@string/tasks_assignee_unassigned" />
+    </LinearLayout>
+
+</ScrollView>

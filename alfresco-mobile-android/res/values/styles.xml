@@ -67,6 +67,10 @@
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
+    
+    <style name="workflowSectionHeader" parent="list_item_toptext">
+        <item name="android:layout_marginTop">8dip</item>
+    </style>
 
     <style name="list_item_bottomtext">
         <item name="android:gravity">bottom</item>

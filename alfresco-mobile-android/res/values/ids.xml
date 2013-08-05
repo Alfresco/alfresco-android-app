@@ -30,6 +30,8 @@
     <item name="favorite_id" type="id"/>
     <item name="operation_id" type="id"/>
     <item name="operation_status" type="id"/>
+    <item name="entry_action" type="id"/>
+    
 
     <!-- Account -->
     <string name="account_service_document">/alfresco</string>

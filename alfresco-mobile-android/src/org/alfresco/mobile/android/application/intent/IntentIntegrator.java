@@ -63,7 +63,7 @@ public interface IntentIntegrator extends PublicIntent
     String ACTION_OPERATION_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATION_COMPLETE";
 
     String ACTION_OPERATIONS_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_OPERATIONS_COMPLETE";
-    
+
     // BROADCAST
     String EXTRA_OPERATIONS_TYPE = "org.alfresco.mobile.android.intent.EXTRA_OPERATIONS_TYPE";
 
@@ -208,18 +208,35 @@ public interface IntentIntegrator extends PublicIntent
     String ACTION_ENCRYPT_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_ENCRYPT_COMPLETED";
 
     String ACTION_DECRYPT_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DECRYPT_COMPLETED";
-    
+
     String ACTION_ENCRYPT_ALL_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_ENCRYPT_ALL_COMPLETED";
 
     String ACTION_DECRYPT_ALL_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DECRYPT_ALL_COMPLETED";
 
     // EXTRA
     String EXTRA_INTENT_ACTION = "org.alfresco.mobile.android.intent.EXTRA_INTENT_ACTION";
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // DATA CLEANER
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION
     String ACTION_CLEAN_SHARE_FILE = "org.alfresco.mobile.android.intent.ACTION_CLEAN_SHARE_FILE";
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // WORKFLOW MANAGEMENT
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTION
+    String ACTION_START_PROCESS = "org.alfresco.mobile.android.intent.ACTION_START_PROCESS";
+
+    
+    // BROADCAST
+    String ACTION_TASK_COMPLETE_STARTED = "org.alfresco.mobile.android.intent.ACTION_TASK_COMPLETE_STARTED";
+
+    String ACTION_TASK_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_TASK_COMPLETED";
+
+    // EXTRA
+    String EXTRA_TASK = "org.alfresco.mobile.android.intent.EXTRA_TASK";
+
+    String EXTRA_UPDATED_TASK = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_TASK";
 
 }

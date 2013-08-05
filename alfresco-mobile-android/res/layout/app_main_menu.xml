@@ -102,6 +102,19 @@
                 android:onClick="showMainMenuFragment"
                 android:text="@string/menu_browse_sites"
                 android:textColor="@android:color/white" />
+            
+            <Button
+                android:id="@+id/menu_workflow"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dip"
+                android:background="@drawable/btn_default_holo_light_underline"
+                android:drawableLeft="@drawable/ic_action_inbox"
+                android:drawablePadding="8dip"
+                android:gravity="left|center_vertical"
+                android:onClick="showMainMenuFragment"
+                android:text="@string/my_tasks"
+                android:textColor="@android:color/white" />
 
             <Button
                 android:id="@+id/menu_favorites"
@@ -189,7 +202,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="3dip"
                 android:background="@drawable/btn_default_holo_light_underline"
-                android:drawableLeft="@drawable/ic_settings_light"
+                android:drawableLeft="@drawable/ic_action_gear"
                 android:drawablePadding="8dip"
                 android:gravity="left|center_vertical"
                 android:onClick="showMainMenuFragment"
