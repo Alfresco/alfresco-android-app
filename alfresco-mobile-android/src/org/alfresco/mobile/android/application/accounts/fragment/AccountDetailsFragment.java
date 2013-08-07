@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -98,6 +99,11 @@ public class AccountDetailsFragment extends BaseFragment
 
     private boolean isEditable = false;
 
+    private Button validate;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
     public AccountDetailsFragment()
     {
     }
@@ -111,6 +117,9 @@ public class AccountDetailsFragment extends BaseFragment
         return bf;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -137,6 +146,35 @@ public class AccountDetailsFragment extends BaseFragment
         return vRoot;
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onResume()
+    {
+        DisplayUtils.hideLeftTitlePane(getActivity());
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), getText(R.string.accounts_details) + " : " + acc.getDescription());
+        }
+        getActivity().invalidateOptionsMenu();
+        super.onResume();
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        getActivity().invalidateOptionsMenu();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ///////////////////////////////////////////////////////////////////////////
     private void initAwaitingCloud(final View v)
     {
         TextView tv = (TextView) v.findViewById(R.id.sign_up_cloud_email);
@@ -219,6 +257,19 @@ public class AccountDetailsFragment extends BaseFragment
                 ActionManager.reloadAccount(getActivity(), acc);
             }
         });
+
+        advanced = (Button) v.findViewById(R.id.my_profile);
+        advanced.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+
+                PersonProfileFragment.newInstance(acc.getUsername()).show(getFragmentManager(),
+                        PersonProfileFragment.TAG);
+            }
+        });
+        displayProfileButton();
 
         // Init values
         EditText formValue = (EditText) v.findViewById(R.id.repository_hostname);
@@ -345,25 +396,6 @@ public class AccountDetailsFragment extends BaseFragment
 
     }
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
-    public void onResume()
-    {
-        DisplayUtils.hideLeftTitlePane(getActivity());
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), getText(R.string.accounts_details) + " : " + acc.getDescription());
-        }
-        getActivity().invalidateOptionsMenu();
-        super.onResume();
-    }
-
     private void initForm()
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
@@ -406,8 +438,6 @@ public class AccountDetailsFragment extends BaseFragment
         }
     };
 
-    private Button validate;
-
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
@@ -435,6 +465,7 @@ public class AccountDetailsFragment extends BaseFragment
 
                 initValues(vRoot);
                 vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
+                displayProfileButton();
                 vRoot.findViewById(R.id.cancel_account).setVisibility(View.GONE);
                 v.setVisibility(View.GONE);
             }
@@ -450,12 +481,14 @@ public class AccountDetailsFragment extends BaseFragment
                 isEditable = false;
                 initValues(vRoot);
                 vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
+                displayProfileButton();
                 v.setVisibility(View.GONE);
                 vRoot.findViewById(R.id.validate_account).setVisibility(View.GONE);
             }
         });
 
         vRoot.findViewById(R.id.browse_document).setVisibility(View.GONE);
+        vRoot.findViewById(R.id.profile_group).setVisibility(View.GONE);
     }
 
     public void delete()
@@ -557,10 +590,12 @@ public class AccountDetailsFragment extends BaseFragment
             ((BaseActivity) getActivity()).setCurrentAccount(null);
             SharedPreferences settings = getActivity().getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
             long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
-            if (id == acc.getId()){
+            if (id == acc.getId())
+            {
                 settings.edit().putLong(AccountsPreferences.ACCOUNT_DEFAULT, -1).commit();
             }
-            ((BaseActivity) getActivity()).setCurrentAccount(AccountManager.getInstance(getActivity()).getDefaultAccount());
+            ((BaseActivity) getActivity()).setCurrentAccount(AccountManager.getInstance(getActivity())
+                    .getDefaultAccount());
         }
 
         Cursor cursor = getActivity().getContentResolver().query(AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL,
@@ -600,17 +635,24 @@ public class AccountDetailsFragment extends BaseFragment
                 AccountOAuthFragment.TAG, true);
     }
 
-    @Override
-    public void onDetach()
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    private void displayProfileButton()
     {
-        super.onDetach();
-        getActivity().invalidateOptionsMenu();
+        if (ApplicationManager.getInstance(getActivity()).hasSession(acc.getId()))
+        {
+            vRoot.findViewById(R.id.profile_group).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            vRoot.findViewById(R.id.profile_group).setVisibility(View.GONE);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-
     public void getMenu(Menu menu)
     {
         MenuItem mi;

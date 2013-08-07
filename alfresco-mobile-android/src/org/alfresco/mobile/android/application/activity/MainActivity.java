@@ -456,10 +456,6 @@ public class MainActivity extends BaseActivity
 
         switch (id)
         {
-            case R.id.menu_myprofile:
-                frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
-                frag.show(getFragmentManager(), PersonProfileFragment.TAG);
-                break;
             case R.id.menu_browse_my_sites:
                 if (!checkSession(R.id.menu_browse_my_sites)) { return; }
                 frag = BrowserSitesFragment.newInstance();

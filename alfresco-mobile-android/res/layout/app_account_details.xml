@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/white_background"
     android:layout_width="fill_parent"
@@ -46,6 +45,38 @@
             android:layout_marginRight="@dimen/wizard_main_margin"
             android:text="@string/browse_documents"
             android:textSize="@dimen/home_button_size" />
+
+        <LinearLayout
+            android:id="@+id/profile_group"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/wizard_main_margin"
+                android:layout_marginRight="@dimen/wizard_main_margin"
+                android:background="?android:attr/dividerVertical" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="@dimen/wizard_main_margin"
+                android:layout_marginRight="@dimen/wizard_main_margin"
+                android:layout_marginTop="@dimen/wizard_main_margin"
+                android:background="?android:attr/dividerVertical" />
+
+            <Button
+                android:id="@+id/my_profile"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/wizard_main_margin"
+                android:layout_marginRight="@dimen/wizard_main_margin"
+                android:text="@string/my_profile"
+                android:textSize="@dimen/home_button_size" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/edit_account"
@@ -79,13 +110,13 @@
                 android:text="@string/save"
                 android:visibility="gone" />
         </LinearLayout>
-        
-          <View
+
+        <View
             android:layout_width="fill_parent"
             android:layout_height="1dip"
             android:layout_marginLeft="@dimen/wizard_main_margin"
             android:layout_marginRight="@dimen/wizard_main_margin"
             android:background="?android:attr/dividerVertical" />
-        
     </LinearLayout>
+
 </ScrollView>
