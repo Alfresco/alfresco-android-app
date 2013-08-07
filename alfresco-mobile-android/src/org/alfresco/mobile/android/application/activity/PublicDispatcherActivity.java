@@ -114,7 +114,7 @@ public class PublicDispatcherActivity extends BaseActivity
         setContentView(R.layout.app_left_panel);
 
         String action = getIntent().getAction();
-        if (Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action))
+        if ((Intent.ACTION_SEND.equals(action) || Intent.ACTION_SEND_MULTIPLE.equals(action)) && getFragment(UploadFormFragment.TAG) == null)
         {
             Fragment f = new UploadFormFragment();
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), UploadFormFragment.TAG,
@@ -141,7 +141,7 @@ public class PublicDispatcherActivity extends BaseActivity
             if (getIntent().hasExtra(IntentIntegrator.EXTRA_FOLDER))
             {
                 f = (File) getIntent().getExtras().getSerializable(IntentIntegrator.EXTRA_FOLDER);
-                Fragment fragment = FileExplorerFragment.newInstance(f, ListingModeFragment.MODE_PICK_FILE, true, 1);
+                Fragment fragment = FileExplorerFragment.newInstance(f, ListingModeFragment.MODE_PICK, true, 1);
                 FragmentDisplayer.replaceFragment(this, fragment, DisplayUtils.getLeftFragmentId(this),
                         FileExplorerFragment.TAG, false, false);
             }

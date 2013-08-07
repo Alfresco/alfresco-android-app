@@ -15,13 +15,14 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.operations.batch.workflow.task.complete;
+package org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate;
 
 import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
@@ -32,23 +33,31 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class CompleteTaskThread extends TaskOperationThread<Task>
+public class ReassignTaskThread extends TaskOperationThread<Task>
 {
-    private static final String TAG = CompleteTaskThread.class.getName();
+    private static final String TAG = ReassignTaskThread.class.getName();
 
     private Task updatedTask = null;
 
     private Map<String, Serializable> properties;
 
+    private Person assignee;
+
+    private String assigneeId;
+
+    private Boolean isClaimed;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public CompleteTaskThread(Context context, OperationRequest request)
+    public ReassignTaskThread(Context context, OperationRequest request)
     {
         super(context, request);
-        if (request instanceof CompleteTaskRequest)
+        if (request instanceof ReassignTaskRequest)
         {
-            this.properties = ((CompleteTaskRequest) request).getProperties();
+            this.assigneeId = ((ReassignTaskRequest) request).getAssigneeId();
+            this.assignee = ((ReassignTaskRequest) request).getAssignee();
+            this.isClaimed = ((ReassignTaskRequest) request).getIsClaimed();
         }
     }
 
@@ -63,17 +72,24 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
         {
             result = super.doInBackground();
 
-            if (properties != null)
+            if (assignee == null)
             {
-                String transitionIdentifier = "";
-                if (task.getIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
-                {
-                    transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
-                }
-                properties.put(WorkflowModel.PROP_TRANSITIONS_VALUE, transitionIdentifier);
-                updatedTask = session.getServiceRegistry().getWorkflowService()
-                        .completeTask(task, properties);
+                assignee = session.getServiceRegistry().getPersonService().getPerson(assigneeId);
             }
+
+            if (assignee != null && task != null && isClaimed == null)
+            {
+                updatedTask = session.getServiceRegistry().getWorkflowService().reassignTask(task, assignee);
+            }
+            if (isClaimed)
+            {
+                updatedTask = session.getServiceRegistry().getWorkflowService().claimTask(task);
+            }
+            else if (!isClaimed)
+            {
+                updatedTask = session.getServiceRegistry().getWorkflowService().unClaimTask(task);
+            }
+
         }
         catch (Exception e)
         {
@@ -92,7 +108,7 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
     public Intent getStartBroadCastIntent()
     {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_COMPLETE_STARTED);
+        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_DELEGATE_STARTED);
         Bundle b = new Bundle();
         b.putSerializable(IntentIntegrator.EXTRA_TASK, task);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_DATA, b);
@@ -102,7 +118,7 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
     public Intent getCompleteBroadCastIntent()
     {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_COMPLETED);
+        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED);
         Bundle b = new Bundle();
         b.putSerializable(IntentIntegrator.EXTRA_TASK, task);
         b.putSerializable(IntentIntegrator.EXTRA_UPDATED_TASK, updatedTask);

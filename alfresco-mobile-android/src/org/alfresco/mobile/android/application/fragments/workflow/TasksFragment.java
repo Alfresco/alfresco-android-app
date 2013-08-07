@@ -135,6 +135,8 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         getActivity().invalidateOptionsMenu();
 
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_TASK_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_START_PROCESS_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED);
         receiver = new TasksFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
@@ -314,7 +316,9 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
             {
                 TasksFragment tasksFragment = (TasksFragment) getFragmentManager().findFragmentByTag(TasksFragment.TAG);
 
-                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED))
+                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
+                        || intent.getAction().equals(IntentIntegrator.ACTION_START_PROCESS_COMPLETED)
+                        || intent.getAction().equals(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED))
                 {
                     tasksFragment.refresh();
                     return;

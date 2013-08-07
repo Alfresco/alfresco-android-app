@@ -72,7 +72,7 @@ public abstract class AbstractFileExplorerFragment extends BaseListFragment impl
             case MODE_LISTING:
                 titleId = R.string.menu_local_files;
                 break;
-            case MODE_PICK_FILE:
+            case MODE_PICK:
                 titleId = R.string.upload_pick_document;
                 break;
             default:

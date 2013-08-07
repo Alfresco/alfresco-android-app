@@ -18,11 +18,14 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -46,6 +49,8 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
 
     public static final String TAG = ProcessesDefinitionFragment.class.getName();
 
+    private boolean filterEnabled = true;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +58,7 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     {
         loaderId = ProcessDefinitionLoader.ID;
         callback = this;
-        emptyListMessageId = R.string.empty_tasks;
+        emptyListMessageId = R.string.empty_process_definition;
         initLoader = false;
         checkSession = false;
     }
@@ -127,7 +132,14 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
         }
         else
         {
-            displayPagingData(results.getData(), loaderId, callback);
+            if (filterEnabled)
+            {
+                displayPagingData(filter(results.getData()), loaderId, callback);
+            }
+            else
+            {
+                displayPagingData(results.getData(), loaderId, callback);
+            }
         }
         setListShown(true);
     }
@@ -136,6 +148,20 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
         // TODO Auto-generated method stub
+    }
+
+    private PagingResultImpl<ProcessDefinition> filter(PagingResult<ProcessDefinition> processDefinitions)
+    {
+        List<ProcessDefinition> definitions = new ArrayList<ProcessDefinition>(processDefinitions.getTotalItems());
+        for (ProcessDefinition processDef : processDefinitions.getList())
+        {
+            if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDef.getKey())
+                    || WorkflowModel.FAMILY_PROCESS_PARALLEL_REVIEW.contains(processDef.getKey()))
+            {
+                definitions.add(processDef);
+            }
+        }
+        return new PagingResultImpl<ProcessDefinition>(definitions, false, definitions.size());
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -159,10 +185,8 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     {
         ProcessDefinition item = (ProcessDefinition) l.getItemAtPosition(position);
         // Show properties
-        Fragment f = StartProcessFragment.newInstance(item);
-        FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()), StartProcessFragment.TAG,
-                true, true);
-        DisplayUtils.switchSingleOrTwo(getActivity(), true);
-        
+        Fragment f = CreateTaskFragment.newInstance(item);
+        FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()),
+                CreateTaskFragment.TAG, true, true);
     }
 }

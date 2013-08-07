@@ -97,7 +97,6 @@
                     android:layout_weight="1"
                     android:editable="false"
                     android:gravity="right|bottom"
-                    android:hint="@string/process_no_assignee"
                     android:minHeight="48dip" />
 
                 <ImageButton

@@ -165,7 +165,9 @@ public interface MenuActionItem
     
     int MENU_TASK_REASSIGN= 602;
 
-
+    int MENU_TASK_CLAIM= 604;
+    
+    int MENU_TASK_UNCLAIM= 605;
     // ///////////////////////////////////////////
     // ACTIVITY DETAILS
     // ///////////////////////////////////////////
