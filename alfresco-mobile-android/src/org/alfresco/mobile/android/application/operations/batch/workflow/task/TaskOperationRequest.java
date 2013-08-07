@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
@@ -15,6 +16,8 @@ public class TaskOperationRequest extends AbstractBatchOperationRequestImpl
 {
     private static final long serialVersionUID = 1L;
 
+    protected Task task;
+    
     protected String taskIdentifier;
     
     protected Map<String, Serializable> persistentProperties;
@@ -26,6 +29,12 @@ public class TaskOperationRequest extends AbstractBatchOperationRequestImpl
     {
         this.taskIdentifier = taskIdentifier;
     }
+    
+    public TaskOperationRequest(Task task)
+    {
+        this.task = task;
+        this.taskIdentifier = task.getIdentifier();
+    }
 
     public TaskOperationRequest(Cursor cursor)
     {
@@ -35,6 +44,11 @@ public class TaskOperationRequest extends AbstractBatchOperationRequestImpl
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
+    public Task getTask()
+    {
+        return task;
+    }
+    
     public String getTaskIdentifier()
     {
         return taskIdentifier;

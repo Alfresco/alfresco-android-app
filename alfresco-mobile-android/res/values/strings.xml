@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -621,16 +621,21 @@
     <string name="start_chat">Start a chat</string>
     <string name="start_call">Start a call</string>
     <string name="start_video_call">Start a video call</string>
-    
+
     <!-- MEMBERS -->
     <string name="members">List of Members</string>
     <string name="members_of">Members of %s</string>
-    
+
+    <!-- PERSON SEARCH -->
+    <string name="person_not_found">No users found</string>
+    <string name="person_search">Search</string>
+    <string name="person_selected">Persons selected</string>
+
     <!-- Activities -->
     <string name="activity_site">Site details</string>
     <string name="activity_profile">Profile of %s</string>
     <string name="activity_profile2">Profile of %s</string>
-    
+
     <!-- Workflow -->
     <string name="variables">Variables</string>
     <string name="my_tasks">My Tasks</string>
@@ -639,12 +644,11 @@
     <string name="task_items">Item(s)</string>
     <string name="empty_process_definition">No Process</string>
     <string name="workflow_start">Start a workflow</string>
-    
     <string name="task_actions">Response</string>
     <string name="tasks">Tasks</string>
     <string name="task_items">Documents</string>
     <string name="task_workflow">Process</string>
-    
+
     <!-- Workflow FILTERS -->
     <string name="tasks_title">Tasks</string>
     <string name="tasks_active">Active</string>
@@ -662,16 +666,16 @@
     <string name="tasks_assignee">Assignee</string>
     <string name="tasks_assignee_me">Me</string>
     <string name="tasks_assignee_unassigned">Unassigned</string>
-    
-    
+
     <!-- Multi Selection -->
     <plurals name="selected_task">
         <item quantity="zero">no task</item>
         <item quantity="one">1 task</item>
         <item quantity="other">%1$s tasks</item>
     </plurals>
-    
+
     <!-- Tasks -->
+    <string name="validate">Validate</string>
     <string name="workflow_priority_low">Low priority</string>
     <string name="workflow_priority_medium">Medium priority</string>
     <string name="workflow_priority_high">High priority</string>
@@ -681,7 +685,6 @@
     <string name="task_user_no_comment">, but did not provide a comment</string>
     <string name="task_user_completed"><![CDATA[<b>%s</b> completed this task]]></string>
     <string name="task_user_not_completed"><![CDATA[<b>%s</b> did not complete this task yet]]></string>
-    
     <string name="task_approve">Approve</string>
     <string name="task_reject">Reject</string>
     <string name="task_comment">Comment</string>
@@ -689,6 +692,8 @@
     <string name="task_done">Done</string>
     <string name="task_completing">Completing Task</string>
     <string name="task_reassign">Reassign</string>
+    <string name="task_claim">Claim</string>
+    <string name="task_unclaim">Release to Pool</string>
     
     <!-- Tasks Filters -->
     <string name="task_filter_active">Active Tasks</string>
@@ -698,19 +703,46 @@
     <string name="task_filter_overdue">Overdue Tasks</string>
     <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
     <string name="task_filter_custom">Custom filter...</string>
-    
+
     <!-- Process Start -->
+    <string name="process_choose_definition">Choose task type</string>
+    <string name="process_create_task">Create Task</string>
+    <string name="process_choose_assignee">Choose assignee</string>
     <string name="process_start_title">Start Process</string>
     <string name="process_title">Title</string>
     <string name="process_title_hint">New task</string>
     <string name="process_due_on">Due on</string>
     <string name="process_no_date">No date</string>
     <string name="process_assignee">Assignee</string>
-    <string name="process_no_assignee">No assignee</string>
+
+    <plurals name="process_assignees">
+        <item quantity="zero">No assignee</item>
+        <item quantity="one">1 assignee</item>
+        <item quantity="many">%1$s assignees</item>
+        <item quantity="other">No assignee</item>
+    </plurals>
+    <plurals name="process_approvers">
+        <item quantity="zero">No approvers</item>
+        <item quantity="one">%1$s of %2$s Approvers.</item>
+        <item quantity="many">%1$s of %2$s Approvers.</item>
+        <item quantity="other">No approvers</item>
+    </plurals>
+
+    <string name="process_initiator">Initiator</string>
+    <string name="process_diagram">Diagram</string>
     <string name="process_attachments">Attachments</string>
     <string name="process_no_attachments">No attachments</string>
     <string name="process_priority">Priority</string>
     <string name="process_notification">Email notification</string>
     <string name="process_approvers">Approvers</string>
     <string name="process_no_approvers">No Approvers</string>
+    <string name="process_starting">Starting Process</string>
+    <string name="task_todo">Todo</string>
+    <string name="task_todo_description">Assign a task to a person</string>
+    <string name="task_review_approve">Review &amp; Approve</string>
+    <string name="task_review_approve_description">Assign a task to one or more persons to review and approve documents.</string>
+    
+    <string name="task_delegate_in_progress">Reassign in progress...</string>
+    <string name="task_delegate_complete">Reassign completed</string>
+
 </resources>

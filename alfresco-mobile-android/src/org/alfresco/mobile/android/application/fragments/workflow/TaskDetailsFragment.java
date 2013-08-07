@@ -2,13 +2,28 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.constants.WorkflowModel;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.utils.WorkflowUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
+import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate.ReassignTaskRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
@@ -33,7 +48,7 @@ import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
-public class TaskDetailsFragment extends BaseFragment implements OnTabChangeListener
+public class TaskDetailsFragment extends BaseFragment implements OnTabChangeListener, onPickPersonFragment
 {
 
     public static final String TAG = TaskDetailsFragment.class.getName();
@@ -87,6 +102,13 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
 
         currentTask = (Task) getArguments().get(ARGUMENT_TASK);
         if (currentTask == null) { return null; }
+
+        // TAB
+        if (savedInstanceState != null)
+        {
+            tabSelection = savedInstanceState.getInt(TAB_SELECTED);
+            savedInstanceState.remove(TAB_SELECTED);
+        }
 
         // Header
         TextView tv = (TextView) vRoot.findViewById(R.id.title);
@@ -159,6 +181,7 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         }
         super.onResume();
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_TASK_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED);
         receiver = new TaskDetailsFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
     }
@@ -252,20 +275,19 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
     // ///////////////////////////////////////////////////////////////////////////
     // TAB MENU ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public void addWorkflow(Task t)
+    private void addWorkflow(Task t)
     {
-        BaseFragment frag = ProcessDiagramFragment.newInstance(t);
+        BaseFragment frag = ProcessDetailsFragment.newInstance(t);
         frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ProcessDiagramFragment.TAG,
+        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ProcessDetailsFragment.TAG,
                 false);
     }
 
-    public void addItems(Task currentTask)
+    private void addItems(Task currentTask)
     {
         BaseFragment frag = ItemsFragment.newInstance(currentTask);
         frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ProcessDiagramFragment.TAG,
-                false);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ItemsFragment.TAG, false);
     }
 
     private void addTasks(Task currentTask)
@@ -281,7 +303,6 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         BaseFragment frag = TaskActionFragment.newInstance(currentTask);
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, TaskActionFragment.TAG, false);
-
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -290,10 +311,112 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
     public void getMenu(Menu menu)
     {
         MenuItem mi;
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_REASSIGN, Menu.FIRST + MenuActionItem.MENU_TASK_REASSIGN,
-                R.string.task_reassign);
-        mi.setIcon(R.drawable.ic_reassign);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        // If task is ended, no action associated
+        if (currentTask.getEndedAt() != null) { return; }
+
+        String processDefinitionKey = WorkflowUtils.getKeyFromProcessDefinitionId(currentTask
+                .getProcessDefinitionIdentifier());
+
+        // unclaim : I unassign myself (generally created by a pooled process)
+        if (currentTask.getAssigneeIdentifier() != null
+                && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_UNCLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_UNCLAIM,
+                    R.string.task_unclaim);
+            mi.setIcon(R.drawable.ic_reassign);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
+        // reassign : I have a task and I decide I dont want to be responsible
+        // anymore of this task so I reassign to a specific person
+        else if (currentTask.getAssigneeIdentifier() != null)
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_REASSIGN, Menu.FIRST + MenuActionItem.MENU_TASK_REASSIGN,
+                    R.string.task_reassign);
+            mi.setIcon(R.drawable.ic_reassign);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+        // claim : I assign to me an unassigned task (created by a pooled
+        // process)
+        else if (currentTask.getAssigneeIdentifier() == null
+                && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_CLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_CLAIM,
+                    R.string.task_claim);
+            mi.setIcon(R.drawable.ic_reassign);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        }
+
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU METHODS
+    // ///////////////////////////////////////////////////////////////////////////
+    public void reassign()
+    {
+        PersonSearchFragment.newInstance(ListingModeFragment.MODE_PICK, TAG, true).show(
+                getActivity().getFragmentManager(), PersonSearchFragment.TAG);
+    }
+
+    public void claim()
+    {
+        // Start claim
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new ReassignTaskRequest(currentTask, alfSession.getPersonIdentifier(), true)
+                .setNotificationTitle(currentTask.getName()).setNotificationVisibility(
+                        OperationRequest.VISIBILITY_DIALOG));
+
+        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
+                getString(R.string.task_reassign), null, null, 0).show(getActivity().getFragmentManager(),
+                OperationWaitingDialogFragment.TAG);
+
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+    }
+
+    public void unclaim()
+    {
+        // Start unclaim
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new ReassignTaskRequest(currentTask, alfSession.getPersonIdentifier(), false)
+                .setNotificationTitle(currentTask.getName()).setNotificationVisibility(
+                        OperationRequest.VISIBILITY_DIALOG));
+
+        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
+                getString(R.string.task_reassign), null, null, 0).show(getActivity().getFragmentManager(),
+                OperationWaitingDialogFragment.TAG);
+
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // REASSIGN
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onSelect(Map<String, Person> mapPerson)
+    {
+        Person delegatePerson = null;
+        for (Entry<String, Person> assignee : mapPerson.entrySet())
+        {
+            delegatePerson = assignee.getValue();
+            break;
+        }
+
+        // Start reassign
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new ReassignTaskRequest(currentTask, delegatePerson).setNotificationTitle(currentTask.getName())
+                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+
+        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_reassign,
+                getString(R.string.task_reassign), null, null, 0).show(getActivity().getFragmentManager(),
+                OperationWaitingDialogFragment.TAG);
+
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+    }
+
+    @Override
+    public Map<String, Person> retrieveSelection()
+    {
+        return new HashMap<String, Person>(1);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -319,7 +442,8 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
                 Task task = (Task) detailsFragment.getArguments().get(TaskDetailsFragment.ARGUMENT_TASK);
                 if (task == null || _task == null) { return; }
 
-                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
+                if ((intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED) || intent.getAction().equals(
+                        IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED))
                         && _task.getIdentifier().equals(task.getIdentifier()))
                 {
                     if (DisplayUtils.hasCentralPane(getActivity()))
@@ -338,4 +462,5 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
             }
         }
     }
+
 }

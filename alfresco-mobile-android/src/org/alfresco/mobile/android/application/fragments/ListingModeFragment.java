@@ -20,12 +20,14 @@ package org.alfresco.mobile.android.application.fragments;
 public interface ListingModeFragment
 {
     String PARAM_MODE = "org.alfresco.mobile.android.application.param.mode";
-    
+    String PARAM_FRAGMENT_TAG = "org.alfresco.mobile.android.application.param.fragment.tag";
+    String PARAM_SINGLE_CHOICE = "org.alfresco.mobile.android.application.param.fragment.singleChoice";
+
     /** Normal case where user can interact with everything. */
     int MODE_LISTING = 1;
 
     /** Select one or multiple document.*/
-    int MODE_PICK_FILE = 2;
+    int MODE_PICK = 2;
     
     /** Select a folder */
     int MODE_IMPORT = 4;

@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Stack;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
@@ -1020,10 +1021,21 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_WORKFLOW_ADD:
                 Intent i = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, this, PrivateDialogActivity.class);
-                getFragment(TasksFragment.TAG).startActivityForResult(i, PublicIntent.REQUESTCODE_FILEPICKER);
-
-                // ProcessesDefinitionFragment.newInstance().show(getFragmentManager(),
-                // ProcessesDefinitionFragment.TAG);
+                if (getFragment(TasksFragment.TAG) != null)
+                {
+                    Document doc = (Document) ((DetailsFragment)getFragment(DetailsFragment.TAG)).getCurrentNode();
+                    i.putExtra(IntentIntegrator.EXTRA_DOCUMENT, (Serializable) doc);
+                }
+                startActivity(i);
+                return true;
+            case MenuActionItem.MENU_TASK_REASSIGN:
+                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).reassign();
+                return true;
+            case MenuActionItem.MENU_TASK_CLAIM:
+                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).claim();
+                return true;
+            case MenuActionItem.MENU_TASK_UNCLAIM:
+                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).unclaim();
                 return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();
@@ -1088,7 +1100,7 @@ public class MainActivity extends BaseActivity
                 {
                     backStack = false;
                 }
-                
+
                 if (fr instanceof TasksFragment)
                 {
                     backStack = false;

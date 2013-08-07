@@ -288,7 +288,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
     {
         final File file = (File) l.getItemAtPosition(position);
 
-        if (getMode() == MODE_PICK_FILE)
+        if (getMode() == MODE_PICK)
         {
             if (nActions != null)
             {

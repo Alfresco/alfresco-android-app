@@ -181,7 +181,7 @@ public class FileActions implements ActionMode.Callback
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     break;
 
-                case FileExplorerFragment.MODE_PICK_FILE:
+                case FileExplorerFragment.MODE_PICK:
 
                     if (selectedFolder.isEmpty())
                     {

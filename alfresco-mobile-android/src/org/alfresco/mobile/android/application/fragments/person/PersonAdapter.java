@@ -15,9 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.sites;
+package org.alfresco.mobile.android.application.fragments.person;
 
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.ApplicationManager;
@@ -35,16 +36,16 @@ import android.widget.LinearLayout;
  * @author jpascal
  *
  */
-public class SiteMembersAdapter extends BaseListAdapter<Person, GenericViewHolder>
+public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
 {
     private Fragment fragment;
     
-    private List<Person> selectedItems;
+    private Map<String, Person> selectedItems;
 
     private RenditionManager renditionManager;
     
-    public SiteMembersAdapter(Fragment fr, int textViewResourceId, List<Person> listItems,
-            List<Person> selectedItems)
+    public PersonAdapter(Fragment fr, int textViewResourceId, List<Person> listItems,
+            Map<String, Person> selectedItems)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
         this.fragment = fr;
@@ -57,7 +58,7 @@ public class SiteMembersAdapter extends BaseListAdapter<Person, GenericViewHolde
     protected void updateBottomText(GenericViewHolder vh, Person item)
     {
         vh.bottomText.setText(item.getJobTitle());
-        if (selectedItems != null && selectedItems.contains(item))
+        if (selectedItems != null && selectedItems.containsKey(item.getIdentifier()))
         {
             UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
                     getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
