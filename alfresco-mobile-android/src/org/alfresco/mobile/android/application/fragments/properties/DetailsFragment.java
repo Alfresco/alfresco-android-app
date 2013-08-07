@@ -979,6 +979,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
+            
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
+                    R.string.update);
+            mi.setIcon(R.drawable.ic_start_review);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            
         }
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())

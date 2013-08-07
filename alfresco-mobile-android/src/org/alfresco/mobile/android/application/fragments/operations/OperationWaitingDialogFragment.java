@@ -62,6 +62,8 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     private static final String PARAM_TYPEID = "typeId";
 
     private static final String PARAM_SIZE = "nbItems";
+    
+    private static final String PARAM_FINISH = "nbItems";
 
     private boolean canDismiss = false;
 
@@ -77,6 +79,21 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
 
     public static OperationWaitingDialogFragment newInstance(int operationType, int iconId, String title,
             String message, Node parent, int nbItems)
+    {
+        OperationWaitingDialogFragment fragment = new OperationWaitingDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt(PARAM_TYPEID, operationType);
+        bundle.putInt(PARAM_ICONID, iconId);
+        bundle.putInt(PARAM_SIZE, nbItems);
+        bundle.putString(PARAM_TITLEID, title);
+        bundle.putString(PARAM_MESSAGEID, message);
+        bundle.putParcelable(PARAM_NODEID, parent);
+        fragment.setArguments(bundle);
+        return fragment;
+    }
+    
+    public static OperationWaitingDialogFragment newInstance(int operationType, int iconId, String title,
+            String message, Node parent, int nbItems, boolean finishActivity)
     {
         OperationWaitingDialogFragment fragment = new OperationWaitingDialogFragment();
         Bundle bundle = new Bundle();

@@ -38,19 +38,27 @@
             android:layout_height="wrap_content"
             layout="@layout/app_account_form" />
 
-        <LinearLayout
+            
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical"
+            android:layout_marginTop="@dimen/margin_large"
+            />
+
+        <Button
+            android:id="@+id/next"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal" >
+            android:text="@string/account_validate"
+            android:textSize="@dimen/home_button_size" />
 
-            <Button
-                android:id="@+id/next"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="@string/account_validate" />
-        </LinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="?android:attr/dividerVertical" />
+            
     </LinearLayout>
 
 </ScrollView>

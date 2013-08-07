@@ -18,7 +18,8 @@
 package org.alfresco.mobile.android.application.fragments.sites;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -29,6 +30,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.person.PersonAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
@@ -51,7 +53,7 @@ public class SiteMembersFragment extends BaseListFragment implements
 
     public static final String TAG = SiteMembersFragment.class.getName();
 
-    private List<Person> selectedItems = new ArrayList<Person>(1);
+    private Map<String, Person> selectedItems = new HashMap<String, Person>(1);
 
     private Site site;
 
@@ -132,7 +134,7 @@ public class SiteMembersFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new SiteMembersAdapter(this, R.layout.sdk_list_row, new ArrayList<Person>(0), selectedItems);
+            adapter = new PersonAdapter(this, R.layout.sdk_list_row, new ArrayList<Person>(0), selectedItems);
         }
         if (checkException(results))
         {
@@ -161,7 +163,7 @@ public class SiteMembersFragment extends BaseListFragment implements
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
-            hideDetails = selectedItems.get(0).equals(item);
+            hideDetails = selectedItems.containsKey(item.getIdentifier());
             selectedItems.clear();
         }
         l.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
@@ -170,7 +172,7 @@ public class SiteMembersFragment extends BaseListFragment implements
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
-            selectedItems.add(item);
+            selectedItems.put(item.getIdentifier(), item);
         }
 
         if (hideDetails)

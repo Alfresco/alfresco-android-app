@@ -131,7 +131,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         File selectedFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)));
 
-        if (getMode() == MODE_PICK_FILE)
+        if (getMode() == MODE_PICK)
         {
             if (nActions != null)
             {

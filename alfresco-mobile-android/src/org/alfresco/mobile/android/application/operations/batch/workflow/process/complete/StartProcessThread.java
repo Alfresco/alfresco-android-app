@@ -15,40 +15,49 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.operations.batch.workflow.task.complete;
+package org.alfresco.mobile.android.application.operations.batch.workflow.process.complete;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.constants.WorkflowModel;
-import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.model.Process;
+import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
-import org.alfresco.mobile.android.application.operations.batch.workflow.task.TaskOperationThread;
+import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationThread;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-public class CompleteTaskThread extends TaskOperationThread<Task>
+public class StartProcessThread extends AbstractBatchOperationThread<Process>
 {
-    private static final String TAG = CompleteTaskThread.class.getName();
+    private static final String TAG = StartProcessThread.class.getName();
 
-    private Task updatedTask = null;
-
-    private Map<String, Serializable> properties;
+    protected Map<String, Serializable> variables;
+    protected ProcessDefinition processDefinition;
+    protected List<Person> assignees;
+    protected List<Document> items;
+    protected Process process = null;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public CompleteTaskThread(Context context, OperationRequest request)
+    public StartProcessThread(Context context, OperationRequest request)
     {
         super(context, request);
-        if (request instanceof CompleteTaskRequest)
+        if (request instanceof StartProcessRequest)
         {
-            this.properties = ((CompleteTaskRequest) request).getProperties();
+            this.variables = ((StartProcessRequest) request).getProperties();
+            this.processDefinition = ((StartProcessRequest) request).getProcessDefinition();
+            this.assignees = ((StartProcessRequest) request).getAssignees();
+            this.items = ((StartProcessRequest) request).getItems();
         }
     }
 
@@ -56,24 +65,14 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected LoaderResult<Task> doInBackground()
+    protected LoaderResult<Process> doInBackground()
     {
-        LoaderResult<Task> result = new LoaderResult<Task>();
+        LoaderResult<Process> result = new LoaderResult<Process>();
+        
         try
         {
             result = super.doInBackground();
-
-            if (properties != null)
-            {
-                String transitionIdentifier = "";
-                if (task.getIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
-                {
-                    transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
-                }
-                properties.put(WorkflowModel.PROP_TRANSITIONS_VALUE, transitionIdentifier);
-                updatedTask = session.getServiceRegistry().getWorkflowService()
-                        .completeTask(task, properties);
-            }
+            process = session.getServiceRegistry().getWorkflowService().startProcess(processDefinition, assignees, variables, items);
         }
         catch (Exception e)
         {
@@ -81,7 +80,7 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
             Log.e(TAG, Log.getStackTraceString(e));
         }
 
-        result.setData(updatedTask);
+        result.setData(process);
 
         return result;
     }
@@ -92,9 +91,8 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
     public Intent getStartBroadCastIntent()
     {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_COMPLETE_STARTED);
+        broadcastIntent.setAction(IntentIntegrator.ACTION_START_PROCESS_STARTED);
         Bundle b = new Bundle();
-        b.putSerializable(IntentIntegrator.EXTRA_TASK, task);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_DATA, b);
         return broadcastIntent;
     }
@@ -102,10 +100,9 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
     public Intent getCompleteBroadCastIntent()
     {
         Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction(IntentIntegrator.ACTION_TASK_COMPLETED);
+        broadcastIntent.setAction(IntentIntegrator.ACTION_START_PROCESS_COMPLETED);
         Bundle b = new Bundle();
-        b.putSerializable(IntentIntegrator.EXTRA_TASK, task);
-        b.putSerializable(IntentIntegrator.EXTRA_UPDATED_TASK, updatedTask);
+        b.putSerializable(IntentIntegrator.EXTRA_PROCESS, process);
         broadcastIntent.putExtra(IntentIntegrator.EXTRA_DATA, b);
         return broadcastIntent;
     }

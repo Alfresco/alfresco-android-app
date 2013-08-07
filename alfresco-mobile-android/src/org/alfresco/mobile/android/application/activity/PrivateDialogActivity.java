@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.ProcessesDefinitionFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.SelectTaskTypeFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -110,10 +110,10 @@ public class PrivateDialogActivity extends BaseActivity
             return;
         }
         
-        if (IntentIntegrator.ACTION_START_PROCESS.equals(action))
+        if (IntentIntegrator.ACTION_START_PROCESS.equals(action) && getFragment(SelectTaskTypeFragment.TAG) == null)
         {
-            Fragment f = new ProcessesDefinitionFragment();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), ProcessesDefinitionFragment.TAG,
+            Fragment f = new SelectTaskTypeFragment();
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), SelectTaskTypeFragment.TAG,
                     false, false);
             return;
         }

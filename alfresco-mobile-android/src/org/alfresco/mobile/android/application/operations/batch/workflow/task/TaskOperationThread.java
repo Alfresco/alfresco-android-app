@@ -45,6 +45,7 @@ public abstract class TaskOperationThread<T> extends AbstractBatchOperationThrea
         super(context, request);
         if (request instanceof TaskOperationRequest)
         {
+            this.task = ((TaskOperationRequest) request).getTask();
             this.taskIdentifier = ((TaskOperationRequest) request).getTaskIdentifier();
         }
     }
@@ -60,7 +61,7 @@ public abstract class TaskOperationThread<T> extends AbstractBatchOperationThrea
 
             try
             {
-                if (taskIdentifier != null)
+                if (task == null && taskIdentifier != null)
                 {
                     task = session.getServiceRegistry().getWorkflowService().getTask(taskIdentifier);
                 }

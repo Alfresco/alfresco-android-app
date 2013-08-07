@@ -26,9 +26,9 @@
     <ScrollView
         android:layout_width="fill_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
-        android:layout_marginRight="@dimen/wizard_main_margin"
         android:layout_marginLeft="@dimen/wizard_main_margin"
+        android:layout_marginRight="@dimen/wizard_main_margin"
+        android:layout_weight="1"
         android:fillViewport="true" >
 
         <LinearLayout
@@ -72,6 +72,26 @@
                 </TableRow>
 
                 <TableRow
+                    android:id="@+id/error_message_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/error_message"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dip"
+                        android:text="@string/filename_error_character"
+                        android:textColor="@color/dark_red"
+                        />
+                </TableRow>
+
+                <TableRow
                     android:id="@+id/process_due_on_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
@@ -93,8 +113,8 @@
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:editable="false"
-                            android:hint="@string/process_no_date" />
+                            android:hint="@string/process_no_date"
+                            android:inputType="date" />
 
                         <ImageButton
                             android:id="@+id/action_process_due_on"
@@ -127,8 +147,7 @@
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:editable="false"
-                            android:hint="@string/process_no_assignee" />
+                            android:editable="false" />
 
                         <ImageButton
                             android:id="@+id/action_process_assignee"
@@ -138,8 +157,8 @@
                             android:src="@drawable/ic_person" />
                     </LinearLayout>
                 </TableRow>
-                
-                  <TableRow
+
+                <TableRow
                     android:id="@+id/process_approvers_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
@@ -150,14 +169,14 @@
                         android:layout_gravity="center_vertical"
                         android:text="@string/process_approvers" />
 
-                      <LinearLayout
+                    <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:baselineAligned="true"
                         android:orientation="horizontal" >
 
                         <EditText
-                            android:id="@+id/process_assignee"
+                            android:id="@+id/process_approvers"
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
@@ -165,14 +184,14 @@
                             android:hint="@string/process_no_approvers" />
 
                         <ImageButton
-                            android:id="@+id/action_process_assignee"
+                            android:id="@+id/action_remove_approvers"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:src="@drawable/ic_remove" />
-                        
-                         <ImageButton
-                            android:id="@+id/action_process_assignee"
+
+                        <ImageButton
+                            android:id="@+id/action_add_approvers"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -231,7 +250,7 @@
                         android:orientation="horizontal" >
 
                         <Button
-                            android:id="@+id/action_process_attachments"
+                            android:id="@+id/action_priority_low"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -245,7 +264,7 @@
                             android:background="?android:attr/dividerVertical" />
 
                         <Button
-                            android:id="@+id/action_process_attachments"
+                            android:id="@+id/action_priority_medium"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -259,7 +278,7 @@
                             android:background="?android:attr/dividerVertical" />
 
                         <Button
-                            android:id="@+id/action_process_attachments"
+                            android:id="@+id/action_priority_high"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -278,9 +297,11 @@
                         android:text="@string/process_notification" />
 
                     <Switch
+                        android:id="@+id/action_send_notification"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right|center"
+                        android:layout_marginTop="5dip"
                         android:checked="true" />
                 </TableRow>
             </TableLayout>
@@ -290,8 +311,8 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:background="?android:attr/dividerVertical"
-        android:layout_marginTop="@dimen/margin_top" />
+        android:layout_marginTop="@dimen/margin_top"
+        android:background="?android:attr/dividerVertical" />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
@@ -305,16 +326,17 @@
         android:paddingTop="0dip" >
 
         <Button
-            android:id="@+id/action_approve"
+            android:id="@+id/action_create"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="@string/task_done" />
     </LinearLayout>
-      <View
+
+    <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
-        android:background="?android:attr/dividerVertical"
-        />
+        android:background="?android:attr/dividerVertical" />
 
 </LinearLayout>

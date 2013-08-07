@@ -149,9 +149,9 @@ public class TaskActionFragment extends BaseFragment
         Map<String, Serializable> variables = new HashMap<String, Serializable>(3);
         if (isReviewTask)
         {
-            String outcome = (isApprove) ? WorkflowModel.REVIEW_TASK_TRANSITION_APPROVE
-                    : WorkflowModel.REVIEW_TASK_TRANSITION_REJECT;
-            outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.SUFFIX_ACTIVITI)) ? outcome : outcome.toLowerCase();
+            String outcome = (isApprove) ? WorkflowModel.TRANSITION_APPROVE
+                    : WorkflowModel.TRANSITION_REJECT;
+            outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI)) ? outcome : outcome.toLowerCase();
             variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
         }
 

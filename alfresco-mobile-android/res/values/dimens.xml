@@ -76,6 +76,7 @@
     
     <!-- IMPORT MARGIN -->
     <dimen name="margin_top">3dip</dimen>
+    <dimen name="margin_large">15dip</dimen>
     
     <!-- IMAX FILE SIZE -->
     <integer name="text_editor_max_file_size">204800</integer>
@@ -86,6 +87,10 @@
     <dimen name="profile_row_padding">5dip</dimen>
     <dimen name="profile_minwidth">150dip</dimen>
     <dimen name="profile_icon_size">100dip</dimen>
+    
+    <!-- PROCESS -->
+    <dimen name="process_diagram_height">200dip</dimen>
+    
     
     
 </resources>
