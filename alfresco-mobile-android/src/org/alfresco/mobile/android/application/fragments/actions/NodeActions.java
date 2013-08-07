@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,12 +27,14 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -50,6 +53,8 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -182,6 +187,11 @@ public class NodeActions extends AbstractActions<Node>
                     + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
             createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                     + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, Menu.FIRST
+                    + MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, R.string.process_start_review);
+            mi.setIcon(R.drawable.ic_start_review);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
@@ -251,6 +261,10 @@ public class NodeActions extends AbstractActions<Node>
                 selectAll();
                 b = false;
                 break;
+            case MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS:
+                startReview();
+                b = true;
+                break;
             default:
                 break;
         }
@@ -267,6 +281,13 @@ public class NodeActions extends AbstractActions<Node>
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
+    private void startReview()
+    {
+        Intent it = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, activity, PrivateDialogActivity.class);
+        it.putParcelableArrayListExtra(IntentIntegrator.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) selectedItems);
+        activity.startActivity(it);
+    }
+
     private void favorite(boolean doFavorite)
     {
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
@@ -365,7 +386,7 @@ public class NodeActions extends AbstractActions<Node>
     {
         ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
     }
-    
+
     public static void delete(final Activity activity, final Fragment f, Node node)
     {
         List<Node> nodes = new ArrayList<Node>();

@@ -1017,7 +1017,7 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_WORKFLOW_ADD:
                 Intent i = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, this, PrivateDialogActivity.class);
-                if (getFragment(TasksFragment.TAG) != null)
+                if (getFragment(DetailsFragment.TAG) != null)
                 {
                     Document doc = (Document) ((DetailsFragment)getFragment(DetailsFragment.TAG)).getCurrentNode();
                     i.putExtra(IntentIntegrator.EXTRA_DOCUMENT, (Serializable) doc);

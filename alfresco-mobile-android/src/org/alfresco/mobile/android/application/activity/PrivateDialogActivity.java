@@ -17,6 +17,11 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.activity;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -59,6 +64,7 @@ public class PrivateDialogActivity extends BaseActivity
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     /** Called when the activity is first created. */
+    @SuppressWarnings("unchecked")
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -109,12 +115,23 @@ public class PrivateDialogActivity extends BaseActivity
                     false, false);
             return;
         }
-        
+
         if (IntentIntegrator.ACTION_START_PROCESS.equals(action) && getFragment(SelectTaskTypeFragment.TAG) == null)
         {
-            Fragment f = new SelectTaskTypeFragment();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), SelectTaskTypeFragment.TAG,
-                    false, false);
+            List<Document> docs = new ArrayList<Document>();
+            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENT))
+            {
+                docs.add((Document) getIntent().getExtras().get(IntentIntegrator.EXTRA_DOCUMENT));
+            }
+            else if (getIntent().getExtras() != null
+                    && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+            {
+                docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(
+                        IntentIntegrator.EXTRA_DOCUMENTS));
+            }
+            Fragment f = SelectTaskTypeFragment.newInstance(docs);
+            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this),
+                    SelectTaskTypeFragment.TAG, false, false);
             return;
         }
     }

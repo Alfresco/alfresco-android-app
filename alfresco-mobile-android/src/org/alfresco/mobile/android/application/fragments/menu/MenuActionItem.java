@@ -163,6 +163,8 @@ public interface MenuActionItem
     // ///////////////////////////////////////////
     int MENU_WORKFLOW_ADD = 603;
     
+    int MENU_PROCESS_REVIEW_ATTACHMENTS = 601;
+    
     int MENU_TASK_REASSIGN= 602;
 
     int MENU_TASK_CLAIM= 604;

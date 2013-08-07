@@ -705,6 +705,7 @@
     <string name="task_filter_custom">Custom filter...</string>
 
     <!-- Process Start -->
+    <string name="process_start_review">Start review</string>
     <string name="process_choose_definition">Choose task type</string>
     <string name="process_create_task">Create Task</string>
     <string name="process_choose_assignee">Choose assignee</string>
@@ -726,6 +727,14 @@
         <item quantity="one">%1$s of %2$s Approvers.</item>
         <item quantity="many">%1$s of %2$s Approvers.</item>
         <item quantity="other">No approvers</item>
+    </plurals>
+    <plurals name="process_attachments">
+        <item quantity="zero">No attachments</item>
+        <item quantity="one">%1$s attachment</item>
+        <item quantity="two">%1$s attachments</item>
+        <item quantity="many">%1$s attachments</item>
+        <item quantity="many">%1$s attachments</item>
+        <item quantity="other">%1$s attachments</item>
     </plurals>
 
     <string name="process_initiator">Initiator</string>

@@ -981,7 +981,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             }
             
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
-                    R.string.update);
+                    R.string.process_start_review);
             mi.setIcon(R.drawable.ic_start_review);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             

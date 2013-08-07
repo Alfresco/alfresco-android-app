@@ -107,6 +107,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private StartProcessReceiver receiver;
 
+    private EditText itemsEditText;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -123,6 +125,14 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         return bf;
     }
 
+    public static CreateTaskFragment newInstance(ProcessDefinition processDefinition, Bundle b)
+    {
+        CreateTaskFragment bf = new CreateTaskFragment();
+        b.putSerializable(PARAM_PROCESS_DEFINITION, processDefinition);
+        bf.setArguments(b);
+        return bf;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -132,6 +142,16 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         // Retrieve parameters
         if (getArguments() == null && !getArguments().containsKey(PARAM_PROCESS_DEFINITION)) { return null; }
         processDefinition = (ProcessDefinition) getArguments().getSerializable(PARAM_PROCESS_DEFINITION);
+
+        if (getArguments() != null && getArguments().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+        {
+            @SuppressWarnings("unchecked")
+            List<Document> docs = (List<Document>) getArguments().get(IntentIntegrator.EXTRA_DOCUMENTS);
+            for (Document document : docs)
+            {
+                items.put(document.getIdentifier(), document);
+            }
+        }
 
         setRetainInstance(true);
         alfSession = SessionUtils.getSession(getActivity());
@@ -212,6 +232,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         }
 
         // ATTACHMENTS
+        itemsEditText = (EditText) vRoot.findViewById(R.id.process_attachments);
+        updateItems();
         ib = (ImageButton) vRoot.findViewById(R.id.action_process_attachments);
         ib.setOnClickListener(new OnClickListener()
         {
@@ -302,8 +324,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
         // Assignees
         List<Person> people = new ArrayList<Person>(assignees.values());
-        
-        //Items
+
+        // Items
         List<Document> attachments = new ArrayList<Document>(items.values());
 
         // Start an adhoc process with no items
@@ -414,6 +436,12 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
         approversEditText.setHint(String.format(getResources()
                 .getQuantityString(R.plurals.process_approvers, approvers), approvers, assignees.size()));
+    }
+
+    private void updateItems()
+    {
+        itemsEditText.setHint(String.format(
+                getResources().getQuantityString(R.plurals.process_attachments, items.size()), items.size()));
     }
 
     private void updateAssignees()
