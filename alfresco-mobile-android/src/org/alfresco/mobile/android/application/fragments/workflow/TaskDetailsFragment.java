@@ -1,28 +1,41 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
-import java.text.SimpleDateFormat;
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
+import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.utils.WorkflowUtils;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate.ReassignTaskRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -31,43 +44,57 @@ import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.FragmentManager;
+import android.app.LoaderManager.LoaderCallbacks;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.Loader;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.TabHost;
-import android.widget.TabHost.OnTabChangeListener;
-import android.widget.TabHost.TabSpec;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
-public class TaskDetailsFragment extends BaseFragment implements OnTabChangeListener, onPickPersonFragment
+public class TaskDetailsFragment extends BaseFragment implements onPickPersonFragment,
+        LoaderCallbacks<LoaderResult<PagingResult<Node>>>
 {
 
     public static final String TAG = TaskDetailsFragment.class.getName();
 
-    private static final String TAB_SELECTED = "tabSelected";
-
     private static final String ARGUMENT_TASK = "paramTask";
+
+    private static final String ACTION_ATTACHMENTS_COMPLETED = "Attachments";
 
     private View vRoot;
 
     private Task currentTask;
 
-    private TabHost mTabHost;
-
-    protected Integer tabSelected = null;
-
-    protected Integer tabSelection = null;
-
     private TaskDetailsFragmentReceiver receiver;
+
+    private EditText comment;
+
+    private boolean isReviewTask = false;
+
+    private Person initiator;
+
+    private RenditionManager renditionManager;
+
+    private List<Node> items;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -91,75 +118,40 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        setRetainInstance(false);
+        setRetainInstance(true);
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
-        vRoot = inflater.inflate(R.layout.app_task_tabpanes, container, false);
+        vRoot = inflater.inflate(R.layout.app_task_details, container, false);
 
         if (alfSession == null) { return vRoot; }
 
         currentTask = (Task) getArguments().get(ARGUMENT_TASK);
         if (currentTask == null) { return null; }
 
-        // TAB
-        if (savedInstanceState != null)
-        {
-            tabSelection = savedInstanceState.getInt(TAB_SELECTED);
-            savedInstanceState.remove(TAB_SELECTED);
-        }
+        // Rendition Manager
+        renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
 
         // Header
         TextView tv = (TextView) vRoot.findViewById(R.id.title);
         tv.setText(currentTask.getDescription());
-        tv = (TextView) vRoot.findViewById(R.id.details);
-        createBottomHeader(currentTask, tv);
 
-        // TabHost
-        mTabHost = (TabHost) vRoot.findViewById(android.R.id.tabhost);
-        setupTabs();
+        // Other parts
+        initHeader(currentTask);
+        initCompleteForm(inflater);
+        initInitiator();
+
+        if (items == null)
+        {
+            getActivity().getLoaderManager().restartLoader(ItemsLoader.ID, null, this);
+        }
+        else
+        {
+            diplayAttachment();
+        }
 
         return vRoot;
-    }
-
-    private void createBottomHeader(Task currentTask, TextView tv)
-    {
-        StringBuilder builder = new StringBuilder();
-        switch (currentTask.getPriority())
-        {
-            case 1:
-                builder.append(getString(R.string.workflow_priority_high));
-                break;
-            case 2:
-                builder.append(getString(R.string.workflow_priority_medium));
-                break;
-            case 3:
-                builder.append(getString(R.string.workflow_priority_low));
-                break;
-            default:
-                break;
-        }
-        builder.append("   -   ");
-        builder.append(currentTask.getName());
-        if (currentTask.getDueAt() != null)
-        {
-            builder.append("   -   ");
-            if (currentTask.getDueAt().before(new GregorianCalendar()))
-            {
-                builder.append("<b>");
-                builder.append("<font color='#9F000F'>");
-                builder.append(Formatter.formatToRelativeDate(getActivity(), currentTask.getDueAt().getTime()));
-                builder.append("</font>");
-                builder.append("</b>");
-            }
-            else
-            {
-                SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
-                builder.append(formatter.format(currentTask.getDueAt().getTime()));
-            }
-        }
-        tv.setText(Html.fromHtml(builder.toString()), TextView.BufferType.SPANNABLE);
     }
 
     @Override
@@ -182,6 +174,7 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         super.onResume();
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_TASK_COMPLETED);
         intentFilter.addAction(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED);
+        intentFilter.addAction(ACTION_ATTACHMENTS_COMPLETED);
         receiver = new TaskDetailsFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
     }
@@ -194,115 +187,234 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // TAB MENU
+    // INIT
     // ///////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
+    public void initCompleteForm(LayoutInflater inflater)
     {
-        super.onSaveInstanceState(outState);
-        if (tabSelected != null)
+        if (currentTask.getEndedAt() == null)
         {
-            outState.putInt(TAB_SELECTED, tabSelected);
+
+            View validation = vRoot.findViewById(R.id.action_approve);
+            View reject = vRoot.findViewById(R.id.action_reject);
+            comment = (EditText) vRoot.findViewById(R.id.task_comment);
+
+            if (WorkflowModel.TASK_REVIEW.equals(currentTask.getKey())
+                    || WorkflowModel.TASK_ACTIVITI_REVIEW.equals(currentTask.getKey()))
+            {
+                isReviewTask = true;
+                reject.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                reject.setVisibility(View.GONE);
+                if (validation instanceof Button)
+                {
+                    ((Button) validation).setText(R.string.task_done);
+                }
+            }
+
+            validation.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    completeTask(currentTask, isReviewTask, true);
+                }
+            });
+
+            reject.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    completeTask(currentTask, isReviewTask, false);
+                }
+            });
         }
     }
 
-    private static final String TAB_ACTIONS = "Actions";
-
-    private static final String TAB_ITEMS = "Items";
-
-    private static final String TAB_TASKS = "Persons";
-
-    private static final String TAB_WORKFLOW = "Workflow";
-
-    private void setupTabs()
+    private void initInitiator()
     {
-        if (mTabHost == null) { return; }
-
-        mTabHost.setup();
-        mTabHost.setOnTabChangedListener(this);
-
-        int stringId = R.string.task_actions;
-        if (currentTask.getEndedAt() != null)
+        // Display Initiator
+        initiator = null;
+        if (currentTask.getData().containsKey(OnPremiseConstant.WORKFLOWINSTANCE_VALUE))
         {
-            stringId = R.string.variables;
+            Process p = (Process) currentTask.getData().get(OnPremiseConstant.WORKFLOWINSTANCE_VALUE);
+            initiator = (Person) p.getData().get(OnPremiseConstant.INITIATOR_VALUE);
         }
-        mTabHost.addTab(newTab(TAB_ACTIONS, stringId, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(TAB_ITEMS, R.string.task_items, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(TAB_TASKS, R.string.tasks, android.R.id.tabcontent));
-        mTabHost.addTab(newTab(TAB_WORKFLOW, R.string.task_workflow, android.R.id.tabcontent));
 
-        if (tabSelection != null)
+        if (initiator != null)
         {
-            if (tabSelection == 0) { return; }
-            mTabHost.setCurrentTab(tabSelection);
+            ImageView preview = (ImageView) vRoot.findViewById(R.id.task_initiator_icon);
+            int iconId = R.drawable.ic_person;
+            renditionManager.display((ImageView) preview, initiator.getIdentifier(), iconId);
+
+            LinearLayout layout = (LinearLayout) vRoot.findViewById(R.id.task_initiator_group);
+            layout.setOnClickListener(new OnClickListener()
+            {
+                public void onClick(View v)
+                {
+                    PersonProfileFragment.newInstance(initiator.getIdentifier()).show(getFragmentManager(),
+                            PersonProfileFragment.TAG);
+                }
+            });
+
+            TextView tv = (TextView) vRoot.findViewById(R.id.task_initiator);
+            tv.setText(initiator.getFullName());
+        }
+        else
+        {
+            vRoot.findViewById(R.id.task_initiator_group).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.task_initiator_icon).setVisibility(View.GONE);
         }
     }
 
-    private TabSpec newTab(String tag, int labelId, int tabContentId)
+    private void initHeader(Task currentTask)
     {
-        TabSpec tabSpec = mTabHost.newTabSpec(tag);
-        tabSpec.setContent(tabContentId);
-        tabSpec.setIndicator(this.getText(labelId));
-        return tabSpec;
+        // PRIORITY
+        ImageView icon = (ImageView) vRoot.findViewById(R.id.task_priority_icon);
+        TextView textValue = (TextView) vRoot.findViewById(R.id.task_priority);
+
+        icon.setImageDrawable(getResources().getDrawable(TasksAdapter.getPriorityIconId(currentTask)));
+        int labelId = R.string.workflow_priority_medium;
+        switch (currentTask.getPriority())
+        {
+            case WorkflowModel.PRIORITY_HIGH:
+                labelId = R.string.workflow_priority_high;
+                break;
+            case WorkflowModel.PRIORITY_MEDIUM:
+                labelId = R.string.workflow_priority_medium;
+                break;
+            case WorkflowModel.PRIORITY_LOW:
+                labelId = R.string.workflow_priority_low;
+                break;
+            default:
+                break;
+        }
+        textValue.setText(labelId);
+
+        // TASK TYPE
+        textValue = (TextView) vRoot.findViewById(R.id.task_type);
+        textValue.setText(currentTask.getName());
+
+        // DUE DATE
+        StringBuilder builder = new StringBuilder();
+        if (currentTask.getDueAt() != null)
+        {
+            textValue = (TextView) vRoot.findViewById(R.id.task_due_date);
+            if (currentTask.getDueAt().before(new GregorianCalendar()))
+            {
+                builder.append("<b>");
+                builder.append("<font color='#9F000F'>");
+                builder.append(DateFormat.getLongDateFormat(getActivity()).format(currentTask.getDueAt().getTime()));
+                builder.append("</font>");
+                builder.append("</b>");
+            }
+            else
+            {
+                builder.append(DateFormat.getLongDateFormat(getActivity()).format(currentTask.getDueAt().getTime()));
+            }
+            textValue.setText(builder.toString());
+            textValue.setText(Html.fromHtml(builder.toString()), TextView.BufferType.SPANNABLE);
+        }
+        else
+        {
+            vRoot.findViewById(R.id.task_due_date_group).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.task_due_date_icon).setVisibility(View.GONE);
+        }
     }
 
-    @Override
-    public void onTabChanged(String tabId)
+    private void diplayAttachment()
     {
-        if (TAB_ACTIONS.equals(tabId))
+        vRoot.findViewById(R.id.attachments_waiting).setVisibility(View.GONE);
+        LinearLayout ll = (LinearLayout) vRoot.findViewById(R.id.attachments);
+        if (items == null || items.isEmpty())
         {
-            tabSelected = 0;
-            addTaskAction(currentTask);
+            ImageView iv = new ImageView(getActivity());
+            iv.setScaleType(ScaleType.FIT_CENTER);
+            iv.setImageResource(R.drawable.mime_empty_doc);
+            ll.addView(iv, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+
+            TextView tv = new TextView(getActivity());
+            tv.setText(R.string.process_no_attachments);
+            tv.setGravity(Gravity.CENTER);
+            ll.addView(tv, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+
+            ll.setGravity(Gravity.CENTER);
+            return;
         }
-        else if (TAB_TASKS.equals(tabId))
+
+        LayoutInflater li = LayoutInflater.from(getActivity());
+        View vr = null;
+        TextView tv = null;
+        for (Node node : items)
         {
-            tabSelected = 2;
-            addTasks(currentTask);
+            vr = li.inflate(R.layout.app_task_item_row, ll, false);
+            tv = (TextView) vr.findViewById(R.id.toptext);
+            tv.setText(node.getName());
+            tv = (TextView) vr.findViewById(R.id.bottomtext);
+            tv.setText(createContentBottomText(getActivity(), node));
+            ll.addView(vr, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+            ImageView iv = (ImageView) vr.findViewById(R.id.icon);
+            renditionManager.display(iv, node, MimeTypeManager.getIcon(node.getName(), true), ScaleType.FIT_CENTER);
+            vr.setTag(node);
+            vr.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Node item = (Node) v.getTag();
+                    ((MainActivity) getActivity()).addPropertiesFragment(item.getIdentifier(), true);
+                }
+            });
         }
-        else if (TAB_ITEMS.equals(tabId))
+    }
+
+    private String createContentBottomText(Context context, Node node)
+    {
+        String s = "";
+
+        if (node.getCreatedAt() != null)
         {
-            tabSelected = 1;
-            addItems(currentTask);
+            s = Formatter.formatToRelativeDate(context, node.getCreatedAt().getTime());
+            if (node.isDocument())
+            {
+                Document doc = (Document) node;
+                s += " - " + Formatter.formatFileSize(context, doc.getContentStreamLength());
+            }
         }
-        else if (TAB_WORKFLOW.equals(tabId))
-        {
-            tabSelected = 3;
-            addWorkflow(currentTask);
-        }
+        return s;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // TAB MENU ACTIONS
+    // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void addWorkflow(Task t)
+    private void completeTask(Task task, boolean isReviewTask, boolean isApprove)
     {
-        BaseFragment frag = ProcessDetailsFragment.newInstance(t);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ProcessDetailsFragment.TAG,
-                false);
-    }
+        // Prepare Variables
+        Map<String, Serializable> variables = new HashMap<String, Serializable>(3);
+        if (isReviewTask)
+        {
+            String outcome = (isApprove) ? WorkflowModel.TRANSITION_APPROVE : WorkflowModel.TRANSITION_REJECT;
+            outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI)) ? outcome
+                    : outcome.toLowerCase();
+            variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
+        }
 
-    private void addItems(Task currentTask)
-    {
-        BaseFragment frag = ItemsFragment.newInstance(currentTask);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, ItemsFragment.TAG, false);
-    }
+        if (comment.getText().length() > 0)
+        {
+            variables.put(WorkflowModel.PROP_COMMENT, comment.getText().toString());
+        }
 
-    private void addTasks(Task currentTask)
-    {
-        BaseFragment frag = ProcessTasksFragment.newInstance(currentTask.getProcessIdentifier());
-        frag.setSession(alfSession);
-        FragmentDisplayer
-                .replaceFragment(getActivity(), frag, android.R.id.tabcontent, ProcessTasksFragment.TAG, false);
-    }
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
+        group.enqueue(new CompleteTaskRequest(task, variables).setNotificationTitle(task.getName())
+                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
 
-    private void addTaskAction(Task currentTask)
-    {
-        BaseFragment frag = TaskActionFragment.newInstance(currentTask);
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, android.R.id.tabcontent, TaskActionFragment.TAG, false);
+        OperationWaitingDialogFragment.newInstance(CompleteTaskRequest.TYPE_ID, R.drawable.ic_workflow,
+                getString(R.string.task_completing), null, null, 0).show(getActivity().getFragmentManager(),
+                OperationWaitingDialogFragment.TAG);
+
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -317,6 +429,13 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
 
         String processDefinitionKey = WorkflowUtils.getKeyFromProcessDefinitionId(currentTask
                 .getProcessDefinitionIdentifier());
+
+        if (processDefinitionKey.startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_DETAILS, Menu.FIRST
+                    + MenuActionItem.MENU_PROCESS_DETAILS, R.string.process_diagram);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
 
         // unclaim : I unassign myself (generally created by a pooled process)
         if (currentTask.getAssigneeIdentifier() != null
@@ -388,6 +507,21 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
         BatchOperationManager.getInstance(getActivity()).enqueue(group);
     }
 
+    public void showProcessDiagram()
+    {
+        BaseFragment frag = ProcessDiagramFragment.newInstance(currentTask);
+        frag.setSession(alfSession);
+        frag.show(getFragmentManager(), ProcessDiagramFragment.TAG);
+
+        /*
+         * BaseFragment frag = ProcessDiagramFragment.newInstance(currentTask);
+         * frag.setSession(alfSession);
+         * FragmentDisplayer.replaceFragment(getActivity(), frag,
+         * DisplayUtils.getMainPaneId(getActivity()),
+         * ProcessDiagramFragment.TAG, true);
+         */
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // REASSIGN
     // ///////////////////////////////////////////////////////////////////////////
@@ -420,6 +554,39 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // LOADERS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Loader<LoaderResult<PagingResult<Node>>> onCreateLoader(int id, Bundle ba)
+    {
+        return new ItemsLoader(getActivity(), alfSession, currentTask);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> arg0, LoaderResult<PagingResult<Node>> results)
+    {
+        if (results.hasException())
+        {
+
+        }
+        else
+        {
+            if (items != null)
+            {
+                items.clear();
+            }
+            items = results.getData().getList();
+            LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ACTION_ATTACHMENTS_COMPLETED));
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
     public class TaskDetailsFragmentReceiver extends BroadcastReceiver
@@ -430,6 +597,12 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
             Log.d(TAG, intent.getAction());
 
             if (getActivity() == null) { return; }
+
+            if (ACTION_ATTACHMENTS_COMPLETED.equals(intent.getAction()))
+            {
+                diplayAttachment();
+                return;
+            }
 
             if (intent.getExtras() != null)
             {
@@ -462,5 +635,4 @@ public class TaskDetailsFragment extends BaseFragment implements OnTabChangeList
             }
         }
     }
-
 }

@@ -34,6 +34,8 @@ public interface PublicIntent
     
     String EXTRA_DOCUMENT = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT";
     
+    String EXTRA_DOCUMENTS = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENTS";
+    
     String EXTRA_DOCUMENT_ID = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT_ID";
     
     String EXTRA_DATA = "org.alfresco.mobile.android.intent.EXTRA_DATA";

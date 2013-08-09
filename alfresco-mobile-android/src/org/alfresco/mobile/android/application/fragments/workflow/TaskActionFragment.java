@@ -97,7 +97,7 @@ public class TaskActionFragment extends BaseFragment
         View v = null;
         if (task.getEndedAt() == null)
         {
-            v = inflater.inflate(R.layout.app_task_actions, container, false);
+            v = inflater.inflate(R.layout.app_task_action, container, false);
 
             Button validation = (Button) v.findViewById(R.id.action_approve);
             Button reject = (Button) v.findViewById(R.id.action_reject);

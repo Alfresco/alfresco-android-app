@@ -25,22 +25,31 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
+import android.widget.ImageView.ScaleType;
 
 /**
  * Provides access to node (documents or folders) and displays them as a view
@@ -62,6 +71,10 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     protected int mode;
 
+    private boolean isEditable;
+
+    private Fragment fragment;
+
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -78,6 +91,36 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         super(context, textViewResourceId, listItems);
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+    }
+
+    public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)
+    {
+        super(fr.getActivity(), textViewResourceId, listItems);
+        this.fragment = fr;
+        this.renditionManager = ApplicationManager.getInstance(fr.getActivity()).getRenditionManager(fr.getActivity());
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.isEditable = isEditable;
+    }
+    
+    // /////////////////////////////////////////////////////////////
+    // CRUD LIST
+    // ////////////////////////////////////////////////////////////
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent)
+    {
+        if (isEditable && getCount() == 1)
+        {
+            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = vi.inflate(textViewResourceId, null);
+            ProgressViewHolder vh = create(vhClassName, v);
+            v.setTag(vh);
+            Node item = getItem(position);
+            updateBottomText(vh, item);
+            updateTopText(vh, item);
+            renditionManager.display(vh.icon, MimeTypeManager.getIcon(item.getName()), item.getIdentifier());
+            return v;
+        }
+        return getView(position, convertView, parent);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -217,8 +260,28 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, Node item)
+    protected void updateIcon(ProgressViewHolder vh, final Node item)
     {
+        if (isEditable)
+        {
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setScaleType(ScaleType.CENTER_INSIDE);
+            vh.choose.setImageResource(R.drawable.ic_cancel);
+            vh.choose.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    remove(item);
+                    notifyDataSetChanged();
+                    if (fragment instanceof CreateTaskFragment && item instanceof Document)
+                    {
+                        ((CreateTaskFragment) fragment).removeDocument((Document) item, v);
+                    }
+                }
+            });
+        }
+        
         if (item.isDocument())
         {
             if (!activateThumbnail)

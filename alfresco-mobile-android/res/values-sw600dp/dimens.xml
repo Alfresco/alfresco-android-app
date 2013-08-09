@@ -27,4 +27,9 @@
     <!-- FRAGMENT DETAILS -->
     <dimen name="properties_details_padding">10dip</dimen>
     
+    <dimen name="process_diagram_width">450dip</dimen>
+    <dimen name="process_diagram_height">400dip</dimen>
+    <dimen name="process_thumbnail_height">128dip</dimen>
+    
+    
 </resources>

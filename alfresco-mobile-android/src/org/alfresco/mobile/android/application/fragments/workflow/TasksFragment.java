@@ -76,7 +76,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         loaderId = TasksLoader.ID;
         callback = this;
         emptyListMessageId = R.string.empty_tasks;
-        initLoader = false;
+        initLoader = true;
         checkSession = false;
     }
 
@@ -115,7 +115,6 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(TasksLoader.ID, null, this);
     }
 
     @Override
