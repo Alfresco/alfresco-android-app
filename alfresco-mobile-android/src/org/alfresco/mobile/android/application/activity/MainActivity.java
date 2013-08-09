@@ -456,10 +456,6 @@ public class MainActivity extends BaseActivity
 
         switch (id)
         {
-            case R.id.menu_myprofile:
-                frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
-                frag.show(getFragmentManager(), PersonProfileFragment.TAG);
-                break;
             case R.id.menu_browse_my_sites:
                 if (!checkSession(R.id.menu_browse_my_sites)) { return; }
                 frag = BrowserSitesFragment.newInstance();
@@ -1021,7 +1017,7 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_WORKFLOW_ADD:
                 Intent i = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, this, PrivateDialogActivity.class);
-                if (getFragment(TasksFragment.TAG) != null)
+                if (getFragment(DetailsFragment.TAG) != null)
                 {
                     Document doc = (Document) ((DetailsFragment)getFragment(DetailsFragment.TAG)).getCurrentNode();
                     i.putExtra(IntentIntegrator.EXTRA_DOCUMENT, (Serializable) doc);
@@ -1036,6 +1032,9 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_TASK_UNCLAIM:
                 ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).unclaim();
+                return true;
+            case MenuActionItem.MENU_PROCESS_DETAILS:
+                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).showProcessDiagram();
                 return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();

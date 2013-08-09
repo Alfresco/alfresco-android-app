@@ -18,6 +18,7 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/white_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal"
@@ -55,7 +56,8 @@
                 <TableRow
                     android:id="@+id/process_title_group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,14 +89,14 @@
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="3dip"
                         android:text="@string/filename_error_character"
-                        android:textColor="@color/dark_red"
-                        />
+                        android:textColor="@color/dark_red" />
                 </TableRow>
 
                 <TableRow
                     android:id="@+id/process_due_on_group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -112,6 +114,7 @@
                             android:id="@+id/process_due_on"
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
                             android:layout_weight="1"
                             android:hint="@string/process_no_date"
                             android:inputType="date" />
@@ -126,9 +129,45 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/repository_hostname_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_attachments" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <Spinner
+                            android:id="@+id/process_attachments"
+                            style="@android:style/Widget.Holo.Light.Spinner"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_weight="1" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_attachments"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:minHeight="71dip"
+                            android:src="@drawable/ic_repository_dark" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/repository_hostname_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/thumbnail_height"
+                    android:minHeight="@dimen/thumbnail_height" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -142,18 +181,21 @@
                         android:baselineAligned="true"
                         android:orientation="horizontal" >
 
-                        <EditText
+                        <Spinner
                             android:id="@+id/process_assignee"
+                            style="@android:style/Widget.Holo.Light.Spinner"
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:editable="false" />
+                            android:layout_gravity="bottom"
+                            android:layout_weight="1" />
 
                         <ImageButton
                             android:id="@+id/action_process_assignee"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:minHeight="71dip"
                             android:src="@drawable/ic_person" />
                     </LinearLayout>
                 </TableRow>
@@ -200,42 +242,10 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/process_attachments" />
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="true"
-                        android:orientation="horizontal" >
-
-                        <EditText
-                            android:id="@+id/process_attachments"
-                            android:layout_width="0dip"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:editable="false"
-                            android:hint="@string/process_no_attachments" />
-
-                        <ImageButton
-                            android:id="@+id/action_process_attachments"
-                            style="?android:attr/buttonBarButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_repository_dark" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
                     android:id="@+id/repository_https_group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -249,12 +259,13 @@
                         android:gravity="right|center"
                         android:orientation="horizontal" >
 
-                        <Button
+                        <ToggleButton
                             android:id="@+id/action_priority_low"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tasks_priority_low" />
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_low"
+                            android:textOn="@string/tasks_priority_low" />
 
                         <View
                             android:layout_width="1dip"
@@ -263,12 +274,13 @@
                             android:layout_marginRight="4dip"
                             android:background="?android:attr/dividerVertical" />
 
-                        <Button
+                        <ToggleButton
                             android:id="@+id/action_priority_medium"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tasks_priority_medium" />
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_medium"
+                            android:textOn="@string/tasks_priority_medium" />
 
                         <View
                             android:layout_width="1dip"
@@ -277,18 +289,20 @@
                             android:layout_marginRight="4dip"
                             android:background="?android:attr/dividerVertical" />
 
-                        <Button
+                        <ToggleButton
                             android:id="@+id/action_priority_high"
-                            style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/tasks_priority_high" />
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_high"
+                            android:textOn="@string/tasks_priority_high" />
                     </LinearLayout>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" >
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
 
                     <TextView
                         android:layout_width="wrap_content"

@@ -17,21 +17,33 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.app.Fragment;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -44,7 +56,8 @@ import android.widget.TextView;
 public class SelectTaskTypeFragment extends BaseFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<ProcessDefinition>>>
 {
-
+    private static final String ACTION_REVIEW = "org.alfresco.mobile.android.intent.ACTION_REVIEW";
+    
     public static final String TAG = SelectTaskTypeFragment.class.getName();
 
     private View vRoot;
@@ -59,6 +72,8 @@ public class SelectTaskTypeFragment extends BaseFragment implements
 
     private LinearLayout lv;
 
+    private UpdateReceiver receiver;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -66,12 +81,15 @@ public class SelectTaskTypeFragment extends BaseFragment implements
     {
     }
 
-    public static SelectTaskTypeFragment newInstance()
+    public static SelectTaskTypeFragment newInstance(List<Document> docs)
     {
         SelectTaskTypeFragment bf = new SelectTaskTypeFragment();
+        Bundle b = new Bundle();
+        b.putParcelableArrayList(IntentIntegrator.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) docs);
+        bf.setArguments(b);
         return bf;
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -129,9 +147,31 @@ public class SelectTaskTypeFragment extends BaseFragment implements
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.process_choose_definition));
+        if (getArguments() != null && getArguments().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.process_create_task));
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.process_choose_definition));
+        }
         getActivity().invalidateOptionsMenu();
+        
+        IntentFilter intentFilter = new IntentFilter(ACTION_REVIEW);
+        receiver = new UpdateReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+        
         super.onResume();
+    }
+    
+    @Override
+    public void onPause()
+    {
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        }
+        super.onPause();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -154,8 +194,15 @@ public class SelectTaskTypeFragment extends BaseFragment implements
         }
         else
         {
-            displayTasks(true);
             filter(results.getData());
+            if (getArguments() != null && getArguments().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+            {
+                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(ACTION_REVIEW));
+            }
+            else
+            {
+                displayTasks(true);
+            }
         }
     }
 
@@ -188,9 +235,9 @@ public class SelectTaskTypeFragment extends BaseFragment implements
     // ///////////////////////////////////////////////////////////////////////////
     private void createTask(ProcessDefinition item)
     {
-        Fragment f = CreateTaskFragment.newInstance(item);
+        Fragment f = CreateTaskFragment.newInstance(item, getArguments() != null ? getArguments() : new Bundle());
         FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()),
-                CreateTaskFragment.TAG, true, true);
+                CreateTaskFragment.TAG, getArguments() == null, getArguments() == null);
     }
 
     private void displayTasks(Boolean shown)
@@ -213,5 +260,26 @@ public class SelectTaskTypeFragment extends BaseFragment implements
         ev.setVisibility(View.VISIBLE);
         lv.setVisibility(View.GONE);
         pb.setVisibility(View.GONE);
+    }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    public class UpdateReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (getActivity() == null) { return; }
+
+            if (intent.getAction().equals(ACTION_REVIEW))
+            {
+                createTask(review);
+                return;
+            }
+
+        }
     }
 }

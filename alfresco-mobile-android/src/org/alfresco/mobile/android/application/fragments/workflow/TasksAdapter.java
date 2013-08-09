@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -31,9 +30,9 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Html;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
 
 /**
  * @author Jean Marie Pascal
@@ -99,8 +98,13 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
     @Override
     protected void updateIcon(GenericViewHolder vh, Task item)
     {
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(getPriorityIconId(item)));
+        vh.choose.setVisibility(View.GONE);
+    }
+    
+    public static int getPriorityIconId(Task task){
         int iconId = R.drawable.ic_priority_medium;
-        switch (item.getPriority())
+        switch (task.getPriority())
         {
             case 3:
                 iconId = R.drawable.ic_priority_low;
@@ -115,17 +119,6 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
                 iconId = R.drawable.ic_workflow;
                 break;
         }
-
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(iconId));
-
-        if (item.getEndedAt() == null && item.getDueAt() != null && item.getDueAt().before(calendar))
-        {
-            vh.choose.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_warning));
-            vh.choose.setScaleType(ScaleType.CENTER_INSIDE);
-        }
-        else
-        {
-            vh.choose.setImageDrawable(null);
-        }
+        return iconId;
     }
 }

@@ -44,6 +44,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
@@ -52,6 +53,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
 /**
@@ -235,6 +237,11 @@ public class RenditionManager
     {
         display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null);
     }
+    
+    public void display(ImageView iv, Node n, int initDrawableId, ScaleType scaleType)
+    {
+        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null, scaleType);
+    }
 
     public void display(ImageView iv, int initDrawableId, String identifier)
     {
@@ -248,7 +255,7 @@ public class RenditionManager
     
     public void displayDiagram(ImageView iv, int initDrawableId, String workflowId)
     {
-        display(iv, workflowId, initDrawableId, TYPE_WORKFLOW, null);
+        display(iv, workflowId, initDrawableId, TYPE_WORKFLOW, null, ScaleType.FIT_CENTER);
     }
 
     public void preview(ImageView iv, Node n, int initDrawableId, Integer size)
@@ -262,6 +269,11 @@ public class RenditionManager
     }
     
     private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
+    {
+        display(iv, identifier, initDrawableId, type, preview, ScaleType.FIT_XY);
+    }
+    
+    private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview, ScaleType scaleType)
     {
         String imageKey = identifier;
         if (imageKey != null && preview != null)
@@ -280,7 +292,7 @@ public class RenditionManager
         }
         else if (cancelPotentialWork(identifier, iv))
         {
-            final BitmapThread thread = new BitmapThread(context, session, iv, identifier, type, preview);
+            final BitmapThread thread = new BitmapThread(context, session, iv, identifier, type, preview, scaleType);
             thread.setPriority(Thread.MIN_PRIORITY);
             if (preview != null)
             {
@@ -443,20 +455,23 @@ public class RenditionManager
         private String processId;
 
         private Integer preview;
+        
+        private ScaleType scaleType;
 
         public BitmapThread(Activity ctxt, AlfrescoSession session, ImageView imageView, String identifier, int type)
         {
-            this(ctxt, session, imageView, identifier, type, null);
+            this(ctxt, session, imageView, identifier, type, null, ScaleType.FIT_XY);
         }
 
         public BitmapThread(Activity ctxt, AlfrescoSession session, ImageView imageView, String identifier, int type,
-                Integer preview)
+                Integer preview, ScaleType scaleType)
         {
             // Use a WeakReference to ensure the ImageView can be garbage
             // collected
             this.imageViewReference = new WeakReference<ImageView>(imageView);
             this.session = session;
             this.ctxt = ctxt;
+            this.scaleType = scaleType;
 
             if (type == TYPE_NODE)
             {
@@ -580,16 +595,19 @@ public class RenditionManager
                 else if (imageViewReference != null && imageViewReference.get() != null
                         && ctxt != null)
                 {
-                    imageViewReference.get().setScaleType(ImageView.ScaleType.FIT_XY);
                     ctxt.runOnUiThread(new BitmapDisplayer(bm, preview, imageViewReference, this));
                 }
             }
             catch (Exception e)
             {
-                // Continue
+                Log.d(TAG, Log.getStackTraceString(e));
             }
         }
 
+        public ScaleType getScaleType()
+        {
+            return scaleType;
+        }
     }
 
     public static int getDPI(DisplayMetrics dm, int sizeInDp)
@@ -621,10 +639,13 @@ public class RenditionManager
 
         public void run()
         {
-
             if (imageViewReference != null && bitmap != null)
             {
                 imageView = imageViewReference.get();
+                imageView.setScaleType(bitmapTask.getScaleType());
+                if (imageView.getScaleType() == ScaleType.FIT_CENTER){
+                    imageView.setBackgroundResource(R.drawable.shadow_picture);
+                }
                 final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
                 if (bitmapTask.equals(bitmapWorkerTask) && imageView != null)
                 {

@@ -156,20 +156,6 @@
                 android:textColor="@android:color/white" />
 
             <Button
-                android:id="@+id/menu_myprofile"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/accounts_spinner"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
-                android:drawableLeft="@drawable/ic_person_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/my_profile"
-                android:textColor="@android:color/white" />
-
-            <Button
                 android:id="@+id/menu_notifications"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
