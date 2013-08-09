@@ -16,15 +16,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item name="app_main" type="layout">@layout/app_main_one_pane</item>
-    <item name="app_details" type="layout">@layout/app_details_onepanel</item>
-    <item name="app_import" type="layout">@layout/app_import_spinner</item>
-    <item name="app_start_process" type="layout">@layout/app_start_process_tablet</item>
-    <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>
-    <item name="app_task_header" type="layout">@layout/app_task_header_single</item>
-    
-    <bool name="tablet_middle">true</bool>
+    <item android:drawable="@drawable/list_longpressed_holo" android:state_pressed="true"/>
+    <item android:drawable="@drawable/list_longpressed_holo" android:state_enabled="true" android:state_focused="true"/>
+    <item android:drawable="@drawable/list_longpressed_holo" android:state_checked="true"/>
+    <item android:drawable="@drawable/list_longpressed_holo" android:state_focused="true"/>
 
-</resources>
+</selector>

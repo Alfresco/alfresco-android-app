@@ -122,14 +122,17 @@ public class PrivateDialogActivity extends BaseActivity
             if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENT))
             {
                 docs.add((Document) getIntent().getExtras().get(IntentIntegrator.EXTRA_DOCUMENT));
+                getIntent().removeExtra(IntentIntegrator.EXTRA_DOCUMENT);
             }
             else if (getIntent().getExtras() != null
                     && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
             {
                 docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(
                         IntentIntegrator.EXTRA_DOCUMENTS));
+                getIntent().removeExtra(IntentIntegrator.EXTRA_DOCUMENTS);
             }
-            Fragment f = SelectTaskTypeFragment.newInstance(docs);
+
+            Fragment f = docs.isEmpty() ? new SelectTaskTypeFragment() : SelectTaskTypeFragment.newInstance(docs);
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this),
                     SelectTaskTypeFragment.TAG, false, false);
             return;

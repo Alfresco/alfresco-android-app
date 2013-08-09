@@ -183,12 +183,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(false);
-
+        
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         vRoot = inflater.inflate(R.layout.app_details, container, false);
-        
+
         if (alfSession == null) { return vRoot; }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
@@ -720,7 +720,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                     openin();
                 }
             });
-        } else {
+        }
+        else
+        {
             vRoot.findViewById(R.id.preview).setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -979,12 +981,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
-            
+
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
                     R.string.process_start_review);
             mi.setIcon(R.drawable.ic_start_review);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-            
+
         }
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
@@ -996,8 +998,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canDelete())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                    R.string.delete);
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, 1000 + MenuActionItem.MENU_DELETE, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -1042,7 +1043,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         vRoot.findViewById(R.id.properties_details).setVisibility(View.GONE);
         vRoot.findViewById(R.id.progressbar).setVisibility(View.VISIBLE);
 
-        return new NodeLoader(getActivity(), SessionUtils.getAccount(getActivity()), alfSession, args.getString(ARGUMENT_NODE_ID));
+        return new NodeLoader(getActivity(), SessionUtils.getAccount(getActivity()), alfSession,
+                args.getString(ARGUMENT_NODE_ID));
     }
 
     @Override

@@ -1033,6 +1033,9 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_TASK_UNCLAIM:
                 ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).unclaim();
                 return true;
+            case MenuActionItem.MENU_PROCESS_DETAILS:
+                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).showProcessDiagram();
+                return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);

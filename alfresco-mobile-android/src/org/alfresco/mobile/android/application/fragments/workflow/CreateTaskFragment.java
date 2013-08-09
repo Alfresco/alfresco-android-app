@@ -26,6 +26,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.utils.DateUtils;
@@ -33,7 +34,9 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.person.PersonAdapter;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -50,6 +53,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -64,8 +68,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment
 {
@@ -87,7 +93,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private int priority = WorkflowModel.PRIORITY_MEDIUM;
 
-    private Button bM, bL, bH;
+    private ToggleButton bM, bL, bH;
 
     private boolean isAdhoc = false;
 
@@ -108,6 +114,10 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     private StartProcessReceiver receiver;
 
     private EditText itemsEditText;
+
+    private Spinner spinnerAssignees;
+
+    private Spinner spinnerDocuments;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -151,6 +161,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             {
                 items.put(document.getIdentifier(), document);
             }
+            getArguments().remove(IntentIntegrator.EXTRA_DOCUMENTS);
         }
 
         setRetainInstance(true);
@@ -188,9 +199,13 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                         PersonSearchFragment.TAG, true);
             }
         });
-        EditText edt = (EditText) vRoot.findViewById(R.id.process_assignee);
-        edt.setHint(String.format(getResources().getQuantityString(R.plurals.process_assignees, assignees.size()),
-                assignees.size()));
+        spinnerAssignees = (Spinner) vRoot.findViewById(R.id.process_assignee);
+        List<Person> people = new ArrayList<Person>(assignees.values());
+        spinnerAssignees.setAdapter(new PersonAdapter(this, R.layout.app_item_row, people, true));
+        if (people.isEmpty())
+        {
+            spinnerAssignees.setEnabled(false);
+        }
 
         // APPROVERS
         if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
@@ -232,8 +247,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         }
 
         // ATTACHMENTS
-        itemsEditText = (EditText) vRoot.findViewById(R.id.process_attachments);
-        updateItems();
         ib = (ImageButton) vRoot.findViewById(R.id.action_process_attachments);
         ib.setOnClickListener(new OnClickListener()
         {
@@ -243,13 +256,20 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
             }
         });
+        spinnerDocuments = (Spinner) vRoot.findViewById(R.id.process_attachments);
+        List<Node> docs = new ArrayList<Node>(items.values());
+        spinnerDocuments.setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs, true));
+        if (docs.isEmpty())
+        {
+            spinnerDocuments.setEnabled(false);
+        }
 
         // PRIORITY
-        bM = (Button) vRoot.findViewById(R.id.action_priority_medium);
+        bM = (ToggleButton) vRoot.findViewById(R.id.action_priority_medium);
         bM.setOnTouchListener(priorityClickListener);
-        bL = (Button) vRoot.findViewById(R.id.action_priority_low);
+        bL = (ToggleButton) vRoot.findViewById(R.id.action_priority_low);
         bL.setOnTouchListener(priorityClickListener);
-        bH = (Button) vRoot.findViewById(R.id.action_priority_high);
+        bH = (ToggleButton) vRoot.findViewById(R.id.action_priority_high);
         bH.setOnTouchListener(priorityClickListener);
         updatePriority();
 
@@ -285,7 +305,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         super.onResume();
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            UIUtils.displayTitle(getActivity(), R.string.process_start_title);
+            UIUtils.displayTitle(getActivity(), R.string.task_create);
         }
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_START_PROCESS_COMPLETED);
         receiver = new StartProcessReceiver();
@@ -363,48 +383,62 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             {
                 case R.id.action_priority_low:
                     priority = WorkflowModel.PRIORITY_LOW;
-                    bM.setPressed(false);
-                    bH.setPressed(false);
+                    bM.setChecked(false);
+                    bM.setTextColor(Color.BLACK);
+                    bH.setChecked(false);
+                    bH.setTextColor(Color.BLACK);
                     break;
                 case R.id.action_priority_medium:
                     priority = WorkflowModel.PRIORITY_MEDIUM;
-                    bL.setPressed(false);
-                    bH.setPressed(false);
+                    bL.setChecked(false);
+                    bL.setTextColor(Color.BLACK);
+                    bH.setChecked(false);
+                    bH.setTextColor(Color.BLACK);
                     break;
                 case R.id.action_priority_high:
                     priority = WorkflowModel.PRIORITY_HIGH;
-                    bL.setPressed(false);
-                    bM.setPressed(false);
+                    bL.setChecked(false);
+                    bL.setTextColor(Color.BLACK);
+                    bM.setChecked(false);
+                    bM.setTextColor(Color.BLACK);
                     break;
                 default:
                     break;
             }
-            Button b = (Button) v;
-            b.setPressed(true);
+            ToggleButton b = (ToggleButton) v;
+            b.setChecked(true);
+            b.setTextColor(Color.WHITE);
             return true;
         }
     };
 
     private void updatePriority()
     {
-        int id = R.id.action_priority_medium;
         switch (priority)
         {
             case WorkflowModel.PRIORITY_HIGH:
-                id = R.id.action_priority_high;
-                bL.setPressed(false);
-                bM.setPressed(false);
-                bH.setPressed(true);
+                bL.setChecked(false);
+                bL.setTextColor(Color.BLACK);
+                bM.setChecked(false);
+                bM.setTextColor(Color.BLACK);
+                bH.setChecked(true);
+                bH.setTextColor(Color.WHITE);
                 break;
             case WorkflowModel.PRIORITY_LOW:
-                bM.setPressed(false);
-                bH.setPressed(false);
-                bL.setPressed(true);
+                bM.setChecked(false);
+                bM.setTextColor(Color.BLACK);
+                bH.setChecked(false);
+                bH.setTextColor(Color.BLACK);
+                bL.setChecked(true);
+                bL.setTextColor(Color.WHITE);
                 break;
             case WorkflowModel.PRIORITY_MEDIUM:
-                bL.setPressed(false);
-                bH.setPressed(false);
-                bM.setPressed(true);
+                bL.setChecked(false);
+                bL.setTextColor(Color.BLACK);
+                bH.setChecked(false);
+                bH.setTextColor(Color.BLACK);
+                bM.setChecked(true);
+                bM.setTextColor(Color.WHITE);
                 break;
             default:
                 break;
@@ -446,9 +480,10 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private void updateAssignees()
     {
-        EditText edt = (EditText) vRoot.findViewById(R.id.process_assignee);
-        edt.setHint(String.format(getResources().getQuantityString(R.plurals.process_assignees, assignees.size()),
-                assignees.size()));
+        // EditText edt = (EditText) vRoot.findViewById(R.id.process_assignee);
+        // edt.setHint(String.format(getResources().getQuantityString(R.plurals.process_assignees,
+        // assignees.size()),
+        // assignees.size()));
 
         if (assignees.size() > 0 && titleTask.getText().length() > 0)
         {
@@ -459,10 +494,43 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             validation.setEnabled(false);
         }
 
+        if (approvers > assignees.size())
+        {
+            approvers = assignees.size();
+        }
+
         if (assignees.size() > 0 && !isAdhoc && approvers == 0)
         {
             approvers = 1;
+        }
+        if (!isAdhoc)
+        {
             updateApprovers();
+        }
+
+        List<Person> people = new ArrayList<Person>(assignees.values());
+        if (people.isEmpty())
+        {
+            spinnerAssignees.setAdapter(null);
+            spinnerAssignees.setEnabled(false);
+        }
+        else
+        {
+            spinnerAssignees.setAdapter(new PersonAdapter(this, R.layout.app_item_row, people, true));
+        }
+    }
+    
+    private void updateDocuments()
+    {
+        List<Node> docs = new ArrayList<Node>(items.values());
+        if (docs.isEmpty())
+        {
+            spinnerDocuments.setAdapter(null);
+            spinnerDocuments.setEnabled(false);
+        }
+        else
+        {
+            spinnerDocuments.setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs, true));
         }
     }
 
@@ -515,9 +583,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
         // Update assignees
         updateAssignees();
-
-        // Update approvers
-
     }
 
     @Override
@@ -531,6 +596,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     // ///////////////////////////////////////////////////////////////////////////
     public class StartProcessReceiver extends BroadcastReceiver
     {
+
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -545,8 +611,24 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                     getActivity().finish();
                     return;
                 }
-
             }
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC
+    // ///////////////////////////////////////////////////////////////////////////
+    public void removeAssignee(Person item, View v)
+    {
+        assignees.remove(item.getIdentifier());
+        updateAssignees();
+        v.setVisibility(View.GONE);
+    }
+    
+    public void removeDocument(Document doc, View v)
+    {
+        items.remove(doc.getIdentifier());
+        updateDocuments();
+        v.setVisibility(View.GONE);
     }
 }

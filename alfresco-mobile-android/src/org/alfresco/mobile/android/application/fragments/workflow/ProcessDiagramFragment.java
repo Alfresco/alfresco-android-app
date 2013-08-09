@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 
 public class ProcessDiagramFragment extends BaseFragment
@@ -40,6 +41,8 @@ public class ProcessDiagramFragment extends BaseFragment
     public static final String ARGUMENT_TASK = "task";
 
     private Task task;
+
+    private ImageView preview;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -64,6 +67,11 @@ public class ProcessDiagramFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (getDialog() != null)
+        {
+            getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+        }
+
         setRetainInstance(false);
 
         if (container != null)
@@ -73,20 +81,20 @@ public class ProcessDiagramFragment extends BaseFragment
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
 
-        View v = inflater.inflate(R.layout.app_preview, container, false);
+        View v = inflater.inflate(R.layout.app_process_preview, container, false);
         if (alfSession == null) { return v; }
 
         task = (Task) getArguments().get(ARGUMENT_TASK);
         if (task == null) { return null; }
-        ImageView preview = (ImageView) v.findViewById(R.id.preview);
-        int iconId = R.drawable.mime_folder;
+        preview = (ImageView) v.findViewById(R.id.preview);
+        int iconId = R.drawable.ic_px;
 
         RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
         renditionManager.displayDiagram((ImageView) preview, iconId, task.getProcessIdentifier());
         return v;
     }
-    
+
     @Override
     public void onResume()
     {
@@ -95,6 +103,7 @@ public class ProcessDiagramFragment extends BaseFragment
         {
             UIUtils.displayTitle(getActivity(), R.string.process_start_title);
         }
+
         super.onResume();
     }
 }

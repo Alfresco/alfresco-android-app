@@ -89,7 +89,10 @@
     <dimen name="profile_icon_size">100dip</dimen>
     
     <!-- PROCESS -->
-    <dimen name="process_diagram_height">200dip</dimen>
+    <dimen name="process_thumbnail_height">72dip</dimen>
+    <dimen name="process_diagram_width">300dip</dimen>
+    <dimen name="process_diagram_height">250dip</dimen>
+    <dimen name="task_complete_margin">5dip</dimen>
     
     
     

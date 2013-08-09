@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -35,6 +35,8 @@
     <color name="grey_lighter">#eeeeee</color>
     <color name="sliding_account_background">#282828</color>
     <color name="dark_red">#ffcc0000</color>
+    <color name="hint_foreground_holo_light">#808080</color>
+    <color name="blue_light">#33B5E5</color>
 
     <!-- =============================================================== -->
     <!-- STYLE -->
@@ -56,27 +58,28 @@
         <item name="android:layout_width">@dimen/thumbnail_height</item>
     </style>
 
+    <style name="list_item_large_icon" parent="list_item_icon">
+        <item name="android:layout_height">@dimen/process_thumbnail_height</item>
+        <item name="android:layout_width">@dimen/process_thumbnail_height</item>
+    </style>
+
     <style name="list_item_toptext">
         <item name="android:gravity">center_vertical</item>
         <item name="android:paddingRight">1dip</item>
         <item name="android:layout_gravity">center</item>
-        <!--  <item name="android:layout_marginLeft">@dimen/browse_margin</item>-->
+        <!-- <item name="android:layout_marginLeft">@dimen/browse_margin</item> -->
         <item name="android:maxLines">2</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
     </style>
-    
-    <style name="workflowSectionHeader" parent="list_item_toptext">
-        <item name="android:layout_marginTop">8dip</item>
-    </style>
 
     <style name="list_item_bottomtext">
         <item name="android:gravity">bottom</item>
         <item name="android:paddingRight">1dip</item>
         <item name="android:layout_gravity">bottom|center</item>
-        <!--<item name="android:layout_marginLeft">@dimen/browse_margin</item>-->
+        <!-- <item name="android:layout_marginLeft">@dimen/browse_margin</item> -->
         <item name="android:maxLines">3</item>
         <item name="android:ellipsize">end</item>
         <item name="android:textAppearance">?android:textAppearanceSmall</item>
@@ -170,11 +173,31 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
-    
-    
-     <style name="profile_propName" parent="android:Widget.Holo.Light.TextView">
+
+    <style name="profile_propName" parent="android:Widget.Holo.Light.TextView">
         <item name="android:minWidth">@dimen/profile_minwidth</item>
         <item name="android:paddingLeft">@dimen/profile_row_padding</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- WORKFLOW / PROCESS / TASK -->
+    <style name="task_title">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingRight">1dip</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">@dimen/browse_margin</item>
+        <item name="android:maxLines">10</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="workflowSectionHeader" parent="list_item_toptext">
+        <item name="android:layout_marginTop">8dip</item>
+    </style>
+    
+    <style name="task_property_value">
         <item name="android:textStyle">bold</item>
     </style>
 

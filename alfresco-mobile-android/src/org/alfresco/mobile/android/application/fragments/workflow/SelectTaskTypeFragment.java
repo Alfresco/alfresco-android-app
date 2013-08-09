@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment.UpdateReceiver;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -238,7 +237,7 @@ public class SelectTaskTypeFragment extends BaseFragment implements
     {
         Fragment f = CreateTaskFragment.newInstance(item, getArguments() != null ? getArguments() : new Bundle());
         FragmentDisplayer.replaceFragment(getActivity(), f, DisplayUtils.getLeftFragmentId(getActivity()),
-                CreateTaskFragment.TAG, false, false);
+                CreateTaskFragment.TAG, getArguments() == null, getArguments() == null);
     }
 
     private void displayTasks(Boolean shown)
