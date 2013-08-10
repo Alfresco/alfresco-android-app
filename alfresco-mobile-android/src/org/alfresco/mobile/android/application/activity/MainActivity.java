@@ -61,6 +61,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
+import org.alfresco.mobile.android.application.fragments.search.SearchAggregatorFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
@@ -477,8 +478,8 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
-                frag = KeywordSearch.newInstance();
-                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), KeywordSearch.TAG,
+                frag = SearchAggregatorFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this), SearchAggregatorFragment.TAG,
                         true);
                 break;
             case R.id.menu_favorites:

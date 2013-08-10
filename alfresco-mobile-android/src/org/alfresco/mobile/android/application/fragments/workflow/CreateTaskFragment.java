@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -34,9 +35,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.fragments.person.PersonAdapter;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -68,7 +67,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -115,9 +113,9 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private EditText itemsEditText;
 
-    private Spinner spinnerAssignees;
+    private Button assigneesButton;
 
-    private Spinner spinnerDocuments;
+    private Button attachmentsButton;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -193,19 +191,20 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             @Override
             public void onClick(View v)
             {
-                PersonSearchFragment frag = PersonSearchFragment.newInstance(ListingModeFragment.MODE_PICK, TAG,
-                        isAdhoc);
-                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
-                        PersonSearchFragment.TAG, true);
+                startPersonPicker();
             }
         });
-        spinnerAssignees = (Spinner) vRoot.findViewById(R.id.process_assignee);
-        List<Person> people = new ArrayList<Person>(assignees.values());
-        spinnerAssignees.setAdapter(new PersonAdapter(this, R.layout.app_item_row, people, true));
-        if (people.isEmpty())
+        assigneesButton = (Button) vRoot.findViewById(R.id.process_assignee);
+        assigneesButton.setOnClickListener(new OnClickListener()
         {
-            spinnerAssignees.setEnabled(false);
-        }
+            @Override
+            public void onClick(View v)
+            {
+                CreateTaskPickerFragment.newInstance(CreateTaskPickerFragment.MODE_PERSON).show(getFragmentManager(),
+                        CreateTaskPickerFragment.TAG);
+            }
+        });
+        assigneesButton.setText(MessageFormat.format(getString(R.string.task_assignees_plurals), assignees.size()));
 
         // APPROVERS
         if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
@@ -256,13 +255,17 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
             }
         });
-        spinnerDocuments = (Spinner) vRoot.findViewById(R.id.process_attachments);
-        List<Node> docs = new ArrayList<Node>(items.values());
-        spinnerDocuments.setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs, true));
-        if (docs.isEmpty())
+        attachmentsButton = (Button) vRoot.findViewById(R.id.process_attachments);
+        attachmentsButton.setOnClickListener(new OnClickListener()
         {
-            spinnerDocuments.setEnabled(false);
-        }
+            @Override
+            public void onClick(View v)
+            {
+                CreateTaskPickerFragment.newInstance(CreateTaskPickerFragment.MODE_DOCUMENT).show(getFragmentManager(),
+                        CreateTaskPickerFragment.TAG);
+            }
+        });
+        attachmentsButton.setText(MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()));
 
         // PRIORITY
         bM = (ToggleButton) vRoot.findViewById(R.id.action_priority_medium);
@@ -468,22 +471,19 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             removeApprover.setEnabled(true);
         }
 
-        approversEditText.setHint(String.format(getResources()
-                .getQuantityString(R.plurals.process_approvers, approvers), approvers, assignees.size()));
+        approversEditText.setHint(String.format(
+                MessageFormat.format(getString(R.string.process_approvers_plurals), assignees.size()), approvers));
     }
 
     private void updateItems()
     {
         itemsEditText.setHint(String.format(
-                getResources().getQuantityString(R.plurals.process_attachments, items.size()), items.size()));
+                MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()), items.size()));
     }
 
     private void updateAssignees()
     {
-        // EditText edt = (EditText) vRoot.findViewById(R.id.process_assignee);
-        // edt.setHint(String.format(getResources().getQuantityString(R.plurals.process_assignees,
-        // assignees.size()),
-        // assignees.size()));
+        assigneesButton.setText(MessageFormat.format(getString(R.string.task_assignees_plurals), assignees.size()));
 
         if (assignees.size() > 0 && titleTask.getText().length() > 0)
         {
@@ -507,31 +507,11 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         {
             updateApprovers();
         }
-
-        List<Person> people = new ArrayList<Person>(assignees.values());
-        if (people.isEmpty())
-        {
-            spinnerAssignees.setAdapter(null);
-            spinnerAssignees.setEnabled(false);
-        }
-        else
-        {
-            spinnerAssignees.setAdapter(new PersonAdapter(this, R.layout.app_item_row, people, true));
-        }
     }
-    
+
     private void updateDocuments()
     {
-        List<Node> docs = new ArrayList<Node>(items.values());
-        if (docs.isEmpty())
-        {
-            spinnerDocuments.setAdapter(null);
-            spinnerDocuments.setEnabled(false);
-        }
-        else
-        {
-            spinnerDocuments.setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs, true));
-        }
+        attachmentsButton.setText(MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()));
     }
 
     private TextWatcher watcher = new TextWatcher()
@@ -618,17 +598,33 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC
     // ///////////////////////////////////////////////////////////////////////////
-    public void removeAssignee(Person item, View v)
+    public void removeAssignee(Person item)
     {
         assignees.remove(item.getIdentifier());
         updateAssignees();
-        v.setVisibility(View.GONE);
     }
-    
-    public void removeDocument(Document doc, View v)
+
+    public void removeDocument(Document doc)
     {
         items.remove(doc.getIdentifier());
         updateDocuments();
-        v.setVisibility(View.GONE);
     }
+
+    public List<Person> getAssignees()
+    {
+        return new ArrayList<Person>(assignees.values());
+    }
+
+    public void startPersonPicker()
+    {
+        PersonSearchFragment frag = PersonSearchFragment.newInstance(ListingModeFragment.MODE_PICK, TAG, isAdhoc);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                PersonSearchFragment.TAG, true);
+    }
+
+    public List<Node> getAttachments()
+    {
+        return new ArrayList<Node>(items.values());
+    }
+
 }
