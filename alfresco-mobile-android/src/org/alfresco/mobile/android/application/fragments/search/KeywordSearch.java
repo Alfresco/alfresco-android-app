@@ -57,7 +57,7 @@ import android.widget.TextView.OnEditorActionListener;
 public class KeywordSearch extends SearchFragment
 {
 
-    public static final String TAG = "SearchFragment";
+    public static final String TAG = KeywordSearch.class.getName();
 
     private static final String PARAM_SITE = "site";
 

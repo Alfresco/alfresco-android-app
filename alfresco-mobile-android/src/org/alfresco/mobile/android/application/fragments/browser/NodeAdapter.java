@@ -25,31 +25,28 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
+import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 
 /**
  * Provides access to node (documents or folders) and displays them as a view
@@ -108,18 +105,6 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        if (isEditable && getCount() == 1)
-        {
-            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = vi.inflate(textViewResourceId, null);
-            ProgressViewHolder vh = create(vhClassName, v);
-            v.setTag(vh);
-            Node item = getItem(position);
-            updateBottomText(vh, item);
-            updateTopText(vh, item);
-            renditionManager.display(vh.icon, MimeTypeManager.getIcon(item.getName()), item.getIdentifier());
-            return v;
-        }
         return getView(position, convertView, parent);
     }
 
@@ -274,9 +259,9 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
                 {
                     remove(item);
                     notifyDataSetChanged();
-                    if (fragment instanceof CreateTaskFragment && item instanceof Document)
+                    if (fragment instanceof CreateTaskPickerFragment && item instanceof Document)
                     {
-                        ((CreateTaskFragment) fragment).removeDocument((Document) item, v);
+                        ((CreateTaskPickerFragment) fragment).removeDocument((Document) item);
                     }
                 }
             });

@@ -93,7 +93,9 @@
     <dimen name="process_diagram_width">300dip</dimen>
     <dimen name="process_diagram_height">250dip</dimen>
     <dimen name="task_complete_margin">5dip</dimen>
+    <dimen name="task_filter_margin">60dip</dimen>
     
-    
+    <!-- SEARCH-->
+    <dimen name="aggregator_icon_height">48dip</dimen>
     
 </resources>

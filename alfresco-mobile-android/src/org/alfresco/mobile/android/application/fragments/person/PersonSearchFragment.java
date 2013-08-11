@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.ProcessTasksLoader;
 import org.alfresco.mobile.android.application.fragments.workflow.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -63,7 +64,7 @@ public class PersonSearchFragment extends BaseListFragment implements
 
     public static final String TAG = PersonSearchFragment.class.getName();
 
-    private static final String PARAM_KEYWORD = "keyWord";
+    private static final String PARAM_KEYWORD = "keyword";
 
     private Map<String, Person> selectedItems = new HashMap<String, Person>(1);
 
@@ -78,6 +79,8 @@ public class PersonSearchFragment extends BaseListFragment implements
     private Button validation;
 
     private boolean singleChoice = true;
+
+    private String keywords;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -94,6 +97,16 @@ public class PersonSearchFragment extends BaseListFragment implements
     public static PersonSearchFragment newInstance()
     {
         PersonSearchFragment bf = new PersonSearchFragment();
+        return bf;
+    }
+
+    public static BaseFragment newInstance(String keywords)
+    {
+        PersonSearchFragment bf = new PersonSearchFragment();
+        Bundle b = new Bundle();
+        b.putInt(PARAM_MODE, MODE_LISTING);
+        b.putString(PARAM_KEYWORD, keywords);
+        bf.setArguments(b);
         return bf;
     }
 
@@ -125,6 +138,7 @@ public class PersonSearchFragment extends BaseListFragment implements
 
         if (getArguments() != null && getArguments().containsKey(PARAM_MODE))
         {
+            keywords = getArguments().getString(PARAM_KEYWORD);
             mode = getArguments().getInt(PARAM_MODE);
             singleChoice = getArguments().getBoolean(PARAM_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
@@ -138,37 +152,44 @@ public class PersonSearchFragment extends BaseListFragment implements
         // Init list
         init(vRoot, R.string.person_not_found);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
-        // Init form search
-        final EditText searchForm = (EditText) vRoot.findViewById(R.id.search_query);
-        searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-
-        searchForm.setOnEditorActionListener(new OnEditorActionListener()
-        {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
-            {
-                if (event != null
-                        && (event.getAction() == KeyEvent.ACTION_DOWN)
-                        && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
-                {
-                    if (searchForm.getText().length() > 0)
-                    {
-                        search(searchForm.getText().toString());
-                        View vr  =  vRoot.findViewById(R.id.empty_focus);
-                        vr.requestFocus();
-                    }
-                    else
-                    {
-                        MessengerManager.showLongToast(getActivity(), getString(R.string.search_form_hint));
-                    }
-                    return true;
-                }
-                return false;
-            }
-        });
-
         setListShown(true);
+        
+        if (keywords != null && !keywords.isEmpty())
+        {
+            search(keywords);
+            vRoot.findViewById(R.id.search_form_group).setVisibility(View.GONE);
+        }
+        else
+        {
+            // Init form search
+            final EditText searchForm = (EditText) vRoot.findViewById(R.id.search_query);
+            searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
+
+            searchForm.setOnEditorActionListener(new OnEditorActionListener()
+            {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+                {
+                    if (event != null
+                            && (event.getAction() == KeyEvent.ACTION_DOWN)
+                            && ((actionId == EditorInfo.IME_ACTION_SEARCH) || (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)))
+                    {
+                        if (searchForm.getText().length() > 0)
+                        {
+                            search(searchForm.getText().toString());
+                            View vr = vRoot.findViewById(R.id.empty_focus);
+                            vr.requestFocus();
+                        }
+                        else
+                        {
+                            MessengerManager.showLongToast(getActivity(), getString(R.string.search_form_hint));
+                        }
+                        return true;
+                    }
+                    return false;
+                }
+            });
+        }
 
         if (getMode() == MODE_PICK)
         {
@@ -224,7 +245,7 @@ public class PersonSearchFragment extends BaseListFragment implements
             if (fragmentPick instanceof TaskDetailsFragment)
             {
                 getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_reassign);
-                getDialog().setTitle(R.string.process_choose_assignee);
+                getDialog().setTitle(R.string.task_reassign_long);
             }
         }
         super.onStart();
@@ -373,6 +394,9 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LISTENERS
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public int getMode()
     {
