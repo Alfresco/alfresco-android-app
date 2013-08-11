@@ -23,15 +23,13 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Fragment;
-import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -71,18 +69,6 @@ public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        if (isEditable && getCount() == 1)
-        {
-            LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View v = vi.inflate(textViewResourceId, null);
-            GenericViewHolder vh = create(vhClassName, v);
-            v.setTag(vh);
-            Person item = getItem(position);
-            updateBottomText(vh, item);
-            updateTopText(vh, item);
-            renditionManager.display(vh.icon, item.getIdentifier(), R.drawable.ic_avatar);
-            return v;
-        }
         return getView(position, convertView, parent);
     }
 
@@ -117,6 +103,7 @@ public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setScaleType(ScaleType.CENTER_INSIDE);
             vh.choose.setImageResource(R.drawable.ic_cancel);
+            vh.choose.setTag(vh);
             vh.choose.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -124,14 +111,13 @@ public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
                 {
                     remove(item);
                     notifyDataSetChanged();
-                    if (fragment instanceof CreateTaskFragment)
+                    if (fragment instanceof CreateTaskPickerFragment)
                     {
-                        ((CreateTaskFragment) fragment).removeAssignee(item, v);
+                        ((CreateTaskPickerFragment) fragment).removeAssignee(item);
                     }
                 }
             });
         }
-
     }
 
     @Override

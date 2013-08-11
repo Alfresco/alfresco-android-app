@@ -443,7 +443,6 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_UNCLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_UNCLAIM,
                     R.string.task_unclaim);
-            mi.setIcon(R.drawable.ic_reassign);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         // reassign : I have a task and I decide I dont want to be responsible
@@ -462,7 +461,6 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_CLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_CLAIM,
                     R.string.task_claim);
-            mi.setIcon(R.drawable.ic_reassign);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
 

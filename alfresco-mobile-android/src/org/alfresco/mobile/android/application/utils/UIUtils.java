@@ -30,13 +30,18 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 /**
@@ -91,7 +96,7 @@ public class UIUtils
 
     private static final Pattern NAME_PATTERN = Pattern
             .compile("(.*[\"\\*\\\\>\\<\\?\\/\\:\\|]+.*)|(.*[\\.]?.*[\\.]+$)|(.*[ ]+$)");
-    
+
     public static boolean hasInvalidName(String name)
     {
         Matcher matcher = NAME_PATTERN.matcher(name);
@@ -184,7 +189,7 @@ public class UIUtils
             {
                 bar.setCustomView(v);
             }
-            
+
             activity.invalidateOptionsMenu();
         }
     }

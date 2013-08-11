@@ -28,9 +28,9 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TasksFilterAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class TasksShortCutAdapter extends BaseListAdapter<Integer, GenericViewHolder>
 {
-    public TasksFilterAdapter(Activity context)
+    public TasksShortCutAdapter(Activity context)
     {
         super(context, R.layout.sdk_list_row, SHORTCUTS);
     }

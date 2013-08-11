@@ -200,5 +200,12 @@
     <style name="task_property_value">
         <item name="android:textStyle">bold</item>
     </style>
-
+    
+    <!-- SEARCH -->
+ 	<style name="search_aggregator_icon" parent="list_item_icon">
+        <item name="android:layout_height">@dimen/aggregator_icon_height</item>
+        <item name="android:layout_width">@dimen/aggregator_icon_height</item>
+    </style>
+    
+ 
 </resources>

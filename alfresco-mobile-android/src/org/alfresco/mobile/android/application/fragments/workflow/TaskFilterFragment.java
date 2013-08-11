@@ -17,8 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.services.WorkflowService;
@@ -35,17 +34,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ExpandableListView;
+import android.widget.ExpandableListView.OnChildClickListener;
 
-public class TasksMenuFragment extends BaseFragment
+public class TaskFilterFragment extends BaseFragment
 {
-    public static final String TAG = TasksMenuFragment.class.getName();
+    public static final String TAG = TaskFilterFragment.class.getName();
+
+    private ExpandableListView expandableList;
+
+    private TaskFilterExpandableAdapter expListAdapter;
+
+    private Button validate;
+
+    private Map<Integer, Integer> selectedItems;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static BaseFragment newInstance()
+    public static TaskFilterFragment newInstance()
     {
-        return new TasksMenuFragment();
+        return new TaskFilterFragment();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -54,15 +64,41 @@ public class TasksMenuFragment extends BaseFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.app_task_menu, container, false);
+        setRetainInstance(true);
         
+        View rootView = inflater.inflate(R.layout.app_task_filters, container, false);
+
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
+
+        expandableList = (ExpandableListView) rootView.findViewById(R.id.filters_list);
+        expandableList.setGroupIndicator(null);
+        expListAdapter = new TaskFilterExpandableAdapter(getActivity(), selectedItems);
+        expandableList.setAdapter(expListAdapter);
+
+        expandableList.setOnChildClickListener(new OnChildClickListener()
+        {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+            {
+                expListAdapter.select(v,  groupPosition,  childPosition);
+                return false;
+            }
+        });
         
-        initClickListener(rootView);
+        validate = (Button) rootView.findViewById(R.id.validate);
+        validate.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                createFilter();
+            }
+        });
+        
+
         return rootView;
     }
-    
 
     @Override
     public void onResume()
@@ -70,92 +106,59 @@ public class TasksMenuFragment extends BaseFragment
         UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
         super.onResume();
     }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // UTILS
-    // ///////////////////////////////////////////////////////////////////////////
-    private void initClickListener(View rootView)
-    {
-        for (Integer buttonId : TASK_FILTERS)
+    
+    
+    private void createFilter(){
+        ListingFilter f = new ListingFilter();
+        
+        selectedItems = expListAdapter.getSelectedItems();
+        for (Integer value : selectedItems.values())
         {
-            rootView.findViewById(buttonId).setOnClickListener(menuClickListener);
-        }
-    }
-
-    private static final List<Integer> TASK_FILTERS = new ArrayList<Integer>(7)
-    {
-        private static final long serialVersionUID = 1L;
-        {
-            add(R.id.tasks_active);
-            add(R.id.tasks_completed);
-
-            add(R.id.tasks_due_today);
-            add(R.id.tasks_due_tomorrow);
-            add(R.id.tasks_due_week);
-            add(R.id.tasks_due_over);
-            add(R.id.tasks_due_no_date);
-
-            add(R.id.tasks_priority_low);
-            add(R.id.tasks_priority_medium);
-            add(R.id.tasks_priority_high);
-
-            add(R.id.tasks_assignee_me);
-            add(R.id.tasks_assignee_unassigned);
-        }
-    };
-
-    private OnClickListener menuClickListener = new OnClickListener()
-    {
-        @Override
-        public void onClick(View v)
-        {
-            ListingFilter f = new ListingFilter();
-            switch (v.getId())
+            switch (value)
             {
-                case R.id.tasks_active:
+                case R.string.tasks_active:
                     f.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
                     break;
-                case R.id.tasks_completed:
+                case R.string.tasks_completed:
                     f.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
                     break;
-                case R.id.tasks_due_today:
+                case R.string.tasks_due_today:
                     f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_TODAY);
                     break;
-                case R.id.tasks_due_tomorrow:
+                case R.string.tasks_due_tomorrow:
                     f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_TOMORROW);
                     break;
-                case R.id.tasks_due_week:
+                case R.string.tasks_due_week:
                     f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_7DAYS);
                     break;
-                case R.id.tasks_due_over:
+                case R.string.tasks_due_over:
                     f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_OVERDUE);
                     break;
-                case R.id.tasks_due_no_date:
+                case R.string.tasks_due_no_date:
                     f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_NODATE);
                     break;
-                case R.id.tasks_priority_low:
+                case R.string.tasks_priority_low:
                     f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_LOW);
                     break;
-                case R.id.tasks_priority_medium:
+                case R.string.tasks_priority_medium:
                     f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_MEDIUM);
                     break;
-                case R.id.tasks_priority_high:
+                case R.string.tasks_priority_high:
                     f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
                     break;
-                case R.id.tasks_assignee_me:
+                case R.string.tasks_assignee_me:
                     f.addFilter(WorkflowService.FILTER_ASSIGNEE, alfSession.getPersonIdentifier());
                     break;
-                case R.id.tasks_assignee_unassigned:
+                case R.string.tasks_assignee_unassigned:
                     f.addFilter(WorkflowService.FILTER_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
                     break;
                 default:
                     break;
             }
-
-            Fragment taskFragment = TasksFragment.newInstance(f);
-            FragmentDisplayer.replaceFragment(getActivity(), taskFragment, DisplayUtils.getLeftFragmentId(getActivity()),
-                    TasksFragment.TAG, true);
-
         }
-    };
+
+        Fragment taskFragment = TasksFragment.newInstance(f);
+        FragmentDisplayer.replaceFragment(getActivity(), taskFragment, DisplayUtils.getLeftFragmentId(getActivity()),
+                TasksFragment.TAG, true);
+    }
 }

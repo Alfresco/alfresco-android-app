@@ -621,6 +621,7 @@
     <string name="start_chat">Start a chat</string>
     <string name="start_call">Start a call</string>
     <string name="start_video_call">Start a video call</string>
+    <string name="search_person_hint">Search by name or username</string>
 
     <!-- MEMBERS -->
     <string name="members">List of Members</string>
@@ -650,7 +651,7 @@
     <string name="task_workflow">Process</string>
 
     <!-- Workflow FILTERS -->
-    <string name="tasks_title">Tasks</string>
+    <string name="tasks_status">Tasks Status</string>
     <string name="tasks_active">Active</string>
     <string name="tasks_completed">Completed</string>
     <string name="tasks_due">Due</string>
@@ -692,6 +693,7 @@
     <string name="task_done">Done</string>
     <string name="task_completing">Completing Task</string>
     <string name="task_reassign">Reassign</string>
+    <string name="task_reassign_long">Reassign this task to...</string>
     <string name="task_claim">Claim</string>
     <string name="task_unclaim">Release to Pool</string>
     <string name="task_priority">Priority</string>
@@ -708,7 +710,7 @@
     <string name="task_filter_due_today">Task Due Today</string>
     <string name="task_filter_overdue">Overdue Tasks</string>
     <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
-    <string name="task_filter_custom">Custom filter...</string>
+    <string name="task_filter_custom">My filter...</string>
 
     <!-- Process Start -->
     <string name="process_start_review">Start review</string>
@@ -723,26 +725,16 @@
     <string name="process_assignee">Assignee</string>
     <string name="process_diagram">Process Diagram</string>
 
-    <plurals name="process_assignees">
-        <item quantity="zero">No assignee</item>
-        <item quantity="one">1 assignee</item>
-        <item quantity="many">%1$s assignees</item>
-        <item quantity="other">%1$s assignees</item>
-    </plurals>
-    <plurals name="process_approvers">
-        <item quantity="zero">No approvers</item>
-        <item quantity="one">%1$s of %2$s Approvers.</item>
-        <item quantity="many">%1$s of %2$s Approvers.</item>
-        <item quantity="other">%1$s of %2$s Approvers.</item>
-    </plurals>
-    <plurals name="process_attachments">
-        <item quantity="zero">No attachments</item>
-        <item quantity="one">%1$s attachment</item>
-        <item quantity="two">%1$s attachments</item>
-        <item quantity="many">%1$s attachments</item>
-        <item quantity="many">%1$s attachments</item>
-        <item quantity="other">%1$s attachments</item>
-    </plurals>
+    <string name="task_assignees_plurals">{0,choice,0#No assignee|1#1 assignee|1&lt;{0} assignees}</string>
+    <string name="task_assignees">Assignees</string>
+    <string name="task_assignees_selection">Select assignees&#8230;</string>
+    
+    <string name="process_approvers_plurals">{0,choice,0#No approver|1#1 of 1 approver|1&lt;%s of {0} approvers}</string>
+    
+    <string name="task_attachments_plurals">{0,choice,0#No attachment|1#1 of 1 attachment|1&lt;{0} attachments}</string>
+    <string name="task_attachments_selection">Select attachments&#8230;</string>
+    <string name="task_attachments">Attachments</string>
+    
 
     <string name="process_no_assignees">No assignee</string>
     <string name="process_initiator">Initiator</string>
@@ -760,7 +752,14 @@
     <string name="task_review_approve">Review &amp; Approve</string>
     <string name="task_review_approve_description">Assign a task to one or more persons to review and approve documents.</string>
     
-    <string name="task_delegate_in_progress">Reassign in progress...</string>
+    <string name="task_delegate_in_progress">Reassign in progress&#8230;</string>
     <string name="task_delegate_complete">Reassign completed</string>
-
+    
+    <!-- AGGREGATOR SEARCH -->
+    <string name="search">Search</string>
+    <string name="search_person">Persons</string>
+    <string name="search_documents">Documents</string>
+    <string name="search_folders">Folders</string>
+    <string name="search_advanced">Advanced Search</string>
+    
 </resources>

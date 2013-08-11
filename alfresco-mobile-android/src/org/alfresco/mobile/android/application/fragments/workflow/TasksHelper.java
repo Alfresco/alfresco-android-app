@@ -27,7 +27,7 @@ public final class TasksHelper
     public static void displayNavigationMode(final Activity activity, final boolean backStack, int menuId)
     {
         activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-        TasksFilterAdapter adapter = new TasksFilterAdapter(activity);
+        TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);
 
         OnNavigationListener mOnNavigationListener = new OnNavigationListener()
         {
@@ -61,10 +61,9 @@ public final class TasksHelper
                                 .getPersonIdentifier());
                         break;
                     case 6:
-                        Fragment taskFragment = TasksMenuFragment.newInstance();
+                        Fragment taskFragment = TaskFilterFragment.newInstance();
                         FragmentDisplayer.replaceFragment(activity, taskFragment,
-                                DisplayUtils.getLeftFragmentId(activity), TasksMenuFragment.TAG, true);
-                        prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
+                                DisplayUtils.getLeftFragmentId(activity), TaskFilterFragment.TAG, true);
                         return true;
                     default:
                         break;
