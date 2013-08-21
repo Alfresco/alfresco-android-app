@@ -16,6 +16,8 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
+import org.alfresco.mobile.android.api.model.impl.TaskImpl;
 import org.alfresco.mobile.android.api.utils.WorkflowUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
@@ -67,11 +69,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 public class TaskDetailsFragment extends BaseFragment implements onPickPersonFragment,
-        LoaderCallbacks<LoaderResult<PagingResult<Node>>>
+        LoaderCallbacks<LoaderResult<PagingResult<Document>>>
 {
 
     public static final String TAG = TaskDetailsFragment.class.getName();
@@ -94,7 +95,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
 
     private RenditionManager renditionManager;
 
-    private List<Node> items;
+    private List<Document> items;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -237,10 +238,10 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     {
         // Display Initiator
         initiator = null;
-        if (currentTask.getData().containsKey(OnPremiseConstant.WORKFLOWINSTANCE_VALUE))
+        if (((TaskImpl) currentTask).getData().containsKey(OnPremiseConstant.WORKFLOWINSTANCE_VALUE))
         {
-            Process p = (Process) currentTask.getData().get(OnPremiseConstant.WORKFLOWINSTANCE_VALUE);
-            initiator = (Person) p.getData().get(OnPremiseConstant.INITIATOR_VALUE);
+            Process p = (Process) ((TaskImpl) currentTask).getData().get(OnPremiseConstant.WORKFLOWINSTANCE_VALUE);
+            initiator = (Person) ((ProcessImpl) p).getData().get(OnPremiseConstant.INITIATOR_VALUE);
         }
 
         if (initiator != null)
@@ -555,13 +556,13 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     // LOADERS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Node>>> onCreateLoader(int id, Bundle ba)
+    public Loader<LoaderResult<PagingResult<Document>>> onCreateLoader(int id, Bundle ba)
     {
         return new ItemsLoader(getActivity(), alfSession, currentTask);
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> arg0, LoaderResult<PagingResult<Node>> results)
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Document>>> arg0, LoaderResult<PagingResult<Document>> results)
     {
         if (results.hasException())
         {
@@ -579,7 +580,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     }
 
     @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<Document>>> arg0)
     {
         // TODO Auto-generated method stub
     }
