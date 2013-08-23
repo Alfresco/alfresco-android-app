@@ -219,14 +219,26 @@
         <item name="android:layout_width">@dimen/aggregator_icon_height</item>
     </style>
     
-      <style name="actionbar_header_text">
+    <style name="actionbar_header_text">
         <item name="android:gravity">center_vertical</item>
-        <item name="android:layout_gravity">center</item>
-        <item name="android:ellipsize">end</item>
+        <item name="android:ellipsize">middle</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
         <item name="android:textColor">@android:color/primary_text_light</item>
-        <item name="android:minHeight">48dip</item>
+        <item name="android:paddingLeft">5dip</item>
+    </style>
+    
+      <style name="actionbar_header_text_account">
+ 		<item name="android:gravity">center_vertical</item>
+ 		<item name="android:ellipsize">middle</item>
+         <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/actionbar_dropdown_top_height</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
         <item name="android:paddingLeft">5dip</item>
     </style>
 

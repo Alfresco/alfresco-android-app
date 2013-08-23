@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -169,7 +170,7 @@ public class UIUtils
             if (v == null)
             {
                 LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
-                v = inflater.inflate(R.layout.app_title, null);
+                v = inflater.inflate(R.layout.app_header_row, null);
             }
 
             TextView tv = (TextView) v.findViewById(R.id.toptext);
@@ -192,5 +193,20 @@ public class UIUtils
 
             activity.invalidateOptionsMenu();
         }
+    }
+    
+    public static String getAccountLabel(Account account)
+    {
+        String label = "";
+        if (account != null)
+        {
+            label = account.getDescription();
+            if (label == null || label.isEmpty())
+            {
+                label = account.getUsername();
+            }
+        }
+        return label;
+
     }
 }

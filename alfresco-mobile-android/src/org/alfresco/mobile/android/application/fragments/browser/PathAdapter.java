@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.Activity;
 import android.content.Context;
@@ -59,6 +60,7 @@ public class PathAdapter extends ArrayAdapter<String>
         {
             ((TextView) v.findViewById(R.id.bottomtext)).setText(item + "  ");
             ((TextView) v.findViewById(R.id.toptext)).setVisibility(View.GONE);
+            ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.VISIBLE);
         }
         return v;
     }
@@ -70,14 +72,14 @@ public class PathAdapter extends ArrayAdapter<String>
         if (v == null)
         {
             LayoutInflater vi = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            v = vi.inflate(R.layout.app_path_shortcut, null);
+            v = vi.inflate(R.layout.app_header_row, null);
         }
         item = getItem(position);
         if (item != null && v != null)
         {
             if (AccountManager.getInstance(getContext()).hasMultipleAccount())
             {
-                ((TextView) v.findViewById(R.id.toptext)).setText(getLabel(account) + "  ");
+                ((TextView) v.findViewById(R.id.toptext)).setText(UIUtils.getAccountLabel(account));
                 v.findViewById(R.id.toptext).setVisibility(View.VISIBLE);
             }
             else
@@ -85,25 +87,9 @@ public class PathAdapter extends ArrayAdapter<String>
                 v.findViewById(R.id.toptext).setVisibility(View.GONE);
             }
 
-            ((TextView) v.findViewById(R.id.bottomtext)).setText(getItem(position) + "  ");
+            ((TextView) v.findViewById(R.id.bottomtext)).setText(getItem(position));
             ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.GONE);
         }
         return v;
     }
-
-    private String getLabel(Account account)
-    {
-        String label = "";
-        if (account != null)
-        {
-            label = account.getDescription();
-            if (label == null || label.isEmpty())
-            {
-                label = account.getUsername();
-            }
-        }
-        return label;
-
-    }
-
 }
