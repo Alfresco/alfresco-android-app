@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractPagingLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -29,7 +29,7 @@ import android.content.Context;
 /**
  * @author jpascal
  */
-public class ItemsLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Node>>>
+public class ItemsLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Document>>>
 {
     /** Unique SitesLoader identifier. */
     public static final int ID = ItemsLoader.class.hashCode();
@@ -44,10 +44,10 @@ public class ItemsLoader extends AbstractPagingLoader<LoaderResult<PagingResult<
     }
 
     @Override
-    public LoaderResult<PagingResult<Node>> loadInBackground()
+    public LoaderResult<PagingResult<Document>> loadInBackground()
     {
-        LoaderResult<PagingResult<Node>> result = new LoaderResult<PagingResult<Node>>();
-        PagingResult<Node> pagingResult = null;
+        LoaderResult<PagingResult<Document>> result = new LoaderResult<PagingResult<Document>>();
+        PagingResult<Document> pagingResult = null;
 
         try
         {

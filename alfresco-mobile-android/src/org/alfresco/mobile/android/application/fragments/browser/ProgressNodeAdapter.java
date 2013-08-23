@@ -19,7 +19,9 @@ package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
@@ -91,6 +93,16 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);
+    }
+
+    public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
+            Map<String, Document> selectedItems)
+    {
+        super(context, textViewResourceId, listItems, selectedItems);
+        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.parentNode = parentNode;
+        context.getLoaderManager().restartLoader(context.hashCode(), null, this);
+        refreshFavorites();
     }
 
     // /////////////////////////////////////////////////////////////
@@ -223,6 +235,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
 
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
+            if (mode == ListingModeFragment.MODE_PICK) { return; }
+
 
             UIUtils.setBackground(((View) vh.choose),
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));

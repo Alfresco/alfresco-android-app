@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
@@ -72,6 +73,8 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     private Fragment fragment;
 
+    private Map<String, Document> selectedMapItems;
+
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -98,7 +101,18 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.isEditable = isEditable;
     }
-    
+
+    public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
+            Map<String, Document> selectedItems)
+    {
+        super(context, textViewResourceId, listItems);
+        originalNodes = listItems;
+        this.selectedMapItems = selectedItems;
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
+        this.mode = ListingModeFragment.MODE_PICK;
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+    }
+
     // /////////////////////////////////////////////////////////////
     // CRUD LIST
     // ////////////////////////////////////////////////////////////
@@ -208,15 +222,31 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     protected void updateBottomText(ProgressViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
-        if (selectedItems != null && selectedItems.contains(item))
+        if (mode == ListingModeFragment.MODE_PICK)
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
-                    getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+            if (selectedMapItems.containsKey(item.getIdentifier()))
+            {
+                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                        getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+            }
+            else
+            {
+                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+            }
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+            if (selectedItems != null && selectedItems.contains(item))
+            {
+                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                        getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+            }
+            else
+            {
+                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+            }
         }
+
         if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
         {
             // Disable document : grey font color instead of black
@@ -266,7 +296,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
                 }
             });
         }
-        
+
         if (item.isDocument())
         {
             if (!activateThumbnail)

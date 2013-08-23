@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
@@ -17,10 +18,9 @@
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/btn_block_border_selected" android:state_checked="true"/>
-    <item android:drawable="@drawable/btn_block_border_selected" android:state_enabled="true" android:state_focused="true" android:state_pressed="true"/>
-    <item android:drawable="@drawable/btn_block_border_selected" android:state_enabled="true" android:state_focused="false" android:state_pressed="true"/>
-    <item android:drawable="@drawable/btn_block_border_selected" android:state_enabled="true" android:state_focused="true"/>
-    <item android:drawable="@drawable/btn_block_border_default" android:state_focused="false" android:state_pressed="false"/>
+    <item android:drawable="@drawable/btn_blue_round_pressed" android:state_pressed="true"/>
+    <item android:drawable="@drawable/btn_blue_round_pressed" android:state_enabled="true" android:state_focused="true"/>
+    <item android:drawable="@drawable/btn_blue_round_pressed" android:state_focused="true"/>
+    <item android:drawable="@drawable/btn_search_dialog_voice_default"></item>
 
 </selector>

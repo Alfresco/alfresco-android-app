@@ -41,14 +41,12 @@
             android:textSize="@dimen/home_title_size" />
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            style="@style/round_button_large"
             android:layout_marginTop="15dip"
-            android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_cloud"
             android:onClick="cloud"
             android:text="@string/home_sign_cloud"
-            android:textSize="@dimen/home_button_size" />
+            />
 
         <TextView
             android:layout_width="match_parent"
@@ -59,10 +57,8 @@
             android:textSize="@dimen/home_description_size" />
 
         <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            style="@style/round_button_large"
             android:layout_marginTop="15dip"
-            android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="launch"
             android:text="@string/home_account" />

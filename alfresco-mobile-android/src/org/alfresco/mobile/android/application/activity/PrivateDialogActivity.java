@@ -27,8 +27,11 @@ import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.browser.onPickDocumentFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.SelectTaskTypeFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskDocumentPickerFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -37,6 +40,7 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +49,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -116,7 +121,8 @@ public class PrivateDialogActivity extends BaseActivity
             return;
         }
 
-        if (IntentIntegrator.ACTION_START_PROCESS.equals(action) && getFragment(SelectTaskTypeFragment.TAG) == null)
+        if (IntentIntegrator.ACTION_START_PROCESS.equals(action)
+                && getFragment(CreateTaskTypePickerFragment.TAG) == null)
         {
             List<Document> docs = new ArrayList<Document>();
             if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENT))
@@ -132,9 +138,10 @@ public class PrivateDialogActivity extends BaseActivity
                 getIntent().removeExtra(IntentIntegrator.EXTRA_DOCUMENTS);
             }
 
-            Fragment f = docs.isEmpty() ? new SelectTaskTypeFragment() : SelectTaskTypeFragment.newInstance(docs);
+            Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment() : CreateTaskTypePickerFragment
+                    .newInstance(docs);
             FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this),
-                    SelectTaskTypeFragment.TAG, false, false);
+                    CreateTaskTypePickerFragment.TAG, false, false);
             return;
         }
     }
@@ -219,6 +226,18 @@ public class PrivateDialogActivity extends BaseActivity
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC
+    // ///////////////////////////////////////////////////////////////////////////
+    public onPickDocumentFragment getOnPickDocumentFragment()
+    {
+        return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+    }
+
+    public void doCancel(View v)
+    {
+        getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////

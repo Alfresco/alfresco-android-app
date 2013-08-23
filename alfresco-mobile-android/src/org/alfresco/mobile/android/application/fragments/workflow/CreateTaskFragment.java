@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.browser.onPickDocumentFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
@@ -48,6 +49,7 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
+import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -71,7 +73,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment
+public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
@@ -252,7 +254,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             @Override
             public void onClick(View v)
             {
-
+                startDocumentPicker();
             }
         });
         attachmentsButton = (Button) vRoot.findViewById(R.id.process_attachments);
@@ -475,12 +477,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 MessageFormat.format(getString(R.string.process_approvers_plurals), assignees.size()), approvers));
     }
 
-    private void updateItems()
-    {
-        itemsEditText.setHint(String.format(
-                MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()), items.size()));
-    }
-
     private void updateAssignees()
     {
         assigneesButton.setText(MessageFormat.format(getString(R.string.task_assignees_plurals), assignees.size()));
@@ -511,7 +507,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private void updateDocuments()
     {
-        attachmentsButton.setText(MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()));
+        attachmentsButton.setText(String.format(
+                MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()), items.size()));
     }
 
     private TextWatcher watcher = new TextWatcher()
@@ -570,6 +567,30 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     {
         return assignees;
     }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // DOCUMENT PICKER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onSelectDocument(List<Document> p)
+    {
+        if (p == null) { return; }
+        items.clear();
+        for (Node node : p)
+        {
+            items.put(node.getIdentifier(), (Document) node);
+        }
+
+        // Update documents
+        updateDocuments();
+        getActivity().getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    @Override
+    public Map<String, Document> retrieveDocumentSelection()
+    {
+        return new HashMap<String, Document>(items);
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
@@ -622,9 +643,15 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 PersonSearchFragment.TAG, true);
     }
 
+    public void startDocumentPicker()
+    {
+        CreateTaskDocumentPickerFragment frag = CreateTaskDocumentPickerFragment.newInstance();
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                CreateTaskDocumentPickerFragment.TAG, true);
+    }
+
     public List<Node> getAttachments()
     {
         return new ArrayList<Node>(items.values());
     }
-
 }

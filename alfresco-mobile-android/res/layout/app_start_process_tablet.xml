@@ -14,7 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.-->
+  limitations under the License.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/white_background"
@@ -174,7 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/process_assignee" />
+                        android:text="@string/process_assignees" />
 
                     <LinearLayout
                         android:layout_width="fill_parent"
@@ -347,7 +348,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/task_done" />
+            android:text="@string/done" />
     </LinearLayout>
 
     <View
