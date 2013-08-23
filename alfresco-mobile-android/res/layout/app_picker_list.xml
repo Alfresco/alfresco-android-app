@@ -38,7 +38,7 @@
 
         <Button
             android:id="@+id/action_select"
-            style="?android:attr/buttonBarButtonStyle"
+            android:background="@drawable/btn_round_simple"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"

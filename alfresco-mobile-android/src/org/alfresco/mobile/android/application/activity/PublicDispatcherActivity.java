@@ -213,7 +213,7 @@ public class PublicDispatcherActivity extends BaseActivity
         finish();
     }
 
-    public void doImport(View v)
+    public void validateAction(View v)
     {
         ((ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG)).createFiles(uploadFiles);
     }

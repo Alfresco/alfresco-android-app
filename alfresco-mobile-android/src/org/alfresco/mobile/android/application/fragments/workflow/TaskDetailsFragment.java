@@ -210,7 +210,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
                 reject.setVisibility(View.GONE);
                 if (validation instanceof Button)
                 {
-                    ((Button) validation).setText(R.string.task_done);
+                    ((Button) validation).setText(R.string.done);
                 }
             }
 

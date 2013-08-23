@@ -19,7 +19,9 @@ package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 
@@ -52,6 +54,13 @@ public class AlphabeticNodeAdapter extends ProgressNodeAdapter
             List<Node> selectedItems, int mode)
     {
         super(context, textViewResourceId, parent, listItems, selectedItems, mode);
+        mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    public AlphabeticNodeAdapter(Activity context, int textViewResourceId, Node parent,
+            List<Node> listItems, Map<String, Document> selectedItems)
+    {
+        super(context, textViewResourceId, parent, listItems, selectedItems);
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 

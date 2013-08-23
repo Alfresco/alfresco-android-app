@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -70,7 +71,7 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
     {
         super.updateTopText(vh, item);
 
-        if (mode == BrowserSitesFragment.MODE_IMPORT) { return; }
+        if (mode == ListingModeFragment.MODE_IMPORT || mode == ListingModeFragment.MODE_PICK) { return; }
 
         UIUtils.setBackground(((View) vh.choose),
                 getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));

@@ -55,12 +55,12 @@
             android:text="@string/cancel" />
 
         <Button
-            android:id="@+id/action_import"
+            android:id="@+id/action_validation"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="doImport"
+            android:onClick="validateAction"
             android:text="@string/action_upload"
             android:enabled="false" />
     </LinearLayout>

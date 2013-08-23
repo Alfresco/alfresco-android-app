@@ -76,13 +76,10 @@
 
         <Button
             android:id="@+id/alfresco_cloud"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            style="@style/round_button_large"
             android:layout_marginTop="15dip"
-            android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_cloud"
-            android:text="@string/account_wizard_alfresco_cloud"
-            android:textSize="@dimen/home_button_size" />
+            android:text="@string/account_wizard_alfresco_cloud" />
 
         <TextView
             android:layout_width="match_parent"
@@ -104,13 +101,10 @@
 
         <Button
             android:id="@+id/alfresco_server"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            style="@style/round_button_large"
             android:layout_marginTop="15dip"
-            android:background="@drawable/btn_block_border"
             android:drawableLeft="@drawable/ic_onpremise"
-            android:text="@string/account_wizard_alfresco_server"
-            android:textSize="@dimen/home_button_size" />
+            android:text="@string/account_wizard_alfresco_server" />
 
         <TextView
             android:layout_width="match_parent"

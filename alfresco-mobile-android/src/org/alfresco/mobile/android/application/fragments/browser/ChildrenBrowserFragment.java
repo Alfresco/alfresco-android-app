@@ -18,12 +18,16 @@
 package org.alfresco.mobile.android.application.fragments.browser;
 
 import java.io.File;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
@@ -37,6 +41,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
@@ -82,6 +87,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
@@ -108,7 +114,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     /** By default, the fragment is in Listing mode. */
     private int mode = MODE_LISTING;
 
-    private Button importButton;
+    private Button validationButton;
 
     private TransfertReceiver receiver;
 
@@ -117,6 +123,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     private NodeActions nActions;
 
     private File tmpFile;
+
+    private onPickDocumentFragment fragmentPick;
+
+    private Map<String, Document> selectedMapItems = new HashMap<String, Document>(0);
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -182,6 +192,11 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             mode = MODE_IMPORT;
             setActivateThumbnail(false);
         }
+        else if (getActivity() instanceof PrivateDialogActivity)
+        {
+            mode = MODE_PICK;
+            fragmentPick = ((PrivateDialogActivity) getActivity()).getOnPickDocumentFragment();
+        }
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -191,12 +206,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         View v = null;
         // In case of Import mode, we wrap the listing with buttons.
-        if (getActivity() instanceof PublicDispatcherActivity)
+        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity)
         {
             v = inflater.inflate(R.layout.app_browser_import, container, false);
             init(v, emptyListMessageId);
 
-            importButton = (Button) v.findViewById(R.id.action_import);
+            validationButton = (Button) v.findViewById(R.id.action_validation);
+            ListView listView = (ListView) v.findViewById(R.id.listView);
+            if (getActivity() instanceof PrivateDialogActivity)
+            {
+                validationButton.setText(R.string.done);
+                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            }
+            else
+            {
+                listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            }
+            listView.setClickable(true);
+            listView.setDivider(null);
+            listView.setDividerHeight(0);
         }
         else
         {
@@ -224,7 +252,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         {
             mode = MODE_IMPORT;
             titleId = R.string.import_document_title;
-            checkImportButton();
+            checkValidationButton();
+        }
+        else if (getActivity() instanceof PrivateDialogActivity)
+        {
+            mode = MODE_PICK;
+            titleId = R.string.picker_document_title;
+            checkValidationButton();
         }
 
         // If the fragment is resumed after user content creation action, we
@@ -438,6 +472,24 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             return;
         }
 
+        // In case of pick mode, we allow multiSelection
+        if (mode == MODE_PICK && getActivity() instanceof PrivateDialogActivity && item.isDocument())
+        {
+            l.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            if (selectedMapItems.containsKey(item.getIdentifier()))
+            {
+                selectedMapItems.remove(item.getIdentifier());
+            }
+            else
+            {
+                selectedMapItems.put(item.getIdentifier(), (Document) item);
+            }
+            l.setItemChecked(position, true);
+            checkValidationButton();
+            return;
+        }
+
+        // In other case, listing mode
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
@@ -488,7 +540,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         // We disable long click during import mode.
-        if (mode == MODE_IMPORT) { return false; }
+        if (mode == MODE_IMPORT || mode == MODE_PICK) { return false; }
 
         Node n = (Node) l.getItemAtPosition(position);
         boolean b = true;
@@ -554,7 +606,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             importFolder = parentFolder;
         }
 
-        if (adapter == null)
+        if (mode == MODE_PICK && adapter == null)
+        {
+            selectedMapItems = fragmentPick.retrieveDocumentSelection();
+            adapter = new AlphabeticNodeAdapter(getActivity(), R.layout.app_list_progress_row, parentFolder,
+                    new ArrayList<Node>(0), selectedMapItems);
+        }
+        else if (adapter == null)
         {
             adapter = new AlphabeticNodeAdapter(getActivity(), R.layout.app_list_progress_row, parentFolder,
                     new ArrayList<Node>(0), selectedItems, mode);
@@ -571,7 +629,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         ((NodeAdapter) adapter).setActivateThumbnail(hasActivateThumbnail());
         getActivity().invalidateOptionsMenu();
         displayPathShortcut();
-        checkImportButton();
+        checkValidationButton();
     }
 
     @Override
@@ -962,18 +1020,33 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
      * Helper method to enable/disable the import button depending on mode and
      * permission.
      */
-    private void checkImportButton()
+    private void checkValidationButton()
     {
+        boolean enable = false;
         if (mode == MODE_IMPORT)
         {
-            boolean enable = false;
             if (parentFolder != null)
             {
                 Permissions permission = alfSession.getServiceRegistry().getDocumentFolderService()
                         .getPermissions(parentFolder);
                 enable = permission.canAddChildren();
             }
-            importButton.setEnabled(enable);
+            validationButton.setEnabled(enable);
+        }
+        else if (mode == MODE_PICK && selectedItems != null)
+        {
+            validationButton.setText(String.format(
+                    MessageFormat.format(getString(R.string.picker_attach_document), selectedMapItems.size()),
+                    selectedMapItems.size()));
+            validationButton.setEnabled(!selectedMapItems.isEmpty());
+            validationButton.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    fragmentPick.onSelectDocument(new ArrayList<Document>(selectedMapItems.values()));
+                }
+            });
         }
     }
 

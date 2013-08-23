@@ -32,24 +32,15 @@
         android:gravity="center"
         android:orientation="vertical" >
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical"
-            />
 
         <Button
             android:id="@+id/task_todo"
-            style="?android:attr/buttonBarButtonStyle"
+            android:background="@drawable/btn_round_simple"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/task_todo"
+            android:padding="25dip"
             android:textSize="@dimen/home_button_size" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical" />
 
         <TextView
             android:layout_width="match_parent"
@@ -61,23 +52,14 @@
             android:text="@string/task_todo_description"
             android:textSize="@dimen/home_description_size" />
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical" />
-
         <Button
             android:id="@+id/task_review_approve"
-            style="?android:attr/buttonBarButtonStyle"
+            android:background="@drawable/btn_round_simple"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/task_review_approve"
+            android:padding="25dip"
             android:textSize="@dimen/home_button_size" />
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="?android:attr/dividerVertical" />
 
         <TextView
             android:layout_width="match_parent"

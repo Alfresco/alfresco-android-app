@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -53,12 +53,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class SelectTaskTypeFragment extends BaseFragment implements
+public class CreateTaskTypePickerFragment extends BaseFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<ProcessDefinition>>>
 {
     private static final String ACTION_REVIEW = "org.alfresco.mobile.android.intent.ACTION_REVIEW";
-    
-    public static final String TAG = SelectTaskTypeFragment.class.getName();
+
+    public static final String TAG = CreateTaskTypePickerFragment.class.getName();
 
     private View vRoot;
 
@@ -77,13 +77,13 @@ public class SelectTaskTypeFragment extends BaseFragment implements
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public SelectTaskTypeFragment()
+    public CreateTaskTypePickerFragment()
     {
     }
 
-    public static SelectTaskTypeFragment newInstance(List<Document> docs)
+    public static CreateTaskTypePickerFragment newInstance(List<Document> docs)
     {
-        SelectTaskTypeFragment bf = new SelectTaskTypeFragment();
+        CreateTaskTypePickerFragment bf = new CreateTaskTypePickerFragment();
         Bundle b = new Bundle();
         b.putParcelableArrayList(IntentIntegrator.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) docs);
         bf.setArguments(b);
@@ -141,7 +141,10 @@ public class SelectTaskTypeFragment extends BaseFragment implements
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(ProcessDefinitionLoader.ID, null, this);
+        if (getLoaderManager().getLoader(ProcessDefinitionLoader.ID) == null)
+        {
+            getLoaderManager().restartLoader(ProcessDefinitionLoader.ID, null, this);
+        }
     }
 
     @Override
@@ -156,14 +159,14 @@ public class SelectTaskTypeFragment extends BaseFragment implements
             UIUtils.displayTitle(getActivity(), getString(R.string.process_choose_definition));
         }
         getActivity().invalidateOptionsMenu();
-        
+
         IntentFilter intentFilter = new IntentFilter(ACTION_REVIEW);
         receiver = new UpdateReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-        
+
         super.onResume();
     }
-    
+
     @Override
     public void onPause()
     {
@@ -261,7 +264,7 @@ public class SelectTaskTypeFragment extends BaseFragment implements
         lv.setVisibility(View.GONE);
         pb.setVisibility(View.GONE);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////

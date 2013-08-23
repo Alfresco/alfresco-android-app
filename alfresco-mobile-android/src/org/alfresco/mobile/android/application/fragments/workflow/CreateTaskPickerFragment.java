@@ -136,6 +136,7 @@ public class CreateTaskPickerFragment extends BaseFragment
             {
                 if (mode == MODE_DOCUMENT)
                 {
+                    createTaskFragment.startDocumentPicker();
                 }
                 else if (mode == MODE_PERSON)
                 {
