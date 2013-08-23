@@ -17,21 +17,6 @@
 -->
 <resources>
 
-    <!-- PANELS -->
-    <item name="weight_left_panel" format="float" type="dimen">0.65</item>
-    <item name="weight_right_panel" format="float" type="dimen">0.35</item>
-
-    <!-- ACCOUNT WIZARD -->
-    <dimen name="wizard_main_margin">15dip</dimen>
-    
-    <!-- FRAGMENT DETAILS -->
-    <dimen name="properties_details_padding">10dip</dimen>
-    
-    <dimen name="process_diagram_width">450dip</dimen>
-    <dimen name="process_diagram_height">400dip</dimen>
-    <dimen name="process_thumbnail_height">128dip</dimen>
-    
-    <dimen name="actionbar_dropdown_top_height">12sp</dimen>
-    
+    <dimen name="actionbar_dropdown_top_height">8sp</dimen>
     
 </resources>

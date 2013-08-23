@@ -44,10 +44,24 @@
                 android:id="@+id/process_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom|left"
                 android:hint="@string/process_title_hint"
-                android:inputType="text"
-                android:minHeight="48dip" />
+                android:inputType="text" >
+            </EditText>
+
+            <LinearLayout
+                android:id="@+id/error_message_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" >
+
+                <TextView
+                    android:id="@+id/error_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="3dip"
+                    android:text="@string/filename_error_character"
+                    android:textColor="@color/dark_red" />
+            </LinearLayout>
 
             <TextView
                 style="@style/workflowSectionHeader"
@@ -65,11 +79,11 @@
                     android:id="@+id/process_due_on"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
                     android:layout_weight="1"
-                    android:editable="false"
-                    android:gravity="right|bottom"
                     android:hint="@string/process_no_date"
-                    android:minHeight="48dip" />
+                    android:inputType="date"
+                    android:minHeight="48dp" />
 
                 <ImageButton
                     android:id="@+id/action_process_due_on"
@@ -91,14 +105,15 @@
                 android:baselineAligned="true"
                 android:orientation="horizontal" >
 
-                <EditText
+                <Button
                     android:id="@+id/process_assignee"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:editable="false"
-                    android:gravity="right|bottom"
-                    android:minHeight="48dip" />
+                    android:background="@drawable/spinner_holo_light"
+                    android:gravity="left|bottom"
+                    android:paddingLeft="10dip"
+                    android:textColor="@color/hint_foreground_holo_light" />
 
                 <ImageButton
                     android:id="@+id/action_process_assignee"
@@ -120,15 +135,15 @@
                 android:baselineAligned="true"
                 android:orientation="horizontal" >
 
-                <EditText
+                <Button
                     android:id="@+id/process_attachments"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:editable="false"
-                    android:gravity="right|bottom"
-                    android:hint="@string/process_no_attachments"
-                    android:minHeight="48dip" />
+                    android:background="@drawable/spinner_holo_light"
+                    android:gravity="left|bottom"
+                    android:paddingLeft="10dip"
+                    android:textColor="@color/hint_foreground_holo_light" />
 
                 <ImageButton
                     android:id="@+id/action_process_attachments"
@@ -151,7 +166,7 @@
                 android:orientation="horizontal" >
 
                 <EditText
-                    android:id="@+id/process_assignee"
+                    android:id="@+id/process_approvers"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -159,14 +174,14 @@
                     android:hint="@string/process_no_approvers" />
 
                 <ImageButton
-                    android:id="@+id/action_process_assignee"
+                    android:id="@+id/action_remove_approvers"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_remove" />
 
                 <ImageButton
-                    android:id="@+id/action_process_assignee"
+                    android:id="@+id/action_add_approvers"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -185,12 +200,13 @@
                 android:gravity="right|center"
                 android:orientation="horizontal" >
 
-                <Button
-                    android:id="@+id/action_process_attachments"
-                    style="?android:attr/buttonBarButtonStyle"
+                <ToggleButton
+                    android:id="@+id/action_priority_low"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tasks_priority_low" />
+                    android:background="@drawable/btn_default_holo_light_blue"
+                    android:textOff="@string/tasks_priority_low"
+                    android:textOn="@string/tasks_priority_low" />
 
                 <View
                     android:layout_width="1dip"
@@ -199,12 +215,13 @@
                     android:layout_marginRight="4dip"
                     android:background="?android:attr/dividerVertical" />
 
-                <Button
-                    android:id="@+id/action_process_attachments"
-                    style="?android:attr/buttonBarButtonStyle"
+                <ToggleButton
+                    android:id="@+id/action_priority_medium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tasks_priority_medium" />
+                    android:background="@drawable/btn_default_holo_light_blue"
+                    android:textOff="@string/tasks_priority_medium"
+                    android:textOn="@string/tasks_priority_medium" />
 
                 <View
                     android:layout_width="1dip"
@@ -213,12 +230,13 @@
                     android:layout_marginRight="4dip"
                     android:background="?android:attr/dividerVertical" />
 
-                <Button
-                    android:id="@+id/action_process_attachments"
-                    style="?android:attr/buttonBarButtonStyle"
+                <ToggleButton
+                    android:id="@+id/action_priority_high"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/tasks_priority_high" />
+                    android:background="@drawable/btn_default_holo_light_blue"
+                    android:textOff="@string/tasks_priority_high"
+                    android:textOn="@string/tasks_priority_high" />
             </LinearLayout>
 
             <TextView
@@ -239,6 +257,7 @@
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
+        android:layout_marginTop="@dimen/margin_top"
         android:background="?android:attr/dividerVertical" />
 
     <LinearLayout
@@ -253,11 +272,17 @@
         android:paddingTop="0dip" >
 
         <Button
-            android:id="@+id/action_approve"
+            android:id="@+id/action_create"
             style="?android:attr/buttonBarButtonStyle"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:text="@string/done" />
     </LinearLayout>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical" />
 
 </LinearLayout>

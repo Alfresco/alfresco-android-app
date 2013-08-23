@@ -99,5 +99,7 @@
     <dimen name="aggregator_icon_height">48dip</dimen>
     
     <!-- ACTION BAR -->
-    <dimen name="actionbar_dropdown_min_widht">250dip</dimen>
+    <dimen name="actionbar_dropdown_min_width">250dip</dimen>
+    <dimen name="actionbar_dropdown_top_height">10sp</dimen>
+    
 </resources>
