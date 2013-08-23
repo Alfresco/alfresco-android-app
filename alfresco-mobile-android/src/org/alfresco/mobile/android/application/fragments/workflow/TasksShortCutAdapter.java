@@ -21,30 +21,41 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 
 import android.app.Activity;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHolder>
 {
+    private Account account;
+
     public TasksShortCutAdapter(Activity context)
     {
         super(context, R.layout.app_header_row, SHORTCUTS);
         this.vhClassName = SimpleViewHolder.class.getCanonicalName();
+        this.account = SessionUtils.getAccount(context);
     }
 
     @Override
     protected void updateTopText(SimpleViewHolder vh, Integer item)
     {
-        vh.topText.setText(getContext().getString(item));
+        vh.topText.setVisibility(View.GONE);
+        int px = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getContext().getResources().getDisplayMetrics());
+        vh.bottomText.setMinHeight(px);
     }
 
     @Override
     protected void updateBottomText(SimpleViewHolder vh, Integer item)
     {
-        vh.bottomText.setVisibility(View.GONE);
+        vh.bottomText.setText(getContext().getString(item));
     }
 
     @Override
@@ -55,7 +66,24 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        return getView(position, convertView, parent);
+        View v = super.getView(position, convertView, parent);
+        
+        return v;
+    }
+    
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        View v = super.getView(position, convertView, parent);
+        if (AccountManager.getInstance(getContext()).hasMultipleAccount())
+        {
+            ((TextView) v.findViewById(R.id.toptext)).setText(UIUtils.getAccountLabel(account));
+            v.findViewById(R.id.toptext).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            v.findViewById(R.id.toptext).setVisibility(View.GONE);
+        }
+        return v;
     }
 
     private static final List<Integer> SHORTCUTS = new ArrayList<Integer>(10)

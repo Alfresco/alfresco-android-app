@@ -43,7 +43,7 @@
             android:id="@+id/search_query"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/person_search"
+            android:hint="@string/search_person_hint"
             android:inputType="text"
             android:nextFocusForward="@id/search_query" />
     </LinearLayout>
