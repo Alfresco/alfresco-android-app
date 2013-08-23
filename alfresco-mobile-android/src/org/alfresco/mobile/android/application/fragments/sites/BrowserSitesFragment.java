@@ -25,9 +25,12 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.services.SiteService;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -54,13 +57,10 @@ import android.widget.TabHost.TabSpec;
  * 
  * @author Jean Marie Pascal
  */
-public class BrowserSitesFragment extends SitesFragment implements RefreshFragment, OnTabChangeListener
+public class BrowserSitesFragment extends SitesFragment implements RefreshFragment, OnTabChangeListener,
+        ListingModeFragment
 {
-    public static final int MODE_LISTING = 0;
-
-    public static final int MODE_IMPORT = 1;
-
-    public static final String TAG = "BrowserSitesFragment";
+    public static final String TAG = BrowserSitesFragment.class.getName();
 
     public static final String TAB_ALL_SITES = "All";
 
@@ -113,6 +113,10 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
         {
             mode = MODE_IMPORT;
             titleId = R.string.import_document_title;
+        }
+        else if (getActivity() instanceof PrivateDialogActivity)
+        {
+            mode = MODE_PICK;
         }
 
         mTabHost.setCurrentTabByTag(currentTabId);
@@ -178,13 +182,9 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         Site s = (Site) l.getItemAtPosition(position);
-        if (getActivity() instanceof MainActivity)
+        if (getActivity() instanceof BaseActivity)
         {
-            ((MainActivity) getActivity()).addNavigationFragment(s);
-        }
-        else if (getActivity() instanceof PublicDispatcherActivity)
-        {
-            ((PublicDispatcherActivity) getActivity()).addNavigationFragment(s);
+            ((BaseActivity) getActivity()).addNavigationFragment(s);
         }
     }
 
@@ -286,5 +286,11 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
             alfSession.getServiceRegistry().getSiteService().clear();
             reloadTab();
         }
+    }
+
+    @Override
+    public int getMode()
+    {
+        return mode;
     }
 }

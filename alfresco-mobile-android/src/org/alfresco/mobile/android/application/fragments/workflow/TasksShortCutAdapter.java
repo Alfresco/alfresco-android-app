@@ -22,35 +22,34 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class TasksShortCutAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHolder>
 {
     public TasksShortCutAdapter(Activity context)
     {
-        super(context, R.layout.sdk_list_row, SHORTCUTS);
+        super(context, R.layout.app_header_row, SHORTCUTS);
+        this.vhClassName = SimpleViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Integer item)
+    protected void updateTopText(SimpleViewHolder vh, Integer item)
     {
         vh.topText.setText(getContext().getString(item));
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Integer item)
+    protected void updateBottomText(SimpleViewHolder vh, Integer item)
     {
         vh.bottomText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Integer item)
+    protected void updateIcon(SimpleViewHolder vh, Integer item)
     {
-        vh.icon.setVisibility(View.GONE);
     }
 
     @Override

@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -196,16 +196,38 @@
     <style name="workflowSectionHeader" parent="list_item_toptext">
         <item name="android:layout_marginTop">8dip</item>
     </style>
-    
+
     <style name="task_property_value">
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="round_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/btn_round_simple</item>
+        <item name="android:padding">25dip</item>
+    </style>
     
+    <style name="round_button_large" parent="round_button">
+        <item name="android:textSize">@dimen/home_button_size</item>
+        <item name="android:drawablePadding">10dip</item>
+    </style>
+
     <!-- SEARCH -->
- 	<style name="search_aggregator_icon" parent="list_item_icon">
+    <style name="search_aggregator_icon" parent="list_item_icon">
         <item name="android:layout_height">@dimen/aggregator_icon_height</item>
         <item name="android:layout_width">@dimen/aggregator_icon_height</item>
     </style>
     
- 
+      <style name="actionbar_header_text">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:minHeight">48dip</item>
+        <item name="android:paddingLeft">5dip</item>
+    </style>
+
 </resources>

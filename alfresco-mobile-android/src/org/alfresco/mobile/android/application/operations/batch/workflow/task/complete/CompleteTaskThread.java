@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.TaskOperationThread;
@@ -70,9 +71,11 @@ public class CompleteTaskThread extends TaskOperationThread<Task>
                 {
                     transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
                 }
-                properties.put(WorkflowModel.PROP_TRANSITIONS_VALUE, transitionIdentifier);
-                updatedTask = session.getServiceRegistry().getWorkflowService()
-                        .completeTask(task, properties);
+                if (!(session.getServiceRegistry().getWorkflowService() instanceof PublicAPIWorkflowServiceImpl))
+                {
+                    properties.put(WorkflowModel.PROP_TRANSITIONS_VALUE, transitionIdentifier);
+                }
+                updatedTask = session.getServiceRegistry().getWorkflowService().completeTask(task, properties);
             }
         }
         catch (Exception e)

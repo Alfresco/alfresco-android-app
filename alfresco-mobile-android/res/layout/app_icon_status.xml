@@ -34,7 +34,6 @@
         android:layout_height="20dip"
         android:layout_gravity="top|right"
         android:scaleType="centerInside"
-        android:src="@drawable/btn_star_big_on_pressed"
         android:layout_marginTop="@dimen/thumbnail_margin_min"
         android:layout_marginRight="@dimen/thumbnail_margin_min"
         android:visibility="gone" />

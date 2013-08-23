@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 

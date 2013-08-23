@@ -690,7 +690,7 @@
     <string name="task_reject">Reject</string>
     <string name="task_comment">Comment</string>
     <string name="task_response">Response</string>
-    <string name="task_done">Done</string>
+    <string name="done">Done</string>
     <string name="task_completing">Completing Task</string>
     <string name="task_reassign">Reassign</string>
     <string name="task_reassign_long">Reassign this task to...</string>
@@ -716,25 +716,25 @@
     <string name="process_start_review">Start review</string>
     <string name="process_choose_definition">Choose task type</string>
     <string name="process_create_task">Create Task</string>
-    <string name="process_choose_assignee">Choose assignee</string>
+    <string name="process_choose_assignees">Choose assignees</string>
+    <string name="process_choose_attachments">Choose attachments</string>
     <string name="process_start_title">Start Process</string>
     <string name="process_title">Title</string>
     <string name="process_title_hint">New task</string>
     <string name="process_due_on">Due on</string>
     <string name="process_no_date">No date</string>
-    <string name="process_assignee">Assignee</string>
+    <string name="process_assignees">Assignees</string>
     <string name="process_diagram">Process Diagram</string>
 
-    <string name="task_assignees_plurals">{0,choice,0#No assignee|1#1 assignee|1&lt;{0} assignees}</string>
+    <string name="task_assignees_plurals">{0,choice,0#No assignees|1#1 assignee|1&lt;{0} assignees}</string>
     <string name="task_assignees">Assignees</string>
     <string name="task_assignees_selection">Select assignees&#8230;</string>
     
-    <string name="process_approvers_plurals">{0,choice,0#No approver|1#1 of 1 approver|1&lt;%s of {0} approvers}</string>
+    <string name="process_approvers_plurals">{0,choice,0#No approvers|1#1 of 1 approver|1&lt;%s of {0} approvers}</string>
     
-    <string name="task_attachments_plurals">{0,choice,0#No attachment|1#1 of 1 attachment|1&lt;{0} attachments}</string>
+    <string name="task_attachments_plurals">{0,choice,0#No attachments|1#1 attachment|1&lt;{0} attachments}</string>
     <string name="task_attachments_selection">Select attachments&#8230;</string>
     <string name="task_attachments">Attachments</string>
-    
 
     <string name="process_no_assignees">No assignee</string>
     <string name="process_initiator">Initiator</string>
@@ -761,5 +761,11 @@
     <string name="search_documents">Documents</string>
     <string name="search_folders">Folders</string>
     <string name="search_advanced">Advanced Search</string>
+    
+    <!-- DOCUMENT PICKER -->
+    <string name="picker_document_title">Select attachments</string>
+    <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
+    <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 document|1&lt;Attach {0} documents}</string>
+    
     
 </resources>

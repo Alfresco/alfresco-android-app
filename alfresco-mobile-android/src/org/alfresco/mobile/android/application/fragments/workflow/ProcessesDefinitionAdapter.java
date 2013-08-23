@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.model.impl.ProcessDefinitionImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -50,7 +51,8 @@ public class ProcessesDefinitionAdapter extends BaseListAdapter<ProcessDefinitio
     @Override
     protected void updateBottomText(GenericViewHolder vh, ProcessDefinition item)
     {
-        vh.bottomText.setText((String) item.getData().get(OnPremiseConstant.DESCRIPTION_VALUE));
+        vh.bottomText.setText((String) ((ProcessDefinitionImpl) item).getData()
+                .get(OnPremiseConstant.DESCRIPTION_VALUE));
     }
 
     @Override

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.person;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -143,6 +144,7 @@ public class PersonSearchFragment extends BaseListFragment implements
             singleChoice = getArguments().getBoolean(PARAM_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
             fragmentPick = ((onPickPersonFragment) getFragmentManager().findFragmentByTag(pickFragmentTag));
+            selectedItems = fragmentPick.retrieveSelection();
         }
 
         // Create View
@@ -153,7 +155,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         init(vRoot, R.string.person_not_found);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         setListShown(true);
-        
+
         if (keywords != null && !keywords.isEmpty())
         {
             search(keywords);
@@ -195,6 +197,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         {
             vRoot.findViewById(R.id.pick_actions).setVisibility(View.VISIBLE);
             validation = (Button) vRoot.findViewById(R.id.validate);
+            updatePickButton();
             validation.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -292,8 +295,8 @@ public class PersonSearchFragment extends BaseListFragment implements
             if (mode == MODE_PICK)
             {
                 selectedItems = fragmentPick.retrieveSelection();
+                updatePickButton();
             }
-
             adapter = new PersonAdapter(this, R.layout.sdk_list_row, new ArrayList<Person>(0), selectedItems);
         }
         if (checkException(results))
@@ -368,10 +371,7 @@ public class PersonSearchFragment extends BaseListFragment implements
             if (mode == MODE_PICK)
             {
                 selectedItems.remove(item.getIdentifier());
-                if (selectedItems.isEmpty())
-                {
-                    validation.setEnabled(false);
-                }
+                updatePickButton();
             }
             else if (mode == MODE_LISTING && DisplayUtils.hasCentralPane(getActivity()))
             {
@@ -390,8 +390,17 @@ public class PersonSearchFragment extends BaseListFragment implements
             else if (mode == MODE_PICK)
             {
                 validation.setEnabled(true);
+                updatePickButton();
             }
         }
+    }
+
+    protected void updatePickButton()
+    {
+        validation.setEnabled(!selectedItems.isEmpty());
+        validation.setText(String.format(
+                MessageFormat.format(getString(R.string.picker_assign_person), selectedItems.size()),
+                selectedItems.size()));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
