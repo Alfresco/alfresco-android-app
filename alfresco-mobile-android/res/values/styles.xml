@@ -242,4 +242,16 @@
         <item name="android:paddingLeft">5dip</item>
     </style>
 
+    <style name="comment_username">
+       <item name="android:textColor">@color/grey_text</item>
+    </style>
+    
+     <style name="list_item_icon_2">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:layout_margin">@dimen/thumbnail_margin</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+      
 </resources>

@@ -29,7 +29,7 @@
 
         <ImageView
             android:id="@+id/task_priority_icon"
-            style="@style/list_item_icon"
+            style="@style/list_item_icon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -64,7 +64,7 @@
 
         <ImageView
             android:id="@+id/task_type_icon"
-            style="@style/list_item_icon"
+            style="@style/list_item_icon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -100,12 +100,13 @@
 
         <ImageView
             android:id="@+id/task_initiator_icon"
-            style="@style/list_item_icon"
+            style="@style/list_item_icon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:contentDescription="@string/thumbnail"
-            android:src="@drawable/ic_person" />
+            android:src="@drawable/ic_person"
+             />
 
         <LinearLayout
             android:id="@+id/task_initiator_group"
@@ -137,7 +138,7 @@
 
         <ImageView
             android:id="@+id/task_due_date_icon"
-            style="@style/list_item_icon"
+            style="@style/list_item_icon_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

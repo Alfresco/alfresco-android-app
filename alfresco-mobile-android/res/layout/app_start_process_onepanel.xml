@@ -154,12 +154,14 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/process_approvers_group_title"
                 style="@style/workflowSectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_approvers" />
 
             <LinearLayout
+                android:id="@+id/process_approvers_group"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="true"
@@ -246,6 +248,7 @@
                 android:text="@string/process_notification" />
 
             <Switch
+                android:id="@+id/action_send_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|center"

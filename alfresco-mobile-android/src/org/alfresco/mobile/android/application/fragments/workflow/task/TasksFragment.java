@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,54 +29,79 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
-public class ProcessTasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>
+public class TasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>,
+        RefreshFragment
 {
 
-    private static final String PARAM_PROCESS = "TaskProcess";
+    private static final String PARAM_MENUID = "menuId";
 
-    public static final String TAG = ProcessTasksFragment.class.getName();
+    private static final String PARAM_FILTER = "TaskFragmentFilter";
+
+    public static final String TAG = TasksFragment.class.getName();
 
     protected List<Task> selectedItems = new ArrayList<Task>(1);
 
     private TaskActions nActions;
 
+    private TasksFragmentReceiver receiver;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public ProcessTasksFragment()
+    public TasksFragment()
     {
-        loaderId = ProcessTasksLoader.ID;
+        loaderId = TasksLoader.ID;
         callback = this;
         emptyListMessageId = R.string.empty_tasks;
-        initLoader = false;
+        initLoader = true;
         checkSession = false;
     }
 
-    public static ProcessTasksFragment newInstance()
+    public static TasksFragment newInstance()
     {
-        ProcessTasksFragment bf = new ProcessTasksFragment();
-        return bf;
+        ListingFilter lf = new ListingFilter();
+        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+        return newInstance(lf, 0);
     }
 
-    public static ProcessTasksFragment newInstance(String processIdentifier)
+    public static TasksFragment newInstance(ListingFilter f)
     {
-        ProcessTasksFragment bf = new ProcessTasksFragment();
+        TasksFragment bf = new TasksFragment();
         Bundle b = new Bundle();
-        b.putSerializable(PARAM_PROCESS, processIdentifier);
+        b.putSerializable(PARAM_FILTER, f);
+        bf.setArguments(b);
+        return bf;
+    };
+
+    public static TasksFragment newInstance(ListingFilter f, int menuId)
+    {
+        TasksFragment bf = new TasksFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_FILTER, f);
+        b.putInt(PARAM_MENUID, menuId);
         bf.setArguments(b);
         return bf;
     };
@@ -90,17 +115,30 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(ProcessTasksLoader.ID, null, this);
     }
 
     @Override
     public void onResume()
     {
-        if (!DisplayUtils.hasCentralPane(getActivity()))
+        if (getArguments().containsKey(PARAM_MENUID))
+        {
+            TasksHelper.displayNavigationMode(getActivity(), false, getArguments().getInt(PARAM_MENUID));
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            getActivity().getActionBar().setDisplayShowCustomEnabled(true);
+            getActivity().getActionBar().setCustomView(null);
+        }
+        else
         {
             UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
         }
         getActivity().invalidateOptionsMenu();
+
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_TASK_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_START_PROCESS_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED);
+        receiver = new TasksFragmentReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+
         super.onResume();
     }
 
@@ -115,27 +153,26 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         bundle = (ba == null) ? getArguments() : ba;
 
         ListingContext lc = null, lcorigin = null;
-        ProcessTasksLoader st = null;
-        ListingFilter lf = new ListingFilter();
-        lf.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ANY);
-        String processIdentifier = bundle.getString(PARAM_PROCESS);
+        ListingFilter lf = null;
+        TasksLoader st = null;
         if (bundle != null)
         {
+            lf = (ListingFilter) bundle.getSerializable(PARAM_FILTER);
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
             lc = copyListing(lcorigin);
+            if (lc == null && lf != null)
+            {
+                lc = new ListingContext();
+            }
+            lc.setFilter(lf);
             loadState = bundle.getInt(LOAD_STATE);
-            st = new ProcessTasksLoader(getActivity(), alfSession, processIdentifier);
+            st = new TasksLoader(getActivity(), alfSession);
         }
         else
         {
-            st = new ProcessTasksLoader(getActivity(), alfSession, processIdentifier);
+            st = new TasksLoader(getActivity(), alfSession);
         }
         calculateSkipCount(lc);
-        if (lc == null)
-        {
-            lc = new ListingContext();
-        }
-        lc.setFilter(lf);
         st.setListingContext(lc);
         return st;
     }
@@ -145,7 +182,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     {
         if (adapter == null)
         {
-            adapter = new ProcessTasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0));
+            adapter = new TasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0), selectedItems);
         }
         if (checkException(results))
         {
@@ -167,7 +204,6 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-
     public static void getMenu(Menu menu)
     {
         MenuItem mi;
@@ -175,6 +211,10 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
                 R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, 1000 + MenuActionItem.MENU_REFRESH, R.string.refresh);
+        mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
@@ -211,12 +251,16 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
 
         if (hideDetails)
         {
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                FragmentDisplayer.removeFragment(getActivity(), DisplayUtils.getCentralFragmentId(getActivity()));
+            }
             selectedItems.clear();
         }
         else if (nActions == null)
         {
             // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item, true);
+            ((MainActivity) getActivity()).addTaskDetailsFragment(item, !DisplayUtils.hasCentralPane(getActivity()));
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
@@ -232,7 +276,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         selectedItems.add(item);
 
         // Start the CAB using the ActionMode.Callback defined above
-        nActions = new TaskActions(ProcessTasksFragment.this, selectedItems);
+        nActions = new TaskActions(TasksFragment.this, selectedItems);
         nActions.setOnFinishModeListerner(new onFinishModeListerner()
         {
             @Override
@@ -246,5 +290,39 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         getActivity().startActionMode(nActions);
         adapter.notifyDataSetChanged();
         return true;
+    }
+
+    @Override
+    public void refresh()
+    {
+        reload(bundle, loaderId, this);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    public class TasksFragmentReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            Log.d(TAG, intent.getAction());
+
+            if (getActivity() == null) { return; }
+
+            if (intent.getExtras() != null)
+            {
+                TasksFragment tasksFragment = (TasksFragment) getFragmentManager().findFragmentByTag(TasksFragment.TAG);
+
+                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
+                        || intent.getAction().equals(IntentIntegrator.ACTION_START_PROCESS_COMPLETED)
+                        || intent.getAction().equals(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED))
+                {
+                    tasksFragment.refresh();
+                    return;
+                }
+
+            }
+        }
     }
 }

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -91,6 +92,7 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
         private static final long serialVersionUID = 1L;
         {
             add(R.string.task_filter_active);
+            add(R.string.task_filter_initiator);
             add(R.string.task_filter_completed);
             add(R.string.task_filter_high_priority);
             add(R.string.task_filter_due_today);

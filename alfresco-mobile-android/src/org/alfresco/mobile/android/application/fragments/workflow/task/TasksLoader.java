@@ -15,12 +15,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractPagingLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.PagingResult;
-import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
@@ -30,20 +29,15 @@ import android.util.Log;
 /**
  * @author jpascal
  */
-public class ProcessTasksLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Task>>>
+public class TasksLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Task>>>
 {
     /** Unique SitesLoader identifier. */
-    public static final int ID = ProcessTasksLoader.class.hashCode();
+    public static final int ID = TasksLoader.class.hashCode();
 
-    private Process process;
-
-    private String processId;
-
-    public ProcessTasksLoader(Context context, AlfrescoSession session, String processId)
+    public TasksLoader(Context context, AlfrescoSession session)
     {
         super(context);
         this.session = session;
-        this.processId = processId;
     }
 
     @Override
@@ -54,15 +48,11 @@ public class ProcessTasksLoader extends AbstractPagingLoader<LoaderResult<Paging
 
         try
         {
-            process = session.getServiceRegistry().getWorkflowService().getProcess(processId);
-            if (process != null)
-            {
-                pagingResult = session.getServiceRegistry().getWorkflowService().getTasks(process, listingContext);
-            }
+            pagingResult = session.getServiceRegistry().getWorkflowService().getTasks(listingContext);
         }
         catch (Exception e)
         {
-            Log.d("ProcessTasksLoader", Log.getStackTraceString(e));
+            Log.d("TasksLoader", Log.getStackTraceString(e));
             result.setException(e);
         }
 

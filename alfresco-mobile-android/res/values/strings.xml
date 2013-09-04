@@ -680,12 +680,12 @@
     <string name="workflow_priority_low">Low priority</string>
     <string name="workflow_priority_medium">Medium priority</string>
     <string name="workflow_priority_high">High priority</string>
-    <string name="task_user_approved">%s approved the documents</string>
-    <string name="task_user_rejected">%s rejected the documents</string>
+    <string name="task_user_approved"><![CDATA[%s <b>approved the documents</b>]]></string>
+    <string name="task_user_rejected"><![CDATA[%s <b>rejected the documents</b>]]></string>
     <string name="task_user_commented">and commented:</string>
     <string name="task_user_no_comment">, but did not provide a comment</string>
-    <string name="task_user_completed"><![CDATA[<b>%s</b> completed this task]]></string>
-    <string name="task_user_not_completed"><![CDATA[<b>%s</b> did not complete this task yet]]></string>
+    <string name="task_user_completed"><![CDATA[%s <b>completed this task</b>]]></string>
+    <string name="task_user_not_completed"><![CDATA[%s <b>did not complete this task yet</b>]]></string>
     <string name="task_approve">Approve</string>
     <string name="task_reject">Reject</string>
     <string name="task_comment">Comment</string>
@@ -701,12 +701,14 @@
     <string name="task_initiator">Initiator of the task</string>
     <string name="task_dueat">Due Date</string>
     <string name="task_no_dueat">Due Date</string>
+    <string name="tasks_history">Tasks History</string>
     
     
     <!-- Tasks Filters -->
     <string name="task_filter_active">Active Tasks</string>
+    <string name="task_filter_initiator">Tasks I\'ve started</string>
     <string name="task_filter_completed">Completed Tasks</string>
-    <string name="task_filter_high_priority">Hight Priority Tasks</string>
+    <string name="task_filter_high_priority">High Priority Tasks</string>
     <string name="task_filter_due_today">Task Due Today</string>
     <string name="task_filter_overdue">Overdue Tasks</string>
     <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
@@ -736,6 +738,7 @@
     <string name="task_attachments_selection">Select attachments&#8230;</string>
     <string name="task_attachments">Attachments</string>
 
+    <string name="process_no_description">(No Message)</string>
     <string name="process_no_assignees">No assignee</string>
     <string name="process_initiator">Initiator</string>
     <string name="process_diagram">Diagram</string>

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
+import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
@@ -38,26 +39,26 @@ public class ProcessDiagramFragment extends BaseFragment
 
     public static final String TAG = ProcessDiagramFragment.class.getName();
 
-    public static final String ARGUMENT_TASK = "task";
+    public static final String ARGUMENT_PROCESSID = "processId";
 
-    private Task task;
+    private String processId;
 
     private ImageView preview;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public static Bundle createBundleArgs(Task task)
+    public static Bundle createBundleArgs(String processId)
     {
         Bundle args = new Bundle();
-        args.putSerializable(ARGUMENT_TASK, task);
+        args.putString(ARGUMENT_PROCESSID, processId);
         return args;
     }
 
-    public static ProcessDiagramFragment newInstance(Task t)
+    public static BaseFragment newInstance(String processId)
     {
         ProcessDiagramFragment bf = new ProcessDiagramFragment();
-        bf.setArguments(createBundleArgs(t));
+        bf.setArguments(createBundleArgs(processId));
         return bf;
     }
 
@@ -84,14 +85,14 @@ public class ProcessDiagramFragment extends BaseFragment
         View v = inflater.inflate(R.layout.app_process_preview, container, false);
         if (alfSession == null) { return v; }
 
-        task = (Task) getArguments().get(ARGUMENT_TASK);
-        if (task == null) { return null; }
+        processId = getArguments().getString(ARGUMENT_PROCESSID);
+        if (processId == null || processId.isEmpty()) { return null; }
         preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.ic_px;
 
         RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
-        renditionManager.displayDiagram((ImageView) preview, iconId, task.getProcessIdentifier());
+        renditionManager.displayDiagram((ImageView) preview, iconId, processId);
         return v;
     }
 
