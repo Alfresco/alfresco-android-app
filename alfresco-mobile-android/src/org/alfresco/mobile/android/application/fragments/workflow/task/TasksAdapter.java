@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
@@ -98,13 +98,13 @@ public class TasksAdapter extends BaseListAdapter<Task, GenericViewHolder>
     @Override
     protected void updateIcon(GenericViewHolder vh, Task item)
     {
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(getPriorityIconId(item)));
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(getPriorityIconId(item.getPriority())));
         vh.choose.setVisibility(View.GONE);
     }
     
-    public static int getPriorityIconId(Task task){
+    public static int getPriorityIconId(int priority){
         int iconId = R.drawable.ic_priority_medium;
-        switch (task.getPriority())
+        switch (priority)
         {
             case 3:
                 iconId = R.drawable.ic_priority_low;

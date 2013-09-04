@@ -15,64 +15,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import org.alfresco.mobile.android.api.asynchronous.AbstractPagingLoader;
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Process;
-import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
-import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * @author jpascal
  */
-public class ItemsLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Document>>>
+public class ProcessesLoader extends AbstractPagingLoader<LoaderResult<PagingResult<Process>>>
 {
     /** Unique SitesLoader identifier. */
-    public static final int ID = ItemsLoader.class.hashCode();
+    public static final int ID = ProcessesLoader.class.hashCode();
 
-    private Task task;
-
-    private Process process;
-
-    public ItemsLoader(Context context, AlfrescoSession session, Task task)
+    public ProcessesLoader(Context context, AlfrescoSession session)
     {
         super(context);
         this.session = session;
-        this.task = task;
-    }
-
-    public ItemsLoader(Activity context, AlfrescoSession session, Process currentProcess)
-    {
-        super(context);
-        this.session = session;
-        this.process = currentProcess;
     }
 
     @Override
-    public LoaderResult<PagingResult<Document>> loadInBackground()
+    public LoaderResult<PagingResult<Process>> loadInBackground()
     {
-        LoaderResult<PagingResult<Document>> result = new LoaderResult<PagingResult<Document>>();
-        PagingResult<Document> pagingResult = null;
+        LoaderResult<PagingResult<Process>> result = new LoaderResult<PagingResult<Process>>();
+        PagingResult<Process> pagingResult = null;
 
         try
         {
-            if (task != null)
-            {
-                pagingResult = session.getServiceRegistry().getWorkflowService().getDocuments(task, listingContext);
-            }
-            else if (process != null)
-            {
-                pagingResult = session.getServiceRegistry().getWorkflowService().getDocuments(process, listingContext);
-            }
+            pagingResult = session.getServiceRegistry().getWorkflowService().getProcesses(listingContext);
         }
         catch (Exception e)
         {
+            Log.d("TasksLoader", Log.getStackTraceString(e));
             result.setException(e);
         }
 

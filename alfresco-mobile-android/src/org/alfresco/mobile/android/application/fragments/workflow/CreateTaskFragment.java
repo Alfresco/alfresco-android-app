@@ -212,6 +212,9 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
         {
             vRoot.findViewById(R.id.process_approvers_group).setVisibility(View.GONE);
+            if (vRoot.findViewById(R.id.process_approvers_group_title) != null){
+                vRoot.findViewById(R.id.process_approvers_group_title).setVisibility(View.GONE);
+            }
             isAdhoc = true;
         }
         else
@@ -358,7 +361,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         group.enqueue(new StartProcessRequest(processDefinition, people, variables, attachments).setNotificationTitle(
                 titleTask.getText().toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
 
-        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_action_inbox_light,
+        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_action_inbox,
                 getString(R.string.process_starting), null, null, 0).show(getActivity().getFragmentManager(),
                 OperationWaitingDialogFragment.TAG);
 

@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.Map;
 
@@ -117,40 +117,40 @@ public class TaskFilterFragment extends BaseFragment
             switch (value)
             {
                 case R.string.tasks_active:
-                    f.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
                     break;
                 case R.string.tasks_completed:
-                    f.addFilter(WorkflowService.FILTER_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
                     break;
                 case R.string.tasks_due_today:
-                    f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_TODAY);
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TODAY);
                     break;
                 case R.string.tasks_due_tomorrow:
-                    f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_TOMORROW);
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TOMORROW);
                     break;
                 case R.string.tasks_due_week:
-                    f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_7DAYS);
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_7DAYS);
                     break;
                 case R.string.tasks_due_over:
-                    f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_OVERDUE);
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_OVERDUE);
                     break;
                 case R.string.tasks_due_no_date:
-                    f.addFilter(WorkflowService.FILTER_DUE, WorkflowService.FILTER_DUE_NODATE);
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_NODATE);
                     break;
                 case R.string.tasks_priority_low:
-                    f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_LOW);
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_LOW);
                     break;
                 case R.string.tasks_priority_medium:
-                    f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_MEDIUM);
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_MEDIUM);
                     break;
                 case R.string.tasks_priority_high:
-                    f.addFilter(WorkflowService.FILTER_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
                     break;
                 case R.string.tasks_assignee_me:
-                    f.addFilter(WorkflowService.FILTER_ASSIGNEE, alfSession.getPersonIdentifier());
+                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, alfSession.getPersonIdentifier());
                     break;
                 case R.string.tasks_assignee_unassigned:
-                    f.addFilter(WorkflowService.FILTER_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
+                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
                     break;
                 default:
                     break;
