@@ -596,6 +596,7 @@
 
     <!-- People -->
     <string name="my_profile">My Profile</string>
+    <string name="user_profile">User Profile</string>
     <string name="about">About</string>
     <string name="firstName">First Name</string>
     <string name="lastName">Last Name</string>

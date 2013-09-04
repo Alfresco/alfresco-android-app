@@ -151,7 +151,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
         if (getDialog() != null)
         {
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_avatar);
-            getDialog().setTitle(R.string.my_profile);
+            getDialog().setTitle(R.string.user_profile);
         }
     }
 
