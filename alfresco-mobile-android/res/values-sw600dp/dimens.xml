@@ -33,5 +33,6 @@
     
     <dimen name="actionbar_dropdown_top_height">12sp</dimen>
     
+    <dimen name="user_magin">6dip</dimen>
     
 </resources>

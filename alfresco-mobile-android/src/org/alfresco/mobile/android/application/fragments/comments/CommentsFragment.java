@@ -17,10 +17,15 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.comments;
 
+import java.util.ArrayList;
+
 import org.alfresco.mobile.android.api.asynchronous.CommentCreateLoader;
+import org.alfresco.mobile.android.api.asynchronous.CommentsLoader;
+import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.services.CommentService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
@@ -32,6 +37,7 @@ import org.alfresco.mobile.android.ui.comment.actions.CommentCreateLoaderCallbac
 import org.alfresco.mobile.android.ui.comment.listener.OnCommentCreateListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
+import android.content.Loader;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -50,16 +56,29 @@ import android.widget.TextView.OnEditorActionListener;
 
 public class CommentsFragment extends CommentFragment
 {
-    public static final String TAG = "CommentsFragment";
-    
+    public static final String TAG = CommentsFragment.class.getName();
+
     private static final int MAX_COMMENT = 15;
 
     private EditText commentText;
 
     private ImageButton bAdd;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
     public CommentsFragment()
     {
+        loaderId = CommentsLoader.ID;
+        callback = this;
+        emptyListMessageId = R.string.empty_comment;
+    }
+
+    public static Bundle createBundleArgs(Node node)
+    {
+        Bundle args = new Bundle();
+        args.putParcelable(ARGUMENT_NODE, node);
+        return args;
     }
 
     public static CommentsFragment newInstance(Node n)
@@ -73,6 +92,44 @@ public class CommentsFragment extends CommentFragment
         b.putAll(createBundleArgs(n));
         bf.setArguments(b);
         return bf;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
+
+        super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
+    }
+
+    @Override
+    public void onResume()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            UIUtils.displayTitle(getActivity(), getString(R.string.document_comments_header));
+        }
+
+        if (!alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+        {
+            commentText.setVisibility(View.GONE);
+            bAdd.setVisibility(View.GONE);
+        }
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause()
+    {
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        super.onPause();
     }
 
     @Override
@@ -129,9 +186,79 @@ public class CommentsFragment extends CommentFragment
             }
         });
 
+        lv.setDivider(null);
+        lv.setSelector(android.R.color.transparent);
+        lv.setCacheColorHint(android.R.color.transparent);
+        
+        
+        
         return v;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LOADERS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public Loader<LoaderResult<PagingResult<Comment>>> onCreateLoader(int id, Bundle ba)
+    {
+        if (!hasmore)
+        {
+            setListShown(false);
+        }
+
+        // Case Init & case Reload
+        bundle = (ba == null) ? getArguments() : ba;
+
+        ListingContext lc = null, lcorigin = null;
+
+        if (bundle != null)
+        {
+            node = bundle.getParcelable(ARGUMENT_NODE);
+            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
+            lc = copyListing(lcorigin);
+            loadState = bundle.getInt(LOAD_STATE);
+        }
+        calculateSkipCount(lc);
+        CommentsLoader loader = new CommentsLoader(getActivity(), alfSession, node);
+        loader.setListingContext(lc);
+        return loader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<LoaderResult<PagingResult<Comment>>> arg0,
+            LoaderResult<PagingResult<Comment>> results)
+    {
+        if (adapter == null)
+        {
+            adapter = new CommentAdapter(getActivity(), alfSession, R.layout.sdk_list_comment_row,
+                    new ArrayList<Comment>(0));
+        }
+        if (checkException(results))
+        {
+            onLoaderException(results.getException());
+        }
+        else
+        {
+            displayPagingData(results.getData(), loaderId, callback);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<LoaderResult<PagingResult<Comment>>> arg0)
+    {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
     private void activateSend()
     {
         if (commentText.getText().length() > 0)
@@ -191,45 +318,4 @@ public class CommentsFragment extends CommentFragment
             commentText.setEnabled(true);
         }
     };
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
-
-        super.onActivityCreated(savedInstanceState);
-        setRetainInstance(true);
-    }
-
-    @Override
-    public void onResume()
-    {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), getString(R.string.document_comments_header));
-        }
-        
-        if (!alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit()){
-            commentText.setVisibility(View.GONE);
-            bAdd.setVisibility(View.GONE);
-        }
-        
-        super.onResume();
-    }
-
-    @Override
-    public void onPause()
-    {
-        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        super.onPause();
-    }
-
-    @Override
-    public void onLoaderException(Exception e)
-    {
-        setListShown(true);
-        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
-    }
 }

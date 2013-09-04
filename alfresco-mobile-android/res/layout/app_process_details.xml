@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -16,127 +16,76 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/white_background"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@android:color/background_light"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:visibility="visible" >
+    android:orientation="vertical" >
 
     <ScrollView
-        android:id="@+id/properties_details"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="@dimen/wizard_main_margin"
+        android:layout_marginRight="@dimen/wizard_main_margin"
+        android:layout_weight="1"
+        android:fillViewport="true" >
 
         <LinearLayout
+            android:id="@+id/group_summary"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/properties_details_padding"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/properties_details_padding"
-            android:paddingRight="@dimen/properties_details_padding" >
-
-            <TextView
-                android:id="@+id/description_title"
-                style="@style/sectionHeader"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/process_initiator" />
+            android:layout_height="fill_parent"
+            android:orientation="vertical" >
 
             <LinearLayout
-                android:id="@+id/initiator_group"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/initiatorIcon"
-                    style="@style/list_item_icon"
-                    android:contentDescription="@string/thumbnail"
-                    android:src="@drawable/ic_person"
-                    android:background="@drawable/quickcontact_badge_overlay_light" />
-
-                <LinearLayout
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/initiator_name"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/initiator_description"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/preview_group"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
                 android:orientation="vertical" >
 
                 <TextView
-                    android:id="@+id/description_title"
-                    style="@style/sectionHeader"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/process_diagram" />
-
-                <ImageView
-                    android:id="@+id/preview"
-                    android:layout_width="fill_parent"
-                    android:layout_height="@dimen/process_diagram_height"
-                    android:layout_gravity="center"
-                    android:contentDescription="@string/thumbnail"
-                    android:scaleType="centerInside" />
-
-                <TextView
-                    android:id="@+id/preview_message"
-                    style="@style/list_item_bottomtext"
+                    android:id="@+id/title"
+                    style="@style/task_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:text="@string/preview_unavailable"
-                    android:visibility="invisible" />
+                    android:text="Review this task" />
+
+                <include
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/app_task_header" />
+            </LinearLayout>
+
+            <!-- ATTACHMENTS -->
+
+            <LinearLayout
+                android:id="@+id/attachments_group"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical" >
+
+                <TextView
+                    style="@style/sectionHeader"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/wizard_main_margin"
+                    android:text="Documents"
+                    android:visibility="visible" />
+
+                <LinearLayout
+                    android:id="@+id/attachments"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+
+                    <ProgressBar
+                        android:id="@+id/attachments_waiting"
+                        style="@android:style/Widget.ProgressBar.Large.Inverse"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="@dimen/margin_large" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <ProgressBar
-        android:id="@+id/progressbar"
-        style="@android:style/Widget.ProgressBar.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/empty"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_margin="@dimen/padding_dialog"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_empty"
-            android:gravity="center" />
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>
