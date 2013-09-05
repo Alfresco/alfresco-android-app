@@ -667,6 +667,7 @@
     <string name="tasks_priority_high">High</string>
     <string name="tasks_assignee">Assignee</string>
     <string name="tasks_assignee_me">Me</string>
+    <string name="tasks_assignee_all">All</string>
     <string name="tasks_assignee_unassigned">Unassigned</string>
 
     <!-- Multi Selection -->
@@ -728,7 +729,10 @@
     <string name="process_no_date">No date</string>
     <string name="process_assignees">Assignees</string>
     <string name="process_diagram">Process Diagram</string>
-
+    
+    <string name="task_review_document">Please review %s</string>
+    <string name="task_review_documents">Please review those documents</string>
+       
     <string name="task_assignees_plurals">{0,choice,0#No assignees|1#1 assignee|1&lt;{0} assignees}</string>
     <string name="task_assignees">Assignees</string>
     <string name="task_assignees_selection">Select assignees&#8230;</string>

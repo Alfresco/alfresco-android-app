@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.application.fragments.operations.OperationWai
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -113,8 +114,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private StartProcessReceiver receiver;
 
-    private EditText itemsEditText;
-
     private Button assigneesButton;
 
     private Button attachmentsButton;
@@ -172,6 +171,20 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
         // DESCRIPTION
         titleTask = (EditText) vRoot.findViewById(R.id.process_title);
+        if (items != null && items.size() > 0 && titleTask.getText().length() == 0)
+        {
+            if (items.size() == 1)
+            {
+                List<Document> attachments = new ArrayList<Document>(items.values());
+                titleTask.setText(String.format(getString(R.string.task_review_document),
+                        MimeTypeManager.getName(attachments.get(0).getName())));
+            }
+            else
+            {
+                titleTask.setText(getString(R.string.task_review_documents));
+            }
+        }
+        
         titleTask.addTextChangedListener(watcher);
         errorMessage = ((TextView) vRoot.findViewById(R.id.error_message));
 
@@ -185,6 +198,17 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
+
+        Button b = (Button) vRoot.findViewById(R.id.process_due_on);
+        b.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
+            }
+        });
+        b.setText(getString(R.string.tasks_due_no_date));
 
         // ASSIGNEES
         ib = (ImageButton) vRoot.findViewById(R.id.action_process_assignee);
@@ -212,7 +236,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
         {
             vRoot.findViewById(R.id.process_approvers_group).setVisibility(View.GONE);
-            if (vRoot.findViewById(R.id.process_approvers_group_title) != null){
+            if (vRoot.findViewById(R.id.process_approvers_group_title) != null)
+            {
                 vRoot.findViewById(R.id.process_approvers_group_title).setVisibility(View.GONE);
             }
             isAdhoc = true;
@@ -328,7 +353,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     public void setDueAt(GregorianCalendar gregorianCalendar)
     {
         dueAt = gregorianCalendar;
-        EditText dueOn = (EditText) vRoot.findViewById(R.id.process_due_on);
+        Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
     }
 
@@ -570,7 +595,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     {
         return assignees;
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // DOCUMENT PICKER
     // ///////////////////////////////////////////////////////////////////////////
@@ -586,7 +611,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
         // Update documents
         updateDocuments();
-        getActivity().getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getActivity().getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override

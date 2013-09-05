@@ -50,6 +50,21 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
             return "";
         }
     }
+    
+    public static String getName(String uri)
+    {
+        if (uri == null) { return null; }
+
+        int dot = uri.lastIndexOf(".".charAt(0));
+        if (dot > 0)
+        {
+            return uri.substring(0, dot).toLowerCase();
+        }
+        else
+        {
+            return uri;
+        }
+    }
 
     public static String getMIMEType(String fileName)
     {
