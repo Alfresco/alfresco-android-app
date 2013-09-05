@@ -203,7 +203,7 @@
 
     <!-- NETWORK -->
     <string name="error_network_title">Aucun réseau.</string>
-    <string name="error_network_details">Votre appareil n\'est pas connecté à un réseau. Par conséquent, certaines fonctions peuvent être désactivées.</string>
+    <string name="error_network_details">Votre appareil n\'est pas connecté à un réseau. Certaines fonctions peuvent être désactivées.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Ajouter </string>

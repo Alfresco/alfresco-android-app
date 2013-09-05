@@ -203,7 +203,7 @@
 
     <!-- NETWORK -->
     <string name="error_network_title">Kein Netzwerk.</string>
-    <string name="error_network_details">Ihr Gerät ist mit keinem Netzwerk verbunden. Bestimmte Funktionen sind daher möglicherweise deaktiviert.</string>
+    <string name="error_network_details">Ihr Gerät ist mit keinem Netzwerk verbunden. Bestimmte Funktionen sind möglicherweise deaktiviert.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Hochladen </string>
