@@ -203,7 +203,7 @@
 
     <!-- NETWORK -->
     <string name="error_network_title">No Network.</string>
-    <string name="error_network_details">Your device is not connected to a network, so some features may be disable.</string>
+    <string name="error_network_details">Your device is not connected to a network, some features may be disabled.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
@@ -360,7 +360,7 @@
     <string name="passcode_disable">Disabled</string>
     <string name="passcode_change">Change Passcode</string>
     <string name="passcode_timeout">Expiration</string>
-    <string name="passcode_timeout_summary">After %s minutes</string>
+    <string name="passcode_timeout_summary">{0,choice,0#After 0 minute|1#After 1 minute|1&lt;After {0} minutes}</string>
     <string name="passcode_erase_data">Erase Data</string>
     <string name="passcode_erase_data_summary">Erase all Alfresco Mobile data from this device after 10 failed passcode attempts</string>
     <string name="passcode_edit">Enter your new Passcode</string>
@@ -667,6 +667,7 @@
     <string name="tasks_priority_high">High</string>
     <string name="tasks_assignee">Assignee</string>
     <string name="tasks_assignee_me">Me</string>
+    <string name="tasks_assignee_all">All</string>
     <string name="tasks_assignee_unassigned">Unassigned</string>
 
     <!-- Multi Selection -->
@@ -728,7 +729,10 @@
     <string name="process_no_date">No date</string>
     <string name="process_assignees">Assignees</string>
     <string name="process_diagram">Process Diagram</string>
-
+    
+    <string name="task_review_document">Please review %s</string>
+    <string name="task_review_documents">Please review those documents</string>
+       
     <string name="task_assignees_plurals">{0,choice,0#No assignees|1#1 assignee|1&lt;{0} assignees}</string>
     <string name="task_assignees">Assignees</string>
     <string name="task_assignees_selection">Select assignees&#8230;</string>

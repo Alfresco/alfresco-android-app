@@ -110,16 +110,16 @@
                         android:layout_gravity="bottom"
                         android:orientation="horizontal" >
 
-                        <EditText
+                         <Button
                             android:id="@+id/process_due_on"
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
                             android:layout_weight="1"
-                            android:hint="@string/process_no_date"
-                            android:inputType="date"
-                            android:minHeight="48dp" />
-
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+                        
                         <ImageButton
                             android:id="@+id/action_process_due_on"
                             style="?android:attr/buttonBarButtonStyle"
@@ -259,7 +259,7 @@
                     <LinearLayout
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="right|center"
+                        android:gravity="right|center_vertical"
                         android:orientation="horizontal" >
 
                         <ToggleButton

@@ -87,6 +87,15 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
         return v;
     }
 
+    public static final int FILTER_ACTIVE = 0;
+    public static final int FILTER_INITIATOR = 1;
+    public static final int FILTER_COMPLETED = 2;
+    public static final int FILTER_HIGH_PRIORITY = 3;
+    public static final int FILTER_DUE_TODAY = 4;
+    public static final int FILTER_OVERDUE = 5;
+    public static final int FILTER_ASSIGNED = 6;
+    public static final int FILTER_CUSTOM = 7;
+    
     private static final List<Integer> SHORTCUTS = new ArrayList<Integer>(10)
     {
         private static final long serialVersionUID = 1L;
