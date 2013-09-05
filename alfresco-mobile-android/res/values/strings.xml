@@ -360,7 +360,7 @@
     <string name="passcode_disable">Disabled</string>
     <string name="passcode_change">Change Passcode</string>
     <string name="passcode_timeout">Expiration</string>
-    <string name="passcode_timeout_summary">After %s minutes</string>
+    <string name="passcode_timeout_summary">{0,choice,0#After 0 minute|1#After 1 minute|1&lt;After {0} minutes}</string>
     <string name="passcode_erase_data">Erase Data</string>
     <string name="passcode_erase_data_summary">Erase all Alfresco Mobile data from this device after 10 failed passcode attempts</string>
     <string name="passcode_edit">Enter your new Passcode</string>
