@@ -139,6 +139,10 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         receiver = new TasksFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
+        if (getLoaderManager().getLoader(TasksLoader.ID) != null && getLoaderManager().getLoader(TasksLoader.ID).isStarted()){
+            setListShown(false);
+        }
+        
         super.onResume();
     }
 
@@ -296,6 +300,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     public void refresh()
     {
         reload(bundle, loaderId, this);
+        setListShown(false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
