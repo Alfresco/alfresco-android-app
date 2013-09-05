@@ -203,7 +203,7 @@
 
     <!-- NETWORK -->
     <string name="error_network_title">Aucun réseau.</string>
-    <string name="error_network_details">Votre appareil n\'est pas connecté à un réseau. Par conséquent, certaines fonctions peuvent être désactivées.</string>
+    <string name="error_network_details">Votre appareil n\'est pas connecté à un réseau. Certaines fonctions peuvent être désactivées.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Ajouter </string>
@@ -360,7 +360,7 @@
     <string name="passcode_disable">Désactivé</string>
     <string name="passcode_change">Modifier le code d\'accès</string>
     <string name="passcode_timeout">Expiration</string>
-    <string name="passcode_timeout_summary">Au bout de %s minutes</string>
+    <string name="passcode_timeout_summary">{0,choice,0#Au bout de 0 minute|1#Au bout de 1 minute|1&lt;Au bout de {0} minutes}</string>
     <string name="passcode_erase_data">Effacer les données</string>
     <string name="passcode_erase_data_summary">Effacer toutes les données Alfresco Mobile de ce appareil après 10 tentatives infructueuses de saisie du code d\'accès</string>
     <string name="passcode_edit">Saisissez votre nouveau code d\'accès</string>

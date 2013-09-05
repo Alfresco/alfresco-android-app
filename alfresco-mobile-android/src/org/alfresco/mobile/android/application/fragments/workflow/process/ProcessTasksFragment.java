@@ -150,7 +150,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         ProcessTasksLoader st = null;
         ListingFilter lf = new ListingFilter();
         lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ANY);
-        lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ANY);
+        lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ALL);
         String processIdentifier = bundle.getString(PARAM_PROCESS);
         if (bundle != null)
         {

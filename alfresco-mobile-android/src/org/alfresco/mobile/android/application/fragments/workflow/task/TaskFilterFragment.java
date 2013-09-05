@@ -147,7 +147,7 @@ public class TaskFilterFragment extends BaseFragment
                     f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
                     break;
                 case R.string.tasks_assignee_me:
-                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, alfSession.getPersonIdentifier());
+                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
                     break;
                 case R.string.tasks_assignee_unassigned:
                     f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);

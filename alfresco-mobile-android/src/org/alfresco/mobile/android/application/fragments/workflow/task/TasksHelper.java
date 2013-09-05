@@ -56,28 +56,27 @@ public final class TasksHelper
                 ListingFilter f = new ListingFilter();
                 switch (itemPosition)
                 {
-                    case 0:
+                    case TasksShortCutAdapter.FILTER_ACTIVE:
                         f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
                         break;
-                    case 1:
+                    case TasksShortCutAdapter.FILTER_INITIATOR:
                         isProcessFragment = true;
                         break;
-                    case 2:
+                    case TasksShortCutAdapter.FILTER_COMPLETED:
                         f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
                         break;
-                    case 3:
+                    case TasksShortCutAdapter.FILTER_HIGH_PRIORITY:
                         f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
                         break;
-                    case 4:
+                    case TasksShortCutAdapter.FILTER_DUE_TODAY:
                         f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TODAY);
                         break;
-                    case 5:
+                    case TasksShortCutAdapter.FILTER_OVERDUE:
                         f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_OVERDUE);
-                    case 6:
-                        f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, SessionUtils.getSession(activity)
-                                .getPersonIdentifier());
+                    case TasksShortCutAdapter.FILTER_ASSIGNED:
+                        f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
                         break;
-                    case 7:
+                    case TasksShortCutAdapter.FILTER_CUSTOM:
                         Fragment taskFragment = TaskFilterFragment.newInstance();
                         FragmentDisplayer.replaceFragment(activity, taskFragment,
                                 DisplayUtils.getLeftFragmentId(activity), TaskFilterFragment.TAG, true);

@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.preferences;
 
+import java.text.MessageFormat;
 import java.util.Date;
 
 import org.alfresco.mobile.android.application.R;
@@ -64,7 +65,7 @@ public class PasscodePreferences extends PreferenceFragment
     public static final String TAG = "PasscodePreferencesFragment";
 
     private static final String DEFAULT_TIMEOUT = "300000";
-    
+
     private static final int ONE_MINUTE = 60000;
 
     private static final long DEFAULT_ACTIVATION_TIME = -1;
@@ -178,6 +179,8 @@ public class PasscodePreferences extends PreferenceFragment
         pref = findPreference(getString(R.string.passcode_timeout));
         int minutes = Math.round(timeout / ONE_MINUTE);
         pref.setSummary(String.format(getString(R.string.passcode_timeout_summary), minutes + ""));
+        pref.setSummary(String.format(MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes),
+                minutes));
         pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
         {
             @Override
@@ -185,7 +188,8 @@ public class PasscodePreferences extends PreferenceFragment
             {
                 sharedPref.edit().putString(KEY_PASSCODE_TIMEOUT, (String) newValue).commit();
                 int minutes = Math.round(Long.parseLong((String) newValue) / ONE_MINUTE);
-                preference.setSummary(String.format(getString(R.string.passcode_timeout_summary), minutes + ""));
+                preference.setSummary(String.format(
+                        MessageFormat.format(getString(R.string.passcode_timeout_summary), minutes), minutes));
                 return true;
             }
         });

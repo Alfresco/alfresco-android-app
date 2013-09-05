@@ -218,6 +218,7 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
         {
             add(R.string.tasks_assignee_me);
             add(R.string.tasks_assignee_unassigned);
+            add(R.string.tasks_assignee_all);
         }
     };
 

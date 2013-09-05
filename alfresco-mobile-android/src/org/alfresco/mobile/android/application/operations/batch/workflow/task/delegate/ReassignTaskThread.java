@@ -81,15 +81,17 @@ public class ReassignTaskThread extends TaskOperationThread<Task>
             {
                 updatedTask = session.getServiceRegistry().getWorkflowService().reassignTask(task, assignee);
             }
-            if (isClaimed)
+            if (isClaimed != null)
             {
-                updatedTask = session.getServiceRegistry().getWorkflowService().claimTask(task);
+                if (isClaimed)
+                {
+                    updatedTask = session.getServiceRegistry().getWorkflowService().claimTask(task);
+                }
+                else if (!isClaimed)
+                {
+                    updatedTask = session.getServiceRegistry().getWorkflowService().unClaimTask(task);
+                }
             }
-            else if (!isClaimed)
-            {
-                updatedTask = session.getServiceRegistry().getWorkflowService().unClaimTask(task);
-            }
-
         }
         catch (Exception e)
         {
