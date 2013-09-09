@@ -15,7 +15,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.operations.batch.workflow.process.complete;
+package org.alfresco.mobile.android.application.operations.batch.workflow.process.start;
 
 import java.io.Serializable;
 import java.util.HashMap;

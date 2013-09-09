@@ -56,7 +56,7 @@ import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate.ReassignTaskRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -318,6 +318,9 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
                     completeTask(currentTask, isReviewTask, false);
                 }
             });
+        } else {
+            vRoot.findViewById(R.id.complete_group).setVisibility(View.GONE);
+
         }
     }
 
