@@ -80,7 +80,6 @@ public final class TasksHelper
                         Fragment taskFragment = TaskFilterFragment.newInstance();
                         FragmentDisplayer.replaceFragment(activity, taskFragment,
                                 DisplayUtils.getLeftFragmentId(activity), TaskFilterFragment.TAG, true);
-                        prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
                         return true;
                     default:
                         break;

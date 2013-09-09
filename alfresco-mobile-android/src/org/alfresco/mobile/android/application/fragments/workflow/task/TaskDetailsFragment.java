@@ -510,7 +510,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
 
         String processDefinitionKey = WorkflowUtils.getKeyFromProcessDefinitionId(processDefinitionId);
 
-        if (processDefinitionKey.startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+        if (endedAt == null && processDefinitionKey.startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_DETAILS, Menu.FIRST
                     + MenuActionItem.MENU_PROCESS_DETAILS, R.string.process_diagram);
@@ -521,7 +521,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
                 R.string.tasks_history);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        if (currentTask == null) { return; }
+        if (currentTask == null || endedAt != null) { return; }
 
         // unclaim : I unassign myself (generally created by a pooled process)
         if (currentTask.getAssigneeIdentifier() != null
