@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
@@ -44,7 +45,7 @@ import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessRequest;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
@@ -352,6 +353,10 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     // ///////////////////////////////////////////////////////////////////////////
     public void setDueAt(GregorianCalendar gregorianCalendar)
     {
+        gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
+        gregorianCalendar.set(Calendar.MINUTE, 59);
+        gregorianCalendar.set(Calendar.SECOND, 59);
+        gregorianCalendar.set(Calendar.MILLISECOND, 999);
         dueAt = gregorianCalendar;
         Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));

@@ -109,6 +109,10 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
         {
             vh.bottomText.setText(selectedItems.get(FAMILY.get(groupPosition)));
         }
+        else
+        {
+            vh.bottomText.setText("");
+        }
 
         return convertView;
     }
@@ -176,10 +180,17 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
     {
         Integer selected = (Integer) getChild(groupPosition, childPosition);
         CheckBoxViewHolder vh = (CheckBoxViewHolder) v.getTag();
-        vh.checkBox.setChecked(true);
-
-        // Check if other selected item of the same family
-        selectedItems.put(FAMILY.get(groupPosition), selected);
+        if (!vh.checkBox.isChecked())
+        {
+            vh.checkBox.setChecked(true);
+            // Check if other selected item of the same family
+            selectedItems.put(FAMILY.get(groupPosition), selected);
+        }
+        else
+        {
+            vh.checkBox.setChecked(false);
+            selectedItems.remove(FAMILY.get(groupPosition));
+        }
         notifyDataSetChanged();
     }
 
