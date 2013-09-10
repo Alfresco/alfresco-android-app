@@ -82,9 +82,9 @@ import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFa
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessCallback;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessRequest;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.complete.StartProcessThread;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessCallback;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessRequest;
+import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessThread;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskCallback;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.complete.CompleteTaskThread;

@@ -355,7 +355,7 @@
     <!-- PIN Code -->
     <string name="passcode_title">Entrer le code d\'accès</string>
     <string name="passcode_enable_title">Activer le code d\'accès</string>
-    <string name="passcode_preference">Protection du code d\'accès</string>
+    <string name="passcode_preference">Protection par code d\'accès</string>
     <string name="passcode_enable">Activé</string>
     <string name="passcode_disable">Désactivé</string>
     <string name="passcode_change">Modifier le code d\'accès</string>

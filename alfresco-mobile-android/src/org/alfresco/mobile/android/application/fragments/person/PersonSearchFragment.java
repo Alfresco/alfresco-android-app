@@ -144,7 +144,10 @@ public class PersonSearchFragment extends BaseListFragment implements
             singleChoice = getArguments().getBoolean(PARAM_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
             fragmentPick = ((onPickPersonFragment) getFragmentManager().findFragmentByTag(pickFragmentTag));
-            selectedItems = fragmentPick.retrieveSelection();
+            if (fragmentPick != null)
+            {
+                selectedItems = fragmentPick.retrieveSelection();
+            }
         }
 
         // Create View
