@@ -49,6 +49,10 @@ public interface MenuActionItem
     int MENU_REFRESH = 40;
 
     int MENU_DETAILS = 50;
+    
+    int MENU_DISPLAY_ITEMS = 12;
+    
+    int MENU_DISPLAY_GALLERY = 13;
 
     // ///////////////////////////////////////////
     // FILE EXPLORER
@@ -214,4 +218,5 @@ public interface MenuActionItem
     int PARAMETER_HIDE_SHOW_TAB = 3000;
 
     int ABOUT_ID = 4000;
+
 }

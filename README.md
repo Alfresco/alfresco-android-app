@@ -15,11 +15,22 @@ The master branch is used for development of new features so it's stability can 
 [download the pre-built binaries](https://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application) from the Google Play Store. 
 Alternatively, use one of the [tags](https://github.com/Alfresco/alfresco-android-app/tags) to build from source.
 
+Prerequisites
+-------------
+
+* Android Maven SDK Deployer
+
+To build this project with Maven, you'll need to use the Android Maven SDK Deployer (https://github.com/mosabua/maven-android-sdk-deployer) in order to install the Google Support Library APIs into your local Maven repository.
+To import, simply go to the maven-android-sdk-deployer root directory and execute a mvn install.
+
+Important Note : Be sure you already installed all the relevant Android packages to your local SDK installation. 
+You can find more informations at https://github.com/mosabua/maven-android-sdk-deployer/blob/master/README.markdown.
+
 
 License
 -------
 
-Alfresco Mobile for Android 1.2 
+Alfresco Mobile for Android 1.3 
 
 Copyright © 2013 Alfresco Software, Ltd. and others. 
 
@@ -33,4 +44,12 @@ __Apache 2.0 License__
 
 * Android Open Source Project	 http://source.android.com/
 
+* OkHttp	 https://github.com/square/okhttp
+
 * DiskLruCache	 https://github.com/JakeWharton/DiskLruCache 
+
+* Android Split Pane Layout	 https://github.com/MobiDevelop/android-split-pane-layout 
+
+__MIT License__
+
+* Image View Zoom	 https://github.com/sephiroth74/ImageViewZoom

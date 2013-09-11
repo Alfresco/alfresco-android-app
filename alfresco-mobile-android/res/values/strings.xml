@@ -775,5 +775,8 @@
     <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
     <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 document|1&lt;Attach {0} documents}</string>
     
+    <!-- DISLAY VIEWS ITEMS -->
+    <string name="display_views">Views</string>
+    <string name="display_gallery">Display Gallery</string>
     
 </resources>

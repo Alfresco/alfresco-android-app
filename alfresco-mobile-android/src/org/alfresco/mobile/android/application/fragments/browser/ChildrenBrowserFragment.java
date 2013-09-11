@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
@@ -66,12 +67,12 @@ import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
-import org.alfresco.mobile.android.ui.documentfolder.NavigationFragment;
 import org.alfresco.mobile.android.ui.documentfolder.actions.CreateFolderDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -79,8 +80,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -90,7 +93,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
+import android.widget.GridView;
 import android.widget.SpinnerAdapter;
 
 /**
@@ -99,9 +102,15 @@ import android.widget.SpinnerAdapter;
  * 
  * @author Jean Marie Pascal
  */
-public class ChildrenBrowserFragment extends NavigationFragment implements RefreshFragment, ListingModeFragment
+public class ChildrenBrowserFragment extends GridNavigationFragment implements RefreshFragment, ListingModeFragment
 {
-    public static final String TAG = "ChildrenBrowserFragment";
+    public static final String TAG = ChildrenBrowserFragment.class.getName();
+
+    private static final int DISPLAY_LIST = 0;
+
+    private static final int DISPLAY_LIST_LARGE = 1;
+
+    private static final int DISPLAY_GRID = 2;
 
     private boolean shortcutAlreadyVisible = false;
 
@@ -127,6 +136,10 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     private onPickDocumentFragment fragmentPick;
 
     private Map<String, Document> selectedMapItems = new HashMap<String, Document>(0);
+
+    private int displayMode = DISPLAY_GRID;
+
+    private MenuItem displayMenuItem;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -198,6 +211,8 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             fragmentPick = ((PrivateDialogActivity) getActivity()).getOnPickDocumentFragment();
         }
 
+        getDisplayItemLayout();
+
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -212,30 +227,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
             init(v, emptyListMessageId);
 
             validationButton = (Button) v.findViewById(R.id.action_validation);
-            ListView listView = (ListView) v.findViewById(R.id.listView);
+            GridView listView = (GridView) v.findViewById(R.id.gridview);
             if (getActivity() instanceof PrivateDialogActivity)
             {
                 validationButton.setText(R.string.done);
-                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                listView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
             }
             else
             {
-                listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+                listView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             }
             listView.setClickable(true);
-            listView.setDivider(null);
-            listView.setDividerHeight(0);
         }
         else
         {
             v = super.onCreateView(inflater, container, savedInstanceState);
 
-            ListView listView = (ListView) v.findViewById(R.id.listView);
-            listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+            GridView listView = (GridView) v.findViewById(R.id.gridview);
+            listView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             listView.setClickable(true);
-
-            listView.setDivider(null);
-            listView.setDividerHeight(0);
 
             listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
         }
@@ -450,7 +460,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     // LIST ACTIONS
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id)
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         Node item = (Node) l.getItemAtPosition(position);
 
@@ -464,7 +474,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         // It's only possible to select a folder for navigation purpose.
         if (mode == MODE_IMPORT && getActivity() instanceof PublicDispatcherActivity)
         {
-            l.setChoiceMode(ListView.CHOICE_MODE_NONE);
+            l.setChoiceMode(GridView.CHOICE_MODE_NONE);
             if (item.isFolder())
             {
                 ((PublicDispatcherActivity) getActivity()).addNavigationFragment((Folder) item);
@@ -475,7 +485,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         // In case of pick mode, we allow multiSelection
         if (mode == MODE_PICK && getActivity() instanceof PrivateDialogActivity && item.isDocument())
         {
-            l.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+            l.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
             if (selectedMapItems.containsKey(item.getIdentifier()))
             {
                 selectedMapItems.remove(item.getIdentifier());
@@ -537,7 +547,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         }
     }
 
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    public boolean onItemLongClick(GridView l, View v, int position, long id)
     {
         // We disable long click during import mode.
         if (mode == MODE_IMPORT || mode == MODE_PICK) { return false; }
@@ -593,7 +603,6 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> loader, LoaderResult<PagingResult<Node>> results)
     {
-
         if (getActivity() instanceof MainActivity && ((MainActivity) getActivity()).getCurrentNode() != null)
         {
             selectedItems.clear();
@@ -609,13 +618,13 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
         if (mode == MODE_PICK && adapter == null)
         {
             selectedMapItems = fragmentPick.retrieveDocumentSelection();
-            adapter = new AlphabeticNodeAdapter(getActivity(), R.layout.app_list_progress_row, parentFolder,
-                    new ArrayList<Node>(0), selectedMapItems);
+            adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, new ArrayList<Node>(
+                    0), selectedMapItems);
         }
         else if (adapter == null)
         {
-            adapter = new AlphabeticNodeAdapter(getActivity(), R.layout.app_list_progress_row, parentFolder,
-                    new ArrayList<Node>(0), selectedItems, mode);
+            adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, new ArrayList<Node>(
+                    0), selectedItems, mode);
         }
 
         if (results.hasException())
@@ -771,6 +780,25 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
+
+        // Uncomment for enabling view switcher
+        /*
+         * displayMenuItem = menu.add(Menu.NONE,
+         * MenuActionItem.MENU_DISPLAY_ITEMS, Menu.FIRST +
+         * MenuActionItem.MENU_DISPLAY_ITEMS, R.string.display_views); switch
+         * (displayMode) { case DISPLAY_LIST:
+         * displayMenuItem.setIcon(R.drawable.ic_action_list); break; case
+         * DISPLAY_LIST_LARGE:
+         * displayMenuItem.setIcon(R.drawable.ic_action_tiles_small); break;
+         * case DISPLAY_GRID:
+         * displayMenuItem.setIcon(R.drawable.ic_action_list_2); break; default:
+         * break; }
+         * displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+         */
+
+        displayMenuItem = menu.add(Menu.NONE, MenuActionItem.MENU_DISPLAY_GALLERY, Menu.FIRST
+                + MenuActionItem.MENU_DISPLAY_GALLERY, R.string.display_gallery);
+        displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
     public static void getMenu(AlfrescoSession session, Menu menu, Folder parentFolder, boolean actionMode)
@@ -882,7 +910,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         if (adapter != null)
         {
-            ((AlphabeticNodeAdapter) adapter).remove(node.getName());
+            ((ProgressNodeAdapter) adapter).remove(node.getName());
             if (adapter.isEmpty())
             {
                 displayEmptyView();
@@ -894,7 +922,7 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     {
         if (nActions != null && adapter != null)
         {
-            nActions.selectNodes(((AlphabeticNodeAdapter) adapter).getNodes());
+            nActions.selectNodes(((ProgressNodeAdapter) adapter).getNodes());
             adapter.notifyDataSetChanged();
         }
     }
@@ -902,6 +930,29 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     public void select(Node updatedNode)
     {
         selectedItems.add(updatedNode);
+    }
+
+    public void highLight(Node updatedNode)
+    {
+        selectedItems.add(updatedNode);
+        adapter.notifyDataSetChanged();
+    }
+
+    public List<Node> getNodes()
+    {
+        if (((ProgressNodeAdapter) adapter) != null)
+        {
+            return ((ProgressNodeAdapter) adapter).getNodes();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    public Node getSelectedNodes()
+    {
+        return (selectedItems != null && !selectedItems.isEmpty()) ? selectedItems.get(0) : null;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -936,12 +987,12 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         String documentName = b.getString(IntentIntegrator.EXTRA_DOCUMENT_NAME);
                         Node node = new NodePlaceHolder(documentName, CreateDocumentRequest.TYPE_ID,
                                 Operation.STATUS_RUNNING);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(node);
+                        ((ProgressNodeAdapter) adapter).replaceNode(node);
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_UPLOAD_COMPLETED))
                     {
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(node);
+                        ((ProgressNodeAdapter) adapter).replaceNode(node);
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_UPDATE_COMPLETED))
                     {
@@ -955,36 +1006,36 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
                         }
 
                         Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(updatedNode);
+                        ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED))
                     {
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_CREATED_FOLDER);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(node);
+                        ((ProgressNodeAdapter) adapter).replaceNode(node);
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                     {
-                        ((AlphabeticNodeAdapter) adapter).refreshFavorites();
+                        ((ProgressNodeAdapter) adapter).refreshFavorites();
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED))
                     {
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
-                        ((AlphabeticNodeAdapter) adapter).replaceNode(node);
+                        ((ProgressNodeAdapter) adapter).replaceNode(node);
                     }
                     refreshList();
-                    lv.setSelection(selectedPosition);
+                    gv.setSelection(selectedPosition);
                 }
             }
         }
 
         private void refreshList()
         {
-            if (((AlphabeticNodeAdapter) adapter).getCount() >= 2)
+            if (((ProgressNodeAdapter) adapter).getCount() >= 2)
             {
-                lv.setVisibility(View.VISIBLE);
+                gv.setVisibility(View.VISIBLE);
                 ev.setVisibility(View.GONE);
-                lv.setEmptyView(null);
-                lv.setAdapter(adapter);
+                gv.setEmptyView(null);
+                gv.setAdapter(adapter);
             }
         }
     }
@@ -1058,5 +1109,87 @@ public class ChildrenBrowserFragment extends NavigationFragment implements Refre
     private void addNavigationFragment(Site currentSite, Folder item)
     {
         ((BaseActivity) getActivity()).addNavigationFragment(currentSite, item);
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // VIEWS SWITCHER
+    // //////////////////////////////////////////////////////////////////////
+    private static final String DISPLAY_ITEMS = "DisplayItems-";
+
+    protected static void setDisplayItems(Activity activity, int mode)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            sharedPref.edit().putInt(DISPLAY_ITEMS + account.getId(), mode).commit();
+        }
+    }
+
+    protected static int getDisplayItems(Activity activity)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            return sharedPref.getInt(DISPLAY_ITEMS + account.getId(), DISPLAY_LIST);
+        }
+        return DISPLAY_LIST;
+    }
+
+    protected void switchDisplayItems()
+    {
+        switch (displayMode)
+        {
+            case DISPLAY_LIST:
+                displayMode = DISPLAY_LIST_LARGE;
+                break;
+            case DISPLAY_LIST_LARGE:
+                displayMode = DISPLAY_GRID;
+                break;
+            case DISPLAY_GRID:
+                displayMode = DISPLAY_LIST;
+                break;
+            default:
+                break;
+        }
+
+        setDisplayItems(getActivity(), displayMode);
+
+        List<Node> nodes = ((ProgressNodeAdapter) adapter).getNodes();
+
+        adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, nodes, selectedItems,
+                mode);
+        ((NodeAdapter) adapter).setActivateThumbnail(hasActivateThumbnail());
+        refreshListView();
+        getActivity().invalidateOptionsMenu();
+    }
+
+    private int getDisplayItemLayout()
+    {
+        int displayItemLayout = R.layout.app_grid_large_progress_row;
+        switch (displayMode)
+        {
+            case DISPLAY_LIST:
+                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 240));
+                displayItemLayout = R.layout.app_grid_large_progress_row;
+                break;
+            case DISPLAY_LIST_LARGE:
+                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 320));
+                displayItemLayout = R.layout.app_grid_progress_row;
+                break;
+            case DISPLAY_GRID:
+                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 240));
+                displayItemLayout = R.layout.app_grid_progress_row;
+                break;
+            default:
+                break;
+        }
+        return displayItemLayout;
+    }
+
+    public void setColumnWidth(int value)
+    {
+        gv.setColumnWidth(value);
     }
 }
