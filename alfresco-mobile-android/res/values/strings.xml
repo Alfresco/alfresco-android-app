@@ -623,6 +623,7 @@
     <string name="start_call">Start a call</string>
     <string name="start_video_call">Start a video call</string>
     <string name="search_person_hint">Search by name or username</string>
+    <string name="contact_add">Add Contact</string>
 
     <!-- MEMBERS -->
     <string name="members">List of Members</string>

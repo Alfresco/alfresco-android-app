@@ -225,7 +225,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
         switch (mode)
         {
             case MODE_CALL:
-                if (person.getTelephoneNumber() != null)
+                if (person.getTelephoneNumber() != null  && !person.getTelephoneNumber().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_TEL, Menu.FIRST + MenuActionItem.MENU_TEL,
                             person.getTelephoneNumber());
@@ -233,7 +233,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
 
-                if (person.getMobileNumber() != null)
+                if (person.getMobileNumber() != null && !person.getMobileNumber().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_MOBILE, Menu.FIRST + MenuActionItem.MENU_MOBILE,
                             person.getMobileNumber());
@@ -241,7 +241,8 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
 
-                if (person.getCompany() != null && person.getCompany().getTelephoneNumber() != null)
+                if (person.getCompany() != null && person.getCompany().getTelephoneNumber() != null
+                        && !person.getCompany().getTelephoneNumber().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMPANY_TEL, Menu.FIRST
                             + MenuActionItem.MENU_COMPANY_TEL, person.getCompany().getTelephoneNumber());
@@ -266,7 +267,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
             case MODE_EMAIL:
-                if (person.getEmail() != null)
+                if (person.getEmail() != null && !person.getEmail().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_EMAIL, Menu.FIRST + MenuActionItem.MENU_EMAIL,
                             person.getEmail());
@@ -274,7 +275,8 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
 
-                if (person.getCompany() != null && person.getCompany().getEmail() != null)
+                if (person.getCompany() != null && person.getCompany().getEmail() != null
+                        && !person.getCompany().getEmail().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMPANY_EMAIL, Menu.FIRST
                             + MenuActionItem.MENU_COMPANY_EMAIL, person.getCompany().getEmail());
@@ -410,7 +412,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
         }
 
         // SKype
-        if (person.getSkypeId() != null)
+        if (person.getSkypeId() != null && !person.getSkypeId().isEmpty())
         {
             displayGroup();
             tv = (TextView) vRoot.findViewById(R.id.skypeId_value);
@@ -600,10 +602,10 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
             intent.putExtra(ContactsContract.Intents.Insert.PHONE, member.getTelephoneNumber());
             intent.putExtra(ContactsContract.Intents.Insert.PHONE_ISPRIMARY, true);
             intent.putExtra(ContactsContract.Intents.Insert.PHONE_TYPE,
-                    ContactsContract.CommonDataKinds.Phone.TYPE_WORK);
+                    ContactsContract.CommonDataKinds.Phone.TYPE_MAIN);
             intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE, member.getMobileNumber());
             intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_PHONE_TYPE,
-                    ContactsContract.CommonDataKinds.Phone.TYPE_WORK_MOBILE);
+                    ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE);
 
             // CONTACT EMAIL
             intent.putExtra(ContactsContract.Intents.Insert.EMAIL, member.getEmail());
@@ -631,15 +633,19 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
             // COMPANY DETAILS
             intent.putExtra(ContactsContract.Intents.Insert.COMPANY, member.getCompany().getName());
 
-            intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_EMAIL, member.getEmail());
+            intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_EMAIL, member.getCompany().getEmail());
             intent.putExtra(ContactsContract.Intents.Insert.SECONDARY_EMAIL_TYPE,
-                    ContactsContract.CommonDataKinds.Email.TYPE_WORK);
+                    ContactsContract.CommonDataKinds.Email.TYPE_OTHER);
+
+            intent.putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE, member.getCompany().getTelephoneNumber());
+            intent.putExtra(ContactsContract.Intents.Insert.TERTIARY_PHONE_TYPE,
+                    ContactsContract.CommonDataKinds.Phone.TYPE_COMPANY_MAIN);
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
             try
             {
-                c.startActivity(Intent.createChooser(intent, "Add contact"));
+                c.startActivity(Intent.createChooser(intent, c.getString(R.string.contact_add)));
             }
             catch (ActivityNotFoundException e)
             {
