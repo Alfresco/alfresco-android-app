@@ -119,6 +119,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private Button attachmentsButton;
 
+    private Button dueOn;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -199,6 +201,10 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
+        dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
+        if (dueAt != null){
+            dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
+        }
 
         Button b = (Button) vRoot.findViewById(R.id.process_due_on);
         b.setOnClickListener(new OnClickListener()
@@ -346,6 +352,11 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
         super.onResume();
+        
+        dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
+        if (dueAt != null){
+            dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

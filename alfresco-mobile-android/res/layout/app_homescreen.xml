@@ -18,7 +18,6 @@
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/white_background"
-    android:id="@+id/master_pane"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center" >

@@ -132,6 +132,7 @@
 		<!-- Android Dependencies -->
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
+		<android.support.version>r18</android.support.version>
 		<android.maven.plugin.version>3.6.0</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
@@ -441,12 +442,6 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>org.robolectric</groupId>
-				<artifactId>robolectric</artifactId>
-				<version>${robolectric.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
 				<groupId>com.google.android</groupId>
 				<artifactId>android-test</artifactId>
 				<version>${android.version}</version>
@@ -457,6 +452,11 @@
 				<artifactId>annotations</artifactId>
 				<version>${android.version}</version>
 				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>android.support</groupId>
+				<artifactId>compatibility-v13</artifactId>
+				<version>${android.support.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>

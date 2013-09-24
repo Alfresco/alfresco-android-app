@@ -33,6 +33,8 @@ import org.alfresco.mobile.android.api.services.impl.AbstractPersonService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.imagezoom.ImageViewTouch;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Editor;
 import org.alfresco.mobile.android.ui.utils.thirdparty.DiskLruCache.Snapshot;
@@ -44,12 +46,10 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -84,7 +84,7 @@ public class RenditionManager
     public static final int TYPE_NODE = 0;
 
     public static final int TYPE_PERSON = 1;
-    
+
     public static final int TYPE_WORKFLOW = 2;
 
     public RenditionManager(Activity context, AlfrescoSession session)
@@ -237,7 +237,7 @@ public class RenditionManager
     {
         display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null);
     }
-    
+
     public void display(ImageView iv, Node n, int initDrawableId, ScaleType scaleType)
     {
         display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null, scaleType);
@@ -252,7 +252,7 @@ public class RenditionManager
     {
         display(iv, username, initDrawableId, TYPE_PERSON, null);
     }
-    
+
     public void displayDiagram(ImageView iv, int initDrawableId, String workflowId)
     {
         display(iv, workflowId, initDrawableId, TYPE_WORKFLOW, null, ScaleType.FIT_CENTER);
@@ -267,13 +267,14 @@ public class RenditionManager
     {
         display(iv, identifier, initDrawableId, TYPE_NODE, null);
     }
-    
+
     private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
     {
-        display(iv, identifier, initDrawableId, type, preview, ScaleType.FIT_XY);
+        display(iv, identifier, initDrawableId, type, preview, ScaleType.FIT_CENTER);
     }
-    
-    private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview, ScaleType scaleType)
+
+    private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview,
+            ScaleType scaleType)
     {
         String imageKey = identifier;
         if (imageKey != null && preview != null)
@@ -283,10 +284,13 @@ public class RenditionManager
         final Bitmap bitmap = getBitmapFromMemCache(imageKey);
         if (bitmap != null)
         {
+            iv.setScaleType(scaleType);
             iv.setImageBitmap(bitmap);
-            if (preview != null)
+            if (preview != null && iv instanceof ImageViewTouch)
             {
-                addShadow(iv, bitmap);
+                ((ImageViewTouch) iv).setScaleEnabled(true);
+                ((ImageViewTouch) iv).setDoubleTapEnabled(true);
+                ((View)iv.getTag()).setVisibility(View.GONE);
             }
             // Log.d(TAG, "Cache : " + identifier);
         }
@@ -385,7 +389,7 @@ public class RenditionManager
             fis.close();
 
             // Find the correct scale value. It should be the power of 2.
-            int requiredSizePx = getDPI(dm, requiredSize);
+            int requiredSizePx = DisplayUtils.getDPI(dm, requiredSize);
             int scale = calculateInSampleSize(o, requiredSizePx, requiredSizePx);
             Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
 
@@ -451,11 +455,11 @@ public class RenditionManager
         private Activity ctxt;
 
         private String username;
-        
+
         private String processId;
 
         private Integer preview;
-        
+
         private ScaleType scaleType;
 
         public BitmapThread(Activity ctxt, AlfrescoSession session, ImageView imageView, String identifier, int type)
@@ -554,7 +558,8 @@ public class RenditionManager
                         {
                             cf = null;
                         }
-                    } else if (processId != null)
+                    }
+                    else if (processId != null)
                     {
                         try
                         {
@@ -592,8 +597,7 @@ public class RenditionManager
                                 preview, imageViewReference, this));
                     }
                 }
-                else if (imageViewReference != null && imageViewReference.get() != null
-                        && ctxt != null)
+                else if (imageViewReference != null && imageViewReference.get() != null && ctxt != null)
                 {
                     ctxt.runOnUiThread(new BitmapDisplayer(bm, preview, imageViewReference, this));
                 }
@@ -608,11 +612,6 @@ public class RenditionManager
         {
             return scaleType;
         }
-    }
-
-    public static int getDPI(DisplayMetrics dm, int sizeInDp)
-    {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
     }
 
     // Used to display bitmap in the UI thread
@@ -643,20 +642,17 @@ public class RenditionManager
             {
                 imageView = imageViewReference.get();
                 imageView.setScaleType(bitmapTask.getScaleType());
-                if (imageView.getScaleType() == ScaleType.FIT_CENTER){
-                    imageView.setBackgroundResource(R.drawable.shadow_picture);
-                }
                 final BitmapThread bitmapWorkerTask = getBitmapThread(imageView);
                 if (bitmapTask.equals(bitmapWorkerTask) && imageView != null)
                 {
                     imageView.setImageBitmap(bitmap);
 
                     // We create preview with a shadow effect around the image.
-                    if (preview != null)
+                    if (preview != null && imageView instanceof ImageViewTouch)
                     {
-                        addShadow(imageView, bitmap);
-                        // Log.d(TAG, "W:" + bitmap.getWidth() + " H:" +
-                        // bitmap.getHeight());
+                        ((ImageViewTouch) imageView).setScaleEnabled(true);
+                        ((ImageViewTouch) imageView).setDoubleTapEnabled(true);
+                        ((View) imageView.getTag()).setVisibility(View.GONE);
                     }
                 }
             }

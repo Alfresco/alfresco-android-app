@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
@@ -35,7 +35,11 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/properties_padding"
             android:layout_marginRight="@dimen/properties_padding"
-            android:text="@string/menu_accounts" />
+            android:text="@string/menu_accounts"
+             android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:scrollHorizontally="true" />
 
         <Spinner
             android:id="@+id/accounts_spinner"
@@ -62,111 +66,59 @@
                 style="@style/slidingmenu_sectionHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/menu_view" />
+                android:text="@string/menu_view"
+                 android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:scrollHorizontally="true" />
 
             <Button
                 android:id="@+id/menu_browse_activities"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_activities_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_browse_activities"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_browse_activities" />
 
             <Button
                 android:id="@+id/menu_browse_root"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_repository_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_browse_root"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_browse_root" />
 
             <Button
                 android:id="@+id/menu_browse_my_sites"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_all_sites_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_browse_sites"
-                android:textColor="@android:color/white" />
-            
+                android:text="@string/menu_browse_sites" />
+
             <Button
                 android:id="@+id/menu_workflow"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_action_inbox_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/my_tasks"
-                android:textColor="@android:color/white" />
+                android:text="@string/my_tasks" />
 
             <Button
                 android:id="@+id/menu_favorites"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_favorite"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_favorites"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_favorites" />
 
             <Button
                 android:id="@+id/menu_search"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_search_off"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_search"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_search" />
 
             <Button
                 android:id="@+id/menu_downloads"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_download_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_local_files"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_local_files" />
 
             <Button
                 android:id="@+id/menu_notifications"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_events"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/notifications"
-                android:textColor="@android:color/white" />
+                android:text="@string/notifications" />
 
             <TextView
                 android:id="@+id/TextView01"
@@ -180,46 +132,29 @@
                 android:paddingTop="@dimen/button_padding"
                 android:text="@string/menu_resources"
                 android:textColor="@color/grey_light"
-                android:visibility="visible" />
+                android:visibility="visible"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:scrollHorizontally="true" />
 
             <Button
                 android:id="@+id/menu_prefs"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_settings_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_prefs"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_prefs" />
 
             <Button
                 android:id="@+id/menu_help"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_help"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_help"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_help" />
 
             <Button
                 android:id="@+id/menu_about"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="3dip"
-                android:background="@drawable/btn_default_holo_light_underline"
+                style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_about_light"
-                android:drawablePadding="8dip"
-                android:gravity="left|center_vertical"
-                android:onClick="showMainMenuFragment"
-                android:text="@string/menu_about"
-                android:textColor="@android:color/white" />
+                android:text="@string/menu_about" />
         </LinearLayout>
     </RelativeLayout>
 

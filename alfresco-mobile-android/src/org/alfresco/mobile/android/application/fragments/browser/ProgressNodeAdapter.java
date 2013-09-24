@@ -179,7 +179,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
         else
         {
-            vh.favoriteIcon.setVisibility(View.GONE);
+           vh.favoriteIcon.setVisibility(View.GONE);
         }
 
         if (item instanceof NodePlaceHolder)
@@ -232,7 +232,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
         if (item.isFolder())
         {
-            vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
+            vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_256_folder));
 
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }

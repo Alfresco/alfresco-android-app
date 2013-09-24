@@ -18,11 +18,13 @@
 package org.alfresco.mobile.android.application.fragments;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.utils.thirdparty.split.SplitPaneLayout;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
 import android.widget.TextView;
@@ -169,17 +171,29 @@ public abstract class DisplayUtils
     {
         if (activity.getResources().getBoolean(R.bool.tablet_middle) && hasCentralPane(activity))
         {
-            Fragment fr = activity.getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(activity));
-            if ((fr != null && !isNull) || (fr == null && isNull))
-            {
-                DisplayUtils.getLeftPane(activity).setVisibility(View.GONE);
-                DisplayUtils.getCentralPane(activity).setVisibility(View.VISIBLE);
-            }
-            else if ((fr == null && !isNull) || (fr != null && isNull))
-            {
-                DisplayUtils.getLeftPane(activity).setVisibility(View.VISIBLE);
-                DisplayUtils.getCentralPane(activity).setVisibility(View.GONE);
-            }
+            /*
+             * Fragment fr =
+             * activity.getFragmentManager().findFragmentById(DisplayUtils
+             * .getCentralFragmentId(activity)); SplitPaneLayout split =
+             * (SplitPaneLayout) activity.findViewById(R.id.master_pane); if
+             * ((fr != null && !isNull) || (fr == null && isNull)) {
+             * //split.setSplitterPosition
+             * (getDPI(activity.getResources().getDisplayMetrics(), 48));
+             * //split.getChildAt(0).setVisibility(View.GONE);
+             * //split.getChildAt(1).setVisibility(View.VISIBLE);
+             * split.setSplitterPositionPercent(0f);
+             * //DisplayUtils.getLeftPane(activity).setVisibility(View.GONE);
+             * //DisplayUtils
+             * .getCentralPane(activity).setVisibility(View.VISIBLE); } else if
+             * ((fr == null && !isNull) || (fr != null && isNull)) {
+             * //split.setSplitterPositionPercent(33f);
+             * //split.getChildAt(0).setVisibility(View.VISIBLE);
+             * //split.getChildAt(1).setVisibility(View.GONE);
+             * split.setSplitterPositionPercent(100f);
+             * //DisplayUtils.getLeftPane(activity).setVisibility(View.VISIBLE);
+             * //DisplayUtils.getCentralPane(activity).setVisibility(View.GONE);
+             * }
+             */
         }
     }
 
@@ -226,4 +240,39 @@ public abstract class DisplayUtils
         return coeff;
     }
 
+    public static int getDPI(DisplayMetrics dm, int sizeInDp)
+    {
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, sizeInDp, dm);
+    }
+
+    // ///////////////////////////////////////////
+    // SPLITTER BAR
+    // ///////////////////////////////////////////
+    /**
+     * Returns in dp
+     * @param context
+     * @return
+     */
+    public static int getSplitterWidth(MainActivity context)
+    {
+        Display display = context.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+        float density = context.getResources().getDisplayMetrics().density;
+        
+        SplitPaneLayout split = (SplitPaneLayout) context.findViewById(R.id.master_pane);
+        return (split != null) ?  Math.round(split.getSplitterPosition() / density)  :  Math.round(outMetrics.widthPixels / density);
+    }
+    
+    public static int getScreenWidth(Activity context)
+    {
+        Display display = context.getWindowManager().getDefaultDisplay();
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        display.getMetrics(outMetrics);
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int width = Math.round(outMetrics.widthPixels / density);
+        
+        return width;
+    }
 }
