@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.thirdparty.imagezoom.ImageViewTouch;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 
@@ -45,7 +46,6 @@ import android.content.ActivityNotFoundException;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -107,11 +107,14 @@ public class PreviewFragment extends BaseFragment
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
+        preview.setTag(v.findViewById(R.id.preview_message));
         if (node.isDocument() && node instanceof NodeImpl)
         {
             iconId = MimeTypeManager.getIcon(node.getName(), true);
             if (((Document) node).isLatestVersion())
             {
+                ((ImageViewTouch)preview).setScaleEnabled(false);
+                ((ImageViewTouch)preview).setDoubleTapEnabled(false);
                 renditionManager.preview((ImageView) preview, node, iconId, DisplayUtils.getWidth(getActivity()));
             }
         }
@@ -123,15 +126,6 @@ public class PreviewFragment extends BaseFragment
         {
             preview.setImageResource(iconId);
         }
-
-        preview.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                openin();
-            }
-        });
 
         return v;
     }

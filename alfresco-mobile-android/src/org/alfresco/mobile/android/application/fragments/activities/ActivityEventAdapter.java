@@ -30,26 +30,25 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.TextView;
 
 /**
  * Provides access to activity entries and displays them as a view based on
@@ -81,9 +80,8 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     @Override
     protected void updateTopText(GenericViewHolder vh, ActivityEntry item)
     {
-        vh.topText.setMaxLines(3);
-        vh.topText.setTypeface(Typeface.DEFAULT);
-        vh.topText.setText(Html.fromHtml(getActivityTypeMessage(item)));
+        vh.topText.setText(getUser(item));
+        vh.content.setText(Html.fromHtml(getActivityTypeMessage(item)));
     }
 
     @Override
@@ -98,22 +96,21 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), getContext().getResources()
+            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), getContext().getResources()
                     .getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), null);
         }
 
-        /* Uncomment to activate people & site shortcut*/
+        /* Uncomment to activate people & site shortcut */
         // Add support for people & sites
-        UIUtils.setBackground(((View) vh.choose),
-                getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+        // UIUtils.setBackground(((View) vh.choose),
+        // getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
-        vh.choose.setVisibility(View.VISIBLE);
-        vh.choose.setTag(R.id.entry_action, item);
-        vh.choose.setOnClickListener(new OnClickListener()
+        ((View) vh.icon.getParent()).setTag(R.id.entry_action, item);
+        ((View) vh.icon.getParent()).setOnClickListener(new OnClickListener()
         {
 
             @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -121,25 +118,8 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             public void onClick(View v)
             {
                 ActivityEntry item = (ActivityEntry) v.getTag(R.id.entry_action);
-                selectedOptionItems.add(item);
-                PopupMenu popup = new PopupMenu(getContext(), v);
-                getMenu(popup.getMenu(), item);
-
-                if (AndroidVersion.isICSOrAbove())
-                {
-                    popup.setOnDismissListener(new OnDismissListener()
-                    {
-                        @Override
-                        public void onDismiss(PopupMenu menu)
-                        {
-                            selectedOptionItems.clear();
-                        }
-                    });
-                }
-
-                popup.setOnMenuItemClickListener(ActivityEventAdapter.this);
-
-                popup.show();
+                PersonProfileFragment.newInstance(item.getCreatedBy()).show(fr.getActivity().getFragmentManager(),
+                        PersonProfileFragment.TAG);
             }
         });
     }
@@ -147,20 +127,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     @Override
     protected void updateIcon(GenericViewHolder vh, ActivityEntry item)
     {
-        switch (iconItemType)
-        {
-            case DISPLAY_ICON_NONE:
-                vh.icon.setVisibility(View.GONE);
-                break;
-            case DISPLAY_ICON_DEFAULT:
-                vh.icon.setImageDrawable(getContext().getResources().getDrawable(getFileDrawableId(item)));
-                break;
-            case DISPLAY_ICON_CREATOR:
-                getCreatorAvatar(vh, item);
-                break;
-            default:
-                break;
-        }
+        getCreatorAvatar(vh, item);
     }
 
     private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)
@@ -170,7 +137,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
         if (type.startsWith(PREFIX_FILE))
         {
-            renditionManager.display(vh.icon, item.getCreatedBy(), getFileDrawableId(item));
+            renditionManager.display(vh.icon, item.getCreatedBy(), R.drawable.ic_person);
         }
         else if (type.startsWith(PREFIX_GROUP))
         {
@@ -183,7 +150,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             {
                 tmp = null;
             }
-            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
+            renditionManager.display(vh.icon, tmp,  R.drawable.ic_person);
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
@@ -192,11 +159,11 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             {
                 tmp = null;
             }
-            renditionManager.display(vh.icon, tmp, getFileDrawableId(item));
+            renditionManager.display(vh.icon, tmp,  R.drawable.ic_person);
         }
         else
         {
-            renditionManager.display(vh.icon, item.getCreatedBy(), getFileDrawableId(item));
+            renditionManager.display(vh.icon, item.getCreatedBy(),  R.drawable.ic_person);
         }
     }
 
@@ -228,12 +195,12 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     // ///////////////////////////////////////////////////////////////////////////
     public void getMenu(Menu menu, ActivityEntry entry)
     {
-        /*if (entry.getSiteShortName() != null)
-        {
-            menu.add(Menu.NONE, MenuActionItem.MENU_ACTIVITY_SITE, Menu.FIRST + MenuActionItem.MENU_ACTIVITY_SITE,
-                    R.string.activity_site);
-        }*/
-        
+        /*
+         * if (entry.getSiteShortName() != null) { menu.add(Menu.NONE,
+         * MenuActionItem.MENU_ACTIVITY_SITE, Menu.FIRST +
+         * MenuActionItem.MENU_ACTIVITY_SITE, R.string.activity_site); }
+         */
+
         if (entry.getCreatedBy() != null)
         {
             menu.add(Menu.NONE, MenuActionItem.MENU_ACTIVITY_PROFILE,
@@ -322,6 +289,29 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     private static final String PARAM_SUBSCRIBER = "{5}";
 
     private static final String PARAM_STATUS = "{6}";
+
+    private String getUser(ActivityEntry item)
+    {
+        String s = item.getType();
+        String username = item.getCreatedBy();
+        if (MAP_ACTIVITY_TYPE.get(s) != null)
+        {
+            s = getContext().getResources().getString(MAP_ACTIVITY_TYPE.get(item.getType()));
+
+            if (s.contains(PARAM_CUSTOM))
+            {
+                s = s.replace(PARAM_CUSTOM, getData(item, OnPremiseConstant.ROLE_VALUE));
+                username = getData(item, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.MEMBERLASTNAME_VALUE);
+            }
+            else
+            {
+                username = getData(item, OnPremiseConstant.FIRSTNAME_VALUE) + " "
+                        + getData(item, OnPremiseConstant.LASTNAME_VALUE);
+            }
+        }
+        return username;
+    }
 
     private String getActivityTypeMessage(ActivityEntry item)
     {
@@ -437,4 +427,24 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
             put("org.alfresco.profile.status-changed", R.string.org_alfresco_profile_status_changed);
         }
     };
+}
+
+final class GenericViewHolder extends ViewHolder
+{
+    public TextView topText;
+
+    public TextView bottomText;
+
+    public ImageView icon;
+
+    public TextView content;
+
+    public GenericViewHolder(View v)
+    {
+        super(v);
+        icon = (ImageView) v.findViewById(R.id.icon);
+        topText = (TextView) v.findViewById(R.id.toptext);
+        bottomText = (TextView) v.findViewById(R.id.bottomtext);
+        content = (TextView) v.findViewById(R.id.content);
+    }
 }

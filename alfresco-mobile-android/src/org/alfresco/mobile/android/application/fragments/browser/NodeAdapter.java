@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -30,6 +30,8 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
@@ -75,6 +77,13 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     private Map<String, Document> selectedMapItems;
 
+    private Activity context;
+
+    private int width;
+
+    // //////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // //////////////////////////////////////////////////////////////////////
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -84,6 +93,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.mode = mode;
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.context = context;
     }
 
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
@@ -91,6 +101,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         super(context, textViewResourceId, listItems);
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.context = context;
     }
 
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)
@@ -100,6 +111,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.renditionManager = ApplicationManager.getInstance(fr.getActivity()).getRenditionManager(fr.getActivity());
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.isEditable = isEditable;
+        this.context = fr.getActivity();
     }
 
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems,
@@ -111,15 +123,123 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(context);
         this.mode = ListingModeFragment.MODE_PICK;
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.context = context;
     }
 
     // /////////////////////////////////////////////////////////////
-    // CRUD LIST
+    // VIEWS
     // ////////////////////////////////////////////////////////////
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
         return getView(position, convertView, parent);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent)
+    {
+        // Specific part for dynaminc resize
+        
+        // First init ==> always 
+        width = DisplayUtils.getSplitterWidth((MainActivity) context);
+        int layoutId = R.layout.app_grid_progress_row;
+        int flagLayoutId = R.id.app_grid_progress;
+
+        int columnWidth = 240;
+        Log.d("WIDTH", width + "");
+        if (width <= 400)
+        {
+            layoutId = R.layout.app_grid_progress_row;
+            flagLayoutId = R.id.app_grid_progress;
+            columnWidth = 320;
+        }
+        else if (width < 480)
+        {
+            layoutId = R.layout.app_grid_card_repo;
+            flagLayoutId = R.id.app_grid_card;
+            columnWidth = 150;
+        }
+        else if (width < 600)
+        {
+            layoutId = R.layout.app_grid_card_repo;
+            flagLayoutId = R.id.app_grid_card;
+            columnWidth = 150;
+        }
+        else if (width < 800)
+        {
+            layoutId = R.layout.app_grid_card_repo;
+            flagLayoutId = R.id.app_grid_card;
+            columnWidth = 160;
+        }
+        else if (width < 1000)
+        {
+            layoutId = R.layout.app_grid_tiles_repo;
+            flagLayoutId = R.id.app_grid_tiles;
+            columnWidth = 200;
+        }
+        else
+        {
+            layoutId = R.layout.app_grid_tiles_repo;
+            flagLayoutId = R.id.app_grid_tiles;
+            columnWidth = 240;
+        }
+
+        ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
+                ChildrenBrowserFragment.TAG);
+        if (fr != null)
+        {
+            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
+        }
+
+        View v = convertView;
+        if (convertView == null || convertView.findViewById(flagLayoutId) == null)
+        {
+            v = createView(getContext(), convertView, layoutId);
+        }
+        else
+        {
+            return super.getView(position, convertView, parent);
+        }
+
+        ProgressViewHolder vh = (ProgressViewHolder) v.getTag();
+        Node item = getItem(position);
+        updateControls(vh, item);
+        return v;
+        
+       /* View v = convertView;
+        if (convertView == null || (!DisplayUtils.isLargerThan((MainActivity) context, 350) && convertView
+                .findViewById(R.id.app_grid_progress) == null))
+        {
+            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
+                    ChildrenBrowserFragment.TAG);
+            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 350));
+            v = createView(getContext(), convertView, R.layout.app_grid_progress_row);
+        }
+        else if (DisplayUtils.isLargerThan((MainActivity) context, 350)
+                && !DisplayUtils.isLargerThan((MainActivity) context, 650)
+                && convertView.findViewById(R.id.app_grid_card) == null)
+        {
+            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
+                    ChildrenBrowserFragment.TAG);
+            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 150));
+            v = createView(getContext(), convertView, R.layout.app_grid_card_repo);
+        }
+        else if (DisplayUtils.isLargerThan((MainActivity) context, 650)
+                && convertView.findViewById(R.id.app_grid_tiles) == null)
+        {
+            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
+                    ChildrenBrowserFragment.TAG);
+            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 200));
+            v = createView(getContext(), convertView, R.layout.app_grid_tiles_repo);
+        }
+        else
+        {
+            return super.getView(position, convertView, parent);
+        }
+        ProgressViewHolder vh = (ProgressViewHolder) v.getTag();
+        Node item = getItem(position);
+        updateControls(vh, item);
+        return v;*/
     }
 
     // /////////////////////////////////////////////////////////////
@@ -203,7 +323,6 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     // /////////////////////////////////////////////////////////////
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
-
     @Override
     protected void updateTopText(ProgressViewHolder vh, Node item)
     {
@@ -226,24 +345,24 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             if (selectedMapItems.containsKey(item.getIdentifier()))
             {
-                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
             }
         }
         else
         {
             if (selectedItems != null && selectedItems.contains(item))
             {
-                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
             }
         }
 
@@ -301,19 +420,28 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(MimeTypeManager.getIcon(item.getName()));
+                vh.icon.setImageResource(MimeTypeManager.getIcon(item.getName(), true));
             }
             else
             {
-                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(item.getName()));
+                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(item.getName(), true));
             }
+            vh.choose.setVisibility(View.GONE);
         }
         else if (item.isFolder())
         {
-            vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.icon.setImageResource(R.drawable.mime_256_folder);
         }
     }
 
+    // /////////////////////////////////////////////////////////////
+    // UTILITIES
+    // ////////////////////////////////////////////////////////////
+    public void setContext(Activity activity){
+        this.context = activity;
+    }
+    
     public Boolean hasActivateThumbnail()
     {
         return activateThumbnail;

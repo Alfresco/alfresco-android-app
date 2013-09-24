@@ -623,6 +623,7 @@
     <string name="start_call">Start a call</string>
     <string name="start_video_call">Start a video call</string>
     <string name="search_person_hint">Search by name or username</string>
+    <string name="contact_add">Add Contact</string>
 
     <!-- MEMBERS -->
     <string name="members">List of Members</string>
@@ -763,6 +764,13 @@
     <string name="task_delegate_in_progress">Reassign in progress&#8230;</string>
     <string name="task_delegate_complete">Reassign completed</string>
     
+    <!-- PROCESS NAME -->    
+    <string name="process_adhoc">Adhoc Workflow</string>
+    <string name="process_parallel_review">Parallel Review and Approve</string>
+    <string name="process_review">Review and Approve</string>
+    <string name="process_pooled_review">Pooled Review and Approve</string>
+    
+    
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Search</string>
     <string name="search_person">Persons</string>
@@ -775,5 +783,8 @@
     <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
     <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 document|1&lt;Attach {0} documents}</string>
     
+    <!-- DISLAY VIEWS ITEMS -->
+    <string name="display_views">Views</string>
+    <string name="display_gallery">Display Gallery</string>
     
 </resources>

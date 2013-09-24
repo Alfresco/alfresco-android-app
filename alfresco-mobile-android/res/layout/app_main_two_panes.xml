@@ -14,17 +14,22 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:spl="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <LinearLayout
+    <org.alfresco.mobile.android.application.utils.thirdparty.split.SplitPaneLayout
         android:id="@+id/master_pane"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:baselineAligned="false" >
+        android:baselineAligned="false"
+        spl:orientation="horizontal"
+        spl:splitterBackground="@drawable/divider_touch"
+        spl:splitterDraggingBackground="@drawable/divider_touch"
+        spl:splitterPosition="33%"
+        spl:splitterSize="12dip" >
 
         <LinearLayout
             android:id="@+id/left_pane"
@@ -57,11 +62,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="1dip"
-            android:layout_height="fill_parent"
-            android:background="@drawable/shadow" />
-
-        <LinearLayout
             android:id="@+id/central_pane"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -80,8 +80,7 @@
                     android:id="@+id/central_pane_title"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    />
+                    android:gravity="center" />
             </LinearLayout>
 
             <LinearLayout
@@ -91,7 +90,7 @@
                 android:gravity="center"
                 android:orientation="vertical" />
         </LinearLayout>
-    </LinearLayout>
+    </org.alfresco.mobile.android.application.utils.thirdparty.split.SplitPaneLayout>
 
     <LinearLayout
         android:id="@+id/slide_pane"

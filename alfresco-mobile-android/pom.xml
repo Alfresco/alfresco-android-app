@@ -57,6 +57,10 @@
 			<groupId>com.squareup.okhttp</groupId>
 			<artifactId>okhttp</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v13</artifactId>
+		</dependency>
 	</dependencies>
 
 

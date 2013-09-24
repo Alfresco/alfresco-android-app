@@ -29,11 +29,8 @@ import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TaskActions;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
@@ -56,8 +53,6 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     public static final String TAG = ProcessTasksFragment.class.getName();
 
     protected List<Task> selectedItems = new ArrayList<Task>(1);
-
-    private TaskActions nActions;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -223,61 +218,24 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         {
             hideDetails = selectedItems.get(0).equals(item);
         }
-        l.setItemChecked(position, true);
 
-        if (nActions != null)
+        l.setItemChecked(position, true);
+        selectedItems.clear();
+        if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
         {
-            nActions.selectNode(item);
-            if (selectedItems.size() == 0)
-            {
-                hideDetails = true;
-            }
-        }
-        else
-        {
-            selectedItems.clear();
-            if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
-            {
-                selectedItems.add(item);
-            }
+            selectedItems.add(item);
         }
 
         if (hideDetails)
         {
             selectedItems.clear();
         }
-        else if (nActions == null)
+        else
         {
             // Show properties
             ((MainActivity) getActivity()).addTaskDetailsFragment(item, true);
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
-    }
-
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
-    {
-        if (nActions != null) { return false; }
-
-        Task item = (Task) l.getItemAtPosition(position);
-
-        selectedItems.clear();
-        selectedItems.add(item);
-
-        // Start the CAB using the ActionMode.Callback defined above
-        nActions = new TaskActions(ProcessTasksFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
-        {
-            @Override
-            public void onFinish()
-            {
-                nActions = null;
-                selectedItems.clear();
-                refreshListView();
-            }
-        });
-        getActivity().startActionMode(nActions);
-        adapter.notifyDataSetChanged();
-        return true;
     }
 }

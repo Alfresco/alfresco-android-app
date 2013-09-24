@@ -2,10 +2,10 @@ package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.services.WorkflowService;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -93,6 +93,7 @@ public final class TasksHelper
                 if (isProcessFragment)
                 {
                     prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
+                    f.addFilter(PublicAPIWorkflowServiceImpl.INCLUDE_VARIABLES, "true");
                     Fragment processesFragment = ProcessesFragment.newInstance(f, itemPosition);
                     FragmentDisplayer.replaceFragment(activity, processesFragment,
                             DisplayUtils.getLeftFragmentId(activity), TasksFragment.TAG, true);

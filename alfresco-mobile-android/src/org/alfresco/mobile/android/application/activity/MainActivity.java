@@ -61,6 +61,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.PreviewGallery;
 import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.search.SearchAggregatorFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
@@ -462,7 +463,8 @@ public class MainActivity extends BaseActivity
         {
             case R.id.menu_browse_my_sites:
                 if (!checkSession(R.id.menu_browse_my_sites)) { return; }
-                frag = BrowserSitesFragment.newInstance();
+                frag =  new BrowserSitesFragment();
+                frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         BrowserSitesFragment.TAG, true);
                 break;
@@ -650,7 +652,6 @@ public class MainActivity extends BaseActivity
         BaseFragment frag = DetailsFragment.newInstance(n, parentFolder);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, forceBackStack);
-
     }
 
     public void addPropertiesFragment(String nodeIdentifier)
@@ -729,6 +730,20 @@ public class MainActivity extends BaseActivity
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         addPropertiesFragment(n, getImportParent(), b);
+    }
+    
+    public void addGalleryFragment()
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        BaseFragment frag = PreviewGallery.newInstance();
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), PreviewGallery.TAG, b);
     }
 
     public void addComments(Node n)
@@ -1035,6 +1050,9 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_DELETE:
                 ((DetailsFragment) getFragment(DetailsFragment.TAG)).delete();
                 return true;
+            case MenuActionItem.MENU_DISPLAY_GALLERY:
+                addGalleryFragment();
+                return true;
             case MenuActionItem.MENU_SITE_LIST_REQUEST:
                 ((BrowserSitesFragment) getFragment(BrowserSitesFragment.TAG)).displayJoinSiteRequests();
                 return true;
@@ -1091,9 +1109,6 @@ public class MainActivity extends BaseActivity
             }
             else
             {
-                DisplayUtils.getLeftPane(this).setVisibility(View.VISIBLE);
-                DisplayUtils.getCentralPane(this).setVisibility(View.GONE);
-
                 Fragment fr = getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this));
 
                 boolean backStack = true;
