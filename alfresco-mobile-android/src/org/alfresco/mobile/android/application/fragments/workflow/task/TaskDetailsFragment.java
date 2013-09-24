@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
 import org.alfresco.mobile.android.api.model.impl.TaskImpl;
+import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
 import org.alfresco.mobile.android.api.utils.WorkflowUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
@@ -261,12 +262,13 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
         }
         else if (currentProcess != null)
         {
-            description = currentProcess.getDescription() != null ? currentProcess.getDescription() : getString(R.string.process_no_description);
+            description = currentProcess.getDescription() != null ? currentProcess.getDescription()
+                    : getString(R.string.process_no_description);
             priority = currentProcess.getPriority();
             endedAt = currentProcess.getEndedAt();
             initiator = (Person) ((ProcessImpl) currentProcess).getData().get(OnPremiseConstant.INITIATOR_VALUE);
             type = ProcessesAdapter.getName(getActivity(), currentProcess.getKey());
-            dueAt = ((ProcessImpl)currentProcess).getDueAt();
+            dueAt = ((ProcessImpl) currentProcess).getDueAt();
             processId = currentProcess.getIdentifier();
             processDefinitionId = currentProcess.getDefinitionIdentifier();
         }
@@ -319,7 +321,9 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
                     completeTask(currentTask, isReviewTask, false);
                 }
             });
-        } else {
+        }
+        else
+        {
             vRoot.findViewById(R.id.complete_group).setVisibility(View.GONE);
 
         }
@@ -330,9 +334,11 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
         // Display Initiator
         if (initiator != null)
         {
-            //ImageView preview = (ImageView) vRoot.findViewById(R.id.task_initiator_icon);
-            //int iconId = R.drawable.ic_person;
-            //renditionManager.display((ImageView) preview, initiator.getIdentifier(), iconId);
+            // ImageView preview = (ImageView)
+            // vRoot.findViewById(R.id.task_initiator_icon);
+            // int iconId = R.drawable.ic_person;
+            // renditionManager.display((ImageView) preview,
+            // initiator.getIdentifier(), iconId);
 
             LinearLayout layout = (LinearLayout) vRoot.findViewById(R.id.task_initiator_group);
             layout.setOnClickListener(new OnClickListener()
@@ -481,8 +487,11 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
         if (isReviewTask)
         {
             String outcome = (isApprove) ? WorkflowModel.TRANSITION_APPROVE : WorkflowModel.TRANSITION_REJECT;
-            outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI)) ? outcome
-                    : outcome.toLowerCase();
+            if (!(alfSession.getServiceRegistry().getWorkflowService() instanceof PublicAPIWorkflowServiceImpl))
+            {
+                outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI)) ? outcome
+                        : outcome.toLowerCase();
+            }
             variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
         }
 
