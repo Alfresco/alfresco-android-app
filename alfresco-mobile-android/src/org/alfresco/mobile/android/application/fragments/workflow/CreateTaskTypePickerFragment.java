@@ -245,6 +245,8 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
 
     private void displayTasks(Boolean shown)
     {
+        if (ev == null || lv == null || pb == null) { return; }
+
         if (shown)
         {
             lv.setVisibility(View.VISIBLE);
