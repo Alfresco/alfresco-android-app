@@ -763,6 +763,13 @@
     <string name="task_delegate_in_progress">Reassign in progress&#8230;</string>
     <string name="task_delegate_complete">Reassign completed</string>
     
+    <!-- PROCESS NAME -->    
+    <string name="process_adhoc">Adhoc Workflow</string>
+    <string name="process_parallel_review">Parallel Review and Approve</string>
+    <string name="process_review">Review and Approve</string>
+    <string name="process_pooled_review">Pooled Review and Approve</string>
+    
+    
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Search</string>
     <string name="search_person">Persons</string>

@@ -50,6 +50,7 @@ import org.alfresco.mobile.android.application.fragments.person.onPickPersonFrag
 import org.alfresco.mobile.android.application.fragments.workflow.ItemsLoader;
 import org.alfresco.mobile.android.application.fragments.workflow.ProcessDiagramFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessTasksFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesAdapter;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
@@ -264,7 +265,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
             priority = currentProcess.getPriority();
             endedAt = currentProcess.getEndedAt();
             initiator = (Person) ((ProcessImpl) currentProcess).getData().get(OnPremiseConstant.INITIATOR_VALUE);
-            type = currentProcess.getName();
+            type = ProcessesAdapter.getName(getActivity(), currentProcess.getKey());
             dueAt = ((ProcessImpl)currentProcess).getDueAt();
             processId = currentProcess.getIdentifier();
             processDefinitionId = currentProcess.getDefinitionIdentifier();

@@ -21,6 +21,7 @@ import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.impl.ProcessImpl;
 import org.alfresco.mobile.android.application.R;
@@ -46,7 +47,8 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
 
     protected Context context;
 
-    public ProcessesAdapter(Activity context, int textViewResourceId, List<Process> listItems, List<Process> selectedItems)
+    public ProcessesAdapter(Activity context, int textViewResourceId, List<Process> listItems,
+            List<Process> selectedItems)
     {
         super(context, textViewResourceId, listItems);
         this.context = context;
@@ -56,21 +58,26 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
     @Override
     protected void updateTopText(GenericViewHolder vh, Process item)
     {
-        vh.topText.setText(item.getDescription() != null ? item.getDescription() : context.getString(R.string.process_no_description));
+        vh.topText.setText(item.getDescription() != null ? item.getDescription() : context
+                .getString(R.string.process_no_description));
     }
 
     @Override
     protected void updateBottomText(GenericViewHolder vh, Process item)
     {
-        StringBuilder bottomText = new StringBuilder(item.getName() != null ? item.getName() : "");
+        StringBuilder bottomText = new StringBuilder(item.getName() != null ? item.getName() : getName(context, item.getKey()));
 
-        if (item.getEndedAt() == null && ((ProcessImpl)item).getDueAt() != null && ((ProcessImpl)item).getDueAt().before(calendar))
+        if (item.getEndedAt() == null && ((ProcessImpl) item).getDueAt() != null
+                && ((ProcessImpl) item).getDueAt().before(calendar))
         {
-            bottomText.append(" - ");
+            if (bottomText.length() > 0)
+            {
+                bottomText.append(" - ");
+            }
             bottomText.append("<b>");
             bottomText.append("<font color='#9F000F'>");
             SimpleDateFormat formatter = new SimpleDateFormat("dd MMM");
-            bottomText.append(formatter.format(((ProcessImpl)item).getDueAt().getTime()));
+            bottomText.append(formatter.format(((ProcessImpl) item).getDueAt().getTime()));
             bottomText.append("</font>");
             bottomText.append("</b>");
         }
@@ -122,5 +129,32 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
                 break;
         }
         return iconId;
+    }
+
+    public static String getName(Context context, String keyId)
+    {
+        int nameId = -1;
+
+        if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(keyId))
+        {
+            nameId = R.string.process_adhoc;
+        }
+        else if (WorkflowModel.FAMILY_PROCESS_PARALLEL_GROUP_REVIEW.contains(keyId))
+        {
+            nameId = R.string.process_review;
+        }
+        else if (WorkflowModel.FAMILY_REVIEW.contains(keyId))
+        {
+            nameId = R.string.process_review;
+        }
+        else if (WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(keyId))
+        {
+            nameId = R.string.process_pooled_review;
+        }
+        else if (WorkflowModel.FAMILY_PROCESS_PARALLEL_REVIEW.contains(keyId))
+        {
+            nameId = R.string.process_parallel_review;
+        }
+        return (nameId != -1) ? context.getString(nameId) : "";
     }
 }
