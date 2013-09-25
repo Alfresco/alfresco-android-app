@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
@@ -74,6 +75,8 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     private boolean isEditable;
 
     private Fragment fragment;
+    
+    private BaseGridFragment gridFragment;
 
     private Map<String, Document> selectedMapItems;
 
@@ -94,6 +97,19 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.mode = mode;
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.context = context;
+    }
+    
+    public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
+            int mode)
+    {
+        super(fr.getActivity(), textViewResourceId, listItems);
+        originalNodes = listItems;
+        this.selectedItems = selectedItems;
+        this.renditionManager = ApplicationManager.getInstance(fr.getActivity()).getRenditionManager(fr.getActivity());
+        this.mode = mode;
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.context = fr.getActivity();
+        this.gridFragment = fr;
     }
 
     public NodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
@@ -147,17 +163,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
         int columnWidth = 240;
         Log.d("WIDTH", width + "");
-        if (width <= 400)
+        if (width <= 480)
         {
             layoutId = R.layout.app_grid_progress_row;
             flagLayoutId = R.id.app_grid_progress;
             columnWidth = 320;
-        }
-        else if (width < 480)
-        {
-            layoutId = R.layout.app_grid_card_repo;
-            flagLayoutId = R.id.app_grid_card;
-            columnWidth = 150;
         }
         else if (width < 600)
         {
@@ -184,13 +194,10 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             columnWidth = 240;
         }
 
-        ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
-                ChildrenBrowserFragment.TAG);
-        if (fr != null)
-        {
-            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
+        if (gridFragment != null){
+            gridFragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
         }
-
+        
         View v = convertView;
         if (convertView == null || convertView.findViewById(flagLayoutId) == null)
         {
@@ -205,41 +212,6 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         Node item = getItem(position);
         updateControls(vh, item);
         return v;
-        
-       /* View v = convertView;
-        if (convertView == null || (!DisplayUtils.isLargerThan((MainActivity) context, 350) && convertView
-                .findViewById(R.id.app_grid_progress) == null))
-        {
-            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
-                    ChildrenBrowserFragment.TAG);
-            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 350));
-            v = createView(getContext(), convertView, R.layout.app_grid_progress_row);
-        }
-        else if (DisplayUtils.isLargerThan((MainActivity) context, 350)
-                && !DisplayUtils.isLargerThan((MainActivity) context, 650)
-                && convertView.findViewById(R.id.app_grid_card) == null)
-        {
-            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
-                    ChildrenBrowserFragment.TAG);
-            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 150));
-            v = createView(getContext(), convertView, R.layout.app_grid_card_repo);
-        }
-        else if (DisplayUtils.isLargerThan((MainActivity) context, 650)
-                && convertView.findViewById(R.id.app_grid_tiles) == null)
-        {
-            ChildrenBrowserFragment fr = (ChildrenBrowserFragment) context.getFragmentManager().findFragmentByTag(
-                    ChildrenBrowserFragment.TAG);
-            fr.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), 200));
-            v = createView(getContext(), convertView, R.layout.app_grid_tiles_repo);
-        }
-        else
-        {
-            return super.getView(position, convertView, parent);
-        }
-        ProgressViewHolder vh = (ProgressViewHolder) v.getTag();
-        Node item = getItem(position);
-        updateControls(vh, item);
-        return v;*/
     }
 
     // /////////////////////////////////////////////////////////////

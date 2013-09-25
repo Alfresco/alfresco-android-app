@@ -1187,9 +1187,4 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         }
         return displayItemLayout;
     }
-
-    public void setColumnWidth(int value)
-    {
-        gv.setColumnWidth(value);
-    }
 }

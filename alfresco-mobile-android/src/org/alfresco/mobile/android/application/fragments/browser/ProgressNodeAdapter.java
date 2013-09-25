@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -87,6 +88,16 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         context.getLoaderManager().restartLoader(context.hashCode(), null, this);
+        refreshFavorites();
+    }
+    
+    public ProgressNodeAdapter(BaseGridFragment fragment, int textViewResourceId, Node parentNode, List<Node> listItems,
+            List<Node> selectedItems, int mode)
+    {
+        super(fragment, textViewResourceId, listItems, selectedItems, mode);
+        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.parentNode = parentNode;
+        fragment.getActivity().getLoaderManager().restartLoader(fragment.getActivity().hashCode(), null, this);
         refreshFavorites();
     }
 
