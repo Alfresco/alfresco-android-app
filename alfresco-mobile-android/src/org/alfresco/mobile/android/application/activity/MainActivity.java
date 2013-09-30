@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.Stack;
 
+import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -30,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
@@ -42,6 +44,7 @@ import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFr
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
 import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
+import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -463,7 +466,7 @@ public class MainActivity extends BaseActivity
         {
             case R.id.menu_browse_my_sites:
                 if (!checkSession(R.id.menu_browse_my_sites)) { return; }
-                frag =  new BrowserSitesFragment();
+                frag = new BrowserSitesFragment();
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         BrowserSitesFragment.TAG, true);
@@ -471,6 +474,20 @@ public class MainActivity extends BaseActivity
             case R.id.menu_browse_root:
                 if (!checkSession(R.id.menu_browse_root)) { return; }
                 frag = ChildrenBrowserFragment.newInstance(getCurrentSession().getRootFolder());
+                frag.setSession(SessionUtils.getSession(this));
+                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                        ChildrenBrowserFragment.TAG, true);
+                break;
+            case R.id.menu_browse_shared:
+                if (!checkSession(R.id.menu_browse_shared)) { return; }
+                frag = ChildrenBrowserFragment.newInstance(NodeChildrenLoader.FOLDER_SHARED);
+                frag.setSession(SessionUtils.getSession(this));
+                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                        ChildrenBrowserFragment.TAG, true);
+                break;
+            case R.id.menu_browse_userhome:
+                if (!checkSession(R.id.menu_browse_userhome)) { return; }
+                frag = ChildrenBrowserFragment.newInstance(NodeChildrenLoader.FOLDER_USER_HOMES);
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         ChildrenBrowserFragment.TAG, true);
@@ -731,7 +748,7 @@ public class MainActivity extends BaseActivity
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
         addPropertiesFragment(n, getImportParent(), b);
     }
-    
+
     public void addGalleryFragment()
     {
         Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
@@ -886,7 +903,7 @@ public class MainActivity extends BaseActivity
             ProcessesFragment.getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(TasksFragment.TAG))
         {
             TasksFragment.getMenu(menu);
@@ -1274,6 +1291,11 @@ public class MainActivity extends BaseActivity
 
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED.equals(intent.getAction()))
             {
+                if (getCurrentSession() instanceof RepositorySession)
+                {
+                    ConfigurationManager.getInstance(activity).retrieveConfiguration(activity, currentAccount);
+                }
+
                 if (!isCurrentAccountToLoad(intent)) { return; }
 
                 setSessionState(SESSION_ACTIVE);

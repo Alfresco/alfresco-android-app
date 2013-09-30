@@ -65,7 +65,7 @@ public abstract class BaseCursorLoader<VH> extends CursorAdapter
         updateControls(vh, cursor);
     }
 
-    private void updateControls(VH vh, Cursor cursor)
+    protected void updateControls(VH vh, Cursor cursor)
     {
         if (vh != null)
         {

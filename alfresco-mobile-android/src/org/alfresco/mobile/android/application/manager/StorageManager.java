@@ -47,6 +47,8 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     private static final String SYNCHRO_DIRECTORY = "Synchro";
 
     private static final String SHARE_DIRECTORY = "Share";
+    
+    private static final String CONFIGURATION_DIRECTORY = "Configuration";
 
     private static final String ASSETDIR = "Assets";
 
@@ -61,6 +63,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     // ///////////////////////////////////////////////////////////////////////////
     // SHORTCUT
     // ///////////////////////////////////////////////////////////////////////////
+    public static File getConfigurationFolder(Context context, Account acc)
+    {
+        return getPrivateFolder(context, CONFIGURATION_DIRECTORY, acc);
+    }
+    
     public static File getShareFolder(Context context, Account acc)
     {
         return getPrivateFolder(context, SHARE_DIRECTORY, acc);

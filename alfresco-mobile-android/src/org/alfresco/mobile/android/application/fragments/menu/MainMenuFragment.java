@@ -17,12 +17,18 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
+import java.util.Map;
+
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
+import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -34,6 +40,8 @@ import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -73,6 +81,10 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private Button menuSlidingFavorites;
 
+    private ConfigurationManager configurationManager;
+
+    private View rootView;
+
     public static final String TAG = "MainMenuFragment";
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
@@ -83,7 +95,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.app_main_menu, container, false);
+        rootView = inflater.inflate(R.layout.app_main_menu, container, false);
 
         spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(this);
@@ -93,6 +105,17 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         if (SLIDING_TAG.equals(getTag()))
         {
             menuSlidingFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
+        }
+
+        configurationManager = ApplicationManager.getInstance(getActivity()).getConfigurationManager();
+        if (configurationManager != null
+                && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
+        {
+            configure(configurationManager.getConfig(SessionUtils.getAccount(getActivity())));
+        }
+        else
+        {
+            display();
         }
 
         return rootView;
@@ -138,14 +161,22 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-        if (receiver == null)
-        {
-            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
-            receiver = new MainMenuReceiver();
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-        }
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_CONFIGURATION_MENU);
+        receiver = new MainMenuReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
         displayFavoriteStatut();
+
+        if (configurationManager != null
+                && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
+        {
+            configure(configurationManager.getConfig(SessionUtils.getAccount(getActivity())));
+        }
+        else
+        {
+            display();
+        }
     }
 
     @Override
@@ -245,6 +276,90 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
+    private void configure(ConfigurationContext configurationContext)
+    {
+        if (configurationContext != null && configurationContext.getJson() != null
+                && configurationContext.getJson().containsKey(ConfigurationManager.CATEGORY_ROOTMENU))
+        {
+            Log.d(TAG, "Configure Main menu + " + rootView);
+
+            Map<String, Object> menuConfig = (Map<String, Object>) configurationContext.getJson().get(
+                    ConfigurationManager.CATEGORY_ROOTMENU);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_ACTIVITIES, R.id.menu_browse_activities);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_REPOSITORY, R.id.menu_browse_root);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SITES, R.id.menu_browse_my_sites);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_TASKS, R.id.menu_workflow);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_FAVORITES, R.id.menu_favorites);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SEARCH, R.id.menu_search);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_LOCAL_FILES, R.id.menu_downloads);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_NOTIFICATIONS, R.id.menu_notifications);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SHARED, R.id.menu_browse_shared, true);
+            hideOrDisplay(menuConfig, ConfigurationManager.MENU_MYFILES, R.id.menu_browse_userhome, true);
+        }
+        else
+        {
+            display();
+        }
+    }
+
+    private void display()
+    {
+        Log.d(TAG, "Display");
+
+        rootView.findViewById(R.id.menu_browse_activities).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_browse_root).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_browse_my_sites).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_favorites).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
+        rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
+    }
+
+    private void hideOrDisplay(Map<String, Object> menuConfig, String configKey, int viewId)
+    {
+        hideOrDisplay(menuConfig, configKey, viewId, false);
+    }
+
+    private void hideOrDisplay(Map<String, Object> menuConfig, String configKey, int viewId, boolean forceHide)
+    {
+        if (menuConfig.containsKey(configKey))
+        {
+            Map<String, Object> itemVisibility = (Map<String, Object>) menuConfig.get(configKey);
+            if (itemVisibility.containsKey(ConfigurationManager.PROP_VISIBILE)
+                    && JSONConverter.getBoolean(itemVisibility, ConfigurationManager.PROP_VISIBILE))
+            {
+                rootView.findViewById(viewId).setVisibility(View.VISIBLE);
+            }
+            else if (!itemVisibility.containsKey(ConfigurationManager.PROP_VISIBILE))
+            {
+                if (forceHide)
+                {
+                    rootView.findViewById(viewId).setVisibility(View.GONE);
+                }
+                else
+                {
+                    rootView.findViewById(viewId).setVisibility(View.VISIBLE);
+                }
+            }
+            else
+            {
+                rootView.findViewById(viewId).setVisibility(View.GONE);
+            }
+        }
+        else
+        {
+            if (forceHide)
+            {
+                rootView.findViewById(viewId).setVisibility(View.GONE);
+            } else {
+                rootView.findViewById(viewId).setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     private void refresh()
     {
         if (accountCursor == null) { return; }
@@ -337,7 +452,25 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         {
             Log.d(TAG, intent.getAction());
             if (intent.getAction() == null) { return; }
-            displayFavoriteStatut();
+
+            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction()))
+            {
+                displayFavoriteStatut();
+            }
+            else if (IntentIntegrator.ACTION_CONFIGURATION_MENU.equals(intent.getAction()))
+            {
+                configurationManager = ApplicationManager.getInstance(getActivity()).getConfigurationManager();
+                if (configurationManager != null
+                        && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
+                {
+                    configure(configurationManager.getConfig(AccountManager.retrieveAccount(context, intent.getExtras()
+                            .getLong(IntentIntegrator.EXTRA_ACCOUNT_ID))));
+                }
+                else
+                {
+                    display();
+                }
+            }
         }
     }
 }

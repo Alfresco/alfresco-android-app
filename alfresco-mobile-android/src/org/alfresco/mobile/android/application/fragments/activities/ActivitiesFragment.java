@@ -196,7 +196,7 @@ public class ActivitiesFragment extends BaseGridFragment implements
 
         if (adapter == null)
         {
-            adapter = new ActivityEventAdapter(this, alfSession, R.layout.app_grid_row_activities,
+            adapter = new ActivityEventAdapter(this, alfSession, R.layout.app_grid_row_activities2,
                     new ArrayList<ActivityEntry>(0), selectedEntry);
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }

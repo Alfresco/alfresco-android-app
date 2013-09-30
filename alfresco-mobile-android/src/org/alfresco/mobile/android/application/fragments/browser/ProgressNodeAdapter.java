@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -86,8 +87,24 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         super(context, textViewResourceId, listItems, selectedItems, mode);
         vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
-        context.getLoaderManager().restartLoader(context.hashCode(), null, this);
-        refreshFavorites();
+        if (parentNode != null)
+        {
+            context.getLoaderManager().restartLoader(context.hashCode(), null, this);
+            refreshFavorites();
+        }
+    }
+
+    public ProgressNodeAdapter(BaseGridFragment fragment, int textViewResourceId, Node parentNode,
+            List<Node> listItems, List<Node> selectedItems, int mode)
+    {
+        super(fragment, textViewResourceId, listItems, selectedItems, mode);
+        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.parentNode = parentNode;
+        if (parentNode != null)
+        {
+            fragment.getActivity().getLoaderManager().restartLoader(fragment.getActivity().hashCode(), null, this);
+            refreshFavorites();
+        }
     }
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
@@ -101,8 +118,11 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         super(context, textViewResourceId, listItems, selectedItems);
         vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
-        context.getLoaderManager().restartLoader(context.hashCode(), null, this);
-        refreshFavorites();
+        if (parentNode != null)
+        {
+            context.getLoaderManager().restartLoader(context.hashCode(), null, this);
+            refreshFavorites();
+        }
     }
 
     // /////////////////////////////////////////////////////////////
@@ -179,7 +199,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
         else
         {
-           vh.favoriteIcon.setVisibility(View.GONE);
+            vh.favoriteIcon.setVisibility(View.GONE);
         }
 
         if (item instanceof NodePlaceHolder)
@@ -236,7 +256,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }
-
 
             UIUtils.setBackground(((View) vh.choose),
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
