@@ -158,6 +158,18 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         return newInstance(null, folderPath, null);
     }
 
+    public static ChildrenBrowserFragment newInstance(int folderTypeId)
+    {
+        ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
+        lc.setIsSortAscending(true);
+        Bundle b = createBundleArgs(folderTypeId);
+        b.putAll(createBundleArgs(lc, LOAD_AUTO));
+        bf.setArguments(b);
+        return bf;
+    }
+
     public static ChildrenBrowserFragment newInstance(Site site)
     {
         return newInstance(null, null, site);
@@ -629,6 +641,10 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
         if (results.hasException())
         {
+            if (adapter.getCount() == 0)
+            {
+                ev.setVisibility(View.VISIBLE);
+            }
             onLoaderException(results.getException());
         }
         else
@@ -1186,10 +1202,5 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
                 break;
         }
         return displayItemLayout;
-    }
-
-    public void setColumnWidth(int value)
-    {
-        gv.setColumnWidth(value);
     }
 }

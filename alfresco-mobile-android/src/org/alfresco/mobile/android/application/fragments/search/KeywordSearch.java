@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.search.SearchFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.Loader;
@@ -50,11 +49,12 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class KeywordSearch extends SearchFragment
+public class KeywordSearch extends GridSearchFragment
 {
 
     public static final String TAG = KeywordSearch.class.getName();
@@ -109,7 +109,7 @@ public class KeywordSearch extends SearchFragment
 
         init(v, R.string.empty_child);
 
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        gv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         final EditText searchForm = (EditText) v.findViewById(R.id.search_query);
         searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
@@ -166,7 +166,7 @@ public class KeywordSearch extends SearchFragment
         // Reduce voluntary result list for cloud.
         if (alfSession instanceof CloudSession)
         {
-            b.putSerializable(ARGUMENT_LISTING, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+            b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
         }
         if (parentFolder != null)
         {
@@ -177,7 +177,7 @@ public class KeywordSearch extends SearchFragment
     }
 
     @Override
-    public void onListItemClick(ListView l, View v, int position, long id)
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         super.onListItemClick(l, v, position, id);
         Node item = (Node) l.getItemAtPosition(position);
@@ -260,7 +260,7 @@ public class KeywordSearch extends SearchFragment
         Log.e(TAG, Log.getStackTraceString(e));
         MessengerManager.showToast(getActivity(), R.string.error_general);
         setListShown(true);
-        lv.setEmptyView(ev);
+        gv.setEmptyView(ev);
     }
 
     @Override

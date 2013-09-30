@@ -503,5 +503,9 @@ public abstract class BaseGridFragment extends BaseFragment
         lci.setSortProperty(lco.getSortProperty());
         return lci;
     }
-
+    
+    public void setColumnWidth(int value)
+    {
+        gv.setColumnWidth(value);
+    }
 }

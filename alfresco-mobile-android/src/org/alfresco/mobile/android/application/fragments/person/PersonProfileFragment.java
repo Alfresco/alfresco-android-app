@@ -225,7 +225,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
         switch (mode)
         {
             case MODE_CALL:
-                if (person.getTelephoneNumber() != null  && !person.getTelephoneNumber().isEmpty())
+                if (person.getTelephoneNumber() != null && !person.getTelephoneNumber().isEmpty())
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_TEL, Menu.FIRST + MenuActionItem.MENU_TEL,
                             person.getTelephoneNumber());
@@ -361,7 +361,8 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
 
         // JOB TITLE
         tv = (TextView) vRoot.findViewById(R.id.jobTitle);
-        if (person.getJobTitle() != null && person.getCompany() != null && person.getCompany().getName() != null)
+        if (person.getJobTitle() != null && !person.getJobTitle().isEmpty() && person.getCompany() != null
+                && person.getCompany().getName() != null && !person.getCompany().getName().isEmpty())
         {
             tv.setText(String.format(getString(R.string.work_at), person.getJobTitle(), person.getCompany().getName()));
         }

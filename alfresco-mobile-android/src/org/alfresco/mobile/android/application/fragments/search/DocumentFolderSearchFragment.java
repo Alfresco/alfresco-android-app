@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.search.SearchFragment;
 
 import android.content.Loader;
 import android.os.Bundle;
@@ -44,13 +43,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.GridView;
 import android.widget.ListView;
 
 /**
  * @version 1.3
  * @author jpascal
  */
-public class DocumentFolderSearchFragment extends SearchFragment
+public class DocumentFolderSearchFragment extends GridSearchFragment
 {
 
     public static final String TAG = DocumentFolderSearchFragment.class.getName();
@@ -120,12 +120,12 @@ public class DocumentFolderSearchFragment extends SearchFragment
         SessionUtils.checkSession(getActivity(), alfSession);
 
         setActivateThumbnail(false);
-        View v = inflater.inflate(R.layout.sdk_list, container, false);
+        View v = inflater.inflate(R.layout.sdk_grid, container, false);
         if (alfSession == null) { return v; }
 
         init(v, R.string.empty_child);
 
-        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+        gv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         tmpParentFolder = null;
         site = null;
@@ -166,7 +166,7 @@ public class DocumentFolderSearchFragment extends SearchFragment
         // Reduce voluntary result list for cloud.
         if (alfSession instanceof CloudSession)
         {
-            b.putSerializable(ARGUMENT_LISTING, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+            b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
         }
         if (parentFolder != null)
         {
@@ -191,7 +191,7 @@ public class DocumentFolderSearchFragment extends SearchFragment
         // Reduce voluntary result list for cloud.
         if (alfSession instanceof CloudSession)
         {
-            b.putSerializable(ARGUMENT_LISTING, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+            b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
         }
         if (parentFolder != null)
         {
@@ -209,7 +209,8 @@ public class DocumentFolderSearchFragment extends SearchFragment
     {
         if (adapter == null)
         {
-            adapter = new NodeAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Node>(0), selectedItems, -1);
+            gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 240));
+            adapter = new NodeAdapter(this, R.layout.app_grid_progress_row, new ArrayList<Node>(0), selectedItems, -1);
         }
         if (alfSession instanceof CloudSession)
         {
@@ -236,13 +237,13 @@ public class DocumentFolderSearchFragment extends SearchFragment
         Log.e(TAG, Log.getStackTraceString(e));
         MessengerManager.showToast(getActivity(), R.string.error_general);
         setListShown(true);
-        lv.setEmptyView(ev);
+        gv.setEmptyView(ev);
     }
 
     // //////////////////////////////////////////////////////////////////////
     // LIST ACTION
     // //////////////////////////////////////////////////////////////////////
-    public void onListItemClick(ListView l, View v, int position, long id)
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         super.onListItemClick(l, v, position, id);
         Node item = (Node) l.getItemAtPosition(position);
