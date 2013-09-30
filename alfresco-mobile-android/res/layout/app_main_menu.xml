@@ -53,7 +53,7 @@
             android:textColor="@android:color/white" />
 
         <LinearLayout
-            android:id="@+id/LinearLayout1"
+            android:id="@+id/main_menu_group"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@+id/accounts_spinner"
@@ -83,12 +83,26 @@
                 style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_repository_light"
                 android:text="@string/menu_browse_root" />
+            
+             <Button
+                android:id="@+id/menu_browse_shared"
+                style="@style/main_menu_action_button"
+                android:drawableLeft="@drawable/ic_shared_light"
+                android:text="@string/menu_browse_shared"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_browse_my_sites"
                 style="@style/main_menu_action_button"
                 android:drawableLeft="@drawable/ic_all_sites_light"
                 android:text="@string/menu_browse_sites" />
+            
+             <Button
+                android:id="@+id/menu_browse_userhome"
+                style="@style/main_menu_action_button"
+                android:drawableLeft="@drawable/ic_myfiles_light"
+                android:text="@string/menu_browse_userhome"
+                android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_workflow"

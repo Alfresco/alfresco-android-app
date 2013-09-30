@@ -137,6 +137,8 @@
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repository</string>
     <string name="menu_browse_sites">Sites</string>
+    <string name="menu_browse_userhome">My Files</string>
+    <string name="menu_browse_shared">Shared Files</string>
     <string name="menu_browse_all_sites">All Sites</string>
     <string name="menu_browse_my_sites">My Sites</string>
     <string name="menu_browse_favorite_sites">Favorite Sites</string>

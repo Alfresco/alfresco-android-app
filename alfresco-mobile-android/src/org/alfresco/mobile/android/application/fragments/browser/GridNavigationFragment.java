@@ -27,8 +27,8 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
-import org.alfresco.mobile.android.ui.R;
 
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
@@ -50,6 +50,8 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     public static final String ARGUMENT_SITE = "site";
 
     public static final String ARGUMENT_FOLDERPATH = "folderPath";
+    
+    public static final String ARGUMENT_FOLDER_TYPE_ID = "folderId";
 
     // Browser Parameters
     protected Folder parentFolder;
@@ -57,10 +59,12 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     protected Site currentSiteParameter = null;
     protected String pathParameter = null;
     protected Folder folderParameter = null;
+    protected int folderTypeId = -1;
     
     private Boolean activateThumbnail = Boolean.FALSE;
 
     protected List<Node> selectedItems = new ArrayList<Node>(1);
+
 
     public GridNavigationFragment()
     {
@@ -82,6 +86,13 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     public static Bundle createBundleArgs(Site site)
     {
         return createBundleArgs(null, null, site);
+    }
+    
+    public static Bundle createBundleArgs(int folderId)
+    {
+        Bundle args = new Bundle();
+        args.putInt(ARGUMENT_FOLDER_TYPE_ID, folderId);
+        return args;
     }
 
     public static Bundle createBundleArgs(Folder parentFolder, String pathFolder, Site site)
@@ -110,6 +121,7 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
         {
             folderParameter = (Folder) bundle.getSerializable(ARGUMENT_FOLDER);
             pathParameter = bundle.getString(ARGUMENT_FOLDERPATH);
+            folderTypeId = bundle.containsKey(ARGUMENT_FOLDER_TYPE_ID) ? bundle.getInt(ARGUMENT_FOLDER_TYPE_ID) : -1;
             currentSiteParameter = (Site) bundle.getSerializable(ARGUMENT_SITE);
             lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_GRID);
             lc = copyListing(lcorigin);
@@ -133,6 +145,22 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
         {
             title = folderParameter.getName();
             loader = new NodeChildrenLoader(getActivity(), alfSession, folderParameter);
+        }
+        else if (folderTypeId != -1)
+        {
+            switch (folderTypeId)
+            {
+                case NodeChildrenLoader.FOLDER_SHARED:
+                    title = getString(R.string.menu_browse_shared);
+                    break;
+                case NodeChildrenLoader.FOLDER_USER_HOMES:
+                    title = getString(R.string.menu_browse_userhome);
+                    break;
+                default:
+                    title = "";
+                    break;
+            }
+            loader = new NodeChildrenLoader(getActivity(), alfSession, folderTypeId);
         }
 
         if (loader != null)

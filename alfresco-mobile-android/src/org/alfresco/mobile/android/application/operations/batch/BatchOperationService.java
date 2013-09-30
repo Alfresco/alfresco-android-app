@@ -35,6 +35,9 @@ import org.alfresco.mobile.android.application.operations.batch.account.CreateAc
 import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionCallBack;
 import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionThread;
+import org.alfresco.mobile.android.application.operations.batch.configuration.ConfigurationOperationCallBack;
+import org.alfresco.mobile.android.application.operations.batch.configuration.ConfigurationOperationRequest;
+import org.alfresco.mobile.android.application.operations.batch.configuration.ConfigurationOperationThread;
 import org.alfresco.mobile.android.application.operations.batch.file.create.CreateDirectoryCallBack;
 import org.alfresco.mobile.android.application.operations.batch.file.create.CreateDirectoryRequest;
 import org.alfresco.mobile.android.application.operations.batch.file.create.CreateDirectoryThread;
@@ -286,6 +289,12 @@ public class BatchOperationService<T> extends Service
                     task = (AbstractBatchOperationThread<T>) new FileProtectionThread(getBaseContext(), request);
                 }
                 callback = (OperationCallBack<T>) new DataProtectionCallback(getBaseContext(), totalItems,
+                        pendingRequest);
+                break;
+            case ConfigurationOperationRequest.TYPE_ID:
+                parallelOperation = 1;
+                task = (AbstractBatchOperationThread<T>) new ConfigurationOperationThread(getBaseContext(), request);
+                callback = (OperationCallBack<T>) new ConfigurationOperationCallBack(getBaseContext(), totalItems,
                         pendingRequest);
                 break;
             default:

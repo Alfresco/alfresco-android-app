@@ -247,5 +247,19 @@ public interface IntentIntegrator extends PublicIntent
     String EXTRA_TASK = "org.alfresco.mobile.android.intent.EXTRA_TASK";
 
     String EXTRA_UPDATED_TASK = "org.alfresco.mobile.android.intent.EXTRA_UPDATED_TASK";
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SERVER SIDE CONFIGURATION
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST
+    String ACTION_CONFIGURATION_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_CONFIGURATION_COMPLETED";
+
+    String ACTION_CONFIGURATION_MENU = "org.alfresco.mobile.android.intent.ACTION_CONFIGURATION_MENU";
+    
+    // EXTRA
+    String EXTRA_CONFIGURATION = "org.alfresco.mobile.android.intent.EXTRA_CONFIGURATION";
+    String EXTRA_DATA_DICTIONARY_ID = "org.alfresco.mobile.android.intent.DATA_DICTIONARY_ID";
+    String EXTRA_CONFIGURATION_ID = "org.alfresco.mobile.android.intent.CONFIGURATION_ID";
+    String EXTRA_LASTMODIFICATION = "org.alfresco.mobile.android.intent.EXTRA_LASTMODIFICATION";
 
 }
