@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.properties;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -57,6 +58,8 @@ public class MetadataFragment extends BaseFragment
     protected Folder parentNode;
 
     protected Node node;
+
+    protected boolean isRestrictable = false;
 
     public static Bundle createBundleArgs(Node node)
     {
@@ -111,8 +114,10 @@ public class MetadataFragment extends BaseFragment
         ScrollView sv = new ScrollView(getActivity());
         sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         sv.setPadding(5, 5, 5, 0);
-        
+
         if (alfSession == null) { return sv; }
+
+        isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
         LinearLayout v = new LinearLayout(getActivity());
         v.setOrientation(LinearLayout.VERTICAL);
@@ -148,6 +153,7 @@ public class MetadataFragment extends BaseFragment
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_RESTRICTABLE);
 
         sv.addView(v);
 
@@ -230,6 +236,18 @@ public class MetadataFragment extends BaseFragment
                     else
                     {
                         tv.setText(node.getProperty(map.getKey()).getValue().toString());
+                        if (isRestrictable && ContentModel.PROP_OFFLINE_EXPIRES_AFTER.equals(map.getKey()))
+                        {
+                            BigInteger expires = node.getProperty(map.getKey()).getValue();
+                            if (expires.longValue() / 3600000 > 0)
+                            {
+                                tv.setText(String.format("%d", expires.longValue() / 3600000));
+                            }
+                            else
+                            {
+                                tv.setText(String.format("%s", expires.floatValue() / 3600000));
+                            }
+                        }
                     }
                     groupview.addView(v);
                 }

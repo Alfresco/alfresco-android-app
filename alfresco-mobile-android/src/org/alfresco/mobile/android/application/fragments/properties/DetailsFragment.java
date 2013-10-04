@@ -143,8 +143,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private UpdateReceiver receiver;
 
-    // private Date decryptDateTime;
-
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -183,7 +181,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(false);
-        
+
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
@@ -205,6 +203,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (node != null)
         {
+            // Detect if isRestrictable
+            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
             display(node, inflater);
         }
         else if (nodeIdentifier != null)
@@ -417,6 +417,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         node = refreshedNode;
 
+        // Detect if restrictable
+        isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
+
         renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity());
 
         // Header
@@ -460,12 +463,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
             createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
+            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_RESTRICTABLE);
         }
 
         // BUTTONS
         ImageView b = (ImageView) vRoot.findViewById(R.id.action_openin);
         if (node.isDocument() && ((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
-                && ((Document) node).getContentStreamLength() > 0)
+                && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
         {
             b.setOnClickListener(new OnClickListener()
             {
@@ -531,21 +535,29 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         // BUTTONS
         b = (ImageView) vRoot.findViewById(R.id.action_favorite);
-        IsFavoriteLoaderCallBack lcb = new IsFavoriteLoaderCallBack(alfSession, this, node);
-        lcb.setImageButton(b);
-        lcb.setProgressView(vRoot.findViewById(R.id.favorite_progress));
-        lcb.execute(false);
-        b.setOnClickListener(new OnClickListener()
+        if (!isRestrictable)
         {
-            @Override
-            public void onClick(View v)
+            IsFavoriteLoaderCallBack lcb = new IsFavoriteLoaderCallBack(alfSession, this, node);
+            lcb.setImageButton(b);
+            lcb.setProgressView(vRoot.findViewById(R.id.favorite_progress));
+            lcb.execute(false);
+            b.setOnClickListener(new OnClickListener()
             {
-                favorite(v);
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    favorite(v);
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+            vRoot.findViewById(R.id.favorite_progress).setVisibility(View.GONE);
+        }
 
         b = (ImageView) vRoot.findViewById(R.id.action_share);
-        if (node.isDocument())
+        if (node.isDocument() && !isRestrictable)
         {
             b.setOnClickListener(new OnClickListener()
             {
@@ -594,14 +606,17 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 iv.setImageResource(iconId);
             }
 
-            iv.setOnClickListener(new OnClickListener()
+            if (!isRestrictable)
             {
-                @Override
-                public void onClick(View v)
+                iv.setOnClickListener(new OnClickListener()
                 {
-                    openin();
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
+            }
         }
         else
         {
@@ -683,24 +698,38 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         // Hide Buttons
         ImageView b = (ImageView) vRoot.findViewById(R.id.action_openin);
-        b.setOnClickListener(new OnClickListener()
+        if (!isRestrictable)
         {
-            @Override
-            public void onClick(View v)
+            b.setOnClickListener(new OnClickListener()
             {
-                openin();
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    openin();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
 
         b = (ImageView) vRoot.findViewById(R.id.action_share);
-        b.setOnClickListener(new OnClickListener()
+        if (!isRestrictable)
         {
-            @Override
-            public void onClick(View v)
+            b.setOnClickListener(new OnClickListener()
             {
-                share();
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    share();
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
+        }
 
         b = (ImageView) vRoot.findViewById(R.id.like);
         vRoot.findViewById(R.id.like_progress).setVisibility(View.GONE);
@@ -712,25 +741,31 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
-            vRoot.findViewById(R.id.icon).setOnClickListener(new OnClickListener()
+            if (!isRestrictable)
             {
-                @Override
-                public void onClick(View v)
+                vRoot.findViewById(R.id.icon).setOnClickListener(new OnClickListener()
                 {
-                    openin();
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
+            }
         }
         else
         {
-            vRoot.findViewById(R.id.preview).setOnClickListener(new OnClickListener()
+            if (!isRestrictable)
             {
-                @Override
-                public void onClick(View v)
+                vRoot.findViewById(R.id.preview).setOnClickListener(new OnClickListener()
                 {
-                    openin();
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
+            }
         }
     }
 
@@ -820,6 +855,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void openin()
     {
+        if (isRestrictable) { return; }
+
         Bundle b = new Bundle();
 
         // 3 cases
@@ -866,6 +903,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void download()
     {
+        if (isRestrictable) { return; }
+
         if (node instanceof Document)
         {
             NodeActions.download(getActivity(), parentNode, (Document) node);
@@ -905,6 +944,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void favorite(View v)
     {
+        if (isRestrictable) { return; }
+
         if (!GeneralPreferences.hasDisplayedActivateSync(getActivity()))
         {
             ActivateSyncDialogFragment.newInstance(new OnSyncChangeListener()
@@ -962,10 +1003,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (node == null) { return; }
         if (node instanceof NodeSyncPlaceHolder) { return; }
+        
+        boolean isRestrict = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
         if (node.isDocument())
         {
-            if (((Document) node).getContentStreamLength() > 0)
+            if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
             {
                 mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD,
                         R.string.download);

@@ -91,7 +91,7 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
             result = super.doInBackground();
 
             destFile = getDownloadFile();
-
+            
             ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
                     .getContentStream((Document) node);
             totalLength = contentStream.getLength();
@@ -99,6 +99,7 @@ public class DownloadThread extends NodeOperationThread<ContentFile>
             copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
             contentFileResult = new ContentFileImpl(destFile);
 
+            //Encryption if necessary
             DataProtectionManager.getInstance(context).checkEncrypt(acc, destFile);
         }
         catch (Exception e)
