@@ -33,6 +33,8 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
@@ -119,17 +121,41 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
                             .getFavoriteDocuments(listingContext);
 
-                    if (session instanceof CloudSession)
+                    // Check if restrictable is available on repo
+                    List<String> restrictableIds = new ArrayList<String>(remoteFavorites.getTotalItems());
+                    try
+                    {
+                        ((AbstractAlfrescoSessionImpl) session).getCmisSession().getTypeDefinition("P:dp:restrictable");
+
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("SELECT d.cmis:objectId,d.cmis:objectTypeId,d.cmis:baseTypeId,d.cmis:name,d.cmis:createdBy,d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=");
+                        join(builder, " OR d.cmis:objectId=", remoteFavorites.getList());
+                        builder.append(")");
+
+                        List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
+                                .search(builder.toString(), SearchLanguage.CMIS);
+                        for (Node node : restrictableNodes)
+                        {
+                            restrictableIds.add(node.getIdentifier());
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                    }
+
+                    if (session instanceof CloudSession
+                            || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session)
+                                    .hasPublicAPI()))
                     {
                         // Objects don't contain enough information
-                        // We request all node object with a search query 
+                        // We request all node object with a search query
                         // to retrieve ContentStreamId and permissions.
                         List<Document> favoriteDocumentsList = new ArrayList<Document>(remoteFavorites.getTotalItems());
-
-                        Log.d(TAG, "Sync Query");
-                        
-                        StringBuilder builder = new StringBuilder("SELECT * FROM cmis:document WHERE cmis:objectId=");
+                        StringBuilder builder = new StringBuilder();
+                        builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
                         join(builder, " OR cmis:objectId=", remoteFavorites.getList());
+                        builder.append(")");
+
                         List<Node> nodes = session.getServiceRegistry().getSearchService()
                                 .search(builder.toString(), SearchLanguage.CMIS);
 
@@ -137,10 +163,23 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         {
                             favoriteDocumentsList.add((Document) node);
                         }
-                        Log.d(TAG, "Sync Query END");
-
                         remoteFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
                                 remoteFavorites.hasMoreItems(), remoteFavorites.getTotalItems());
+                    }
+
+                    // Check Restrictable
+                    if (restrictableIds != null && !restrictableIds.isEmpty())
+                    {
+                        List<Document> tmpNodes = new ArrayList<Document>(remoteFavorites.getTotalItems());
+                        for (Node node : remoteFavorites.getList())
+                        {
+                            if (!restrictableIds.contains(node.getIdentifier()))
+                            {
+                                tmpNodes.add((Document) node);
+                            }
+                        }
+                        remoteFavorites = new PagingResultImpl<Document>(tmpNodes, remoteFavorites.hasMoreItems(),
+                                remoteFavorites.getTotalItems());
                     }
 
                     // Retrieve list of local Favorites

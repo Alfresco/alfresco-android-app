@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.properties;
 import java.io.File;
 import java.util.Date;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.impl.NodeImpl;
@@ -57,6 +58,10 @@ public class PreviewFragment extends BaseFragment
     public static final String ARGUMENT_NODE = "node";
 
     private File tempFile = null;
+    
+    private Node node;
+
+    protected boolean isRestrictable = false;
 
     public File getTempFile()
     {
@@ -81,9 +86,7 @@ public class PreviewFragment extends BaseFragment
         bf.setArguments(createBundleArgs(n));
         return bf;
     }
-
-    private Node node;
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -101,6 +104,9 @@ public class PreviewFragment extends BaseFragment
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
+        
+        // Detect if isRestrictable
+        isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
         RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
@@ -132,6 +138,10 @@ public class PreviewFragment extends BaseFragment
 
     public void openin()
     {
+        if (isRestrictable){
+            return;
+        }
+        
         Bundle b = new Bundle();
 
         // 3 cases

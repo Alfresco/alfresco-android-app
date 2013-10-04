@@ -789,4 +789,8 @@
     <string name="display_views">Views</string>
     <string name="display_gallery">Display Gallery</string>
     
+    <!-- Metadata RESTRICTABLE -->
+    <string name="metadata_aspect_restrictable">Restrictable</string>
+    <string name="metadata_prop_offline_expires_after">Offline Expires After (hours)</string>
+    
 </resources>
