@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.fragments.workflow;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;

@@ -169,7 +169,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
     private int getFileDrawableId(ActivityEntry item)
     {
-        int drawable = R.drawable.ic_menu_notifications;
+        int drawable = R.drawable.ic_menu_notif;
         String s = item.getType();
 
         if (s.startsWith(PREFIX_FILE))
@@ -265,15 +265,15 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
         {
             put(PREFIX_LINK, R.drawable.ic_menu_share);
             put(PREFIX_EVENT, R.drawable.ic_menu_today);
-            put(PREFIX_WIKI, R.drawable.ic_menu_notifications);
+            put(PREFIX_WIKI, R.drawable.ic_menu_notif);
             put(PREFIX_USER, R.drawable.ic_avatar);
-            put(PREFIX_DATALIST, R.drawable.ic_menu_notifications);
-            put(PREFIX_DISCUSSIONS, R.drawable.ic_menu_start_conversation);
+            put(PREFIX_DATALIST, R.drawable.ic_menu_notif);
+            put(PREFIX_DISCUSSIONS, R.drawable.ic_action_dialog);
             put(PREFIX_FOLDER, R.drawable.ic_menu_archive);
-            put(PREFIX_COMMENT, R.drawable.ic_menu_start_conversation);
-            put(PREFIX_BLOG, R.drawable.ic_menu_notifications);
-            put(PREFIX_SUBSCRIPTION, R.drawable.ic_menu_notifications);
-            put(PREFIX_GROUP, R.drawable.ic_menu_notifications);
+            put(PREFIX_COMMENT, R.drawable.ic_action_dialog);
+            put(PREFIX_BLOG, R.drawable.ic_menu_notif);
+            put(PREFIX_SUBSCRIPTION, R.drawable.ic_menu_notif);
+            put(PREFIX_GROUP, R.drawable.ic_menu_notif);
         }
     };
 

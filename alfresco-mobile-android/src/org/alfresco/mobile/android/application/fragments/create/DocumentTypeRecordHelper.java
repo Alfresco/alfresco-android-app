@@ -17,11 +17,14 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
+
+import android.content.Context;
 
 /**
  * This class contains all informations about a specific file type. It's used by
@@ -29,10 +32,8 @@ import org.alfresco.mobile.android.application.R;
  * 
  * @author Jean Marie Pascal
  */
-public class DocumentTypeRecord implements Serializable
+public class DocumentTypeRecordHelper
 {
-
-    private static final long serialVersionUID = 1L;
 
     private static final String TEMPLATEFOLDER_PATH = "FilesTemplates/Template";
 
@@ -69,46 +70,8 @@ public class DocumentTypeRecord implements Serializable
     /** Unique Identifier for text document (txt). */
     public static final int VIDEO_ID = 70;
 
-    /** Unique Identifier of the file type. */
-    public int id;
-
-    /** Icon Ressource Identifier associated to the file type. */
-    public int iconId;
-
-    /**
-     * String Ressource Identifier associated to the file type. <br/>
-     * Example : Word Document
-     */
-    public int nameId;
-
-    /**
-     * String value that represents filename extension part of the document. <br/>
-     * Example : .docx, .xlsx
-     */
-    public String extension;
-
-    /**
-     * String value that represents document mimetype . <br/>
-     * Example :
-     * application/vnd.openxmlformats-officedocument.wordprocessingml.document
-     */
-    public String mimetype;
-
-    /**
-     * Path value to a default template file associated to the document type. <br/>
-     * By default the root folder is "assets" folder inside the application.
-     */
-    public String templatePath;
-
-    public DocumentTypeRecord(int id, int iconId, int nameId, String extension, String mimetype, String template)
+    private DocumentTypeRecordHelper()
     {
-        super();
-        this.id = id;
-        this.iconId = iconId;
-        this.nameId = nameId;
-        this.extension = extension;
-        this.mimetype = mimetype;
-        this.templatePath = template;
     }
 
     /**
@@ -132,16 +95,37 @@ public class DocumentTypeRecord implements Serializable
                     "text/plain", null));
         }
     };
+    
+    public static List<DocumentTypeRecord> getCreationDocumentTypeList(Context context)
+    {
+        List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>(DOCUMENT_TYPES_CREATION_LIST);
+        if (context != null && ApplicationManager.getSamsungManager(context) != null)
+        {
+            fileTypes.add(ApplicationManager.getInstance(context).getSamsungManager().addDocumentTypeRecord());
+        }
+        return fileTypes;
+    }
 
     public static final List<DocumentTypeRecord> DOCUMENT_TYPES_OPENAS_LIST = new ArrayList<DocumentTypeRecord>(4)
     {
         private static final long serialVersionUID = 1L;
         {
             add(new DocumentTypeRecord(IMAGE_ID, R.drawable.mime_img, R.string.open_as_image, null, "image/jpeg", null));
-            add(new DocumentTypeRecord(VIDEO_ID, R.drawable.mime_video, R.string.open_as_video, null, "video/mpeg", null));
-            add(new DocumentTypeRecord(AUDIO_ID, R.drawable.mime_audio, R.string.open_as_audio, null, "audio/mpeg", null));
-            add(new DocumentTypeRecord(TEXT_ID, R.drawable.mime_txt, R.string.open_as_txt, null, "text/plain",
+            add(new DocumentTypeRecord(VIDEO_ID, R.drawable.mime_video, R.string.open_as_video, null, "video/mpeg",
                     null));
+            add(new DocumentTypeRecord(AUDIO_ID, R.drawable.mime_audio, R.string.open_as_audio, null, "audio/mpeg",
+                    null));
+            add(new DocumentTypeRecord(TEXT_ID, R.drawable.mime_txt, R.string.open_as_txt, null, "text/plain", null));
         }
     };
+
+    public static List<DocumentTypeRecord> getOpenAsDocumentTypeList(Context context)
+    {
+        List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>(DOCUMENT_TYPES_OPENAS_LIST);
+        if (context != null && ApplicationManager.getInstance(context).getSamsungManager() != null)
+        {
+            fileTypes.add(ApplicationManager.getInstance(context).getSamsungManager().addDocumentTypeRecord());
+        }
+        return fileTypes;
+    }
 }

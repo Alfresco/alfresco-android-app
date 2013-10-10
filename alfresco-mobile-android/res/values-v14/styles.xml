@@ -25,4 +25,16 @@
         <item name="android:maxLength">1</item>
     </style>
     
+   <style name="sectionHeader" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="slidingmenu_sectionHeader" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:textAllCaps">true</item>
+    </style>
+    
+    <style name="tab_pager_header">
+        <item name="android:textAllCaps">true</item>
+    </style>
+   
 </resources>

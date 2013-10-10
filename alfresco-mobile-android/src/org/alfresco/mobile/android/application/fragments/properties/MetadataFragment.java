@@ -27,8 +27,11 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PropertyType;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.PropertyManager;
@@ -43,6 +46,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -150,6 +154,13 @@ public class MetadataFragment extends BaseFragment
         ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false,
                 generalPropertyTitle, filter);
         addPathProperty(generalGroup, inflater);
+        View vr = addPropertyLine(generalGroup, inflater, node, R.string.metadata_prop_creator, PropertyIds.CREATED_BY,
+                null, false);
+
+        // SAMSUNG Specific
+        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
+                getActivity());
+        
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
@@ -160,34 +171,45 @@ public class MetadataFragment extends BaseFragment
         return sv;
     }
 
+    protected View addPropertyLine(ViewGroup generalGroup, LayoutInflater inflater, Node node, int propertyLabel,
+            String propertyId, OnClickListener listener, boolean isUnderline)
+    {
+        View vr = inflater.inflate(R.layout.sdk_property_row, null);
+        TextView tv = (TextView) vr.findViewById(R.id.propertyName);
+        tv.setText(propertyLabel);
+        tv = (TextView) vr.findViewById(R.id.propertyValue);
+        tv.setText((String) node.getPropertyValue(propertyId));
+        tv.setClickable(true);
+        tv.setFocusable(true);
+        if (isUnderline)
+        {
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
+        tv.setTag(node);
+        tv.setOnClickListener(listener);
+        generalGroup.addView(vr);
+        return vr;
+    }
+
     protected void addPathProperty(ViewGroup generalGroup, LayoutInflater inflater)
     {
         // Add Path
         if (parentNode != null || node.isFolder())
         {
             Node tmpNode = (parentNode != null) ? parentNode : node;
-            View vr = inflater.inflate(R.layout.sdk_property_row, null);
-            TextView tv = (TextView) vr.findViewById(R.id.propertyName);
-            tv.setText(R.string.metadata_prop_path);
-            tv = (TextView) vr.findViewById(R.id.propertyValue);
-            tv.setText((String) tmpNode.getPropertyValue(PropertyIds.PATH));
-            tv.setClickable(true);
-            tv.setFocusable(true);
-            tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-            tv.setTag(tmpNode);
-            tv.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    if (getActivity() instanceof BaseActivity)
+            addPropertyLine(generalGroup, inflater, tmpNode, R.string.metadata_prop_path, PropertyIds.PATH,
+                    new OnClickListener()
                     {
-                        ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) v.getTag())
-                                .getPropertyValue(PropertyIds.PATH));
-                    }
-                }
-            });
-            generalGroup.addView(vr);
+                        @Override
+                        public void onClick(View v)
+                        {
+                            if (getActivity() instanceof BaseActivity)
+                            {
+                                ((BaseActivity) getActivity()).addBrowserFragment((String) ((Folder) v.getTag())
+                                        .getPropertyValue(PropertyIds.PATH));
+                            }
+                        }
+                    }, true);
         }
     }
 

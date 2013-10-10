@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;

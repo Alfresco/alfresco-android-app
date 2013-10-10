@@ -33,7 +33,7 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/comment_create_hint"
+            android:hint="@string/comment_add_hint"
             android:imeOptions="actionSend"
             android:inputType="text"
             android:maxLines="2" />

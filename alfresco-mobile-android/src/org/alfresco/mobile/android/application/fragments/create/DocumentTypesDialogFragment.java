@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -99,7 +100,7 @@ public class DocumentTypesDialogFragment extends DialogFragment
             }
         });
 
-        List<DocumentTypeRecord> fileTypes = DocumentTypeRecord.DOCUMENT_TYPES_CREATION_LIST;
+        List<DocumentTypeRecord> fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.sdk_list_row, fileTypes);
         lv.setAdapter(adapter);
 

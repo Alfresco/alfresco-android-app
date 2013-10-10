@@ -21,8 +21,9 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
-import org.alfresco.mobile.android.application.fragments.create.DocumentTypeRecord;
+import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
+import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypeRecordHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
@@ -100,7 +101,7 @@ public class OpenAsDialogFragment extends DialogFragment
             }
         });
 
-        List<DocumentTypeRecord> fileTypes = DocumentTypeRecord.DOCUMENT_TYPES_OPENAS_LIST;
+        List<DocumentTypeRecord> fileTypes = DocumentTypeRecordHelper.getOpenAsDocumentTypeList(getActivity());
         FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.sdk_list_row, fileTypes);
         lv.setAdapter(adapter);
 

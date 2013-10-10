@@ -27,6 +27,12 @@ Important Note : Be sure you already installed all the relevant Android packages
 You can find more informations at https://github.com/mosabua/maven-android-sdk-deployer/blob/master/README.markdown.
 
 
+Optional
+-------------
+
+* Samsung Mobile SDK
+
+
 License
 -------
 

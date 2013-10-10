@@ -41,6 +41,10 @@
 	</scm>
 
 	<modules>
+		<!-- Extensions -->
+		<module>alfresco-mobile-android-commons/alfresco-mobile-android-commons</module>
+
+		<!-- Application -->
 		<module>alfresco-mobile-android</module>
 	</modules>
 
@@ -133,14 +137,15 @@
 		<android.version.number>16</android.version.number>
 		<android.version>4.1.1.4</android.version>
 		<android.support.version>r18</android.support.version>
-		<android.maven.plugin.version>3.6.0</android.maven.plugin.version>
+		<android.maven.plugin.version>3.7.0</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
-		<okhttp.version>1.1.1</okhttp.version>
+		<okhttp.version>1.2.1</okhttp.version>
 
 		<!-- Alfresco Configuration -->
 		<alfresco.sdk.version>1.3.0-SNAPSHOT</alfresco.sdk.version>
+		<alfresco.apps.version>1.3.0-SNAPSHOT</alfresco.apps.version>
 
 		<!-- Plugins -->
 		<site.basedir>${project.parent.basedir}</site.basedir>
@@ -432,6 +437,15 @@
 
 		</plugins>
 	</reporting>
+
+	<profiles>
+		<profile>
+			<id>extension-samsung</id>
+			<modules>
+				<module>alfresco-mobile-android-extensions/alfresco-mobile-android-extension-samsung</module>
+			</modules>
+		</profile>
+	</profiles>
 
 	<dependencyManagement>
 		<dependencies>

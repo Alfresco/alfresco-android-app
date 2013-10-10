@@ -19,12 +19,14 @@ package org.alfresco.mobile.android.application.fragments.create;
 
 import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -39,6 +41,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,8 +91,8 @@ public class EditorsDialogFragment extends DialogFragment
         // 'eventually' edit a document.
         // ACTION_EDIT doesn't work
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setType(documentType.mimetype);
-
+        intent.setDataAndType(Uri.fromFile(new File("/sdcard/test"+documentType.extension)), documentType.mimetype);
+        //intent.setDataAndType(Uri.fromFile(new File("/storage/sdcard0/Android/data/org.alfresco.mobile.android.application/files/ec2-176-34-173-67.eu-west-1.compute.amazonaws.com-admin/Download/yyy.spd")), documentType.mimetype)
         final PackageManager mgr = getActivity().getPackageManager();
         List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
         Collections.sort(list, new EditorComparator(getActivity(), true));
