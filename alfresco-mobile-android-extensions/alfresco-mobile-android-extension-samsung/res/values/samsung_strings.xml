@@ -18,8 +18,16 @@
 -->
 <resources>
 
+    <!-- Override -->
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="search">Search</string>
+    <string name="search_hint">Enter search term</string>
+    <string name="comment_add_hint">Saisissez votre commentaire ici&#8230;</string>
+    <string name="add">Ajouter</string>
+    
+    
+    <!-- Samsung -->
     <string name="extension_name">Samsung Extension</string>
     <string name="thumbnail">Thumbnail</string>
     <string name="note_editor_name">Alfresco S Note Editor</string>
