@@ -47,31 +47,30 @@ public class SamsungManagerImpl extends SamsungManager
         try
         {
             spenPackage.initialize(context);
-            return spenPackage.isFeatureEnabled(Spen.DEVICE_PEN);
+            spenPackage.isFeatureEnabled(Spen.DEVICE_PEN);
+            return true;
         }
         catch (SsdkUnsupportedException e)
         {
             int eType = e.getType();
             if (eType == SsdkUnsupportedException.VENDOR_NOT_SUPPORTED)
             {
-                // The device is not a Samsung device.
+                return false;
             }
             else if (eType == SsdkUnsupportedException.DEVICE_NOT_SUPPORTED)
             {
-                // The device does not support the Pen package.
+                return false;
             }
             else if (eType == SsdkUnsupportedException.LIBRARY_NOT_INSTALLED)
             {
-                // The Pen package APK is not installed on the device.
+                return true;
             }
             else if (eType == SsdkUnsupportedException.LIBRARY_UPDATE_IS_REQUIRED)
             {
-                // The Pen package library requires updates.
+                return true;
             }
             else if (eType == SsdkUnsupportedException.LIBRARY_UPDATE_IS_RECOMMENDED)
             {
-                // It is recommended that the Pen package library be updated to
-                // the latest version available.
                 return true;
             }
         }

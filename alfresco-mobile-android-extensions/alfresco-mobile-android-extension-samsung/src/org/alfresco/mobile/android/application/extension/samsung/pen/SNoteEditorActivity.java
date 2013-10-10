@@ -336,7 +336,7 @@ public class SNoteEditorActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        if (spenPageDoc != null && spenPageDoc.getObjectCount(true) > 0 && spenPageDoc.isChanged())
+        if (spenNoteDoc != null && spenNoteDoc.isChanged())
         {
             // Request to save before quit
             requestSave();
@@ -521,17 +521,18 @@ public class SNoteEditorActivity extends Activity
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
         {
+            if (spenNoteDoc != null && spenNoteDoc.getPageCount() == 1){
+                return false;
+            }
             if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
             {
-                MessengerManager.showToast(context, "Fling Right to left ! ");
                 swipePage(SpenFlickListener.DIRECTION_RIGHT);
-                return false; // Right to left
+                return true; // Right to left
             }
             else if (e2.getX() - e1.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
             {
-                MessengerManager.showToast(context, "Fling  Left to right ! ");
                 swipePage(SpenFlickListener.DIRECTION_LEFT);
-                return false; // Left to right
+                return true; // Left to right
             }
             return false;
         }
