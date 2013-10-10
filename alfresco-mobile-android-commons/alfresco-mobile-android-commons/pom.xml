@@ -46,11 +46,12 @@
 			<groupId>com.google.android</groupId>
 			<artifactId>annotations</artifactId>
 		</dependency>
-				<dependency>
+		<dependency>
 			<groupId>org.alfresco.mobile.android.sdk</groupId>
 			<artifactId>alfresco-mobile-android-ui-library</artifactId>
 			<version>${alfresco.sdk.version}</version>
 			<type>apklib</type>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
