@@ -184,6 +184,7 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
         EXT2ICON.put("rtx", R.drawable.mime_txt);
         EXT2ICON.put("sct", R.drawable.mime_txt);
         EXT2ICON.put("snd", R.drawable.mime_audio);
+        EXT2ICON.put("spd", R.drawable.mime_pages);
         EXT2ICON.put("stm", R.drawable.mime_html);
         EXT2ICON.put("svg", R.drawable.mime_xml);
         EXT2ICON.put("swf", R.drawable.mime_swf);
@@ -302,6 +303,7 @@ public class MimeTypeManager extends org.alfresco.mobile.android.ui.manager.Mime
         EXT2LARGEICON.put("rtx", R.drawable.mime_256_txt);
         EXT2LARGEICON.put("sct", R.drawable.mime_256_txt);
         EXT2LARGEICON.put("snd", R.drawable.mime_256_audio);
+        EXT2LARGEICON.put("spd", R.drawable.mime_256_pages);
         EXT2LARGEICON.put("stm", R.drawable.mime_256_html);
         EXT2LARGEICON.put("svg", R.drawable.mime_256_xml);
         EXT2LARGEICON.put("swf", R.drawable.mime_256_swf);

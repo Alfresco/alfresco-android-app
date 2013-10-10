@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (C) 2005-2012 Alfresco Software Limited. This file is part 
+<!-- Copyright (C) 2005-2013 Alfresco Software Limited. This file is part 
 	of Alfresco Mobile for Android. Licensed under the Apache License, Version 
 	2.0 (the "License"); you may not use this file except in compliance with 
 	the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
@@ -41,6 +41,12 @@
 			<type>apklib</type>
 		</dependency>
 		<dependency>
+			<groupId>org.alfresco.mobile.android.apps</groupId>
+			<artifactId>alfresco-mobile-android-commons</artifactId>
+			<version>${project.version}</version>
+			<type>apklib</type>
+		</dependency>
+		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 		</dependency>
@@ -66,7 +72,42 @@
 
 	<profiles>
 		<profile>
+			<id>extension-samsung</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<configuration>
+									<tasks>
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="!--@@SAMSUNG@@-" value="!--@@SAMSUNG BEGIN@@--" />
+											<replace file="${project.basedir}/AndroidManifest.xml"
+											token="!-@@SAMSUNG@@--" value="!--@@SAMSUNG END@@--" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+			<dependencies>
+				<dependency>
+					<groupId>org.alfresco.mobile.android.apps</groupId>
+					<artifactId>alfresco-mobile-android-extension-samsung</artifactId>
+					<version>${project.version}</version>
+					<type>apklib</type>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>android-release</id>
+
 			<build>
 				<resources>
 					<resource>
@@ -86,7 +127,9 @@
 						</includes>
 					</resource>
 				</resources>
+
 				<finalName>${project.artifactId}-${project.version}</finalName>
+
 				<plugins>
 					<plugin>
 						<artifactId>maven-resources-plugin</artifactId>
@@ -132,6 +175,7 @@
 						<artifactId>android-maven-plugin</artifactId>
 						<inherited>true</inherited>
 						<configuration>
+							<release>true</release>
 							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
 							<sign>
 								<debug>false</debug>
@@ -154,6 +198,7 @@
 						</executions>
 					</plugin>
 				</plugins>
+
 			</build>
 		</profile>
 		<profile>

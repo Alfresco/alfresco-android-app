@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.alfresco.mobile.android.application.utils;
+package org.alfresco.mobile.android.application.commons.utils;
 
 public final class AndroidVersion
 {
