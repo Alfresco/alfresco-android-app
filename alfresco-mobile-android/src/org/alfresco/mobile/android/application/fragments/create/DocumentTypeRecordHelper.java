@@ -99,7 +99,7 @@ public class DocumentTypeRecordHelper
     public static List<DocumentTypeRecord> getCreationDocumentTypeList(Context context)
     {
         List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>(DOCUMENT_TYPES_CREATION_LIST);
-        if (context != null && ApplicationManager.getSamsungManager(context) != null)
+        if (context != null && ApplicationManager.getSamsungManager(context) != null && ApplicationManager.getSamsungManager(context).hasPenEnable())
         {
             fileTypes.add(ApplicationManager.getInstance(context).getSamsungManager().addDocumentTypeRecord());
         }

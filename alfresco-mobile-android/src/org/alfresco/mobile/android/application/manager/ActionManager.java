@@ -76,7 +76,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(fr.getActivity(), R.string.error_unable_open_file);
         }
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION VIEW
     // ///////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,11 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         try
         {
             String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
-            if (ApplicationManager.getSamsungManager(fr.getActivity()) != null && (mimeType == null || mimeType.equals("application/octet-stream")) && MimeTypeManager.getExtension(myFile.getName()).equals(SamsungManager.SAMSUNG_NOTE_EXTENSION_2)){
+            if (ApplicationManager.getSamsungManager(fr.getActivity()) != null
+                    && ApplicationManager.getSamsungManager(fr.getActivity()).hasPenEnable()
+                    && (mimeType == null || mimeType.equals("application/octet-stream"))
+                    && MimeTypeManager.getExtension(myFile.getName()).equals(SamsungManager.SAMSUNG_NOTE_EXTENSION_SPD))
+            {
                 mimeType = SamsungManager.SAMSUNG_NOTE_MIMETYPE;
             }
             if (DataProtectionManager.getInstance(fr.getActivity()).isEncrypted(myFile.getPath()))
@@ -422,6 +426,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             MessengerManager.showToast(f.getActivity(), R.string.error_unable_open_file);
         }
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // AUTHENTICATION
     // ///////////////////////////////////////////////////////////////////////////
