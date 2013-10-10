@@ -229,7 +229,6 @@ public final class ApplicationManager
         catch (Exception e)
         {
             //DO Nothing
-            Log.d("SS", Log.getStackTraceString(e));
         }
         return s;
     }
