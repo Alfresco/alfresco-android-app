@@ -49,6 +49,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
@@ -75,7 +76,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     private boolean isEditable;
 
     private Fragment fragment;
-    
+
     private BaseGridFragment gridFragment;
 
     private Map<String, Document> selectedMapItems;
@@ -98,7 +99,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.vhClassName = ProgressViewHolder.class.getCanonicalName();
         this.context = context;
     }
-    
+
     public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -155,8 +156,8 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     public View getView(int position, View convertView, ViewGroup parent)
     {
         // Specific part for dynaminc resize
-        
-        // First init ==> always 
+
+        // First init ==> always
         width = DisplayUtils.getSplitterWidth((MainActivity) context);
         int layoutId = R.layout.app_grid_progress_row;
         int flagLayoutId = R.id.app_grid_progress;
@@ -194,10 +195,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             columnWidth = 240;
         }
 
-        if (gridFragment != null){
+        if (gridFragment != null)
+        {
             gridFragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
         }
-        
+
         View v = convertView;
         if (convertView == null || convertView.findViewById(flagLayoutId) == null)
         {
@@ -410,10 +412,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     // /////////////////////////////////////////////////////////////
     // UTILITIES
     // ////////////////////////////////////////////////////////////
-    public void setContext(Activity activity){
+    public void setContext(Activity activity)
+    {
         this.context = activity;
     }
-    
+
     public Boolean hasActivateThumbnail()
     {
         return activateThumbnail;

@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountSettingsHelper;
-import org.alfresco.mobile.android.application.fragments.SimpleAlertDialogFragment;
+import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 
 import android.app.Activity;

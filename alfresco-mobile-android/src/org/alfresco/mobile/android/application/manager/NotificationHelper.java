@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.application.manager;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Notification;

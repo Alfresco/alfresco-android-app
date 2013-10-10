@@ -17,13 +17,18 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
+import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.commons.extensions.SamsungManager;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.database.DatabaseManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
@@ -31,6 +36,7 @@ import org.alfresco.mobile.android.application.manager.UpgradeManager;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * Provides high level service and responsible to manage sessions across
@@ -62,6 +68,8 @@ public final class ApplicationManager
 
     private ConfigurationManager configurationManager;
 
+    private SamsungManager samsungManager;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
@@ -71,6 +79,7 @@ public final class ApplicationManager
         databaseManager = new DatabaseManager(appContext);
         upgradeManager = new UpgradeManager(appContext);
         configurationManager = ConfigurationManager.getInstance(appContext);
+        samsungManager = createSamsungManager(appContext.getString(R.string.extension_samsung_classname));
     }
 
     public static ApplicationManager getInstance(Context context)
@@ -137,7 +146,7 @@ public final class ApplicationManager
     {
         return configurationManager;
     }
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNT / SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -194,4 +203,35 @@ public final class ApplicationManager
         accountManager.clear();
         mInstance = null;
     }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SAMSUNG EXTENSION
+    // ///////////////////////////////////////////////////////////////////////////
+    public SamsungManager getSamsungManager()
+    {
+        return samsungManager;
+    }
+    
+    public static SamsungManager getSamsungManager(Context context)
+    {
+        return getInstance(context).getSamsungManager();
+    }
+    
+    protected SamsungManager createSamsungManager(String className)
+    {
+        SamsungManager s = null;
+        try
+        {
+            Class<?> c = Class.forName(className);
+            Constructor<?> t = c.getDeclaredConstructor(Context.class);
+            s = (SamsungManager) t.newInstance(appContext);
+        }
+        catch (Exception e)
+        {
+            //DO Nothing
+            Log.d("SS", Log.getStackTraceString(e));
+        }
+        return s;
+    }
+
 }

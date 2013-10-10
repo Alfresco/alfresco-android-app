@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -31,18 +32,13 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
 /**
@@ -51,7 +47,7 @@ import android.widget.TextView;
  * @author Jean Marie Pascal
  */
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-public class UIUtils
+public class UIUtils extends org.alfresco.mobile.android.application.commons.utils.UIUtils
 {
 
     /**
@@ -194,7 +190,7 @@ public class UIUtils
             activity.invalidateOptionsMenu();
         }
     }
-    
+
     public static String getAccountLabel(Account account)
     {
         String label = "";

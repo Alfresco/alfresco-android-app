@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.commons.extensions.SamsungManager;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
@@ -91,6 +93,9 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         try
         {
             String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+            if (ApplicationManager.getSamsungManager(fr.getActivity()) != null && (mimeType == null || mimeType.equals("application/octet-stream")) && MimeTypeManager.getExtension(myFile.getName()).equals(SamsungManager.SAMSUNG_NOTE_EXTENSION_2)){
+                mimeType = SamsungManager.SAMSUNG_NOTE_MIMETYPE;
+            }
             if (DataProtectionManager.getInstance(fr.getActivity()).isEncrypted(myFile.getPath()))
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,

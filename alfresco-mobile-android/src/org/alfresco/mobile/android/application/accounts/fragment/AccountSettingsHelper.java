@@ -351,6 +351,8 @@ public class AccountSettingsHelper
                 settings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME,
                         "org.alfresco.mobile.android.application.security.AlfrescoTrustManager");
             }
+            settings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME,
+                    "org.alfresco.mobile.android.application.security.AlfrescoTrustManager");
         }
         catch (Exception e)
         {

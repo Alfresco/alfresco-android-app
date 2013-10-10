@@ -28,13 +28,13 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
-import org.alfresco.mobile.android.application.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -43,16 +43,23 @@ import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ClipData;
+import android.content.ClipDescription;
 import android.content.Context;
+import android.util.Log;
+import android.view.DragEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.Toast;
 
 /**
  * Provides access to files and displays them as a view based on
@@ -197,12 +204,203 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
                     popup.show();
                 }
             });
+
+            vh.icon.setTag("drag");
+            ((View) vh.icon.getParent().getParent()).setOnDragListener(new myDragEventListener());
+            vh.icon.setOnLongClickListener(new View.OnLongClickListener()
+            {
+                // Defines the one method for the interface, which is called when the View is long-clicked
+                public boolean onLongClick(View v)
+                {
+                    // Create a new ClipData.Item from the ImageView object's tag
+                    ClipData.Item item = new ClipData.Item((CharSequence) v.getTag());
+
+                    // Create a new ClipData using the tag as a label, the plain text MIME type, and
+                    // the already-created item. This will create a new ClipDescription object within the
+                    // ClipData, and set its MIME type entry to "text/plain"
+                    ClipData dragData = new ClipData((CharSequence) v.getTag(), new String[] { "text/plain" }, item);
+
+                    DragShadowBuilder drag = new View.DragShadowBuilder((View) v.getParent().getParent());
+                    UIUtils.setBackground(drag.getView(), getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+                    
+                    v.startDrag(dragData, // the data to be dragged
+                            new View.DragShadowBuilder((View) v.getParent().getParent()), // the drag shadow builder
+                            null, // no need to use local data
+                            0 // flags (not currently used, set to 0)
+                    );
+                    return true;
+                }
+            });
+
+            /*SMultiWindowDropListener dl = new SMultiWindowDropListener()
+            {
+                @Override
+                public void onDrop(DragEvent event)
+                {
+                    MessengerManager.showToast(getContext(), "DROP!!");
+                    ClipData clipData = event.getClipData();
+                    if (clipData != null)
+                    {
+                        int count = clipData.getItemCount();
+                        for (int index = 0; index < count; ++index)
+                        {
+                            ClipData.Item item = clipData.getItemAt(index);
+                            if (item.getText() != null)
+                            {
+                                MessengerManager.showToast(getContext(), "TEXT");
+                            } // Handle any text
+                            if (item.getUri() != null)
+                            {
+                                MessengerManager.showToast(getContext(), "URI");
+                            } // Handle any URIs
+                            if (item.getIntent() != null)
+                            {
+                                MessengerManager.showToast(getContext(), "INTENT");
+                            }
+                            // Handle any intents
+                        }
+                    }
+                }
+            };
+            ((View) vh.icon.getParent().getParent()).setOnDragListener(dl);*/
+
         }
         else
         {
             UIUtils.setBackground(((View) vh.choose), null);
         }
     }
+
+    protected class myDragEventListener implements OnDragListener
+    {
+
+        // This is the method that the system calls when it dispatches a drag event to the
+        // listener.
+        public boolean onDrag(View v, DragEvent event)
+        {
+
+            // Defines a variable to store the action type for the incoming event
+            final int action = event.getAction();
+
+            CharSequence dragData;
+            // Handles each of the expected events
+            switch (action)
+            {
+
+                case DragEvent.ACTION_DRAG_STARTED:
+
+                    // Determines if this View can accept the dragged data
+                    if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN))
+                    {
+
+                        // As an example of what your application might do,
+                        // applies a blue color tint to the View to indicate that it can accept
+                        // data.
+                        UIUtils.setBackground(v, getContext().getResources().getDrawable(R.drawable.bg_gradient));
+
+                        // ((ImageView) v).setColorFilter(Color.BLUE);
+
+                        // Invalidate the view to force a redraw in the new tint
+                        v.invalidate();
+
+                        // returns true to indicate that the View can accept the dragged data.
+                        return (true);
+
+                    }
+                    else
+                    {
+
+                        // Returns false. During the current drag and drop operation, this View will
+                        // not receive events again until ACTION_DRAG_ENDED is sent.
+                        return (false);
+
+                    }
+
+                case DragEvent.ACTION_DRAG_ENTERED:
+
+                    // Applies a green tint to the View. Return true; the return value is ignored.
+                    UIUtils.setBackground(v, getContext().getResources().getDrawable(R.drawable.bg_gradient));
+
+                    // ((ImageView) v).setColorFilter(Color.GREEN);
+
+                    // Invalidate the view to force a redraw in the new tint
+                    v.invalidate();
+
+                    return (true);
+
+                case DragEvent.ACTION_DRAG_LOCATION:
+
+                    // Ignore the event
+                    return (true);
+
+                case DragEvent.ACTION_DRAG_EXITED:
+
+                    // Re-sets the color tint to blue. Returns true; the return value is ignored.
+                    // UIUtils.setBackground(v, null);
+                    UIUtils.setBackground(v, getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+                    // ((ImageView) v).setColorFilter(Color.BLUE);
+
+                    // Invalidate the view to force a redraw in the new tint
+                    v.invalidate();
+
+                    return (true);
+
+                case DragEvent.ACTION_DROP:
+
+                    // Gets the item containing the dragged data
+                    ClipData.Item item = event.getClipData().getItemAt(0);
+
+                    // Gets the text data from the item.
+                    dragData = item.getText();
+
+                    // Displays a message containing the dragged data.
+                    Toast.makeText(getContext(), "Dragged data is " + dragData, Toast.LENGTH_LONG);
+
+                    // Turns off any color tints
+                    UIUtils.setBackground(v, null);
+                    // ((ImageView) v).clearColorFilter();
+
+                    // Invalidates the view to force a redraw
+                    v.invalidate();
+
+                    // Returns true. DragEvent.getResult() will return true.
+                    return (true);
+
+                case DragEvent.ACTION_DRAG_ENDED:
+
+                    // Turns off any color tinting
+                    UIUtils.setBackground(v, null);
+                    // ((ImageView) v).clearColorFilter();
+
+                    // Invalidates the view to force a redraw
+                    v.invalidate();
+
+                    // Does a getResult(), and displays what happened.
+                    if (event.getResult())
+                    {
+                        Toast.makeText(getContext(), "The drop was handled.", Toast.LENGTH_LONG);
+
+                    }
+                    else
+                    {
+                        Toast.makeText(getContext(), "The drop didn't work.", Toast.LENGTH_LONG);
+
+                    }
+                    ;
+
+                    // returns true; the value is ignored.
+                    return (true);
+
+                    // An unknown action type was received.
+                default:
+                    Log.e("DragDrop Example", "Unknown action type received by OnDragListener.");
+
+                    break;
+            }
+            ;
+            return false;
+        };
+    };
 
     // /////////////////////////////////////////////////////////////
     // CRUD LIST
