@@ -253,7 +253,7 @@
 
         <!-- SAMSUNG Mobile SDK Pen. -->
         <!-- IMPORTANT : Comment this Activity if you don't want to use the SNote Extension. -->
-        <!--@@SAMSUNG BEGIN@@->
+        <!--@@SAMSUNG@@->
         <activity
             android:name="org.alfresco.mobile.android.application.extension.samsung.pen.SNoteEditorActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
@@ -288,7 +288,7 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
-        <!-@@SAMSUNG END@@-->
+        <!-@@SAMSUNG@@-->
     </application>
 
 </manifest>
