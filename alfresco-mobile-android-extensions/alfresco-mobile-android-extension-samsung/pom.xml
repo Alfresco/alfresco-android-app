@@ -62,6 +62,19 @@
 			<artifactId>alfresco-mobile-android-commons</artifactId>
 			<version>${project.version}</version>
 			<type>apklib</type>
+			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.alfresco.mobile.android.sdk</groupId>
+					<artifactId>alfresco-mobile-android-ui-library</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-ui-library</artifactId>
+			<version>${alfresco.sdk.version}</version>
+			<type>apklib</type>
 		</dependency>
 	</dependencies>
 </project>
