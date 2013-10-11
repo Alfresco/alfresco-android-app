@@ -714,7 +714,7 @@
     <string name="task_filter_initiator">Tasks I\'ve started</string>
     <string name="task_filter_completed">Completed Tasks</string>
     <string name="task_filter_high_priority">High Priority Tasks</string>
-    <string name="task_filter_due_today">Task Due Today</string>
+    <string name="task_filter_due_today">Tasks Due Today</string>
     <string name="task_filter_overdue">Overdue Tasks</string>
     <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
     <string name="task_filter_custom">My filter...</string>
