@@ -64,6 +64,8 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
 
     private TasksFragmentReceiver receiver;
 
+    private boolean loadFinished = false;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -135,7 +137,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         receiver = new TasksFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
-        if (getLoaderManager().getLoader(TasksLoader.ID) != null && getLoaderManager().getLoader(TasksLoader.ID).isStarted()){
+        if (!loadFinished){
             setListShown(false);
         }
         
@@ -148,6 +150,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public Loader<LoaderResult<PagingResult<Task>>> onCreateLoader(int id, Bundle ba)
     {
+        loadFinished = false;
         setListShown(false);
 
         bundle = (ba == null) ? getArguments() : ba;
@@ -180,6 +183,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Task>>> arg0, LoaderResult<PagingResult<Task>> results)
     {
+        loadFinished = true;
         if (adapter == null)
         {
             adapter = new TasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0), selectedItems);
