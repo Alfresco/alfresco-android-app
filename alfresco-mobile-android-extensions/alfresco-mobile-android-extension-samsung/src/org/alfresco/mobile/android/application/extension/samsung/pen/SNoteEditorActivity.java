@@ -42,6 +42,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
@@ -165,8 +166,7 @@ public class SNoteEditorActivity extends Activity
         }
         catch (Exception e1)
         {
-            Toast.makeText(context, "Cannot initialize Spen.", Toast.LENGTH_SHORT).show();
-            e1.printStackTrace();
+            Log.e(TAG, Log.getStackTraceString(e1));
             finish();
         }
 
@@ -177,7 +177,6 @@ public class SNoteEditorActivity extends Activity
         spenSettingView = new SpenSettingPenLayout(context, new String(), spenViewLayout);
         if (spenSettingView == null)
         {
-            Toast.makeText(context, "Cannot create new PenSettingView.", Toast.LENGTH_SHORT).show();
             finish();
         }
         spenViewContainer.addView(spenSettingView);
@@ -186,7 +185,6 @@ public class SNoteEditorActivity extends Activity
         eraserSettingView = new SpenSettingEraserLayout(context, new String(), spenViewLayout);
         if (eraserSettingView == null)
         {
-            Toast.makeText(context, "Cannot create new EraserSettingView.", Toast.LENGTH_SHORT).show();
             finish();
         }
         spenViewContainer.addView(eraserSettingView);
@@ -196,7 +194,6 @@ public class SNoteEditorActivity extends Activity
                 spenViewLayout);
         if (textSettingView == null)
         {
-            Toast.makeText(context, "Cannot create new TextSettingView.", Toast.LENGTH_SHORT).show();
             finish();
         }
         spenViewContainer.addView(textSettingView);
@@ -205,7 +202,6 @@ public class SNoteEditorActivity extends Activity
         selectionSettingView = new SpenSettingSelectionLayout(context, new String(), spenViewLayout);
         if (textSettingView == null)
         {
-            Toast.makeText(context, "Cannot create new TextSettingView.", Toast.LENGTH_SHORT).show();
             finish();
         }
         spenViewContainer.addView(selectionSettingView);
@@ -214,7 +210,6 @@ public class SNoteEditorActivity extends Activity
         spenSurfaceView = new SpenSurfaceView(context);
         if (spenSurfaceView == null)
         {
-            Toast.makeText(context, "Cannot create new SpenSurfaceView.", Toast.LENGTH_SHORT).show();
             finish();
         }
         spenViewLayout.addView(spenSurfaceView);
@@ -254,13 +249,10 @@ public class SNoteEditorActivity extends Activity
         }
         catch (IOException e)
         {
-            Toast.makeText(context, "Cannot create new NoteDoc.", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
             finish();
         }
         catch (Exception e)
         {
-            e.printStackTrace();
             finish();
         }
 
@@ -387,6 +379,7 @@ public class SNoteEditorActivity extends Activity
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.editor_save_request);
+        builder.setCancelable(false);
         builder.setMessage(Html.fromHtml(getString(R.string.editor_save_description)));
         builder.setIcon(R.drawable.ic_save);
         builder.setPositiveButton(R.string.editor_save, new DialogInterface.OnClickListener()
