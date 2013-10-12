@@ -681,6 +681,7 @@
     </plurals>
 
     <!-- Tasks -->
+    <string name="task_filter_view">View Tasks</string>
     <string name="validate">Validate</string>
     <string name="workflow_priority_low">Low priority</string>
     <string name="workflow_priority_medium">Medium priority</string>
