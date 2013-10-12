@@ -275,7 +275,15 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
     private void displayNavigation(File file, boolean backstack)
     {
-        BaseFragment frag = FileExplorerFragment.newInstance(file);
+        BaseFragment frag;
+        if (getMode() == MODE_PICK)
+        {
+            frag = FileExplorerFragment.newInstance(file, getMode(), true, getArguments().getInt(PARAM_MENUID));
+        }
+        else
+        {
+            frag = FileExplorerFragment.newInstance(file);
+        }
         FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                 FileExplorerFragment.TAG, backstack);
     }
@@ -488,7 +496,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         public void onReceive(Context context, Intent intent)
         {
             if (adapter == null) { return; }
-            
+
             Log.d(TAG, intent.getAction());
 
             if (intent.getExtras() != null)
