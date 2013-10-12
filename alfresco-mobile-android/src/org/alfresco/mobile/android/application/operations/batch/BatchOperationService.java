@@ -95,7 +95,6 @@ import org.alfresco.mobile.android.application.operations.batch.workflow.task.de
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate.ReassignTaskRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.task.delegate.ReassignTaskThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -103,6 +102,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class BatchOperationService<T> extends Service

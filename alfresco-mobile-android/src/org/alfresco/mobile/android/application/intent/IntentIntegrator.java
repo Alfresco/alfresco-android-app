@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.intent;
 
+import android.content.Intent;
+
 public interface IntentIntegrator extends PublicIntent
 {
     String ALFRESCO_SCHEME_SHORT = "alfresco";
@@ -43,7 +45,6 @@ public interface IntentIntegrator extends PublicIntent
     String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
 
     String CATEGORY_OAUTH_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH";
-
     // ///////////////////////////////////////////////////////////////////////////
     // OPERATIONS MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -79,6 +80,8 @@ public interface IntentIntegrator extends PublicIntent
     String ACTION_RELOAD_ACCOUNT = "org.alfresco.mobile.android.intent.ACTION_RELOAD_ACCOUNT";
 
     String ACTION_CREATE_ACCOUNT = "org.alfresco.mobile.android.intent.ACTION_CREATE_ACCOUNT";
+    
+    String ACTION_CREATE_ACCOUNT_CLOUD_ERROR = "org.alfresco.mobile.android.intent.ACTION_CREATE_ACCOUNT_CLOUD_ERROR";
 
     // BROADCAST
     /** The specified account is inactive. */
@@ -261,5 +264,4 @@ public interface IntentIntegrator extends PublicIntent
     String EXTRA_DATA_DICTIONARY_ID = "org.alfresco.mobile.android.intent.DATA_DICTIONARY_ID";
     String EXTRA_CONFIGURATION_ID = "org.alfresco.mobile.android.intent.CONFIGURATION_ID";
     String EXTRA_LASTMODIFICATION = "org.alfresco.mobile.android.intent.EXTRA_LASTMODIFICATION";
-
 }

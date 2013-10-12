@@ -22,12 +22,15 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class CreateAccountCallBack extends AbstractBatchOperationCallback<Account>
@@ -56,14 +59,20 @@ public class CreateAccountCallBack extends AbstractBatchOperationCallback<Accoun
     public void onError(Operation<Account> task, Exception e)
     {
         Log.d(TAG, Log.getStackTraceString(e));
-        
+
         Bundle b = new Bundle();
         b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
         b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_title);
         b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
         b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, SessionExceptionHelper.getMessageId(context, e));
         ActionManager.actionDisplayDialog(context, b);
-        
+
+        if (task instanceof CreateAccountThread && ((CreateAccountThread) task).getOauthData() != null)
+        {
+            LocalBroadcastManager.getInstance(context).sendBroadcast(
+                    new Intent(IntentIntegrator.ACTION_CREATE_ACCOUNT_CLOUD_ERROR));
+        }
+
         super.onError(task, e);
     }
 }

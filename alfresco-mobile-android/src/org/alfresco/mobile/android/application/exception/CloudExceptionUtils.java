@@ -26,13 +26,13 @@ import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDial
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public final class CloudExceptionUtils
