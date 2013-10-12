@@ -461,6 +461,7 @@ public class MainActivity extends BaseActivity
             clearCentralPane();
         }
 
+        fragmentQueue = -1;
         switch (id)
         {
             case R.id.menu_browse_my_sites:
@@ -772,18 +773,6 @@ public class MainActivity extends BaseActivity
         BaseFragment frag = CommentsFragment.newInstance(n);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(true), CommentsFragment.TAG, true);
-        ((View) findViewById(getFragmentPlace(true)).getParent()).setVisibility(View.VISIBLE);
-    }
-
-    public void addVersions(Document d)
-    {
-        if (DisplayUtils.hasCentralPane(this))
-        {
-            stackCentral.push(VersionFragment.TAG);
-        }
-        BaseFragment frag = VersionFragment.newInstance(d);
-        frag.setSession(SessionUtils.getSession(this));
-        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(true), VersionFragment.TAG, true);
         ((View) findViewById(getFragmentPlace(true)).getParent()).setVisibility(View.VISIBLE);
     }
 

@@ -1239,7 +1239,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     public void addVersions(Document d, int layoutId, boolean backstack)
     {
-        BaseFragment frag = VersionFragment.newInstance(d);
+        BaseFragment frag = VersionFragment.newInstance(d, parentNode);
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, layoutId, VersionFragment.TAG, backstack);
     }
