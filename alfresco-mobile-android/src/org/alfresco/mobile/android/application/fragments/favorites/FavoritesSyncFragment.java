@@ -263,6 +263,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
                 {
                     hasSynchroActive = false;
                     GeneralPreferences.setActivateSync(getActivity(), false);
+                    refresh();
                 }
             }).show(getActivity().getFragmentManager(), ActivateSyncDialogFragment.TAG);
             GeneralPreferences.setDisplayActivateSync(getActivity(), true);
