@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -190,6 +191,13 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
     {
         // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

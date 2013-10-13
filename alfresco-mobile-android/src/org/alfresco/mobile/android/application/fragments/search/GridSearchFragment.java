@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.R;
 import org.alfresco.mobile.android.ui.documentfolder.NodeAdapter;
@@ -141,6 +142,14 @@ public abstract class GridSearchFragment extends BaseGridFragment implements
         }
     }
 
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        gv.setEmptyView(ev);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
+    }
+    
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Node>>> arg0)
     {

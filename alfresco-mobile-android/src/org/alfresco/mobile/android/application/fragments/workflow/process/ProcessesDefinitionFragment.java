@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -150,6 +151,13 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
         // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     private PagingResultImpl<ProcessDefinition> filter(PagingResult<ProcessDefinition> processDefinitions)

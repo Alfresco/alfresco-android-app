@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -199,6 +200,13 @@ public class ProcessesFragment extends BaseListFragment implements
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Process>>> arg0)
     {
         // TODO Auto-generated method stub
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
@@ -232,12 +233,12 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
         }
     }
 
+    @Override
     public void onLoaderException(Exception e)
     {
-        Log.e(TAG, Log.getStackTraceString(e));
-        MessengerManager.showToast(getActivity(), R.string.error_general);
         setListShown(true);
         gv.setEmptyView(ev);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // //////////////////////////////////////////////////////////////////////
