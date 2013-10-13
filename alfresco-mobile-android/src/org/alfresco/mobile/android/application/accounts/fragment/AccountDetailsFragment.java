@@ -427,8 +427,7 @@ public class AccountDetailsFragment extends BaseFragment
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after)
         {
-            // TODO Auto-generated method stub
-
+            // Nothing special
         }
 
         @Override

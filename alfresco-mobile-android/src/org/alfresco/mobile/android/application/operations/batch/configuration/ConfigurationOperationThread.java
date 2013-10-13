@@ -90,8 +90,6 @@ public class ConfigurationOperationThread extends AbstractBatchOperationThread<C
 
             SearchService searchService = session.getServiceRegistry().getSearchService();
             DocumentFolderService docService = session.getServiceRegistry().getDocumentFolderService();
-            VersionService versionService = session.getServiceRegistry().getVersionService();
-
             
             try
             {
@@ -100,8 +98,6 @@ public class ConfigurationOperationThread extends AbstractBatchOperationThread<C
                 {
                     configurationDocument = docService.getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(configurationIdentifier));
                 }
-                //versionService.getVersions((Document)configurationDocument)
-                //((Document)configurationDocument).getVersionLabel()
                 // Retrieve Data Dictionary
                 if (configurationDocument == null && dataDictionaryIdentifier != null)
                 {
@@ -110,7 +106,7 @@ public class ConfigurationOperationThread extends AbstractBatchOperationThread<C
             }
             catch (Exception e)
             {
-                // TODO: handle exception
+                // Nothing special
             }
 
             // If no shortcut available we search the datadictionary and next

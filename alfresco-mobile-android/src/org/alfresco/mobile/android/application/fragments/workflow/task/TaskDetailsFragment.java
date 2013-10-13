@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.api.utils.WorkflowUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -672,7 +673,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     {
         if (results.hasException())
         {
-
+            CloudExceptionUtils.handleCloudException(getActivity(), results.getException(), false);
         }
         else
         {
@@ -688,7 +689,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Document>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     // ///////////////////////////////////////////////////////////////////////////

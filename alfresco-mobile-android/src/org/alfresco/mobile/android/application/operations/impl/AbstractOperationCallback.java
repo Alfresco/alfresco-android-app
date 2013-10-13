@@ -95,7 +95,7 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
                             .createIndeterminateNotification(getBaseContext(), getNotificationId(), inProgress, String
                                     .format(getBaseContext().getResources().getQuantityString(
                                             R.plurals.batch_in_progress, groupRecord.runningRequest.size()),
-                                            groupRecord.runningRequest.size() + ""), groupRecord.completeRequest.size()
+                                            (groupRecord.totalRequests - groupRecord.completeRequest.size()) + ""), groupRecord.completeRequest.size()
                                     + "/" + groupRecord.totalRequests);
                 }
 
@@ -129,7 +129,7 @@ public abstract class AbstractOperationCallback<T> implements Operation.Operatio
                             .createIndeterminateNotification(getBaseContext(), getNotificationId(), inProgress, String
                                     .format(getBaseContext().getResources().getQuantityString(
                                             R.plurals.batch_in_progress, groupRecord.runningRequest.size()),
-                                            groupRecord.runningRequest.size() + ""), groupRecord.completeRequest.size()
+                                            (groupRecord.totalRequests - groupRecord.completeRequest.size()) + ""), groupRecord.completeRequest.size()
                                     + "/" + groupRecord.totalRequests);
                 }
                 break;

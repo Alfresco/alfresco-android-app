@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.OnFavoriteChangeListener;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
@@ -73,6 +74,9 @@ public class GeneralPreferences extends PreferenceFragment
 
     private Account account;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFE CYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public void onCreate(Bundle savedInstanceState)
     {
         setRetainInstance(true);
@@ -254,6 +258,20 @@ public class GeneralPreferences extends PreferenceFragment
 
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLIC
+    // ///////////////////////////////////////////////////////////////////////////
+    public void refreshDataProtection()
+    {
+        Preference privateFoldersPref = findPreference(PRIVATE_FOLDERS_BUTTON);
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        privateFoldersPref.setSummary(sharedPref.getBoolean(PRIVATE_FOLDERS, false) ? R.string.data_protection_on
+                : R.string.data_protection_off);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
     public static boolean hasWifiOnlySync(Context context, Account account)
     {
         if (account != null)

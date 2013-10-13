@@ -106,7 +106,6 @@ public class BatchOperationContentProvider extends ContentProvider implements Al
     @Override
     public String getType(Uri uri)
     {
-        // TODO Auto-generated method stub
         return null;
     }
 

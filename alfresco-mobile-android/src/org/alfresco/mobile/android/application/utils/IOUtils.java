@@ -75,7 +75,7 @@ public final class IOUtils
         return "." + extractFileExtension(fileName);
     }
 
-    /* XXX From libcore.io.IoUtils */
+    /* XX From libcore.io.IoUtils */
     public static void deleteContents(File dir) throws IOException
     {
         File[] files = dir.listFiles();

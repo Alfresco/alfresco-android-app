@@ -148,31 +148,48 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         @Override
         public void onPositive()
         {
-            int localMessageId  = R.string.decryption_title;
+            int localMessageId = R.string.decryption_title;
             if (firstTime)
             {
                 prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
-                DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
                 localMessageId = R.string.encryption_title;
             }
             else
             {
                 if (checked)
                 {
-                    DataProtectionManager.getInstance(getActivity()).decrypt(SessionUtils.getAccount(getActivity()));
                     localMessageId = R.string.decryption_title;
                 }
                 else
                 {
-                    DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
                     localMessageId = R.string.encryption_title;
                 }
             }
+
+            // Display Dialog
             if (getFragmentManager().findFragmentByTag(WaitingDialogFragment.TAG) == null)
             {
-                WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection, localMessageId, false);
+                WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
+                        localMessageId, false);
                 dialog.show(getActivity().getFragmentManager(), WaitingDialogFragment.TAG);
+            }
+
+            // Execute encryption / decryption
+            if (firstTime)
+            {
+                DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
+            }
+            else
+            {
+                if (checked)
+                {
+                    DataProtectionManager.getInstance(getActivity()).decrypt(SessionUtils.getAccount(getActivity()));
+                }
+                else
+                {
+                    DataProtectionManager.getInstance(getActivity()).encrypt(SessionUtils.getAccount(getActivity()));
+                }
             }
         }
 

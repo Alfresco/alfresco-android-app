@@ -267,7 +267,7 @@ public final class ConfigurationManager
             }
             catch (Exception e)
             {
-                // TODO: handle exception
+                // Nothing special
             }
         }
     }

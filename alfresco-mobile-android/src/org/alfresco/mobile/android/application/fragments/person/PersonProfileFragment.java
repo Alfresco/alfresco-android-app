@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.impl.CompanyImpl;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -185,6 +186,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
             vRoot.findViewById(R.id.progressbar).setVisibility(View.GONE);
             vRoot.findViewById(R.id.empty).setVisibility(View.VISIBLE);
             ((TextView) vRoot.findViewById(R.id.empty_text)).setText(R.string.empty_child);
+            CloudExceptionUtils.handleCloudException(getActivity(), result.getException(), false);
         }
         else if (loader instanceof PersonLoader && getActivity() != null)
         {
@@ -196,8 +198,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
     @Override
     public void onLoaderReset(Loader<LoaderResult<Person>> arg0)
     {
-        // TODO Auto-generated method stub
-
+        // Nothing special
     }
 
     // //////////////////////////////////////////////////////////////////////

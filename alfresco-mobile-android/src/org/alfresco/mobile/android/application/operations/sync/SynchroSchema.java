@@ -74,9 +74,6 @@ public final class SynchroSchema extends OperationSchema
             + COLUMN_SERVER_MODIFICATION_TIMESTAMP + " LONG,"
             + COLUMN_LOCAL_MODIFICATION_TIMESTAMP + " LONG);";
 
-    private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
-
-    
     // ////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////
@@ -87,14 +84,6 @@ public final class SynchroSchema extends OperationSchema
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        db.execSQL(QUERY_TABLE_CREATE);
-    }
-    
-
-    // TODO REMOVE BEFORE RELEASE
-    public static void reset(SQLiteDatabase db)
-    {
-        db.execSQL(QUERY_TABLE_DROP);
         db.execSQL(QUERY_TABLE_CREATE);
     }
 }

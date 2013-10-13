@@ -110,6 +110,7 @@
     <string name="error_session_refresh">Refreshing session.</string>
 
     <!-- MESSAGE ERROR -->
+    <string name="error_general_title">An error has occurred.</string>
     <string name="error_general">An error has occurred. Please try again.</string>
     <string name="error_account_url">The URL is incorrect. Please check your account settings.</string>
     <string name="error_unknown_filepath">Failed to find the resource.</string>

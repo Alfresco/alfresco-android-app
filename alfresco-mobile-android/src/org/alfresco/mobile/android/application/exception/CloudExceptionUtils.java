@@ -32,6 +32,7 @@ import org.apache.http.HttpStatus;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
@@ -73,6 +74,17 @@ public final class CloudExceptionUtils
                     "No authentication challenges found"))))
             {
                 manageException(context, forceRefresh);
+                return;
+            }
+            else
+            {
+                Bundle b = new Bundle();
+                b.putInt(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+                b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_general_title);
+                b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+                b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE,
+                        SessionExceptionHelper.getMessageId(context, exception));
+                ActionManager.actionDisplayDialog(context, b);
                 return;
             }
         }
@@ -126,12 +138,14 @@ public final class CloudExceptionUtils
     {
         if (forceRefresh)
         {
-            //MessengerManager.showLongToast(activity, (String) activity.getText(R.string.error_session_expired));
+            // MessengerManager.showLongToast(activity, (String)
+            // activity.getText(R.string.error_session_expired));
             ActionManager.actionRequestUserAuthentication(activity, SessionUtils.getAccount(activity));
         }
         else
         {
-            //MessengerManager.showLongToast(activity, (String) activity.getText(R.string.error_session_refresh));
+            // MessengerManager.showLongToast(activity, (String)
+            // activity.getText(R.string.error_session_refresh));
             ActionManager.actionRequestAuthentication(activity, SessionUtils.getAccount(activity));
         }
     }

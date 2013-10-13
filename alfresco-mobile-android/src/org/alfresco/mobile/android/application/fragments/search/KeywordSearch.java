@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
@@ -255,14 +256,6 @@ public class KeywordSearch extends GridSearchFragment
         super.onPause();
     }
 
-    public void onLoaderException(Exception e)
-    {
-        Log.e(TAG, Log.getStackTraceString(e));
-        MessengerManager.showToast(getActivity(), R.string.error_general);
-        setListShown(true);
-        gv.setEmptyView(ev);
-    }
-
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Node>>> arg0, LoaderResult<PagingResult<Node>> results)
     {
@@ -285,6 +278,14 @@ public class KeywordSearch extends GridSearchFragment
             Log.d(TAG, "Result : " + results.getData().getTotalItems());
             displayPagingData(results.getData(), loaderId, callback);
         }
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        gv.setEmptyView(ev);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     public void unselect()

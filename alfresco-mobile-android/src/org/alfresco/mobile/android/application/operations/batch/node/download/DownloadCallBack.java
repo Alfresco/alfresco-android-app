@@ -114,8 +114,7 @@ public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile
     @Override
     public void onError(Operation<ContentFile> task, Exception e)
     {
-        // TODO Auto-generated method stub
-
+        // Nothing special
     }
 
     protected int getNotificationId()
