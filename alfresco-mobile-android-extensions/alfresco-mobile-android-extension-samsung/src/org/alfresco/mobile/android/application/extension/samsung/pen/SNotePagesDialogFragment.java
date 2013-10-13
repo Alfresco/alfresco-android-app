@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.commons.utils.UIUtils;
 import org.alfresco.mobile.android.application.extension.samsung.impl.R;
 
 import android.app.DialogFragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -137,6 +138,17 @@ public class SNotePagesDialogFragment extends DialogFragment
         super.onDestroyView();
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        // Avoid background stretching
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////
     // SETTERS
     // ///////////////////////////////////////////////////////////////////////////

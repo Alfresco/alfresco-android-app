@@ -32,7 +32,6 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
@@ -46,6 +45,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
 
@@ -219,6 +219,37 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION SEND / SHARE
     // ///////////////////////////////////////////////////////////////////////////
+    public static void actionSend(Activity activity, File myFile, ActionManagerListener listener)
+    {
+        try
+        {
+            String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+            if (ApplicationManager.getSamsungManager(activity) != null
+                    && ApplicationManager.getSamsungManager(activity).hasPenEnable()
+                    && (mimeType == null || mimeType.equals("application/octet-stream"))
+                    && MimeTypeManager.getExtension(myFile.getName()).equals(SamsungManager.SAMSUNG_NOTE_EXTENSION_SPD))
+            {
+                mimeType = SamsungManager.SAMSUNG_NOTE_MIMETYPE;
+            }
+            if (DataProtectionManager.getInstance(activity).isEncrypted(myFile.getPath()))
+            {
+                WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
+                        R.string.decryption_title, true);
+                dialog.show(activity.getFragmentManager(), WaitingDialogFragment.TAG);
+                DataProtectionManager.getInstance(activity).decrypt(SessionUtils.getAccount(activity),
+                        myFile, DataProtectionManager.ACTION_SEND);
+            }
+            else
+            {
+                actionSend(activity, myFile);
+            }
+        }
+        catch (Exception e)
+        {
+            MessengerManager.showToast(activity, R.string.error_unable_open_file);
+        }
+    }
+    
     public static void actionSendDocument(Fragment fr, File myFile)
     {
         actionSend(fr.getActivity(), myFile);

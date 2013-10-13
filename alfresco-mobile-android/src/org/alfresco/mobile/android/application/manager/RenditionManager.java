@@ -731,4 +731,12 @@ public class RenditionManager
         params.height = bitmap.getHeight();
         imageView.setLayoutParams(params);
     }
+
+    public boolean hasSameSession(AlfrescoSession alfrescoSession)
+    {
+        if (alfrescoSession == null || session == null){
+            return false;
+        }
+        return alfrescoSession.equals(session);
+    }
 }

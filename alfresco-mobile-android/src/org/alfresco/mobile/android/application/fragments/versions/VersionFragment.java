@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.versions;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -28,6 +29,7 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.version.VersionsFragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,15 +39,21 @@ public class VersionFragment extends VersionsFragment
 {
 
     public static final String TAG = "VersionFragment";
+    
+    private static final String ARGUMENT_FOLDER = "parentFolderNode";
+
+    private Folder parentFolder;
 
     public VersionFragment()
     {
     }
 
-    public static VersionFragment newInstance(Node n)
+    public static VersionFragment newInstance(Node n, Folder parentFolder)
     {
         VersionFragment bf = new VersionFragment();
-        bf.setArguments(createBundleArgs(n));
+        Bundle b = createBundleArgs(n);
+        b.putParcelable(ARGUMENT_FOLDER, (Parcelable) parentFolder);
+        bf.setArguments(b);
         return bf;
     }
 
@@ -66,6 +74,11 @@ public class VersionFragment extends VersionsFragment
         alfSession = SessionUtils.getSession(getActivity());
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
+        
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_FOLDER))
+        {
+            parentFolder = bundle.getParcelable(ARGUMENT_FOLDER);
+        }
     }
 
     @Override
@@ -76,7 +89,7 @@ public class VersionFragment extends VersionsFragment
         if (versionedDoc.getVersionLabel() != null
                 && !versionedDoc.getVersionLabel().equals(((Document) node).getVersionLabel()))
         {
-            ((MainActivity) getActivity()).addPropertiesFragment(versionedDoc, null, true);
+            ((MainActivity) getActivity()).addPropertiesFragment(versionedDoc, parentFolder, true);
         }
     }
 

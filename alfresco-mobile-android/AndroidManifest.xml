@@ -32,7 +32,7 @@
     <application
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
         android:allowBackup="false"
-        android:configChanges="orientation|keyboardHidden"
+        android:configChanges="locale|keyboardHidden|orientation|screenSize"
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_alfresco_logo"
         android:label="@string/app_name"

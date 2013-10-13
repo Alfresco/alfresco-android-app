@@ -23,13 +23,13 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.listener.OnOAuthAccessTokenListener;
@@ -41,6 +41,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class AccountOAuthFragment extends OAuthFragment
     public static final String TAG = "AccountOAuthFragment";
 
     private static final String PARAM_ACCOUNT = "account";
-    
+
     private AccountsReceiver receiver;
 
     public static AccountOAuthFragment newInstance()
@@ -210,9 +211,10 @@ public class AccountOAuthFragment extends OAuthFragment
         {
             receiver = new AccountsReceiver();
             IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED);
+            filters.addAction(IntentIntegrator.ACTION_CREATE_ACCOUNT_CLOUD_ERROR);
             LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, filters);
         }
-        
+
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -223,7 +225,7 @@ public class AccountOAuthFragment extends OAuthFragment
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         super.onPause();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // Actions
     // ///////////////////////////////////////////////////////////////////////////
@@ -246,6 +248,12 @@ public class AccountOAuthFragment extends OAuthFragment
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
     }
+
+    private void resetRequest(){
+        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
+        FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+    }
     
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
@@ -255,7 +263,8 @@ public class AccountOAuthFragment extends OAuthFragment
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()) && getActivity() instanceof MainActivity)
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction())
+                    && getActivity() instanceof MainActivity)
             {
                 getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
                         FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -273,6 +282,15 @@ public class AccountOAuthFragment extends OAuthFragment
                     ((BaseActivity) getActivity()).setCurrentAccount(accountId);
                 }
             }
+
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_CLOUD_ERROR.equals(intent.getAction())
+                    && getActivity() instanceof MainActivity)
+            {
+                getActivity().getFragmentManager().popBackStack();
+                resetRequest();
+            }
         }
     }
+    
+    
 }

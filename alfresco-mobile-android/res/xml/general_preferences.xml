@@ -35,7 +35,7 @@
         <CheckBoxPreference
             android:dependency="@string/favorite_sync"
             android:key="@string/favorite_sync_wifi"
-            android:summary="@string/settings_favorite_sync_data_wifi"
+            android:summary="@string/settings_favorite_sync_data_all"
             android:title="@string/settings_favorite_sync_data" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/settings_links" >

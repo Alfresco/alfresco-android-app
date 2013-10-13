@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.menu;
 
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -39,8 +38,6 @@ import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.ActionBar;
@@ -56,6 +53,7 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -281,8 +279,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         if (configurationContext != null && configurationContext.getJson() != null
                 && configurationContext.getJson().containsKey(ConfigurationManager.CATEGORY_ROOTMENU))
         {
-            Log.d(TAG, "Configure Main menu + " + rootView);
-
             Map<String, Object> menuConfig = (Map<String, Object>) configurationContext.getJson().get(
                     ConfigurationManager.CATEGORY_ROOTMENU);
             hideOrDisplay(menuConfig, ConfigurationManager.MENU_ACTIVITIES, R.id.menu_browse_activities);
@@ -304,8 +300,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void display()
     {
-        Log.d(TAG, "Display");
-
         rootView.findViewById(R.id.menu_browse_activities).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_browse_root).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_browse_my_sites).setVisibility(View.VISIBLE);

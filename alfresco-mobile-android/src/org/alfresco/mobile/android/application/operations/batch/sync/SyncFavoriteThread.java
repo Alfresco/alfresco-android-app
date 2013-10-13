@@ -50,7 +50,6 @@ import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncD
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.ContentValues;
@@ -58,6 +57,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class SyncFavoriteThread extends NodeOperationThread<Void>

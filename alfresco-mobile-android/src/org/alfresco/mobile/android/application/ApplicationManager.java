@@ -116,7 +116,7 @@ public final class ApplicationManager
             }
         }
 
-        if (renditionManager == null && acc != null)
+        if (renditionManager != null && acc != null && !renditionManager.hasSameSession(sessionIndex.get(acc.getId())))
         {
             renditionManager = new RenditionManager(activity, sessionIndex.get(acc.getId()));
         }
