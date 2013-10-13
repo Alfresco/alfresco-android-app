@@ -212,6 +212,8 @@ public interface MenuActionItem
     // ///////////////////////////////////////////
 
     int ACCOUNT_ID = 1000;
+    
+    int ACCOUNT_RELOAD = 1001;
 
     int PARAMETER_ID = 2000;
 

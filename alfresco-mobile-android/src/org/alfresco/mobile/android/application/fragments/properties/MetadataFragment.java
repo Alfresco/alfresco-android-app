@@ -30,8 +30,8 @@ import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.PropertyManager;
@@ -46,7 +46,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -58,6 +57,8 @@ public class MetadataFragment extends BaseFragment
     public static final String ARGUMENT_NODE = "node";
 
     public static final String ARGUMENT_NODE_PARENT = "nodeParent";
+
+    protected static final String ARGUMENT_ISFAVORITE = "isFavorite";
 
     protected Folder parentNode;
 
@@ -98,7 +99,10 @@ public class MetadataFragment extends BaseFragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        if (!getArguments().containsKey(ARGUMENT_ISFAVORITE) && !(node instanceof NodeSyncPlaceHolder))
+        {
+            SessionUtils.checkSession(getActivity(), alfSession);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -119,7 +123,10 @@ public class MetadataFragment extends BaseFragment
         sv.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         sv.setPadding(5, 5, 5, 0);
 
-        if (alfSession == null) { return sv; }
+        if (!getArguments().containsKey(ARGUMENT_ISFAVORITE) && !(node instanceof NodeSyncPlaceHolder))
+        {
+            if (alfSession == null) { return sv; }
+        }
 
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
@@ -160,7 +167,7 @@ public class MetadataFragment extends BaseFragment
         // SAMSUNG Specific
         RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
-        
+
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);

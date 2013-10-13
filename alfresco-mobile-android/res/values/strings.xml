@@ -77,10 +77,11 @@
     <string name="wait_message">Contacting your server&#8230;</string>
 
     <!-- SESSION ERROR -->
+    <string name="retry_account_loading">Retry</string>
     <string name="error_session_creation_title">Save Account</string>
     <string name="error_session_creation_message">Connection Error</string>
     <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
-    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong.<br/> Please check your account settings.]]></string>
+    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong<br/> or you may need to <b>activate your VPN</b>.<br/> Please check your account settings.]]></string>
     <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]></string>
     <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]></string>
     <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your account settings.]]></string>
@@ -415,8 +416,7 @@
     <string name="settings_favorite">Favorites</string>
     <string name="settings_favorite_sync">Enable Sync for \"%s\"</string>
     <string name="settings_favorite_sync_data">Data Usage</string>
-    <string name="settings_favorite_sync_data_wifi">When there\'s a Wi-Fi connection available.</string>
-    <string name="settings_favorite_sync_data_all">When there\'s a Wi-Fi or mobile data connection available.</string>
+    <string name="settings_favorite_sync_data_all">Use Cellular Data for Sync.</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">

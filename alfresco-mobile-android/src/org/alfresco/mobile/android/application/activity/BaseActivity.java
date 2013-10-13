@@ -287,6 +287,15 @@ public abstract class BaseActivity extends Activity
             receivers.add(receiver);
         }
     }
+    
+    public void registerPublicReceiver(BroadcastReceiver receiver, IntentFilter filter)
+    {
+        if (receiver != null && filter != null)
+        {
+            registerReceiver(receiver, filter);
+            receivers.add(receiver);
+        }
+    }
 
     /**
      * Utility BroadcastReceiver for displaying dialog after an error or to

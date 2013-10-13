@@ -70,6 +70,7 @@ import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPla
 import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolderFormatter;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -166,6 +167,16 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         return bf;
     }
 
+    public static DetailsFragment newInstance(String nodeIdentifier, boolean isFavorite)
+    {
+        DetailsFragment bf = new DetailsFragment();
+        Bundle b = new Bundle();
+        b.putString(ARGUMENT_NODE_ID, nodeIdentifier);
+        b.putString(ARGUMENT_ISFAVORITE, nodeIdentifier);
+        bf.setArguments(b);
+        return bf;
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
@@ -173,7 +184,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void onActivityCreated(Bundle savedInstanceState)
     {
         alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        if (!getArguments().containsKey(ARGUMENT_ISFAVORITE))
+        {
+            SessionUtils.checkSession(getActivity(), alfSession);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -184,10 +198,16 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         container.setVisibility(View.VISIBLE);
         alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        if (!getArguments().containsKey(ARGUMENT_ISFAVORITE))
+        {
+            SessionUtils.checkSession(getActivity(), alfSession);
+        }
         vRoot = inflater.inflate(R.layout.app_details, container, false);
 
-        if (alfSession == null) { return vRoot; }
+        if (!getArguments().containsKey(ARGUMENT_ISFAVORITE))
+        {
+            if (alfSession == null) { return vRoot; }
+        }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
         String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
@@ -674,7 +694,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             mTabHost.setup();
             mTabHost.setOnTabChangedListener(this);
-            if (refreshedNode.isDocument()
+            if (refreshedNode.isDocument() && ConnectivityUtils.hasInternetAvailable(getActivity())
                     && Boolean.parseBoolean((String) refreshedNode.getPropertyValue(PropertyIds.IS_LATEST_VERSION)))
             {
                 mTabHost.addTab(newTab(TAB_PREVIEW, R.string.preview, android.R.id.tabcontent));
@@ -775,6 +795,34 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     public void share()
     {
         if (node.isFolder()) { return; }
+
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            SynchroManager syncManager = SynchroManager.getInstance(getActivity());
+            Account acc = SessionUtils.getAccount(getActivity());
+            final File syncFile = syncManager.getSyncFile(acc, node);
+            if (syncFile == null) { return; }
+            long datetime = syncFile.lastModified();
+            setDownloadDateTime(new Date(datetime));
+
+            if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable())
+            {
+                // IF sync file + sync activate + data protection
+                ActionManager.actionSend(getActivity(), syncFile, new ActionManagerListener()
+                {
+                    @Override
+                    public void onActivityNotFoundException(ActivityNotFoundException e)
+                    {
+                    }
+                });
+            }
+            else
+            {
+                // If sync file + sync activate
+                ActionManager.actionSend(getActivity(), syncFile);
+            }
+            return;
+        }
 
         if (alfSession instanceof RepositorySession)
         {
@@ -1003,7 +1051,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (node == null) { return; }
         if (node instanceof NodeSyncPlaceHolder) { return; }
-        
+
         boolean isRestrict = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
         if (node.isDocument())

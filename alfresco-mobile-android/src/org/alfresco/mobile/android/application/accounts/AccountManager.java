@@ -17,15 +17,20 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
+import java.util.Currency;
+
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.ApplicationManager;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionRequest;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
+import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 
 import android.content.BroadcastReceiver;
 import android.content.ContentValues;
@@ -279,13 +284,13 @@ public final class AccountManager
     private AlfrescoSession loadSession(Account account)
     {
         AlfrescoSession session = null;
-        Account currentAccount = appManager.getCurrentAccount();
+        Account accountToLoad = appManager.getCurrentAccount();
 
         // First Session Loading
-        if (account == null && currentAccount == null)
+        if (account == null && accountToLoad == null)
         {
-            currentAccount = getDefaultAccount();
-            if (currentAccount == null)
+            accountToLoad = getDefaultAccount();
+            if (accountToLoad == null)
             {
                 broadManager.sendBroadcast(new Intent(IntentIntegrator.ACTION_ACCOUNT_INACTIVE));
             }
@@ -293,40 +298,54 @@ public final class AccountManager
         else if (account != null)
         {
             // User has choose a specific account to load
-            currentAccount = account;
+            accountToLoad = account;
         }
 
-        if (currentAccount == null) { return null; }
+        if (accountToLoad == null) { return null; }
 
-        if (currentAccount.getActivation() != null)
+        if (accountToLoad.getActivation() != null)
         {
             // SEND broadcast : account is not active !
             broadManager.sendBroadcast(new Intent(IntentIntegrator.ACTION_ACCOUNT_INACTIVE));
         }
 
         // Check if Session available for this specific account
-        if (appManager.hasSession(currentAccount.getId()))
+        if (appManager.hasSession(accountToLoad.getId()))
         {
-            session = appManager.getSession(currentAccount.getId());
+            session = appManager.getSession(accountToLoad.getId());
 
             broadManager.sendBroadcast(new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(
-                    IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId()));
+                    IntentIntegrator.EXTRA_ACCOUNT_ID, accountToLoad.getId()));
         }
-        else
+        else if (appManager.getCurrentAccount() == null || accountToLoad.getId() != appManager.getCurrentAccount().getId())
         {
             // Create the session for the specific account
-            createSession(currentAccount);
+            createSession(accountToLoad);
         }
 
         // Mark accountId for the specific activity.
         // Help to retrieve session associated to a specific activity
-        appManager.saveAccount(currentAccount);
+        appManager.saveAccount(accountToLoad);
 
         return session;
     }
 
     private void createSession(Account currentAccount)
     {
+        // Check Connectivity
+        if (!ConnectivityUtils.hasInternetAvailable(appContext))
+        {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction(IntentIntegrator.ACTION_LOAD_ACCOUNT_ERROR);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_ICON, R.drawable.ic_alfresco_logo);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_session_creation_message);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
+            broadcastIntent.putExtra(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_session_nodata);
+            broadcastIntent.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId());
+            LocalBroadcastManager.getInstance(appContext).sendBroadcast(broadcastIntent);
+            return;
+        }
+
         if (appManager.hasSession(currentAccount.getId()))
         {
             appManager.removeAccount(currentAccount.getId());

@@ -413,7 +413,6 @@
     <string name="settings_favorite">Favoriten</string>
     <string name="settings_favorite_sync">Synchronisierung aktivieren</string>
     <string name="settings_favorite_sync_data">Datennutzung</string>
-    <string name="settings_favorite_sync_data_wifi">Wenn eine Wi-Fi-Verbindung verfügbar ist.</string>
     <string name="settings_favorite_sync_data_all">Wenn eine Wi-Fi- oder mobile Datenverbindung verfügbar ist.</string>
 
     <!-- Multi Selection -->

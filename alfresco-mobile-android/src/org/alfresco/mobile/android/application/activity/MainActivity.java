@@ -68,7 +68,6 @@ import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 import org.alfresco.mobile.android.application.fragments.search.SearchAggregatorFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
-import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
@@ -103,6 +102,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -238,6 +238,7 @@ public class MainActivity extends BaseActivity
         filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
 
         registerPrivateReceiver(new MainActivityReceiver(), filters);
+        registerPublicReceiver(new NetworkReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onStart();
         OAuthRefreshTokenCallback.requestRefreshToken(getCurrentSession(), this);
@@ -548,7 +549,6 @@ public class MainActivity extends BaseActivity
         }
     }
 
-
     public void showMainMenuFragment(View v)
     {
         DisplayUtils.hideLeftTitlePane(this);
@@ -580,6 +580,10 @@ public class MainActivity extends BaseActivity
         else if (getCurrentAccount() == null && getCurrentSession() == null)
         {
             ActionManager.loadAccount(this, accountManager.getDefaultAccount());
+        }
+        else if (sessionState == SESSION_ERROR && getCurrentSession() == null)
+        {
+            ActionManager.loadAccount(this, getCurrentAccount());
         }
         invalidateOptionsMenu();
     }
@@ -682,6 +686,20 @@ public class MainActivity extends BaseActivity
             stackCentral.push(DetailsFragment.TAG);
         }
         BaseFragment frag = DetailsFragment.newInstance(nodeIdentifier);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
+    }
+
+    public void addPropertiesFragment(boolean isFavorite, String nodeIdentifier)
+    {
+        Boolean b = DisplayUtils.hasCentralPane(this) ? false : true;
+        clearCentralPane();
+        if (DisplayUtils.hasCentralPane(this))
+        {
+            stackCentral.clear();
+            stackCentral.push(DetailsFragment.TAG);
+        }
+        BaseFragment frag = DetailsFragment.newInstance(nodeIdentifier, isFavorite);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, b);
     }
@@ -879,6 +897,13 @@ public class MainActivity extends BaseActivity
     {
         super.onCreateOptionsMenu(menu);
 
+        if (sessionState == SESSION_ERROR && getCurrentSession() == null)
+        {
+            MenuItem mi = menu
+                    .add(Menu.NONE, MenuActionItem.ACCOUNT_RELOAD, Menu.FIRST, R.string.retry_account_loading);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
+        }
+
         if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
 
         if (isVisible(TaskDetailsFragment.TAG))
@@ -954,6 +979,9 @@ public class MainActivity extends BaseActivity
     {
         switch (item.getItemId())
         {
+            case MenuActionItem.ACCOUNT_RELOAD:
+                ActionManager.loadAccount(this, getCurrentAccount());
+                return true;
             case MenuActionItem.MENU_PROFILE:
                 PersonProfileFragment frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
                 frag.show(getFragmentManager(), PersonProfileFragment.TAG);
@@ -1412,6 +1440,9 @@ public class MainActivity extends BaseActivity
 
                 // Stop progress indication
                 activity.setProgressBarIndeterminateVisibility(false);
+
+                invalidateOptionsMenu();
+
                 return;
             }
 
@@ -1455,6 +1486,33 @@ public class MainActivity extends BaseActivity
             }
 
             return;
+        }
+    }
+
+    public class NetworkReceiver extends BroadcastReceiver
+    {
+        @Override
+        public void onReceive(Context context, Intent intent)
+        {
+            try
+            {
+                if (ConnectivityUtils.hasInternetAvailable(context))
+                {
+                    if (sessionState == SESSION_ERROR && getCurrentAccount() == null && getCurrentSession() == null)
+                    {
+                        ActionManager.loadAccount(MainActivity.this, accountManager.getDefaultAccount());
+                    }
+                    else if (sessionState == SESSION_ERROR && getCurrentSession() == null)
+                    {
+                        ActionManager.loadAccount(MainActivity.this, getCurrentAccount());
+                    }
+                    invalidateOptionsMenu();
+                }
+            }
+            catch (Exception e)
+            {
+                // TODO: handle exception
+            }
         }
     }
 

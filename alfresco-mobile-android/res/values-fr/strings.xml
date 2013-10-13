@@ -413,7 +413,6 @@
     <string name="settings_favorite">Favoris</string>
     <string name="settings_favorite_sync">Activer Synchro</string>
     <string name="settings_favorite_sync_data">Utilisation des données</string>
-    <string name="settings_favorite_sync_data_wifi">En connexion Wi-Fi.</string>
     <string name="settings_favorite_sync_data_all">En connexion Wi-Fi ou données.</string>
 
     <!-- Multi Selection -->

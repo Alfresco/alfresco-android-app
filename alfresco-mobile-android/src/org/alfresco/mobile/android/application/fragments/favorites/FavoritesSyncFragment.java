@@ -329,7 +329,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         else if (nActions == null)
         {
             // Show properties
-            ((MainActivity) getActivity()).addPropertiesFragment(documentId);
+            ((MainActivity) getActivity()).addPropertiesFragment(true, documentId);
             DisplayUtils.switchSingleOrTwo(getActivity(), true);
         }
         adapter.notifyDataSetChanged();
