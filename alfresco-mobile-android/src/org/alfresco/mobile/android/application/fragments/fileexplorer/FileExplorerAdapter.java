@@ -160,7 +160,6 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     {
         if (item.isFile())
         {
-            // TODO Thumbnails
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(MimeTypeManager.getIcon(item.getName())));
         }
         else if (item.isDirectory())

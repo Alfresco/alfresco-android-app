@@ -198,7 +198,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
     @Override
     public void onLoaderReset(Loader<LoaderResult<Person>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     // //////////////////////////////////////////////////////////////////////

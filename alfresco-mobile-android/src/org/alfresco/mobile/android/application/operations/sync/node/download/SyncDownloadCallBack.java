@@ -75,7 +75,6 @@ public class SyncDownloadCallBack extends AbstractSyncOperationCallback<ContentF
     @Override
     public void onError(Operation<ContentFile> task, Exception e)
     {
-        // TODO Auto-generated method stub
-
+        // Nothing special
     }
 }

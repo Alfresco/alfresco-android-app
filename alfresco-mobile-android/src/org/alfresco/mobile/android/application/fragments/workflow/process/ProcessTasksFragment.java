@@ -190,7 +190,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
     
     @Override

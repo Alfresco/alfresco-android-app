@@ -689,7 +689,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Document>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -150,7 +150,7 @@ public class ProcessesDefinitionFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
     
     @Override

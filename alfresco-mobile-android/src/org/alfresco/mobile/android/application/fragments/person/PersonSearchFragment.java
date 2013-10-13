@@ -317,8 +317,7 @@ public class PersonSearchFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Person>>> arg0)
     {
-        // TODO Auto-generated method stub
-
+        // Nothing special
     }
     
     @Override

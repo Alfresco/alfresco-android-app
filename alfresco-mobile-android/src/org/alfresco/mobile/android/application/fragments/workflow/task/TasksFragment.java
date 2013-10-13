@@ -203,7 +203,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
     
     @Override

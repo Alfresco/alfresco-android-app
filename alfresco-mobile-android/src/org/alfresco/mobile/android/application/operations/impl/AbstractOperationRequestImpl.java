@@ -130,7 +130,6 @@ public abstract class AbstractOperationRequestImpl implements OperationRequest
         return mimeType;
     }
 
-    //TODO MimetypeManager Content Resolver !
     //We user filename for the moment instead of real mimetype
     public OperationRequest setMimeType(String mimeType)
     {

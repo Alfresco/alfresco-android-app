@@ -44,8 +44,6 @@ public final class BatchOperationSchema extends OperationSchema
     // ////////////////////////////////////////////////////
     private static final String QUERY_TABLE_CREATE = "CREATE TABLE " + TABLENAME + " (" + QUERY_CREATE_COLUMNS + ");";
 
-    private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
-
     // ////////////////////////////////////////////////////
     // LIFECYCLE
     // ////////////////////////////////////////////////////
@@ -60,12 +58,5 @@ public final class BatchOperationSchema extends OperationSchema
         {
             db.execSQL(QUERY_TABLE_CREATE);
         }
-    }
-
-    // TODO REMOVE BEFORE RELEASE
-    public static void reset(SQLiteDatabase db)
-    {
-        db.execSQL(QUERY_TABLE_DROP);
-        db.execSQL(QUERY_TABLE_CREATE);
     }
 }

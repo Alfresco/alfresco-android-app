@@ -356,7 +356,7 @@ public class AccountSettingsHelper
         }
         catch (Exception e)
         {
-            // TODO: handle exception
+            // Nothing special
         }
 
         return settings;

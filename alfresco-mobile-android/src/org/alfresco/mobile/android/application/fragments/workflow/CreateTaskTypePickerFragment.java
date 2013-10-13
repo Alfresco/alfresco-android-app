@@ -212,7 +212,7 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     private void filter(PagingResult<ProcessDefinition> processDefinitions)

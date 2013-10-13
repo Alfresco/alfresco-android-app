@@ -246,7 +246,7 @@ public class CommentsFragment extends CommentFragment
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Comment>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     @Override
