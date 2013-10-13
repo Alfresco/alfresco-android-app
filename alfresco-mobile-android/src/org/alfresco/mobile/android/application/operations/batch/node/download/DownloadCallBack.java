@@ -24,9 +24,9 @@ import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationsGroupCallBack;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.content.Context;
+import android.support.v4.content.LocalBroadcastManager;
 
 public class DownloadCallBack extends AbstractBatchOperationCallback<ContentFile> implements OperationsGroupCallBack
 {

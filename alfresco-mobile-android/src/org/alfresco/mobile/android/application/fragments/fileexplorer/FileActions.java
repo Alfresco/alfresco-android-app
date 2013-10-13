@@ -186,9 +186,9 @@ public class FileActions implements ActionMode.Callback
                     if (selectedFolder.isEmpty())
                     {
                         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEND, Menu.FIRST + MenuActionItem.MENU_SEND,
-                                R.string.action_select);
+                                R.string.action_upload);
                         mi.setIcon(R.drawable.ic_upload);
-                        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
                     }
 
                     break;

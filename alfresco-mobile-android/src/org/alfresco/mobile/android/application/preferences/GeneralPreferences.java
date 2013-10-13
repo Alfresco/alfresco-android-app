@@ -174,15 +174,8 @@ public class GeneralPreferences extends PreferenceFragment
 
         if (wifiPref != null)
         {
-            wifiPref.setChecked(syncWifiEnable);
-            if (syncWifiEnable)
-            {
-                wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
-            }
-            else
-            {
-                wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
-            }
+            wifiPref.setChecked(!syncWifiEnable);
+            wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
         }
 
         cpref.setOnPreferenceClickListener(new OnPreferenceClickListener()
@@ -252,16 +245,6 @@ public class GeneralPreferences extends PreferenceFragment
                         isWifiOnly = ((CheckBoxPreference) preference).isChecked();
                     }
                     sharedPref.edit().putBoolean(SYNCHRO_WIFI_PREFIX + account.getId(), isWifiOnly).commit();
-
-                    if (isWifiOnly)
-                    {
-                        wifiPref.setSummary(R.string.settings_favorite_sync_data_wifi);
-                    }
-                    else
-                    {
-                        wifiPref.setSummary(R.string.settings_favorite_sync_data_all);
-                    }
-
                     return false;
                 }
             });

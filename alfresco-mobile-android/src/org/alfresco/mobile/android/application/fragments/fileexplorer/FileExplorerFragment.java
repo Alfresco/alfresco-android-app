@@ -38,7 +38,6 @@ import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -54,6 +53,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -275,7 +275,15 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
 
     private void displayNavigation(File file, boolean backstack)
     {
-        BaseFragment frag = FileExplorerFragment.newInstance(file);
+        BaseFragment frag;
+        if (getMode() == MODE_PICK)
+        {
+            frag = FileExplorerFragment.newInstance(file, getMode(), true, getArguments().getInt(PARAM_MENUID));
+        }
+        else
+        {
+            frag = FileExplorerFragment.newInstance(file);
+        }
         FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                 FileExplorerFragment.TAG, backstack);
     }
@@ -488,7 +496,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         public void onReceive(Context context, Intent intent)
         {
             if (adapter == null) { return; }
-            
+
             Log.d(TAG, intent.getAction());
 
             if (intent.getExtras() != null)

@@ -28,10 +28,10 @@ import org.alfresco.mobile.android.application.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class LoadSessionCallBack extends AbstractBatchOperationCallback<AlfrescoSession>

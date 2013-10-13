@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.application.operations.sync.node.update.SyncU
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.update.SyncUpdateThread;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -47,6 +46,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public class SynchroService<T> extends Service

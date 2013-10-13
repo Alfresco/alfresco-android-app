@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
@@ -45,6 +44,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -63,6 +63,8 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     protected List<Task> selectedItems = new ArrayList<Task>(1);
 
     private TasksFragmentReceiver receiver;
+
+    private boolean loadFinished = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -135,7 +137,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
         receiver = new TasksFragmentReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
-        if (getLoaderManager().getLoader(TasksLoader.ID) != null && getLoaderManager().getLoader(TasksLoader.ID).isStarted()){
+        if (!loadFinished){
             setListShown(false);
         }
         
@@ -148,6 +150,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public Loader<LoaderResult<PagingResult<Task>>> onCreateLoader(int id, Bundle ba)
     {
+        loadFinished = false;
         setListShown(false);
 
         bundle = (ba == null) ? getArguments() : ba;
@@ -180,6 +183,7 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onLoadFinished(Loader<LoaderResult<PagingResult<Task>>> arg0, LoaderResult<PagingResult<Task>> results)
     {
+        loadFinished = true;
         if (adapter == null)
         {
             adapter = new TasksAdapter(getActivity(), R.layout.sdk_list_row, new ArrayList<Task>(0), selectedItems);

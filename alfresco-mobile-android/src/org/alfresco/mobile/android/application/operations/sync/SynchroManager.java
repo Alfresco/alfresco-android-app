@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPla
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.thirdparty.LocalBroadcastManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.BroadcastReceiver;
@@ -62,6 +61,7 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 public final class SynchroManager extends OperationManager
