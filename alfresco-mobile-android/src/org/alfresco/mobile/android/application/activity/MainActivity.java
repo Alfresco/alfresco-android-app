@@ -1097,6 +1097,7 @@ public class MainActivity extends BaseActivity
                     Document doc = (Document) ((DetailsFragment) getFragment(DetailsFragment.TAG)).getCurrentNode();
                     i.putExtra(IntentIntegrator.EXTRA_DOCUMENT, (Serializable) doc);
                 }
+                i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
                 startActivity(i);
                 return true;
             case MenuActionItem.MENU_TASK_REASSIGN:
@@ -1255,6 +1256,12 @@ public class MainActivity extends BaseActivity
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
+                
+                if (getFragment(GeneralPreferences.TAG) != null)
+                {
+                    ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
+                }
+                
                 return;
             }
 
@@ -1511,7 +1518,7 @@ public class MainActivity extends BaseActivity
             }
             catch (Exception e)
             {
-                // TODO: handle exception
+                // Nothing special
             }
         }
     }

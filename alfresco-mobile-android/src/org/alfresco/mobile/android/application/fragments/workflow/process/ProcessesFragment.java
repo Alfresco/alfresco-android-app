@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -198,7 +199,14 @@ public class ProcessesFragment extends BaseListFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Process>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -279,7 +287,7 @@ public class ProcessesFragment extends BaseListFragment implements
                 ProcessesFragment tasksFragment = (ProcessesFragment) getFragmentManager().findFragmentByTag(
                         ProcessesFragment.TAG);
 
-                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
+                if (tasksFragment != null && intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
                         || intent.getAction().equals(IntentIntegrator.ACTION_START_PROCESS_COMPLETED)
                         || intent.getAction().equals(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED))
                 {

@@ -535,7 +535,7 @@ public final class SynchroManager extends OperationManager
             }
             catch (Exception e)
             {
-                // TODO: handle exception
+                // Nothing special
             }
             finally
             {

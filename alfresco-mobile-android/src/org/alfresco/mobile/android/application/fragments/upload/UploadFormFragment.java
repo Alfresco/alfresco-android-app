@@ -469,7 +469,6 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
         }
     }
 
-    // TODO Move to IOUtils
     private File createFile(File localParentFolder, String filename, String data)
     {
         File outputFile = null;

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
@@ -103,14 +104,12 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
         SessionUtils.checkSession(getActivity(), alfSession);
         vRoot = inflater.inflate(R.layout.app_task_create, container, false);
 
-        if (alfSession == null) { return vRoot; }
-
         lv = (LinearLayout) vRoot.findViewById(R.id.create_task_group);
         pb = (ProgressBar) vRoot.findViewById(R.id.progressbar);
         ev = vRoot.findViewById(R.id.empty);
         TextView evt = (TextView) vRoot.findViewById(R.id.empty_text);
         evt.setText(R.string.error_general);
-
+        
         // BUTTONS
         Button b = (Button) vRoot.findViewById(R.id.task_todo);
         b.setOnClickListener(new OnClickListener()
@@ -194,6 +193,7 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
         if (results.getException() != null)
         {
             displayEmptyView();
+            CloudExceptionUtils.handleCloudException(getActivity(), results.getException(), false);
         }
         else
         {
@@ -212,7 +212,7 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<ProcessDefinition>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
     }
 
     private void filter(PagingResult<ProcessDefinition> processDefinitions)
@@ -262,6 +262,8 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
 
     private void displayEmptyView()
     {
+        if (ev == null || lv == null || pb == null) { return; }
+        
         ev.setVisibility(View.VISIBLE);
         lv.setVisibility(View.GONE);
         pb.setVisibility(View.GONE);

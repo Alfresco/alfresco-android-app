@@ -451,7 +451,7 @@ public class BatchOperationManager extends OperationManager
             }
             catch (Exception e)
             {
-                // TODO: handle exception
+                // Nothing special
             }
             finally
             {

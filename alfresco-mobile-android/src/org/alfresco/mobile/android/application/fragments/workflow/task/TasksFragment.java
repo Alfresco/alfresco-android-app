@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
@@ -202,7 +203,14 @@ public class TasksFragment extends BaseListFragment implements LoaderCallbacks<L
     @Override
     public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
     {
-        // TODO Auto-generated method stub
+        // Nothing special
+    }
+    
+    @Override
+    public void onLoaderException(Exception e)
+    {
+        setListShown(true);
+        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

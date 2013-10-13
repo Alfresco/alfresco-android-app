@@ -180,7 +180,6 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
 
     private void findSession(URL tmpurl)
     {
-        // TODO Better support of Cloud Session
         AccountSettingsHelper settingsHelper = new AccountSettingsHelper(getContext(), selectAccount);
         Map<String, Serializable> settings = settingsHelper.prepareCommonSettings();
         if (settingsHelper.isCloud())
