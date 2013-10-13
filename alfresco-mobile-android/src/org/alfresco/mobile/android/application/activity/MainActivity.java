@@ -1097,6 +1097,7 @@ public class MainActivity extends BaseActivity
                     Document doc = (Document) ((DetailsFragment) getFragment(DetailsFragment.TAG)).getCurrentNode();
                     i.putExtra(IntentIntegrator.EXTRA_DOCUMENT, (Serializable) doc);
                 }
+                i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
                 startActivity(i);
                 return true;
             case MenuActionItem.MENU_TASK_REASSIGN:

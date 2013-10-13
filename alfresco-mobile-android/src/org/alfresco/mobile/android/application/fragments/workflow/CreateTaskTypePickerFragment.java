@@ -103,14 +103,12 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
         SessionUtils.checkSession(getActivity(), alfSession);
         vRoot = inflater.inflate(R.layout.app_task_create, container, false);
 
-        if (alfSession == null) { return vRoot; }
-
         lv = (LinearLayout) vRoot.findViewById(R.id.create_task_group);
         pb = (ProgressBar) vRoot.findViewById(R.id.progressbar);
         ev = vRoot.findViewById(R.id.empty);
         TextView evt = (TextView) vRoot.findViewById(R.id.empty_text);
         evt.setText(R.string.error_general);
-
+        
         // BUTTONS
         Button b = (Button) vRoot.findViewById(R.id.task_todo);
         b.setOnClickListener(new OnClickListener()
@@ -262,6 +260,8 @@ public class CreateTaskTypePickerFragment extends BaseFragment implements
 
     private void displayEmptyView()
     {
+        if (ev == null || lv == null || pb == null) { return; }
+        
         ev.setVisibility(View.VISIBLE);
         lv.setVisibility(View.GONE);
         pb.setVisibility(View.GONE);
