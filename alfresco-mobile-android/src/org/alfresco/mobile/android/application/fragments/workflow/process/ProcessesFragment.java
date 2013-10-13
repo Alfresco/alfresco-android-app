@@ -279,7 +279,7 @@ public class ProcessesFragment extends BaseListFragment implements
                 ProcessesFragment tasksFragment = (ProcessesFragment) getFragmentManager().findFragmentByTag(
                         ProcessesFragment.TAG);
 
-                if (intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
+                if (tasksFragment != null && intent.getAction().equals(IntentIntegrator.ACTION_TASK_COMPLETED)
                         || intent.getAction().equals(IntentIntegrator.ACTION_START_PROCESS_COMPLETED)
                         || intent.getAction().equals(IntentIntegrator.ACTION_TASK_DELEGATE_COMPLETED))
                 {

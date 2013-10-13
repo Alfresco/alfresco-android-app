@@ -1256,6 +1256,12 @@ public class MainActivity extends BaseActivity
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
+                
+                if (getFragment(GeneralPreferences.TAG) != null)
+                {
+                    ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
+                }
+                
                 return;
             }
 
