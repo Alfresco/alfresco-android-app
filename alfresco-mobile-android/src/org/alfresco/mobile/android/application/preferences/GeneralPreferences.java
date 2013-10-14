@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoriteAlertDialogFragment.OnFavoriteChangeListener;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;

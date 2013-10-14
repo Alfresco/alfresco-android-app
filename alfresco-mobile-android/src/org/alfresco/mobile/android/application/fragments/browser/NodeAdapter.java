@@ -158,41 +158,46 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         // Specific part for dynaminc resize
 
         // First init ==> always
-        width = DisplayUtils.getSplitterWidth((MainActivity) context);
+        width = 1000;
+        int columnWidth = 2048;
+
         int layoutId = R.layout.app_grid_progress_row;
         int flagLayoutId = R.id.app_grid_progress;
 
-        int columnWidth = 240;
-        Log.d("WIDTH", width + "");
-        if (width <= 480)
+        if (context instanceof MainActivity)
         {
-            layoutId = R.layout.app_grid_progress_row;
-            flagLayoutId = R.id.app_grid_progress;
-            columnWidth = 320;
-        }
-        else if (width < 600)
-        {
-            layoutId = R.layout.app_grid_card_repo;
-            flagLayoutId = R.id.app_grid_card;
-            columnWidth = 150;
-        }
-        else if (width < 800)
-        {
-            layoutId = R.layout.app_grid_card_repo;
-            flagLayoutId = R.id.app_grid_card;
-            columnWidth = 160;
-        }
-        else if (width < 1000)
-        {
-            layoutId = R.layout.app_grid_tiles_repo;
-            flagLayoutId = R.id.app_grid_tiles;
-            columnWidth = 200;
-        }
-        else
-        {
-            layoutId = R.layout.app_grid_tiles_repo;
-            flagLayoutId = R.id.app_grid_tiles;
+            width = DisplayUtils.getSplitterWidth((MainActivity) context);
             columnWidth = 240;
+            if (width <= 480)
+            {
+                layoutId = R.layout.app_grid_progress_row;
+                flagLayoutId = R.id.app_grid_progress;
+                columnWidth = 320;
+            }
+            else if (width < 600)
+            {
+                layoutId = R.layout.app_grid_card_repo;
+                flagLayoutId = R.id.app_grid_card;
+                columnWidth = 150;
+            }
+            else if (width < 800)
+            {
+                layoutId = R.layout.app_grid_card_repo;
+                flagLayoutId = R.id.app_grid_card;
+                columnWidth = 160;
+            }
+            else if (width < 1000)
+            {
+                layoutId = R.layout.app_grid_tiles_repo;
+                flagLayoutId = R.id.app_grid_tiles;
+                columnWidth = 200;
+            }
+            else
+            {
+                layoutId = R.layout.app_grid_tiles_repo;
+                flagLayoutId = R.id.app_grid_tiles;
+                columnWidth = 240;
+            }
         }
 
         if (gridFragment != null)
@@ -404,7 +409,14 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
         else if (item.isFolder())
         {
-            vh.choose.setVisibility(View.VISIBLE);
+            if (isEditable)
+            {
+                vh.choose.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                vh.choose.setVisibility(View.GONE);
+            }
             vh.icon.setImageResource(R.drawable.mime_256_folder);
         }
     }
