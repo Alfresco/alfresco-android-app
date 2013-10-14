@@ -239,27 +239,27 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
             init(v, emptyListMessageId);
 
             validationButton = (Button) v.findViewById(R.id.action_validation);
-            GridView listView = (GridView) v.findViewById(R.id.gridview);
+            GridView gridView = (GridView) v.findViewById(R.id.gridview);
             if (getActivity() instanceof PrivateDialogActivity)
             {
                 validationButton.setText(R.string.done);
-                listView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+                gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
             }
             else
             {
-                listView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
+                gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             }
-            listView.setClickable(true);
+            gridView.setClickable(true);
         }
         else
         {
             v = super.onCreateView(inflater, container, savedInstanceState);
 
-            GridView listView = (GridView) v.findViewById(R.id.gridview);
-            listView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
-            listView.setClickable(true);
+            GridView gridView = (GridView) v.findViewById(R.id.gridview);
+            gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
+            gridView.setClickable(true);
 
-            listView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
+            gridView.setBackgroundColor(getResources().getColor(R.color.grey_lighter));
         }
         return v;
     }
@@ -1184,6 +1184,12 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     private int getDisplayItemLayout()
     {
         int displayItemLayout = R.layout.app_grid_large_progress_row;
+        
+        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity){
+            gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 1000));
+            return R.layout.app_grid_large_progress_row;
+        }
+            
         switch (displayMode)
         {
             case DISPLAY_LIST:
