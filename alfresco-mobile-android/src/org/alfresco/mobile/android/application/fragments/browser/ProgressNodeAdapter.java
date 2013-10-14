@@ -94,19 +94,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
     }
 
-    public ProgressNodeAdapter(BaseGridFragment fragment, int textViewResourceId, Node parentNode,
-            List<Node> listItems, List<Node> selectedItems, int mode)
-    {
-        super(fragment, textViewResourceId, listItems, selectedItems, mode);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.parentNode = parentNode;
-        if (parentNode != null)
-        {
-            fragment.getActivity().getLoaderManager().restartLoader(fragment.getActivity().hashCode(), null, this);
-            refreshFavorites();
-        }
-    }
-
     public ProgressNodeAdapter(Activity context, int textViewResourceId, List<Node> listItems)
     {
         super(context, textViewResourceId, listItems);

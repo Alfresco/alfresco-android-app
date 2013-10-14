@@ -104,8 +104,8 @@
                 <ImageView
                     android:id="@+id/choose"
                     style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="40dip"
+                    android:layout_height="40dip"
                     android:layout_gravity="center"
                     android:background="@drawable/quickcontact_badge_overlay_light"
                     android:visibility="visible" />
