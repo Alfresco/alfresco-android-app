@@ -153,7 +153,7 @@ public class CreateAccountThread extends AbstractBatchOperationThread<Account>
 
     private boolean isPaid(int type, AlfrescoSession session)
     {
-        if (type == Account.TYPE_ALFRESCO_CLOUD)
+        if (type == Account.TYPE_ALFRESCO_CLOUD || type == Account.TYPE_ALFRESCO_TEST_OAUTH)
         {
             return (((CloudSession) session).getNetwork().isPaidNetwork());
         }
