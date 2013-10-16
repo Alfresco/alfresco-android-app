@@ -274,7 +274,10 @@ public abstract class BaseGridFragment extends BaseFragment
         if (!isFullLoad && loadState == LOAD_AUTO)
         {
             getLoaderManager().initLoader(loaderId, getArguments(), callback);
-            getLoaderManager().getLoader(loaderId).forceLoad();
+            if (getLoaderManager().getLoader(loaderId) != null)
+            {
+                getLoaderManager().getLoader(loaderId).forceLoad();
+            }
         }
     }
 
@@ -503,7 +506,7 @@ public abstract class BaseGridFragment extends BaseFragment
         lci.setSortProperty(lco.getSortProperty());
         return lci;
     }
-    
+
     public void setColumnWidth(int value)
     {
         gv.setColumnWidth(value);
