@@ -32,6 +32,9 @@ import android.app.Dialog;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 /**
@@ -57,6 +60,18 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements Loader
         fr.setArguments(b);
         return fr;
     }
+    
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = inflater.inflate(R.layout.sdk_list, container, false);
+
+        init(v, emptyListMessageId);
+        
+        setListShown(false);
+
+        return v;
+    }
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -65,8 +80,7 @@ public class JoinSiteRequestsFragment extends BaseListFragment implements Loader
 
         title = getString(R.string.joinsiterequest_list_title);
         Dialog d = super.onCreateDialog(savedInstanceState);
-
-        setListShown(false);
+        d.setTitle(title);
 
         return d;
     }
