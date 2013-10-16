@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.content.Loader;
 import android.os.Bundle;
@@ -62,13 +61,7 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
     private static final String PARAM_SEARCH_FOLDER = "searchFolder";
 
-    private static final int MAX_RESULT_ITEMS = 30;
-
     private List<Node> selectedItems = new ArrayList<Node>(1);
-
-    private Site site;
-
-    private Folder tmpParentFolder;
 
     private String keywords;
 
@@ -128,14 +121,10 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
         gv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
-        tmpParentFolder = null;
-        site = null;
         if (getArguments() != null)
         {
             searchFolder = getArguments().getBoolean(PARAM_SEARCH_FOLDER);
             keywords = getArguments().getString(PARAM_KEYWORD);
-            site = (Site) getArguments().getSerializable(PARAM_SITE);
-            tmpParentFolder = (Folder) getArguments().getSerializable(FOLDER);
         }
 
         if (keywords != null && !keywords.isEmpty())
