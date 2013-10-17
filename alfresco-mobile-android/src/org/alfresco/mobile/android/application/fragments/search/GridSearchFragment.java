@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.R;
@@ -40,6 +41,8 @@ public abstract class GridSearchFragment extends BaseGridFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<Node>>>
 {
 
+    protected static final int MAX_RESULT_ITEMS = 30;
+    
     public static final String TAG = "SearchFragment";
 
     public static final String KEYWORDS = "keywords";
@@ -163,6 +166,11 @@ public abstract class GridSearchFragment extends BaseGridFragment implements
         b.putString(KEYWORDS, keywords);
         b.putBoolean(INCLUDE_CONTENT, fullText);
         b.putBoolean(EXACTMATCH, isExact);
+        // Reduce voluntary result list for cloud.
+        if (alfSession instanceof CloudSession)
+        {
+            b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+        }
         reload(b, SearchLoader.ID, this);
     }
 

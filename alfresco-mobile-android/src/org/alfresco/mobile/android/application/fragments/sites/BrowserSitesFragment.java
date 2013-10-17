@@ -226,6 +226,7 @@ public class BrowserSitesFragment extends SitesFragment implements RefreshFragme
     public void displayJoinSiteRequests()
     {
         JoinSiteRequestsFragment dialogft = JoinSiteRequestsFragment.newInstance(null);
+        dialogft.setSession(alfSession);
         dialogft.show(getFragmentManager(), JoinSiteRequestsFragment.TAG);
     }
 
