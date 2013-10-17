@@ -354,14 +354,17 @@ public class AccountDetailsFragment extends BaseFragment
         formValue = (EditText) vRoot.findViewById(R.id.repository_description);
         description = formValue.getText().toString();
 
-        formValue = (EditText) vRoot.findViewById(R.id.repository_password);
-        if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
+        if (acc.getTypeId() != Account.TYPE_ALFRESCO_CLOUD && acc.getTypeId() != Account.TYPE_ALFRESCO_TEST_OAUTH)
         {
-            password = formValue.getText().toString();
-        }
-        else
-        {
-            return false;
+            formValue = (EditText) vRoot.findViewById(R.id.repository_password);
+            if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
+            {
+                password = formValue.getText().toString();
+            }
+            else
+            {
+                return false;
+            }
         }
 
         CheckBox sw = (CheckBox) vRoot.findViewById(R.id.repository_https);
@@ -398,13 +401,25 @@ public class AccountDetailsFragment extends BaseFragment
 
     private void initForm()
     {
-        int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
-                R.id.repository_port };
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_password, R.id.repository_hostname,
+                R.id.repository_servicedocument, R.id.repository_description, R.id.repository_port };
         EditText formValue = null;
         for (int i = 0; i < ids.length; i++)
         {
             formValue = (EditText) vRoot.findViewById(ids[i]);
             formValue.addTextChangedListener(watcher);
+        }
+    }
+    
+    private void removeFormWatcher()
+    {
+        int[] ids = new int[] { R.id.repository_username, R.id.repository_password, R.id.repository_hostname,
+                R.id.repository_servicedocument, R.id.repository_description, R.id.repository_port };
+        EditText formValue = null;
+        for (int i = 0; i < ids.length; i++)
+        {
+            formValue = (EditText) vRoot.findViewById(ids[i]);
+            formValue.removeTextChangedListener(watcher);
         }
     }
 
@@ -443,10 +458,14 @@ public class AccountDetailsFragment extends BaseFragment
 
     public void edit()
     {
+        if (isEditable){
+          return;
+        }
+
         isEditable = true;
         initValues(vRoot);
         initForm();
-
+        
         validate = (Button) vRoot.findViewById(R.id.validate_account);
         validate.setVisibility(View.VISIBLE);
         validate.setOnClickListener(new OnClickListener()
@@ -455,8 +474,9 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View v)
             {
                 isEditable = false;
+                removeFormWatcher();
+                validate.setEnabled(false);
                 retrieveFormValues();
-
                 acc = AccountManager.update(getActivity(), getArguments().getLong(ARGUMENT_ACCOUNT_ID), description,
                         (url != null) ? url : acc.getUrl(), username, password, acc.getRepositoryId(),
                         Integer.valueOf((int) acc.getTypeId()), null, acc.getAccessToken(), acc.getRefreshToken(),
@@ -478,6 +498,8 @@ public class AccountDetailsFragment extends BaseFragment
             public void onClick(View v)
             {
                 isEditable = false;
+                validate.setEnabled(false);
+                removeFormWatcher();
                 initValues(vRoot);
                 vRoot.findViewById(R.id.browse_document).setVisibility(View.VISIBLE);
                 displayProfileButton();
