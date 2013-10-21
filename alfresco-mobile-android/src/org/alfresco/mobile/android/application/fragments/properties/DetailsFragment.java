@@ -225,7 +225,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             // Detect if isRestrictable
             isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
-            display(node, inflater);
         }
         else if (nodeIdentifier != null)
         {
@@ -237,6 +236,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onResume()
     {
+        if (node != null &&  vRoot.findViewById(R.id.metadata)!= null &&  ((ViewGroup)vRoot.findViewById(R.id.metadata)).getChildCount() == 0)
+        {
+            // Detect if isRestrictable
+            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
+            display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        }
+        
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
         if (!DisplayUtils.hasCentralPane(getActivity()))

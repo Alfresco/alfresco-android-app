@@ -123,6 +123,7 @@ public abstract class BaseActivity extends Activity
         }
         
         receivers.clear();
+        publicReceivers.clear();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
