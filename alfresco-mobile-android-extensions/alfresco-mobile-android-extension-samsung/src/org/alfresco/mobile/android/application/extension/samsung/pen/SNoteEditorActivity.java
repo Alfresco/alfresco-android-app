@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.extension.samsung.impl.R;
 import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtils;
 import org.alfresco.mobile.android.ui.manager.ActionManager;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.manager.RenditionManager;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -42,6 +43,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
 import android.view.GestureDetector;
@@ -56,7 +58,6 @@ import android.view.View.OnTouchListener;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.samsung.android.sdk.SsdkUnsupportedException;
 import com.samsung.android.sdk.pen.Spen;
@@ -514,9 +515,7 @@ public class SNoteEditorActivity extends Activity
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY)
         {
-            if (spenNoteDoc != null && spenNoteDoc.getPageCount() == 1){
-                return false;
-            }
+            if (spenNoteDoc != null && spenNoteDoc.getPageCount() == 1) { return false; }
             if (e1.getX() - e2.getX() > SWIPE_MIN_DISTANCE && Math.abs(velocityX) > SWIPE_THRESHOLD_VELOCITY)
             {
                 swipePage(SpenFlickListener.DIRECTION_RIGHT);
@@ -571,6 +570,8 @@ public class SNoteEditorActivity extends Activity
     // ACTION
     // ///////////////////////////////////////////////////////////////////////////
     private final int REQUEST_CODE_ATTACH_IMAGE = 6510;
+
+    private DisplayMetrics dm;
 
     private static final String IMAGE_KEY = "IMAGE_";
 
@@ -677,7 +678,13 @@ public class SNoteEditorActivity extends Activity
         Bitmap imageBitmap;
         if (spenNoteDoc.hasAttachedFile(attachmentKey))
         {
-            imageBitmap = BitmapFactory.decodeFile(spenNoteDoc.getAttachedFile(attachmentKey));
+            if (dm == null)
+            {
+                dm = new DisplayMetrics();
+                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+            }
+            imageBitmap = RenditionManager.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
+                    spenSurfaceView.getCanvasWidth(), dm.densityDpi);
         }
         else
         {
