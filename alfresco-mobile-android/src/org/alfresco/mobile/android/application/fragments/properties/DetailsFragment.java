@@ -447,6 +447,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv.setText(node.getName());
         tv = (TextView) vRoot.findViewById(R.id.details);
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
+        
+        if (isRestrictable){
+            tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_encrypt, 0);
+        }
 
         // Preview + Thumbnail
         displayIcon(node, R.drawable.mime_folder, (ImageView) vRoot.findViewById(R.id.icon), false);
