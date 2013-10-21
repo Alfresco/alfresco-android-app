@@ -294,7 +294,7 @@ public class AccountSettingsHelper
                 settings.put(CloudSession.CLOUD_NETWORK_ID, repositoryId);
             }
             
-            settings.put(SessionParameter.COMPRESSION, "false");
+            settings.put(AlfrescoSession.HTTP_ACCEPT_ENCODING, "false");
         }
         return settings;
     }
