@@ -1047,7 +1047,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
         private void refreshList()
         {
-            if (((ProgressNodeAdapter) adapter).getCount() >= 2)
+            if (!((ProgressNodeAdapter) adapter).isEmpty())
             {
                 gv.setVisibility(View.VISIBLE);
                 ev.setVisibility(View.GONE);
