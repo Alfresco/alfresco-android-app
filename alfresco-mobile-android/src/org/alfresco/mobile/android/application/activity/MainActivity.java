@@ -1256,12 +1256,12 @@ public class MainActivity extends BaseActivity
                 {
                     ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
                 }
-                
+
                 if (getFragment(GeneralPreferences.TAG) != null)
                 {
                     ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
                 }
-                
+
                 return;
             }
 
@@ -1280,11 +1280,13 @@ public class MainActivity extends BaseActivity
                 if (getFragment(MainMenuFragment.TAG) != null)
                 {
                     ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFavoriteStatut();
+                    ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).hideWorkflowMenu(currentAccount);
                 }
 
                 if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
                 {
                     ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displayFavoriteStatut();
+                    ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).hideWorkflowMenu(currentAccount);
                 }
 
                 // Return to root screen
