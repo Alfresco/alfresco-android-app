@@ -320,10 +320,7 @@ public class PublicDispatcherActivity extends BaseActivity
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
+                removeWaitingDialog();
 
                 // Upload process : Display the view where the user wants to upload files.
                 BaseFragment frag = null;

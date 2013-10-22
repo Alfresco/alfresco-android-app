@@ -239,13 +239,13 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
         if (item.isFolder())
         {
-            vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_256_folder));
+            vh.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.mime_256_folder));
 
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }
 
             UIUtils.setBackground(((View) vh.choose),
-                    getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+                    context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, item);
@@ -257,7 +257,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 {
                     Node item = (Node) v.getTag(R.id.node_action);
                     selectedOptionItems.add(item);
-                    PopupMenu popup = new PopupMenu(getContext(), v);
+                    PopupMenu popup = new PopupMenu(context, v);
                     getMenu(popup.getMenu(), item);
 
                     if (AndroidVersion.isICSOrAbove())
@@ -292,7 +292,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     {
         Uri baseUri = BatchOperationContentProvider.CONTENT_URI;
 
-        return new CursorLoader(getContext(), baseUri, BatchOperationSchema.COLUMN_ALL,
+        return new CursorLoader(context, baseUri, BatchOperationSchema.COLUMN_ALL,
                 BatchOperationSchema.COLUMN_PARENT_ID + "=\"" + parentNode.getIdentifier() + "\" AND "
                         + BatchOperationSchema.COLUMN_REQUEST_TYPE + " IN(" + CreateDocumentRequest.TYPE_ID + " , "
                         + DownloadRequest.TYPE_ID + " , " + UpdateContentRequest.TYPE_ID + ")", null, null);
@@ -355,7 +355,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     {
         MenuItem mi;
 
-        Permissions permission = SessionUtils.getSession(getContext()).getServiceRegistry().getDocumentFolderService()
+        Permissions permission = SessionUtils.getSession(context).getServiceRegistry().getDocumentFolderService()
                 .getPermissions(node);
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
@@ -386,19 +386,19 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             case MenuActionItem.MENU_DETAILS:
                 onMenuItemClick = true;
-                ((MainActivity) getContext()).addPropertiesFragment(selectedOptionItems.get(0));
+                ((MainActivity) context).addPropertiesFragment(selectedOptionItems.get(0));
                 selectedItems.add(selectedOptionItems.get(0));
                 notifyDataSetChanged();
                 break;
             case MenuActionItem.MENU_EDIT:
                 onMenuItemClick = true;
-                NodeActions.edit((Activity) getContext(), (Folder) parentNode, selectedOptionItems.get(0));
+                NodeActions.edit((Activity) context, (Folder) parentNode, selectedOptionItems.get(0));
                 break;
             case MenuActionItem.MENU_DELETE_FOLDER:
                 onMenuItemClick = true;
-                Fragment fr = ((Activity) getContext()).getFragmentManager().findFragmentByTag(
+                Fragment fr = ((Activity) context).getFragmentManager().findFragmentByTag(
                         ChildrenBrowserFragment.TAG);
-                NodeActions.delete((Activity) getContext(), fr, selectedOptionItems.get(0));
+                NodeActions.delete((Activity) context, fr, selectedOptionItems.get(0));
                 break;
             default:
                 onMenuItemClick = false;
@@ -418,7 +418,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             if (parentNode == null) { return; }
             // Favorite
-            favoriteCursor = getContext().getContentResolver().query(
+            favoriteCursor = context.getContentResolver().query(
                     SynchroProvider.CONTENT_URI,
                     SynchroSchema.COLUMN_ALL,
                     SynchroSchema.COLUMN_PARENT_ID + " LIKE '" + parentNode.getIdentifier() + "' AND "
@@ -434,7 +434,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             }
             else
             {
-                favoriteCursor = getContext().getContentResolver().query(
+                favoriteCursor = context.getContentResolver().query(
                         SynchroProvider.CONTENT_URI,
                         SynchroSchema.COLUMN_ALL,
                         SynchroSchema.COLUMN_PARENT_ID + " LIKE '' AND " + SynchroSchema.COLUMN_STATUS + " != "

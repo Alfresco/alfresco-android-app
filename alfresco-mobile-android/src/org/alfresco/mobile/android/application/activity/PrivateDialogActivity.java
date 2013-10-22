@@ -251,10 +251,7 @@ public class PrivateDialogActivity extends BaseActivity
             if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
                     || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
             {
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
+                removeWaitingDialog();
                 
                 if (getFragment(GeneralPreferences.TAG) != null)
                 {

@@ -336,10 +336,7 @@ public abstract class BaseActivity extends Activity
             // Intent for Display Errors
             if (IntentIntegrator.ACTION_DISPLAY_ERROR.equals(intent.getAction()))
             {
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
+                removeWaitingDialog();
                 Exception e = (Exception) intent.getExtras().getSerializable(IntentIntegrator.EXTRA_ERROR_DATA);
 
                 String errorMessage = getString(R.string.error_general);
