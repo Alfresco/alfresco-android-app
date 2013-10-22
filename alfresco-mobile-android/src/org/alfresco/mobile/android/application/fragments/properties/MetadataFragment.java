@@ -164,10 +164,6 @@ public class MetadataFragment extends BaseFragment
         View vr = addPropertyLine(generalGroup, inflater, node, R.string.metadata_prop_creator, PropertyIds.CREATED_BY,
                 null, false);
 
-        // SAMSUNG Specific
-        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
-                getActivity());
-
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
         createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);

@@ -43,9 +43,9 @@ public class SamsungManagerImpl extends SamsungManager
 
     public boolean hasPenEnable()
     {
-        Spen spenPackage = new Spen();
         try
         {
+            Spen spenPackage = new Spen();
             spenPackage.initialize(context);
             spenPackage.isFeatureEnabled(Spen.DEVICE_PEN);
             return true;

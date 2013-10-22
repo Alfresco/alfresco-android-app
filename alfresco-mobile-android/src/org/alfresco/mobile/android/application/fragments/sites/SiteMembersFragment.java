@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
@@ -138,6 +139,7 @@ public class SiteMembersFragment extends BaseListFragment implements
         }
         if (checkException(results))
         {
+            Log.d(TAG, Log.getStackTraceString(results.getException()));
             onLoaderException(results.getException());
         }
         else

@@ -70,7 +70,8 @@ public abstract class BaseActivity extends Activity
     protected BroadcastReceiver utilsReceiver;
 
     protected List<BroadcastReceiver> receivers = new ArrayList<BroadcastReceiver>(2);
-
+    protected List<BroadcastReceiver> publicReceivers = new ArrayList<BroadcastReceiver>(2);
+    
     protected Account currentAccount;
 
     protected RenditionManager renditionManager;
@@ -115,7 +116,14 @@ public abstract class BaseActivity extends Activity
         {
             broadcastManager.unregisterReceiver(bReceiver);
         }
+        
+        for (BroadcastReceiver bReceiver : publicReceivers)
+        {
+            unregisterReceiver(bReceiver);
+        }
+        
         receivers.clear();
+        publicReceivers.clear();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -293,7 +301,7 @@ public abstract class BaseActivity extends Activity
         if (receiver != null && filter != null)
         {
             registerReceiver(receiver, filter);
-            receivers.add(receiver);
+            publicReceivers.add(receiver);
         }
     }
 

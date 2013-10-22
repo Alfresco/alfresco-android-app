@@ -391,7 +391,7 @@ public class RenditionManager
             // Find the correct scale value. It should be the power of 2.
             int requiredSizePx = DisplayUtils.getDPI(dm, requiredSize);
             int scale = calculateInSampleSize(o, requiredSizePx, requiredSizePx);
-            Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
+            //Log.d(TAG, "Scale:" + scale + " Px" + requiredSizePx + " Dpi" + dm.densityDpi);
 
             // decode with inSampleSize
             fis = new BufferedInputStream(mDiskCache.get(snap).getInputStream(0));

@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
@@ -300,10 +301,19 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void display()
     {
+        Account acc = SessionUtils.getAccount(getActivity());
+
         rootView.findViewById(R.id.menu_browse_activities).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_browse_root).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_browse_my_sites).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
+        if (acc != null && acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
+        {
+            rootView.findViewById(R.id.menu_workflow).setVisibility(View.GONE);
+        }
+        else
+        {
+            rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
+        }
         rootView.findViewById(R.id.menu_favorites).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
@@ -348,7 +358,9 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             if (forceHide)
             {
                 rootView.findViewById(viewId).setVisibility(View.GONE);
-            } else {
+            }
+            else
+            {
                 rootView.findViewById(viewId).setVisibility(View.VISIBLE);
             }
         }
@@ -389,6 +401,19 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
+        }
+    }
+
+    public void hideWorkflowMenu(Account currentAccount)
+    {
+        if (currentAccount.getTypeId() == Account.TYPE_ALFRESCO_CLOUD
+                || currentAccount.getTypeId() == Account.TYPE_ALFRESCO_TEST_OAUTH)
+        {
+            rootView.findViewById(R.id.menu_workflow).setVisibility(View.GONE);
+        }
+        else
+        {
+            rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
         }
     }
 

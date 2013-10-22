@@ -45,7 +45,7 @@
                 android:minHeight="50dip"
                 android:scaleType="fitCenter"
                 android:src="@drawable/mime_256_folder"
-                android:layout_margin="1dip" />
+                android:layout_margin="4dip" />
             
             <LinearLayout
                 android:layout_width="fill_parent"

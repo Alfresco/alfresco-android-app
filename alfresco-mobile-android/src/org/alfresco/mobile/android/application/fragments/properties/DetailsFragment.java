@@ -225,7 +225,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         {
             // Detect if isRestrictable
             isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
-            display(node, inflater);
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+            }
         }
         else if (nodeIdentifier != null)
         {
@@ -237,6 +240,14 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     @Override
     public void onResume()
     {
+        if (!DisplayUtils.hasCentralPane(getActivity()) && node != null && vRoot.findViewById(R.id.metadata) != null
+                && ((ViewGroup) vRoot.findViewById(R.id.metadata)).getChildCount() == 0)
+        {
+            // Detect if isRestrictable
+            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
+            display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+        }
+
         ((MainActivity) getActivity()).setCurrentNode(node);
         getActivity().invalidateOptionsMenu();
         if (!DisplayUtils.hasCentralPane(getActivity()))
@@ -447,6 +458,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         tv.setText(node.getName());
         tv = (TextView) vRoot.findViewById(R.id.details);
         tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
+
+        if (isRestrictable)
+        {
+            tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_encrypt, 0);
+        }
 
         // Preview + Thumbnail
         displayIcon(node, R.drawable.mime_folder, (ImageView) vRoot.findViewById(R.id.icon), false);
@@ -1073,11 +1089,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
-                    R.string.process_start_review);
-            mi.setIcon(R.drawable.ic_start_review);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
+            if (!(session instanceof CloudSession))
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST
+                        + MenuActionItem.MENU_WORKFLOW_ADD, R.string.process_start_review);
+                mi.setIcon(R.drawable.ic_start_review);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
         }
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())

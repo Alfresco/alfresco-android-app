@@ -63,48 +63,7 @@ public class AlfrescoTrustManager implements X509TrustManager
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
     {
-        int chainLength = chain.length;
-        if (chain.length > 1)
-        {
-            int currIndex;
-            for (currIndex = 0; currIndex < chain.length; ++currIndex)
-            {
-                boolean foundNext = false;
-                for (int nextIndex = currIndex + 1; nextIndex < chain.length; ++nextIndex)
-                {
-                    if (chain[currIndex].getIssuerDN().equals(chain[nextIndex].getSubjectDN()))
-                    {
-                        foundNext = true;
-                        if (nextIndex != currIndex + 1)
-                        {
-                            X509Certificate tempCertificate = chain[nextIndex];
-                            chain[nextIndex] = chain[currIndex + 1];
-                            chain[currIndex + 1] = tempCertificate;
-                        }
-                        break;
-                    }
-                }
-                if (!foundNext)
-                {
-                    break;
-                }
-            }
-            X509Certificate lastCertificate = chain[chainLength - 1];
-            Date now = new Date();
-            if (lastCertificate.getSubjectDN().equals(lastCertificate.getIssuerDN())
-                    && now.after(lastCertificate.getNotAfter()))
-            {
-                --chainLength;
-            }
-        }
-        try
-        {
-            defaultTrustManager.checkServerTrusted(chain, authType);
-        }
-        catch (CertificateException ce)
-        {
-            return;
-        }
+        return;
     }
 
     static X509TrustManager findX509TrustManager(TrustManagerFactory tmf)

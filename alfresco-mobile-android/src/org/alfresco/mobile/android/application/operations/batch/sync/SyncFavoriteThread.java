@@ -125,18 +125,19 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     List<String> restrictableIds = new ArrayList<String>(remoteFavorites.getTotalItems());
                     try
                     {
-                        ((AbstractAlfrescoSessionImpl) session).getCmisSession().getTypeDefinition("P:dp:restrictable");
-
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("SELECT d.cmis:objectId,d.cmis:objectTypeId,d.cmis:baseTypeId,d.cmis:name,d.cmis:createdBy,d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=");
-                        join(builder, " OR d.cmis:objectId=", remoteFavorites.getList());
-                        builder.append(")");
-
-                        List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
-                                .search(builder.toString(), SearchLanguage.CMIS);
-                        for (Node node : restrictableNodes)
+                        if (remoteFavorites.getTotalItems() > 0)
                         {
-                            restrictableIds.add(node.getIdentifier());
+                            StringBuilder builder = new StringBuilder();
+                            builder.append("SELECT d.cmis:objectId,d.cmis:objectTypeId,d.cmis:baseTypeId,d.cmis:name,d.cmis:createdBy,d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=");
+                            join(builder, " OR d.cmis:objectId=", remoteFavorites.getList());
+                            builder.append(")");
+
+                            List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
+                                    .search(builder.toString(), SearchLanguage.CMIS);
+                            for (Node node : restrictableNodes)
+                            {
+                                restrictableIds.add(node.getIdentifier());
+                            }
                         }
                     }
                     catch (Exception e)
@@ -151,17 +152,20 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         // We request all node object with a search query
                         // to retrieve ContentStreamId and permissions.
                         List<Document> favoriteDocumentsList = new ArrayList<Document>(remoteFavorites.getTotalItems());
-                        StringBuilder builder = new StringBuilder();
-                        builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
-                        join(builder, " OR cmis:objectId=", remoteFavorites.getList());
-                        builder.append(")");
-
-                        List<Node> nodes = session.getServiceRegistry().getSearchService()
-                                .search(builder.toString(), SearchLanguage.CMIS);
-
-                        for (Node node : nodes)
+                        if (remoteFavorites.getTotalItems() > 0)
                         {
-                            favoriteDocumentsList.add((Document) node);
+                            StringBuilder builder = new StringBuilder();
+                            builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
+                            join(builder, " OR cmis:objectId=", remoteFavorites.getList());
+                            builder.append(")");
+
+                            List<Node> nodes = session.getServiceRegistry().getSearchService()
+                                    .search(builder.toString(), SearchLanguage.CMIS);
+
+                            for (Node node : nodes)
+                            {
+                                favoriteDocumentsList.add((Document) node);
+                            }
                         }
                         remoteFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
                                 remoteFavorites.hasMoreItems(), remoteFavorites.getTotalItems());

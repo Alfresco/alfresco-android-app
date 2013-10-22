@@ -41,7 +41,7 @@
                 android:id="@+id/icon"
                 android:layout_width="match_parent"
                 android:layout_height="0dip"
-                android:layout_margin="1dip"
+                android:layout_margin="4dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/thumbnail"
                 android:minHeight="50dip"
