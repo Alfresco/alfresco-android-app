@@ -657,10 +657,10 @@
     <string name="task_workflow">Processus</string>
 
     <!-- Workflow FILTERS -->
-    <string name="tasks_status">Etat des tâches</string>
+    <string name="tasks_status">Etat</string>
     <string name="tasks_active">Actif</string>
     <string name="tasks_completed">Terminé</string>
-    <string name="tasks_due">Dû</string>
+    <string name="tasks_due">Echeance</string>
     <string name="tasks_due_today">Aujourd\'hui</string>
     <string name="tasks_due_tomorrow">Demain</string>
     <string name="tasks_due_week">Les 7 prochains jours</string>
@@ -669,8 +669,8 @@
     <string name="tasks_priority">Priorité</string>
     <string name="tasks_priority_low">Basse</string>
     <string name="tasks_priority_medium">Moyenne</string>
-    <string name="tasks_priority_high">Haute</string>
-    <string name="tasks_assignee">Acteurs</string>
+    <string name="tasks_priority_high">Elevée</string>
+    <string name="tasks_assignee">Acteur</string>
     <string name="tasks_assignee_me">Moi</string>
     <string name="tasks_assignee_all">Tout</string>
     <string name="tasks_assignee_unassigned">Non assigné</string>
@@ -698,7 +698,7 @@
     <string name="task_reject">Rejeter</string>
     <string name="task_comment">Commentaire</string>
     <string name="task_response">Réponse</string>
-    <string name="done">Fait</string>
+    <string name="done">Terminé</string>
     <string name="task_completing">Tâche en cours d\'exécution</string>
     <string name="task_reassign">Réaffecter</string>
     <string name="task_reassign_long">Réaffecter cette tâche à ...</string>
@@ -716,28 +716,28 @@
     <string name="task_filter_active">Tâches actives</string>
     <string name="task_filter_initiator">Tâches que j\'ai démarrées</string>
     <string name="task_filter_completed">Tâches terminées</string>
-    <string name="task_filter_high_priority">Tâches à priorité élevée</string>
-    <string name="task_filter_due_today">Tâches arrivant à échéance aujourd\'hui</string>
-    <string name="task_filter_overdue">Tâches dont l\'échéance est dépassée</string>
-    <string name="task_filter_assigned_me">Tâches qui me sont affectées</string>
+    <string name="task_filter_high_priority">Tâches de priorité élevée</string>
+    <string name="task_filter_due_today">Tâches pour aujourd\'hui</string>
+    <string name="task_filter_overdue">Tâches en retard</string>
+    <string name="task_filter_assigned_me">Tâches assignées à moi</string>
     <string name="task_filter_custom">Mon filtre...</string>
 
     <!-- Process Start -->
-    <string name="process_start_review">Démarrer un commentaire</string>
+    <string name="process_start_review">Envoyer pour révision</string>
     <string name="process_choose_definition">Choisir un type de tâche</string>
     <string name="process_create_task">Créer une tâche</string>
     <string name="process_choose_assignees">Choisir les acteurs</string>
     <string name="process_choose_attachments">Choisir les éléments attachés</string>
-    <string name="process_start_title">Démarrer le processus</string>
+    <string name="process_start_title">Démarrer la tâche</string>
     <string name="process_title">Titre</string>
     <string name="process_title_hint">Nouvelle tâche</string>
-    <string name="process_due_on">Echéance au</string>
+    <string name="process_due_on">A échéance le</string>
     <string name="process_no_date">Aucune date</string>
     <string name="process_assignees">Acteurs</string>
     <string name="process_diagram">Traiter le diagramme</string>
     
-    <string name="task_review_document">Veuillez consulter %s</string>
-    <string name="task_review_documents">Veuillez consulter ces documents</string>
+    <string name="task_review_document">Réviser %s</string>
+    <string name="task_review_documents">Veuillez réviser ces documents</string>
        
     <string name="task_assignees_plurals">{0,choice,0#Aucun acteur|1#1 acteur|1&lt;{0} acteurs}</string>
     <string name="task_assignees">Acteurs</string>
@@ -761,19 +761,19 @@
     <string name="process_no_approvers">Aucun approbateur</string>
     <string name="process_starting">Démarrage du traitement</string>
     <string name="task_create">Créer une tâche</string>
-    <string name="task_todo">Fait</string>
-    <string name="task_todo_description">Affecter une tâche à une personne</string>
-    <string name="task_review_approve">Revoir &amp; Approuver</string>
-    <string name="task_review_approve_description">Affecter une tâche à une ou plusieurs personnes pour revoir et approuver les documents.</string>
+    <string name="task_todo">Todo</string>
+    <string name="task_todo_description">Assigner une tâche à une personne</string>
+    <string name="task_review_approve">Réviser &amp; Approuver</string>
+    <string name="task_review_approve_description">Assigner une tâche à une ou plusieurs personnes pour réviser et approuver des documents.</string>
     
     <string name="task_delegate_in_progress">Réaffectation en cours&#8230;</string>
     <string name="task_delegate_complete">Réaffectation terminée</string>
     
     <!-- PROCESS NAME -->    
     <string name="process_adhoc">Todo</string>
-    <string name="process_parallel_review">Révision et Approbation en parallèle</string>
-    <string name="process_review">Revoir et Approuver</string>
-    <string name="process_pooled_review">Révision et Approbation du groupe</string>
+    <string name="process_parallel_review">Réviser et Approuver en parallèle</string>
+    <string name="process_review">Réviser et Approuver </string>
+    <string name="process_pooled_review">Réviser et Approuver en mode groupe</string>
     
     
     <!-- AGGREGATOR SEARCH -->
@@ -785,7 +785,7 @@
     
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">Sélectionner les éléments attachés</string>
-    <string name="picker_assign_person">{0,choice,0#Affecter|1#Affecter 1 personne|1&lt;Affecter {0} personnes}</string>
+    <string name="picker_assign_person">{0,choice,0#Assigner|1#Assigner 1 personne|1&lt;Assigner {0} personnes}</string>
     <string name="picker_attach_document">{0,choice,0#Attacher|1#Attacher 1 document|1&lt;Attacher {0} documents}</string>
     
     <!-- DISLAY VIEWS ITEMS -->
