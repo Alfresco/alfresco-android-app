@@ -89,7 +89,7 @@ public class PersonSearchFragment extends BaseListFragment implements
     // //////////////////////////////////////////////////////////////////////
     public PersonSearchFragment()
     {
-        loaderId = ProcessTasksLoader.ID;
+        loaderId = PersonSearchLoader.ID;
         callback = this;
         emptyListMessageId = R.string.person_not_found;
         initLoader = false;
