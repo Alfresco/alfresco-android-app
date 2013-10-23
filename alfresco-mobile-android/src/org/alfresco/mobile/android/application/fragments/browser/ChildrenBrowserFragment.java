@@ -348,13 +348,14 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     }
 
     @Override
-    public void onDestroy()
+    public void onPause()
     {
         if (receiver != null)
         {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+            receiver = null;
         }
-        super.onDestroy();
+        super.onPause();
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1046,7 +1047,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
         private void refreshList()
         {
-            if (((ProgressNodeAdapter) adapter).getCount() >= 2)
+            if (!((ProgressNodeAdapter) adapter).isEmpty())
             {
                 gv.setVisibility(View.VISIBLE);
                 ev.setVisibility(View.GONE);

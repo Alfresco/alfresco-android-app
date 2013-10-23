@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -24,6 +23,7 @@
     <LinearLayout
         android:layout_width="60dip"
         android:layout_height="60dip"
+        android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -59,9 +59,10 @@
 
     <Button
         android:id="@+id/cancel_request"
-        style="@style/list_item_icon"
+        style="@style/round_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:text="@string/cancel" />
 
 </LinearLayout>

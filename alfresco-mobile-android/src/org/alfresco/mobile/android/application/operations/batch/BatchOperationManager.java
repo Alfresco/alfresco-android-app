@@ -379,15 +379,16 @@ public class BatchOperationManager extends OperationManager
             // STOP & DISPATCH
             if (operationId != null && IntentIntegrator.ACTION_OPERATION_STOP.equals(intent.getAction()))
             {
-                if (currentGroup.runningRequest.containsKey(operationId))
+                if (currentGroup != null && currentGroup.runningRequest != null && currentGroup.runningRequest.containsKey(operationId))
                 {
                     request = currentGroup.runningRequest.remove(operationId);
                 }
-                else if (currentGroup.index.containsKey(operationId))
+                else if (currentGroup != null && currentGroup.index != null && currentGroup.index.containsKey(operationId))
                 {
                     request = currentGroup.index.remove(operationId);
                 }
 
+                if (request == null){ return; }
                 context.getContentResolver().update(getNotificationUri(request),
                         ((AbstractBatchOperationRequestImpl) request).createContentValues(Operation.STATUS_CANCEL),
                         null, null);

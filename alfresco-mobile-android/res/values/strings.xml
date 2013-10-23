@@ -108,7 +108,8 @@
     </string>
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
-
+    <string name="error_chunk_transfert"><![CDATA[The server doesnt support chunk transfert.<br/> Please reload your account</b>.]]></string>
+    
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">An error has occurred.</string>
     <string name="error_general">An error has occurred. Please try again.</string>

@@ -49,7 +49,6 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
@@ -1252,11 +1251,7 @@ public class MainActivity extends BaseActivity
             if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
                     || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
             {
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
-
+                removeWaitingDialog();
                 if (getFragment(GeneralPreferences.TAG) != null)
                 {
                     ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
@@ -1343,10 +1338,7 @@ public class MainActivity extends BaseActivity
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
-                if (getFragment(WaitingDialogFragment.TAG) != null)
-                {
-                    ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                }
+               removeWaitingDialog();
 
                 // Used for launching last pressed action button from main menu
                 if (fragmentQueue != -1)

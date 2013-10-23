@@ -37,7 +37,8 @@
         android:icon="@drawable/ic_alfresco_logo"
         android:label="@string/app_name"
         android:logo="@drawable/ic_alfresco"
-        android:theme="@style/alfrescotheme" >
+        android:theme="@style/alfrescotheme"
+        android:largeHeap="true" >
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->

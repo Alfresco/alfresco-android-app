@@ -69,6 +69,7 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<Site, GenericViewHol
                 b.putSerializable(JointSiteRequestCancelLoaderCallBack.PARAM_JOIN_SITE_REQUEST,
                         (Site) v.getTag());
                 new JointSiteRequestCancelLoaderCallBack(fragment).execute(b);
+                v.setEnabled(false);
             }
         });
     }

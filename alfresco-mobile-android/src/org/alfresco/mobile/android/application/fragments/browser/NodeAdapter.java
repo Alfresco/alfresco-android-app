@@ -81,7 +81,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     private Map<String, Document> selectedMapItems;
 
-    private Activity context;
+    protected Activity context;
 
     private int width;
 
