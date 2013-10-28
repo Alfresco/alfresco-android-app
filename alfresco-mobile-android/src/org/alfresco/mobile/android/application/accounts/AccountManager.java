@@ -97,6 +97,7 @@ public final class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasData()
     {
+        getCount();
         return (accountsSize != null);
     }
 
@@ -114,6 +115,7 @@ public final class AccountManager
 
     public boolean isEmpty()
     {
+        getCount();
         if (accountsSize == null) { return true; }
         return (accountsSize == 0);
     }
