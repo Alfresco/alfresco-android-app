@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
-import org.alfresco.mobile.android.api.model.Process;
-import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;

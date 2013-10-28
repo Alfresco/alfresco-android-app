@@ -3,7 +3,6 @@ package org.alfresco.mobile.android.application.operations.batch.configuration;
 import java.io.Serializable;
 import java.util.HashMap;
 
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;

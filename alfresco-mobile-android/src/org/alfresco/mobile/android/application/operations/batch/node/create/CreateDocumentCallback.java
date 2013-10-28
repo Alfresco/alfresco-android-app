@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationCallback;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpThread;
-import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 
 import android.content.ContentValues;

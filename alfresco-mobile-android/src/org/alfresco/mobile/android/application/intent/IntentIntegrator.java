@@ -17,7 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.intent;
 
-import android.content.Intent;
 
 public interface IntentIntegrator extends PublicIntent
 {

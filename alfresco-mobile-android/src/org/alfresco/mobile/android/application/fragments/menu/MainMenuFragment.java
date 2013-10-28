@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;

@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.operations.sync.node.AbstractSyncUpRequest;
 
 import android.database.Cursor;
-import android.net.Uri;
 
 public class SyncUpdateRequest extends AbstractSyncUpRequest
 {

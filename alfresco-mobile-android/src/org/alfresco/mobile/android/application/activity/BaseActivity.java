@@ -37,19 +37,18 @@ import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowser
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
-import android.support.v4.content.LocalBroadcastManager;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**

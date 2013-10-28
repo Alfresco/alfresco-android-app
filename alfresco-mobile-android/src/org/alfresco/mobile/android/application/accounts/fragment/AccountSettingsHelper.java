@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.manager.NetworkHttpInvoker;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 

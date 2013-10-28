@@ -44,7 +44,6 @@ import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
 import android.database.Cursor;

@@ -21,7 +21,6 @@ import java.io.Serializable;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
-import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;

@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
-import java.util.Currency;
-
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.ApplicationManager;

@@ -21,9 +21,6 @@ import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
-import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
@@ -36,7 +33,6 @@ import org.alfresco.mobile.android.application.manager.UpgradeManager;
 
 import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 
 /**
  * Provides high level service and responsible to manage sessions across

@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessTasksLoader;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;

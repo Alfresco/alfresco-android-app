@@ -22,7 +22,6 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Date;
 
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
