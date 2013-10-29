@@ -63,7 +63,15 @@ public class LoadSessionCallBack extends AbstractBatchOperationCallback<Alfresco
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
                 saveData(task, null);
-                CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true);
+                Account acc = loadingTask.getAccount(); 
+                if (acc.getActivation() == null)
+                {
+                    CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true);
+                } else {
+                    Intent broadcastIntent = new Intent(IntentIntegrator.ACTION_ACCOUNT_INACTIVE);
+                    broadcastIntent.putExtra(IntentIntegrator.ACTION_ACCOUNT_INACTIVE, true);
+                    LocalBroadcastManager.getInstance(context).sendBroadcast(broadcastIntent);
+                }
                 break;
             case Account.TYPE_ALFRESCO_TEST_BASIC:
             case Account.TYPE_ALFRESCO_CMIS:
@@ -105,15 +113,23 @@ public class LoadSessionCallBack extends AbstractBatchOperationCallback<Alfresco
         {
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
             case Account.TYPE_ALFRESCO_CLOUD:
-                acc = AccountManager.update(context, acc.getId(), acc.getDescription(), acc.getUrl(),
-                        acc.getUsername(), acc.getPassword(), acc.getRepositoryId(),
-                        Integer.valueOf((int) acc.getTypeId()), null, loadingTask.getOAuthData().getAccessToken(),
-                        loadingTask.getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
+                if (acc.getActivation() != null && session == null)
+                {
+                    //Do Nothing
+                }
+                else
+                {
+                    acc = AccountManager.update(context, acc.getId(), acc.getDescription(), acc.getUrl(),
+                            acc.getUsername(), acc.getPassword(), acc.getRepositoryId(),
+                            Integer.valueOf((int) acc.getTypeId()), null, loadingTask.getOAuthData().getAccessToken(),
+                            loadingTask.getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
+                }
 
                 if (acc == null)
                 {
                     Log.e(TAG, "Error during saving oauth data");
                 }
+
                 break;
             default:
                 // Do nothing

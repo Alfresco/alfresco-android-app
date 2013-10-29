@@ -1449,7 +1449,7 @@ public class MainActivity extends BaseActivity
 
             if (IntentIntegrator.ACTION_ACCOUNT_INACTIVE.equals(intent.getAction()))
             {
-                if (!isCurrentAccountToLoad(intent)) { return; }
+                if (!isCurrentAccountToLoad(intent) && !intent.hasExtra(IntentIntegrator.ACTION_ACCOUNT_INACTIVE)) { return; }
 
                 setSessionState(SESSION_INACTIVE);
                 activity.setProgressBarIndeterminateVisibility(false);
