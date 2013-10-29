@@ -14,7 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
+
 -->
 <resources>
 
@@ -26,15 +27,15 @@
     <string name="home_title">Per iniziare... </string>
     <string name="home_sign_cloud">Registrazione al Cloud Alfresco</string>
     <string name="home_sign_cloud_description">Benvenuto Crea un account gratuito online per salvare documenti e accedervi da qualsiasi luogo.</string>
-    <string name="home_account">Dispongo già di account</string>
+    <string name="home_account">Dispongo già di un account</string>
     <string name="home_account_description">Scegli questa opzione se hai già un account del Cloud Alfresco o per connetterti a un server Alfresco.</string>
     <string name="home_helper">Per maggiori informazioni su Alfresco Mobile, consulta la <a href="alfresco://view_help_guide/">guida</a> nell\'area Aiuto.</string>
 
     <!-- ACCOUNT WIZARD SCRE STEP 1 -->
     <string name="account_wizard_alfresco_server">Server Alfresco</string>
     <string name="account_wizard_alfresco_server_description">Connetti a un server Alfresco</string>
-    <string name="account_wizard_alfresco_cloud">Cloud Alfresco</string>
-    <string name="account_wizard_alfresco_cloud_description">Accedi al tuo account del Cloud Alfresco</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud_description">Accedi al tuo account del Alfresco Cloud</string>
     <string name="account_wizard_alfresco_help">Benvenuto <a href="alfresco://sign_up_cloud/">Registrati</a> per un account gratuito</string>
     <string name="account_wizard_alfresco_help_inside_app">Benvenuto <a href="alfresco://sign_up_cloud_i/">Registrati</a> per un account gratuito</string>
 
@@ -762,17 +763,17 @@
     <string name="task_create">Crea compito</string>
     <string name="task_todo">da fare</string>
     <string name="task_todo_description">Assegna un compito a una persona.</string>
-    <string name="task_review_approve">Effettua revisione e approva</string>
-    <string name="task_review_approve_description">Assegna un compito a una o più persone per la revisione e l\'approvazione di documenti.</string>
+    <string name="task_review_approve">Esamina e approva</string>
+    <string name="task_review_approve_description">Assegna un compito a una o più persone d\'esaminare e approvare di documenti.</string>
     
     <string name="task_delegate_in_progress">Riassegnazione in corso...</string>
     <string name="task_delegate_complete">Riassegnazione completata</string>
     
     <!-- PROCESS NAME -->    
     <string name="process_adhoc">Workflow ad hoc</string>
-    <string name="process_parallel_review">Revisione e approvazione in parallelo</string>
-    <string name="process_review">Revisione e approvazione</string>
-    <string name="process_pooled_review">Revisione e approvazione raggruppate</string>
+    <string name="process_parallel_review">Esamina e approva in parallelo</string>
+    <string name="process_review">Esamina e approva</string>
+    <string name="process_pooled_review">Esamina e approva in pool</string>
     
     
     <!-- AGGREGATOR SEARCH -->

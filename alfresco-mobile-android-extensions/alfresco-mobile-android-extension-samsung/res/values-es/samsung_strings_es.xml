@@ -82,9 +82,9 @@
 
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">Requisitos de S Note</string>
-    <string name="error_sdk_unsupported">Este dispositivo no admite Spen</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>Es necesario instalar el software Spen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Es necesario actualizar el software Spen para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
-    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Recomendamos actualizar el software Spen antes de usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
+    <string name="error_sdk_unsupported">Este dispositivo no admite S Pen</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Es necesario instalar el software S Pen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Es necesario actualizar el software S Pen para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Recomendamos actualizar el software S Pen antes de usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
     
 </resources>

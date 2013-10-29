@@ -92,7 +92,7 @@
     <string name="error_session_certificate">
 <![CDATA[<p><b>Le certificat de sécurité du serveur n\'est pas fiable !</b><br/></p>
 		L\'entité tierce qui a émis le certificat de la destination de votre serveur n\'est pas reconnue par votre appareil.<br/>
-		Afin qu\'Alfresco Mobile vérifie que vous vous connectez au serveur approprié, son certificat doit doit avoir été émis par une entité de confiance.<br/>
+		Afin qu\'Alfresco Mobile vérifie que vous vous connectez au serveur approprié, son certificat doit avoir été émis par une entité de confiance.<br/>
 		Si votre serveur dispose d\'un certificat auto-signé, veuillez l\'ajouter à votre appareil pour qu\'il se connecte avec succès.<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">

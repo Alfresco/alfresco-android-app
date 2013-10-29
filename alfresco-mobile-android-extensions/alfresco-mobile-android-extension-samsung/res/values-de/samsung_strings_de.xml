@@ -37,14 +37,14 @@
 
     <!-- Editor MENU -->
     <!-- Tools -->
-    <string name="editor_tools">Tools</string>
+    <string name="editor_tools">Werkzeuge</string>
     <string name="editor_pen">Stift</string>
     <string name="editor_selection">Auswahl</string>
     <string name="editor_eraser">Radiergummi</string>
     <string name="editor_text">Text</string>
 
     <!-- Settings -->
-    <string name="editor_tools_settings">Tools-Einstellungen</string>
+    <string name="editor_tools_settings">Werkzeug-Einstellungen</string>
 
     <!-- Action Mode -->
     <string name="editor_group_menu">Gruppieren</string>
@@ -82,9 +82,9 @@
 
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">S Note-Anforderungen</string>
-    <string name="error_sdk_unsupported">Dieses Gerät bietet keine Unterstützung für Spen.</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>Sie müssen zusätzliche Spen-Software installieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Sie müssen Ihre Spen-Software aktualisieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
-    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Wir empfehlen Ihnen, Ihre Spen-Software zu aktualisieren, bevor Sie diese Funktion nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+    <string name="error_sdk_unsupported">Dieses Gerät bietet keine Unterstützung für S Pen.</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Sie müssen zusätzliche S Pen-Software installieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Sie müssen Ihre S Pen-Software aktualisieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Wir empfehlen Ihnen, Ihre S Pen-Software zu aktualisieren, bevor Sie diese Funktion nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
     
 </resources>

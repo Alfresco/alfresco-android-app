@@ -82,9 +82,9 @@
 
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">Exigences S Note</string>
-    <string name="error_sdk_unsupported">Cet appareil ne prend pas Spen en charge</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>Vous devez installer le logiciel Spen supplémentaire pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Vous devez mettre à jour votre logiciel Spen pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
-    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Nous vous recommandons de mettre à jour votre logiciel Spen avant d\'utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
+    <string name="error_sdk_unsupported">Cet appareil ne prend pas S Pen en charge</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Vous devez installer le logiciel S Pen supplémentaire pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Vous devez mettre à jour votre logiciel S Pen pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Nous vous recommandons de mettre à jour votre logiciel S Pen avant d\'utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
     
 </resources>
