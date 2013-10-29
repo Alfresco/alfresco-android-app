@@ -196,10 +196,11 @@ public class CloudSignupDialogFragment extends DialogFragment
         }
     };
 
-    public void displayAccounts()
+    public void displayAccounts(long id)
     {
         Intent i = new Intent(getActivity(), MainActivity.class);
         i.setAction(IntentIntegrator.ACTION_CHECK_SIGNUP);
+        i.putExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, id);
         getActivity().startActivity(i);
         if (getActivity() instanceof HomeScreenActivity)
         {

@@ -82,9 +82,9 @@
 
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">S Note Requirements</string>
-    <string name="error_sdk_unsupported">This device does not support Spen</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>You need to install additional Spen software to use this feature. <br/>You will be taken to the installation screen.</p> Restart this application after the software has been installed.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>You need to update your Spen software to use this feature. <br/>You will be taken to the installation screen.</p> Restart this application after the software has been installed.]]></string>
+    <string name="error_sdk_unsupported">This device does not support S Pen</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>You need to install additional S Pen software to use this feature. <br/>You will be taken to the installation screen.</p> Restart this application after the software has been installed.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>You need to update your S Pen software to use this feature. <br/>You will be taken to the installation screen.</p> Restart this application after the software has been installed.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>We recommend that you update your Spen software before using this feature. <br/>You will be taken to the installation screen.</p> Restart this application after the software has been installed.]]></string>
     
 </resources>

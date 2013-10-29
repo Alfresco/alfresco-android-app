@@ -100,7 +100,7 @@ public class CloudSignupLoaderCallback implements LoaderCallbacks<LoaderResult<C
             if (acc != null)
             {
                 mProgressDialog.dismiss();
-                ((CloudSignupDialogFragment) fr).displayAccounts();
+                ((CloudSignupDialogFragment) fr).displayAccounts(acc.getId());
             }
 
         }
