@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.utils.TagHandlerList;
-import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;

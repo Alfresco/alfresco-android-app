@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;

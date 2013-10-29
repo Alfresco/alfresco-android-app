@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
-import java.util.Currency;
-
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.ApplicationManager;
@@ -99,6 +97,7 @@ public final class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasData()
     {
+        getCount();
         return (accountsSize != null);
     }
 
@@ -116,6 +115,7 @@ public final class AccountManager
 
     public boolean isEmpty()
     {
+        getCount();
         if (accountsSize == null) { return true; }
         return (accountsSize == 0);
     }

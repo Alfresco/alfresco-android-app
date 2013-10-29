@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
-import org.alfresco.mobile.android.api.services.VersionService;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;

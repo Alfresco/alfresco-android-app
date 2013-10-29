@@ -23,7 +23,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;

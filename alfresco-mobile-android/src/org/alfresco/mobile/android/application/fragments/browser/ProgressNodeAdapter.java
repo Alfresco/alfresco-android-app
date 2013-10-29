@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
-import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -301,7 +300,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     @Override
     public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
     {
-        Log.d(TAG, "Count : " + cursor.getCount());
         while (cursor.moveToNext())
         {
             int status = cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID);

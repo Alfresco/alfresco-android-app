@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;

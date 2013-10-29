@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.node.AbstractUpRequest;
 import org.alfresco.mobile.android.application.utils.ContentFileProgressImpl;
 

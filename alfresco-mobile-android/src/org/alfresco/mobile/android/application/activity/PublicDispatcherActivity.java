@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountOAuthFra
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
@@ -44,7 +43,6 @@ import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -199,7 +197,6 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         if (receiver != null)
         {
-            Log.d(TAG, "UNREGISTER");
             broadcastManager.unregisterReceiver(receiver);
         }
         super.onStop();
