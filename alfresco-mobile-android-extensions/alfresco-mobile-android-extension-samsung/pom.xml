@@ -25,6 +25,7 @@
 	<properties>
 		<parentBasedir>../../</parentBasedir>
 		<samsung.sdk.version>1.0.0</samsung.sdk.version>
+		<samsung.pen.version>1.0.2</samsung.pen.version>
 	</properties>
 
 	<build>
@@ -50,7 +51,7 @@
 		<dependency>
 			<groupId>com.samsung.android.sdk</groupId>
 			<artifactId>pen</artifactId>
-			<version>${samsung.sdk.version}</version>
+			<version>${samsung.pen.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.samsung.android</groupId>
