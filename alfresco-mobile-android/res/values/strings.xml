@@ -778,7 +778,7 @@
     
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Search</string>
-    <string name="search_person">Persons</string>
+    <string name="search_person">People</string>
     <string name="search_documents">Documents</string>
     <string name="search_folders">Folders</string>
     <string name="search_advanced">Advanced Search</string>
