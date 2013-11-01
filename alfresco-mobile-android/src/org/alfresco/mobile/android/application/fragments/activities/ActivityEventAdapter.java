@@ -338,7 +338,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
             if (s.contains(PARAM_SITE_LINK))
             {
-                s = s.replace(PARAM_SITE_LINK, item.getSiteShortName());
+                s = s.replace(PARAM_SITE_LINK, item.getSiteShortName() != null ? item.getSiteShortName() : "");
             }
 
             if (s.contains(PARAM_STATUS))
