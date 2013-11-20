@@ -327,7 +327,32 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 d = new Date(datetime);
                 modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
 
-                if (modified
+                if (node instanceof NodeSyncPlaceHolder && modified)
+                {
+                    // Offline mode
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+
+                        int operationStatut = SyncOperation.STATUS_PENDING;
+                        if (requestCode == PublicIntent.REQUESTCODE_DECRYPTED)
+                        {
+                            operationStatut = SyncOperation.STATUS_MODIFIED;
+                        }
+
+                        cValues.put(SynchroSchema.COLUMN_STATUS, operationStatut);
+                        getActivity().getContentResolver().update(
+                                SynchroManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+                    }
+                    
+                    // Encrypt sync file if necessary
+                    StorageManager.manageFile(getActivity(), dlFile);
+                }
+                else if (modified && alfSession != null
+                        && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node) != null
                         && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
                 {
                     // File modified + Sync File

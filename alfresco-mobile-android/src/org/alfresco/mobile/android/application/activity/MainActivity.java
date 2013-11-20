@@ -580,7 +580,7 @@ public class MainActivity extends BaseActivity
         {
             ActionManager.loadAccount(this, accountManager.getDefaultAccount());
         }
-        else if (sessionState == SESSION_ERROR && getCurrentSession() == null)
+        else if (sessionState == SESSION_ERROR && getCurrentSession() == null && ConnectivityUtils.hasInternetAvailable(this))
         {
             ActionManager.loadAccount(this, getCurrentAccount());
         }
