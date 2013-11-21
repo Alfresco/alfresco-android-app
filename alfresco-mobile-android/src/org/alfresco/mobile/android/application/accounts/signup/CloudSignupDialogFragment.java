@@ -42,7 +42,7 @@ import android.widget.TextView;
 public class CloudSignupDialogFragment extends DialogFragment
 {
     public static final String TAG = "SignupCloudDialogFragment";
-    
+
     private static final int PASSWORD_LENGTH_MIN = 6;
 
     private String firstName;
@@ -145,12 +145,15 @@ public class CloudSignupDialogFragment extends DialogFragment
         formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_confirm);
         String confirm = formValue.getText().toString();
 
-        if (password.length() < PASSWORD_LENGTH_MIN || confirm.length() < PASSWORD_LENGTH_MIN || !confirm.equals(password)) { return false; }
+        if (password.length() < PASSWORD_LENGTH_MIN || confirm.length() < PASSWORD_LENGTH_MIN
+                || !confirm.equals(password)) { return false; }
 
         formValue = (EditText) findViewByIdInternal(R.id.cloud_signup_email);
         emailAddress = formValue.getText().toString();
 
-        if (emailAddress.length() == 0 || !emailAddress.matches("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+")) { return false; }
+        // Simplify email adress validation at the minimum.
+        // No need of complex regxp
+        if (emailAddress.length() <= 2 || !emailAddress.contains("@")) { return false; }
 
         return true;
     }
