@@ -127,7 +127,7 @@ public final class CloudExceptionUtils
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
         Long accountId = null;
-        if (activity instanceof BaseActivity)
+        if (activity instanceof BaseActivity && ((BaseActivity) activity).getCurrentAccount() != null)
         {
             accountId = ((BaseActivity) activity).getCurrentAccount().getId();
         }
