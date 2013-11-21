@@ -405,7 +405,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     public void hideWorkflowMenu(Account currentAccount)
     {
-        if (rootView.findViewById(R.id.menu_workflow) == null) { return; }
+        if (rootView == null || rootView.findViewById(R.id.menu_workflow) == null) { return; }
         if (currentAccount.getTypeId() == Account.TYPE_ALFRESCO_CLOUD
                 || currentAccount.getTypeId() == Account.TYPE_ALFRESCO_TEST_OAUTH)
         {
