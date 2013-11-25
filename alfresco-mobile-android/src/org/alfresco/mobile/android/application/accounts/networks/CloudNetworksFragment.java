@@ -74,7 +74,7 @@ public class CloudNetworksFragment extends BaseListFragment implements
     {
         if (adapter == null)
         {
-            adapter = new CloudNetworkAdapter(getActivity(), R.layout.sdk_list_comment_row,
+            adapter = new CloudNetworkAdapter(getActivity(), R.layout.sdk_list_row,
                     new ArrayList<CloudNetwork>(0));
         }
         if (checkException(results))

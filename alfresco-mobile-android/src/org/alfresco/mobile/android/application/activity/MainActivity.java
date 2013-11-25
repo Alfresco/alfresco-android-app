@@ -472,8 +472,8 @@ public class MainActivity extends BaseActivity
                         BrowserSitesFragment.TAG, true);
                 break;
             case R.id.menu_browse_root:
-                if (!checkSession(R.id.menu_browse_root)) { return; }
-                frag = ChildrenBrowserFragment.newInstance(getCurrentSession().getRootFolder());
+                if (!checkSession(R.id.menu_browse_root) || getCurrentSession() == null) { return; }
+                frag = ChildrenBrowserFragment.newInstance(SessionUtils.getSession(this).getRootFolder());
                 frag.setSession(SessionUtils.getSession(this));
                 FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                         ChildrenBrowserFragment.TAG, true);
@@ -580,7 +580,7 @@ public class MainActivity extends BaseActivity
         {
             ActionManager.loadAccount(this, accountManager.getDefaultAccount());
         }
-        else if (sessionState == SESSION_ERROR && getCurrentSession() == null)
+        else if (sessionState == SESSION_ERROR && getCurrentSession() == null && ConnectivityUtils.hasInternetAvailable(this))
         {
             ActionManager.loadAccount(this, getCurrentAccount());
         }

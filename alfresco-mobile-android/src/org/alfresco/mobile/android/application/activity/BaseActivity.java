@@ -260,7 +260,7 @@ public abstract class BaseActivity extends Activity
         }
 
         ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
-        if (mFragment != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
+        if (mFragment != null && mFragment.getParent() != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
 
         BaseFragment frag = ChildrenBrowserFragment.newInstance(site, f);
         frag.setSession(SessionUtils.getSession(this));
