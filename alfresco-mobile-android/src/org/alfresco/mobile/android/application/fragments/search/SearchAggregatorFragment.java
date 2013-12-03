@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.search;
 
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
@@ -218,8 +220,6 @@ public class SearchAggregatorFragment extends BaseFragment implements OnMenuItem
     // //////////////////////////////////////////////////////////////////////
     private void getMenu(Menu menu)
     {
-        //menu.add(Menu.NONE, MENU_ITEM_ADVANCED, Menu.FIRST + MENU_ITEM_ADVANCED, R.string.search_advanced);
-
         switch (searchKey)
         {
             case MENU_ITEM_PERSON:
@@ -227,12 +227,19 @@ public class SearchAggregatorFragment extends BaseFragment implements OnMenuItem
                 menu.add(Menu.NONE, MENU_ITEM_FOLDER, Menu.FIRST + MENU_ITEM_FOLDER, R.string.search_folders);
                 break;
             case MENU_ITEM_DOCUMENT:
-                menu.add(Menu.NONE, MENU_ITEM_PERSON, Menu.FIRST + MENU_ITEM_PERSON, R.string.search_person);
+                //Remove to activate person search
+                if ((alfSession instanceof RepositorySession))
+                {
+                    menu.add(Menu.NONE, MENU_ITEM_PERSON, Menu.FIRST + MENU_ITEM_PERSON, R.string.search_person);
+                }
                 menu.add(Menu.NONE, MENU_ITEM_FOLDER, Menu.FIRST + MENU_ITEM_FOLDER, R.string.search_folders);
                 break;
             case MENU_ITEM_FOLDER:
                 menu.add(Menu.NONE, MENU_ITEM_DOCUMENT, Menu.FIRST + MENU_ITEM_DOCUMENT, R.string.search_documents);
-                menu.add(Menu.NONE, MENU_ITEM_PERSON, Menu.FIRST + MENU_ITEM_PERSON, R.string.search_person);
+                if ((alfSession instanceof RepositorySession))
+                {
+                    menu.add(Menu.NONE, MENU_ITEM_PERSON, Menu.FIRST + MENU_ITEM_PERSON, R.string.search_person);
+                }
                 break;
             default:
                 break;
