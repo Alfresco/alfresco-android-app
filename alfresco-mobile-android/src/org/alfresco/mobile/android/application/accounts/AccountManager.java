@@ -370,6 +370,10 @@ public final class AccountManager
             accountsSize = cursor.getCount();
             cursor.close();
         }
+        else
+        {
+            accountsSize = 0;
+        }
     }
 
     public void clear()
