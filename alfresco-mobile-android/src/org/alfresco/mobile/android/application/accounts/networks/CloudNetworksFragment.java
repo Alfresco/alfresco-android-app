@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 
 import android.app.LoaderManager.LoaderCallbacks;
@@ -60,6 +61,13 @@ public class CloudNetworksFragment extends BaseListFragment implements
         SessionUtils.checkSession(getActivity(), alfSession);
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
+    }
+    
+    @Override
+    public void onResume()
+    {
+        UIUtils.displayTitle(getActivity(), getString(R.string.cloud_networks_switch));
+        super.onResume();
     }
 
     @Override
