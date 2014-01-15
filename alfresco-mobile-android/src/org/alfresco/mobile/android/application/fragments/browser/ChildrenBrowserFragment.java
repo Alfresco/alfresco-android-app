@@ -152,6 +152,11 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(folder, null, null);
     }
+    
+    public static ChildrenBrowserFragment newInstance(Folder folder, boolean isShortcut)
+    {
+        return newInstance(folder, null, null, isShortcut);
+    }
 
     public static ChildrenBrowserFragment newInstance(String folderPath)
     {
@@ -179,15 +184,25 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(folder, null, site);
     }
+    
+    public static ChildrenBrowserFragment newInstance(Site site, Folder folder, boolean isShortCut)
+    {
+        return newInstance(folder, null, site, isShortCut);
+    }
 
     private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site)
+    {
+        return newInstance(parentFolder, pathFolder, site, pathFolder != null || parentFolder instanceof CloudFolderImpl);
+    }
+    
+    private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site, boolean isShortcut)
     {
         ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
         ListingContext lc = new ListingContext();
         lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
         lc.setIsSortAscending(true);
         Bundle b = createBundleArgs(parentFolder, pathFolder, site);
-        b.putBoolean(PARAM_IS_SHORTCUT, pathFolder != null || parentFolder instanceof CloudFolderImpl);
+        b.putBoolean(PARAM_IS_SHORTCUT, isShortcut);
         b.putAll(createBundleArgs(lc, LOAD_AUTO));
         bf.setArguments(b);
         return bf;
@@ -549,7 +564,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         {
             if (item.isFolder())
             {
-                addNavigationFragment(currentSiteParameter, (Folder) item);
+                ((BaseActivity) getActivity()).addNavigationFragment(currentSiteParameter, (Folder) item, isShortcut());
             }
             else
             {

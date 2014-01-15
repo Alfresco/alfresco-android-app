@@ -82,9 +82,9 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
     private String uri;
 
     private Account selectAccount;
-    
+
     private Account acc;
-    
+
     public NodeLoader(Activity context, Account acc, AlfrescoSession session, String nodeIdentifier)
     {
         super(context);
@@ -119,16 +119,13 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             // Retrieve Node
             n = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(identifier);
 
-            if (n.isDocument())
+            try
             {
-                try
-                {
-                    parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
-                }
-                catch (Exception e)
-                {
-                    Log.w(TAG, Log.getStackTraceString(e));
-                }
+                parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(n);
+            }
+            catch (Exception e)
+            {
+                Log.w(TAG, Log.getStackTraceString(e));
             }
         }
         catch (Exception e)
@@ -138,11 +135,11 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
             {
                 // Retrieve Sync Cursor for the specified node
                 Uri localUri = syncManager.getUri(acc, identifier);
-                Cursor syncCursor = getContext().getContentResolver().query(localUri, SynchroSchema.COLUMN_ALL, null, null,
-                        null);
+                Cursor syncCursor = getContext().getContentResolver().query(localUri, SynchroSchema.COLUMN_ALL, null,
+                        null, null);
                 if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
                 {
-                    //syncCursor.getString(BatchOperationSchema.COLUMN_PROPERTIES_ID)
+                    // syncCursor.getString(BatchOperationSchema.COLUMN_PROPERTIES_ID)
                     Map<String, String> properties = retrievePropertiesMap(syncCursor);
                     n = new NodeSyncPlaceHolder(properties);
                 }

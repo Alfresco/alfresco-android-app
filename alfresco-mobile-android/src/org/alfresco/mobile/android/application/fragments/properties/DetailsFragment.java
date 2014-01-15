@@ -452,7 +452,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
     {
         vRoot.findViewById(R.id.properties_details).setVisibility(View.VISIBLE);
         vRoot.findViewById(R.id.progressbar).setVisibility(View.GONE);
-        if (node instanceof Document)
+        if (node instanceof Document || node instanceof Folder)
         {
             display(node);
         }
