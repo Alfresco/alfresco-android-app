@@ -270,7 +270,7 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
             }
             else
             {
-                ((MainActivity) getActivity()).addNavigationFragment((Folder) item);
+                ((MainActivity) getActivity()).addNavigationFragment((Folder) item, true);
             }
         }
 

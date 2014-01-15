@@ -147,6 +147,10 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
                 tsize.setText(Formatter.formatFileSize(getActivity(), ((Document) node).getContentStreamLength()));
                 tsize.setVisibility(View.VISIBLE);
             }
+            else
+            {
+                tsize.setVisibility(View.GONE);
+            }
 
             if (RepositoryVersionHelper.isAlfrescoProduct(alfSession)
                     && node.getProperty(ContentModel.PROP_DESCRIPTION) != null

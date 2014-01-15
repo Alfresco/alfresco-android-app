@@ -627,6 +627,13 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addNavigationFragment(f);
     }
+    
+    public void addNavigationFragment(Folder f, boolean isShortCut)
+    {
+        clearScreen();
+        clearCentralPane();
+        super.addNavigationFragment(f, isShortCut);
+    }
 
     public void addNavigationFragment(String path)
     {

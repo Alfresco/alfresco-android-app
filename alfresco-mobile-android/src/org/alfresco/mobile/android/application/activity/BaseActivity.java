@@ -69,8 +69,9 @@ public abstract class BaseActivity extends Activity
     protected BroadcastReceiver utilsReceiver;
 
     protected List<BroadcastReceiver> receivers = new ArrayList<BroadcastReceiver>(2);
+
     protected List<BroadcastReceiver> publicReceivers = new ArrayList<BroadcastReceiver>(2);
-    
+
     protected Account currentAccount;
 
     protected RenditionManager renditionManager;
@@ -115,12 +116,12 @@ public abstract class BaseActivity extends Activity
         {
             broadcastManager.unregisterReceiver(bReceiver);
         }
-        
+
         for (BroadcastReceiver bReceiver : publicReceivers)
         {
             unregisterReceiver(bReceiver);
         }
-        
+
         receivers.clear();
         publicReceivers.clear();
     }
@@ -250,6 +251,19 @@ public abstract class BaseActivity extends Activity
                 ChildrenBrowserFragment.TAG, true);
     }
 
+    public void addNavigationFragment(Folder f, boolean isShortcut)
+    {
+        if (f == null) { return; }
+
+        ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
+        if (mFragment != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
+
+        BaseFragment frag = ChildrenBrowserFragment.newInstance(f, isShortcut);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                ChildrenBrowserFragment.TAG, true);
+    }
+
     public void addNavigationFragment(Site site, Folder f)
     {
         if (f == null) { return; }
@@ -260,12 +274,39 @@ public abstract class BaseActivity extends Activity
         }
 
         ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
-        if (mFragment != null && mFragment.getParent() != null && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
+        if (mFragment != null && mFragment.getParent() != null
+                && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
 
         BaseFragment frag = ChildrenBrowserFragment.newInstance(site, f);
         frag.setSession(SessionUtils.getSession(this));
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
+    }
+
+    public void addNavigationFragment(Site site, Folder f, boolean isShortcut)
+    {
+        if (!isShortcut)
+        {
+            addNavigationFragment(site, f);
+        }
+        else
+        {
+            if (f == null) { return; }
+            if (site == null)
+            {
+                addNavigationFragment(f);
+                return;
+            }
+
+            ChildrenBrowserFragment mFragment = (ChildrenBrowserFragment) getFragment(ChildrenBrowserFragment.TAG);
+            if (mFragment != null && mFragment.getParent() != null
+                    && f.getIdentifier().equals(mFragment.getParent().getIdentifier())) { return; }
+
+            BaseFragment frag = ChildrenBrowserFragment.newInstance(site, f, isShortcut);
+            frag.setSession(SessionUtils.getSession(this));
+            FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                    ChildrenBrowserFragment.TAG, true);
+        }
     }
 
     public void addNavigationFragment(Site s)
@@ -294,7 +335,7 @@ public abstract class BaseActivity extends Activity
             receivers.add(receiver);
         }
     }
-    
+
     public void registerPublicReceiver(BroadcastReceiver receiver, IntentFilter filter)
     {
         if (receiver != null && filter != null)

@@ -317,7 +317,8 @@ public final class AccountManager
             broadManager.sendBroadcast(new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT_COMPLETED).putExtra(
                     IntentIntegrator.EXTRA_ACCOUNT_ID, accountToLoad.getId()));
         }
-        else if (appManager.getCurrentAccount() == null || accountToLoad.getId() != appManager.getCurrentAccount().getId())
+        else if (appManager.getCurrentAccount() == null
+                || accountToLoad.getId() != appManager.getCurrentAccount().getId())
         {
             // Create the session for the specific account
             createSession(accountToLoad);
@@ -364,8 +365,11 @@ public final class AccountManager
     {
         Cursor cursor = appContext.getContentResolver()
                 .query(AccountProvider.CONTENT_URI, COLUMN_ALL, null, null, null);
-        accountsSize = cursor.getCount();
-        cursor.close();
+        if (cursor != null)
+        {
+            accountsSize = cursor.getCount();
+            cursor.close();
+        }
     }
 
     public void clear()
