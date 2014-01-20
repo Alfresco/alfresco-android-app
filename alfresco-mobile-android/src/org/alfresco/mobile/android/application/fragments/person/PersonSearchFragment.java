@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -31,8 +31,10 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.search.AdvancedSearchFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -57,7 +59,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 /**
  * @since 1.3
- * @author jpascal
+ * @author Jean Marie Pascal
  */
 public class PersonSearchFragment extends BaseListFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<Person>>>, ListingModeFragment
@@ -253,6 +255,18 @@ public class PersonSearchFragment extends BaseListFragment implements
                 getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_reassign);
                 getDialog().setTitle(R.string.task_reassign_long);
             }
+            else if (fragmentPick instanceof AdvancedSearchFragment)
+            {
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setTitle(R.string.metadata_modified_by);
+            }
+        }
+        else
+        {
+            if (keywords != null)
+            {
+                UIUtils.displayTitle(getActivity(), "Search : " + keywords);
+            }
         }
         super.onStart();
     }
@@ -318,7 +332,7 @@ public class PersonSearchFragment extends BaseListFragment implements
     {
         // Nothing special
     }
-    
+
     @Override
     public void onLoaderException(Exception e)
     {

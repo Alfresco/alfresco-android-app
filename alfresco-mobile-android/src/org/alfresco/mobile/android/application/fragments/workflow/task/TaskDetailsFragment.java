@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -54,8 +54,8 @@ import org.alfresco.mobile.android.application.fragments.workflow.ProcessDiagram
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessTasksFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesAdapter;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -94,6 +94,10 @@ import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public class TaskDetailsFragment extends BaseFragment implements onPickPersonFragment,
         LoaderCallbacks<LoaderResult<PagingResult<Document>>>
 {
@@ -448,7 +452,7 @@ public class TaskDetailsFragment extends BaseFragment implements onPickPersonFra
             tv.setText(createContentBottomText(getActivity(), node));
             ll.addView(vr, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
             ImageView iv = (ImageView) vr.findViewById(R.id.icon);
-            renditionManager.display(iv, node, MimeTypeManager.getIcon(node.getName(), true), ScaleType.FIT_CENTER);
+            renditionManager.display(iv, node, MimeTypeManager.getIcon(getActivity(), node.getName(), true), ScaleType.FIT_CENTER);
             vr.setTag(node);
             vr.setOnClickListener(new OnClickListener()
             {

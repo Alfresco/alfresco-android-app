@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -17,6 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.database;
 
+/**
+ * @since 1.2
+ * @author Jean Marie Pascal
+ */
 public interface DatabaseVersionNumber
 {
     int VERSION_1_0_0 = 2;
@@ -24,4 +28,8 @@ public interface DatabaseVersionNumber
     int VERSION_1_1_0 = 3;
 
     int VERSION_1_2_0 = 4;
+    
+    int VERSION_1_4_0 = 5;
+    
+    int LATEST_VERSION = VERSION_1_4_0;
 }

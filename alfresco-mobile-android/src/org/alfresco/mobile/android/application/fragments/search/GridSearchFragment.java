@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -37,6 +37,10 @@ import android.app.LoaderManager.LoaderCallbacks;
 import android.content.Loader;
 import android.os.Bundle;
 
+/**
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public abstract class GridSearchFragment extends BaseGridFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<Node>>>
 {
@@ -159,7 +163,7 @@ public abstract class GridSearchFragment extends BaseGridFragment implements
         // Nothing special
     }
 
-    protected void search(String keywords, boolean fullText, boolean isExact)
+    protected void search(String keywords, boolean fullText, boolean isExact, Folder parentFolder)
     {
         Bundle b = new Bundle();
         b.putAll(getArguments());
@@ -171,6 +175,12 @@ public abstract class GridSearchFragment extends BaseGridFragment implements
         {
             b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
         }
+        
+        if (parentFolder != null)
+        {
+            b.putSerializable(FOLDER, parentFolder);
+        }
+        
         reload(b, SearchLoader.ID, this);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -35,8 +35,8 @@ import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -398,11 +398,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(MimeTypeManager.getIcon(item.getName(), true));
+                vh.icon.setImageResource(MimeTypeManager.getIcon(context, item.getName(), true));
             }
             else
             {
-                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(item.getName(), true));
+                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(context, item.getName(), true));
             }
             vh.choose.setVisibility(View.GONE);
         }

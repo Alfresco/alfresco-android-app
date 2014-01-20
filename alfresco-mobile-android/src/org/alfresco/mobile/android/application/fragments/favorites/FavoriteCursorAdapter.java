@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -51,6 +51,10 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
+/**
+ * @since 1.2
+ * @author Jean Marie Pascal
+ */
 public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
 {
     //private static final String TAG = FavoriteCursorAdapter.class.getName();
@@ -79,7 +83,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.icon.setImageResource(MimeTypeManager.getIcon(cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
+        vh.icon.setImageResource(MimeTypeManager.getIcon(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
     }
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)

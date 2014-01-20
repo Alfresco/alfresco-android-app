@@ -305,5 +305,16 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+    
+     <style name="searchHeader" parent="list_item_toptext">
+        <item name="android:layout_marginTop">8dip</item>
+        <item name="android:layout_marginLeft">0dip</item>
+    </style>
+    
+    <style name="searchInput">
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+    
+    
 
 </resources>

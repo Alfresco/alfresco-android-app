@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -63,8 +63,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.PreviewGallery;
-import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
-import org.alfresco.mobile.android.application.fragments.search.SearchAggregatorFragment;
+import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
@@ -500,9 +499,9 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
-                frag = SearchAggregatorFragment.newInstance();
-                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
-                        SearchAggregatorFragment.TAG, true);
+                Fragment fr = SearchFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, fr, DisplayUtils.getLeftFragmentId(this),
+                        SearchFragment.TAG, true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
@@ -924,6 +923,12 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
+        if (isVisible(SearchFragment.TAG))
+        {
+            SearchFragment.getMenu(menu);
+            return true;
+        }
+        
         if (isVisible(TasksFragment.TAG))
         {
             TasksFragment.getMenu(menu);
@@ -1014,7 +1019,7 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
-                FragmentDisplayer.replaceFragment(this, new KeywordSearch(), getFragmentPlace(), KeywordSearch.TAG,
+                FragmentDisplayer.replaceFragment(this, SearchFragment.newInstance(), getFragmentPlace(), SearchFragment.TAG,
                         true);
                 return true;
 
@@ -1166,9 +1171,8 @@ public class MainActivity extends BaseActivity
                     backStack = false;
                 }
 
-                if (fr instanceof KeywordSearch)
+                if (fr instanceof SearchFragment)
                 {
-                    ((KeywordSearch) fr).unselect();
                     backStack = false;
                 }
 

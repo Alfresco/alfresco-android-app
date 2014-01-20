@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -109,7 +109,7 @@
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
     <string name="error_chunk_transfert"><![CDATA[The server doesnt support chunk transfert.<br/> Please reload your account</b>.]]></string>
-    
+
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">An error has occurred.</string>
     <string name="error_general">An error has occurred. Please try again.</string>
@@ -710,8 +710,7 @@
     <string name="task_dueat">Due Date</string>
     <string name="task_no_dueat">Due Date</string>
     <string name="tasks_history">Tasks History</string>
-    
-    
+
     <!-- Tasks Filters -->
     <string name="task_filter_active">Active Tasks</string>
     <string name="task_filter_initiator">Tasks I\'ve started</string>
@@ -735,20 +734,15 @@
     <string name="process_no_date">No date</string>
     <string name="process_assignees">Assignees</string>
     <string name="process_diagram">Process Diagram</string>
-    
     <string name="task_review_document">Please review %s</string>
     <string name="task_review_documents">Please review those documents</string>
-       
     <string name="task_assignees_plurals">{0,choice,0#No assignees|1#1 assignee|1&lt;{0} assignees}</string>
     <string name="task_assignees">Assignees</string>
     <string name="task_assignees_selection">Select assignees&#8230;</string>
-    
     <string name="process_approvers_plurals">{0,choice,0#No approvers|1#1 of 1 approver|1&lt;%s of {0} approvers}</string>
-    
     <string name="task_attachments_plurals">{0,choice,0#No attachments|1#1 attachment|1&lt;{0} attachments}</string>
     <string name="task_attachments_selection">Select attachments&#8230;</string>
     <string name="task_attachments">Attachments</string>
-
     <string name="process_no_description">(No Message)</string>
     <string name="process_no_assignees">No assignee</string>
     <string name="process_initiator">Initiator</string>
@@ -765,35 +759,52 @@
     <string name="task_todo_description">Assign a task to a person</string>
     <string name="task_review_approve">Review &amp; Approve</string>
     <string name="task_review_approve_description">Assign a task to one or more persons to review and approve documents.</string>
-    
     <string name="task_delegate_in_progress">Reassign in progress&#8230;</string>
     <string name="task_delegate_complete">Reassign completed</string>
-    
-    <!-- PROCESS NAME -->    
+
+    <!-- PROCESS NAME -->
     <string name="process_adhoc">Adhoc Workflow</string>
     <string name="process_parallel_review">Parallel Review and Approve</string>
     <string name="process_review">Review and Approve</string>
     <string name="process_pooled_review">Pooled Review and Approve</string>
-    
-    
+
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Search</string>
     <string name="search_person">People</string>
     <string name="search_documents">Documents</string>
     <string name="search_folders">Folders</string>
     <string name="search_advanced">Advanced Search</string>
-    
+
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">Select attachments</string>
     <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
     <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 document|1&lt;Attach {0} documents}</string>
-    
+
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">Views</string>
     <string name="display_gallery">Display Gallery</string>
-    
+
     <!-- Metadata RESTRICTABLE -->
     <string name="metadata_aspect_restrictable">Restrictable</string>
     <string name="metadata_prop_offline_expires_after">Offline Expires After (hours)</string>
+
+    <!-- Advanced Search -->
+    <string name="clear">Clear</string>
+    <string name="mimetype">Mimetype</string>
+    <string name="metadata_modified_by">Modified By</string>
+    <string name="modified_by">By</string>
+    <string name="metadata_modification_date">Last Modification</string>
+    <string name="metadata_modification_date_from">From</string>
+    <string name="metadata_modification_date_to">To</string>
+    <string name="search_name">Name or Username</string>
+    <string name="mimetype_unknown">Unknown</string>
+    <string name="mimetype_documents">Documents</string>
+    <string name="mimetype_presentations">Presentations</string>
+    <string name="mimetype_spreadsheets">Spreadsheets</string>
+    <string name="mimetype_images">Images</string>
+    <string name="mimetype_videos">Videos</string>
+    <string name="mimetype_music">Music</string>
+    <string name="mimetype_text">Text</string>
+    <string name="error_search_fields_empty">Please fill at least one field</string>
     
 </resources>

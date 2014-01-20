@@ -18,8 +18,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="24"
-    android:versionName="1.3.2" >
+    android:versionCode="30"
+    android:versionName="1.4.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -207,6 +207,14 @@
         <provider
             android:name="org.alfresco.mobile.android.application.accounts.AccountProvider"
             android:authorities="org.alfresco.mobile.android.provider.accounts"
+            android:exported="false" />
+         <provider
+            android:name="org.alfresco.mobile.android.application.fragments.search.HistorySearchProvider"
+            android:authorities="org.alfresco.mobile.android.provider.searches"
+            android:exported="false" />
+         <provider
+            android:name="org.alfresco.mobile.android.application.mimetype.MimeTypeProvider"
+            android:authorities="org.alfresco.mobile.android.provider.mimetypes"
             android:exported="false" />
 
         <!-- *************************************************************** -->

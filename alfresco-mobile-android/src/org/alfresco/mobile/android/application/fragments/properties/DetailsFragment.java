@@ -54,9 +54,9 @@ import org.alfresco.mobile.android.application.fragments.versions.VersionFragmen
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -650,7 +650,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         int iconId = defaultIconId;
         if (node.isDocument())
         {
-            iconId = MimeTypeManager.getIcon(node.getName(), isLarge);
+            iconId = MimeTypeManager.getIcon(getActivity(), node.getName(), isLarge);
             if (((Document) node).isLatestVersion())
             {
                 if (isLarge)
@@ -702,11 +702,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (vRoot.findViewById(R.id.icon) != null)
         {
             ((ImageView) vRoot.findViewById(R.id.icon))
-                    .setImageResource(MimeTypeManager.getIcon(node.getName(), false));
+                    .setImageResource(MimeTypeManager.getIcon(getActivity(), node.getName(), false));
         }
         if (vRoot.findViewById(R.id.preview) != null)
         {
-            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(node.getName(),
+            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(getActivity(), node.getName(),
                     true));
         }
 
@@ -975,7 +975,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             else
             {
                 // If sync file + sync activate
-                ActionManager.openIn(this, syncFile, MimeTypeManager.getMIMEType(syncFile.getName()),
+                ActionManager.openIn(this, syncFile, MimeTypeManager.getMIMEType(getActivity(), syncFile.getName()),
                         PublicIntent.REQUESTCODE_SAVE_BACK);
             }
         }

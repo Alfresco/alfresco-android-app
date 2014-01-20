@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -17,7 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.intent;
 
-
+/**
+ * @since 1.2
+ * @author Jean Marie Pascal
+ */
 public interface IntentIntegrator extends PublicIntent
 {
     String ALFRESCO_SCHEME_SHORT = "alfresco";
@@ -263,4 +266,11 @@ public interface IntentIntegrator extends PublicIntent
     String EXTRA_DATA_DICTIONARY_ID = "org.alfresco.mobile.android.intent.DATA_DICTIONARY_ID";
     String EXTRA_CONFIGURATION_ID = "org.alfresco.mobile.android.intent.CONFIGURATION_ID";
     String EXTRA_LASTMODIFICATION = "org.alfresco.mobile.android.intent.EXTRA_LASTMODIFICATION";
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SEARCH 
+    // ///////////////////////////////////////////////////////////////////////////
+    // BROADCAST
+    String ACTION_SEARCH_OPTION_SELECTED = "org.alfresco.mobile.android.intent.ACTION_SEARCH_OPTION_SELECTED";
+    
 }
