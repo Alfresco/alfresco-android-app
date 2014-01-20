@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -41,7 +42,6 @@ import org.alfresco.mobile.android.application.operations.batch.node.create.Retr
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.content.BroadcastReceiver;
@@ -252,7 +252,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
         {
             ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(f.getFileName()));
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(getActivity(), f.getFileName()));
         }
         else
         {

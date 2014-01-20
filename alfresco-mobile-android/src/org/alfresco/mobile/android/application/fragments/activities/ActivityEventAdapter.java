@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -32,9 +32,9 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.annotation.TargetApi;
@@ -174,7 +174,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
 
         if (s.startsWith(PREFIX_FILE))
         {
-            drawable = MimeTypeManager.getIcon(getData(item, OnPremiseConstant.TITLE_VALUE));
+            drawable = MimeTypeManager.getIcon(getContext(), getData(item, OnPremiseConstant.TITLE_VALUE));
         }
         else
         {

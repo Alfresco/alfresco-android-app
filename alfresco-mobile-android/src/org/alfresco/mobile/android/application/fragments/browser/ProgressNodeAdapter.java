@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
@@ -65,6 +65,10 @@ import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 
+/**
+ * @since 1.2
+ * @author Jean Marie Pascal
+ */
 public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.LoaderCallbacks<Cursor>,
         OnMenuItemClickListener
 {
@@ -229,7 +233,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         if (item instanceof NodePlaceHolder)
         {
             UIUtils.setBackground(((View) vh.icon), null);
-            vh.icon.setImageResource(MimeTypeManager.getIcon(item.getName()));
+            vh.icon.setImageResource(MimeTypeManager.getIcon(context, item.getName()));
         }
         else
         {

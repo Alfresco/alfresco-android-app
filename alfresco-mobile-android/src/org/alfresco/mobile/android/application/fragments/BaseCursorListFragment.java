@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -37,6 +37,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+/**
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public abstract class BaseCursorListFragment extends DialogFragment implements LoaderCallbacks<Cursor>
 {
     /** Principal ListView of the fragment */
@@ -191,5 +195,4 @@ public abstract class BaseCursorListFragment extends DialogFragment implements L
     {
         adapter.changeCursor(null);
     }
-
 }

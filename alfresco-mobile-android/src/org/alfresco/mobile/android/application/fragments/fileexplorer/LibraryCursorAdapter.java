@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
@@ -12,8 +29,8 @@ import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -32,6 +49,10 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
+/**
+ * @since 1.3
+ * @author Jean Marie Pascal
+ */
 public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> implements OnMenuItemClickListener
 {
     private List<File> selectedItems;
@@ -133,7 +154,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
                 break;
             default:
                 Uri uri = Uri.parse(cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)));
-                vh.icon.setImageResource(MimeTypeManager.getIcon(uri.getLastPathSegment()));
+                vh.icon.setImageResource(MimeTypeManager.getIcon(context, uri.getLastPathSegment()));
                 break;
         }
 

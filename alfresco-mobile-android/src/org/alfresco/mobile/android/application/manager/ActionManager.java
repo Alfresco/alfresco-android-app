@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -29,11 +29,11 @@ import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity
 import org.alfresco.mobile.android.application.commons.extensions.SamsungManager;
 import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.batch.account.CreateAccountRequest;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -49,6 +49,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
 
+/**
+ * @author Jean Marie Pascal
+ */
 public class ActionManager extends org.alfresco.mobile.android.ui.manager.ActionManager
 {
     public static final String TAG = ActionManager.class.getName();
@@ -57,7 +60,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         try
         {
-            String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+            String mimeType = MimeTypeManager.getMIMEType(fr.getActivity(), myFile.getName());
             if (DataProtectionManager.getInstance(fr.getActivity()).isEncrypted(myFile.getPath()))
             {
                 WaitingDialogFragment dialog = WaitingDialogFragment.newInstance(R.string.data_protection,
@@ -92,7 +95,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         try
         {
-            String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+            String mimeType = MimeTypeManager.getMIMEType(fr.getActivity(), myFile.getName());
             if (ApplicationManager.getSamsungManager(fr.getActivity()) != null
                     && ApplicationManager.getSamsungManager(fr.getActivity()).hasPenEnable()
                     && (mimeType == null || mimeType.equals("application/octet-stream"))
@@ -123,7 +126,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         Uri data = Uri.fromFile(contentFile);
-        intent.setDataAndType(data, MimeTypeManager.getMIMEType(contentFile.getName()).toLowerCase());
+        intent.setDataAndType(data, MimeTypeManager.getMIMEType(activity, contentFile.getName()).toLowerCase());
         return intent;
     }
 
@@ -223,7 +226,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
     {
         try
         {
-            String mimeType = MimeTypeManager.getMIMEType(myFile.getName());
+            String mimeType = MimeTypeManager.getMIMEType(activity, myFile.getName());
             if (ApplicationManager.getSamsungManager(activity) != null
                     && ApplicationManager.getSamsungManager(activity).hasPenEnable()
                     && (mimeType == null || mimeType.equals("application/octet-stream"))
@@ -262,7 +265,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
             Intent i = new Intent(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
-            i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+            i.setType(MimeTypeManager.getMIMEType(activity, contentFile.getName()));
             activity.startActivity(Intent.createChooser(i, activity.getText(R.string.share_content)));
         }
         catch (ActivityNotFoundException e)
@@ -276,7 +279,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         Intent i = new Intent(Intent.ACTION_SEND);
         i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
         i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
-        i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+        i.setType(MimeTypeManager.getMIMEType(activity, contentFile.getName()));
         return i;
     }
 
@@ -351,7 +354,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
         Intent i = new Intent(activity, PublicDispatcherActivity.class);
         i.setAction(Intent.ACTION_SEND);
         i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
-        i.setType(MimeTypeManager.getMIMEType(contentFile.getName()));
+        i.setType(MimeTypeManager.getMIMEType(activity, contentFile.getName()));
         return i;
     }
 
@@ -398,7 +401,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
                 uris.add(u);
             }
             i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            i.setType(MimeTypeManager.getMIMEType("text/plain"));
+            i.setType(MimeTypeManager.getMIMEType(fr.getActivity(), "text/plain"));
             fr.getActivity().startActivity(i);
         }
         catch (ActivityNotFoundException e)
@@ -426,7 +429,7 @@ public class ActionManager extends org.alfresco.mobile.android.ui.manager.Action
                 uris.add(u);
             }
             i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            i.setType(MimeTypeManager.getMIMEType("text/plain"));
+            i.setType(MimeTypeManager.getMIMEType(fr.getActivity(), "text/plain"));
             fr.getActivity().startActivity(Intent.createChooser(i, fr.getActivity().getText(R.string.share_content)));
         }
         catch (ActivityNotFoundException e)

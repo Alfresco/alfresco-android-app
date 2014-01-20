@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -54,7 +54,7 @@ import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
+import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
@@ -152,7 +152,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(folder, null, null);
     }
-    
+
     public static ChildrenBrowserFragment newInstance(Folder folder, boolean isShortcut)
     {
         return newInstance(folder, null, null, isShortcut);
@@ -184,7 +184,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(folder, null, site);
     }
-    
+
     public static ChildrenBrowserFragment newInstance(Site site, Folder folder, boolean isShortCut)
     {
         return newInstance(folder, null, site, isShortCut);
@@ -192,10 +192,12 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
     private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site)
     {
-        return newInstance(parentFolder, pathFolder, site, pathFolder != null || parentFolder instanceof CloudFolderImpl);
+        return newInstance(parentFolder, pathFolder, site, pathFolder != null
+                || parentFolder instanceof CloudFolderImpl);
     }
-    
-    private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site, boolean isShortcut)
+
+    private static ChildrenBrowserFragment newInstance(Folder parentFolder, String pathFolder, Site site,
+            boolean isShortcut)
     {
         ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
         ListingContext lc = new ListingContext();
@@ -798,7 +800,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         if (getActivity() instanceof MainActivity)
         {
             getMenu(alfSession, menu, parentFolder);
-            
+
             displayMenuItem = menu.add(Menu.NONE, MenuActionItem.MENU_DISPLAY_GALLERY, Menu.FIRST
                     + MenuActionItem.MENU_DISPLAY_GALLERY, R.string.display_gallery);
             displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -1078,7 +1080,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     public void search(int fragmentPlaceId)
     {
         FragmentDisplayer.replaceFragment(getActivity(),
-                KeywordSearch.newInstance(folderParameter, currentSiteParameter), fragmentPlaceId, KeywordSearch.TAG,
+                SearchFragment.newInstance(folderParameter, currentSiteParameter), fragmentPlaceId, SearchFragment.TAG,
                 true);
     }
 
@@ -1200,12 +1202,13 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     private int getDisplayItemLayout()
     {
         int displayItemLayout = R.layout.app_grid_large_progress_row;
-        
-        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity){
+
+        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity)
+        {
             gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 1000));
             return R.layout.app_grid_large_progress_row;
         }
-            
+
         switch (displayMode)
         {
             case DISPLAY_LIST:

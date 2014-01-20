@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -40,8 +40,9 @@ import org.alfresco.mobile.android.application.fragments.browser.onPickDocumentF
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -75,7 +76,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment
+public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment, onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
@@ -198,7 +199,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             @Override
             public void onClick(View v)
             {
-                new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
+                DatePickerFragment.newInstance(0, TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
         dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
@@ -362,7 +363,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public void setDueAt(GregorianCalendar gregorianCalendar)
+    @Override
+    public void onDatePicked(int dateId, GregorianCalendar gregorianCalendar)
     {
         gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
         gregorianCalendar.set(Calendar.MINUTE, 59);
@@ -372,7 +374,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
     }
-
     // ///////////////////////////////////////////////////////////////////////////
     // VALIDATION
     // ///////////////////////////////////////////////////////////////////////////
