@@ -807,4 +807,9 @@
     <string name="mimetype_text">Text</string>
     <string name="error_search_fields_empty">Please fill at least one field</string>
     
+    
+    <!-- Storage Access Framework -->
+    <string name="menu_browse_favorites_folder">Favorites Folder</string>
+    <string name="account_alfresco_onpremise">Alfresco Server</string>
+    <string name="account_alfresco_cloud">Alfresco Cloud</string>
 </resources>

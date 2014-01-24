@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -16,6 +16,9 @@
  *  limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -135,6 +138,29 @@ public final class AccountManager
             return retrieveAccount(appContext, id);
         }
     }
+    
+    public static List<Account> retrieveAccounts(Context context)
+    {
+        List<Account> accounts = null;
+        try
+        {
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, COLUMN_ALL, null, null, null);
+            accounts = new ArrayList<Account>(cursor.getCount());
+            while (cursor.moveToNext())
+            {
+                accounts.add(createAccountWithoutClose(cursor));
+            }
+            Log.d(TAG, "accounts " + accounts.size());
+
+            cursor.close();
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
+      
+        return accounts;
+    }
 
     public static Account retrieveAccount(Context context, long id)
     {
@@ -147,6 +173,18 @@ public final class AccountManager
         }
         cursor.close();
         return null;
+    }
+    
+    
+    private static Account createAccountWithoutClose(Cursor c)
+    {
+        Account account = new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
+                c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
+                c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
+                c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
+                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
+                c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
+        return account;
     }
 
     public static Account createAccount(Cursor c)

@@ -260,17 +260,11 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             nActions.finish();
         }
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy()
-    {
         if (receiver != null)
         {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         }
-        super.onDestroy();
+        super.onStop();
     }
 
     private void displayNavigation(File file, boolean backstack)

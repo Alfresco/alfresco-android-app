@@ -23,11 +23,14 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
@@ -207,7 +210,8 @@
         <provider
             android:name="org.alfresco.mobile.android.application.accounts.AccountProvider"
             android:authorities="org.alfresco.mobile.android.provider.accounts"
-            android:exported="false" />
+            android:exported="false"
+             />
          <provider
             android:name="org.alfresco.mobile.android.application.fragments.search.HistorySearchProvider"
             android:authorities="org.alfresco.mobile.android.provider.searches"
@@ -216,6 +220,17 @@
             android:name="org.alfresco.mobile.android.application.mimetype.MimeTypeProvider"
             android:authorities="org.alfresco.mobile.android.provider.mimetypes"
             android:exported="false" />
+         
+         <provider
+            android:name="org.alfresco.mobile.android.application.storage.provider.StorageAccessDocumentsProvider"
+            android:authorities="org.alfresco.android.provider.documents"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS" >
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
 
         <!-- *************************************************************** -->
         <!-- Internal : SERVICES -->
