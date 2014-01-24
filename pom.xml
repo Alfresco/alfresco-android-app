@@ -134,8 +134,9 @@
 		<maven.compile.target>1.6</maven.compile.target>
 
 		<!-- Android Dependencies -->
-		<android.version.number>16</android.version.number>
-		<android.version>4.1.1.4</android.version>
+		<android.version.number>19</android.version.number>
+		<android.version>4.4.2_r2</android.version>
+		<android.annotation.version>22.3</android.annotation.version>
 		<android.support.version>r18</android.support.version>
 		<android.maven.plugin.version>3.7.0</android.maven.plugin.version>
 
@@ -450,7 +451,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>com.google.android</groupId>
+				<groupId>android</groupId>
 				<artifactId>android</artifactId>
 				<version>${android.version}</version>
 				<scope>provided</scope>
@@ -462,9 +463,9 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-				<groupId>com.google.android</groupId>
+				<groupId>com.google.android.annotations</groupId>
 				<artifactId>annotations</artifactId>
-				<version>${android.version}</version>
+				<version>${android.annotation.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
