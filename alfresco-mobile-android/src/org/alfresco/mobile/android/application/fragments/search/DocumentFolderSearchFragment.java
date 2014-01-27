@@ -63,6 +63,8 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
     private static final String PARAM_SEARCH_FOLDER = "searchFolder";
 
+    private static final String PARAM_TITLE = "queryDescription";
+
     private static final String PARAM_CMIS_QUERY = "cmisQuery";
 
     private List<Node> selectedItems = new ArrayList<Node>(1);
@@ -100,11 +102,20 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
     public static DocumentFolderSearchFragment newInstance(String query)
     {
+        return newInstance(query, null);
+    }
+
+    public static DocumentFolderSearchFragment newInstance(String query, String description)
+    {
         DocumentFolderSearchFragment ssf = new DocumentFolderSearchFragment();
         Bundle b = new Bundle();
         ListingContext lc = new ListingContext();
         b.putAll(createBundleArgs(lc, LOAD_MANUAL));
         b.putString(PARAM_CMIS_QUERY, query);
+        if (description != null)
+        {
+            b.putString(PARAM_TITLE, description);
+        }
         ssf.setArguments(b);
         return ssf;
     }
@@ -113,8 +124,14 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
     {
         return newInstance(query, searchFolder, null);
     }
+    
+    public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder, String description)
+    {
+        return newInstance(query, searchFolder, null, description);
+    }
 
-    public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder, Folder parentFolder)
+    public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder, Folder parentFolder,
+            String description)
     {
         DocumentFolderSearchFragment ssf = new DocumentFolderSearchFragment();
         Bundle b = new Bundle();
@@ -123,6 +140,7 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
         lc.setIsSortAscending(true);
         b.putAll(createBundleArgs(lc, LOAD_MANUAL));
         b.putSerializable(PARAM_KEYWORD, query);
+        b.putSerializable(PARAM_TITLE, description);
         b.putBoolean(PARAM_SEARCH_FOLDER, searchFolder);
         if (parentFolder != null)
         {
@@ -151,6 +169,7 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
         if (getArguments() != null)
         {
+            title = getArguments().getString(PARAM_TITLE);
             searchFolder = getArguments().getBoolean(PARAM_SEARCH_FOLDER);
             keywords = getArguments().getString(PARAM_KEYWORD);
             cmisQuery = getArguments().getString(PARAM_CMIS_QUERY);
@@ -181,7 +200,14 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
     {
         super.onResume();
 
-        UIUtils.displayTitle(getActivity(), "Search : " + keywords);
+        if (title != null)
+        {
+            UIUtils.displayTitle(getActivity(), "Search : " + title);
+        }
+        else if (keywords != null)
+        {
+            UIUtils.displayTitle(getActivity(), "Search : " + keywords);
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////

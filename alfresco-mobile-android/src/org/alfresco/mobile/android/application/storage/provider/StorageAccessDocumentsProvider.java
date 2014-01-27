@@ -202,9 +202,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         Log.d(TAG, "Query Children : " + parentDocumentId);
         final DocumentFolderCursor docsCursor = new DocumentFolderCursor(resolveDocumentProjection(projection));
-        final Uri uri = DocumentsContract.buildChildDocumentsUri(mAuthority, parentDocumentId);
+        Uri uri = DocumentsContract.buildChildDocumentsUri(mAuthority, parentDocumentId);
+        Log.d(TAG, "Query Children : " + uri);
         EncodedQueryUri cUri = new EncodedQueryUri(parentDocumentId);
-        checkSession(cUri);
 
         // Dispatch value
         try
@@ -300,12 +300,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         Log.d(TAG, "Query Document : " + documentId);
         final DocumentFolderCursor docsCursor = new DocumentFolderCursor(resolveDocumentProjection(projection));
-        final Uri uri = DocumentsContract.buildDocumentUri(mAuthority, documentId);
+        Uri uri = DocumentsContract.buildDocumentUri(mAuthority, documentId);
 
         try
         {
             EncodedQueryUri cUri = new EncodedQueryUri(documentId);
-            checkSession(cUri);
+            //checkSession(cUri);
 
             if (cUri.id != null)
             {
@@ -452,6 +452,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         }
         catch (Exception e)
         {
+            Log.w(TAG, Log.getStackTraceString(e));
             throw new FileNotFoundException("Unable to find this document");
         }
     }
@@ -516,6 +517,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         }
         catch (Exception e)
         {
+            Log.w(TAG, Log.getStackTraceString(e));
             return null;
         }
     }
@@ -526,7 +528,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     {
         final DocumentFolderCursor DocumentFolderCursor = new DocumentFolderCursor(
                 resolveDocumentProjection(projection));
-        final Uri uri = DocumentsContract.buildSearchDocumentsUri(mAuthority, rootId, query);
+        Uri uri = DocumentsContract.buildSearchDocumentsUri(mAuthority, rootId, query);
         final EncodedQueryUri cUri = new EncodedQueryUri(rootId);
 
         Boolean active = mLoadingUris.get(uri);
@@ -573,13 +575,12 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public Cursor queryRecentDocuments(String rootId, String[] projection) throws FileNotFoundException
     {
-        Log.v(TAG, "queryRecentDocuments");
+        Log.v(TAG, "queryRecentDocuments" + rootId);
 
         final DocumentFolderCursor recentDocumentsCursor = new DocumentFolderCursor(
                 resolveDocumentProjection(projection));
-        final Uri uri = DocumentsContract.buildRecentDocumentsUri(mAuthority, rootId);
-        EncodedQueryUri cUri = new EncodedQueryUri(rootId);
-        checkSession(cUri);
+        Uri uri = DocumentsContract.buildRecentDocumentsUri(mAuthority, rootId);
+        final EncodedQueryUri cUri = new EncodedQueryUri(rootId);
 
         Boolean active = mLoadingUris.get(uri);
 
@@ -603,19 +604,27 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 @Override
                 protected Void doInBackground(Void... params)
                 {
-
-                    List<Node> nodes = new ArrayList<Node>();
-                    GregorianCalendar calendar = new GregorianCalendar();
-                    calendar.add(Calendar.DAY_OF_YEAR, -7);
-                    String formatedDate = DateUtils.format(calendar);
-                    nodes = session.getServiceRegistry().getSearchService()
-                            .search(String.format(QUERY_RECENT, formatedDate), SearchLanguage.CMIS);
-
-                    for (Node node : nodes)
+                    try
                     {
-                        nodesIndex.put(NodeRefUtils.getVersionIdentifier(node.getIdentifier()), node);
-                    }
+                        checkSession(cUri);
+                        List<Node> nodes = new ArrayList<Node>();
+                        GregorianCalendar calendar = new GregorianCalendar();
+                        calendar.add(Calendar.DAY_OF_YEAR, -7);
+                        String formatedDate = DateUtils.format(calendar);
+                        nodes = session.getServiceRegistry().getSearchService()
+                                .search(String.format(QUERY_RECENT, formatedDate), SearchLanguage.CMIS);
 
+                        for (Node node : nodes)
+                        {
+                            nodesIndex.put(NodeRefUtils.getVersionIdentifier(node.getIdentifier()), node);
+                        }
+
+                    }
+                    catch (Exception e)
+                    {
+                        exception = null;
+                        Log.w(TAG, Log.getStackTraceString(e));
+                    }
                     return null;
                 }
             }.execute();
@@ -741,22 +750,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         }
     }
 
-    private boolean hasSession(Uri uri, DocumentFolderCursor DocumentFolderCursor)
-    {
-        if (session == null)
-        {
-            // Session unavailable
-            // User needs to open the application
-            removeUri(uri, false);
-            DocumentFolderCursor.setErrorInformation("Refresh required.");
-            return false;
-        }
-        else
-        {
-            return true;
-        }
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // ROOTS
     // //////////////////////////////////////////////////////////////////////
@@ -841,6 +834,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     catch (AlfrescoException e)
                     {
                         exception = e;
+                        Log.w(TAG, Log.getStackTraceString(e));
                     }
                     return null;
                 }
@@ -880,14 +874,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     // SITES
     // //////////////////////////////////////////////////////////////////////
-    private void retrieveSitesChildren(final Uri uri, EncodedQueryUri row, DocumentFolderCursor sitesCursor)
+    private void retrieveSitesChildren(Uri uri, final EncodedQueryUri row, DocumentFolderCursor sitesCursor)
     {
-        if (!hasSession(uri, sitesCursor)) { return; }
         new StorageProviderAsyncTask(uri, sitesCursor)
         {
             @Override
             protected Void doInBackground(Void... params)
             {
+                checkSession(row);
                 List<Site> sites = session.getServiceRegistry().getSiteService().getSites();
                 for (Site site : sites)
                 {
@@ -901,7 +895,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private void fillSitesChildren(Uri uri, Boolean active, DocumentFolderCursor sitesCursor)
     {
         if (hasError(uri, active, sitesCursor)) { return; }
-        if (!hasSession(uri, sitesCursor)) { return; }
         for (Entry<String, Site> siteEntry : siteIndex.entrySet())
         {
             addSiteRow(sitesCursor, siteEntry.getValue());
@@ -924,8 +917,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private void retrieveSiteDocumentLibraryChildren(final Uri uri, EncodedQueryUri row,
             DocumentFolderCursor sitesCursor)
     {
-        if (!hasSession(uri, sitesCursor)) { return; }
-
+        checkSession(row);
         Site currentSite = null;
         if (siteIndex != null && siteIndex.containsKey(row.id))
         {
@@ -947,16 +939,15 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // //////////////////////////////////////////////////////////////////////
     // FAVORITES FOLDER
     // //////////////////////////////////////////////////////////////////////
-    private void retrieveFavoriteFoldersChildren(final Uri uri, EncodedQueryUri row,
+    private void retrieveFavoriteFoldersChildren(Uri uri, final EncodedQueryUri row,
             DocumentFolderCursor DocumentFolderCursor)
     {
-        if (!hasSession(uri, DocumentFolderCursor)) { return; }
-
         new StorageProviderAsyncTask(uri, DocumentFolderCursor, true)
         {
             @Override
             protected Void doInBackground(Void... params)
             {
+                checkSession(row);
                 List<Folder> folders = new ArrayList<Folder>();
                 folders = session.getServiceRegistry().getDocumentFolderService().getFavoriteFolders();
                 for (Node node : folders)
@@ -1009,7 +1000,6 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private void fillNodeChildren(Uri uri, Boolean active, DocumentFolderCursor DocumentFolderCursor)
     {
         if (hasError(uri, active, DocumentFolderCursor)) { return; }
-        if (!hasSession(uri, DocumentFolderCursor)) { return; }
 
         for (Entry<String, Node> nodeEntry : nodesIndex.entrySet())
         {
@@ -1227,7 +1217,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
             catch (AlfrescoException e)
             {
-                Log.v(TAG, "AlfrescoException");
+                Log.e(TAG, Log.getStackTraceString(e));
                 exception = e;
             }
         }

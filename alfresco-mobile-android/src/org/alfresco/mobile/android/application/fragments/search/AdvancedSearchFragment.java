@@ -19,13 +19,13 @@ package org.alfresco.mobile.android.application.fragments.search;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TimeZone;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Person;
@@ -353,6 +353,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
     private void search()
     {
         String statement = createQuery();
+        String description = createDescriptionQuery();
         if (statement == null)
         {
             MessengerManager.showLongToast(getActivity(), getActivity().getString(R.string.error_search_fields_empty));
@@ -363,13 +364,13 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         switch (searchKey)
         {
             case HistorySearch.TYPE_PERSON:
-                frag = PersonSearchFragment.newInstance(statement);
+                frag = PersonSearchFragment.newInstance(statement, description);
                 frag.setSession(alfSession);
                 tag = PersonSearchFragment.TAG;
                 break;
             case HistorySearch.TYPE_FOLDER:
             case HistorySearch.TYPE_DOCUMENT:
-                frag = DocumentFolderSearchFragment.newInstance(statement);
+                frag = DocumentFolderSearchFragment.newInstance(statement, description);
                 tag = DocumentFolderSearchFragment.TAG;
                 break;
             default:
@@ -378,7 +379,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
 
         // Save history or update
         HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
-                searchKey, 1, createDescriptionQuery(), statement, new Date().getTime());
+                searchKey, 1, description, statement, new Date().getTime());
 
         frag.setSession(alfSession);
         FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()), tag,
@@ -479,7 +480,10 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
                 addParameter(builder, "name", name);
                 addParameter(builder, "title", title);
                 addParameter(builder, "description", description);
-                addParameter(builder, "mimetype", getString(mimetype));
+                if (mimetype != R.string.mimetype_unknown)
+                {
+                    addParameter(builder, "mimetype", getString(mimetype));
+                }
                 addParameter(builder, "modifier", modifiedId);
                 addParameter(builder, "-modified", modificationDateFromValue);
                 addParameter(builder, "+modified", modificationDateToValue);
@@ -572,20 +576,17 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
     @Override
     public void onDatePicked(int dateId, GregorianCalendar gregorianCalendar)
     {
-        gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        gregorianCalendar.set(Calendar.MINUTE, 59);
-        gregorianCalendar.set(Calendar.SECOND, 59);
-        gregorianCalendar.set(Calendar.MILLISECOND, 999);
-
         switch (dateId)
         {
             case DATE_FROM:
-                modificationDateFromValue = gregorianCalendar;
+                modificationDateFromValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+                modificationDateFromValue.setTime(gregorianCalendar.getTime());
                 modificationDateFrom.setText(DateFormat.getDateFormat(getActivity()).format(
                         modificationDateFromValue.getTime()));
                 break;
             case DATE_TO:
-                modificationDateToValue = gregorianCalendar;
+                modificationDateToValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+                modificationDateToValue.setTime(gregorianCalendar.getTime());
                 modificationDateTo.setText(DateFormat.getDateFormat(getActivity()).format(
                         modificationDateToValue.getTime()));
                 break;

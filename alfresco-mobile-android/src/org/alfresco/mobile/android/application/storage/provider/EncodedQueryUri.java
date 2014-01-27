@@ -80,7 +80,7 @@ public class EncodedQueryUri
         {
             type = Integer.parseInt(params.get(PARAM_TYPE));
         }
-        if (params.containsKey(PARAM_TYPE))
+        if (params.containsKey(PARAM_ACCOUNT))
         {
             account = Long.parseLong(params.get(PARAM_ACCOUNT));
         }
