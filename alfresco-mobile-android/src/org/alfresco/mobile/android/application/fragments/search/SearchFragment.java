@@ -293,7 +293,7 @@ public class SearchFragment extends BaseCursorListFragment
             switch (searchKey)
             {
                 case HistorySearch.TYPE_PERSON:
-                    frag = PersonSearchFragment.newInstance(search.getQuery());
+                    frag = PersonSearchFragment.newInstance(search.getQuery(), null);
                     frag.setSession(alfSession);
                     FragmentDisplayer.replaceFragment(getActivity(), frag,
                             DisplayUtils.getLeftFragmentId(getActivity()), PersonSearchFragment.TAG, true, false);
@@ -317,13 +317,13 @@ public class SearchFragment extends BaseCursorListFragment
         {
             case HistorySearch.TYPE_DOCUMENT:
                 // Display results
-                frag = DocumentFolderSearchFragment.newInstance(keywords, false, tmpParentFolder);
+                frag = DocumentFolderSearchFragment.newInstance(keywords, false, tmpParentFolder, null);
                 frag.setSession(alfSession);
                 FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                         DocumentFolderSearchFragment.TAG, true, false);
                 break;
             case HistorySearch.TYPE_PERSON:
-                frag = PersonSearchFragment.newInstance(keywords);
+                frag = PersonSearchFragment.newInstance(keywords, null);
                 frag.setSession(alfSession);
                 FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
                         PersonSearchFragment.TAG, true, false);

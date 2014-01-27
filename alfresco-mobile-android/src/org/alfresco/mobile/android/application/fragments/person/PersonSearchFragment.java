@@ -69,6 +69,8 @@ public class PersonSearchFragment extends BaseListFragment implements
 
     private static final String PARAM_KEYWORD = "keyword";
 
+    private static final String PARAM_TITLE = "queryDescription";
+
     private Map<String, Person> selectedItems = new HashMap<String, Person>(1);
 
     private View vRoot;
@@ -103,12 +105,13 @@ public class PersonSearchFragment extends BaseListFragment implements
         return bf;
     }
 
-    public static BaseFragment newInstance(String keywords)
+    public static BaseFragment newInstance(String keywords, String description)
     {
         PersonSearchFragment bf = new PersonSearchFragment();
         Bundle b = new Bundle();
         b.putInt(PARAM_MODE, MODE_LISTING);
         b.putString(PARAM_KEYWORD, keywords);
+        b.putString(PARAM_TITLE, description);
         bf.setArguments(b);
         return bf;
     }
@@ -142,6 +145,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         if (getArguments() != null && getArguments().containsKey(PARAM_MODE))
         {
             keywords = getArguments().getString(PARAM_KEYWORD);
+            title = getArguments().getString(PARAM_TITLE);
             mode = getArguments().getInt(PARAM_MODE);
             singleChoice = getArguments().getBoolean(PARAM_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
@@ -266,6 +270,10 @@ public class PersonSearchFragment extends BaseListFragment implements
             if (keywords != null)
             {
                 UIUtils.displayTitle(getActivity(), "Search : " + keywords);
+            }
+            if (title != null)
+            {
+                UIUtils.displayTitle(getActivity(), "Search : " + title);
             }
         }
         super.onStart();

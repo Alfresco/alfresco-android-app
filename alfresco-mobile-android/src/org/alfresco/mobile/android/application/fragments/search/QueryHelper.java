@@ -1,6 +1,7 @@
 package org.alfresco.mobile.android.application.fragments.search;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -81,6 +82,10 @@ public class QueryHelper
         // Modified FROM
         if (modificationFrom != null)
         {
+            modificationFrom.set(Calendar.HOUR, 00);
+            modificationFrom.set(Calendar.MINUTE, 00);
+            modificationFrom.set(Calendar.SECOND, 00);
+            modificationFrom.set(Calendar.MILLISECOND, 000);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_SUPERIOR,
                     DateUtils.format(modificationFrom));
         }
@@ -88,6 +93,11 @@ public class QueryHelper
         // Modified TO
         if (modificationTo != null)
         {
+            modificationTo.add(Calendar.DAY_OF_MONTH, 1);
+            modificationFrom.set(Calendar.HOUR, 00);
+            modificationFrom.set(Calendar.MINUTE, 00);
+            modificationFrom.set(Calendar.SECOND, 00);
+            modificationFrom.set(Calendar.MILLISECOND, 000);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_INFERIOR,
                     DateUtils.format(modificationTo));
         }
@@ -152,6 +162,7 @@ public class QueryHelper
             builder.append(" AND ");
         }
         builder.append(key);
+        builder.append(" ");
         builder.append(operator);
         builder.append(" TIMESTAMP ");
         builder.append("'" + value + "'");
