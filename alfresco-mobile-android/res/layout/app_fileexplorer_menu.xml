@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -29,7 +29,7 @@
         android:paddingRight="@dimen/properties_padding" >
 
         <TextView
-            style="@style/sectionHeader"
+            style="?AlfrescoTheme.TextView.SectionHeader.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:paddingTop="5dip"
@@ -45,18 +45,8 @@
             android:gravity="left|center_vertical"
             android:text="@string/shortcut_alfresco_downloads" />
 
-       <!--   <Button
-            android:id="@+id/shortcut_alfresco_sync"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/btn_default_holo_light_underline"
-            android:drawableLeft="@drawable/ic_refresh"
-            android:drawablePadding="5dip"
-            android:gravity="left|center_vertical"
-            android:text="@string/shortcut_alfresco_sync" />-->
-
         <TextView
-            style="@style/sectionHeader"
+            style="?AlfrescoTheme.TextView.SectionHeader.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/properties_padding"
@@ -88,7 +78,7 @@
             android:text="@string/shortcut_local_downloads" />
         
          <TextView
-            style="@style/sectionHeader"
+            style="?AlfrescoTheme.TextView.SectionHeader.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/properties_padding"

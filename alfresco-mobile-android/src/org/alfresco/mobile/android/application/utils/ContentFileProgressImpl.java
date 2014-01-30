@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -73,12 +73,16 @@ public class ContentFileProgressImpl extends ContentFileImpl
     @Override
     public void fileReadCallback(int nBytes) throws IOException
     {
+        if (nBytes == -1) { return; }
+
         amountCopied += nBytes;
 
-        if (listener != null && (amountCopied / segment > currentSegment)
-                || amountCopied == getFile().length())
+        if (listener != null && amountCopied == getFile().length() || (amountCopied / segment > currentSegment))
         {
-            ++currentSegment;
+            if (segment == 0 &&  amountCopied == getFile().length()){
+                segment = 1;
+            }
+            currentSegment = (int) (amountCopied / segment);
             listener.onRead(this, amountCopied);
         }
     }
@@ -107,7 +111,6 @@ public class ContentFileProgressImpl extends ContentFileImpl
         }
     }
 
-  
     // ///////////////////////////////////////////////////////////////////////////
     // LISTENERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -117,7 +120,7 @@ public class ContentFileProgressImpl extends ContentFileImpl
 
         int getSegment();
     }
-    
+
     public void setReaderListener(ReaderListener listener)
     {
         this.listener = listener;

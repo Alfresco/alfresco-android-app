@@ -196,17 +196,16 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
     }
 
     @Override
-    public void onResume()
+    public void onStart()
     {
-        super.onResume();
-
+        super.onStart();
         if (title != null)
         {
-            UIUtils.displayTitle(getActivity(), "Search : " + title);
+            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), title));
         }
         else if (keywords != null)
         {
-            UIUtils.displayTitle(getActivity(), "Search : " + keywords);
+            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), keywords));
         }
     }
 

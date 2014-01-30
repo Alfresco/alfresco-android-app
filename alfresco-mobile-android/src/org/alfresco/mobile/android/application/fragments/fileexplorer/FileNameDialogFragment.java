@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -46,7 +46,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class FileNameDialogFragment extends DialogFragment
 {
@@ -140,9 +139,9 @@ public class FileNameDialogFragment extends DialogFragment
         v.setLayoutParams(new LayoutParams(width, LayoutParams.MATCH_PARENT));
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
-        final Button validate = (Button) v.findViewById(R.id.create_document);
-        final Button cancel = (Button) v.findViewById(R.id.cancel);
+        final Button validate = UIUtils.initValidation(v, R.string.create);
+        validate.setEnabled(false);
+        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
 
         if (fileToRename != null)
         {
@@ -159,25 +158,23 @@ public class FileNameDialogFragment extends DialogFragment
                     validate.setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.filename_error_character);
+                        textName.setError(getString(R.string.filename_error_character));
                         validate.setEnabled(false);
                     }
                     else if ((new File(parentFile, s.toString().trim()).exists()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.create_document_filename_error);
+                        textName.setError(getString(R.string.create_document_filename_error));
                         validate.setEnabled(false);
                     }
                     else
                     {
-                        errorMessage.setVisibility(View.GONE);
+                        textName.setError(null);
                     }
                 }
                 else
                 {
                     validate.setEnabled(false);
-                    errorMessage.setVisibility(View.GONE);
+                    textName.setError(null);
                 }
             }
 

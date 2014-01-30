@@ -801,9 +801,12 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         {
             getMenu(alfSession, menu, parentFolder);
 
-            displayMenuItem = menu.add(Menu.NONE, MenuActionItem.MENU_DISPLAY_GALLERY, Menu.FIRST
-                    + MenuActionItem.MENU_DISPLAY_GALLERY, R.string.display_gallery);
-            displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            if (hasDocument())
+            {
+                displayMenuItem = menu.add(Menu.NONE, MenuActionItem.MENU_DISPLAY_GALLERY, Menu.FIRST
+                        + MenuActionItem.MENU_DISPLAY_GALLERY, R.string.display_gallery);
+                displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+            }
         }
         else if (getActivity() instanceof PublicDispatcherActivity)
         {
@@ -984,6 +987,18 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         }
     }
 
+    private boolean hasDocument()
+    {
+        if (((ProgressNodeAdapter) adapter) != null)
+        {
+            for (Node node : ((ProgressNodeAdapter) adapter).getNodes())
+            {
+                if (node.isDocument()) { return true; }
+            }
+        }
+        return false;
+    }
+
     public Node getSelectedNodes()
     {
         return (selectedItems != null && !selectedItems.isEmpty()) ? selectedItems.get(0) : null;
@@ -1139,12 +1154,6 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return (Boolean) getArguments().get(PARAM_IS_SHORTCUT);
     }
-
-    private void addNavigationFragment(Site currentSite, Folder item)
-    {
-        ((BaseActivity) getActivity()).addNavigationFragment(currentSite, item);
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // VIEWS SWITCHER
     // //////////////////////////////////////////////////////////////////////

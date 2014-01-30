@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -28,9 +28,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
@@ -40,7 +37,7 @@
         android:icon="@drawable/ic_alfresco_logo"
         android:label="@string/app_name"
         android:logo="@drawable/ic_alfresco"
-        android:theme="@style/alfrescotheme"
+        android:theme="@style/AlfrescoTheme"
         android:largeHeap="true" >
 
         <!-- *************************************************************** -->
@@ -160,7 +157,7 @@
             android:icon="@drawable/ic_alfresco_logo"
             android:label="@string/app_name"
             android:logo="@drawable/ic_alfresco_logo"
-            android:theme="@style/alfrescotheme_popup" >
+            android:theme="@style/AlfrescoTheme.Dialog" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
@@ -178,7 +175,7 @@
             android:icon="@drawable/ic_alfresco_logo"
             android:label="@string/settings"
             android:logo="@drawable/ic_alfresco_logo"
-            android:theme="@style/alfrescotheme_popup" >
+            android:theme="@style/AlfrescoTheme.Dialog" >
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS" />
 

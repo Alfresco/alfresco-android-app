@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
+    style="?AlfrescoTheme.Background.White"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center_horizontal" >
@@ -31,7 +31,7 @@
 
         <Button
             android:id="@+id/browse_document"
-            style="@style/round_button"
+            style="?AlfrescoTheme.Button"
             android:layout_marginLeft="@dimen/wizard_main_margin"
             android:layout_marginRight="@dimen/wizard_main_margin"
             android:text="@string/browse_documents" />
@@ -68,7 +68,7 @@
 
             <Button
                 android:id="@+id/cancel_account"
-                style="@style/round_button"
+                style="?AlfrescoTheme.Button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -77,7 +77,7 @@
 
             <Button
                 android:id="@+id/validate_account"
-                style="@style/round_button"
+                style="?AlfrescoTheme.Button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

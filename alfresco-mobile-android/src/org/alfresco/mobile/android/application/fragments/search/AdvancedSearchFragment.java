@@ -171,7 +171,6 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
                 initPersonrForm();
                 break;
             case HistorySearch.TYPE_FOLDER:
-                // TODO Hide Mimetype
             case HistorySearch.TYPE_DOCUMENT:
                 initDocFolderForm();
                 break;
@@ -201,7 +200,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         editLocation = (EditText) rootView.findViewById(R.id.location);
 
         // BUTTON
-        Button validationButton = (Button) rootView.findViewById(R.id.validate);
+        Button validationButton = UIUtils.initValidation(rootView, R.string.search);
         validationButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -211,7 +210,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             }
         });
 
-        Button clear = (Button) rootView.findViewById(R.id.clear);
+        Button clear = UIUtils.initCancel(rootView, R.string.clear);
         clear.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -323,7 +322,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         });
 
         // BUTTON
-        Button validationButton = (Button) rootView.findViewById(R.id.validate);
+        Button validationButton = UIUtils.initValidation(rootView, R.string.search);
         validationButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -333,7 +332,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             }
         });
 
-        Button clear = (Button) rootView.findViewById(R.id.clear);
+        Button clear = UIUtils.initCancel(rootView, R.string.clear);
         clear.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -454,7 +453,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         {
             case HistorySearch.TYPE_PERSON:
                 String location = editLocation.getText().toString();
-                addParameter(builder, "", name);
+                addParameter(builder, "name", name);
                 addParameter(builder, "jobtitle", title);
                 addParameter(builder, "organization", description);
                 addParameter(builder, "location", location);

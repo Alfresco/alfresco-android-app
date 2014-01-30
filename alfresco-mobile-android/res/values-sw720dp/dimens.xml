@@ -13,8 +13,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <resources>
 
     <!-- LIST TEXT HDPI -->
@@ -26,12 +25,6 @@
     <dimen name="home_title_size">30sp</dimen>
     <dimen name="home_button_size">24sp</dimen>
     <dimen name="home_description_size">16sp</dimen>
-
-    <!-- ABOUT -->
     <dimen name="about_text_size">25sp</dimen>
-
-    <!-- PANELS -->
-    <item name="weight_left_panel" format="float" type="dimen">0.65</item>
-    <item name="weight_right_panel" format="float" type="dimen">0.35</item>
 
 </resources>

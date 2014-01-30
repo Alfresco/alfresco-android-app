@@ -35,42 +35,42 @@
             android:orientation="vertical" >
 
             <TextView
-                style="@style/searchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_name" />
 
             <EditText
                 android:id="@+id/metadata_prop_name"
-                style="@style/searchInput"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="@style/searchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_title" />
 
             <EditText
                 android:id="@+id/metadata_prop_title"
-                style="@style/searchInput"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="@style/searchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_description" />
 
             <EditText
                 android:id="@+id/metadata_prop_description"
-                style="@style/searchInput"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/metadata_prop_mimetype_header"
-                style="@style/searchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/mimetype" />
@@ -92,7 +92,7 @@
                 android:textColor="@color/hint_foreground_holo_light" />
 
             <TextView
-                style="@style/searchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_modification_date" />
@@ -106,7 +106,7 @@
                 android:padding="0dip" >
 
                 <TextView
-                    style="@style/searchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="wrap_content"
                     android:gravity="left|bottom"
@@ -136,7 +136,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    style="@style/searchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="fill_parent"
                     android:text="@string/metadata_modification_date_from" />
@@ -165,7 +165,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    style="@style/searchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="fill_parent"
                     android:text="@string/metadata_modification_date_to" />
@@ -193,34 +193,10 @@
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    
+      <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
-
-        <Button
-            android:id="@+id/clear"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/clear" />
-
-        <Button
-            android:id="@+id/validate"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/search" />
-    </LinearLayout>
+        layout="@layout/app_validation_button" />
 
 </LinearLayout>

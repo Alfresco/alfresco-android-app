@@ -549,7 +549,6 @@ public class MainActivity extends BaseActivity
 
     public void showMainMenuFragment(View v)
     {
-        DisplayUtils.hideLeftTitlePane(this);
         doMainMenuAction(v.getId());
     }
 
@@ -1035,25 +1034,14 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_CREATE_DOCUMENT:
-                /*String fragmentTag = FileExplorerFragment.TAG;
+                String fragmentTag = FileExplorerFragment.TAG;
                 if (getFragment(ChildrenBrowserFragment.TAG) != null)
                 {
                     fragmentTag = ChildrenBrowserFragment.TAG;
                 }
                 DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount,
                         fragmentTag);
-                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);*/
-                Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-
-                // Filter to only show results that can be "opened", such as
-                // a file (as opposed to a list of contacts or timezones).
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-                // Create a file with the requested MIME type.
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TITLE, "t.txt");
-                startActivityForResult(intent, 150);
-                
+                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
 
             case MenuActionItem.MENU_UPLOAD:

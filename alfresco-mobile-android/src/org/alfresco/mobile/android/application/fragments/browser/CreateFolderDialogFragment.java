@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -43,7 +43,6 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public abstract class CreateFolderDialogFragment extends BaseFragment
 {
@@ -96,8 +95,7 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
             }
         });
 
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
-        final Button bcreate = (Button) v.findViewById(R.id.create_folder);
+        final Button bcreate = UIUtils.initValidation(v, R.string.create);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -127,20 +125,20 @@ public abstract class CreateFolderDialogFragment extends BaseFragment
                 if (tv.getText().length() == 0)
                 {
                     bcreate.setEnabled(false);
-                    errorMessage.setVisibility(View.GONE);
+                    tv.setError(null);
                 }
                 else
                 {
                     bcreate.setEnabled(true);
                     if (UIUtils.hasInvalidName(tv.getText().toString().trim()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.filename_error_character);
+                        tv.setError(getString(R.string.filename_error_character));
+                        tv.requestFocus();
                         bcreate.setEnabled(false);
                     }
                     else
                     {
-                        errorMessage.setVisibility(View.GONE);
+                        tv.setError(null);
                     }
                 }
             }

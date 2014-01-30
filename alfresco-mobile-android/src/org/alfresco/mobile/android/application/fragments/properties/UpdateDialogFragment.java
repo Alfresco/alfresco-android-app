@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -114,8 +114,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
             }
         });
 
-        final Button bcreate = (Button) v.findViewById(R.id.create_content);
-        bcreate.setText(R.string.update);
+        final Button bcreate = UIUtils.initValidation(v, R.string.update);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -168,8 +167,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         }
 
         final EditText textName = ((EditText) v.findViewById(R.id.content_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
-        final Button validate = (Button) v.findViewById(R.id.create_content);
+        final Button validate = (Button) v.findViewById(R.id.validate_action);
 
         // This Listener is responsible to enable or not the validate button and
         // error message.
@@ -182,19 +180,18 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
                     validate.setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.filename_error_character);
+                        textName.setError(getString(R.string.filename_error_character));
                         validate.setEnabled(false);
                     }
                     else
                     {
-                        errorMessage.setVisibility(View.GONE);
+                        textName.setError(null);
                     }
                 }
                 else
                 {
                     validate.setEnabled(false);
-                    errorMessage.setVisibility(View.GONE);
+                    textName.setError(null);
                 }
             }
 

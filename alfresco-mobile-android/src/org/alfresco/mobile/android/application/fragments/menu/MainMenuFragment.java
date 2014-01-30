@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAd
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
@@ -138,8 +137,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     public void onStart()
     {
         super.onStart();
-
-        DisplayUtils.hideLeftTitlePane(getActivity());
 
         if (isAdded() && TAG.equals(getTag())
                 && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null

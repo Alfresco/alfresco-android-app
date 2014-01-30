@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -36,7 +36,7 @@
             android:orientation="vertical" >
 
             <TextView
-                style="@style/import_sectionHeader"
+                style="?AlfrescoTheme.TextView.SectionHeader.Grey.Thin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_top"
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content" />
 
             <TextView
-                style="@style/import_sectionHeader"
+                style="?AlfrescoTheme.TextView.SectionHeader.Grey.Thin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_top"
@@ -63,7 +63,7 @@
                 android:hint="@string/optional" />
 
             <TextView
-                style="@style/import_sectionHeader"
+                style="?AlfrescoTheme.TextView.SectionHeader.Grey.Thin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/import_documents" />
@@ -81,34 +81,10 @@
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
-
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    
+        <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
-
-        <Button
-            android:id="@+id/cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
-        <Button
-            android:id="@+id/ok"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="0dip"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/next" />
-    </LinearLayout>
+        layout="@layout/app_validation_button" />
 
 </LinearLayout>

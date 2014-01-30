@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -62,9 +62,7 @@
 
                     <TextView
                         android:id="@+id/name"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        style="?AlfrescoTheme.TextView.ListItem.Primary"
                         android:layout_margin="0dp"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -74,9 +72,7 @@
 
                     <TextView
                         android:id="@+id/jobTitle"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -86,9 +82,7 @@
 
                     <TextView
                         android:id="@+id/location"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -106,47 +100,35 @@
 
                 <ImageView
                     android:id="@+id/action_call"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:src="@drawable/ic_call" />
 
                 <ImageView
                     android:id="@+id/action_skype"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:src="@drawable/ic_skype" />
 
                 <ImageView
                     android:id="@+id/action_email"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/favorites_document"
                     android:src="@drawable/ic_send_mail" />
 
                 <ImageView
                     android:id="@+id/action_im"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/like"
                     android:src="@drawable/ic_im" />
 
                 <ImageView
                     android:id="@+id/action_addcontact"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/like"
                     android:src="@drawable/ic_add_contact" />
 
                 <ImageView
                     android:id="@+id/action_geolocation"
-                    style="@style/details_action_icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/geolocation"
                     android:src="@drawable/ic_location" />
             </LinearLayout>
@@ -164,7 +146,7 @@
 
                 <TextView
                     android:id="@+id/summary"
-                    style="@style/sectionHeader"
+                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -194,7 +176,7 @@
 
                 <TextView
                     android:id="@+id/contactInfo_title"
-                    style="@style/sectionHeader"
+                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -207,7 +189,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/email" />
@@ -229,7 +211,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/telephone" />
@@ -251,7 +233,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mobile" />
@@ -273,7 +255,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/skypeId" />
@@ -295,7 +277,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/instantMessagingId" />
@@ -317,7 +299,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/googleId" />
@@ -346,7 +328,7 @@
 
                 <TextView
                     android:id="@+id/company_title"
-                    style="@style/sectionHeader"
+                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -359,7 +341,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyName" />
@@ -381,7 +363,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyAdress" />
@@ -403,7 +385,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -424,7 +406,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -445,7 +427,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyPostCode" />
@@ -467,7 +449,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyTelephone" />
@@ -489,7 +471,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyFax" />
@@ -511,7 +493,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="@style/profile_propName"
+                        style="?AlfrescoTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyEmail" />
@@ -529,30 +511,9 @@
         </LinearLayout>
     </ScrollView>
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        style="@android:style/Widget.ProgressBar.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/empty"
+   <include
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="@dimen/padding_dialog"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_empty"
-            android:gravity="center" />
-    </LinearLayout>
+        layout="@layout/app_progress_emtpy" />
 
 </FrameLayout>

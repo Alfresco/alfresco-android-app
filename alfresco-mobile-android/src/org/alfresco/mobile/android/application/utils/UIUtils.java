@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -39,6 +39,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 /**
@@ -204,5 +205,47 @@ public class UIUtils extends org.alfresco.mobile.android.application.commons.uti
         }
         return label;
 
+    }
+
+    /**
+     * Init the validation button form.
+     * 
+     * @param vRoot
+     * @param actionId
+     * @return
+     */
+    public static Button initValidation(View vRoot, int actionId)
+    {
+        Button bcreate = (Button) vRoot.findViewById(R.id.validate_action);
+        bcreate.setText(actionId);
+        return bcreate;
+    }
+    
+    public static Button initCancel(View vRoot, int actionId)
+    {
+        Button bcreate = (Button) vRoot.findViewById(R.id.cancel);
+        bcreate.setText(actionId);
+        return bcreate;
+    }
+    
+    public static Button initCancel(View vRoot, int actionId, boolean hide)
+    {
+        Button bcreate = (Button) vRoot.findViewById(R.id.cancel);
+        bcreate.setText(actionId);
+        if (hide)
+        {
+            bcreate.setVisibility(View.GONE);
+        }
+        return bcreate;
+    }
+    
+    public static Button initValidation(View vRoot, int actionId, boolean hideCancel)
+    {
+        Button bcreate = initValidation(vRoot, actionId);
+        if (hideCancel)
+        {
+            vRoot.findViewById(R.id.cancel).setVisibility(View.GONE);
+        }
+        return bcreate;
     }
 }

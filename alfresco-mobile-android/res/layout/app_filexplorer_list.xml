@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -23,16 +23,6 @@
     android:orientation="vertical"
     android:paddingLeft="@dimen/properties_padding"
     android:paddingRight="@dimen/properties_padding" >
-
-   <!--   <TextView
-        android:id="@+id/path"
-        style="@style/sectionHeader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="1"
-        android:scrollHorizontally="true"
-        android:text="Hello World! SD.FSDfksdùflksqù dlkfùs ldmkf ùldmfk qsùmdfkùsmldkf ùmsldk fùsqlmk fùmlsdk fùdslkfùslkqd fùslmqk dùflmskq dùflk sdùfmlksdù lfmksqùldfk ùlmqsk ùmldskfùmlksqfdùlmqkzd ùflmk GGGGG"
-        android:visibility="visible" />-->
 
     <include
         android:layout_width="match_parent"

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- =============================================================== -->
+    <!-- STYLE -->
+    <!-- =============================================================== -->
+    <style name="AlfrescoBaseTheme" parent="android:Theme.Holo.Light">
+        <item name="android:tabWidgetStyle">@style/alfrescotheme.TabWidget</item>
+    </style>
+
+    <style name="alfrescotheme.TabWidget" parent="android:Widget.Holo.TabWidget">
+        <item name="android:textAppearance">@style/alfrescotheme.TextAppearance.Widget.TabWidget</item>
+        <item name="android:divider">?android:attr/dividerVertical</item>
+        <item name="android:showDividers">middle</item>
+        <item name="android:dividerPadding">8dip</item>
+        <item name="android:measureWithLargestChild">true</item>
+        <item name="android:minWidth">120dip</item>
+        <item name="android:layout_width">0dip</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="alfrescotheme.TextAppearance.Widget.TabWidget" parent="@android:TextAppearance.Widget.TabWidget">
+        <item name="android:textColor">@color/tab_indicator_text</item>
+        <item name="android:textSize">@dimen/browse_toptext_size</item>
+    </style>
+
+</resources>

@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -70,13 +71,15 @@ import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment, onPickDateFragment
+public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment,
+        onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
@@ -104,9 +107,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private Button validation;
 
-    private TextView errorMessage;
-
-    private Switch emailNotification;
+    private View emailNotification;
 
     private EditText approversEditText;
 
@@ -188,9 +189,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 titleTask.setText(getString(R.string.task_review_documents));
             }
         }
-        
+
         titleTask.addTextChangedListener(watcher);
-        errorMessage = ((TextView) vRoot.findViewById(R.id.error_message));
 
         // DatePicker
         ImageButton ib = (ImageButton) vRoot.findViewById(R.id.action_process_due_on);
@@ -203,7 +203,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             }
         });
         dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
-        if (dueAt != null){
+        if (dueAt != null)
+        {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
         }
 
@@ -315,7 +316,8 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         updatePriority();
 
         // VALIDATION
-        validation = (Button) vRoot.findViewById(R.id.action_create);
+        validation = UIUtils.initValidation(vRoot, R.string.done, true);
+        validation.setEnabled(false);
         validation.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -326,7 +328,14 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         });
 
         // Email Notification
-        emailNotification = (Switch) vRoot.findViewById(R.id.action_send_notification);
+        if (AndroidVersion.isICSOrAbove())
+        {
+            emailNotification = (Switch) vRoot.findViewById(R.id.action_send_notification);
+        }
+        else
+        {
+            emailNotification = (CheckBox) vRoot.findViewById(R.id.action_send_notification);
+        }
 
         return vRoot;
     }
@@ -353,9 +362,10 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
         super.onResume();
-        
+
         dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
-        if (dueAt != null){
+        if (dueAt != null)
+        {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
         }
     }
@@ -374,6 +384,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // VALIDATION
     // ///////////////////////////////////////////////////////////////////////////
@@ -415,7 +426,14 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     // ///////////////////////////////////////////////////////////////////////////
     private boolean hasEmailNotification()
     {
-        return emailNotification.isChecked();
+        if (AndroidVersion.isICSOrAbove())
+        {
+            return ((Switch) emailNotification).isChecked();
+        }
+        else
+        {
+            return ((CheckBox) emailNotification).isChecked();
+        }
     }
 
     private double calculateApprovalPercent()
@@ -565,13 +583,13 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 validation.setEnabled(true);
                 if (UIUtils.hasInvalidName(s.toString().trim()))
                 {
-                    ((View) errorMessage.getParent()).setVisibility(View.VISIBLE);
-                    errorMessage.setText(R.string.filename_error_character);
+
+                    titleTask.setError(getString(R.string.filename_error_character));
                     validation.setEnabled(false);
                 }
                 else
                 {
-                    ((View) errorMessage.getParent()).setVisibility(View.GONE);
+                    titleTask.setError(null);
                     if (assignees.isEmpty())
                     {
                         validation.setEnabled(false);
@@ -581,7 +599,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
             else
             {
                 validation.setEnabled(false);
-                ((View) errorMessage.getParent()).setVisibility(View.GONE);
+                titleTask.setError(null);
             }
         }
 
