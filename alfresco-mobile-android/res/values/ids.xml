@@ -22,7 +22,6 @@
 
     <!-- LOADERS ID -->
     <item name="tab_history" type="id"/>
-
     <item name="tag_account" type="id"/>
     <item name="tag_action" type="id"/>
     <item name="site_action" type="id"/>
@@ -31,18 +30,20 @@
     <item name="operation_id" type="id"/>
     <item name="operation_status" type="id"/>
     <item name="entry_action" type="id"/>
-    
+
+    <!-- Backward compatibility -->
+    <item name="create_content" type="id"/>
+    <item name="create_folder" type="id"/>
+    <item name="create_content" type="id"/>
 
     <!-- Account -->
     <string name="account_service_document">/alfresco</string>
-    
-    
+
     <!-- Settings -->
     <string name="passcode_enable_key">TurnPasscodeKey</string>
     <string name="favorite_sync_group">favoriteSyncGroup</string>
     <string name="favorite_sync">favoriteSync</string>
     <string name="favorite_sync_wifi">favoriteSyncWifi</string>
-    
 
     <!-- HELP -->
     <string name="help_path">Help/</string>
