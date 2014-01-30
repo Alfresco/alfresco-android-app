@@ -39,6 +39,7 @@ import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -293,17 +294,17 @@ public class SearchFragment extends BaseCursorListFragment
             switch (searchKey)
             {
                 case HistorySearch.TYPE_PERSON:
-                    frag = PersonSearchFragment.newInstance(search.getQuery(), null);
+                    frag = PersonSearchFragment.newInstance(search.getQuery(), search.getDescription());
                     frag.setSession(alfSession);
                     FragmentDisplayer.replaceFragment(getActivity(), frag,
-                            DisplayUtils.getLeftFragmentId(getActivity()), PersonSearchFragment.TAG, true, false);
+                            DisplayUtils.getLeftFragmentId(getActivity()), PersonSearchFragment.TAG, true, true);
                     break;
                 default:
-                    frag = DocumentFolderSearchFragment.newInstance(search.getQuery());
+                    frag = DocumentFolderSearchFragment.newInstance(search.getQuery(), search.getDescription());
                     frag.setSession(alfSession);
                     FragmentDisplayer.replaceFragment(getActivity(), frag,
                             DisplayUtils.getLeftFragmentId(getActivity()), DocumentFolderSearchFragment.TAG, true,
-                            false);
+                            true);
                     break;
             }
 
@@ -340,14 +341,39 @@ public class SearchFragment extends BaseCursorListFragment
         if (search == null)
         {
             HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
-                    searchKey, 0, keywords, null, new Date().getTime());
+                    searchKey, 0, getQueryDescription(keywords, tmpParentFolder), null, new Date().getTime());
         }
         else
         {
             HistorySearchManager.update(getActivity(), search.getId(), search.getAccountId(), search.getType(),
                     search.getAdvanced(), search.getDescription(), search.getQuery(), new Date().getTime());
         }
-
+    }
+    
+    // //////////////////////////////////////////////////////////////////////
+    // QUERY DESCRIPTION
+    // //////////////////////////////////////////////////////////////////////
+    private static String getQueryDescription(String keywords, Folder folder){
+        StringBuilder builder = new StringBuilder();
+        if (folder != null)
+        {
+            addParameter(builder, "in", folder.getName());
+            builder.append(" ");
+        }
+        builder.append(keywords);
+        return builder.toString();
+    }
+    
+    private static void addParameter(StringBuilder builder, String key, String value)
+    {
+        if (TextUtils.isEmpty(value)) { return; }
+        if (builder.length() != 0)
+        {
+            builder.append(" ");
+        }
+        builder.append(key);
+        builder.append(":");
+        builder.append(value);
     }
 
     // //////////////////////////////////////////////////////////////////////

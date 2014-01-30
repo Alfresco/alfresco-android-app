@@ -789,6 +789,7 @@
     <string name="metadata_prop_offline_expires_after">Offline Expires After (hours)</string>
 
     <!-- Advanced Search -->
+    <string name="search_title">Search: %s</string>
     <string name="clear">Clear</string>
     <string name="mimetype">Mimetype</string>
     <string name="metadata_modified_by">Modified By</string>

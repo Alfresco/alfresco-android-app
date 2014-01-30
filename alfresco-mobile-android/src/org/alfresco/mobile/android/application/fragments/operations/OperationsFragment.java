@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -95,7 +95,7 @@ public class OperationsFragment extends BaseCursorListFragment
     protected void init(View v, int estring)
     {
         super.init(v, estring);
-        cancelAll = (Button) v.findViewById(R.id.cancel_all);
+        cancelAll = UIUtils.initCancel(v, R.string.cancel_all, true);
         cancelAll.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -105,7 +105,7 @@ public class OperationsFragment extends BaseCursorListFragment
             }
         });
 
-        dismissAll = (Button) v.findViewById(R.id.dismiss_all);
+        dismissAll = UIUtils.initValidation(v, R.string.dismiss_all);
         dismissAll.setOnClickListener(new OnClickListener()
         {
             @Override

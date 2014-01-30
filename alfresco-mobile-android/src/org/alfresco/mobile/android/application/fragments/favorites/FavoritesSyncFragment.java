@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -408,7 +408,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         if (mi != null)
         {
             // Display spinning wheel instead of refresh
-            mi.setActionView(R.layout.spinning);
+            mi.setActionView(R.layout.app_spinning);
         }
         ((FavoriteCursorAdapter) adapter).refresh();
         lv.setAdapter(adapter);

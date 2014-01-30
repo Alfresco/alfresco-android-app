@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
   
@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/contentweb"
-                style="@style/comment_username"
+                style="?AlfrescoTheme.TextView.Secondary"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"

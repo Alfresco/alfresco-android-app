@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -54,7 +54,7 @@
 
             <EditText
                 android:id="@+id/passcode_1"
-                style="@style/passcode_input"
+                style="?AlfrescoTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 >
@@ -62,19 +62,19 @@
 
             <EditText
                 android:id="@+id/passcode_2"
-                style="@style/passcode_input"
+                style="?AlfrescoTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/passcode_3"
-                style="@style/passcode_input"
+                style="?AlfrescoTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/passcode_4"
-                style="@style/passcode_input"
+                style="?AlfrescoTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -94,21 +94,21 @@
 
                 <Button
                     android:id="@+id/keyboard_1"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="1" />
 
                 <Button
                     android:id="@+id/keyboard_2"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="2" />
 
                 <Button
                     android:id="@+id/keyboard_3"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="3" />
@@ -122,21 +122,21 @@
 
                 <Button
                     android:id="@+id/keyboard_4"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="4" />
 
                 <Button
                     android:id="@+id/keyboard_5"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="5" />
 
                 <Button
                     android:id="@+id/keyboard_6"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="6" />
@@ -150,21 +150,21 @@
 
                 <Button
                     android:id="@+id/keyboard_7"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="7" />
 
                 <Button
                     android:id="@+id/keyboard_8"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="8" />
 
                 <Button
                     android:id="@+id/keyboard_9"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="9" />
@@ -177,7 +177,7 @@
                 android:orientation="horizontal" >
 
                 <Button
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="fill_parent"
                     android:enabled="false"
@@ -185,14 +185,14 @@
 
                 <Button
                     android:id="@+id/keyboard_0"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"
                     android:text="0" />
 
                 <Button
                     android:id="@+id/keyboard_back"
-                    style="@style/passcode_button"
+                    style="?AlfrescoTheme.PasscodeButton"
                     android:layout_width="100dip"
                     android:layout_height="fill_parent"
                     android:drawableLeft="@drawable/sym_keyboard_feedback_delete" />

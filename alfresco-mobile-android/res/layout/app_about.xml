@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -17,10 +17,8 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fillViewport="true">
+    style="?AlfrescoTheme.Background.White"
+    android:fillViewport="true" >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -28,59 +26,47 @@
         android:orientation="vertical" >
 
         <LinearLayout
+            style="@style/about_logo_panel"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
-            android:layout_gravity="bottom"
-            android:layout_margin="10dip"
-            android:layout_weight="0.4"
             android:orientation="vertical" >
 
             <ImageView
+                style="@style/about_logo"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dip"
-                android:scaleType="fitCenter"
-                android:src="@drawable/alfresco_logo_large" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/about_description_panel"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
-            android:layout_gravity="bottom"
-            android:layout_margin="20dip"
-            android:layout_weight="0.7"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/about_description"
+                style="@style/about_text_normal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:text="@string/about_description_title"
-                android:textSize="@dimen/about_text_size" />
+                android:layout_height="fill_parent" />
         </LinearLayout>
 
         <LinearLayout
+            style="@style/about_version_panel"
             android:layout_width="fill_parent"
             android:layout_height="0dip"
-            android:layout_gravity="bottom"
-            android:layout_margin="10dip"
-            android:layout_weight="0.2"
             android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/about_buildnumber"
+                style="@style/about_text_normal_center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="@dimen/about_text_size" />
-            
+                android:layout_height="wrap_content" />
+
             <TextView
                 android:id="@+id/about_sdknumber"
+                style="@style/about_text_normal_center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textSize="@dimen/about_text_size" />
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 

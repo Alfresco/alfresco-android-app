@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -89,9 +90,9 @@ public class UploadLocalDialogFragment extends DialogFragment
         ((TextView) v.findViewById(R.id.document_extension)).setVisibility(View.GONE);
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
-        final Button validate = (Button) v.findViewById(R.id.create_document);
-        final Button cancel = (Button) v.findViewById(R.id.cancel);
+        final Button validate = UIUtils.initValidation(v, R.string.create);
+        validate.setEnabled(false);
+        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
 
         textName.setText(file.getName());
         validate.setEnabled(true);
@@ -105,7 +106,7 @@ public class UploadLocalDialogFragment extends DialogFragment
                 if (s.length() > 0)
                 {
                     validate.setEnabled(true);
-                    errorMessage.setVisibility(View.GONE);
+                    textName.setError(null);
                 }
                 else
                 {
@@ -143,7 +144,7 @@ public class UploadLocalDialogFragment extends DialogFragment
                 if (newFile.exists())
                 {
                     // If the file already exist, we prompt a warning message.
-                    errorMessage.setVisibility(View.VISIBLE);
+                    textName.setError(getString(R.string.create_document_filename_error));
                     return;
                 }
                 else

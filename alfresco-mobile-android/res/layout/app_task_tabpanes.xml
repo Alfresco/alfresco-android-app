@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -17,9 +17,7 @@
   limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="?AlfrescoTheme.Background.White"
     android:gravity="center"
     android:orientation="vertical"
     android:visibility="visible" >
@@ -56,9 +54,7 @@
 
                     <TextView
                         android:id="@+id/title"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        style="?AlfrescoTheme.TextView.ListItem.Primary"
                         android:layout_gravity="left"
                         android:layout_margin="0dp"
                         android:paddingLeft="0dip"
@@ -67,9 +63,7 @@
 
                     <TextView
                         android:id="@+id/details"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:paddingLeft="0dip"
                         android:text="G419 days ago - 142Kb, version 1.0" />
@@ -86,30 +80,8 @@
             layout="@layout/app_details_extra" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressbar"
-        style="@android:style/Widget.ProgressBar.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/empty"
+ <include
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_margin="@dimen/padding_dialog"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:drawableTop="@drawable/ic_empty"
-            android:gravity="center" />
-    </LinearLayout>
-
+        layout="@layout/app_progress_emtpy" />
 </FrameLayout>

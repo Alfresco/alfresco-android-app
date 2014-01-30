@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -29,7 +29,7 @@
 
         <ImageView
             android:id="@+id/task_priority_icon"
-            style="@style/grid_item_icon"
+            style="?AlfrescoTheme.ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -49,7 +49,7 @@
 
             <TextView
                 android:id="@+id/task_priority"
-                style="@style/task_property_value"
+                style="?AlfrescoTheme.TextView.SecondaryBold"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/tasks_priority_medium" />
@@ -64,7 +64,7 @@
 
         <ImageView
             android:id="@+id/task_type_icon"
-            style="@style/grid_item_icon"
+            style="?AlfrescoTheme.ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -85,7 +85,7 @@
 
             <TextView
                 android:id="@+id/task_type"
-                style="@style/task_property_value"
+                style="?AlfrescoTheme.TextView.SecondaryBold"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -100,7 +100,7 @@
 
         <ImageView
             android:id="@+id/task_initiator_icon"
-            style="@style/grid_item_icon"
+            style="?AlfrescoTheme.ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -124,7 +124,7 @@
 
             <TextView
                 android:id="@+id/task_initiator"
-                style="@style/task_property_value"
+                style="?AlfrescoTheme.TextView.SecondaryBold"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -138,7 +138,7 @@
 
         <ImageView
             android:id="@+id/task_due_date_icon"
-            style="@style/grid_item_icon"
+            style="?AlfrescoTheme.ImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
@@ -159,7 +159,7 @@
 
             <TextView
                 android:id="@+id/task_due_date"
-                style="@style/task_property_value"
+                style="?AlfrescoTheme.TextView.SecondaryBold"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

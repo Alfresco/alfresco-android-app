@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:spl="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
@@ -41,20 +40,6 @@
             android:visibility="visible" >
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/left_pane_title"
-                    style="@style/sectionHeader"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/left_pane_body"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -63,32 +48,14 @@
         </LinearLayout>
 
         <LinearLayout
-            style="@style/white_background"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            style="?AlfrescoTheme.Background.White"
             android:layout_weight="@dimen/weight_right_panel"
             android:orientation="vertical" >
 
             <LinearLayout
                 android:id="@+id/central_pane"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@drawable/alfresco_background_logo"
+                style="?AlfrescoTheme.Background.Logo"
                 android:orientation="vertical" >
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="horizontal"
-                    android:visibility="gone" >
-
-                    <TextView
-                        android:id="@+id/central_pane_title"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/central_pane_body"
@@ -100,21 +67,9 @@
         </LinearLayout>
     </org.alfresco.mobile.android.application.utils.thirdparty.split.SplitPaneLayout>
 
-    <LinearLayout
-        android:id="@+id/slide_pane"
+    <include
         android:layout_width="@dimen/sliding_panel"
         android:layout_height="fill_parent"
-        android:clickable="false"
-        android:focusable="false"
-        android:orientation="vertical"
-        android:visibility="gone" >
-
-        <fragment
-            android:id="@+id/sliding_menu"
-            android:name="org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:tag="SlidingMenuFragment" />
-    </LinearLayout>
+        layout="@layout/app_main_sliding_pane" />
 
 </RelativeLayout>

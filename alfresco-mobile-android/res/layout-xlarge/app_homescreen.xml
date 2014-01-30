@@ -43,8 +43,7 @@
             android:textSize="@dimen/home_title_size" />
 
         <Button
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_cloud"
             android:onClick="cloud"
             android:text="@string/home_sign_cloud" />
@@ -58,8 +57,7 @@
             android:textSize="@dimen/home_description_size" />
 
         <Button
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="launch"
             android:text="@string/home_account" />

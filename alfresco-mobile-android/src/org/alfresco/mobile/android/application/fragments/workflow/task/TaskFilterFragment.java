@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -86,7 +86,7 @@ public class TaskFilterFragment extends BaseFragment
             }
         });
         
-        validate = (Button) rootView.findViewById(R.id.validate);
+        validate = UIUtils.initValidation(rootView, R.string.task_filter_view, true);
         validate.setOnClickListener(new OnClickListener()
         {
             @Override

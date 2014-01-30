@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -107,9 +107,9 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
         ((TextView) v.findViewById(R.id.document_extension)).setText(documentType.extension);
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
-        final TextView errorMessage = ((TextView) v.findViewById(R.id.error_message));
-        final Button validate = (Button) v.findViewById(R.id.create_document);
-        final Button cancel = (Button) v.findViewById(R.id.cancel);
+        final Button validate = UIUtils.initValidation(v, R.string.create);
+        validate.setEnabled(false);
+        final Button cancel = UIUtils.initCancel(v, R.string.cancel);
 
         // This Listener is responsible to enable or not the validate button and
         // error message.
@@ -122,19 +122,18 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                     validate.setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.filename_error_character);
+                        textName.setError(getString(R.string.filename_error_character));
                         validate.setEnabled(false);
                     }
                     else
                     {
-                        errorMessage.setVisibility(View.GONE);
+                        textName.setError(null);
                     }
                 }
                 else
                 {
                     validate.setEnabled(false);
-                    errorMessage.setVisibility(View.GONE);
+                    textName.setError(null);
                 }
             }
 
@@ -168,7 +167,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 if (newFile.exists() && FileExplorerFragment.TAG.equals(fragmentTag))
                 {
                     // If the file already exist, we prompt a warning message.
-                    errorMessage.setVisibility(View.VISIBLE);
+                    textName.setError(getString(R.string.create_document_filename_error));
                     return;
                 }
                 else

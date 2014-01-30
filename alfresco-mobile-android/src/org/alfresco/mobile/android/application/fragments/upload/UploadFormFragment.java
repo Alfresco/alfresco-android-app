@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -278,7 +278,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             }
         }
 
-        Button b = (Button) rootView.findViewById(R.id.cancel);
+        Button b = UIUtils.initCancel(rootView, R.string.cancel);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -288,7 +288,7 @@ public class UploadFormFragment extends Fragment implements LoaderCallbacks<Curs
             }
         });
 
-        b = (Button) rootView.findViewById(R.id.ok);
+        b = UIUtils.initValidation(rootView, R.string.next);
         b.setOnClickListener(new OnClickListener()
         {
             @Override

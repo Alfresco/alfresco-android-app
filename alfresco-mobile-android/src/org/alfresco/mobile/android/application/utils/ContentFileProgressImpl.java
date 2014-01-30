@@ -77,8 +77,11 @@ public class ContentFileProgressImpl extends ContentFileImpl
 
         amountCopied += nBytes;
 
-        if (listener != null && (amountCopied / segment > currentSegment) || amountCopied == getFile().length())
+        if (listener != null && amountCopied == getFile().length() || (amountCopied / segment > currentSegment))
         {
+            if (segment == 0 &&  amountCopied == getFile().length()){
+                segment = 1;
+            }
             currentSegment = (int) (amountCopied / segment);
             listener.onRead(this, amountCopied);
         }

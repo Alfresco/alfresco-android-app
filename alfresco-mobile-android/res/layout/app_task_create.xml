@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -17,9 +17,7 @@
   limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="?AlfrescoTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center" >
 
@@ -71,36 +69,9 @@
             android:textSize="@dimen/home_description_size" />
     </LinearLayout>
     
-     <ProgressBar
-        android:id="@+id/progressbar"
-        style="@android:style/Widget.ProgressBar.Large.Inverse"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:indeterminate="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/empty"
+    <include
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_margin="@dimen/padding_dialog" >
-
-        <ImageView
-            android:id="@+id/empty_picture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_empty" />
-
-        <TextView
-            android:id="@+id/empty_text"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center" />
-    </LinearLayout>
+        layout="@layout/app_progress_emtpy" />
 
 </FrameLayout>

@@ -157,7 +157,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
 
         // Create View
-        vRoot = inflater.inflate(R.layout.app_search_person, container, false);
+        vRoot = inflater.inflate(R.layout.app_pick_person, container, false);
         if (alfSession == null) { return vRoot; }
 
         // Init list
@@ -204,8 +204,8 @@ public class PersonSearchFragment extends BaseListFragment implements
 
         if (getMode() == MODE_PICK)
         {
-            vRoot.findViewById(R.id.pick_actions).setVisibility(View.VISIBLE);
-            validation = (Button) vRoot.findViewById(R.id.validate);
+            vRoot.findViewById(R.id.validation_panel).setVisibility(View.VISIBLE);
+            validation = UIUtils.initValidation(vRoot, R.string.done);
             updatePickButton();
             validation.setOnClickListener(new OnClickListener()
             {
@@ -224,7 +224,7 @@ public class PersonSearchFragment extends BaseListFragment implements
                 }
             });
 
-            Button cancel = (Button) vRoot.findViewById(R.id.cancel);
+            Button cancel = UIUtils.initCancel(vRoot, R.string.cancel);
             cancel.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -243,7 +243,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
         else
         {
-            vRoot.findViewById(R.id.pick_actions).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.validation_panel).setVisibility(View.GONE);
         }
 
         return vRoot;
@@ -267,14 +267,15 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
         else
         {
-            if (keywords != null)
-            {
-                UIUtils.displayTitle(getActivity(), "Search : " + keywords);
-            }
             if (title != null)
             {
-                UIUtils.displayTitle(getActivity(), "Search : " + title);
+                UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), title));
             }
+            else if (keywords != null)
+            {
+                UIUtils.displayTitle(getActivity(),String.format(getString(R.string.search_title), keywords));
+            }
+
         }
         super.onStart();
     }

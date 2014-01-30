@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -18,9 +18,7 @@
 -->
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="?AlfrescoTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center"
     android:minWidth="600dp" >
@@ -42,16 +40,12 @@
 
             <TextView
                 android:id="@+id/toptext"
-                style="@style/list_item_bottomtext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="?AlfrescoTheme.TextView.ListItem.Secondary"
                 android:text="@string/account_wizard_step1" />
 
             <TextView
                 android:id="@+id/bottomtext"
-                style="@style/list_item_toptext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                style="?AlfrescoTheme.TextView.ListItem.Primary"
                 android:text="@string/account_wizard_step1_description" />
         </LinearLayout>
 
@@ -78,8 +72,7 @@
 
         <Button
             android:id="@+id/alfresco_cloud"
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_cloud"
             android:text="@string/account_wizard_alfresco_cloud" />
 
@@ -103,8 +96,7 @@
 
         <Button
             android:id="@+id/alfresco_server"
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_onpremise"
             android:text="@string/account_wizard_alfresco_server" />
 

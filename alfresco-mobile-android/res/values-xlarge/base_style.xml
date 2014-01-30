@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- =============================================================== -->
+    <!-- DIMENSION -->
+    <!-- =============================================================== -->
+
+    <!-- PANELS -->
+    <item name="weight_left_panel" format="float" type="dimen">0.7</item>
+    <item name="weight_right_panel" format="float" type="dimen">0.3</item>
+
+    <!-- ABOUT -->
+    <dimen name="about_text_size">25sp</dimen>
+
+
+</resources>
