@@ -81,7 +81,7 @@
                 style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/mimetype" />
+                android:text="@string/metadata_type" />
 
             <Spinner
                 android:id="@+id/metadata_prop_mimetype"
