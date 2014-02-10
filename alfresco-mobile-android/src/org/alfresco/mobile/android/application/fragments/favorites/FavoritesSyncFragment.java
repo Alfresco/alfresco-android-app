@@ -62,6 +62,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -71,6 +72,10 @@ import android.widget.ListView;
 public class FavoritesSyncFragment extends BaseCursorListFragment implements RefreshFragment, ListingModeFragment
 {
     public static final String TAG = FavoritesSyncFragment.class.getName();
+
+    private static final String PARAM_FOLDER_ID = "FolderId";
+
+    private static final String PARAM_FOLDER_NAME = "FolderName";
 
     protected List<String> selectedItems = new ArrayList<String>(1);
 
@@ -106,6 +111,17 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         FavoritesSyncFragment bf = new FavoritesSyncFragment();
         Bundle settings = new Bundle();
         settings.putInt(PARAM_MODE, mode);
+        bf.setArguments(settings);
+        return bf;
+    }
+
+    public static FavoritesSyncFragment newInstance(int mode, String folderId, String folderName)
+    {
+        FavoritesSyncFragment bf = new FavoritesSyncFragment();
+        Bundle settings = new Bundle();
+        settings.putInt(PARAM_MODE, mode);
+        settings.putString(PARAM_FOLDER_ID, folderId);
+        settings.putString(PARAM_FOLDER_NAME, folderName);
         bf.setArguments(settings);
         return bf;
     }
@@ -163,7 +179,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             titleId = R.string.synced_documents;
         }
-        UIUtils.displayTitle(getActivity(), getString(titleId));
+
+        if (getFolderName() != null)
+        {
+            UIUtils.displayTitle(getActivity(), getFolderName());
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), getString(titleId));
+        }
 
         super.onResume();
     }
@@ -282,6 +306,23 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             selection = SynchroProvider.getAccountFilter(acc);
         }
+
+        if (!TextUtils.isEmpty(selection))
+        {
+            selection += " AND ";
+        }
+
+        if (getFolderId() != null)
+        {
+            selection += SynchroSchema.COLUMN_PARENT_ID + " == '" + getFolderId() + "'";
+        }
+        else
+        {
+            selection += SynchroSchema.COLUMN_FAVORITED + " == '" + SynchroProvider.FLAG_FAVORITE + "'";
+        }
+
+        Log.d(TAG, selection);
+
         return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL, selection, null,
                 SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
@@ -293,6 +334,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         String documentId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
+        String documentName = cursor.getString(SynchroSchema.COLUMN_TITLE_ID);
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
@@ -329,9 +371,20 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         }
         else if (nActions == null)
         {
-            // Show properties
-            ((MainActivity) getActivity()).addPropertiesFragment(true, documentId);
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            if (SynchroManager.isFolder(cursor))
+            {
+                selectedItems.clear();
+                // GO TO subfolder
+                Fragment syncFrag = FavoritesSyncFragment.newInstance(getMode(), documentId, documentName);
+                FragmentDisplayer.replaceFragment(getActivity(), syncFrag,
+                        DisplayUtils.getLeftFragmentId(getActivity()), FavoritesSyncFragment.TAG, true);
+            }
+            else
+            {
+                // Show properties
+                ((MainActivity) getActivity()).addPropertiesFragment(true, documentId);
+                DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            }
         }
         adapter.notifyDataSetChanged();
     }
@@ -368,6 +421,18 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         Bundle b = getArguments();
         return b.getInt(PARAM_MODE);
+    }
+
+    public String getFolderId()
+    {
+        Bundle b = getArguments();
+        return b.getString(PARAM_FOLDER_ID);
+    }
+
+    public String getFolderName()
+    {
+        Bundle b = getArguments();
+        return b.getString(PARAM_FOLDER_NAME);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

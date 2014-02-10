@@ -49,6 +49,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
@@ -315,6 +316,11 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
     }
 
+    private LinearLayout getSelectionLayout(ProgressViewHolder vh)
+    {
+        return (LinearLayout) vh.icon.getParent();
+    }
+
     @Override
     protected void updateBottomText(ProgressViewHolder vh, Node item)
     {
@@ -323,24 +329,24 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             if (selectedMapItems.containsKey(item.getIdentifier()))
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
+                UIUtils.setBackground(getSelectionLayout(vh),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
+                UIUtils.setBackground(getSelectionLayout(vh), null);
             }
         }
         else
         {
             if (selectedItems != null && selectedItems.contains(item))
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
+                UIUtils.setBackground(getSelectionLayout(vh),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
+                UIUtils.setBackground(getSelectionLayout(vh), null);
             }
         }
 

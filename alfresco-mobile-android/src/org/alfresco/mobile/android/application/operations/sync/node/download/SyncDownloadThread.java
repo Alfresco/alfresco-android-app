@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * 
+ * This file is part of Alfresco Mobile for Android.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.sync.node.download;
 
 import java.io.BufferedOutputStream;
@@ -22,8 +39,8 @@ import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.SyncNodeOperationThread;
@@ -125,8 +142,10 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
             cValues.put(SynchroSchema.COLUMN_CONTENT_URI, (String) node.getPropertyValue(PropertyIds.CONTENT_STREAM_ID));
             if (persistentProperties != null && !persistentProperties.isEmpty())
             {
-                cValues.put(BatchOperationSchema.COLUMN_PROPERTIES, MapUtil.mapToString(persistentProperties));
+                cValues.put(SynchroSchema.COLUMN_PROPERTIES, MapUtil.mapToString(persistentProperties));
             }
+            cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES,  ((Document) node).getContentStreamLength());
+            cValues.put(SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, ((Document) node).getContentStreamLength());
             context.getContentResolver().update(request.getNotificationUri(), cValues, null, null);
         }
         catch (Exception e)
@@ -161,6 +180,9 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
                     .getTimeInMillis());
             cValues.put(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, result.getData().getFile().lastModified());
             context.getContentResolver().update(request.getNotificationUri(), cValues, null, null);
+            
+            //Update Parent Folder if present
+            SynchroManager.getInstance(context).updateParentFolder(acc, parentFolder.getIdentifier());
         }
 
     }

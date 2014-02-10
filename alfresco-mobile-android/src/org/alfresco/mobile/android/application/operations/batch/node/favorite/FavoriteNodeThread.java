@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -21,9 +21,9 @@ import java.util.GregorianCalendar;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.operations.OperationManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.NodeOperationThread;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
@@ -46,6 +46,8 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
     private Boolean value;
 
     private Boolean isFavorite = Boolean.FALSE;
+
+    private boolean hasSyncParent;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -72,6 +74,29 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
             result = super.doInBackground();
 
             isFavorite = session.getServiceRegistry().getDocumentFolderService().isFavorite(node);
+            hasSyncParent = false;
+
+            // Retrieve local sync info.
+            cursorId = SynchroManager.getCursorForId(context, acc, node.getIdentifier());
+
+            // Check if parent is in sync or not
+            Cursor parentCursorId = null;
+            try
+            {
+                parentCursorId = SynchroManager.getCursorForId(context, acc, parentFolderIdentifier);
+                if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
+                {
+                    hasSyncParent = true;
+                }
+            }
+            catch (Exception e)
+            {
+                // do nothing
+            }
+            finally
+            {
+                OperationManager.closeCursor(parentCursorId);
+            }
 
             if ((value == null && isFavorite) || (value != null && !value && isFavorite))
             {
@@ -81,16 +106,19 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                 // Update Sync Info
                 if (node instanceof Document)
                 {
-                    cursorId = context.getContentResolver().query(
-                            SynchroProvider.CONTENT_URI,
-                            SynchroSchema.COLUMN_ALL,
-                            SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                    + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
-
                     if (cursorId.getCount() == 1 && cursorId.moveToFirst())
                     {
                         ContentValues cValues = new ContentValues();
-                        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
+                        if (SynchroProvider.FLAG_FAVORITE.equals(cursorId.getString(SynchroSchema.COLUMN_FAVORITED_ID)))
+                        {
+                            // Unfavorite
+                            cValues.put(SynchroSchema.COLUMN_FAVORITED, "");
+                        }
+
+                        if (!hasSyncParent)
+                        {
+                            cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
+                        }
                         context.getContentResolver().update(
                                 SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null,
                                 null);
@@ -105,26 +133,21 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                 // Add to favorite
                 if (node instanceof Document)
                 {
-
-                    cursorId = context.getContentResolver().query(
-                            SynchroProvider.CONTENT_URI,
-                            SynchroSchema.COLUMN_ALL,
-                            SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                                    + NodeRefUtils.getCleanIdentifier(node.getIdentifier()) + "%'", null, null);
-
                     if (cursorId.getCount() == 0)
                     {
+                        // Update local sync referential.
                         context.getContentResolver().insert(
                                 SynchroProvider.CONTENT_URI,
-                                SynchroManager.createContentValues(context,
+                                SynchroManager.createFavoriteContentValues(context,
                                         AccountManager.retrieveAccount(context, accountId),
                                         SyncDownloadRequest.TYPE_ID, parentFolderIdentifier, (Document) node,
-                                        new GregorianCalendar().getTimeInMillis()));
+                                        new GregorianCalendar().getTimeInMillis(), 0));
                     }
                     else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
                     {
                         ContentValues cValues = new ContentValues();
-                        cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
+                        // Already present in sync
+                        cValues.put(SynchroSchema.COLUMN_FAVORITED, SynchroProvider.FLAG_FAVORITE);
                         context.getContentResolver().update(
                                 SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null,
                                 null);

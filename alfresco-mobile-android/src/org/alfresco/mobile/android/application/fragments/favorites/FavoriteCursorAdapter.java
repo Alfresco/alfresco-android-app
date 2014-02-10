@@ -32,6 +32,8 @@ import org.alfresco.mobile.android.application.operations.OperationsRequestGroup
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
 import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
@@ -57,7 +59,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  */
 public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
 {
-    //private static final String TAG = FavoriteCursorAdapter.class.getName();
+    // private static final String TAG = FavoriteCursorAdapter.class.getName();
 
     private Fragment fragment;
 
@@ -83,7 +85,14 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.icon.setImageResource(MimeTypeManager.getIcon(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
+        if (SynchroManager.isFolder(cursor))
+        {
+            vh.icon.setImageResource(R.drawable.mime_256_folder);
+        }
+        else
+        {
+            vh.icon.setImageResource(MimeTypeManager.getIcon(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
+        }
     }
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
@@ -91,6 +100,17 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         int status = cursor.getInt(SynchroSchema.COLUMN_STATUS_ID);
         String nodeId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
         long favoriteId = cursor.getLong(SynchroSchema.COLUMN_ID_ID);
+        String isFavorited = cursor.getString(SynchroSchema.COLUMN_FAVORITED_ID);
+        
+        if (SynchroProvider.FLAG_FAVORITE.equals(isFavorited))
+        {
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_dark);
+        }
+        else
+        {
+            vh.favoriteIcon.setVisibility(View.GONE);
+        }
 
         vh.progress.setVisibility(View.GONE);
         vh.iconTopRight.setVisibility(View.GONE);
@@ -102,6 +122,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             case SyncOperation.STATUS_RUNNING:
                 displayStatut(vh, R.drawable.sync_status_loading);
                 vh.progress.setVisibility(View.VISIBLE);
+                vh.favoriteIcon.setVisibility(View.GONE);
                 long totalSize = cursor.getLong(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                 if (totalSize == -1)
                 {
@@ -153,7 +174,9 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         {
             vh.bottomText.setVisibility(View.VISIBLE);
             vh.bottomText.setText(createContentBottomText(context, cursor));
-        } else {
+        }
+        else
+        {
             vh.bottomText.setVisibility(View.GONE);
         }
 
@@ -167,21 +190,22 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             vh.choose.setTag(R.id.node_action, nodeId);
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
+            vh.choose.setTag(R.id.is_favorite, isFavorited);
             vh.choose.setOnClickListener(new OnClickListener()
             {
-
                 @Override
                 public void onClick(View v)
                 {
                     String item = (String) v.getTag(R.id.node_action);
                     Integer statut = (Integer) v.getTag(R.id.operation_status);
                     long favoriteId = (Long) v.getTag(R.id.favorite_id);
+                    String isFavorited = (String) v.getTag(R.id.is_favorite);
 
                     selectedOptionItems.add(item);
                     selectedOptionItemId.add(favoriteId);
 
                     PopupMenu popup = new PopupMenu(context, v);
-                    getMenu(popup.getMenu(), statut);
+                    getMenu(popup.getMenu(), statut, isFavorited);
 
                     if (AndroidVersion.isICSOrAbove())
                     {
@@ -215,8 +239,13 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         {
             s = Formatter.formatToRelativeDate(context,
                     new Date(cursor.getLong(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID)));
-            s += " - " + Formatter.formatFileSize(context, cursor.getLong(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES_ID));
+            long size = cursor.getLong(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+            if (size > 0)
+            {
+                s += " - " + Formatter.formatFileSize(context, size);
+            }
         }
+
         return s;
     }
 
@@ -241,7 +270,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public void getMenu(Menu menu, Integer statut)
+    public void getMenu(Menu menu, Integer statut, String isFavorited)
     {
         MenuItem mi;
 
@@ -259,9 +288,18 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
-               mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
-                        + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
-                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                if (SynchroProvider.FLAG_FAVORITE.equals(isFavorited))
+                {
+                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
+                            + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
+                else
+                {
+                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
+                            + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
+                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+                }
                 break;
         }
     }
@@ -316,6 +354,5 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     public void refresh()
     {
         hasSynchroActive = GeneralPreferences.hasActivateSync(context, SessionUtils.getAccount(context));
-
     }
 }
