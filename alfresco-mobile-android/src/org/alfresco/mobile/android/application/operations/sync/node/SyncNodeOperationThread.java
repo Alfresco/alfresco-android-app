@@ -72,6 +72,14 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             try
             {
                 node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+            }
+            catch (AlfrescoServiceException e)
+            {
+                // Do Nothing
+            }
+            
+            try
+            {
                 parentFolder = retrieveParentFolder();
             }
             catch (AlfrescoServiceException e)

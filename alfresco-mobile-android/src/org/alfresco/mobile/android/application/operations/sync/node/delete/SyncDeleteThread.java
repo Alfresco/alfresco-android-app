@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -38,6 +38,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class SyncDeleteThread extends SyncNodeOperationThread<Void>
@@ -111,6 +112,9 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                 }
                 else
                 {
+                    //Parent Identifier
+                    String parentIdentifier = cursor.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
+                    
                     // No local modification
                     // Delete them
                     IOUtils.deleteContents(dlFile.getParentFile());
@@ -118,6 +122,12 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                     context.getContentResolver().delete(
                             SynchroManager.getUri(cursor.getLong(cursor.getColumnIndex(SynchroSchema.COLUMN_ID))),
                             null, null);
+                    
+                    // Update Parent Folder if present
+                    if (!TextUtils.isEmpty(parentIdentifier))
+                    {
+                        SynchroManager.getInstance(context).updateParentFolder(acc, parentIdentifier);
+                    }
                 }
             }
 
@@ -141,7 +151,6 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
 
         return result;
     }
-
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS UTILS
     // ///////////////////////////////////////////////////////////////////////////

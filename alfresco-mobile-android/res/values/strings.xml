@@ -791,7 +791,7 @@
     <!-- Advanced Search -->
     <string name="search_title">Search: %s</string>
     <string name="clear">Clear</string>
-    <string name="mimetype">Mimetype</string>
+    <string name="metadata_type">Type</string>
     <string name="metadata_modified_by">Modified By</string>
     <string name="modified_by">By</string>
     <string name="metadata_modification_date">Last Modification</string>

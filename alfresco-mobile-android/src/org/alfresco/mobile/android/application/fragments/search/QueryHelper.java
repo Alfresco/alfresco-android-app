@@ -112,9 +112,9 @@ public class QueryHelper
     public static String createPersonSearchQuery(String name, String jobTitle, String company, String location)
     {
         StringBuilder queryBuilder = new StringBuilder(name);
-        addParameter(queryBuilder, "jobtitle", jobTitle);
-        addParameter(queryBuilder, "organization", company);
-        addParameter(queryBuilder, "location", location);
+        addPersonParameter(queryBuilder, "jobtitle", jobTitle);
+        addPersonParameter(queryBuilder, "organization", company);
+        addPersonParameter(queryBuilder, "location", location);
         return queryBuilder.toString();
     }
 
@@ -184,6 +184,18 @@ public class QueryHelper
         if (builder.length() != 0)
         {
             builder.append("&");
+        }
+        builder.append(key);
+        builder.append(":");
+        builder.append(value);
+    }
+    
+    private static void addPersonParameter(StringBuilder builder, String key, String value)
+    {
+        if (TextUtils.isEmpty(value)) { return; }
+        if (builder.length() != 0)
+        {
+            builder.append(" ");
         }
         builder.append(key);
         builder.append(":");

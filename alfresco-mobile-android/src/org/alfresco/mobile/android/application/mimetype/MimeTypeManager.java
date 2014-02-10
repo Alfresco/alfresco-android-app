@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.mimetype;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.operations.OperationManager;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -162,39 +163,61 @@ public final class MimeTypeManager
 
     public static MimeType findById(Context context, long id)
     {
-        Cursor cursor = context.getContentResolver().query(getUri(id), COLUMN_ALL, null, null, null);
-        if (cursor == null) { return null; }
-        if (cursor.getCount() == 1)
+        Cursor cursor = null;
+        try
         {
-            cursor.moveToFirst();
-            return createMimeType(cursor);
+            cursor = context.getContentResolver().query(getUri(id), COLUMN_ALL, null, null, null);
+            if (cursor == null) { return null; }
+            if (cursor.getCount() == 1)
+            {
+                cursor.moveToFirst();
+                return createMimeType(cursor);
+            }
+            cursor.close();
         }
-        cursor.close();
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+        finally
+        {
+            OperationManager.closeCursor(cursor);
+        }
         return null;
     }
 
     public static MimeType findByExtension(Context context, String extension)
     {
         if (extension == null) { return null; }
-        Cursor cursor = context.getContentResolver().query(MimeTypeProvider.CONTENT_URI, COLUMN_ALL,
-                MimeTypeSchema.COLUMN_EXTENSION + " = \"" + extension + "\"", null, null);
-        if (cursor == null) { return null; }
-        if (cursor.getCount() == 1)
+        Cursor cursor = null;
+        try
         {
-            cursor.moveToFirst();
-            return createMimeType(cursor);
+            cursor = context.getContentResolver().query(MimeTypeProvider.CONTENT_URI, COLUMN_ALL,
+                    MimeTypeSchema.COLUMN_EXTENSION + " = \"" + extension + "\"", null, null);
+            if (cursor == null) { return null; }
+            if (cursor.getCount() == 1)
+            {
+                cursor.moveToFirst();
+                return createMimeType(cursor);
+            }
         }
-        cursor.close();
+        catch (Exception e)
+        {
+            // TODO: handle exception
+        }
+        finally
+        {
+            OperationManager.closeCursor(cursor);
+        }
         return null;
     }
 
-    public static MimeType createMimeType(Cursor c)
+    private static MimeType createMimeType(Cursor c)
     {
         MimeType account = new MimeType(c.getLong(MimeTypeSchema.COLUMN_ID_ID),
                 c.getString(MimeTypeSchema.COLUMN_EXTENSION_ID), c.getString(MimeTypeSchema.COLUMN_TYPE_ID),
                 c.getString(MimeTypeSchema.COLUMN_SUBTYPE_ID), c.getString(MimeTypeSchema.COLUMN_DESCRIPTION_ID),
                 c.getString(MimeTypeSchema.COLUMN_SMALL_ICON_ID), c.getString(MimeTypeSchema.COLUMN_LARGE_ICON_ID));
-        c.close();
         return account;
     }
 
@@ -283,16 +306,26 @@ public final class MimeTypeManager
     // ///////////////////////////////////////////////////////////////////////////
     private void getCount()
     {
-        Cursor cursor = appContext.getContentResolver().query(MimeTypeProvider.CONTENT_URI, COLUMN_ALL, null, null,
-                null);
-        if (cursor != null)
+        Cursor cursor = null;
+        try
         {
-            mimetypeSize = cursor.getCount();
-            cursor.close();
+            cursor = appContext.getContentResolver().query(MimeTypeProvider.CONTENT_URI, COLUMN_ALL, null, null, null);
+            if (cursor != null)
+            {
+                mimetypeSize = cursor.getCount();
+            }
+            else
+            {
+                mimetypeSize = 0;
+            }
         }
-        else
+        catch (Exception e)
         {
-            mimetypeSize = 0;
+            // TODO: handle exception
+        }
+        finally
+        {
+            OperationManager.closeCursor(cursor);
         }
     }
 }

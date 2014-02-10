@@ -25,6 +25,7 @@ import java.util.TimeZone;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
@@ -69,17 +70,29 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private OperationsRequestGroup group;
 
-    private boolean canExecuteAction;
+    private boolean hasSyncEnable;
 
     private long syncScanningTimeStamp;
 
-    private PagingResult<Document> remoteFavorites;
+    private PagingResult<Document> repoDocumentFavorites;
 
-    private Cursor localFavoritesCursor;
+    private PagingResult<Folder> repoFolderFavorites;
 
-    private ArrayList<String> remoteFavoritesId;
+    private Cursor localSyncCursor;
+
+    private ArrayList<String> repoFavoriteIds;
+
+    private ArrayList<String> repoSyncIds;
 
     private DataProtectionManager dataProtectionManager;
+
+    private static final String QUERY_RESTRICTABLE_DOCS = "SELECT d.cmis:objectId, d.cmis:objectTypeId, d.cmis:baseTypeId, d.cmis:name, d.cmis:createdBy, d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=";
+
+    private static final String QUERY_RESTRICTABLE_FOLDER = "SELECT d.cmis:objectId, d.cmis:objectTypeId, d.cmis:baseTypeId, d.cmis:name, d.cmis:createdBy, d.cmis:lastModificationDate, m.dp:offlineExpiresAfter FROM cmis:folder AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=";
+
+    private static final String QUERY_OR = " OR d.cmis:objectId=";
+
+    private SynchroManager syncManager;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -91,6 +104,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         {
             this.mode = ((SyncFavoriteRequest) request).getMode();
         }
+        syncManager = SynchroManager.getInstance(context);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -105,111 +119,56 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
             Log.d(TAG, "Sync Scan Started");
             result = super.doInBackground();
 
-            canExecuteAction = SynchroManager.getInstance(context).canSync(acc);
+            hasSyncEnable = syncManager.canSync(acc);
             dataProtectionManager = DataProtectionManager.getInstance(context);
+
+            Long dataOrigin = syncManager.getAmountDataStored();
 
             group = new OperationsRequestGroup(context, acc);
 
             // Timestamp the scan process
             syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
 
+            // Retrieve List of remote favorite
             switch (mode)
             {
+                case SyncFavoriteRequest.MODE_BOTH:
+                    retrieveDocumentFavorites();
+                    retrieveFolderFavorites();
+                    break;
+                case SyncFavoriteRequest.MODE_FOLDERS:
+                    retrieveFolderFavorites();
+                    break;
                 case SyncFavoriteRequest.MODE_DOCUMENTS:
-                    // Retrieve list of Favorites
-                    remoteFavorites = session.getServiceRegistry().getDocumentFolderService()
-                            .getFavoriteDocuments(listingContext);
-
-                    // Check if restrictable is available on repo
-                    List<String> restrictableIds = new ArrayList<String>(remoteFavorites.getTotalItems());
-                    try
-                    {
-                        if (remoteFavorites.getTotalItems() > 0)
-                        {
-                            StringBuilder builder = new StringBuilder();
-                            builder.append("SELECT d.cmis:objectId,d.cmis:objectTypeId,d.cmis:baseTypeId,d.cmis:name,d.cmis:createdBy,d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=");
-                            join(builder, " OR d.cmis:objectId=", remoteFavorites.getList());
-                            builder.append(")");
-
-                            List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
-                                    .search(builder.toString(), SearchLanguage.CMIS);
-                            for (Node node : restrictableNodes)
-                            {
-                                restrictableIds.add(node.getIdentifier());
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                    }
-
-                    if (session instanceof CloudSession
-                            || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session)
-                                    .hasPublicAPI()))
-                    {
-                        // Objects don't contain enough information
-                        // We request all node object with a search query
-                        // to retrieve ContentStreamId and permissions.
-                        List<Document> favoriteDocumentsList = new ArrayList<Document>(remoteFavorites.getTotalItems());
-                        if (remoteFavorites.getTotalItems() > 0)
-                        {
-                            StringBuilder builder = new StringBuilder();
-                            builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
-                            join(builder, " OR cmis:objectId=", remoteFavorites.getList());
-                            builder.append(")");
-
-                            List<Node> nodes = session.getServiceRegistry().getSearchService()
-                                    .search(builder.toString(), SearchLanguage.CMIS);
-
-                            for (Node node : nodes)
-                            {
-                                favoriteDocumentsList.add((Document) node);
-                            }
-                        }
-                        remoteFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
-                                remoteFavorites.hasMoreItems(), remoteFavorites.getTotalItems());
-                    }
-
-                    // Check Restrictable
-                    if (restrictableIds != null && !restrictableIds.isEmpty())
-                    {
-                        List<Document> tmpNodes = new ArrayList<Document>(remoteFavorites.getTotalItems());
-                        for (Node node : remoteFavorites.getList())
-                        {
-                            if (!restrictableIds.contains(node.getIdentifier()))
-                            {
-                                tmpNodes.add((Document) node);
-                            }
-                        }
-                        remoteFavorites = new PagingResultImpl<Document>(tmpNodes, remoteFavorites.hasMoreItems(),
-                                remoteFavorites.getTotalItems());
-                    }
-
-                    // Retrieve list of local Favorites
-                    localFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
-                            SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(acc), null, null);
+                    retrieveDocumentFavorites();
                     break;
                 default:
                     break;
             }
 
+            // Retrieve list of local Favorites
+            localSyncCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
+                    SynchroProvider.getAccountFilter(acc), null, null);
+
             // We have our favorites
-            // Update the referential contentProvider
+            // Update the Local referential
             if (!isFirstSync())
             {
                 // Check updated favorites
-                scanUpdateItem();
+                scanFavoritesToUpdate();
 
                 // Check deleted favorites
-                scanDeleteItem();
+                scanFavoritesToDelete();
             }
 
-            if (!group.getRequests().isEmpty())
+            // Check the amount of data to transfert
+            if (syncManager.canStart(getAccount(), dataOrigin) && !group.getRequests().isEmpty())
             {
-                SynchroManager.getInstance(context).enqueue(group);
+                syncManager.enqueue(group);
             }
 
             // Flag the execution of last sync
+            syncManager.setLastScan(getAccount(), dataOrigin);
             SynchroManager.updateLastActivity(context);
         }
         catch (Exception e)
@@ -219,9 +178,9 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         }
         finally
         {
-            if (localFavoritesCursor != null)
+            if (localSyncCursor != null)
             {
-                localFavoritesCursor.close();
+                localSyncCursor.close();
             }
         }
         return result;
@@ -237,34 +196,293 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // SCANNING
+    // SCAN : RESTRICTABLE
+    // ///////////////////////////////////////////////////////////////////////////
+    private void retrieveDocumentFavorites()
+    {
+        repoDocumentFavorites = session.getServiceRegistry().getDocumentFolderService()
+                .getFavoriteDocuments(listingContext);
+
+        // Check if restrictable is available on repo
+        List<String> restrictableIds = new ArrayList<String>(repoDocumentFavorites.getTotalItems());
+        try
+        {
+            if (repoDocumentFavorites.getTotalItems() > 0)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append(QUERY_RESTRICTABLE_DOCS);
+                join(builder, QUERY_OR, repoDocumentFavorites.getList());
+                builder.append(")");
+
+                List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
+                        .search(builder.toString(), SearchLanguage.CMIS);
+                for (Node node : restrictableNodes)
+                {
+                    restrictableIds.add(node.getIdentifier());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+        }
+
+        if (session instanceof CloudSession
+                || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session).hasPublicAPI()))
+        {
+            // Objects don't contain enough information
+            // We request all node object with a search query
+            // to retrieve ContentStreamId and permissions.
+            List<Document> favoriteDocumentsList = new ArrayList<Document>(repoDocumentFavorites.getTotalItems());
+            if (repoDocumentFavorites.getTotalItems() > 0)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
+                join(builder, " OR cmis:objectId=", repoDocumentFavorites.getList());
+                builder.append(")");
+
+                List<Node> nodes = session.getServiceRegistry().getSearchService()
+                        .search(builder.toString(), SearchLanguage.CMIS);
+
+                for (Node node : nodes)
+                {
+                    favoriteDocumentsList.add((Document) node);
+                }
+            }
+            repoDocumentFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
+                    repoDocumentFavorites.hasMoreItems(), repoDocumentFavorites.getTotalItems());
+        }
+
+        // Check Restrictable
+        if (restrictableIds != null && !restrictableIds.isEmpty())
+        {
+            List<Document> tmpNodes = new ArrayList<Document>(repoDocumentFavorites.getTotalItems());
+            for (Node node : repoDocumentFavorites.getList())
+            {
+                if (!restrictableIds.contains(node.getIdentifier()))
+                {
+                    tmpNodes.add((Document) node);
+                }
+            }
+            repoDocumentFavorites = new PagingResultImpl<Document>(tmpNodes, repoDocumentFavorites.hasMoreItems(),
+                    repoDocumentFavorites.getTotalItems());
+        }
+    }
+
+    private void retrieveFolderFavorites()
+    {
+        repoFolderFavorites = session.getServiceRegistry().getDocumentFolderService()
+                .getFavoriteFolders(listingContext);
+
+        // Check if restrictable is available on repo
+        List<String> restrictableIds = new ArrayList<String>(repoFolderFavorites.getTotalItems());
+        try
+        {
+            if (repoFolderFavorites.getTotalItems() > 0)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append(QUERY_RESTRICTABLE_FOLDER);
+                joinF(builder, QUERY_OR, repoFolderFavorites.getList());
+                builder.append(")");
+
+                List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
+                        .search(builder.toString(), SearchLanguage.CMIS);
+                for (Node node : restrictableNodes)
+                {
+                    restrictableIds.add(node.getIdentifier());
+                }
+            }
+        }
+        catch (Exception e)
+        {
+        }
+
+        if (session instanceof CloudSession
+                || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session).hasPublicAPI()))
+        {
+            // Objects don't contain enough information
+            // We request all node object with a search query
+            // to retrieve ContentStreamId and permissions.
+            List<Folder> favoriteFoldersList = new ArrayList<Folder>(repoFolderFavorites.getTotalItems());
+            if (repoFolderFavorites.getTotalItems() > 0)
+            {
+                StringBuilder builder = new StringBuilder();
+                builder.append("SELECT * FROM cmis:folder WHERE ( cmis:objectId=");
+                joinF(builder, " OR cmis:objectId=", repoFolderFavorites.getList());
+                builder.append(")");
+
+                List<Node> nodes = session.getServiceRegistry().getSearchService()
+                        .search(builder.toString(), SearchLanguage.CMIS);
+
+                for (Node node : nodes)
+                {
+                    favoriteFoldersList.add((Folder) node);
+                }
+            }
+            repoFolderFavorites = new PagingResultImpl<Folder>(favoriteFoldersList, repoFolderFavorites.hasMoreItems(),
+                    repoFolderFavorites.getTotalItems());
+        }
+
+        // Check Restrictable
+        if (restrictableIds != null && !restrictableIds.isEmpty())
+        {
+            List<Folder> tmpNodes = new ArrayList<Folder>(repoFolderFavorites.getTotalItems());
+            for (Node node : repoFolderFavorites.getList())
+            {
+                if (!restrictableIds.contains(node.getIdentifier()))
+                {
+                    tmpNodes.add((Folder) node);
+                }
+            }
+            repoFolderFavorites = new PagingResultImpl<Folder>(tmpNodes, repoFolderFavorites.hasMoreItems(),
+                    repoFolderFavorites.getTotalItems());
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // FIRST SYNC
     // ///////////////////////////////////////////////////////////////////////////
     private boolean isFirstSync()
     {
-        if ((localFavoritesCursor == null || localFavoritesCursor.getCount() == 0)
-                && mode == SyncFavoriteRequest.MODE_DOCUMENTS)
+        if (localSyncCursor == null || localSyncCursor.getCount() == 0)
         {
             // USE CASE : FIRST
             // If 0 ==> Bulk Insert
-            for (Document doc : remoteFavorites.getList())
+            switch (mode)
             {
-                addSyncDownloadRequest(doc, syncScanningTimeStamp);
+                case SyncFavoriteRequest.MODE_DOCUMENTS:
+                    for (Document doc : repoDocumentFavorites.getList())
+                    {
+                        addSyncDownloadRequest(doc, syncScanningTimeStamp);
+                    }
+                    return true;
+                case SyncFavoriteRequest.MODE_FOLDERS:
+                    for (Folder folder : repoFolderFavorites.getList())
+                    {
+                        startRecursiveScanFromFavorite(folder, syncScanningTimeStamp);
+                    }
+                    return true;
+                case SyncFavoriteRequest.MODE_BOTH:
+                    for (Document doc : repoDocumentFavorites.getList())
+                    {
+                        addSyncDownloadRequest(doc, syncScanningTimeStamp);
+                    }
+                    for (Folder folder : repoFolderFavorites.getList())
+                    {
+                        startRecursiveScanFromFavorite(folder, syncScanningTimeStamp);
+                    }
+                    return true;
+                default:
+                    break;
             }
-            return true;
         }
         return false;
     }
 
-    private void scanUpdateItem()
+    // ///////////////////////////////////////////////////////////////////////////
+    // UPDATE SYNC
+    // ///////////////////////////////////////////////////////////////////////////
+    private void scanFavoritesToUpdate()
+    {
+        repoFavoriteIds = new ArrayList<String>();
+
+        switch (mode)
+        {
+            case SyncFavoriteRequest.MODE_DOCUMENTS:
+                List<Node> tmpNodes = new ArrayList<Node>(repoDocumentFavorites.getList());
+                scanUpdateItems(tmpNodes);
+                break;
+            case SyncFavoriteRequest.MODE_BOTH:
+                List<Node> tmpNodes2 = new ArrayList<Node>(repoDocumentFavorites.getList());
+                scanUpdateItems(tmpNodes2);
+            case SyncFavoriteRequest.MODE_FOLDERS:
+                repoSyncIds = new ArrayList<String>();
+                Cursor cursorId = null;
+                try
+                {
+                    for (Folder favoriteFolder : repoFolderFavorites.getList())
+                    {
+                        repoFavoriteIds.add(NodeRefUtils.getCleanIdentifier(favoriteFolder.getIdentifier()));
+
+                        // Check if it exists first
+                        // Try to retrieve local info
+                        cursorId = SynchroManager.getCursorForId(context, acc, favoriteFolder.getIdentifier());
+
+                        if (cursorId.moveToFirst())
+                        {
+                            // Is it a new Favorite ?
+                            String favoriteFolderLink = cursorId.getString(SynchroSchema.COLUMN_FAVORITED_ID);
+                            if (SynchroProvider.FLAG_FAVORITE.equals(favoriteFolderLink))
+                            {
+                                // If exist so update
+                                recursiveUpdate(favoriteFolder, favoriteFolder);
+                            }
+                            else
+                            {
+                                // New favorite
+                                String parent = cursorId.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
+
+                                recursiveUpdate(favoriteFolder, favoriteFolder);
+
+                                ContentValues cValues = new ContentValues();
+                                cValues.put(SynchroSchema.COLUMN_FAVORITED, SynchroProvider.FLAG_FAVORITE);
+                                cValues.put(SynchroSchema.COLUMN_PARENT_ID, parent);
+                                context.getContentResolver().update(
+                                        SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)), cValues,
+                                        null, null);
+                            }
+                        }
+                        else
+                        {
+                            // If not create
+                            startRecursiveScanFromFavorite(favoriteFolder, syncScanningTimeStamp);
+                        }
+                        cursorId.close();
+                    }
+                }
+                catch (Exception e)
+                {
+
+                }
+                finally
+                {
+                    if (cursorId != null)
+                    {
+                        cursorId.close();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void recursiveUpdate(Folder favoriteFolder, Folder currentFolder)
+    {
+        boolean hasMoreItems = true;
+        PagingResult<Node> childrenResult = null;
+
+        while (hasMoreItems)
+        {
+            childrenResult = session.getServiceRegistry().getDocumentFolderService()
+                    .getChildren(currentFolder, listingContext);
+            hasMoreItems = childrenResult.hasMoreItems();
+            scanUpdateItems(favoriteFolder, currentFolder, childrenResult.getList());
+        }
+    }
+
+    private void scanUpdateItems(List<Node> favoritedNode)
+    {
+        scanUpdateItems(null, null, favoritedNode);
+    }
+
+    private void scanUpdateItems(Folder favoriteRootFolder, Folder parentFolder, List<Node> childrens)
     {
         // Favorites are present.
         // Check if new, update or delete action
-        remoteFavoritesId = new ArrayList<String>(remoteFavorites.getTotalItems());
         Cursor cursorId = null;
-
         long localServerTimeStamp = -1;
         long remoteServerTimeStamp = -1;
-
+        boolean isDocumentFavorite = (favoriteRootFolder == null && parentFolder == null);
         File localFile = null;
         boolean hasLocalModification = false;
         Uri localUri = null;
@@ -274,27 +492,66 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         Permissions permissions = null;
 
         // Browse the results
-        for (Document doc : remoteFavorites.getList())
+        for (Node childrenNode : childrens)
         {
-            remoteFavoritesId.add(NodeRefUtils.getCleanIdentifier(doc.getIdentifier()));
+            if (cursorId != null)
+            {
+                cursorId.close();
+            }
+
+            if (isDocumentFavorite)
+            {
+                // Documents Favorited
+                repoFavoriteIds.add(NodeRefUtils.getCleanIdentifier(childrenNode.getIdentifier()));
+            }
+            else
+            {
+                // Documents & Folders Non Favorited
+                repoSyncIds.add(NodeRefUtils.getCleanIdentifier(childrenNode.getIdentifier()));
+            }
 
             // Try to retrieve local info
-            cursorId = context.getContentResolver().query(
-                    SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL,
-                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                            + NodeRefUtils.getCleanIdentifier(doc.getIdentifier()) + "%'", null, null);
+            cursorId = SynchroManager.getCursorForId(context, acc, childrenNode.getIdentifier());
 
             if (cursorId.moveToFirst())
             {
-                // Info available locally
                 localUri = SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID));
+
+                // NODE HAS MOVED
+                // Check Parent ID if possible
+                String parentId = cursorId.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
+                if (parentFolder != null && !parentFolder.getIdentifier().equals(parentId))
+                {
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(BatchOperationSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
+                    context.getContentResolver().update(localUri, cValues, null, null);
+                }
+
+                // Folder
+                if (childrenNode.isFolder())
+                {
+                    // FOLDER HAS BEEN RENAMED
+                    ContentValues cValues = new ContentValues();
+                    String folderName = cursorId.getString(SynchroSchema.COLUMN_TITLE_ID);
+                    if (!childrenNode.getName().equals(folderName))
+                    {
+                        // Rename
+                        cValues.put(BatchOperationSchema.COLUMN_TITLE, childrenNode.getName());
+                        context.getContentResolver().update(localUri, cValues, null, null);
+                    }
+
+                    // Browse Children nodes
+                    recursiveUpdate(favoriteRootFolder, (Folder) childrenNode);
+                    continue;
+                }
+
+                // Info available locally
                 hasLocalModification = hasLocalModification(cursorId);
-                permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(doc);
+                permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(childrenNode);
 
                 // Check ContentStream modification
                 localContentUri = cursorId.getString(SynchroSchema.COLUMN_CONTENT_URI_ID);
-                docContentUri = doc.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue();
+                docContentUri = childrenNode.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue();
                 if (localContentUri != null && docContentUri != null && !localContentUri.equals(docContentUri))
                 {
                     // Content has changed in server side
@@ -318,7 +575,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     {
                         // No local change
                         // We download the new content
-                        addSyncDownloadRequest(localUri, doc);
+                        addSyncDownloadRequest(localUri, (Document) childrenNode);
                     }
                     continue;
                 }
@@ -327,16 +584,16 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                 // Content might been deleted with a file explorer
                 localFileUri = Uri.parse(cursorId.getString(SynchroSchema.COLUMN_LOCAL_URI_ID));
                 localFile = new File(localFileUri.getPath());
-                if (!localFile.exists() && canExecuteAction)
+                if (!localFile.exists() && hasSyncEnable)
                 {
                     // Content is not present, we download content
-                    addSyncDownloadRequest(localUri, doc);
+                    addSyncDownloadRequest(localUri, (Document) childrenNode);
                     continue;
                 }
 
                 // Check modification Date and local modification
                 localServerTimeStamp = cursorId.getLong(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID);
-                remoteServerTimeStamp = doc.getModifiedAt().getTimeInMillis();
+                remoteServerTimeStamp = childrenNode.getModifiedAt().getTimeInMillis();
                 hasLocalModification = hasLocalModification(cursorId, localFile);
 
                 // Check if there's a modification in server side
@@ -365,7 +622,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                         // Document metadata has changed
                         // Content is still the same
                         // We rename the document.
-                        rename(doc, localFile, localUri);
+                        rename((Document) childrenNode, localFile, localUri);
                     }
                     continue;
                 }
@@ -378,7 +635,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
                     if (permissions.canEdit())
                     {
                         // Let's Update!
-                        addSyncUpdateRequest(doc, cursorId, localFile, localUri);
+                        addSyncUpdateRequest((Document) childrenNode, cursorId, localFile, localUri);
                     }
                     else
                     {
@@ -392,75 +649,164 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
             {
                 // Info unavailable
                 // USE CASE : NEW
-                addSyncDownloadRequest(doc, syncScanningTimeStamp);
+                // Folder : we check only creation/rename/move/deletion
+                if (childrenNode.isFolder())
+                {
+                    if (parentFolder != null && favoriteRootFolder != null)
+                    {
+                        startRecursiveScan((Folder) childrenNode, syncScanningTimeStamp, parentFolder,
+                                favoriteRootFolder);
+                    }
+                    continue;
+                }
+                else
+                {
+                    // Document : We add it
+                    if (parentFolder != null && favoriteRootFolder != null)
+                    {
+                        addNonFavoriteDocumentRequest((Document) childrenNode, syncScanningTimeStamp,
+                                parentFolder.getIdentifier(), favoriteRootFolder.getIdentifier());
+                    }
+                    else
+                    {
+                        addSyncDownloadRequest((Document) childrenNode, syncScanningTimeStamp);
+                    }
+                }
             }
             cursorId.close();
         }
     }
 
-    private void scanDeleteItem()
+    private void scanFavoritesToDelete()
     {
-        if (localFavoritesCursor == null) return;
+        if (localSyncCursor == null) return;
 
         // USE CASE : DELETE
         // Compare referential and list of favorite Ids
-        if (!localFavoritesCursor.isBeforeFirst())
+        if (!localSyncCursor.isBeforeFirst())
         {
-            localFavoritesCursor.moveToFirst();
-            localFavoritesCursor.moveToPrevious();
+            localSyncCursor.moveToFirst();
+            localSyncCursor.moveToPrevious();
         }
 
-        List<String> favoriteLocalNode = new ArrayList<String>(remoteFavoritesId.size());
-        while (localFavoritesCursor.moveToNext())
+        List<String> nodeUnFavorited = new ArrayList<String>();
+        List<String> nodeNonFavoritedToDelete = new ArrayList<String>();
+
+        while (localSyncCursor.moveToNext())
         {
-            // Clean Id because of version number after update
-            // (1.4, 1.5...)
-            if (remoteFavoritesId.contains(NodeRefUtils.getCleanIdentifier(localFavoritesCursor
-                    .getString(SynchroSchema.COLUMN_NODE_ID_ID))))
+            String favoriteFolderLink = localSyncCursor.getString(SynchroSchema.COLUMN_FAVORITED_ID);
+            String nodeId = NodeRefUtils.getCleanIdentifier(localSyncCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+            if (SynchroProvider.FLAG_FAVORITE.equals(favoriteFolderLink))
             {
-                remoteFavoritesId.remove(NodeRefUtils.getCleanIdentifier(localFavoritesCursor
-                        .getString(SynchroSchema.COLUMN_NODE_ID_ID)));
+                // Clean Id because of version number after update
+                // (1.4, 1.5...)
+                if (repoFavoriteIds.contains(nodeId))
+                {
+                    repoFavoriteIds.remove(nodeId);
+                }
+                else
+                {
+                    nodeUnFavorited.add(localSyncCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                }
             }
             else
             {
-                favoriteLocalNode.add(localFavoritesCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                if (repoSyncIds != null && repoSyncIds.contains(nodeId))
+                {
+                    repoSyncIds.remove(nodeId);
+                }
+                else
+                {
+                    nodeNonFavoritedToDelete.add(localSyncCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                }
             }
         }
 
-        Cursor localFavoriteCursor = null;
-        // If nodeIds present, favorite are no longer in repo
-        for (String id : favoriteLocalNode)
+        // Node unfavorited but always present in a folder favorite
+        Cursor cursorId = null;
+        ContentValues cValues;
+        List<String> nodeToDelete = new ArrayList<String>();
+        for (String nodeId : nodeUnFavorited)
         {
-            localFavoriteCursor = context.getContentResolver().query(
-                    SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL,
-                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
-                            + NodeRefUtils.getCleanIdentifier(id) + "%'", null, null);
-
-            if (localFavoriteCursor.getCount() > 1)
+            if (repoSyncIds.contains(NodeRefUtils.getCleanIdentifier(nodeId)))
             {
-                while (localFavoriteCursor.moveToNext())
+                try
                 {
-                    // Check status
-                    switch (localFavoriteCursor.getInt(SynchroSchema.COLUMN_STATUS_ID))
+                    // Try to retrieve local info
+                    cursorId = SynchroManager.getCursorForId(context, acc, nodeId);
+                    if (cursorId.moveToFirst())
                     {
-                        case SyncOperation.STATUS_HIDDEN:
-                            addSyncdeleteRequest(id, localFavoriteCursor);
-                            break;
-                        default:
-                            break;
+                        // Unflag the folder favorite
+                        cValues = new ContentValues();
+                        cValues.put(SynchroSchema.COLUMN_FAVORITED, "");
+                        context.getContentResolver().update(
+                                SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null,
+                                null);
+                    }
+                    cursorId.close();
+                }
+                catch (Exception e)
+                {
+                    // DO Nothing
+                }
+                finally
+                {
+                    if (cursorId != null)
+                    {
+                        cursorId.close();
                     }
                 }
             }
-            else if (localFavoriteCursor.getCount() == 1 && localFavoriteCursor.moveToFirst())
+            else
             {
-                addSyncdeleteRequest(id, localFavoriteCursor);
+                // To delete
+                nodeToDelete.add(nodeId);
             }
         }
 
-        if (localFavoriteCursor != null)
+        // Merge 2 list
+        nodeToDelete.addAll(nodeNonFavoritedToDelete);
+
+        Cursor localFavoriteCursor = null;
+        try
         {
-            localFavoriteCursor.close();
+            // If nodeIds present, favorite are no longer in repo
+            for (String id : nodeToDelete)
+            {
+                localFavoriteCursor = SynchroManager.getCursorForId(context, acc, id);
+
+                if (localFavoriteCursor.getCount() > 1)
+                {
+                    while (localFavoriteCursor.moveToNext())
+                    {
+                        // Check status
+                        switch (localFavoriteCursor.getInt(SynchroSchema.COLUMN_STATUS_ID))
+                        {
+                            case SyncOperation.STATUS_HIDDEN:
+                                addSyncdeleteRequest(id, localFavoriteCursor);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                else if (localFavoriteCursor.getCount() == 1 && localFavoriteCursor.moveToFirst())
+                {
+                    addSyncdeleteRequest(id, localFavoriteCursor);
+                }
+                localFavoriteCursor.close();
+            }
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+        finally
+        {
+            if (localFavoriteCursor != null)
+            {
+                localFavoriteCursor.close();
+            }
         }
     }
 
@@ -492,15 +838,120 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // FOLDER SYNC
+    // ///////////////////////////////////////////////////////////////////////////
+    private void startRecursiveScanFromFavorite(Folder folder, long timeStamp)
+    {
+        // Flag children
+        long size = recursiveSyncRequest(folder, timeStamp, folder);
+
+        // Flag the favorite
+        Uri uri = syncManager.getUri(acc, folder.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroManager.createFavoriteContentValues(context, acc, SyncDownloadRequest.TYPE_ID, "", folder,
+                            timeStamp, size));
+        }
+    }
+
+    private void startRecursiveScan(Folder currentFolder, long timeStamp, Folder parentFolder, Folder rootFavoriteFolder)
+    {
+        // Flag children
+        long size = recursiveSyncRequest(currentFolder, timeStamp, rootFavoriteFolder);
+
+        // Flag the favorite
+        Uri uri = syncManager.getUri(acc, currentFolder.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID,
+                            parentFolder.getIdentifier(), currentFolder, timeStamp, size));
+        }
+    }
+
+    public long recursiveSyncRequest(Folder folder, long timeStamp, Folder rootFavoriteFolder)
+    {
+        long length = 0;
+        boolean hasMoreItems = true;
+        PagingResult<Node> nodes = null;
+
+        while (hasMoreItems)
+        {
+            nodes = session.getServiceRegistry().getDocumentFolderService().getChildren(folder, listingContext);
+            hasMoreItems = nodes.hasMoreItems();
+
+            for (Node node : nodes.getList())
+            {
+                if (node.isDocument())
+                {
+                    addNonFavoriteDocumentRequest((Document) node, timeStamp, folder.getIdentifier(),
+                            rootFavoriteFolder.getIdentifier());
+                    length += ((Document) node).getContentStreamLength();
+                }
+                else if (node.isFolder())
+                {
+                    long folderSize = recursiveSyncRequest((Folder) node, timeStamp, rootFavoriteFolder);
+                    addNonFavoriteFolderRequest((Folder) node, timeStamp, folder.getIdentifier(),
+                            rootFavoriteFolder.getIdentifier(), folderSize);
+                    length += folderSize;
+                }
+            }
+        }
+        Log.d(TAG, "length " + length);
+        return length;
+    }
+
+    private void addNonFavoriteFolderRequest(Folder folder, long timeStamp, String parentFolder,
+            String favoriteFolderId, long folderSize)
+    {
+        Uri uri = syncManager.getUri(acc, folder.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, parentFolder, folder,
+                            timeStamp, folderSize));
+        }
+        else
+        {
+            // Already present == Favorite Folder
+            ContentValues cValues = new ContentValues();
+            cValues.put(SynchroSchema.COLUMN_PARENT_ID, parentFolder);
+            context.getContentResolver().update(uri, cValues, null, null);
+        }
+    }
+
+    private void addNonFavoriteDocumentRequest(Document doc, long timeStamp, String parentFolder,
+            String favoriteFolderId)
+    {
+        Uri uri = syncManager.getUri(acc, doc.getIdentifier());
+        if (uri == null)
+        {
+            uri = context.getContentResolver().insert(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, parentFolder, doc,
+                            timeStamp, 0));
+        }
+        
+        // Execution
+        addSyncDownloadRequest(uri, doc);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // CREATE SYNC TASK
     // ///////////////////////////////////////////////////////////////////////////
     private void addSyncDownloadRequest(Document doc, long timeStamp)
     {
-        Uri uri = SynchroManager.getInstance(context).getUri(acc, doc.getIdentifier());
+        Uri uri = syncManager.getUri(acc, doc.getIdentifier());
         if (uri == null)
         {
-            uri = context.getContentResolver().insert(SynchroProvider.CONTENT_URI,
-                    SynchroManager.createContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc, timeStamp));
+            uri = context.getContentResolver().insert(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroManager.createFavoriteContentValues(context, acc, SyncDownloadRequest.TYPE_ID, doc,
+                            timeStamp));
         }
         // Execution
         addSyncDownloadRequest(uri, doc);
@@ -509,7 +960,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     private void addSyncDownloadRequest(Uri localUri, Document doc)
     {
         // If listing mode, update Metadata associated
-        if (!canExecuteAction)
+        if (!hasSyncEnable)
         {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_NODE_ID, doc.getIdentifier());
@@ -527,7 +978,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
 
     private void addSyncUpdateRequest(Document doc, Cursor cursorId, File localFile, Uri localUri)
     {
-        if (!canExecuteAction) { return; }
+        if (!hasSyncEnable) { return; }
         SyncUpdateRequest updateRequest = new SyncUpdateRequest(cursorId.getString(SynchroSchema.COLUMN_PARENT_ID_ID),
                 doc, new ContentFileImpl(localFile));
         updateRequest.setNotificationTitle(doc.getName());
@@ -539,7 +990,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     {
         // If Favorite listing simply rename the entry.
         ContentValues cValues = new ContentValues();
-        if (!canExecuteAction)
+        if (!hasSyncEnable)
         {
             // Doc has been renamed or metadata changes
             // ==> update properties only
@@ -562,7 +1013,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     private void addSyncdeleteRequest(String id, Cursor cursorId)
     {
         // If Favorite listing simply delete the entry.
-        if (!canExecuteAction)
+        if (!hasSyncEnable)
         {
             context.getContentResolver().delete(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
                     null, null);
@@ -575,6 +1026,7 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
         {
             ContentValues cValues = new ContentValues();
             cValues.put(SynchroSchema.COLUMN_STATUS, SyncOperation.STATUS_HIDDEN);
+            cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES, 0);
             context.getContentResolver().update(SynchroManager.getUri(cursorId.getLong(SynchroSchema.COLUMN_ID_ID)),
                     cValues, null, null);
         }
@@ -619,6 +1071,23 @@ public class SyncFavoriteThread extends NodeOperationThread<Void>
     {
         boolean firstTime = true;
         for (Document token : tokens)
+        {
+            if (firstTime)
+            {
+                firstTime = false;
+            }
+            else
+            {
+                sb.append(delimiter);
+            }
+            sb.append("'" + token.getIdentifier() + "'");
+        }
+    }
+
+    private static void joinF(StringBuilder sb, CharSequence delimiter, List<Folder> tokens)
+    {
+        boolean firstTime = true;
+        for (Folder token : tokens)
         {
             if (firstTime)
             {

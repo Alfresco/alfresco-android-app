@@ -52,7 +52,7 @@ public class SyncFavoriteRequest extends NodeOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     public SyncFavoriteRequest()
     {
-      this(MODE_DOCUMENTS);
+      this(MODE_BOTH);
     }
     
     public SyncFavoriteRequest(int mode)

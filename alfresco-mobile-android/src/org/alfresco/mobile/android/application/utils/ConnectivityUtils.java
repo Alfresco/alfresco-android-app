@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -27,6 +27,11 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+/**
+ * Utility class to manage connectivity.
+ * 
+ * @author Jean Marie Pascal
+ */
 public final class ConnectivityUtils
 {
     private ConnectivityUtils()
@@ -46,6 +51,14 @@ public final class ConnectivityUtils
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         if (wifiInfo != null && wifiInfo.isConnected()) { return true; }
+        return false;
+    }
+    
+    public static boolean isMobileNetworkAvailable(Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (mobileInfo != null && mobileInfo.isConnected()) { return true; }
         return false;
     }
 

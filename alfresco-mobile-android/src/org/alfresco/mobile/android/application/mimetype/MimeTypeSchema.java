@@ -67,21 +67,25 @@ public final class MimeTypeSchema
     public static final String[] COLUMN_ALL = { COLUMN_ID, COLUMN_EXTENSION, COLUMN_TYPE, COLUMN_SUBTYPE,
             COLUMN_DESCRIPTION, COLUMN_SMALL_ICON, COLUMN_LARGE_ICON };
 
-    private static final String QUERY_TABLE_CREATE = "CREATE TABLE " + TABLENAME + " (" + COLUMN_ID
-            + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_EXTENSION + " TEXT ," + COLUMN_TYPE
-            + " TEXT NOT NULL," + COLUMN_SUBTYPE + " TEXT NOT NULL," + COLUMN_DESCRIPTION + " TEXT NOT NULL,"
-            + COLUMN_SMALL_ICON + " TEXT," + COLUMN_LARGE_ICON + " TEXT" + ");";
+    private static final String QUERY_TABLE_CREATE = "CREATE TABLE " + TABLENAME + " (" 
+            + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," 
+            + COLUMN_EXTENSION + " TEXT ," 
+            + COLUMN_TYPE + " TEXT NOT NULL," 
+            + COLUMN_SUBTYPE + " TEXT NOT NULL," 
+            + COLUMN_DESCRIPTION + " TEXT NOT NULL,"
+            + COLUMN_SMALL_ICON + " TEXT," 
+            + COLUMN_LARGE_ICON + " TEXT" + ");";
 
     public static void onCreate(Context context, SQLiteDatabase db)
     {
-        create(context, db);
+        create(db);
     }
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)
     {
         if (oldVersion <= DatabaseVersionNumber.VERSION_1_4_0)
         {
-            create(context, db);
+            create(db);
         }
     }
     
@@ -107,7 +111,7 @@ public final class MimeTypeSchema
     
     
 
-    private static void create(Context context, SQLiteDatabase db){
+    private static void create(SQLiteDatabase db){
         db.execSQL(QUERY_TABLE_CREATE);
         insert(db, "", MimeType.TYPE_APPLICATION, "octet-stream", "Binary Data", ICON_GENERIC, ICON_GENERIC_LARGE);
         insert(db, "3fr", MimeType.TYPE_IMAGE, "x-raw-hasselblad", "Hasselblad RAW Image", ICON_IMG, ICON_IMG_LARGE);
@@ -425,9 +429,22 @@ public final class MimeTypeSchema
     public static long insert(SQLiteDatabase db, String extension, String type, String subtype, String description,
             String smallIcon, String largeIcon)
     {
-        ContentValues insertValues = MimeTypeManager.createContentValues(extension, subtype, subtype, description,
+        ContentValues insertValues = MimeTypeManager.createContentValues(extension, type, subtype, description,
                 smallIcon, largeIcon);
         return db.insert(MimeTypeSchema.TABLENAME, null, insertValues);
     }
 
+    
+    // ////////////////////////////////////////////////////
+    // DEBUG
+    // ////////////////////////////////////////////////////
+    private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
+
+    // TODO REMOVE BEFORE RELEASE
+    public static void reset(SQLiteDatabase db)
+    {
+        db.execSQL(QUERY_TABLE_DROP);
+        create(db);
+    }
+    
 }
