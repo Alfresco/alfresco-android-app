@@ -376,7 +376,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         // Sync if it's possible.
                         if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                         {
-                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), node);
                         }
                     }
                     else

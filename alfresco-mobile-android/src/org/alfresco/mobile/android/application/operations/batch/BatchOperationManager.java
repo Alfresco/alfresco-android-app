@@ -43,7 +43,7 @@ import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNo
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdatePropertiesRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncPrepareRequest;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
 
 import android.content.BroadcastReceiver;
@@ -164,8 +164,8 @@ public class BatchOperationManager extends OperationManager
                 case RenameRequest.TYPE_ID:
                     request = new RenameRequest(cursor);
                     break;
-                case SyncFavoriteRequest.TYPE_ID:
-                    request = new SyncFavoriteRequest(cursor);
+                case SyncPrepareRequest.TYPE_ID:
+                    request = new SyncPrepareRequest(cursor);
                     break;
                 case CleanSyncFavoriteRequest.TYPE_ID:
                     // request = new UnSyncFavoriteRequest(cursor);

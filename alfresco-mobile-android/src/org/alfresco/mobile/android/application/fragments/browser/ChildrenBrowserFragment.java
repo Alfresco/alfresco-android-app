@@ -162,6 +162,19 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(null, folderPath, null);
     }
+    
+    public static ChildrenBrowserFragment newInstanceById(String folderIdentifier)
+    {
+        ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
+        lc.setIsSortAscending(true);
+        Bundle b = createBundleArg(folderIdentifier);
+        b.putBoolean(PARAM_IS_SHORTCUT, true);
+        b.putAll(createBundleArgs(lc, LOAD_AUTO));
+        bf.setArguments(b);
+        return bf;
+    }
 
     public static ChildrenBrowserFragment newInstance(int folderTypeId)
     {
@@ -1064,7 +1077,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                     {
-                        ((ProgressNodeAdapter) adapter).refreshFavorites();
+                        ((ProgressNodeAdapter) adapter).refreshOperations();
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED))
                     {

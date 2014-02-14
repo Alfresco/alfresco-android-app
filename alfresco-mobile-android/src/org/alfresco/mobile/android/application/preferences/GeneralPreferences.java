@@ -65,6 +65,8 @@ public class GeneralPreferences extends PreferenceFragment
     private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
 
     private static final String SYNCHRO_PREFIX = "SynchroEnable-";
+    
+    private static final String SYNCHRO_EVEYTHING_PREFIX = "SynchroEverythingEnable-";
 
     private static final String SYNCHRO_WIFI_PREFIX = "SynchroWifiEnable-";
 
@@ -78,8 +80,6 @@ public class GeneralPreferences extends PreferenceFragment
     
     private static final float SYNCHRO_FREE_SPACE_ALERT_LENGTH = 0.1f; //In Percent of total space
     
-    private static final String SYNCHRO_DATA_TRANSFER_PREFIX = "SynchroDataTransfer-";
-
     private Account account;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -331,6 +331,26 @@ public class GeneralPreferences extends PreferenceFragment
         return false;
     }
     
+    public static boolean canSyncEverything(Context context, Account account)
+    {
+        if (account != null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), false);
+        }
+        return false;
+    }
+
+    public static void setSyncEverything(Activity activity, boolean isActive)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).commit();
+        }
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////
     // SYNC FOLDER
     // ///////////////////////////////////////////////////////////////////////////
@@ -374,25 +394,4 @@ public class GeneralPreferences extends PreferenceFragment
             sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).commit();
         }
     }
-    
-    /*public static Long getLastSyncScanData(Context context, Account account)
-    {
-        if (account != null)
-        {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-            return sharedPref.getLong(SYNCHRO_DATA_TRANSFER_PREFIX + account.getId(), 0);
-        }
-        return 0L;
-    }
-    
-    
-    public static void setLastSyncScanData(Context context, long length)
-    {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        if (SessionUtils.getAccount(context) != null)
-        {
-            final Account account = SessionUtils.getAccount(context);
-            sharedPref.edit().putLong(SYNCHRO_DATA_TRANSFER_PREFIX + account.getId(), length).commit();
-        }
-    }*/
 }

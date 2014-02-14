@@ -29,8 +29,10 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.SyncScanInfo;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
@@ -157,6 +159,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_STARTED);
         intentFilter.addAction(IntentIntegrator.ACTION_CONFIGURATION_MENU);
         receiver = new MainMenuReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
@@ -425,6 +429,32 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             Account acc = SessionUtils.getAccount(getActivity());
             Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
 
+            long startTimeStamp = SynchroManager.getStartSyncPrepareTimestamp(getActivity(), acc);
+            long finalTimeStamp = SynchroManager.getSyncPrepareTimestamp(getActivity(), acc);
+
+            // Sync Prepare in Progress ?
+            if (startTimeStamp > finalTimeStamp)
+            {
+                // Sync Prepare in progress
+                statut = getActivity().getResources().getDrawable(R.drawable.ic_action_reload);
+            }
+            else
+            {
+                // Sync Prepare done 
+                
+                // Is there a policy warning ?
+                SyncScanInfo syncScanInfo = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+                if (syncScanInfo != null && syncScanInfo.hasWarning())
+                {
+                    // ==> Sync requires a user input
+                    statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                }
+                
+                // ==> Sync in progress
+                
+            }
+
+            // Is there a doc warning ?
             if (hasSynchroActive && acc != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
@@ -437,13 +467,13 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
                 statutCursor.close();
-
-                if (menuSlidingFavorites != null)
-                {
-                    menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
-                }
-                menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
             }
+
+            if (menuSlidingFavorites != null)
+            {
+                menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+            }
+            menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
         }
         catch (Exception e)
         {
@@ -469,7 +499,9 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             Log.d(TAG, intent.getAction());
             if (intent.getAction() == null) { return; }
 
-            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction()))
+            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_SYNC_SCAN_STARTED.equals(intent.getAction()))
             {
                 displayFavoriteStatut();
             }

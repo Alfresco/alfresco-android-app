@@ -162,12 +162,4 @@ public abstract class OperationManager
         Intent i = new Intent(IntentIntegrator.ACTION_OPERATIONS_CANCEL);
         LocalBroadcastManager.getInstance(c).sendBroadcast(i);
     }
-
-    public static void closeCursor(Cursor cursor)
-    {
-        if (cursor != null)
-        {
-            cursor.close();
-        }
-    }
 }

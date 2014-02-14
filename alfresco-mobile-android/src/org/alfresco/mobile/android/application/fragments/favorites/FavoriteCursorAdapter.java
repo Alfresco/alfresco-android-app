@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationMa
 import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
-import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
@@ -100,9 +99,9 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         int status = cursor.getInt(SynchroSchema.COLUMN_STATUS_ID);
         String nodeId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
         long favoriteId = cursor.getLong(SynchroSchema.COLUMN_ID_ID);
-        String isFavorited = cursor.getString(SynchroSchema.COLUMN_FAVORITED_ID);
-        
-        if (SynchroProvider.FLAG_FAVORITE.equals(isFavorited))
+        boolean favorited = cursor.getInt(SynchroSchema.COLUMN_IS_FAVORITE_ID) > 0;
+
+        if (favorited)
         {
             vh.favoriteIcon.setVisibility(View.VISIBLE);
             vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_dark);
@@ -180,8 +179,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             vh.bottomText.setVisibility(View.GONE);
         }
 
-        if (mode == FavoritesSyncFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity
-                && hasSynchroActive)
+        if (mode == FavoritesSyncFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity)
         {
             UIUtils.setBackground(((View) vh.choose),
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
@@ -190,7 +188,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             vh.choose.setTag(R.id.node_action, nodeId);
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
-            vh.choose.setTag(R.id.is_favorite, isFavorited);
+            vh.choose.setTag(R.id.is_favorite, favorited);
             vh.choose.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -199,13 +197,13 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                     String item = (String) v.getTag(R.id.node_action);
                     Integer statut = (Integer) v.getTag(R.id.operation_status);
                     long favoriteId = (Long) v.getTag(R.id.favorite_id);
-                    String isFavorited = (String) v.getTag(R.id.is_favorite);
+                    boolean favorited = (Boolean) v.getTag(R.id.is_favorite);
 
                     selectedOptionItems.add(item);
                     selectedOptionItemId.add(favoriteId);
 
                     PopupMenu popup = new PopupMenu(context, v);
-                    getMenu(popup.getMenu(), statut, isFavorited);
+                    getMenu(popup.getMenu(), statut, favorited);
 
                     if (AndroidVersion.isICSOrAbove())
                     {
@@ -270,7 +268,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public void getMenu(Menu menu, Integer statut, String isFavorited)
+    public void getMenu(Menu menu, Integer statut, boolean favorited)
     {
         MenuItem mi;
 
@@ -288,7 +286,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
-                if (SynchroProvider.FLAG_FAVORITE.equals(isFavorited))
+                if (favorited)
                 {
                     mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                             + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);

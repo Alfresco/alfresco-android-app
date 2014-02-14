@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
@@ -78,6 +79,7 @@ import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.operations.batch.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
@@ -157,6 +159,7 @@ public class MainActivity extends BaseActivity
         // FOR TEST PURPOSE
         //SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
         //BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
+        //MimeTypeSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
@@ -266,7 +269,7 @@ public class MainActivity extends BaseActivity
         {
             PasscodePreferences.updateLastActivity(this);
         }
-        SynchroManager.updateLastActivity(this);
+        SynchroManager.saveSyncPrepareTimestamp(this);
     }
 
     @Override
@@ -643,6 +646,13 @@ public class MainActivity extends BaseActivity
         clearScreen();
         clearCentralPane();
         super.addBrowserFragment(path);
+    }
+    
+    public void addNavigationFragmentById(String folderIdentifier)
+    {
+        clearScreen();
+        clearCentralPane();
+        super.addNavigationFragment(folderIdentifier);
     }
 
     public void addNavigationFragment(Site s)
@@ -1129,6 +1139,9 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_PROCESS_DETAILS:
                 ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).showProcessDiagram();
+                return true;
+            case MenuActionItem.MENU_SYNC_WARNING:
+                ((FavoritesSyncFragment) getFragment(FavoritesSyncFragment.TAG)).displayWarning();
                 return true;
             case MenuActionItem.ABOUT_ID:
                 displayAbout();

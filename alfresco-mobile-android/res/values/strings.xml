@@ -494,7 +494,13 @@
         <item quantity="one">1 download in progress.</item>
         <item quantity="other">%1$s downloads in progress.</item>
     </plurals>
-
+    
+    <string name="sync_warning">Sync Warning</string>
+    <string name="sync_error">Sync Error</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> You are about to sync <b>%s</b> over a carrier connection.</p> Would you like to proceed?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> You are trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space in your device or unfavorite documents/folders.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> You are about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Would you like to proceed?]]></string>
+    
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a download file with the same name.</p> Do you want to overwrite the existing file ?]]></string>
@@ -807,7 +813,6 @@
     <string name="mimetype_music">Music</string>
     <string name="mimetype_text">Text</string>
     <string name="error_search_fields_empty">Please fill at least one field</string>
-    
     
     <!-- Storage Access Framework -->
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
