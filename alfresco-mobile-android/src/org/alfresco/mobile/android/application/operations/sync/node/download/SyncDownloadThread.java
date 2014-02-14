@@ -146,6 +146,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
             }
             cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES,  ((Document) node).getContentStreamLength());
             cValues.put(SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, ((Document) node).getContentStreamLength());
+            cValues.put(SynchroSchema.COLUMN_DOC_SIZE_BYTES, 0);
             context.getContentResolver().update(request.getNotificationUri(), cValues, null, null);
         }
         catch (Exception e)

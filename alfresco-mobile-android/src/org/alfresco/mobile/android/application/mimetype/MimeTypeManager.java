@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.application.mimetype;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.operations.OperationManager;
+import org.alfresco.mobile.android.application.utils.CursorUtils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -181,7 +181,7 @@ public final class MimeTypeManager
         }
         finally
         {
-            OperationManager.closeCursor(cursor);
+           CursorUtils.closeCursor(cursor);
         }
         return null;
     }
@@ -207,7 +207,7 @@ public final class MimeTypeManager
         }
         finally
         {
-            OperationManager.closeCursor(cursor);
+           CursorUtils.closeCursor(cursor);
         }
         return null;
     }
@@ -325,7 +325,7 @@ public final class MimeTypeManager
         }
         finally
         {
-            OperationManager.closeCursor(cursor);
+           CursorUtils.closeCursor(cursor);
         }
     }
 }

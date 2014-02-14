@@ -62,7 +62,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -96,6 +95,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     private Date decryptDateTime;
 
     private Account acc;
+
+    private SyncScanInfo info;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -301,30 +302,37 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        String selection = null;
+        StringBuilder selection = new StringBuilder();
         if (acc != null)
         {
-            selection = SynchroProvider.getAccountFilter(acc);
+            selection.append(SynchroProvider.getAccountFilter(acc));
         }
 
-        if (!TextUtils.isEmpty(selection))
+        if (selection.length() > 0)
         {
-            selection += " AND ";
+            selection.append(" AND ");
         }
 
         if (getFolderId() != null)
         {
-            selection += SynchroSchema.COLUMN_PARENT_ID + " == '" + getFolderId() + "'";
+            selection.append(SynchroSchema.COLUMN_PARENT_ID + " == '" + getFolderId() + "'");
         }
         else
         {
-            selection += SynchroSchema.COLUMN_FAVORITED + " == '" + SynchroProvider.FLAG_FAVORITE + "'";
+            selection.append(SynchroSchema.COLUMN_IS_FAVORITE + " == '" + SynchroProvider.FLAG_FAVORITE + "'");
         }
 
-        Log.d(TAG, selection);
+        if (selection.length() > 0)
+        {
+            selection.append(" AND ");
+        }
 
-        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL, selection, null,
-                SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
+        selection.append(SynchroSchema.COLUMN_STATUS + " NOT IN (" + SyncOperation.STATUS_HIDDEN + ")");
+
+        Log.d(TAG, selection.toString());
+
+        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
+                selection.toString(), null, SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -333,7 +341,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public void onListItemClick(ListView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String documentId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
+        String nodeId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
         String documentName = cursor.getString(SynchroSchema.COLUMN_TITLE_ID);
 
         if (DisplayUtils.hasCentralPane(getActivity()))
@@ -344,13 +352,13 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
-            hideDetails = selectedItems.get(0).equals(documentId);
+            hideDetails = selectedItems.get(0).equals(nodeId);
         }
         l.setItemChecked(position, true);
 
         if (nActions != null)
         {
-            nActions.selectNode(documentId);
+            nActions.selectNode(nodeId);
             if (selectedItems.size() == 0)
             {
                 hideDetails = true;
@@ -361,7 +369,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             selectedItems.clear();
             if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
             {
-                selectedItems.add(documentId);
+                selectedItems.add(nodeId);
             }
         }
 
@@ -374,15 +382,22 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             if (SynchroManager.isFolder(cursor))
             {
                 selectedItems.clear();
-                // GO TO subfolder
-                Fragment syncFrag = FavoritesSyncFragment.newInstance(getMode(), documentId, documentName);
-                FragmentDisplayer.replaceFragment(getActivity(), syncFrag,
-                        DisplayUtils.getLeftFragmentId(getActivity()), FavoritesSyncFragment.TAG, true);
+                if (SynchroManager.getInstance(getActivity()).hasActivateSync(acc))
+                {
+                    // GO TO Local subfolder
+                    Fragment syncFrag = FavoritesSyncFragment.newInstance(getMode(), nodeId, documentName);
+                    FragmentDisplayer.replaceFragment(getActivity(), syncFrag,
+                            DisplayUtils.getLeftFragmentId(getActivity()), FavoritesSyncFragment.TAG, true);
+                }
+                else
+                {
+                    ((MainActivity) getActivity()).addNavigationFragmentById(nodeId);
+                }
             }
             else
             {
                 // Show properties
-                ((MainActivity) getActivity()).addPropertiesFragment(true, documentId);
+                ((MainActivity) getActivity()).addPropertiesFragment(true, nodeId);
                 DisplayUtils.switchSingleOrTwo(getActivity(), true);
             }
         }
@@ -454,8 +469,17 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
     public void getMenu(Menu menu)
     {
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.refresh);
+        info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+        if (info != null && (info.hasWarning() && !info.hasResponse()))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SYNC_WARNING, Menu.FIRST + MenuActionItem.MENU_SYNC_WARNING,
+                    R.string.sync_warning);
+            mi.setIcon(R.drawable.ic_warning);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, MenuActionItem.MENU_SYNC_WARNING
+                + MenuActionItem.MENU_REFRESH, R.string.refresh);
         mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
@@ -477,7 +501,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         }
         ((FavoriteCursorAdapter) adapter).refresh();
         lv.setAdapter(adapter);
+    }
 
+    public void displayWarning()
+    {
+        if (info != null && info.hasWarning())
+        {
+            SyncErrorDialogFragment.newInstance().show(getActivity().getFragmentManager(), SyncErrorDialogFragment.TAG);
+            return;
+        }
     }
 
     public void select(Node updatedNode)
@@ -490,7 +522,6 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     // ///////////////////////////////////////////////////////////////////////////
     private class FavoriteSyncReceiver extends BroadcastReceiver
     {
-
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -502,6 +533,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 // Hide spinning wheel
                 mi.setActionView(null);
+                info = SyncScanInfo.getLastSyncScanData(context, acc);
+                getActivity().invalidateOptionsMenu();
+
+                if (info.hasWarning())
+                {
+                    SyncErrorDialogFragment.newInstance().show(getActivity().getFragmentManager(),
+                            SyncErrorDialogFragment.TAG);
+                    return;
+                }
             }
 
             if (acc == null) { return; }

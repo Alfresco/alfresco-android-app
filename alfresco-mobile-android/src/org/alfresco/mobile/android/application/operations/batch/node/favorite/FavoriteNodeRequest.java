@@ -34,8 +34,12 @@ public class FavoriteNodeRequest extends NodeOperationRequest
     public static final int TYPE_ID = 60;
     
     private Boolean markFavorite;
+
+    private boolean batchFavorite = false;
     
     private static final String PROP_FAVORITE = "favorite";
+
+    private static final String PROP_BATCH_FAVORITE = "batchFavorite";
 
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -63,6 +67,24 @@ public class FavoriteNodeRequest extends NodeOperationRequest
         persistentProperties.put(PROP_FAVORITE, markFavorite);
     }
     
+    public FavoriteNodeRequest(String parentIdentifier, String documentIdentifier, boolean markFavorite, boolean batchFavorite)
+    {
+        this(parentIdentifier, documentIdentifier);
+        this.markFavorite = markFavorite;
+        this.batchFavorite = batchFavorite;
+        
+        persistentProperties = new HashMap<String, Serializable>();
+        persistentProperties.put(PROP_FAVORITE, markFavorite);
+        persistentProperties.put(PROP_BATCH_FAVORITE, batchFavorite);
+    }
+    
+    public FavoriteNodeRequest(Folder parent, Node node, boolean markFavorite, boolean batchFavorite)
+    {
+        this(parent.getIdentifier(), node.getIdentifier(), markFavorite, batchFavorite);
+        setNotificationTitle(node.getName());
+        setMimeType(node.getName());
+    }
+    
     public FavoriteNodeRequest(Folder parent, Node node, boolean markFavorite)
     {
         this(parent.getIdentifier(), node.getIdentifier(), markFavorite);
@@ -80,6 +102,11 @@ public class FavoriteNodeRequest extends NodeOperationRequest
         {
             this.markFavorite = Boolean.parseBoolean(tmpProperties.remove(PROP_FAVORITE));
         }
+        
+        if (tmpProperties.containsKey(PROP_BATCH_FAVORITE))
+        {
+            this.batchFavorite = Boolean.parseBoolean(tmpProperties.remove(PROP_BATCH_FAVORITE));
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -88,5 +115,10 @@ public class FavoriteNodeRequest extends NodeOperationRequest
     public Boolean markAsFavorite()
     {
         return markFavorite;
+    }
+    
+    public Boolean isBatch()
+    {
+        return batchFavorite;
     }
 }

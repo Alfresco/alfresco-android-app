@@ -21,15 +21,16 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.node.NodeOperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
 
 import android.database.Cursor;
 
-public class SyncFavoriteRequest extends NodeOperationRequest
+public class SyncPrepareRequest extends NodeOperationRequest
 {
-    public static final int MODE_DOCUMENT = 0;
+    public static final int MODE_NODE = 0;
     
     public static final int MODE_DOCUMENTS = 1;
 
@@ -44,18 +45,20 @@ public class SyncFavoriteRequest extends NodeOperationRequest
     public static final String MIME_SYNC = "SyncAnalyser";
 
     private static final String PROP_MODE = "Mode";
+    
+    private static final String PROP_NODE = "Node";
 
     private int mode;
     
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public SyncFavoriteRequest()
+    public SyncPrepareRequest()
     {
       this(MODE_BOTH);
     }
     
-    public SyncFavoriteRequest(int mode)
+    public SyncPrepareRequest(int mode)
     {
         super(null, null);
         requestTypeId = TYPE_ID;
@@ -67,7 +70,21 @@ public class SyncFavoriteRequest extends NodeOperationRequest
         persistentProperties.put(PROP_MODE, mode);
     }
     
-    public SyncFavoriteRequest(Cursor cursor)
+    public SyncPrepareRequest(int mode, Node node)
+    {
+        super(null, null);
+        requestTypeId = TYPE_ID;
+        setMimeType(MIME_SYNC);
+        
+        this.mode = mode;
+        this.nodeIdentifier = node.getIdentifier();
+        
+        persistentProperties = new HashMap<String, Serializable>(1);
+        persistentProperties.put(PROP_MODE, mode);
+        persistentProperties.put(BatchOperationSchema.COLUMN_NODE_ID, mode);
+    }
+    
+    public SyncPrepareRequest(Cursor cursor)
     {
         super(cursor);
         requestTypeId = TYPE_ID;

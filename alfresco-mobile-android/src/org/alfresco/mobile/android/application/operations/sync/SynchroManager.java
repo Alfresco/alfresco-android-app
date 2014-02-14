@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
+import org.alfresco.mobile.android.application.fragments.favorites.SyncScanInfo;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
 import org.alfresco.mobile.android.application.operations.Operation;
@@ -41,7 +42,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationMa
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncPrepareRequest;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
@@ -49,6 +50,7 @@ import org.alfresco.mobile.android.application.operations.sync.node.update.SyncU
 import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.utils.ConnectivityUtils;
+import org.alfresco.mobile.android.application.utils.CursorUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -170,7 +172,7 @@ public final class SynchroManager extends OperationManager
         {
             enqueue(groupSet.getValue());
         }
-        closeCursor(cursor);
+        CursorUtils.closeCursor(cursor);
     }
 
     public void retry(long id)
@@ -196,6 +198,8 @@ public final class SynchroManager extends OperationManager
     public static final String ACTION_START_SYNC = "startSyncService";
 
     private static final String LAST_SYNC_ACTIVATED_AT = "LastSyncDateTime";
+
+    private static final String LAST_START_SYNC_PREPARE = "LastSyncPrepareDateTime";
 
     public void notifyCompletion(Context c, String operationId, int status)
     {
@@ -282,9 +286,22 @@ public final class SynchroManager extends OperationManager
                     Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_NODE);
                     Account acc = SessionUtils.getAccount(mAppContext);
 
+                    SyncScanInfo lastScanSyncInfo = SyncScanInfo.getLastSyncScanData(context, acc);
+                    // The preceding scan returns an error/warning
+                    // We await the next user/automatic scan before redid it
+                    if (lastScanSyncInfo.getScanResponse() == SyncScanInfo.RESPONSE_AWAIT) { return; }
+
                     if (acc != null && node != null && canSync(acc))
                     {
-                        sync(acc);
+                        if (b.containsKey(IntentIntegrator.EXTRA_BATCH_FAVORITE)
+                                && b.getBoolean(IntentIntegrator.EXTRA_BATCH_FAVORITE))
+                        {
+                            sync(acc);
+                        }
+                        else
+                        {
+                            sync(acc, node);
+                        }
                     }
                     return;
                 }
@@ -306,7 +323,7 @@ public final class SynchroManager extends OperationManager
                             SynchroManager.getInstance(mAppContext).sync(acc);
                         }
                     }
-                    closeCursor(favoriteCursor);
+                    CursorUtils.closeCursor(favoriteCursor);
                     return;
                 }
 
@@ -333,10 +350,10 @@ public final class SynchroManager extends OperationManager
                                 favoriteCursor.getLong(SynchroSchema.COLUMN_ACCOUNT_ID_ID));
                         if (canSync(acc))
                         {
-                            SynchroManager.getInstance(mAppContext).sync(acc);
+                            SynchroManager.getInstance(mAppContext).sync(acc, node);
                         }
                     }
-                    closeCursor(favoriteCursor);
+                    CursorUtils.closeCursor(favoriteCursor);
                     return;
                 }
             }
@@ -539,7 +556,7 @@ public final class SynchroManager extends OperationManager
             }
             finally
             {
-                closeCursor(cursor);
+                CursorUtils.closeCursor(cursor);
             }
 
         }
@@ -558,7 +575,7 @@ public final class SynchroManager extends OperationManager
             Node node, long time)
     {
         ContentValues cValues = createContentValues(context, account, requestType, "", node, time, 0);
-        cValues.put(SynchroSchema.COLUMN_FAVORITED, SynchroProvider.FLAG_FAVORITE);
+        cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, SynchroProvider.FLAG_FAVORITE);
         return cValues;
     }
 
@@ -579,6 +596,7 @@ public final class SynchroManager extends OperationManager
         {
             cValues.put(SynchroSchema.COLUMN_MIMETYPE, ((Document) node).getContentStreamMimeType());
             cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES, ((Document) node).getContentStreamLength());
+            cValues.put(SynchroSchema.COLUMN_DOC_SIZE_BYTES, ((Document) node).getContentStreamLength());
             if (node.getProperty(PropertyIds.CONTENT_STREAM_ID) != null)
             {
                 cValues.put(SynchroSchema.COLUMN_CONTENT_URI, (String) node.getProperty(PropertyIds.CONTENT_STREAM_ID)
@@ -589,6 +607,7 @@ public final class SynchroManager extends OperationManager
         {
             cValues.put(SynchroSchema.COLUMN_MIMETYPE, ContentModel.TYPE_FOLDER);
             cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES, folderSize);
+            cValues.put(SynchroSchema.COLUMN_DOC_SIZE_BYTES, 0);
             if (folderSize == 0)
             {
                 cValues.put(SynchroSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
@@ -607,7 +626,7 @@ public final class SynchroManager extends OperationManager
             String parent, Node node, long time, long folderSize)
     {
         ContentValues cValues = createContentValues(context, account, requestType, parent, node, time, folderSize);
-        cValues.put(SynchroSchema.COLUMN_FAVORITED, SynchroProvider.FLAG_FAVORITE);
+        cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, SynchroProvider.FLAG_FAVORITE);
         return cValues;
     }
 
@@ -620,7 +639,16 @@ public final class SynchroManager extends OperationManager
     {
         if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
-        group.enqueue(new SyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        group.enqueue(new SyncPrepareRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        BatchOperationManager.getInstance(mAppContext).enqueue(group);
+    }
+
+    public void sync(Account account, Node n)
+    {
+        if (account == null) { return; }
+        OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
+        group.enqueue(new SyncPrepareRequest(SyncPrepareRequest.MODE_NODE, n)
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
@@ -641,7 +669,7 @@ public final class SynchroManager extends OperationManager
                 SynchroProvider.getAccountFilter(account) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
                         + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1) && GeneralPreferences.hasActivateSync(mAppContext, account);
-        closeCursor(favoriteCursor);
+        CursorUtils.closeCursor(favoriteCursor);
         return b;
     }
 
@@ -680,7 +708,7 @@ public final class SynchroManager extends OperationManager
         {
             b = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
         }
-        closeCursor(favoriteCursor);
+        CursorUtils.closeCursor(favoriteCursor);
         return b;
     }
 
@@ -691,9 +719,20 @@ public final class SynchroManager extends OperationManager
                         .isWifiAvailable(mAppContext)) || !GeneralPreferences.hasWifiOnlySync(mAppContext, account));
     }
 
-    public void setLastScan(Account account, long data)
+    public boolean hasActivateSync(Account account)
     {
-        // GeneralPreferences.setLastSyncScanData(mAppContext, data);
+        return GeneralPreferences.hasActivateSync(mAppContext, account);
+    }
+
+    public boolean canSyncEverything(Account account)
+    {
+        return GeneralPreferences.canSyncEverything(mAppContext, account);
+    }
+
+    public boolean hasConnectivityToSync(Account account)
+    {
+        return ((GeneralPreferences.hasWifiOnlySync(mAppContext, account) && ConnectivityUtils
+                .isWifiAvailable(mAppContext)) || !GeneralPreferences.hasWifiOnlySync(mAppContext, account));
     }
 
     /**
@@ -701,12 +740,34 @@ public final class SynchroManager extends OperationManager
      * 
      * @param context
      */
-    public static void updateLastActivity(Context context)
+    public static void saveStartSyncPrepareTimestamp(Context context)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
-        editor.putLong(LAST_SYNC_ACTIVATED_AT, new Date().getTime());
+        Account account = SessionUtils.getAccount(context);
+        editor.putLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
         editor.commit();
+    }
+
+    public static void saveSyncPrepareTimestamp(Context context)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        Editor editor = sharedPref.edit();
+        Account account = SessionUtils.getAccount(context);
+        editor.putLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
+        editor.commit();
+    }
+
+    public static long getSyncPrepareTimestamp(Context context, Account account)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
+    }
+
+    public static long getStartSyncPrepareTimestamp(Context context, Account account)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPref.getLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
     }
 
     /**
@@ -714,9 +775,10 @@ public final class SynchroManager extends OperationManager
      */
     public void cronSync(Account account)
     {
+        if (account == null) { return; }
         long now = new Date().getTime();
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mAppContext);
-        long lastTime = sharedPref.getLong(LAST_SYNC_ACTIVATED_AT, now);
+        long lastTime = sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), now);
         if ((lastTime + 3600000) < now && canSync(account))
         {
             sync(account);
@@ -735,11 +797,16 @@ public final class SynchroManager extends OperationManager
     private static final String QUERY_SUM = "SELECT SUM(" + SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR + ") FROM "
             + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_PARENT_ID + " = '%s';";
 
+    private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
+            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " IN ( "
+            + SyncOperation.STATUS_PENDING + "," + SyncOperation.STATUS_HIDDEN + ");";
+
     private static final String QUERY_SUM_TOTAL_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES
             + ") FROM " + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " = "
-            + SyncOperation.STATUS_PENDING + ";";
+            + SyncOperation.STATUS_PENDING + " AND " + SynchroSchema.COLUMN_MIMETYPE + " NOT IN ('"
+            + ContentModel.TYPE_FOLDER + "');";
 
-    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES + ") FROM "
+    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
             + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " IN ("
             + SyncOperation.STATUS_PENDING + ", " + SyncOperation.STATUS_SUCCESSFUL + ");";
 
@@ -751,7 +818,7 @@ public final class SynchroManager extends OperationManager
         Long currentValue = null;
         Long totalSize = null;
         String parentFolderId = null;
-        Cursor favoriteCursor = null, cursorTotal = null, cursor = null;
+        Cursor favoriteCursor = null, parentCursor = null, cursorTotal = null, cursor = null;
 
         try
         {
@@ -766,21 +833,33 @@ public final class SynchroManager extends OperationManager
             {
                 parentFolderId = favoriteCursor.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
                 uri = Uri.parse(SynchroProvider.CONTENT_URI + "/" + favoriteCursor.getLong(SynchroSchema.COLUMN_ID_ID));
+
+                parentCursor = mAppContext.getContentResolver().query(
+                        SynchroProvider.CONTENT_URI,
+                        SynchroSchema.COLUMN_ALL,
+                        SynchroProvider.getAccountFilter(account) + " AND " + SynchroSchema.COLUMN_NODE_ID + " == '"
+                                + NodeRefUtils.getCleanIdentifier(parentFolderId) + "'", null, null);
             }
             else
             {
                 return;
             }
 
+            if (parentCursor != null && parentCursor.getCount() == 1 && parentCursor.moveToFirst()
+                    && SyncOperation.STATUS_HIDDEN == parentCursor.getInt(SynchroSchema.COLUMN_STATUS_ID))
+            {
+                // Node has been flag to deletion
+                // We don't update
+                return;
+            }
+
             // Retrieve the TOTAL sum of children
             totalSize = retrieveSize(String.format(QUERY_SUM_TOTAL, identifier));
             if (totalSize == null) { return; }
-            Log.d(TAG, "TotalSize " + totalSize);
 
             // REtrieve the sum of children
             currentValue = retrieveSize(String.format(QUERY_SUM, identifier));
             if (currentValue == null) { return; }
-            Log.d(TAG, "CurrentValue " + currentValue);
 
             // Update the parent
             ContentValues cValues = new ContentValues();
@@ -792,12 +871,6 @@ public final class SynchroManager extends OperationManager
                 cValues.put(BatchOperationSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
             }
             mAppContext.getContentResolver().update(uri, cValues, null, null);
-
-            // Recursive on grand parent
-            if (parentFolderId != null)
-            {
-                updateParentFolder(account, parentFolderId);
-            }
         }
         catch (Exception e)
         {
@@ -805,9 +878,16 @@ public final class SynchroManager extends OperationManager
         }
         finally
         {
-            closeCursor(cursorTotal);
-            closeCursor(favoriteCursor);
-            closeCursor(cursor);
+            CursorUtils.closeCursor(parentCursor);
+            CursorUtils.closeCursor(cursorTotal);
+            CursorUtils.closeCursor(favoriteCursor);
+            CursorUtils.closeCursor(cursor);
+        }
+
+        // Recursive on grand parent
+        if (parentFolderId != null)
+        {
+            updateParentFolder(account, parentFolderId);
         }
     }
 
@@ -835,13 +915,18 @@ public final class SynchroManager extends OperationManager
         return retrieveSize(QUERY_TOTAL_STORED);
     }
 
+    public Long getPreviousAmountDataStored()
+    {
+        return retrieveSize(QUERY_SUM_IN_PENDING);
+    }
+
     // ////////////////////////////////////////////////////
     // SYNC POLICIES
     // ////////////////////////////////////////////////////
-    public boolean canStart(Account acc, long dataOrigin)
+    public SyncScanInfo getScanInfo(Account acc)
     {
         long dataFinalStored = getAmountDataStored();
-        long deltaStorage = dataFinalStored - dataOrigin;
+        long deltaStorage = getPreviousAmountDataStored();
         float totalBytes = StorageManager.getTotalBytes(mAppContext);
         float availableBytes = StorageManager.getAvailableBytes(mAppContext);
         long dataToTransfer = getAmountDataToTransfert();
@@ -856,7 +941,25 @@ public final class SynchroManager extends OperationManager
         boolean respectEnoughStorageSpace = respectEnoughStorageSpace(availableBytes, deltaStorage);
         boolean respectLimitStorageSpace = respectLimitStorageSpace(acc, availableBytes, deltaStorage, totalBytes);
 
-        return (respectMobileTransferPolicy && respectEnoughStorageSpace && respectLimitStorageSpace);
+        Log.d(TAG, "Transfert Policy : " + respectMobileTransferPolicy);
+        Log.d(TAG, "Enough Space : " + respectEnoughStorageSpace);
+        Log.d(TAG, "Limit Space : " + respectLimitStorageSpace);
+
+        int scanResult = SyncScanInfo.RESULT_SUCCESS;
+        if (!respectEnoughStorageSpace)
+        {
+            scanResult = SyncScanInfo.RESULT_ERROR_NOT_ENOUGH_STORAGE;
+        }
+        else if (!respectLimitStorageSpace)
+        {
+            scanResult = SyncScanInfo.RESULT_WARNING_LOW_STORAGE;
+        }
+        else if (!respectMobileTransferPolicy)
+        {
+            scanResult = SyncScanInfo.RESULT_WARNING_MOBILE_DATA;
+        }
+
+        return new SyncScanInfo(deltaStorage, dataToTransfer, scanResult);
     }
 
     private boolean respectMobileTransferPolicy(Account acc, long dataToTransfer)
@@ -902,4 +1005,26 @@ public final class SynchroManager extends OperationManager
         }
         return true;
     }
+
+    // ////////////////////////////////////////////////////
+    // PENDING OPERATIONS
+    // ////////////////////////////////////////////////////
+    private OperationsRequestGroup pendingOperationGroup;
+
+    public void saveOperationGroup(OperationsRequestGroup group)
+    {
+        pendingOperationGroup = group;
+    }
+
+    public void runPendingOperationGroup()
+    {
+        if (pendingOperationGroup != null)
+        {
+            enqueue(pendingOperationGroup);
+        }
+        SyncScanInfo.getLastSyncScanData(mAppContext, SessionUtils.getAccount(mAppContext)).forceScan(mAppContext,
+                SessionUtils.getAccount(mAppContext));
+        pendingOperationGroup = null;
+    }
+
 }

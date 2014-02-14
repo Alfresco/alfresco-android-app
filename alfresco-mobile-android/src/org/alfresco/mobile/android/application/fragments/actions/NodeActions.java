@@ -177,21 +177,22 @@ public class NodeActions extends AbstractActions<Node>
             mi.setIcon(R.drawable.ic_download_dark);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
-                    + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
-            createMenu.setIcon(R.drawable.ic_favorite_dark);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
-
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
-                    + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
-                    + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
-
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, Menu.FIRST
                     + MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, R.string.process_start_review);
             mi.setIcon(R.drawable.ic_start_review);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
+        
+        
+        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
+                + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
+        createMenu.setIcon(R.drawable.ic_favorite_dark);
+        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
+                + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
+        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
+                + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
 
         createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
                 + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
@@ -292,7 +293,7 @@ public class NodeActions extends AbstractActions<Node>
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Node node : selectedItems)
         {
-            group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite)
+            group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
 

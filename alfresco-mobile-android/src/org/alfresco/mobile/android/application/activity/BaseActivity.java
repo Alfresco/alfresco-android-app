@@ -263,6 +263,14 @@ public abstract class BaseActivity extends Activity
         FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
                 ChildrenBrowserFragment.TAG, true);
     }
+    
+    public void addNavigationFragment(String folderIdentifier)
+    {
+        BaseFragment frag = ChildrenBrowserFragment.newInstanceById(folderIdentifier);
+        frag.setSession(SessionUtils.getSession(this));
+        FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
+                ChildrenBrowserFragment.TAG, true);
+    }
 
     public void addNavigationFragment(Site site, Folder f)
     {

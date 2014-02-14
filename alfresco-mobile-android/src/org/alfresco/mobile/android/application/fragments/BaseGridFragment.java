@@ -426,6 +426,7 @@ public abstract class BaseGridFragment extends BaseFragment
         if (adapter != null && adapter instanceof ProgressNodeAdapter)
         {
             ((ProgressNodeAdapter) adapter).setContext(getActivity());
+            ((ProgressNodeAdapter) adapter).refreshOperations();
         }
         gv.setAdapter(adapter);
     }

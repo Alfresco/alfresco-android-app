@@ -58,16 +58,28 @@ public final class SynchroSchema extends OperationSchema
     // ////////////////////////////////////////////////////
     // SYNC FOLDER
     // ////////////////////////////////////////////////////
-    public static final String COLUMN_FAVORITED = "favorited";
+    public static final String COLUMN_IS_FAVORITE = "favorited";
 
-    public static final int COLUMN_FAVORITED_ID = COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID + 1;
+    public static final int COLUMN_IS_FAVORITE_ID = COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID + 1;
+    
+    public static final String COLUMN_IS_ROOT = "root";
+
+    public static final int COLUMN_IS_ROOT_ID = COLUMN_IS_FAVORITE_ID + 1;
+    
+    public static final String COLUMN_DOC_SIZE_BYTES = "document_size";
+
+    public static final int COLUMN_DOC_SIZE_BYTES_ID = COLUMN_IS_ROOT_ID + 1;
+    
+
     
     private static final String[] COLUMNS_SYNC = { 
         COLUMN_CONTENT_URI,
         COLUMN_ANALYZE_TIMESTAMP,
         COLUMN_SERVER_MODIFICATION_TIMESTAMP,
         COLUMN_LOCAL_MODIFICATION_TIMESTAMP,
-        COLUMN_FAVORITED
+        COLUMN_IS_FAVORITE,
+        COLUMN_IS_ROOT,
+        COLUMN_DOC_SIZE_BYTES
         };
     
     public static final String[] COLUMN_ALL = join(COLUMNS, COLUMNS_SYNC);
@@ -81,12 +93,19 @@ public final class SynchroSchema extends OperationSchema
             + COLUMN_ANALYZE_TIMESTAMP + " LONG,"
             + COLUMN_SERVER_MODIFICATION_TIMESTAMP + " LONG,"
             + COLUMN_LOCAL_MODIFICATION_TIMESTAMP + " LONG," 
-            + COLUMN_FAVORITED + " TEXT"
+            + COLUMN_IS_FAVORITE + " INT,"
+            + COLUMN_IS_ROOT + " INT,"
+            + COLUMN_DOC_SIZE_BYTES + " LONG"
             + ");";
     
     // Update database to add Sync Folder column
     // DB version 5.
-    private static final String QUERY_SYNC_FOLDER_COLUM = "ALTER TABLE " + TABLENAME + " ADD COLUMN " + COLUMN_FAVORITED + " TEXT DEFAULT '"+ SynchroProvider.FLAG_FAVORITE +"';";
+    private static final String QUERY_SYNC_FOLDER_COLUM = 
+            "ALTER TABLE " + TABLENAME 
+            + " ADD COLUMN " + COLUMN_IS_FAVORITE + " INT DEFAULT 1,"
+            + " ADD COLUMN " + COLUMN_IS_ROOT + " INT DEFAULT 1,"
+            + " ADD COLUMN " + COLUMN_DOC_SIZE_BYTES + " LONG DEFAULT 0" 
+            +";";
 
     // ////////////////////////////////////////////////////
     // LIFECYCLE
