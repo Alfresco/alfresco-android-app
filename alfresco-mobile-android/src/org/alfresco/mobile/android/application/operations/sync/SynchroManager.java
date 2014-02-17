@@ -289,7 +289,7 @@ public final class SynchroManager extends OperationManager
                     SyncScanInfo lastScanSyncInfo = SyncScanInfo.getLastSyncScanData(context, acc);
                     // The preceding scan returns an error/warning
                     // We await the next user/automatic scan before redid it
-                    if (lastScanSyncInfo.getScanResponse() == SyncScanInfo.RESPONSE_AWAIT) { return; }
+                    if (lastScanSyncInfo != null && lastScanSyncInfo.getScanResponse() == SyncScanInfo.RESPONSE_AWAIT) { return; }
 
                     if (acc != null && node != null && canSync(acc))
                     {
@@ -745,8 +745,11 @@ public final class SynchroManager extends OperationManager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         Account account = SessionUtils.getAccount(context);
-        editor.putLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
-        editor.commit();
+        if (account != null)
+        {
+            editor.putLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
+            editor.commit();
+        }
     }
 
     public static void saveSyncPrepareTimestamp(Context context)
@@ -754,18 +757,23 @@ public final class SynchroManager extends OperationManager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         Editor editor = sharedPref.edit();
         Account account = SessionUtils.getAccount(context);
-        editor.putLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
-        editor.commit();
+        if (account != null)
+        {
+            editor.putLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
+            editor.commit();
+        }
     }
 
     public static long getSyncPrepareTimestamp(Context context, Account account)
     {
+        if (account == null){return -1;}
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
     }
 
     public static long getStartSyncPrepareTimestamp(Context context, Account account)
     {
+        if (account == null){return -1;}
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
     }
