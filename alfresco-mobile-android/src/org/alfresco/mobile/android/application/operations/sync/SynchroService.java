@@ -125,12 +125,12 @@ public class SynchroService<T> extends Service
             case SyncDownloadRequest.TYPE_ID:
                 task = (Operation<T>) new SyncDownloadThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncDownloadCallBack(getBaseContext(), totalItems, pendingRequest);
-                parallelOperation = 4;
+                parallelOperation = 2;
                 break;
             case SyncDeleteRequest.TYPE_ID:
                 task = (Operation<T>) new SyncDeleteThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncDeleteCallback(getBaseContext(), totalItems, pendingRequest);
-                parallelOperation = 3;
+                parallelOperation = 2;
                 break;
             case SyncUpdateRequest.TYPE_ID:
                 task = (Operation<T>) new SyncUpdateThread(getBaseContext(), request);

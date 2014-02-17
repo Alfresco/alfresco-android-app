@@ -619,6 +619,7 @@ public final class SynchroManager extends OperationManager
         cValues.put(SynchroSchema.COLUMN_ANALYZE_TIMESTAMP, time);
         cValues.put(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, node.getModifiedAt().getTimeInMillis());
         cValues.put(SynchroSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, time);
+        cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, 0);
         return cValues;
     }
 
