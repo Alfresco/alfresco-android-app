@@ -90,7 +90,11 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
             Cursor parentCursorId = null;
             try
             {
-                parentCursorId = SynchroManager.getCursorForId(context, acc, parentFolderIdentifier);
+                if (parentFolder == null)
+                {
+                    parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                }
+                parentCursorId = SynchroManager.getCursorForId(context, acc, parentFolder.getIdentifier());
                 if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
                 {
                     hasSyncParent = true;
@@ -98,7 +102,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
             }
             catch (Exception e)
             {
-                // do nothing
+                hasSyncParent = true;
             }
             finally
             {
@@ -117,6 +121,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                     if (SynchroManager.getInstance(context).hasActivateSync(acc))
                     {
                         ContentValues cValues = new ContentValues();
+                        cValues.put(SynchroSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
                         if (cursorId.getInt(SynchroSchema.COLUMN_IS_FAVORITE_ID) > 0)
                         {
                             // Unfavorite
