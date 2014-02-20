@@ -100,12 +100,14 @@ public final class SynchroSchema extends OperationSchema
     
     // Update database to add Sync Folder column
     // DB version 5.
-    private static final String QUERY_SYNC_FOLDER_COLUM = 
-            "ALTER TABLE " + TABLENAME 
-            + " ADD COLUMN " + COLUMN_IS_FAVORITE + " INT DEFAULT 1,"
-            + " ADD COLUMN " + COLUMN_IS_ROOT + " INT DEFAULT 1,"
-            + " ADD COLUMN " + COLUMN_DOC_SIZE_BYTES + " LONG DEFAULT 0" 
-            +";";
+    private static final String QUERY_SYNC_FOLDER_COLUM_1 = "ALTER TABLE " + TABLENAME + " ADD COLUMN "
+            + COLUMN_IS_FAVORITE + " INT DEFAULT 1;";
+
+    private static final String QUERY_SYNC_FOLDER_COLUM_2 = "ALTER TABLE " + TABLENAME + " ADD COLUMN "
+            + COLUMN_IS_ROOT + " INT DEFAULT 0;";
+
+    private static final String QUERY_SYNC_FOLDER_COLUM_3 = "ALTER TABLE " + TABLENAME + " ADD COLUMN "
+            + COLUMN_DOC_SIZE_BYTES + " LONG DEFAULT 0;";
 
     // ////////////////////////////////////////////////////
     // LIFECYCLE
@@ -119,7 +121,9 @@ public final class SynchroSchema extends OperationSchema
     {
         if (oldVersion <= DatabaseVersionNumber.VERSION_1_4_0)
         {
-            db.execSQL(QUERY_SYNC_FOLDER_COLUM);
+            db.execSQL(QUERY_SYNC_FOLDER_COLUM_1);
+            db.execSQL(QUERY_SYNC_FOLDER_COLUM_2);
+            db.execSQL(QUERY_SYNC_FOLDER_COLUM_3);
         }
     }
     

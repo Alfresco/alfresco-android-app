@@ -108,6 +108,12 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
             }
         });
     }
+    
+    @Override
+    protected void updateIcon(GenericViewHolder vh, Site item)
+    {
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_flatten));
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU

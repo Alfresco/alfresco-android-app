@@ -36,6 +36,7 @@ public class SyncDownloadCallBack extends AbstractSyncOperationCallback<ContentF
     @Override
     public void onPreExecute(Operation<ContentFile> task)
     {
+        if(((SyncDownloadThread) task).getDocument() == null){return;}
         NotificationHelper.createProgressNotification(getBaseContext(),
                 getNotificationId(),
                 getBaseContext().getString(R.string.download_progress), ((SyncDownloadThread) task).getDocument()

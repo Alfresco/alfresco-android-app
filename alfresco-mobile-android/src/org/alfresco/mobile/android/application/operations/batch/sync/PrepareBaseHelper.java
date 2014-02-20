@@ -670,11 +670,17 @@ public abstract class PrepareBaseHelper
     {
         boolean hasMoreItems = true;
         PagingResult<Node> childrenResult = null;
+        ListingContext lc = new ListingContext();
+        lc.setMaxItems(100);
+        lc.setSkipCount(0);
 
         while (hasMoreItems)
         {
-            childrenResult = session.getServiceRegistry().getDocumentFolderService()
-                    .getChildren(currentFolder, listingContext);
+            childrenResult = session.getServiceRegistry().getDocumentFolderService().getChildren(currentFolder, lc);
+            if (hasMoreItems)
+            {
+                lc.setSkipCount(childrenResult.getTotalItems());
+            }
             hasMoreItems = childrenResult.hasMoreItems();
             prepareUpdate(favoriteFolder, currentFolder, childrenResult.getList());
         }
@@ -718,7 +724,7 @@ public abstract class PrepareBaseHelper
                 prepareDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID), childrenCursor);
                 if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SynchroSchema.COLUMN_MIMETYPE_ID)))
                 {
-                    
+
                     prepareChildrenFolderDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
                 }
             }
@@ -750,8 +756,8 @@ public abstract class PrepareBaseHelper
                     // Parent is present. We just unfavorite the node
                     ContentValues cValues = new ContentValues();
                     cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, "");
-                    context.getContentResolver().update(SynchroManager.getUri(nodeCursor.getLong(SynchroSchema.COLUMN_ID_ID)),
-                            cValues, null, null);
+                    context.getContentResolver().update(
+                            SynchroManager.getUri(nodeCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null, null);
                 }
                 else
                 {
@@ -999,10 +1005,17 @@ public abstract class PrepareBaseHelper
         long length = 0;
         boolean hasMoreItems = true;
         PagingResult<Node> nodes = null;
+        ListingContext lc = new ListingContext();
+        lc.setMaxItems(100);
+        lc.setSkipCount(0);
 
         while (hasMoreItems)
         {
-            nodes = session.getServiceRegistry().getDocumentFolderService().getChildren(folder, listingContext);
+            nodes = session.getServiceRegistry().getDocumentFolderService().getChildren(folder, lc);
+            if (hasMoreItems)
+            {
+                lc.setSkipCount(nodes.getTotalItems());
+            }
             hasMoreItems = nodes.hasMoreItems();
 
             for (Node node : nodes.getList())
