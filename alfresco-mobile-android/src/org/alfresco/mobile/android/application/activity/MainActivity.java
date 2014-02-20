@@ -155,12 +155,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        //TODO REMOVE IT
-        // FOR TEST PURPOSE
-        //SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        //BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        //MimeTypeSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         activateCheckPasscode = false;

@@ -1,12 +1,12 @@
 package org.alfresco.mobile.android.application.fragments.search;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.mimetype.MimeType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -82,24 +82,19 @@ public class QueryHelper
         // Modified FROM
         if (modificationFrom != null)
         {
-            modificationFrom.set(Calendar.HOUR, 00);
-            modificationFrom.set(Calendar.MINUTE, 00);
-            modificationFrom.set(Calendar.SECOND, 00);
-            modificationFrom.set(Calendar.MILLISECOND, 000);
+            GregorianCalendar localModificationFrom = (GregorianCalendar) modificationFrom.clone();
+            localModificationFrom.add(Calendar.DAY_OF_MONTH, -1);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_SUPERIOR,
-                    DateUtils.format(modificationFrom));
+                    formatLast(localModificationFrom));
         }
 
         // Modified TO
         if (modificationTo != null)
         {
-            modificationTo.add(Calendar.DAY_OF_MONTH, 1);
-            modificationFrom.set(Calendar.HOUR, 00);
-            modificationFrom.set(Calendar.MINUTE, 00);
-            modificationFrom.set(Calendar.SECOND, 00);
-            modificationFrom.set(Calendar.MILLISECOND, 000);
+            GregorianCalendar localModificationTo = (GregorianCalendar) modificationTo.clone();
+            localModificationTo.add(Calendar.DAY_OF_MONTH, 1);
             addDateParameter(whereClause, PropertyIds.LAST_MODIFICATION_DATE, OPERATOR_INFERIOR,
-                    DateUtils.format(modificationTo));
+                    formatFirst(localModificationTo));
         }
 
         queryBuilder.append(whereClause);
@@ -122,6 +117,17 @@ public class QueryHelper
     // ///////////////////////////////////////////////////////////////////////////
     // HELPER
     // ///////////////////////////////////////////////////////////////////////////
+    public static String formatFirst(GregorianCalendar calendar)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(calendar.getTime()).concat("T00:00:00.000Z");
+    }
+    public static String formatLast(GregorianCalendar calendar)
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        return dateFormat.format(calendar.getTime()).concat("T23:59:59.999Z");
+    }
+    
     private static void addParenFolderParameter(StringBuilder builder, Folder value)
     {
         if (value == null) { return; }

@@ -129,7 +129,7 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
                     pickFragmentTag));
             if (fragmentPick != null)
             {
-                fragmentPick.onDatePicked(dateId, new GregorianCalendar(year, month, day));
+                fragmentPick.onDatePicked(dateId, new GregorianCalendar(year, month, day, 0, 0, 0));
             }
         }
     }
