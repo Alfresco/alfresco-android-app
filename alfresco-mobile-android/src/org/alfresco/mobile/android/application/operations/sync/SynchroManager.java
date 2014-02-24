@@ -655,6 +655,7 @@ public final class SynchroManager extends OperationManager
 
     public void unsync(Account account)
     {
+        if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
         group.enqueue(new CleanSyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
@@ -676,12 +677,14 @@ public final class SynchroManager extends OperationManager
 
     public boolean isSynced(Account account, Node node)
     {
+        if (account == null || node  == null) { return false; }
         if (node.isFolder()) { return false; }
         return isSynced(account, node.getIdentifier());
     }
 
     public File getSyncFile(Account account, Node node)
     {
+        if (account == null || node  == null) { return null; }
         if (node.isFolder()) { return null; }
         if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext, account,
                 node.getName(), node.getIdentifier()); }
