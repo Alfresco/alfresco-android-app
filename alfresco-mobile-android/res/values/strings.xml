@@ -42,11 +42,13 @@
     <string name="account">Account</string>
     <string name="action_add_account">Add</string>
     <string name="account_username">Username</string>
+    <string name="account_username_hint">Enter the username (Required)</string>
     <string name="account_password">Password</string>
+    <string name="account_password_hint">Enter the password (Required)</string>
     <string name="account_hostname">Hostname</string>
-    <string name="account_hostname_hint">www.example.com (Required)</string>
+    <string name="account_hostname_hint">Enter the hostname (www.example.com)</string>
     <string name="account_description">Description</string>
-    <string name="account_description_hint">Alfresco Server (Optional)</string>
+    <string name="account_description_hint">Enter an alias for this account (Optional)</string>
     <string name="account_advanced">Advanced</string>
     <string name="account_authentication">Account Authentication</string>
     <string name="account_https">HTTPS</string>
@@ -694,6 +696,7 @@
     <string name="task_user_no_comment">, but did not provide a comment</string>
     <string name="task_user_completed"><![CDATA[%s <b>completed this task</b>]]></string>
     <string name="task_user_not_completed"><![CDATA[%s <b>did not complete this task yet</b>]]></string>
+    <string name="task_add_comment_hint">Add your comment</string>
     <string name="task_approve">Approve</string>
     <string name="task_reject">Reject</string>
     <string name="task_comment">Comment</string>
@@ -710,6 +713,7 @@
     <string name="task_dueat">Due Date</string>
     <string name="task_no_dueat">Due Date</string>
     <string name="tasks_history">Tasks History</string>
+    <string name="task_documents">Documents</string>
     
     
     <!-- Tasks Filters -->

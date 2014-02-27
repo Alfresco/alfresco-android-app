@@ -31,11 +31,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="bottom|left"
-            android:hint="Add your comment"
+            android:hint="@string/task_add_comment_hint"
             android:inputType="textMultiLine"
             android:lines="1"
-            android:maxLines="2"
-            />
+            android:maxLines="2" />
 
         <ImageButton
             android:id="@+id/action_reject"
