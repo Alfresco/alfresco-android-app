@@ -59,7 +59,7 @@
                         android:layout_width="@dimen/thumbnail_height"
                         android:layout_height="@dimen/thumbnail_height"
                         android:layout_gravity="top"
-                        android:contentDescription="@string/thumbnail"
+                        android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/mime_file" />
                 </FrameLayout>

@@ -50,7 +50,7 @@
                 android:id="@+id/favorite_icon"
                 android:layout_width="12dip"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/thumbnail"
+        		android:contentDescription="@null"
                 android:scaleType="centerInside"
                 android:src="@drawable/mime_file"
                 android:visibility="gone"

@@ -42,7 +42,7 @@
         
         <ImageView
         android:id="@+id/icon"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:scaleType="fitXY"
         android:layout_gravity="top"
         android:layout_width="@dimen/thumbnail_height"

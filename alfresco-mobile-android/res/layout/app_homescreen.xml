@@ -21,7 +21,6 @@
     android:gravity="center" >
 
     <LinearLayout
-        android:id="@+id/left_pane_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -30,6 +29,7 @@
         android:visibility="visible" >
 
         <TextView
+            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
@@ -42,6 +42,7 @@
             android:drawableLeft="@drawable/ic_cloud"
             android:onClick="cloud"
             android:text="@string/home_sign_cloud"
+            android:contentDescription="@string/home_sign_cloud"
             />
 
         <TextView
@@ -56,7 +57,9 @@
             style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="launch"
-            android:text="@string/home_account" />
+            android:text="@string/home_account"
+            android:contentDescription="@string/home_account"
+             />
 
         <TextView
             android:layout_width="match_parent"

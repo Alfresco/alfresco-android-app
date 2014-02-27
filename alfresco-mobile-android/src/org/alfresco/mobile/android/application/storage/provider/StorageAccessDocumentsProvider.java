@@ -769,7 +769,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 row.add(Root.COLUMN_TITLE, getContext().getString(R.string.account_alfresco_cloud));
                 break;
             case Account.TYPE_ALFRESCO_CMIS:
-                row.add(Root.COLUMN_TITLE, getContext().getString(R.string.account_alfresco_onpremise));
+                row.add(Root.COLUMN_TITLE, getContext().getString(R.string.account_alfresco));
                 break;
             default:
                 break;

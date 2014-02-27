@@ -41,7 +41,7 @@
     <ImageView
         android:id="@+id/choose"
         style="?AlfrescoTheme.ImageView.Thumbnail"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:visibility="visible" />
 
 </LinearLayout>

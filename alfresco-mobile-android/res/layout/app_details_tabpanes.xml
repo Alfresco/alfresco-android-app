@@ -54,7 +54,7 @@
                         android:id="@+id/icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:contentDescription="@string/thumbnail"
+                        android:contentDescription="@null"
                         android:gravity="center"
                         android:scaleType="centerInside"
                         android:src="@drawable/mime_file"
@@ -97,6 +97,7 @@
 
                 <ImageView
                     android:id="@+id/action_openin"
+                    android:contentDescription="@string/open_in"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:src="@drawable/ic_open_dark" />
 
@@ -121,7 +122,7 @@
                 <ImageView
                     android:id="@+id/action_share"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
-                    android:contentDescription="@string/like"
+                    android:contentDescription="@string/share"
                     android:src="@drawable/ic_share" />
 
                 <FrameLayout

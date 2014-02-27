@@ -34,8 +34,6 @@
             android:layout_margin="5dip"
             android:layout_weight="1"
             android:hint="@string/create_document_name_hint" >
-
-            <requestFocus />
         </EditText>
 
         <TextView

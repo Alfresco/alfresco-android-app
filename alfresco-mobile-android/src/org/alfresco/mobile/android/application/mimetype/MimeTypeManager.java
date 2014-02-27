@@ -161,6 +161,16 @@ public final class MimeTypeManager
         }
     }
 
+    public static MimeType getMimetype(Context context, String fileName)
+    {
+        String extension = "";
+        if (fileName != null)
+        {
+            extension = getExtension(fileName);
+        }
+        return findByExtension(context, extension);
+    }
+
     public static MimeType findById(Context context, long id)
     {
         Cursor cursor = null;
@@ -181,7 +191,7 @@ public final class MimeTypeManager
         }
         finally
         {
-           CursorUtils.closeCursor(cursor);
+            CursorUtils.closeCursor(cursor);
         }
         return null;
     }
@@ -207,7 +217,7 @@ public final class MimeTypeManager
         }
         finally
         {
-           CursorUtils.closeCursor(cursor);
+            CursorUtils.closeCursor(cursor);
         }
         return null;
     }
@@ -325,7 +335,7 @@ public final class MimeTypeManager
         }
         finally
         {
-           CursorUtils.closeCursor(cursor);
+            CursorUtils.closeCursor(cursor);
         }
     }
 }

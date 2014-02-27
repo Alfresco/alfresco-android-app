@@ -86,7 +86,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dip"
                             android:layout_marginRight="3dip"
-                            android:contentDescription="@string/thumbnail"
+                        	android:contentDescription="@null"
                             android:scaleType="centerInside"
                             android:src="@drawable/mime_file"
                             android:visibility="gone" />
@@ -97,7 +97,7 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dip"
                             android:layout_marginRight="3dip"
-                            android:contentDescription="@string/thumbnail"
+                        	android:contentDescription="@null"
                             android:scaleType="centerInside"
                             android:src="@drawable/sync_status_pending"
                             android:visibility="gone" />

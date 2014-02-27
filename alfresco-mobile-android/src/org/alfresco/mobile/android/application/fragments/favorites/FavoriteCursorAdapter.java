@@ -21,11 +21,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
+import org.alfresco.mobile.android.application.mimetype.MimeType;
 import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
@@ -90,8 +94,19 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         }
         else
         {
-            vh.icon.setImageResource(MimeTypeManager.getIcon(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
+            MimeType mime = MimeTypeManager.getMimetype(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID));
+            vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context,
+                    cursor.getString(SynchroSchema.COLUMN_TITLE_ID), true));
+            if (mime != null)
+            {
+                AccessibilityHelper.addContentDescription(vh.icon, mime.getDescription());
+            }
+            else
+            {
+                AccessibilityHelper.removeContentDescription(vh.icon);
+            }
         }
+
     }
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
@@ -173,6 +188,7 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         {
             vh.bottomText.setVisibility(View.VISIBLE);
             vh.bottomText.setText(createContentBottomText(context, cursor));
+            AccessibilityHelper.addContentDescription(vh.bottomText, createContentDescriptionBottomText(context, cursor));
         }
         else
         {
@@ -189,6 +205,8 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
             vh.choose.setTag(R.id.is_favorite, favorited);
+            AccessibilityHelper.addContentDescription(vh.choose, String.format(context.getString(R.string.more_options_favorite),
+                    cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
             vh.choose.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -245,6 +263,23 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         }
 
         return s;
+    }
+
+    private String createContentDescriptionBottomText(Context context, Cursor cursor)
+    {
+        StringBuilder s = new StringBuilder();
+
+        s.append(context.getString(R.string.metadata_modified));
+        s.append(Formatter.formatToRelativeDate(context,
+                new Date(cursor.getLong(SynchroSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID))));
+        long size = cursor.getLong(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+        if (size > 0)
+        {
+            s.append(" - ");
+            s.append(context.getString(R.string.metadata_size));
+            s.append(Formatter.formatFileSize(context, size));
+        }
+        return s.toString();
     }
 
     protected void updateTopText(ProgressViewHolder vh, Cursor cursor)

@@ -33,7 +33,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-                            android:layout_marginBottom="@dimen/properties_details_padding"
+            android:layout_marginBottom="@dimen/properties_details_padding"
              >
 
             <LinearLayout
@@ -47,7 +47,7 @@
                     android:layout_height="@dimen/profile_icon_size"
                     android:layout_gravity="center"
                     android:layout_margin="15dip"
-                    android:contentDescription="@string/thumbnail"
+                    android:contentDescription="@null"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_person_light" />
 
@@ -101,29 +101,31 @@
                 <ImageView
                     android:id="@+id/action_call"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/call"
                     android:src="@drawable/ic_call" />
 
                 <ImageView
                     android:id="@+id/action_skype"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/skype"
                     android:src="@drawable/ic_skype" />
 
                 <ImageView
                     android:id="@+id/action_email"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
-                    android:contentDescription="@string/favorites_document"
+                    android:contentDescription="@string/email"
                     android:src="@drawable/ic_send_mail" />
 
                 <ImageView
                     android:id="@+id/action_im"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
-                    android:contentDescription="@string/like"
+                    android:contentDescription="@string/instantMessaging"
                     android:src="@drawable/ic_im" />
 
                 <ImageView
                     android:id="@+id/action_addcontact"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
-                    android:contentDescription="@string/like"
+                    android:contentDescription="@string/contact_add"
                     android:src="@drawable/ic_add_contact" />
 
                 <ImageView

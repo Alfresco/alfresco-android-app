@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="?AlfrescoTheme.Background.White"
@@ -104,7 +103,46 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/picker_due_date"
                             android:src="@drawable/ic_calendar_pick" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/thumbnail_height"
+                    android:minHeight="@dimen/thumbnail_height" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_assignees" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/process_assignee"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_assignee"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/picker_assignees"
+                            android:src="@drawable/ic_person" />
                     </LinearLayout>
                 </TableRow>
 
@@ -140,45 +178,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_repository_dark" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/repository_hostname_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/thumbnail_height"
-                    android:minHeight="@dimen/thumbnail_height" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/process_assignees" />
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="true"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/process_assignee"
-                            android:layout_width="0dip"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/spinner_holo_light"
-                            android:gravity="left|bottom"
-                            android:paddingLeft="10dip"
-                            android:textColor="@color/hint_foreground_holo_light" />
-
-                        <ImageButton
-                            android:id="@+id/action_process_assignee"
-                            style="?android:attr/buttonBarButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_person" />
+                            android:src="@drawable/ic_repository_dark"
+                            android:contentDescription="@string/picker_attachments" />
                     </LinearLayout>
                 </TableRow>
 
@@ -212,14 +213,16 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_remove" />
+                            android:src="@drawable/ic_remove"
+                            android:contentDescription="@string/action_remove_approvers" />
 
                         <ImageButton
                             android:id="@+id/action_add_approvers"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_add" />
+                            android:src="@drawable/ic_add"
+                            android:contentDescription="@string/action_add_approvers" />
                     </LinearLayout>
                 </TableRow>
 

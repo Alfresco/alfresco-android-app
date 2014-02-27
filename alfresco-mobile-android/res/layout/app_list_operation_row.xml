@@ -52,7 +52,7 @@
         android:id="@+id/choose"
         style="?AlfrescoTheme.ImageView"
         android:background="@drawable/btn_default_holo_light"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:src="@drawable/ic_validate"
         android:visibility="visible" />
 

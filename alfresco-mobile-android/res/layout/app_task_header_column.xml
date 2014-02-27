@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/header_group"
     android:layout_width="fill_parent"
@@ -32,6 +31,7 @@
             android:id="@+id/task_priority_icon"
             style="?AlfrescoTheme.ImageView"
             android:layout_gravity="bottom"
+            android:contentDescription="@null"
             android:src="@drawable/ic_priority_medium" />
 
         <LinearLayout
@@ -58,7 +58,7 @@
             android:id="@+id/task_type_icon"
             style="?AlfrescoTheme.ImageView"
             android:layout_gravity="bottom"
-            android:contentDescription="@string/thumbnail"
+            android:contentDescription="@null"
             android:src="@drawable/ic_validate" />
 
         <LinearLayout
@@ -91,7 +91,7 @@
             android:id="@+id/task_initiator_icon"
             style="?AlfrescoTheme.ImageView"
             android:layout_gravity="bottom"
-            android:contentDescription="@string/thumbnail"
+            android:contentDescription="@null"
             android:src="@drawable/ic_person" />
 
         <LinearLayout
@@ -119,6 +119,7 @@
             android:id="@+id/task_due_date_icon"
             style="?AlfrescoTheme.ImageView"
             android:layout_gravity="bottom"
+            android:contentDescription="@null"
             android:src="@drawable/ic_calendar_pick" />
 
         <LinearLayout

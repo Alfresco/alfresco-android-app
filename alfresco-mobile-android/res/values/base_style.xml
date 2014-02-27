@@ -415,7 +415,7 @@
     <style name="about_version_panel">
         <item name="android:layout_margin">10dip</item>
         <item name="android:layout_weight">0.2</item>
-        <item name="android:layout_gravity">bottom</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <style name="about_text_normal" parent="AlfrescoHoloTheme.Text">
@@ -424,6 +424,7 @@
 
     <style name="about_text_normal_center" parent="AlfrescoHoloTheme.Text">
         <item name="android:textSize">@dimen/about_text_size</item>
+        <item name="android:layout_gravity">center</item>
     </style>
 
     <!-- ======== -->

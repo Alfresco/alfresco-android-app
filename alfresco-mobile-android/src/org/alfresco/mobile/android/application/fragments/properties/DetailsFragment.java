@@ -53,6 +53,7 @@ import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragme
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -144,6 +145,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private UpdateReceiver receiver;
 
+    private String nodeIdentifier;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -189,6 +192,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             SessionUtils.checkSession(getActivity(), alfSession);
         }
         super.onActivityCreated(savedInstanceState);
+        
+        if (node != null)
+        {
+            // Detect if isRestrictable
+            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+            }
+        }
+        else if (nodeIdentifier != null)
+        {
+            getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
+        }
     }
 
     @Override
@@ -210,7 +227,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
-        String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
+        nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
         parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
         if (node == null && nodeIdentifier == null) { return null; }
 
@@ -220,22 +237,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             tabSelection = savedInstanceState.getInt(TAB_SELECTED);
             savedInstanceState.remove(TAB_SELECTED);
         }
-
-        if (node != null)
-        {
-            // Detect if isRestrictable
-            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            }
-        }
-        else if (nodeIdentifier != null)
-        {
-            getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
-        }
+      
         return vRoot;
     }
+    
+    
 
     @Override
     public void onResume()
@@ -1474,6 +1480,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isLiked ? R.drawable.ic_like : R.drawable.ic_unlike;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                                AccessibilityHelper.addContentDescription(imageView, isLiked ?  R.string.unlike : R.string.like);
+                                AccessibilityHelper.notifyActionCompleted(context, isLiked ?  R.string.like_completed : R.string.unlike_completed);
                             }
                             return;
                         }
@@ -1492,6 +1500,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isFavorite ? R.drawable.ic_favorite_dark : R.drawable.ic_unfavorite_dark;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                                AccessibilityHelper.addContentDescription(imageView, isFavorite ?  R.string.unfavorite : R.string.favorite);
+                                AccessibilityHelper.notifyActionCompleted(context, isFavorite ?  R.string.favorite_completed : R.string.unfavorite_completed);
                             }
                             return;
                         }

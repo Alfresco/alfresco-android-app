@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
@@ -54,6 +55,8 @@ public class CloudSignupDialogFragment extends DialogFragment
     private String password;
 
     private Button signup;
+
+    private View rootView;
 
     public CloudSignupDialogFragment()
     {
@@ -96,12 +99,12 @@ public class CloudSignupDialogFragment extends DialogFragment
             UIUtils.displayTitle(getActivity(), R.string.sign_up_cloud);
         }
 
-        View v = inflater.inflate(R.layout.app_cloud_signup, container, false);
+        rootView = inflater.inflate(R.layout.app_cloud_signup, container, false);
 
-        TextView t2 = (TextView) v.findViewById(R.id.cloud_signup_hint);
+        TextView t2 = (TextView) rootView.findViewById(R.id.cloud_signup_hint);
         t2.setMovementMethod(LinkMovementMethod.getInstance());
 
-        signup = (Button) v.findViewById(R.id.cloud_signup_action);
+        signup = (Button) rootView.findViewById(R.id.cloud_signup_action);
         signup.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -111,7 +114,7 @@ public class CloudSignupDialogFragment extends DialogFragment
             }
         });
 
-        return v;
+        return rootView;
     }
 
     public void signup(View v)
@@ -167,6 +170,20 @@ public class CloudSignupDialogFragment extends DialogFragment
         {
             formValue = (EditText) findViewByIdInternal(ids[i]);
             formValue.addTextChangedListener(watcher);
+        }
+
+        if (AccessibilityHelper.isEnabled(getActivity()))
+        {
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.cloud_signup_firstname),
+                    R.string.cloud_signup_firstname_hint);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.cloud_signup_lastname),
+                    R.string.cloud_signup_lastname_hint);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.cloud_signup_email),
+                    R.string.cloud_signup_email_hint);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.cloud_signup_password),
+                    R.string.cloud_signup_password_hint_long);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.cloud_signup_confirm),
+                    R.string.cloud_signup_confirm_hint);
         }
     }
 

@@ -32,7 +32,8 @@
         android:horizontalSpacing="0dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="0dp" />
+        android:verticalSpacing="0dp"
+        android:importantForAccessibility="yes" />
 
     <include
         android:layout_width="fill_parent"

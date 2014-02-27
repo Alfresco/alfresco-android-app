@@ -57,6 +57,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
@@ -344,6 +345,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             getActivity().getActionBar().setDisplayShowCustomEnabled(false);
             getActivity().setTitle(titleId);
+            AccessibilityHelper.sendAccessibilityEvent(getActivity());
             if (shortcutAlreadyVisible)
             {
                 displayPathShortcut();
@@ -882,7 +884,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 

@@ -29,7 +29,7 @@
         android:layout_height="@dimen/process_diagram_height"
         android:layout_gravity="center"
         android:background="@android:color/white"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:scaleType="fitCenter"
         android:src="@drawable/mime_256_aep" />
 

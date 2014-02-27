@@ -27,7 +27,7 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="center"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:scaleType="centerInside"
         />
 

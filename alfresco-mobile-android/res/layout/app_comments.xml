@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/btn_simple"
             android:src="@drawable/ic_send"
-            android:text="@string/add" />
+            android:contentDescription="@string/add_comment" />
     </LinearLayout>
 
     <include

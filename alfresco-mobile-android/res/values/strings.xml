@@ -40,23 +40,35 @@
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
     <string name="account">Account</string>
-    <string name="action_add_account">Add</string>
+    <string name="action_add_account">Add an account</string>
     <string name="account_username">Username</string>
+    <string name="account_username_required_hint">Username (Required)</string>
     <string name="account_password">Password</string>
+    <string name="account_password_required_hint">Password (Required)</string>
     <string name="account_hostname">Hostname</string>
+    <string name="account_hostname_required_hint">Hostname like www.example.com (Required)</string>
     <string name="account_hostname_hint">www.example.com (Required)</string>
     <string name="account_description">Description</string>
+    <string name="account_description_optional_hint">Description (Optional). By default it\'s Alfresco Server</string>
     <string name="account_description_hint">Alfresco Server (Optional)</string>
     <string name="account_advanced">Advanced</string>
     <string name="account_authentication">Account Authentication</string>
     <string name="account_https">HTTPS</string>
+    <string name="account_https_on_hint">HTTPS on</string>
+    <string name="account_https_off_hint">HTTPS off</string>
     <string name="account_port">Port</string>
+    <string name="account_port_hint">Port (Optional)</string>
     <string name="account_servicedocument">Service URL</string>
+    <string name="account_servicedocument_hint">Service URL (Optional). </string>
     <string name="account_wizard_step2_title">Account Authentication Information</string>
     <string name="account_verify">Verifying Account Information&#8230;</string>
     <string name="email_hint">example@acme.com</string>
     <string name="account_validate">Save</string>
-
+    <string name="account_validate_hint">Save your account information</string>
+    <string name="account_validate_disable_hint">Please fill Username, Password and Hostname fields.</string>
+    <string name="account_validate_disable_url_hint">Your hostname and service document value seems to be wrong. Please check your account settings.</string>
+     
+    
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
     <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
 
@@ -71,6 +83,9 @@
     <string name="account_not_activated_description">Your account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
+    <string name="account_edit_hint">Edit "%s" account informations</string>
+    <string name="account_delete_hint">Delete "%s" account</string>
+    
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Please wait</string>
@@ -183,11 +198,16 @@
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
+    <string name="cloud_signup_firstname_hint">First Name (Required)</string>
     <string name="cloud_signup_lastname">Last Name</string>
+    <string name="cloud_signup_lastname_hint">Last Name (Required)</string>
     <string name="cloud_signup_email">Email</string>
+    <string name="cloud_signup_email_hint">Email (Required) like example@acme.com</string>
     <string name="cloud_signup_password">Password</string>
+    <string name="cloud_signup_password_hint_long">Password (Required) 6 characters minimum.</string>
     <string name="cloud_signup_password_hint">6 characters min.</string>
     <string name="cloud_signup_confirm">Confirm Password</string>
+    <string name="cloud_signup_confirm_hint">Confirm Password (Required)</string>
     <string name="cloud_signup_action">Sign Up</string>
     <string name="cloud_signup_hint">By tapping Sign Up, you are agreeing to the Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">Terms of Service</a> and <a href="http://www.alfresco.com/privacy">Privacy Policy</a>.</string>
     <string name="sign_up_cloud">Sign Up for Alfresco Cloud</string>
@@ -290,6 +310,9 @@
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
+    
+    <!-- Comment -->
+    <string name="comment_add_hint">Add your comment here&#8230;</string>
 
     <!-- DATA PROTECTION -->
     <string name="encrypt_title">Encrypting content</string>
@@ -510,12 +533,16 @@
     <string name="action_view_properties">View Properties</string>
     <string name="action_edit_properties">Edit Properties</string>
     <string name="like_in_progress">"Like" in progress</string>
+    <string name="like_completed">Like completed</string>
     <string name="like_complete">Like complete</string>
+    <string name="unlike_completed">Unlike completed</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
     <string name="favorite_in_progress">"Favorite" in progress</string>
+    <string name="favorite_completed">Favorite completed</string>
     <string name="favorite_complete">Favorite complete</string>
-
+    <string name="unfavorite_completed">Unfavorite completed</string>
+    
     <!-- Operations Status -->
     <string name="status_pending">Pending</string>
     <string name="status_running">Running</string>
@@ -620,6 +647,7 @@
     <string name="mobile">Mobile</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">IM</string>
+    <string name="instantMessaging">Instant Messaging</string>
     <string name="googleId">Google Username</string>
     <string name="company">Company</string>
     <string name="companyDetails">Company Details</string>
@@ -629,6 +657,8 @@
     <string name="companyTelephone">Telephone</string>
     <string name="companyFax">Fax</string>
     <string name="companyEmail">Email</string>
+    <string name="call">Call</string>
+    <string name="skype">Skype</string>
     <string name="start_chat">Start a chat</string>
     <string name="start_call">Start a call</string>
     <string name="start_video_call">Start a video call</string>
@@ -656,7 +686,7 @@
     <string name="empty_items">No Attachments</string>
     <string name="task_items">Item(s)</string>
     <string name="empty_process_definition">No Process</string>
-    <string name="workflow_start">Start a workflow</string>
+    <string name="workflow_start">Create a task</string>
     <string name="task_actions">Response</string>
     <string name="tasks">Tasks</string>
     <string name="task_items">Documents</string>
@@ -735,7 +765,7 @@
     <string name="process_choose_attachments">Choose attachments</string>
     <string name="process_start_title">Start Process</string>
     <string name="process_title">Title</string>
-    <string name="process_title_hint">New task</string>
+    <string name="process_title_hint">New Task Title (Required)</string>
     <string name="process_due_on">Due on</string>
     <string name="process_no_date">No date</string>
     <string name="process_assignees">Assignees</string>
@@ -767,6 +797,13 @@
     <string name="task_review_approve_description">Assign a task to one or more persons to review and approve documents.</string>
     <string name="task_delegate_in_progress">Reassign in progress&#8230;</string>
     <string name="task_delegate_complete">Reassign completed</string>
+    <string name="picker_assignees">Select assignees</string>
+    <string name="picker_due_date">Select a due date</string>
+    <string name="picker_attachments">Select attachments</string>
+    <string name="action_remove_approvers">Remove one approver</string>
+    <string name="action_add_approvers">Add one approver</string>
+    
+    
 
     <!-- PROCESS NAME -->
     <string name="process_adhoc">Adhoc Workflow</string>
@@ -813,9 +850,33 @@
     <string name="mimetype_music">Music</string>
     <string name="mimetype_text">Text</string>
     <string name="error_search_fields_empty">Please fill at least one field</string>
+    <string name="picker_user">Select a person</string>
+    <string name="picker_date_from">Select a date from</string>
+    <string name="picker_date_to">Select a date to</string>
+        
     
     <!-- Storage Access Framework -->
     <string name="menu_browse_favorites_folder">Favorites Folder</string>
-    <string name="account_alfresco_onpremise">Alfresco Server</string>
+    <string name="account_alfresco">Alfresco</string>
     <string name="account_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_alfresco_onpremise">Alfresco On Premise</string>
+    
+    
+    <!-- Accessibility -->
+    <string name="mime_folder">Folder</string>
+    <string name="mime_document">Document</string>
+    <string name="more_options_folder">More options for Folder %s</string>
+    <string name="more_options_favorite">More options for %s</string>
+    <string name="mime_site">Site</string>
+    <string name="more_options_site">More options for Site %s</string>
+    <string name="navigation_drawer_description">Alfresco : Open Navigation Drawer</string>
+    <string name="metadata_modified">Modified </string>
+    <string name="metadata_created_by">Created by %s</string>
+    <string name="metadata_size">Size </string>
+    <string name="contact_card">Open contact card for %s </string>
+    <string name="add_comment">Send a comment</string>
+    <string name="advanced_search_hint">Advanced Search Button</string>
+    <string name="add_menu">Add to this folder</string>
+    
+    
 </resources>

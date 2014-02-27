@@ -75,7 +75,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar_pick" />
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_due_date" />
             </LinearLayout>
 
             <TextView
@@ -105,7 +106,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person" />
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/picker_assignees" />
             </LinearLayout>
 
             <TextView
@@ -135,7 +137,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_repository_dark" />
+                    android:src="@drawable/ic_repository_dark"
+                    android:contentDescription="@string/picker_attachments" />
             </LinearLayout>
 
             <TextView
@@ -165,14 +168,16 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_remove" />
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="@string/action_remove_approvers" />
 
                 <ImageButton
                     android:id="@+id/action_add_approvers"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_add" />
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="@string/action_add_approvers" />
             </LinearLayout>
 
             <TextView

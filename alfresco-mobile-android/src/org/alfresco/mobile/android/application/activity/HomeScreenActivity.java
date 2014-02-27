@@ -58,7 +58,7 @@ public class HomeScreenActivity extends BaseActivity
         {
             HomeScreenFragment newFragment = new HomeScreenFragment();
             FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                    HomeScreenFragment.TAG, false);
+                    HomeScreenFragment.TAG, false, false);
         }
     }
 
