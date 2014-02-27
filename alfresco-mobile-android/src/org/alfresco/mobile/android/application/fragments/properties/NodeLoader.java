@@ -101,6 +101,9 @@ public class NodeLoader extends AbstractBaseLoader<LoaderResult<Node>>
         String identifier = uri;
         try
         {
+            if (!ConnectivityUtils.hasInternetAvailable(getContext())) { throw new AlfrescoServiceException(
+                    "No Network"); }
+
             if (session == null)
             {
                 // Detect url
