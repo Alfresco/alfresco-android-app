@@ -51,6 +51,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 public abstract class PrepareBaseHelper
 {
@@ -721,11 +722,13 @@ public abstract class PrepareBaseHelper
 
             while (childrenCursor.moveToNext())
             {
-                prepareDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID), childrenCursor);
-                if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SynchroSchema.COLUMN_MIMETYPE_ID)))
+                if (childrenCursor.getInt(SynchroSchema.COLUMN_IS_FAVORITE_ID) == 0)
                 {
-
-                    prepareChildrenFolderDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                    prepareDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID), childrenCursor);
+                    if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SynchroSchema.COLUMN_MIMETYPE_ID)))
+                    {
+                        prepareChildrenFolderDelete(childrenCursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+                    }
                 }
             }
 
@@ -755,7 +758,7 @@ public abstract class PrepareBaseHelper
                 {
                     // Parent is present. We just unfavorite the node
                     ContentValues cValues = new ContentValues();
-                    cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, "");
+                    cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, 0);
                     context.getContentResolver().update(
                             SynchroManager.getUri(nodeCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null, null);
                 }
@@ -795,6 +798,7 @@ public abstract class PrepareBaseHelper
         catch (Exception e)
         {
             // Do Nothing
+            Log.e(TAG, Log.getStackTraceString(e));
         }
         finally
         {
@@ -807,7 +811,7 @@ public abstract class PrepareBaseHelper
     {
         // Unflag the folder favorite
         ContentValues cValues = new ContentValues();
-        cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, "");
+        cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, 0);
         cValues.put(SynchroSchema.COLUMN_DOC_SIZE_BYTES, 0);
         if (!ContentModel.TYPE_FOLDER.equals(nodeCursor.getString(SynchroSchema.COLUMN_MIMETYPE_ID)))
         {

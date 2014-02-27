@@ -359,8 +359,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                             + UpdateContentRequest.TYPE_ID + ")", null, null);
         }
         else if (id == LOADER_SYNC_ID) { return new CursorLoader(context, SynchroProvider.CONTENT_URI,
-                SynchroSchema.COLUMN_ALL, SynchroSchema.COLUMN_PARENT_ID + " LIKE '" + parentNode.getIdentifier()
-                        + "' AND " + SynchroSchema.COLUMN_STATUS + " != " + SyncOperation.STATUS_HIDDEN, null, null); }
+                SynchroSchema.COLUMN_ALL, SynchroSchema.COLUMN_PARENT_ID + " =\"" + parentNode.getIdentifier()
+                        + "\" AND " + SynchroSchema.COLUMN_STATUS + " NOT IN (" + SyncOperation.STATUS_HIDDEN +")", null, null); }
         return null;
     }
 

@@ -126,7 +126,7 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                     // Update Parent Folder if present
                     if (!TextUtils.isEmpty(parentIdentifier))
                     {
-                        SynchroManager.getInstance(context).updateParentFolder(acc, parentIdentifier);
+                        //SynchroManager.getInstance(context).updateParentFolder(acc, parentIdentifier);
                     }
                 }
             }
