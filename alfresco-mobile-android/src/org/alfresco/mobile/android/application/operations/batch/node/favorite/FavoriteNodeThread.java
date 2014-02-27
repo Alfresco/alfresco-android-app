@@ -125,7 +125,7 @@ public class FavoriteNodeThread extends NodeOperationThread<Boolean>
                         if (cursorId.getInt(SynchroSchema.COLUMN_IS_FAVORITE_ID) > 0)
                         {
                             // Unfavorite
-                            cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, "");
+                            cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, 0);
                         }
 
                         if (!hasSyncParent)
