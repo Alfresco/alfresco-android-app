@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.model.impl.CommentImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.TagHandlerList;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.manager.RenditionManager;
@@ -64,6 +65,8 @@ public class CommentAdapter extends BaseListAdapter<Comment, GenericViewHolder>
     protected void updateTopText(GenericViewHolder vh, Comment item)
     {
         vh.topText.setText(createContentBottomText(getContext(), item));
+        AccessibilityHelper.addContentDescription(vh.topText, String.format(context.getString(R.string.metadata_created_by),
+                createContentBottomText(getContext(), item)));
     }
 
     @Override
@@ -71,6 +74,12 @@ public class CommentAdapter extends BaseListAdapter<Comment, GenericViewHolder>
     {
         if (vh.content != null)
         {
+            if (AccessibilityHelper.isEnabled(getContext()))
+            {
+                vh.content.setTextIsSelectable(false);
+                AccessibilityHelper.addContentDescription(vh.content,
+                        Html.fromHtml(item.getContent().trim(), null, tagHandler).toString());
+            }
             vh.content
                     .setText(Html.fromHtml(item.getContent().trim(), null, tagHandler), TextView.BufferType.SPANNABLE);
         }
@@ -90,6 +99,9 @@ public class CommentAdapter extends BaseListAdapter<Comment, GenericViewHolder>
         });
 
         renditionManager.display(vh.icon, item.getCreatedBy(), R.drawable.ic_person);
+        AccessibilityHelper.addContentDescription(vh.icon, String.format(getContext().getString(R.string.contact_card),
+                ((CommentImpl) item).getCreatedByPerson().getFullName()));
+
     }
 
     private String createContentBottomText(Context context, Comment item)

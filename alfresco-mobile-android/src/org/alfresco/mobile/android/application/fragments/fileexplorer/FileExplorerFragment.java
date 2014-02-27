@@ -404,7 +404,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
 
             SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 

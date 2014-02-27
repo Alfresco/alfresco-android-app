@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.fragments.person.onPickPersonFrag
 import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -219,6 +220,15 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
                 clear();
             }
         });
+
+        // ACCESSIBILITY
+        if (AccessibilityHelper.isEnabled(getActivity()))
+        {
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.search_name), R.string.search_name);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.jobTitle), R.string.jobTitle);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.company), R.string.company);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.location), R.string.location);
+        }
     }
 
     private void initDocFolderForm()
@@ -341,6 +351,15 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
                 clear();
             }
         });
+
+        // ACCESSIBILITY
+        if (AccessibilityHelper.isEnabled(getActivity()))
+        {
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_name), R.string.metadata_prop_name);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_title), R.string.metadata_prop_title);
+            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_description),
+                    R.string.metadata_prop_description);
+        }
     }
 
     private void startPersonPicker()
@@ -498,7 +517,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         if (TextUtils.isEmpty(value)) { return; }
         if (builder.length() != 0)
         {
-            builder.append(" ");
+            builder.append(", ");
         }
         builder.append(key);
         builder.append(":");
@@ -510,7 +529,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         if (calendar == null) { return; }
         if (builder.length() != 0)
         {
-            builder.append(" ");
+            builder.append(", ");
         }
         builder.append(key);
         builder.append(":");

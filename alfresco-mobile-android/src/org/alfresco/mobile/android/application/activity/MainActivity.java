@@ -73,6 +73,7 @@ import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFrag
 import org.alfresco.mobile.android.application.fragments.workflow.task.TasksHelper;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.ReportManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
@@ -155,12 +156,6 @@ public class MainActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        //TODO REMOVE IT
-        // FOR TEST PURPOSE
-        //SynchroSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        //BatchOperationSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-        //MimeTypeSchema.reset(ApplicationManager.getInstance(this).getDatabaseManager().getWriteDb());
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 
         activateCheckPasscode = false;
@@ -968,7 +963,7 @@ public class MainActivity extends BaseActivity
         if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
-            AccountsFragment.getMenu(menu);
+            AccountsFragment.getMenu(this, menu);
             return true;
         }
 

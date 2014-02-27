@@ -64,6 +64,8 @@ public class MetadataFragment extends BaseFragment
 
     protected boolean isRestrictable = false;
 
+    private ViewGroup grouprootview;
+
     public static Bundle createBundleArgs(Node node)
     {
         Bundle args = new Bundle();
@@ -133,7 +135,7 @@ public class MetadataFragment extends BaseFragment
         v.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         v.setGravity(Gravity.CENTER);
 
-        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.app_properties, v);
+        grouprootview = (ViewGroup) inflater.inflate(R.layout.app_properties, v);
         grouprootview = (ViewGroup) grouprootview.findViewById(R.id.metadata);
 
         // Description

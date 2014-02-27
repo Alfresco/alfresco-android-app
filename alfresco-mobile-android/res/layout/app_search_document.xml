@@ -73,7 +73,8 @@
                 style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
+                android:inputType="text"
+                >
             </EditText>
 
             <TextView
@@ -126,7 +127,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person" />
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/picker_user" />
             </LinearLayout>
 
             <LinearLayout
@@ -155,7 +157,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar_pick" />
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_date_from"  />
             </LinearLayout>
 
             <LinearLayout
@@ -184,7 +187,8 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar_pick" />
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_date_to" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

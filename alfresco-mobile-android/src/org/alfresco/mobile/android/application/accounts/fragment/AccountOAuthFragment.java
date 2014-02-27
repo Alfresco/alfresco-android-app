@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -130,7 +131,7 @@ public class AccountOAuthFragment extends OAuthFragment
         }
         else
         {
-            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step2_title);
+            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step2_title, !(getActivity() instanceof HomeScreenActivity));
         }
 
         final View v = super.onCreateView(inflater, container, savedInstanceState);

@@ -45,7 +45,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/account_username" />
+                android:text="@string/account_username"
+                 />
 
             <EditText
                 android:id="@+id/repository_username"

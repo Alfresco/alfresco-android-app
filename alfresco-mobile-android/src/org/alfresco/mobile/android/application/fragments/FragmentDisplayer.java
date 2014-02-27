@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.R;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.view.accessibility.AccessibilityEvent;
 
 public final class FragmentDisplayer
 {
@@ -199,8 +200,7 @@ public final class FragmentDisplayer
             try
             {
                 FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (hasAnimation
-                        && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
                         && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 {
                     t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);

@@ -19,10 +19,12 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
@@ -117,20 +119,25 @@ public class AccountCursorAdapter extends BaseCursorLoader<GenericViewHolder>
     private void updateIconList(GenericViewHolder vh, Cursor cursor)
     {
         int iconId = R.drawable.ic_onpremise;
+        int descriptionId = R.string.account_alfresco_onpremise;
         switch (cursor.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID))
         {
             case Account.TYPE_ALFRESCO_TEST_BASIC:
             case Account.TYPE_ALFRESCO_TEST_OAUTH:
                 iconId = R.drawable.ic_cloud_alf;
+                descriptionId = R.string.account_alfresco_cloud;
                 break;
             case Account.TYPE_ALFRESCO_CLOUD:
                 iconId = R.drawable.ic_cloud;
+                descriptionId = R.string.account_alfresco_cloud;
                 break;
             default:
                 iconId = R.drawable.ic_onpremise;
+                descriptionId = R.string.account_alfresco_onpremise;
                 break;
         }
         vh.icon.setImageDrawable(context.getResources().getDrawable(iconId));
+        AccessibilityHelper.addContentDescription(vh.icon, descriptionId);
     }
 
     public static final int NETWORK_ITEM = -3;

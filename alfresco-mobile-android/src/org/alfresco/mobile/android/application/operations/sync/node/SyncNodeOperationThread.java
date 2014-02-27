@@ -111,7 +111,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
     // ///////////////////////////////////////////////////////////////////////////
     protected Node retrieveNode()
     {
-        int retry = 0;
         while (node == null)
         {
             try
@@ -120,16 +119,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             }
             catch (Exception e)
             {
-                try
-                {
-                    wait(2000);
-                }
-                catch (InterruptedException e1)
-                {
-                    return null;
-                }
-                retry++;
-                if (retry == 2) { return node; }
                 return null;
             }
         }
@@ -138,7 +127,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
 
     protected Folder retrieveParentFolder()
     {
-        int retry = 0;
         while (parentFolder == null)
         {
             try
@@ -157,16 +145,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             }
             catch (Exception e)
             {
-                try
-                {
-                    wait(2000);
-                }
-                catch (InterruptedException e1)
-                {
-                    return null;
-                }
-                retry++;
-                if (retry == 2) { return parentFolder; }
                 return null;
             }
         }

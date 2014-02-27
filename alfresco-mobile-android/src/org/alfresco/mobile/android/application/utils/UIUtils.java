@@ -144,8 +144,17 @@ public class UIUtils extends org.alfresco.mobile.android.application.commons.uti
     {
         displayTitle(activity, activity.getString(titleId));
     }
+    
+    public static void displayTitle(Activity activity, int titleId, boolean isUpEnable)
+    {
+        displayTitle(activity, activity.getString(titleId), isUpEnable);
+    }
+    
+    public static void displayTitle(Activity activity, String title){
+        displayTitle(activity, title, true);
+    }
 
-    public static void displayTitle(Activity activity, String title)
+    public static void displayTitle(Activity activity, String title, boolean isUpEnable)
     {
         if (activity.getActionBar() != null)
         {
@@ -159,9 +168,9 @@ public class UIUtils extends org.alfresco.mobile.android.application.commons.uti
 
             if (AndroidVersion.isICSOrAbove())
             {
-                bar.setHomeButtonEnabled(true);
+                bar.setHomeButtonEnabled(isUpEnable);
             }
-            activity.getActionBar().setDisplayHomeAsUpEnabled(true);
+            activity.getActionBar().setDisplayHomeAsUpEnabled(isUpEnable);
 
             View v = bar.getCustomView();
             if (v == null)

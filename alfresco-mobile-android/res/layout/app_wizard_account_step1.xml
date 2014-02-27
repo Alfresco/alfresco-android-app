@@ -14,14 +14,14 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License
--->
-
+  limitations under the License-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="?AlfrescoTheme.Background.White"
+    android:layout_width="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:minWidth="600dp" >
+    android:fillViewport="true"
+    >
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -70,10 +70,19 @@
                 android:background="@color/actionbar_grey_bottom" />
         </LinearLayout>
 
+            <LinearLayout
+           android:layout_width="600dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="visible" >
+        
         <Button
             android:id="@+id/alfresco_cloud"
             style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_cloud"
+            android:maxWidth="600dip"
             android:text="@string/account_wizard_alfresco_cloud" />
 
         <TextView
@@ -98,6 +107,7 @@
             android:id="@+id/alfresco_server"
             style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_onpremise"
+            android:maxWidth="600dip"
             android:text="@string/account_wizard_alfresco_server" />
 
         <TextView
@@ -107,6 +117,8 @@
             android:gravity="center"
             android:text="@string/account_wizard_alfresco_server_description"
             android:textSize="@dimen/home_description_size" />
+        
+        </LinearLayout>
     </LinearLayout>
 
 </ScrollView>

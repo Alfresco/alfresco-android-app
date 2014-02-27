@@ -30,14 +30,16 @@ import android.view.Window;
 import android.widget.TextView;
 
 /**
- * It's the first screen seens by the user when the application starts. Display the first step of account creation
- * wizard.
+ * It's the first screen seens by the user when the application starts. Display
+ * the first step of account creation wizard.
  * 
  * @author Jean Marie Pascal
  */
 public class HomeScreenFragment extends DialogFragment
 {
-    public static final String TAG = "HomeScreenFragment";
+    public static final String TAG = HomeScreenFragment.class.getName();
+
+    private View rootView;
 
     public HomeScreenFragment()
     {
@@ -54,7 +56,7 @@ public class HomeScreenFragment extends DialogFragment
         }
         super.onStart();
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -65,14 +67,14 @@ public class HomeScreenFragment extends DialogFragment
         }
         else
         {
-            UIUtils.displayTitle(getActivity(), R.string.app_name);
+            UIUtils.displayTitle(getActivity(), R.string.app_name, false);
         }
 
-        View v = inflater.inflate(R.layout.app_homescreen, container, false);
-        
-        TextView tv = (TextView) v.findViewById(R.id.help_guide);
+        rootView = inflater.inflate(R.layout.app_homescreen, container, false);
+
+        TextView tv = (TextView) rootView.findViewById(R.id.help_guide);
         tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-        return v;
+        return rootView;
     }
 }

@@ -46,8 +46,6 @@
             android:hint="@string/person_search"
             android:inputType="text"
             android:nextFocusForward="@id/search_query" >
-
-            <requestFocus />
         </EditText>
 
     </LinearLayout>
@@ -96,7 +94,9 @@
         android:layout_marginRight="5dip"
         android:layout_marginTop="5dip"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="horizontal"
+        android:contentDescription="@string/advanced_search_hint"
+         >
 
         <ImageView
             android:id="@+id/search_icon"

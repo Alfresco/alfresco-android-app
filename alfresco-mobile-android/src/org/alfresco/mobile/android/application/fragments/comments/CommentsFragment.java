@@ -301,7 +301,7 @@ public class CommentsFragment extends CommentFragment
         {
             commentText.setEnabled(true);
             commentText.setText("");
-            bAdd.setEnabled(true);
+            bAdd.setEnabled(false);
             reload(bundle, loaderId, callback);
             getLoaderManager().destroyLoader(CommentCreateLoader.ID);
         }

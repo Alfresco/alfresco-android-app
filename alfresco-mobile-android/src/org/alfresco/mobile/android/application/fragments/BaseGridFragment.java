@@ -325,6 +325,7 @@ public abstract class BaseGridFragment extends BaseFragment
         hasmore = Boolean.FALSE;
         skipCount = 0;
         adapter = null;
+        gv.invalidateViews();
         if (getArguments() == null) { return; }
         getLoaderManager().restartLoader(loaderId, getArguments(), callback);
         getLoaderManager().getLoader(loaderId).forceLoad();
@@ -357,6 +358,7 @@ public abstract class BaseGridFragment extends BaseFragment
                 isFullLoad = Boolean.TRUE;
                 if (adapter != null)
                 {
+                    gv.invalidateViews();
                     gv.setAdapter(null);
                 }
                 // Log.d("BaseListFragment", "ITEMS : Empty !");
@@ -385,6 +387,7 @@ public abstract class BaseGridFragment extends BaseFragment
                     {
                         loadMore();
                     }
+                    gv.invalidateViews();
                     gv.setAdapter(adapter);
                 }
             }

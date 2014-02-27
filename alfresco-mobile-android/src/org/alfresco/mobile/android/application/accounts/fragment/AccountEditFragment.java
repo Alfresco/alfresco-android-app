@@ -22,9 +22,11 @@ import java.net.URL;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -85,7 +87,8 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
-            UIUtils.displayTitle(getActivity(), R.string.account_authentication);
+            UIUtils.displayTitle(getActivity(), R.string.account_authentication,
+                    !(getActivity() instanceof HomeScreenActivity));
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);
@@ -112,17 +115,31 @@ public class AccountEditFragment extends DialogFragment
                         && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("443")))
                 {
                     portForm.setText("80");
+                    AccessibilityHelper.addContentDescription(buttonView, R.string.account_https_off_hint);
                 }
                 else if (sw.isChecked()
                         && (portForm.getText().toString().isEmpty() || portForm.getText().toString().equals("80")))
                 {
                     portForm.setText("443");
+                    AccessibilityHelper.addContentDescription(buttonView, R.string.account_https_on_hint);
                 }
             }
         });
 
         sw.setChecked(true);
         portForm.setText("443");
+
+        // Accessibility
+        if (AccessibilityHelper.isEnabled(getActivity()))
+        {
+            ((EditText)v.findViewById(R.id.repository_username)).setHint(getString(R.string.account_username_required_hint));
+            ((EditText)v.findViewById(R.id.repository_password)).setHint(getString(R.string.account_password_required_hint));
+            ((EditText)v.findViewById(R.id.repository_hostname)).setHint(getString(R.string.account_hostname_required_hint));
+            ((EditText)v.findViewById(R.id.repository_description)).setHint(getString(R.string.account_description_optional_hint));
+            sw.setContentDescription(getString(R.string.account_https_on_hint));
+            portForm.setHint(getString(R.string.account_port_hint));
+            ((EditText)v.findViewById(R.id.repository_servicedocument)).setHint(getString(R.string.account_servicedocument_hint));
+        }
 
         return v;
     }
@@ -240,6 +257,7 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
             return false;
         }
 
@@ -253,6 +271,7 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
             return false;
         }
 
@@ -263,6 +282,7 @@ public class AccountEditFragment extends DialogFragment
         }
         else
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
             return false;
         }
 
@@ -289,10 +309,12 @@ public class AccountEditFragment extends DialogFragment
         }
         catch (MalformedURLException e)
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_url_hint);
             return false;
         }
 
         url = u.toString();
+        AccessibilityHelper.addContentDescription(validate, R.string.account_validate_hint);
 
         return true;
     }
@@ -317,7 +339,8 @@ public class AccountEditFragment extends DialogFragment
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction()) && getActivity() instanceof MainActivity)
+            if (IntentIntegrator.ACTION_CREATE_ACCOUNT_COMPLETED.equals(intent.getAction())
+                    && getActivity() instanceof MainActivity)
             {
                 getActivity().getFragmentManager().popBackStack(AccountTypesFragment.TAG,
                         FragmentManager.POP_BACK_STACK_INCLUSIVE);

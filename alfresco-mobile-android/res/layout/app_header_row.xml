@@ -25,7 +25,7 @@
     <ImageView
         android:id="@+id/icon"
         style="?AlfrescoTheme.ImageView.Thumbnail"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:src="@drawable/ic_repository_dark"
         android:visibility="gone" />
 

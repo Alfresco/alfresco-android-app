@@ -72,7 +72,7 @@
                     android:layout_width="@dimen/properties_details_icon_size"
                     android:layout_height="@dimen/properties_details_icon_size"
                     android:layout_gravity="center"
-                    android:contentDescription="@string/thumbnail"
+                    android:contentDescription="@string/preview"
                     android:scaleType="centerInside" />
 
                 <TextView
@@ -93,6 +93,7 @@
 
                 <ImageView
                     android:id="@+id/action_openin"
+                    android:contentDescription="@string/open_in"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
                     android:src="@drawable/ic_open_dark" />
 
@@ -117,7 +118,7 @@
                 <ImageView
                     android:id="@+id/action_share"
                     style="?AlfrescoTheme.ImageView.ActionIcon"
-                    android:contentDescription="@string/like"
+                    android:contentDescription="@string/share"
                     android:src="@drawable/ic_share" />
 
                 <FrameLayout

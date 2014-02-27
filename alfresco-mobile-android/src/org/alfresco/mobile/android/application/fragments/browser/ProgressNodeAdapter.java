@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.Operation;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
@@ -306,6 +307,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
+            AccessibilityHelper.addContentDescription(vh.choose, String.format(context.getString(R.string.more_options_folder), item.getName()));
             vh.choose.setTag(R.id.node_action, item);
             vh.choose.setOnClickListener(new OnClickListener()
             {

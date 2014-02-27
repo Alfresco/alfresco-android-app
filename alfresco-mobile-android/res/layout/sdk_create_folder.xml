@@ -26,8 +26,6 @@
         android:layout_height="wrap_content"
         android:layout_margin="3dip"
         android:hint="@string/folder_name_hint" >
-
-        <requestFocus />
     </EditText>
 
     <View

@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -86,10 +87,12 @@ public class IsFavoriteLoaderCallBack extends BaseLoaderCallback implements Load
         else if (isFavorited.getData())
         {
             favoriteButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_favorite_dark));
+            AccessibilityHelper.addContentDescription(favoriteButton, R.string.unfavorite);
         }
         else
         {
             favoriteButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unfavorite_dark));
+            AccessibilityHelper.addContentDescription(favoriteButton, R.string.favorite);
         }
     }
 

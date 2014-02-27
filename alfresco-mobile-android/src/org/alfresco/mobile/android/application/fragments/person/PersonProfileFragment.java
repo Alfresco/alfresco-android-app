@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
@@ -51,6 +52,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -77,7 +79,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
 
     private RenditionManager renditionManager;
 
-    private boolean displayContactDetails = false;
+    private boolean displayContactDetails = false, displayCompanyDetails = false;
 
     private static final String ACTION_PERSON_REFRESH = "ACTION_PERSON_REFRESH";
 
@@ -349,6 +351,8 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
             display();
         }
         getActivity().invalidateOptionsMenu();
+        // AccessibilityHelper.getAccessibilityManager(getActivity()).sendAccessibilityEvent(AccessibilityEvent.obtain(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED));
+        vRoot.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
     }
 
     private void display()
@@ -480,14 +484,14 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
 
         // Company
         Company cp = person.getCompany();
-        displayOrHide(R.id.companyName_value, cp.getName(), R.id.companyName_group);
-        displayOrHide(R.id.companyAdress1_value, cp.getAddress1(), R.id.companyAdress1_group);
-        displayOrHide(R.id.companyAdress2_value, cp.getAddress2(), R.id.companyAdress2_group);
-        displayOrHide(R.id.companyAdress3_value, cp.getAddress3(), R.id.companyAdress3_group);
-        displayOrHide(R.id.companyPostcode_value, cp.getPostCode(), R.id.companyPostcode_group);
-        displayOrHide(R.id.companyTelephone_value, cp.getTelephoneNumber(), R.id.companyTelephone_group);
-        displayOrHide(R.id.companyFax_value, cp.getFaxNumber(), R.id.companyFax_group);
-        displayOrHide(R.id.companyEmail_value, cp.getEmail(), R.id.companyEmail_group);
+        displayCompanyOrHide(R.id.companyName_value, cp.getName(), R.id.companyName_group);
+        displayCompanyOrHide(R.id.companyAdress1_value, cp.getAddress1(), R.id.companyAdress1_group);
+        displayCompanyOrHide(R.id.companyAdress2_value, cp.getAddress2(), R.id.companyAdress2_group);
+        displayCompanyOrHide(R.id.companyAdress3_value, cp.getAddress3(), R.id.companyAdress3_group);
+        displayCompanyOrHide(R.id.companyPostcode_value, cp.getPostCode(), R.id.companyPostcode_group);
+        displayCompanyOrHide(R.id.companyTelephone_value, cp.getTelephoneNumber(), R.id.companyTelephone_group);
+        displayCompanyOrHide(R.id.companyFax_value, cp.getFaxNumber(), R.id.companyFax_group);
+        displayCompanyOrHide(R.id.companyEmail_value, cp.getEmail(), R.id.companyEmail_group);
 
         // Add Contact
         bIm = (ImageView) vRoot.findViewById(R.id.action_addcontact);
@@ -541,7 +545,7 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
             vRoot.findViewById(R.id.action_geolocation).setVisibility(View.GONE);
         }
 
-        if (((CompanyImpl) person.getCompany()).isEmpty())
+        if (!displayCompanyDetails)
         {
             vRoot.findViewById(R.id.company_group).setVisibility(View.GONE);
         }
@@ -549,10 +553,19 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
 
     private void displayOrHide(int viewId, String value, int groupId)
     {
+        displayOrHide(viewId, value, groupId, false);
+    }
+    
+    private void displayOrHide(int viewId, String value, int groupId, boolean isCompany)
+    {
         // Summary
         if (vRoot.findViewById(viewId) != null && value != null && !value.isEmpty())
         {
-            displayGroup();
+            if (isCompany){
+                displayCompanyGroup();
+            } else {
+                displayGroup();
+            }
             TextView tv = (TextView) vRoot.findViewById(viewId);
             tv.setText(value);
         }
@@ -562,11 +575,24 @@ public class PersonProfileFragment extends BaseFragment implements LoaderCallbac
         }
     }
 
+    private void displayCompanyOrHide(int viewId, String value, int groupId)
+    {
+        displayOrHide(viewId, value, groupId, true);
+    }
+
     private void displayGroup()
     {
         if (!displayContactDetails)
         {
             displayContactDetails = true;
+        }
+    }
+
+    private void displayCompanyGroup()
+    {
+        if (!displayCompanyDetails)
+        {
+            displayCompanyDetails = true;
         }
     }
 

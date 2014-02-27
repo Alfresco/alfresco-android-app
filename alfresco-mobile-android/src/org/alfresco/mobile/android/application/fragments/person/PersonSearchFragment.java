@@ -188,8 +188,6 @@ public class PersonSearchFragment extends BaseListFragment implements
                         if (searchForm.getText().length() > 0)
                         {
                             search(searchForm.getText().toString());
-                            View vr = vRoot.findViewById(R.id.empty_focus);
-                            vr.requestFocus();
                         }
                         else
                         {

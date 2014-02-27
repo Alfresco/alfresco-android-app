@@ -35,7 +35,9 @@ import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeType;
 import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
@@ -49,7 +51,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
@@ -325,6 +326,8 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     protected void updateBottomText(ProgressViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
+        AccessibilityHelper.addContentDescription(vh.bottomText, createContentDescriptionBottomText(context, item));
+
         if (mode == ListingModeFragment.MODE_PICK)
         {
             if (selectedMapItems.containsKey(item.getIdentifier()))
@@ -377,6 +380,25 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         return s;
     }
 
+    private String createContentDescriptionBottomText(Context context, Node node)
+    {
+        StringBuilder s = new StringBuilder();
+
+        if (node.getCreatedAt() != null)
+        {
+            s.append(context.getString(R.string.metadata_modified));
+            s.append(formatDate(context, node.getCreatedAt().getTime()));
+            if (node.isDocument())
+            {
+                Document doc = (Document) node;
+                s.append(" - ");
+                s.append(context.getString(R.string.metadata_size));
+                s.append(Formatter.formatFileSize(context, doc.getContentStreamLength()));
+            }
+        }
+        return s.toString();
+    }
+
     @Override
     protected void updateIcon(ProgressViewHolder vh, final Node item)
     {
@@ -402,15 +424,23 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
         if (item.isDocument())
         {
+            MimeType mime = MimeTypeManager.getMimetype(context, item.getName());
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(MimeTypeManager.getIcon(context, item.getName(), true));
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context,
+                        item.getName(), true));
             }
             else
             {
-                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(context, item.getName(), true));
+                renditionManager.display(
+                        vh.icon,
+                        item,
+                        mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context, item.getName(),
+                                true));
             }
             vh.choose.setVisibility(View.GONE);
+            AccessibilityHelper.addContentDescription(vh.icon, mime != null ? mime.getDescription() : ((Document) item)
+                    .getContentStreamMimeType());
         }
         else if (item.isFolder())
         {
@@ -423,6 +453,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
                 vh.choose.setVisibility(View.GONE);
             }
             vh.icon.setImageResource(R.drawable.mime_256_folder);
+            AccessibilityHelper.addContentDescription(vh.icon, R.string.mime_folder);
         }
     }
 
