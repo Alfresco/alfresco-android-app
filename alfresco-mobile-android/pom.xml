@@ -64,6 +64,10 @@
 			<artifactId>okhttp</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.squareup.picasso</groupId>
+			<artifactId>picasso</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>android.support</groupId>
 			<artifactId>compatibility-v13</artifactId>
 		</dependency>
