@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationThread;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.utils.IOUtils;
@@ -39,6 +40,12 @@ public class CleanSyncFavoriteThread extends AbstractBatchOperationThread<Void>
 {
     private static final String TAG = CleanSyncFavoriteThread.class.getName();
 
+    private String accountUsername;
+
+    private String accountUrl;
+
+    private Boolean isDeletion = false;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -48,6 +55,9 @@ public class CleanSyncFavoriteThread extends AbstractBatchOperationThread<Void>
         if (request instanceof CleanSyncFavoriteRequest)
         {
             this.accountId = ((CleanSyncFavoriteRequest) request).getAccountId();
+            this.accountUrl = ((CleanSyncFavoriteRequest) request).getAccountUrl();
+            this.accountUsername = ((CleanSyncFavoriteRequest) request).getAccountUsername();
+            this.isDeletion = ((CleanSyncFavoriteRequest) request).isDeletion();
         }
     }
 
@@ -60,24 +70,30 @@ public class CleanSyncFavoriteThread extends AbstractBatchOperationThread<Void>
         LoaderResult<Void> result = new LoaderResult<Void>();
         try
         {
-            //Delete All local files in sync folder
-            acc = AccountManager.retrieveAccount(context, accountId);
-            File synchroFolder = StorageManager.getSynchroFolder(context, acc);
-            
+            // Delete All local files in sync folder
+            File synchroFolder = StorageManager.getSynchroFolder(context, accountUsername, accountUrl);
             if (synchroFolder != null && synchroFolder.exists())
             {
                 IOUtils.deleteContents(synchroFolder);
             }
-            
-            //For each sync row, reset status
+
+            // For each sync row, reset status
             Cursor allFavoritesCursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI,
-                    SynchroSchema.COLUMN_ALL, null, null, null);
+                    SynchroSchema.COLUMN_ALL, SynchroProvider.getAccountFilter(accountId), null, null);
             while (allFavoritesCursor.moveToNext())
             {
-                // Update Sync Info
-                ContentValues cValues = new ContentValues();
-                cValues.put(BatchOperationSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
-                context.getContentResolver().update(request.getNotificationUri(), cValues, null, null);
+                if (isDeletion)
+                {
+                    // Update Sync Info
+                    context.getContentResolver().delete(SynchroManager.getUri(allFavoritesCursor.getLong(SynchroSchema.COLUMN_ID_ID)), null, null);
+                }
+                else
+                {
+                    // Update Sync Info
+                    ContentValues cValues = new ContentValues();
+                    cValues.put(BatchOperationSchema.COLUMN_STATUS, SyncOperation.STATUS_PENDING);
+                    context.getContentResolver().update(SynchroManager.getUri(allFavoritesCursor.getLong(SynchroSchema.COLUMN_ID_ID)), cValues, null, null);
+                }
             }
         }
         catch (Exception e)

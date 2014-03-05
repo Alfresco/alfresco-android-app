@@ -657,7 +657,7 @@ public final class SynchroManager extends OperationManager
     {
         if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
-        group.enqueue(new CleanSyncFavoriteRequest().setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        group.enqueue(new CleanSyncFavoriteRequest(account, false).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 

@@ -209,5 +209,10 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
     {
         return SynchroSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
+    
+    public static String getAccountFilter(long accId)
+    {
+        return SynchroSchema.COLUMN_ACCOUNT_ID + " == " + accId;
+    }
 
 }

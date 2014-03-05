@@ -40,6 +40,10 @@ import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
@@ -616,6 +620,14 @@ public class AccountDetailsFragment extends BaseFragment
     // TODO move to mainActivity + broadcast !
     private void deleteAccount()
     {
+        
+        //Remove all Sync
+        if (acc == null) { return; }
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), acc);
+        group.enqueue(new CleanSyncFavoriteRequest(acc, true).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+        
+        //Delete Account
         getActivity().getContentResolver().delete(AccountManager.getUri(acc.getId()), null, null);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
