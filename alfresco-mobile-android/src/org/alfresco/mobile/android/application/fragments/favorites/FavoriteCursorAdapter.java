@@ -21,14 +21,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.Document;
-import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
+import org.alfresco.mobile.android.application.fragments.GridFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
+import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.mimetype.MimeType;
 import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
@@ -51,6 +53,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
@@ -76,6 +79,8 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
 
     private boolean hasSynchroActive;
 
+    private RenditionManager renditionManager;
+
     public FavoriteCursorAdapter(Fragment fr, Cursor c, int layoutResourceId, List<String> selectedItems, int mode)
     {
         super(fr.getActivity(), c, layoutResourceId);
@@ -84,6 +89,29 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         this.mode = mode;
         vhClassName = ProgressViewHolder.class.getCanonicalName();
         hasSynchroActive = GeneralPreferences.hasActivateSync(context, SessionUtils.getAccount(context));
+        this.renditionManager = ApplicationManager.getInstance(context).getRenditionManager(fr.getActivity());
+    }
+
+    public View newView(Context context, Cursor cursor, ViewGroup parent)
+    {
+        // Specific part for dynaminc resize
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(context, (GridFragment) fragment);
+        return createView(context, cursor, layouts[0]);
+    }
+
+    @Override
+    public void bindView(View view, Context context, Cursor cursor)
+    {
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(context, (GridFragment) fragment);
+        if (view.findViewById(layouts[1]) == null)
+        {
+            //((ViewGroup) view).removeAllViews();
+            view.invalidate();
+            view.refreshDrawableState();
+            return;
+        }
+        ProgressViewHolder vh = (ProgressViewHolder) view.getTag();
+        updateControls(vh, cursor);
     }
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
@@ -95,8 +123,13 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         else
         {
             MimeType mime = MimeTypeManager.getMimetype(context, cursor.getString(SynchroSchema.COLUMN_TITLE_ID));
-            vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context,
-                    cursor.getString(SynchroSchema.COLUMN_TITLE_ID), true));
+
+            renditionManager.display(
+                    vh.icon,
+                    mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context,
+                            cursor.getString(SynchroSchema.COLUMN_TITLE_ID), true),
+                    cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID));
+
             if (mime != null)
             {
                 AccessibilityHelper.addContentDescription(vh.icon, mime.getDescription());
@@ -127,7 +160,6 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
         }
 
         vh.progress.setVisibility(View.GONE);
-        vh.iconTopRight.setVisibility(View.GONE);
         switch (status)
         {
             case SyncOperation.STATUS_PENDING:
@@ -176,19 +208,20 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
 
         if (selectedItems != null && selectedItems.contains(nodeId))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
+            UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
         }
 
         if (SyncOperation.STATUS_RUNNING != status)
         {
             vh.bottomText.setVisibility(View.VISIBLE);
             vh.bottomText.setText(createContentBottomText(context, cursor));
-            AccessibilityHelper.addContentDescription(vh.bottomText, createContentDescriptionBottomText(context, cursor));
+            AccessibilityHelper.addContentDescription(vh.bottomText,
+                    createContentDescriptionBottomText(context, cursor));
         }
         else
         {
@@ -205,8 +238,10 @@ public class FavoriteCursorAdapter extends BaseCursorLoader<ProgressViewHolder> 
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
             vh.choose.setTag(R.id.is_favorite, favorited);
-            AccessibilityHelper.addContentDescription(vh.choose, String.format(context.getString(R.string.more_options_favorite),
-                    cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
+            AccessibilityHelper.addContentDescription(
+                    vh.choose,
+                    String.format(context.getString(R.string.more_options_favorite),
+                            cursor.getString(SynchroSchema.COLUMN_TITLE_ID)));
             vh.choose.setOnClickListener(new OnClickListener()
             {
                 @Override

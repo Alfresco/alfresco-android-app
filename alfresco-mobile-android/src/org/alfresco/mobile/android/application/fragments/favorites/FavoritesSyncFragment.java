@@ -28,9 +28,11 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.GridFragment;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
@@ -66,9 +68,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.GridView;
 
-public class FavoritesSyncFragment extends BaseCursorListFragment implements RefreshFragment, ListingModeFragment
+public class FavoritesSyncFragment extends BaseCursorGridFragment implements RefreshFragment, ListingModeFragment,
+        GridFragment
 {
     public static final String TAG = FavoritesSyncFragment.class.getName();
 
@@ -105,6 +108,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         super();
         emptyListMessageId = R.string.empty_favorites;
+        checkSession = false;
     }
 
     public static FavoritesSyncFragment newInstance(int mode)
@@ -137,8 +141,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
         acc = SessionUtils.getAccount(getActivity());
 
-        adapter = new FavoriteCursorAdapter(this, null, R.layout.app_list_progress_row, selectedItems, getMode());
-        lv.setAdapter(adapter);
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(getActivity(), this);
+        adapter = new FavoriteCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+        gv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
     }
@@ -338,7 +343,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public void onListItemClick(ListView l, View v, int position, long id)
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         String nodeId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
@@ -404,7 +409,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         adapter.notifyDataSetChanged();
     }
 
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    public boolean onItemLongClick(GridView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
 
@@ -423,7 +428,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 nActions = null;
                 selectedItems.clear();
-                refreshListView();
+                adapter.notifyDataSetChanged();
+                ((FavoriteCursorAdapter) adapter).refresh();
+                gv.setAdapter(adapter);
             }
         });
         getActivity().startActionMode(nActions);
@@ -500,7 +507,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             mi.setActionView(R.layout.app_spinning);
         }
         ((FavoriteCursorAdapter) adapter).refresh();
-        lv.setAdapter(adapter);
+        gv.setAdapter(adapter);
     }
 
     public void displayWarning()

@@ -49,6 +49,7 @@ public class OperationsGroupRecord
 
     public void initIndex(List<OperationRequest> requests)
     {
+        if (requests.isEmpty()) { return; }
         this.notificationVisibility = requests.get(0).getNotificationVisibility();
         for (OperationRequest operationRequest : requests)
         {
@@ -73,7 +74,7 @@ public class OperationsGroupRecord
         runningRequest.put(getOperationId(request), request);
         return new OperationsGroupInfo(request, totalRequests, index.size(), failedRequest.size());
     }
-    
+
     public static String getOperationId(OperationRequest operationRequest)
     {
         return ((AbstractOperationRequestImpl) operationRequest).getNotificationUri().getLastPathSegment().toString();

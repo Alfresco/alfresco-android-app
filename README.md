@@ -54,6 +54,8 @@ __Apache 2.0 License__
 
 * DiskLruCache	 https://github.com/JakeWharton/DiskLruCache 
 
+* Picasso	 http://square.github.io/picasso/
+
 * Android Split Pane Layout	 https://github.com/MobiDevelop/android-split-pane-layout 
 
 __MIT License__

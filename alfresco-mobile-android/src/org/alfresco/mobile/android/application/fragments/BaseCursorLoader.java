@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -51,6 +51,15 @@ public abstract class BaseCursorLoader<VH> extends CursorAdapter
     public View newView(Context context, Cursor cursor, ViewGroup parent)
     {
         View view = LayoutInflater.from(context).inflate(layoutResourceId, null);
+        VH vh = create(vhClassName, view);
+        updateControls(vh, cursor);
+        view.setTag(vh);
+        return view;
+    }
+    
+    protected View createView(Context c, Cursor cursor, int layoutId)
+    {
+        View view = LayoutInflater.from(context).inflate(layoutId, null);
         VH vh = create(vhClassName, view);
         updateControls(vh, cursor);
         view.setTag(vh);

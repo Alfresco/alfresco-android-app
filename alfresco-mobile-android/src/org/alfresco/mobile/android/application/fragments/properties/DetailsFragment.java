@@ -1512,8 +1512,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                             Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
 
-                            ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity())
-                                    .removeFromCache(_node.getIdentifier());
                             Boolean backstack = false;
                             if (!DisplayUtils.hasCentralPane(getActivity()))
                             {

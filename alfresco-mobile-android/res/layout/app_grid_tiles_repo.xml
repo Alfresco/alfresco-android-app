@@ -70,7 +70,7 @@
 
                     <ProgressBar
                         android:id="@+id/status_progress"
-                        style="?AlfrescoTheme.Progress"
+                        style="?AlfrescoTheme.Progress.Horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone" />

@@ -95,6 +95,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return getPrivateFolder(context, SYNCHRO_DIRECTORY, acc);
     }
 
+    public static File getSynchroFolder(Context context, String username, String accountUrl)
+    {
+        return getPrivateFolder(context, SYNCHRO_DIRECTORY, username, accountUrl);
+    }
+
     public static File getSynchroFile(Context context, Account acc, Document doc)
     {
         if (context != null && doc != null) { return getSynchroFile(context, acc, doc.getName(), doc.getIdentifier()); }
@@ -177,6 +182,36 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
                         && acc.getUsername().length() > 0)
                 {
                     folder = IOUtils.createFolder(folder, getAccountFolder(acc.getUrl(), acc.getUsername())
+                            + File.separator + requestedFolder);
+                }
+                else
+                {
+                    folder = IOUtils.createFolder(folder, requestedFolder);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return folder;
+    }
+
+    public static File getPrivateFolder(Context context, String requestedFolder, String username, String url)
+    {
+        File folder = null;
+        try
+        {
+            // NOTE: We must have access to external storage in order to get a
+            // private folder for this Android logged in user.
+            if (isExternalStorageAccessible())
+            {
+                folder = context.getExternalFilesDir(null);
+
+                if (url != null && url.length() > 0 && username != null && username.length() > 0)
+                {
+                    folder = IOUtils.createFolder(folder, getAccountFolder(url, username)
                             + File.separator + requestedFolder);
                 }
                 else
