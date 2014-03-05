@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.api.model.impl.cloud.CloudFolderImpl;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
@@ -47,6 +46,7 @@ import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
@@ -72,7 +72,6 @@ import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.BroadcastReceiver;
@@ -80,10 +79,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.Loader;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,12 +103,6 @@ import android.widget.SpinnerAdapter;
 public class ChildrenBrowserFragment extends GridNavigationFragment implements RefreshFragment, ListingModeFragment
 {
     public static final String TAG = ChildrenBrowserFragment.class.getName();
-
-    private static final int DISPLAY_LIST = 0;
-
-    private static final int DISPLAY_LIST_LARGE = 1;
-
-    private static final int DISPLAY_GRID = 2;
 
     private boolean shortcutAlreadyVisible = false;
 
@@ -138,7 +129,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
     private Map<String, Document> selectedMapItems = new HashMap<String, Document>(0);
 
-    private int displayMode = DISPLAY_GRID;
+    private int displayMode = BaseCursorGridAdapterHelper.DISPLAY_GRID;
 
     private MenuItem displayMenuItem;
 
@@ -163,7 +154,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     {
         return newInstance(null, folderPath, null);
     }
-    
+
     public static ChildrenBrowserFragment newInstanceById(String folderIdentifier)
     {
         ChildrenBrowserFragment bf = new ChildrenBrowserFragment();
@@ -253,8 +244,6 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
             mode = MODE_PICK;
             fragmentPick = ((PrivateDialogActivity) getActivity()).getOnPickDocumentFragment();
         }
-
-        getDisplayItemLayout();
 
         super.onActivityCreated(savedInstanceState);
     }
@@ -663,13 +652,13 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
         if (mode == MODE_PICK && adapter == null)
         {
             selectedMapItems = fragmentPick.retrieveDocumentSelection();
-            adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, new ArrayList<Node>(
-                    0), selectedMapItems);
+            adapter = new ProgressNodeAdapter(getActivity(), BaseCursorGridAdapterHelper.getDisplayItemLayout(
+                    getActivity(), gv, displayMode), parentFolder, new ArrayList<Node>(0), selectedMapItems);
         }
         else if (adapter == null)
         {
-            adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, new ArrayList<Node>(
-                    0), selectedItems, mode);
+            adapter = new ProgressNodeAdapter(getActivity(), BaseCursorGridAdapterHelper.getDisplayItemLayout(
+                    getActivity(), gv, displayMode), parentFolder, new ArrayList<Node>(0), selectedItems, mode);
         }
 
         if (results.hasException())
@@ -1080,7 +1069,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                     {
-                        //((ProgressNodeAdapter) adapter).refreshOperations();
+                        // ((ProgressNodeAdapter) adapter).refreshOperations();
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED))
                     {
@@ -1169,88 +1158,5 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     public boolean isShortcut()
     {
         return (Boolean) getArguments().get(PARAM_IS_SHORTCUT);
-    }
-    // //////////////////////////////////////////////////////////////////////
-    // VIEWS SWITCHER
-    // //////////////////////////////////////////////////////////////////////
-    private static final String DISPLAY_ITEMS = "DisplayItems-";
-
-    protected static void setDisplayItems(Activity activity, int mode)
-    {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-        if (SessionUtils.getAccount(activity) != null)
-        {
-            final Account account = SessionUtils.getAccount(activity);
-            sharedPref.edit().putInt(DISPLAY_ITEMS + account.getId(), mode).commit();
-        }
-    }
-
-    protected static int getDisplayItems(Activity activity)
-    {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
-        if (SessionUtils.getAccount(activity) != null)
-        {
-            final Account account = SessionUtils.getAccount(activity);
-            return sharedPref.getInt(DISPLAY_ITEMS + account.getId(), DISPLAY_LIST);
-        }
-        return DISPLAY_LIST;
-    }
-
-    protected void switchDisplayItems()
-    {
-        switch (displayMode)
-        {
-            case DISPLAY_LIST:
-                displayMode = DISPLAY_LIST_LARGE;
-                break;
-            case DISPLAY_LIST_LARGE:
-                displayMode = DISPLAY_GRID;
-                break;
-            case DISPLAY_GRID:
-                displayMode = DISPLAY_LIST;
-                break;
-            default:
-                break;
-        }
-
-        setDisplayItems(getActivity(), displayMode);
-
-        List<Node> nodes = ((ProgressNodeAdapter) adapter).getNodes();
-
-        adapter = new ProgressNodeAdapter(getActivity(), getDisplayItemLayout(), parentFolder, nodes, selectedItems,
-                mode);
-        ((NodeAdapter) adapter).setActivateThumbnail(hasActivateThumbnail());
-        refreshListView();
-        getActivity().invalidateOptionsMenu();
-    }
-
-    private int getDisplayItemLayout()
-    {
-        int displayItemLayout = R.layout.app_grid_large_progress_row;
-
-        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity)
-        {
-            gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 1000));
-            return R.layout.app_grid_large_progress_row;
-        }
-
-        switch (displayMode)
-        {
-            case DISPLAY_LIST:
-                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 240));
-                displayItemLayout = R.layout.app_grid_large_progress_row;
-                break;
-            case DISPLAY_LIST_LARGE:
-                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 320));
-                displayItemLayout = R.layout.app_grid_progress_row;
-                break;
-            case DISPLAY_GRID:
-                gv.setColumnWidth(DisplayUtils.getDPI(getResources().getDisplayMetrics(), 240));
-                displayItemLayout = R.layout.app_grid_progress_row;
-                break;
-            default:
-                break;
-        }
-        return displayItemLayout;
     }
 }

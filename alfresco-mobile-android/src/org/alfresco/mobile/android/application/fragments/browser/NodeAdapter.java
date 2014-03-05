@@ -30,9 +30,8 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
@@ -157,59 +156,14 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     public View getView(int position, View convertView, ViewGroup parent)
     {
         // Specific part for dynaminc resize
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(getContext(), gridFragment);
 
         // First init ==> always
-        width = 1000;
-        int columnWidth = 2048;
-
-        int layoutId = R.layout.app_grid_progress_row;
-        int flagLayoutId = R.id.app_grid_progress;
-
-        if (context instanceof MainActivity)
-        {
-            width = DisplayUtils.getSplitterWidth((MainActivity) context);
-            columnWidth = 240;
-            if (width <= 480)
-            {
-                layoutId = R.layout.app_grid_progress_row;
-                flagLayoutId = R.id.app_grid_progress;
-                columnWidth = 320;
-            }
-            else if (width < 600)
-            {
-                layoutId = R.layout.app_grid_card_repo;
-                flagLayoutId = R.id.app_grid_card;
-                columnWidth = 150;
-            }
-            else if (width < 800)
-            {
-                layoutId = R.layout.app_grid_card_repo;
-                flagLayoutId = R.id.app_grid_card;
-                columnWidth = 160;
-            }
-            else if (width < 1000)
-            {
-                layoutId = R.layout.app_grid_tiles_repo;
-                flagLayoutId = R.id.app_grid_tiles;
-                columnWidth = 200;
-            }
-            else
-            {
-                layoutId = R.layout.app_grid_tiles_repo;
-                flagLayoutId = R.id.app_grid_tiles;
-                columnWidth = 240;
-            }
-        }
-
-        if (gridFragment != null)
-        {
-            gridFragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
-        }
 
         View v = convertView;
-        if (convertView == null || convertView.findViewById(flagLayoutId) == null)
+        if (convertView == null || convertView.findViewById(layouts[1]) == null)
         {
-            v = createView(getContext(), convertView, layoutId);
+            v = createView(getContext(), convertView, layouts[0]);
         }
         else
         {
