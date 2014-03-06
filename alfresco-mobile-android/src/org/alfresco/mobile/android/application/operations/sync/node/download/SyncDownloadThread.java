@@ -124,20 +124,6 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
                 DataProtectionManager.getInstance(context).encrypt(acc, destFile);
             }
 
-            HashMap<String, Serializable> persistentProperties = new HashMap<String, Serializable>();
-            Map<String, Property> props = node.getProperties();
-            for (Entry<String, Property> entry : props.entrySet())
-            {
-                if (entry.getValue().getValue() instanceof GregorianCalendar)
-                {
-                    persistentProperties.put(entry.getKey(),
-                            ((GregorianCalendar) entry.getValue().getValue()).getTimeInMillis());
-                }
-                else
-                {
-                    persistentProperties.put(entry.getKey(), (Serializable) entry.getValue().getValue());
-                }
-            }
 
             // Update Sync Info
             ContentValues cValues = new ContentValues();
@@ -147,10 +133,7 @@ public class SyncDownloadThread extends SyncNodeOperationThread<ContentFile>
                 cValues.put(SynchroSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
             }
             cValues.put(SynchroSchema.COLUMN_CONTENT_URI, (String) node.getPropertyValue(PropertyIds.CONTENT_STREAM_ID));
-            if (persistentProperties != null && !persistentProperties.isEmpty())
-            {
-                cValues.put(SynchroSchema.COLUMN_PROPERTIES, MapUtil.mapToString(persistentProperties));
-            }
+            cValues.put(SynchroSchema.COLUMN_PROPERTIES, SynchroManager.serializeProperties(node));
             cValues.put(SynchroSchema.COLUMN_TOTAL_SIZE_BYTES, ((Document) node).getContentStreamLength());
             cValues.put(SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, ((Document) node).getContentStreamLength());
             cValues.put(SynchroSchema.COLUMN_DOC_SIZE_BYTES, 0);

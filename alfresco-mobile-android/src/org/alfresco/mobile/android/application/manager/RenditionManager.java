@@ -151,7 +151,7 @@ public class RenditionManager
     {
         // Wrong identifier so display placeholder
         String url = null;
-        if (identifier == null || identifier.isEmpty())
+        if (identifier == null || identifier.isEmpty() || session == null)
         {
             iv.setImageResource(initDrawableId);
             return;

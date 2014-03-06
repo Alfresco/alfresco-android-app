@@ -523,6 +523,7 @@
     <string name="sync_warning_mobile_data"><![CDATA[<p> You are about to sync <b>%s</b> over a carrier connection.</p> Would you like to proceed?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> You are trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space in your device or unfavorite documents/folders.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> You are about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Would you like to proceed?]]></string>
+    <string name="sync_document_not_available">This document is not available on your device.</string>
     
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Document already exists</string>
