@@ -192,7 +192,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             SessionUtils.checkSession(getActivity(), alfSession);
         }
         super.onActivityCreated(savedInstanceState);
-        
+
         if (node != null)
         {
             // Detect if isRestrictable
@@ -237,11 +237,9 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             tabSelection = savedInstanceState.getInt(TAB_SELECTED);
             savedInstanceState.remove(TAB_SELECTED);
         }
-      
+
         return vRoot;
     }
-    
-    
 
     @Override
     public void onResume()
@@ -353,7 +351,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
                                 null);
                     }
-                    
+
                     // Encrypt sync file if necessary
                     StorageManager.manageFile(getActivity(), dlFile);
                 }
@@ -382,7 +380,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         // Sync if it's possible.
                         if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                         {
-                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), node);
+                            SynchroManager.getInstance(getActivity())
+                                    .sync(SessionUtils.getAccount(getActivity()), node);
                         }
                     }
                     else
@@ -707,13 +706,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         // Preview + Thumbnail
         if (vRoot.findViewById(R.id.icon) != null)
         {
-            ((ImageView) vRoot.findViewById(R.id.icon))
-                    .setImageResource(MimeTypeManager.getIcon(getActivity(), node.getName(), false));
+            ((ImageView) vRoot.findViewById(R.id.icon)).setImageResource(MimeTypeManager.getIcon(getActivity(),
+                    node.getName(), false));
         }
         if (vRoot.findViewById(R.id.preview) != null)
         {
-            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(getActivity(), node.getName(),
-                    true));
+            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(getActivity(),
+                    node.getName(), true));
         }
 
         // Description
@@ -848,7 +847,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             SynchroManager syncManager = SynchroManager.getInstance(getActivity());
             Account acc = SessionUtils.getAccount(getActivity());
             final File syncFile = syncManager.getSyncFile(acc, node);
-            if (syncFile == null) { return; }
+            if (syncFile == null || !syncFile.exists())
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                return;
+            }
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
@@ -961,7 +964,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
             final File syncFile = syncManager.getSyncFile(acc, node);
-            if (syncFile == null) { return; }
+            if (syncFile == null || !syncFile.exists())
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                return;
+            }
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
@@ -1480,8 +1487,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isLiked ? R.drawable.ic_like : R.drawable.ic_unlike;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
-                                AccessibilityHelper.addContentDescription(imageView, isLiked ?  R.string.unlike : R.string.like);
-                                AccessibilityHelper.notifyActionCompleted(context, isLiked ?  R.string.like_completed : R.string.unlike_completed);
+                                AccessibilityHelper.addContentDescription(imageView, isLiked ? R.string.unlike
+                                        : R.string.like);
+                                AccessibilityHelper.notifyActionCompleted(context, isLiked ? R.string.like_completed
+                                        : R.string.unlike_completed);
                             }
                             return;
                         }
@@ -1500,8 +1509,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isFavorite ? R.drawable.ic_favorite_dark : R.drawable.ic_unfavorite_dark;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
-                                AccessibilityHelper.addContentDescription(imageView, isFavorite ?  R.string.unfavorite : R.string.favorite);
-                                AccessibilityHelper.notifyActionCompleted(context, isFavorite ?  R.string.favorite_completed : R.string.unfavorite_completed);
+                                AccessibilityHelper.addContentDescription(imageView, isFavorite ? R.string.unfavorite
+                                        : R.string.favorite);
+                                AccessibilityHelper.notifyActionCompleted(context,
+                                        isFavorite ? R.string.favorite_completed : R.string.unfavorite_completed);
                             }
                             return;
                         }

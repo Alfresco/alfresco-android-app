@@ -36,9 +36,9 @@ Optional
 License
 -------
 
-Alfresco Mobile for Android 1.3 
+Alfresco Mobile for Android 1.4 
 
-Copyright © 2013 Alfresco Software, Ltd. and others. 
+Copyright © 2014 Alfresco Software, Ltd. and others. 
 
 This product distribution is made available under the [Apache 2.0 license] (http://www.apache.org/licenses/LICENSE-2.0.html). 
 

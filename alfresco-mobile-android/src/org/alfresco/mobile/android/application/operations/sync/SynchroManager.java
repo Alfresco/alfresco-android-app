@@ -18,7 +18,9 @@
 package org.alfresco.mobile.android.application.operations.sync;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,6 +28,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -43,6 +46,7 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncPrepareRequest;
+import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
 import org.alfresco.mobile.android.application.operations.sync.impl.AbstractSyncOperationRequestImpl;
 import org.alfresco.mobile.android.application.operations.sync.node.delete.SyncDeleteRequest;
 import org.alfresco.mobile.android.application.operations.sync.node.download.SyncDownloadRequest;
@@ -613,7 +617,7 @@ public final class SynchroManager extends OperationManager
                 cValues.put(SynchroSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
             }
         }
-        cValues.put(SynchroSchema.COLUMN_PROPERTIES, "");
+        cValues.put(SynchroSchema.COLUMN_PROPERTIES, serializeProperties(node));
         cValues.put(SynchroSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, 0);
         cValues.put(SynchroSchema.COLUMN_LOCAL_URI, "");
         cValues.put(SynchroSchema.COLUMN_ANALYZE_TIMESTAMP, time);
@@ -629,6 +633,33 @@ public final class SynchroManager extends OperationManager
         ContentValues cValues = createContentValues(context, account, requestType, parent, node, time, folderSize);
         cValues.put(SynchroSchema.COLUMN_IS_FAVORITE, SynchroProvider.FLAG_FAVORITE);
         return cValues;
+    }
+
+    public static String serializeProperties(Node node)
+    {
+        HashMap<String, Serializable> persistentProperties = new HashMap<String, Serializable>();
+        Map<String, Property> props = node.getProperties();
+        for (Entry<String, Property> entry : props.entrySet())
+        {
+            if (entry.getValue().getValue() instanceof GregorianCalendar)
+            {
+                persistentProperties.put(entry.getKey(),
+                        ((GregorianCalendar) entry.getValue().getValue()).getTimeInMillis());
+            }
+            else
+            {
+                persistentProperties.put(entry.getKey(), (Serializable) entry.getValue().getValue());
+            }
+        }
+        if (!persistentProperties.isEmpty())
+        {
+            return MapUtil.mapToString(persistentProperties);
+        }
+        else
+        {
+            return "";
+        }
+
     }
 
     public static Uri getUri(long id)
@@ -657,7 +688,8 @@ public final class SynchroManager extends OperationManager
     {
         if (account == null) { return; }
         OperationsRequestGroup group = new OperationsRequestGroup(mAppContext, account);
-        group.enqueue(new CleanSyncFavoriteRequest(account, false).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        group.enqueue(new CleanSyncFavoriteRequest(account, false)
+                .setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
         BatchOperationManager.getInstance(mAppContext).enqueue(group);
     }
 
@@ -677,14 +709,14 @@ public final class SynchroManager extends OperationManager
 
     public boolean isSynced(Account account, Node node)
     {
-        if (account == null || node  == null) { return false; }
+        if (account == null || node == null) { return false; }
         if (node.isFolder()) { return false; }
         return isSynced(account, node.getIdentifier());
     }
 
     public File getSyncFile(Account account, Node node)
     {
-        if (account == null || node  == null) { return null; }
+        if (account == null || node == null) { return null; }
         if (node.isFolder()) { return null; }
         if (node instanceof NodeSyncPlaceHolder) { return StorageManager.getSynchroFile(mAppContext, account,
                 node.getName(), node.getIdentifier()); }
@@ -770,14 +802,14 @@ public final class SynchroManager extends OperationManager
 
     public static long getSyncPrepareTimestamp(Context context, Account account)
     {
-        if (account == null){return -1;}
+        if (account == null) { return -1; }
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getLong(LAST_SYNC_ACTIVATED_AT + account.getId(), new Date().getTime());
     }
 
     public static long getStartSyncPrepareTimestamp(Context context, Account account)
     {
-        if (account == null){return -1;}
+        if (account == null) { return -1; }
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         return sharedPref.getLong(LAST_START_SYNC_PREPARE + account.getId(), new Date().getTime());
     }
