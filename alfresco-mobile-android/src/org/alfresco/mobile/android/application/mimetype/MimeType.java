@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.mimetype;
 import java.io.Serializable;
 
 import android.content.Context;
+import android.util.Log;
 
 /**
  * @since 1.4
@@ -48,6 +49,8 @@ public class MimeType implements Serializable
     private static final String PREFIX = "R.drawable.";
 
     private static final String DRAWABLE = "drawable";
+    
+    private static final String PACKAGE_NAME = "org.alfresco.mobile.android.application";
 
     private long id;
 
@@ -139,19 +142,20 @@ public class MimeType implements Serializable
     public Integer getSmallIconId(Context context)
     {
         return context.getResources().getIdentifier(smallIcon.substring(PREFIX.length()), DRAWABLE,
-                context.getPackageName());
+                PACKAGE_NAME);
     }
 
     public Integer getLargeIconId(Context context)
     {
+        Log.e("MIME", largeIcon.substring(PREFIX.length()).concat(DRAWABLE).concat(PACKAGE_NAME));
         return context.getResources().getIdentifier(largeIcon.substring(PREFIX.length()), DRAWABLE,
-                context.getPackageName());
+                PACKAGE_NAME);
     }
 
     public static Integer getRessourceId(Context context, String rLabel)
     {
         return context.getResources().getIdentifier(rLabel.substring(PREFIX.length()), DRAWABLE,
-                context.getPackageName());
+                PACKAGE_NAME);
     }
 
     // /////////////////////////////////////////////////////////////////
