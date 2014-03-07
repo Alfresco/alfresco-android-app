@@ -188,7 +188,7 @@
 								<skip>false</skip>
 								<verbose>true</verbose>
 								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-signed-aligned.apk </outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk </outputApk>
 							</zipalign>
 						</configuration>
 						<executions>
@@ -283,7 +283,7 @@
 							<zipalign>
 								<skip>false</skip>
 								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-dev.apk</outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-dev.apk</outputApk>
 							</zipalign>
 							<file>${project.build.directory}/${project.artifactId}-dev.apk</file>
 						</configuration>
