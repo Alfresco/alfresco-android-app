@@ -259,10 +259,6 @@
 											token="@drawable/ic_alfresco_logo" value="@drawable/ic_alfresco" />
 										<replace file="${project.basedir}/AndroidManifest.xml"
 											token="@string/app_name" value="@string/app_name_beta" />
-										<replace file="${project.basedir}/AndroidManifest.xml"
-											token="!--@@SAMSUNG@@-" value="!--@@SAMSUNG BEGIN@@--" />
-										<replace file="${project.basedir}/AndroidManifest.xml"
-											token="!-@@SAMSUNG@@--" value="!--@@SAMSUNG END@@--" />
 									</tasks>
 								</configuration>
 								<goals>
