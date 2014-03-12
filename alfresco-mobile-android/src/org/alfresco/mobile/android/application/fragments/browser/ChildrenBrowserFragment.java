@@ -1030,7 +1030,6 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
                 if (pFolder.equals(parentFolder.getIdentifier()))
                 {
-                    ((ProgressNodeAdapter) adapter).refreshOperations();
                     if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
                     {
                         remove((Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT));
@@ -1076,6 +1075,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
                         Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
                         ((ProgressNodeAdapter) adapter).replaceNode(node);
                     }
+                    ((ProgressNodeAdapter) adapter).refreshOperations();
                     refreshList();
                     gv.setSelection(selectedPosition);
                 }

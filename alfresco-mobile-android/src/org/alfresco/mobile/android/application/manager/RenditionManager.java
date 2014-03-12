@@ -156,7 +156,7 @@ public class RenditionManager
             iv.setImageResource(initDrawableId);
             return;
         }
-        Log.d(TAG, identifier);
+        //Log.d(TAG, identifier);
 
         //
         switch (type)
@@ -425,11 +425,9 @@ public class RenditionManager
 
         if (bitmapWorkerTask != null)
         {
-            Log.d(TAG, "cancel");
             final String workerId = bitmapWorkerTask.identifier;
             if (workerId != null && !workerId.equals(data))
             {
-                Log.d(TAG, "interrupt");
                 bitmapWorkerTask.interrupt();
             }
             else
@@ -447,7 +445,6 @@ public class RenditionManager
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable)
             {
-                Log.d(TAG, "drawable");
                 final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
                 return asyncDrawable.getBitmapWorkerTask();
             }
