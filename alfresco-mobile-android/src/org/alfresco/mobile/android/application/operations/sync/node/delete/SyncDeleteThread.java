@@ -38,7 +38,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.text.TextUtils;
 import android.util.Log;
 
 public class SyncDeleteThread extends SyncNodeOperationThread<Void>
@@ -112,9 +111,6 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                 }
                 else
                 {
-                    //Parent Identifier
-                    String parentIdentifier = cursor.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
-                    
                     // No local modification
                     // Delete them
                     IOUtils.deleteContents(dlFile.getParentFile());
@@ -123,11 +119,13 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
                             SynchroManager.getUri(cursor.getLong(cursor.getColumnIndex(SynchroSchema.COLUMN_ID))),
                             null, null);
                     
-                    // Update Parent Folder if present
+                    /* Update Parent Folder if present
+                    //Parent Identifier
+                    String parentIdentifier = cursor.getString(SynchroSchema.COLUMN_PARENT_ID_ID);
                     if (!TextUtils.isEmpty(parentIdentifier))
                     {
-                        //SynchroManager.getInstance(context).updateParentFolder(acc, parentIdentifier);
-                    }
+                        SynchroManager.getInstance(context).updateParentFolder(acc, parentIdentifier);
+                    }*/
                 }
             }
 
@@ -135,10 +133,6 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
         catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
-            if (result == null)
-            {
-                result = new LoaderResult<Void>();
-            }
             result.setException(e);
         }
         finally

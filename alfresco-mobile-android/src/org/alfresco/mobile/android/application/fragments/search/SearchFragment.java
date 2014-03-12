@@ -253,27 +253,30 @@ public class SearchFragment extends BaseCursorListFragment
 
     private void displayPathOption()
     {
+        StringBuilder pathBuilder = new StringBuilder();
         if (tmpParentFolder != null)
         {
             String pathValue = (String) tmpParentFolder.getPropertyValue(PropertyIds.PATH);
             if (site != null)
             {
                 String[] path = pathValue.split("/");
-                pathValue = "";
+               
                 if (path.length == 4)
                 {
-                    pathValue = site.getTitle();
+                    pathBuilder.append(site.getTitle());
                 }
                 else
                 {
-                    pathValue = site.getTitle() + "/";
+                    pathBuilder.append(site.getTitle());
+                    pathBuilder.append("/");
                     for (int i = 4; i < path.length; i++)
                     {
-                        pathValue += path[i] + "/";
+                        pathBuilder.append(path[i]);
+                        pathBuilder.append("/");
                     }
                 }
             }
-            pathView.setText(pathValue);
+            pathView.setText(pathBuilder.toString());
         }
     }
 

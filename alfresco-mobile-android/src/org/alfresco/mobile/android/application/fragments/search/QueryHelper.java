@@ -184,18 +184,6 @@ public class QueryHelper
         builder.append("CONTAINS(t, '~" + key + ":\\\'" + value + "\\\'')");
     }
 
-    private static void addParameter(StringBuilder builder, String key, String value)
-    {
-        if (TextUtils.isEmpty(value)) { return; }
-        if (builder.length() != 0)
-        {
-            builder.append("&");
-        }
-        builder.append(key);
-        builder.append(":");
-        builder.append(value);
-    }
-    
     private static void addPersonParameter(StringBuilder builder, String key, String value)
     {
         if (TextUtils.isEmpty(value)) { return; }
@@ -275,6 +263,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "msword"));
                 add(new MimeType(MimeType.TYPE_APPLICATION,
@@ -301,6 +291,7 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
             {
                 add(new MimeType(MimeType.TYPE_AUDIO, "x-aiff"));
                 add(new MimeType(MimeType.TYPE_AUDIO, "vnd.adobe.soundbooth"));
@@ -324,6 +315,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "eps"));
                 add(new MimeType(MimeType.TYPE_IMAGE, "x-raw-hasselblad"));
@@ -375,6 +368,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.apple.keynote"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.presentation"));
@@ -400,6 +395,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.apple.numbers"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.spreadsheet"));
@@ -421,6 +418,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.text"));
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.oasis.opendocument.text-template"));
@@ -437,6 +436,8 @@ public class QueryHelper
     {
         return new ArrayList<MimeType>()
         {
+            private static final long serialVersionUID = 1L;
+
             {
                 add(new MimeType(MimeType.TYPE_APPLICATION, "quicktime"));
                 add(new MimeType(MimeType.TYPE_VIDEO, "x-msvideo"));

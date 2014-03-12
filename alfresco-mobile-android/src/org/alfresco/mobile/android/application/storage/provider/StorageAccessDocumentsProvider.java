@@ -200,10 +200,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public Cursor queryChildDocuments(final String parentDocumentId, String[] projection, String sortOrder)
             throws FileNotFoundException
     {
-        Log.d(TAG, "Query Children : " + parentDocumentId);
+        //Log.d(TAG, "Query Children : " + parentDocumentId);
         final DocumentFolderCursor docsCursor = new DocumentFolderCursor(resolveDocumentProjection(projection));
         Uri uri = DocumentsContract.buildChildDocumentsUri(mAuthority, parentDocumentId);
-        Log.d(TAG, "Query Children : " + uri);
+        //Log.d(TAG, "Query Children : " + uri);
         EncodedQueryUri cUri = new EncodedQueryUri(parentDocumentId);
 
         // Dispatch value
@@ -289,7 +289,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             docsCursor.setErrorInformation("Error : " + e.getMessage());
             docsCursor.setNotificationUri(getContext().getContentResolver(), uri);
             getContext().getContentResolver().notifyChange(uri, null);
-            Log.d(TAG, Log.getStackTraceString(e));
+            //Log.w(TAG, Log.getStackTraceString(e));
         }
 
         return docsCursor;
@@ -298,14 +298,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public Cursor queryDocument(String documentId, String[] projection) throws FileNotFoundException
     {
-        Log.d(TAG, "Query Document : " + documentId);
+        //Log.d(TAG, "Query Document : " + documentId);
         final DocumentFolderCursor docsCursor = new DocumentFolderCursor(resolveDocumentProjection(projection));
         Uri uri = DocumentsContract.buildDocumentUri(mAuthority, documentId);
 
         try
         {
             EncodedQueryUri cUri = new EncodedQueryUri(documentId);
-            //checkSession(cUri);
+            // checkSession(cUri);
 
             if (cUri.id != null)
             {
@@ -328,7 +328,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             }
             else
             {
-                Log.d(TAG, "Default Row " + documentId);
+                //Log.d(TAG, "Default Row " + documentId);
                 DocumentFolderCursor.RowBuilder row = docsCursor.newRow();
                 row.add(Document.COLUMN_DOCUMENT_ID, EncodedQueryUri.encodeItem(PREFIX_ACCOUNT, cUri.account, cUri.id));
                 row.add(Document.COLUMN_DISPLAY_NAME, cUri.id);
@@ -353,8 +353,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public ParcelFileDescriptor openDocument(String documentId, String mode, CancellationSignal signal)
             throws FileNotFoundException
     {
-        Log.d(TAG, "Open Document : " + documentId);
-
+        //Log.d(TAG, "Open Document : " + documentId);
         try
         {
             EncodedQueryUri cUri = new EncodedQueryUri(documentId);
@@ -366,7 +365,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 // DocumentId can be an old one stored as "recent doc"
                 // This id might have been updated/changed until the last access
                 // That's why We ALWAYS request the latest version
-                Log.d(TAG, "retrieve latest version");
+                //Log.d(TAG, "retrieve latest version");
                 currentNode = session.getServiceRegistry().getVersionService()
                         .getLatestVersion((org.alfresco.mobile.android.api.model.Document) currentNode);
             }
@@ -413,7 +412,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             final boolean isWrite = (mode.indexOf('w') != -1);
 
             // Is Document in cache ?
-            if (downloadedFile.exists()
+            if (downloadedFile != null && downloadedFile.exists()
                     && currentNode.getModifiedAt().getTimeInMillis() < downloadedFile.lastModified())
             {
                 // Document available locally
@@ -461,7 +460,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public AssetFileDescriptor openDocumentThumbnail(String documentId, Point sizeHint, CancellationSignal signal)
             throws FileNotFoundException
     {
-        Log.v(TAG, "openDocumentThumbnail");
+        //Log.v(TAG, "openDocumentThumbnail");
         try
         {
             Node currentNode = null;
@@ -481,6 +480,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 {
                     downloadedFile = new File(folder, currentNode.getName());
                 }
+            }
+            else
+            {
+                return null;
             }
 
             // Is Document in cache ?
@@ -526,7 +529,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public Cursor querySearchDocuments(String rootId, final String query, String[] projection)
             throws FileNotFoundException
     {
-        final DocumentFolderCursor DocumentFolderCursor = new DocumentFolderCursor(
+        final DocumentFolderCursor documentFolderCursor = new DocumentFolderCursor(
                 resolveDocumentProjection(projection));
         Uri uri = DocumentsContract.buildSearchDocumentsUri(mAuthority, rootId, query);
         final EncodedQueryUri cUri = new EncodedQueryUri(rootId);
@@ -537,7 +540,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         {
             for (Entry<String, Node> nodeEntry : nodesIndex.entrySet())
             {
-                addNodeRow(DocumentFolderCursor, nodeEntry.getValue());
+                addNodeRow(documentFolderCursor, nodeEntry.getValue());
             }
             if (!active)
             {
@@ -548,16 +551,14 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         if (active == null)
         {
-            new StorageProviderAsyncTask(uri, DocumentFolderCursor, true)
+            new StorageProviderAsyncTask(uri, documentFolderCursor, true)
             {
                 @Override
                 protected Void doInBackground(Void... params)
                 {
                     checkSession(cUri);
 
-                    List<Node> nodes = new ArrayList<Node>();
-
-                    nodes = session.getServiceRegistry().getSearchService()
+                    List<Node> nodes = session.getServiceRegistry().getSearchService()
                             .keywordSearch(query, new KeywordSearchOptions());
 
                     for (Node node : nodes)
@@ -569,13 +570,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 }
             }.execute();
         }
-        return DocumentFolderCursor;
+        return documentFolderCursor;
     }
 
     @Override
     public Cursor queryRecentDocuments(String rootId, String[] projection) throws FileNotFoundException
     {
-        Log.v(TAG, "queryRecentDocuments" + rootId);
+        //Log.v(TAG, "queryRecentDocuments" + rootId);
 
         final DocumentFolderCursor recentDocumentsCursor = new DocumentFolderCursor(
                 resolveDocumentProjection(projection));
@@ -607,11 +608,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                     try
                     {
                         checkSession(cUri);
-                        List<Node> nodes = new ArrayList<Node>();
                         GregorianCalendar calendar = new GregorianCalendar();
                         calendar.add(Calendar.DAY_OF_YEAR, -7);
                         String formatedDate = DateUtils.format(calendar);
-                        nodes = session.getServiceRegistry().getSearchService()
+                        List<Node> nodes = session.getServiceRegistry().getSearchService()
                                 .search(String.format(QUERY_RECENT, formatedDate), SearchLanguage.CMIS);
 
                         for (Node node : nodes)
@@ -636,7 +636,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     public String createDocument(final String parentDocumentId, String mimeType, final String displayName)
             throws FileNotFoundException
     {
-        Log.v(TAG, "createDocument " + parentDocumentId);
+        //Log.v(TAG, "createDocument " + parentDocumentId);
 
         EncodedQueryUri cUri = new EncodedQueryUri(parentDocumentId);
 
@@ -668,7 +668,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     @Override
     public void deleteDocument(final String documentId) throws FileNotFoundException
     {
-        Log.v(TAG, "deleteDocument");
+        //Log.v(TAG, "deleteDocument");
         final Uri uri = DocumentsContract.buildDocumentUri(mAuthority, documentId);
 
         final EncodedQueryUri cUri = new EncodedQueryUri(documentId);
@@ -732,12 +732,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         // Refresh in case of crash
         if (accountsIndex == null || accountsIndex.isEmpty())
         {
-            Log.d(TAG, "Retrieve Accounts");
             List<Account> accounts = AccountManager.retrieveAccounts(getContext());
             accountsIndex = new HashMap<Long, Account>(accounts.size());
             sessionIndex = new HashMap<Long, AlfrescoSession>(accounts.size());
             applicationManager = ApplicationManager.getInstance(getContext());
-            Log.d(TAG, "Retrieve Accounts : " + accounts.size());
             for (Account account : accounts)
             {
                 accountsIndex.put(account.getId(), account);
@@ -940,16 +938,15 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // FAVORITES FOLDER
     // //////////////////////////////////////////////////////////////////////
     private void retrieveFavoriteFoldersChildren(Uri uri, final EncodedQueryUri row,
-            DocumentFolderCursor DocumentFolderCursor)
+            DocumentFolderCursor documentFolderCursor)
     {
-        new StorageProviderAsyncTask(uri, DocumentFolderCursor, true)
+        new StorageProviderAsyncTask(uri, documentFolderCursor, true)
         {
             @Override
             protected Void doInBackground(Void... params)
             {
                 checkSession(row);
-                List<Folder> folders = new ArrayList<Folder>();
-                folders = session.getServiceRegistry().getDocumentFolderService().getFavoriteFolders();
+                List<Folder> folders = session.getServiceRegistry().getDocumentFolderService().getFavoriteFolders();
                 for (Node node : folders)
                 {
                     nodesIndex.put(NodeRefUtils.getVersionIdentifier(node.getIdentifier()), node);
@@ -963,14 +960,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     // DOCUMENTS & FOLDERS
     // //////////////////////////////////////////////////////////////////////
     private void retrieveFolderChildren(final Uri uri, final EncodedQueryUri row,
-            DocumentFolderCursor DocumentFolderCursor)
+            DocumentFolderCursor documentFolderCursor)
     {
-        new StorageProviderAsyncTask(uri, DocumentFolderCursor, true)
+        new StorageProviderAsyncTask(uri, documentFolderCursor, true)
         {
             @Override
             protected Void doInBackground(Void... params)
             {
-                Log.d(TAG, "Parent ID : " + row);
                 checkSession(row);
 
                 List<Node> nodes = new ArrayList<Node>();
@@ -997,13 +993,13 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         }.execute();
     }
 
-    private void fillNodeChildren(Uri uri, Boolean active, DocumentFolderCursor DocumentFolderCursor)
+    private void fillNodeChildren(Uri uri, Boolean active, DocumentFolderCursor documentFolderCursor)
     {
-        if (hasError(uri, active, DocumentFolderCursor)) { return; }
+        if (hasError(uri, active, documentFolderCursor)) { return; }
 
         for (Entry<String, Node> nodeEntry : nodesIndex.entrySet())
         {
-            addNodeRow(DocumentFolderCursor, nodeEntry.getValue());
+            addNodeRow(documentFolderCursor, nodeEntry.getValue());
         }
         removeUri(uri, active);
     }
@@ -1240,10 +1236,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             this.docsCursor = docsCursor;
         }
 
-        public StorageProviderAsyncTask(Uri uri, DocumentFolderCursor DocumentFolderCursor, boolean clearNodes)
+        public StorageProviderAsyncTask(Uri uri, DocumentFolderCursor documentFolderCursor, boolean clearNodes)
         {
             this.uri = uri;
-            this.docsCursor = DocumentFolderCursor;
+            this.docsCursor = documentFolderCursor;
             this.clearNodes = clearNodes;
         }
 
@@ -1269,10 +1265,10 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
             docsCursor = null;
         }
 
-        public void startLoadingUri(Uri uri, DocumentFolderCursor DocumentFolderCursor)
+        public void startLoadingUri(Uri uri, DocumentFolderCursor documentFolderCursor)
         {
-            DocumentFolderCursor.setIsLoading(true);
-            DocumentFolderCursor.setNotificationUri(getContext().getContentResolver(), uri);
+            documentFolderCursor.setIsLoading(true);
+            documentFolderCursor.setNotificationUri(getContext().getContentResolver(), uri);
             mLoadingUris.put(uri, Boolean.TRUE);
         }
 

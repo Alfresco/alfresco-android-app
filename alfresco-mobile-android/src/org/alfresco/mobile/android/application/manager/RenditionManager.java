@@ -232,7 +232,7 @@ public class RenditionManager
                 {
                     ((ImageViewTouch) iv).setScaleEnabled(true);
                     ((ImageViewTouch) iv).setDoubleTapEnabled(true);
-                    if (iv != null && ((ViewGroup) iv.getParent()).findViewById(R.id.preview_message) != null)
+                    if (((ViewGroup) iv.getParent()).findViewById(R.id.preview_message) != null)
                     {
                         ((ViewGroup) iv.getParent()).findViewById(R.id.preview_message).setVisibility(View.GONE);
                     }

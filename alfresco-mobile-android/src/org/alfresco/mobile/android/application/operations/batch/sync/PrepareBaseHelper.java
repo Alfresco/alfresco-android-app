@@ -357,12 +357,15 @@ public abstract class PrepareBaseHelper
         switch (mode)
         {
             case SyncPrepareRequest.MODE_NODE:
-                if (node.isFolder())
-                {
-                    repoSyncIds = new ArrayList<String>();
-                }
                 List<Node> tmpNode = new ArrayList<Node>(1);
-                tmpNode.add(node);
+                if (node != null)
+                {
+                    if (node.isFolder())
+                    {
+                        repoSyncIds = new ArrayList<String>();
+                    }
+                    tmpNode.add(node);
+                }
                 prepareUpdate(tmpNode);
                 break;
             case SyncPrepareRequest.MODE_DOCUMENTS:
@@ -867,7 +870,6 @@ public abstract class PrepareBaseHelper
 
         // Node unfavorited but always present in a folder favorite
         Cursor cursorId = null;
-        ContentValues cValues;
         List<String> nodeToDelete = new ArrayList<String>();
         for (String nodeId : nodeUnFavorited)
         {

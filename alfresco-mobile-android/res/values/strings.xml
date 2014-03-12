@@ -738,7 +738,7 @@
     <string name="done">Done</string>
     <string name="task_completing">Completing Task</string>
     <string name="task_reassign">Reassign</string>
-    <string name="task_reassign_long">Reassign this task to...</string>
+    <string name="task_reassign_long">Reassign this task to&#8230;</string>
     <string name="task_claim">Claim</string>
     <string name="task_unclaim">Release to Pool</string>
     <string name="task_priority">Priority</string>
@@ -756,7 +756,7 @@
     <string name="task_filter_due_today">Tasks Due Today</string>
     <string name="task_filter_overdue">Overdue Tasks</string>
     <string name="task_filter_assigned_me">Tasks Assigned to Me</string>
-    <string name="task_filter_custom">My filter...</string>
+    <string name="task_filter_custom">My filter&#8230;</string>
 
     <!-- Process Start -->
     <string name="process_start_review">Start review</string>

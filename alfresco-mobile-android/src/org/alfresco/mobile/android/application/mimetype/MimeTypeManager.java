@@ -298,19 +298,6 @@ public final class MimeTypeManager
         return update(appContext, id, extension, type, subtype, description, smallIcon, largeIcon);
     }
 
-    private static ContentValues createContentValues(MimeType mimeType)
-    {
-        ContentValues updateValues = new ContentValues();
-
-        updateValues.put(MimeTypeSchema.COLUMN_EXTENSION, mimeType.getExtension());
-        updateValues.put(MimeTypeSchema.COLUMN_TYPE, mimeType.getType());
-        updateValues.put(MimeTypeSchema.COLUMN_SUBTYPE, mimeType.getSubType());
-        updateValues.put(MimeTypeSchema.COLUMN_DESCRIPTION, mimeType.getDescription());
-        updateValues.put(MimeTypeSchema.COLUMN_SMALL_ICON, mimeType.getSmallIcon());
-        updateValues.put(MimeTypeSchema.COLUMN_LARGE_ICON, mimeType.getLargeIcon());
-        return updateValues;
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // Private
     // ///////////////////////////////////////////////////////////////////////////
