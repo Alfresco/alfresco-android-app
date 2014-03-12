@@ -1026,6 +1026,9 @@ public final class SynchroManager extends OperationManager
 
     private boolean respectEnoughStorageSpace(float availableBytes, long deltaStorage)
     {
+        //In case we remove data or no data
+        if (deltaStorage <= 0){ return true; }
+        
         // POLICY 1 : Enough Storage
         if ((availableBytes - deltaStorage) <= 0)
         {
@@ -1038,6 +1041,9 @@ public final class SynchroManager extends OperationManager
 
     private boolean respectLimitStorageSpace(Account acc, float availableBytes, long deltaStorage, float totalBytes)
     {
+        //In case we remove data or no data
+        if (deltaStorage <= 0){ return true; }
+        
         float percentTotalSpace = GeneralPreferences.getDataSyncPercentFreeSpace(mAppContext, acc);
 
         // Check Delta data storage after sync
