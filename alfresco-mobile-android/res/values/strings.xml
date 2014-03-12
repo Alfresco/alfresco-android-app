@@ -241,7 +241,7 @@
     <string name="error_unable_pick_file">There\'s no external application to pick a file.</string>
 
     <!-- OTHER -->
-    <string name="unlike">UnLike</string>
+    <string name="unlike">Unlike</string>
     <string name="error_retrieve_likes">The Like/Unlike tag for this content could not be retrieved.</string>
     <string name="next">Next</string>
     <string name="save">Save</string>
@@ -302,11 +302,11 @@
     <string name="create_document_name_hint">Type the file name here</string>
     <string name="filename_error_character">This name is invalid.</string>
     <string name="create_document_filename_error">This name is already in use.</string>
-    <string name="create_document_save">An error occurred: Your content is saved inside "Downloads".</string>
+    <string name="create_document_save">An error occurred: Your file is saved inside "Downloads".</string>
     <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
     <string name="create_document_editor_title">Complete action using</string>
     <string name="create_document_editor_not_available">No application available</string>
-    <string name="create_document_editor_not_available_description">You don\'t have an app that will create this content type.</string>
+    <string name="create_document_editor_not_available_description">You don\'t have an app that will create this file type.</string>
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
     <string name="loginfirst">Please login to an account first</string>
@@ -363,11 +363,11 @@
 
     <!-- IMPORT -->
     <string name="import_document_title">Upload with Alfresco Mobile</string>
-    <string name="import_document_name">Content Name</string>
-    <string name="import_documents">Content</string>
+    <string name="import_document_name">File Name</string>
+    <string name="import_documents">File</string>
     <string name="import_account">Account</string>
-    <string name="import_send_download">The content is available inside \"%s\"\'s Download folder.</string>
-    <string name="import_send_downloads">Content is available inside your \"Downloads\" folder.</string>
+    <string name="import_send_download">The file is available inside \"%s\"\'s Download folder.</string>
+    <string name="import_send_downloads">Files are available inside your \"Downloads\" folder.</string>
     <string name="import_folder">Upload Folder</string>
     <string name="import_error">An error occurred during the upload.</string>
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
@@ -462,12 +462,12 @@
     <string name="menu_favorites">Favorites</string>
     <string name="synced_documents">Synced Content</string>
     <string name="empty_favorites">No Favorites</string>
-    <string name="favorites_document">Favorite Content</string>
+    <string name="favorites_document">Favorite</string>
     <string name="error_retrieve_favorite">Favorite info for this content could not be retrieved.</string>
     <string name="favorites_activate">Sync content for \"%s\"</string>
     <string name="favorites_activate_description">Would you like to automatically keep your favorite content in sync with this device?</string>
     <string name="favorites_deactivate">Deactivate Synchronization</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync?</p> All sync content will be deleted from your device.]]></string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync?</p> All synced content will be deleted from your device.]]></string>
     <string name="sync_error_title">Sync Errors</string>
     <string name="sync_error_node_unfavorited"><![CDATA[<p>You\'ve unfavorited <b>%s</b> since you started editing it. <br/> <b>Sync</b> your edited version to the server or <b>Save</b> it to your \"Downloads\" folder. </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> has been deleted on the server but a copy has been saved in your \"Downloads\" folder.</p>]]></string>
@@ -484,13 +484,13 @@
 
     <plurals name="sync_complete_description">
         <item quantity="zero">no content synced</item>
-        <item quantity="one">1 item synced</item>
-        <item quantity="other">%1$s items synced</item>
+        <item quantity="one">1 file synced</item>
+        <item quantity="other">%1$s files synced</item>
     </plurals>
     <plurals name="download_complete_description">
         <item quantity="zero">no content downloaded</item>
-        <item quantity="one">1 item available offline</item>
-        <item quantity="other">%1$s items available offline</item>
+        <item quantity="one">1 file available offline</item>
+        <item quantity="other">%1$s files available offline</item>
     </plurals>
     <plurals name="upload_complete_description">
         <item quantity="zero">no content uploaded.</item>
@@ -499,8 +499,8 @@
     </plurals>
     <plurals name="update_complete_description">
         <item quantity="zero">no content updated.</item>
-        <item quantity="one">1 item updated.</item>
-        <item quantity="other">%1$s items updated.</item>
+        <item quantity="one">1 file updated.</item>
+        <item quantity="other">%1$s files updated.</item>
     </plurals>
     <plurals name="batch_failed">
         <item quantity="zero">no transfers failed.</item>
@@ -566,12 +566,12 @@
     <string name="LoadSessionRequest">Load Session</string>
     <string name="CreateAccountRequest">Create Account</string>
     <string name="UpdatePropertiesRequest">Update Properties</string>
-    <string name="DeleteFileRequest">Delete Content</string>
+    <string name="DeleteFileRequest">Delete File</string>
     <string name="CreateDirectoryRequest">Create Folder</string>
-    <string name="RenameRequest">Rename Content</string>
+    <string name="RenameRequest">Rename File</string>
     <string name="SyncFavoriteRequest">Sync</string>
     <string name="UnSyncFavoriteRequest">Unsync</string>
-    <string name="RetrieveDocumentNameRequest">Check Content Name</string>
+    <string name="RetrieveDocumentNameRequest">Check File Name</string>
 
     <!-- Multi selection -->
     <string name="empty">Nothing at all</string>
@@ -614,14 +614,14 @@
 
     <!-- FILE Editor Menu -->
     <string name="file_editor_name">Alfresco Text Editor</string>
-    <string name="file_editor_error_open">Unable to open this content.</string>
-    <string name="file_editor_error_too_large">This content exceeds the size limit to be opened with the Alfresco Text Editor.</string>
+    <string name="file_editor_error_open">Unable to open this file.</string>
+    <string name="file_editor_error_too_large">This file exceeds the size limit to be opened with the Alfresco Text Editor.</string>
     <string name="file_editor_error_speech">Text To Speech is not available inside your device.</string>
-    <string name="file_editor_save_request">The content has been modified.</string>
+    <string name="file_editor_save_request">The file has been modified.</string>
     <string name="file_editor_save_description"><![CDATA[Do you want to quit without saving? <br/> Any unsaved changes will be lost.]]></string>
     <string name="file_editor_save">Save</string>
     <string name="file_editor_discard">Discard</string>
-    <string name="file_editor_save_confirmation">Content has been saved.</string>
+    <string name="file_editor_save_confirmation">File has been saved.</string>
     <string name="file_editor_loading">Please wait a few moments&#8230;</string>
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_encoding">Encoding</string>
@@ -815,14 +815,14 @@
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Search</string>
     <string name="search_person">People</string>
-    <string name="search_documents">Content</string>
+    <string name="search_documents">Files</string>
     <string name="search_folders">Folders</string>
     <string name="search_advanced">Advanced Search</string>
 
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">Select attachments</string>
     <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
-    <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 item|1&lt;Attach {0} items}</string>
+    <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 file|1&lt;Attach {0} files}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">Views</string>
