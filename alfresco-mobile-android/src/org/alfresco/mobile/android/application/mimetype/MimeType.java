@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.mimetype;
 import java.io.Serializable;
 
 import android.content.Context;
-import android.util.Log;
 
 /**
  * @since 1.4
@@ -147,7 +146,6 @@ public class MimeType implements Serializable
 
     public Integer getLargeIconId(Context context)
     {
-        Log.e("MIME", largeIcon.substring(PREFIX.length()).concat(DRAWABLE).concat(PACKAGE_NAME));
         return context.getResources().getIdentifier(largeIcon.substring(PREFIX.length()), DRAWABLE,
                 PACKAGE_NAME);
     }

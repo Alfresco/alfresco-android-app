@@ -17,13 +17,10 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.search;
 
-import org.alfresco.mobile.android.application.ApplicationManager;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 /**
@@ -41,10 +38,6 @@ public final class HistorySearchManager
     private static final Object LOCK = new Object();
 
     private Integer historySize;
-
-    private ApplicationManager appManager;
-
-    private LocalBroadcastManager broadManager;
 
     public static final Uri CONTENT_URI = HistorySearchProvider.CONTENT_URI;
 
@@ -67,7 +60,6 @@ public final class HistorySearchManager
     {
         // Init/retrieve manager
         this.appContext = context;
-        appManager = ApplicationManager.getInstance(context);
         getCount();
     }
 
@@ -173,19 +165,6 @@ public final class HistorySearchManager
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private static ContentValues createContentValues(HistorySearch search)
-    {
-        ContentValues updateValues = new ContentValues();
-
-        updateValues.put(HistorySearchSchema.COLUMN_ACCOUNT_ID, search.getAccountId());
-        updateValues.put(HistorySearchSchema.COLUMN_TYPE, search.getType());
-        updateValues.put(HistorySearchSchema.COLUMN_ADVANCED, search.getAdvanced());
-        updateValues.put(HistorySearchSchema.COLUMN_DESCRIPTION, search.getDescription());
-        updateValues.put(HistorySearchSchema.COLUMN_QUERY, search.getQuery());
-        updateValues.put(HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP, search.getTimestamp());
-        return updateValues;
-    }
-
     private static ContentValues createContentValues(long accountId, int type, int advanced, String description,
             String query, long timestamp)
     {

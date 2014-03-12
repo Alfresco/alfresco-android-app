@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.accounts.fragment;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;

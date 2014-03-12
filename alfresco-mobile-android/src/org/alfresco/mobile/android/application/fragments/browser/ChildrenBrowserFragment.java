@@ -1069,7 +1069,7 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_FAVORITE_COMPLETED))
                     {
-                        // ((ProgressNodeAdapter) adapter).refreshOperations();
+                        ((ProgressNodeAdapter) adapter).refreshOperations();
                     }
                     else if (intent.getAction().equals(IntentIntegrator.ACTION_DOWNLOAD_COMPLETED))
                     {

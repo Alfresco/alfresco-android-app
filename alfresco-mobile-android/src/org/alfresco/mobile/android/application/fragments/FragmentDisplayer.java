@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.application.R;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.view.accessibility.AccessibilityEvent;
 
 public final class FragmentDisplayer
 {
