@@ -119,7 +119,12 @@ public final class SynchroSchema extends OperationSchema
 
     public static void onUpgrade(Context context, SQLiteDatabase db, int oldVersion, int newVersion)
     {
-        if (oldVersion <= DatabaseVersionNumber.VERSION_1_4_0)
+        if (oldVersion < DatabaseVersionNumber.VERSION_1_2_0)
+        {
+            db.execSQL(QUERY_TABLE_CREATE);
+        }
+        
+        if (oldVersion >= DatabaseVersionNumber.VERSION_1_2_0 && oldVersion <= DatabaseVersionNumber.VERSION_1_4_0)
         {
             db.execSQL(QUERY_SYNC_FOLDER_COLUM_1);
             db.execSQL(QUERY_SYNC_FOLDER_COLUM_2);
