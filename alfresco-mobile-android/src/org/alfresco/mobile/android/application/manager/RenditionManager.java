@@ -156,7 +156,7 @@ public class RenditionManager
             iv.setImageResource(initDrawableId);
             return;
         }
-        //Log.d(TAG, identifier);
+        // Log.d(TAG, identifier);
 
         //
         switch (type)
@@ -460,14 +460,21 @@ public class RenditionManager
 
     public String getDocumentRendition(String identifier, String type)
     {
-        String nodeIdentifier = identifier;
-        if (NodeRefUtils.isVersionIdentifier(identifier) || NodeRefUtils.isIdentifier(identifier))
+        try
         {
-            nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(identifier);
-        }
-        UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, nodeIdentifier, type));
-        url.addParameter("format", "json");
+            String nodeIdentifier = identifier;
+            if (NodeRefUtils.isVersionIdentifier(identifier) || NodeRefUtils.isIdentifier(identifier))
+            {
+                nodeIdentifier = NodeRefUtils.createNodeRefByIdentifier(identifier);
+            }
+            UrlBuilder url = new UrlBuilder(OnPremiseUrlRegistry.getThumbnailsUrl(session, nodeIdentifier, type));
+            url.addParameter("format", "json");
 
-        return url.toString();
+            return url.toString();
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
     }
 }
