@@ -57,6 +57,7 @@ import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeType;
 import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
@@ -655,6 +656,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         int iconId = defaultIconId;
         if (node.isDocument())
         {
+            MimeType mime = MimeTypeManager.getMimetype(getActivity(), node.getName());
             iconId = MimeTypeManager.getIcon(getActivity(), node.getName(), isLarge);
             if (((Document) node).isLatestVersion())
             {
@@ -671,8 +673,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 iv.setImageResource(iconId);
             }
+            AccessibilityHelper.addContentDescription(iv, mime != null ? mime.getDescription() : ((Document) node)
+                    .getContentStreamMimeType());
 
-            if (!isRestrictable)
+            if (!isRestrictable && !AccessibilityHelper.isEnabled(getActivity()))
             {
                 iv.setOnClickListener(new OnClickListener()
                 {
@@ -687,6 +691,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         else
         {
             iv.setImageResource(defaultIconId);
+            AccessibilityHelper.addContentDescription(iv, R.string.mime_folder);
         }
     }
 
@@ -807,7 +812,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
-            if (!isRestrictable)
+            if (!isRestrictable && !AccessibilityHelper.isEnabled(getActivity()))
             {
                 vRoot.findViewById(R.id.icon).setOnClickListener(new OnClickListener()
                 {
