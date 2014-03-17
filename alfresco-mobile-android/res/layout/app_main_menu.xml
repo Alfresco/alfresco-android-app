@@ -112,31 +112,8 @@
                 android:id="@+id/menu_notifications"
                 style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_events"
-                android:text="@string/notifications" />
-
-            <TextView
-                style="?AlfrescoTheme.TextView.SectionHeader.Grey"
-                android:paddingTop="@dimen/button_padding"
-                android:text="@string/menu_resources" />
-
-            <Button
-                android:id="@+id/menu_prefs"
-                style="?AlfrescoTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_settings_light"
-                android:text="@string/menu_prefs" />
-
-            <Button
-                android:id="@+id/menu_help"
-                style="?AlfrescoTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_help"
-                android:text="@string/menu_help" />
-
-            <Button
-                android:id="@+id/menu_about"
-                style="?AlfrescoTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_about_light"
-                android:text="@string/menu_about" />
+                android:text="@string/notifications"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
-
 </ScrollView>
