@@ -59,3 +59,9 @@ __Apache 2.0 License__
 __MIT License__
 
 * Image View Zoom	 https://github.com/sephiroth74/ImageViewZoom
+
+
+Contributors
+------------
+
+* Davi Garcia Pereira	 https://github.com/davigp
