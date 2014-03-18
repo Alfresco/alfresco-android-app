@@ -461,9 +461,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     // ==> Sync requires a user input
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
-
-                // ==> Sync in progress
-
             }
 
             // Is there a doc warning ?
@@ -479,6 +476,10 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
                 statutCursor.close();
+            }
+            else
+            {
+                statut = null;
             }
 
             if (menuSlidingFavorites != null)
