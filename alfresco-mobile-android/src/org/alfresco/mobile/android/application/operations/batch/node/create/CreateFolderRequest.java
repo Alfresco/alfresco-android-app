@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.application.operations.batch.node.NodeOperati
 import org.alfresco.mobile.android.application.operations.batch.utils.MapUtil;
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -50,7 +51,7 @@ public class CreateFolderRequest extends NodeOperationRequest
         requestTypeId = TYPE_ID;
 
         properties = new HashMap<String, Serializable>(2);
-        properties.put(PropertyIds.OBJECT_TYPE_ID, ObjectType.FOLDER_BASETYPE_ID);
+        properties.put(PropertyIds.OBJECT_TYPE_ID, BaseTypeId.CMIS_FOLDER.value());
         
         persistentProperties = new HashMap<String, Serializable>();
         persistentProperties.put(ContentModel.PROP_NAME, folderName);
