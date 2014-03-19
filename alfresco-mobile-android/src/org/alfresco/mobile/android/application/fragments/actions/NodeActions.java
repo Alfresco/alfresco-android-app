@@ -24,6 +24,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
@@ -177,13 +178,15 @@ public class NodeActions extends AbstractActions<Node>
             mi.setIcon(R.drawable.ic_download_dark);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, Menu.FIRST
-                    + MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, R.string.process_start_review);
-            mi.setIcon(R.drawable.ic_start_review);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            if (!(SessionUtils.getSession(activity) instanceof CloudSession))
+            {
+                mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, Menu.FIRST
+                        + MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, R.string.process_start_review);
+                mi.setIcon(R.drawable.ic_start_review);
+                mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+            }
         }
-        
-        
+
         createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
                 + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_dark);
@@ -284,7 +287,8 @@ public class NodeActions extends AbstractActions<Node>
     private void startReview()
     {
         Intent it = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, activity, PrivateDialogActivity.class);
-        it.putParcelableArrayListExtra(IntentIntegrator.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) selectedItems);
+        it.putParcelableArrayListExtra(IntentIntegrator.EXTRA_DOCUMENTS,
+                (ArrayList<? extends Parcelable>) selectedItems);
         activity.startActivity(it);
     }
 
