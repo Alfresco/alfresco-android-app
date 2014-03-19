@@ -429,13 +429,13 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             case HistorySearch.TYPE_FOLDER:
                 if (isEmpty(name, title, description, null, modifiedId, modificationDateFromValue,
                         modificationDateToValue)) { return null; }
-                return QueryHelper.createQuery(name, title, description, -1, modifiedId, modificationDateFromValue,
+                return QueryHelper.createQuery(false, name, title, description, -1, modifiedId, modificationDateFromValue,
                         modificationDateToValue, tmpParentFolder);
             case HistorySearch.TYPE_DOCUMENT:
                 Integer mimetype = (Integer) spinnerMimeType.getSelectedItem();
                 if (isEmpty(name, title, description, mimetype, modifiedId, modificationDateFromValue,
                         modificationDateToValue)) { return null; }
-                return QueryHelper.createQuery(name, title, description, mimetype, modifiedId,
+                return QueryHelper.createQuery(true, name, title, description, mimetype, modifiedId,
                         modificationDateFromValue, modificationDateToValue, tmpParentFolder);
             default:
                 break;
