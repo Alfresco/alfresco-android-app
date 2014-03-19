@@ -528,9 +528,18 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         {
             builder.append(", ");
         }
+
         builder.append(key);
         builder.append(":");
+        if (value.contains(" "))
+        {
+            builder.append("\"");
+        }
         builder.append(value);
+        if (value.contains(" "))
+        {
+            builder.append("\"");
+        }
     }
 
     private static void addParameter(StringBuilder builder, String key, GregorianCalendar calendar)

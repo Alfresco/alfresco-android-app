@@ -191,9 +191,14 @@ public class QueryHelper
         {
             builder.append(" ");
         }
-        builder.append(key);
-        builder.append(":");
-        builder.append(value);
+        String[] values = value.split(" ");
+        for (int i = 0; i < values.length; i++)
+        {
+            builder.append(key);
+            builder.append(":");
+            builder.append(values[i]);
+            builder.append(" ");
+        }
     }
 
     private static void addMimeTypeParameter(StringBuilder builder, int mimetypeKey)
