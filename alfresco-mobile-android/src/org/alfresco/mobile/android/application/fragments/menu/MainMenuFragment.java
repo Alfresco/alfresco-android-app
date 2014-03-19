@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationContex
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.favorites.SyncScanInfo;
+import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
@@ -57,6 +58,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -317,7 +320,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         rootView.findViewById(R.id.menu_favorites).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
         rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
         rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
     }
@@ -390,6 +393,15 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         }
 
         spinnerAccount.setSelection(accountIndex);
+
+        if (OperationsFragment.canDisplay(getActivity(), currentAccount))
+        {
+            rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
+        }
     }
 
     private void hideSlidingMenu(boolean goHome)
@@ -440,8 +452,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             }
             else
             {
-                // Sync Prepare done 
-                
+                // Sync Prepare done
+
                 // Is there a policy warning ?
                 SyncScanInfo syncScanInfo = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
                 if (syncScanInfo != null && syncScanInfo.hasWarning())
@@ -449,9 +461,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     // ==> Sync requires a user input
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
-                
-                // ==> Sync in progress
-                
             }
 
             // Is there a doc warning ?
@@ -467,6 +476,10 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
                 statutCursor.close();
+            }
+            else
+            {
+                statut = null;
             }
 
             if (menuSlidingFavorites != null)
@@ -486,6 +499,29 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                 statutCursor.close();
             }
         }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // OVERFLOW MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void getMenu(Menu menu)
+    {
+        MenuItem mi;
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SETTINGS_ID, Menu.FIRST + MenuActionItem.MENU_SETTINGS_ID,
+                R.string.menu_prefs);
+        mi.setIcon(R.drawable.ic_settings_light);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_HELP_ID, Menu.FIRST + MenuActionItem.MENU_HELP_ID,
+                R.string.menu_help);
+        mi.setIcon(R.drawable.ic_help);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_ABOUT_ID, Menu.FIRST + MenuActionItem.MENU_ABOUT_ID,
+                R.string.menu_about);
+        mi.setIcon(R.drawable.ic_about_light);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

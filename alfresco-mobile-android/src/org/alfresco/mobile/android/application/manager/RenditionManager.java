@@ -40,6 +40,7 @@ import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,9 +74,15 @@ public class RenditionManager
 
     public static final int TYPE_WORKFLOW = 2;
 
+    private static final String AWAIT = "await";
+
+    private static final String NO_RENDITION = "NoRendition";
+
     protected Map<String, String> streamUriStore = new HashMap<String, String>();
 
     protected Map<String, String> previewUriStore = new HashMap<String, String>();
+
+    protected Map<String, Integer> urlRetrievers = new HashMap<String, Integer>();
 
     public RenditionManager(Activity context, AlfrescoSession session)
     {
@@ -123,6 +130,10 @@ public class RenditionManager
 
     public void display(ImageView iv, String username, int initDrawableId)
     {
+        if (picasso != null)
+        {
+            picasso.cancelRequest(iv);
+        }
         display(iv, username, initDrawableId, TYPE_PERSON, null);
     }
 
@@ -151,7 +162,7 @@ public class RenditionManager
     {
         // Wrong identifier so display placeholder
         String url = null;
-        if (identifier == null || identifier.isEmpty() || session == null)
+        if (TextUtils.isEmpty(identifier) || session == null)
         {
             iv.setImageResource(initDrawableId);
             return;
@@ -192,25 +203,37 @@ public class RenditionManager
                     startPicasso(url, initDrawableId, iv);
                     return;
                 }
+                else if (hasReference(identifier, preview))
+                {
+                    url = getReference(identifier, preview);
+                    startPicasso(url, initDrawableId, iv);
+                    return;
+                }
                 break;
             default:
                 break;
         }
 
-        addReference(identifier, null, preview);
         iv.setImageResource(initDrawableId);
-        urlRetrieverThread thread = new urlRetrieverThread(context, session, iv, initDrawableId, identifier, type,
-                preview);
-        thread.setPriority(Thread.MIN_PRIORITY);
-        if (preview != null)
+
+        if (getReference(identifier, preview) == null)
         {
-            thread.setPriority(Thread.NORM_PRIORITY);
-        }
-        final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), thread);
-        iv.setImageDrawable(asyncDrawable);
-        if (thread.getState() == Thread.State.NEW)
-        {
-            thread.start();
+            addReference(identifier, AWAIT, preview);
+            urlRetrieverThread thread = new urlRetrieverThread(context, session, iv, initDrawableId, identifier, type,
+                    preview);
+            thread.setPriority(Thread.MIN_PRIORITY);
+            if (preview != null)
+            {
+                thread.setPriority(Thread.NORM_PRIORITY);
+            }
+            final AsyncDrawable asyncDrawable = new AsyncDrawable(context.getResources(), thread);
+            iv.setImageDrawable(asyncDrawable);
+            if (thread.getState() == Thread.State.NEW)
+            {
+                thread.start();
+            }
+        } else {
+            Log.d(TAG, "AWAIT URL" + identifier);
         }
     }
 
@@ -322,13 +345,12 @@ public class RenditionManager
                 }
                 else if (url == null)
                 {
-                    addReference(identifier, null, preview);
+                    addReference(identifier, NO_RENDITION, preview);
                 }
             }
             catch (Exception e)
             {
-                Log.w(TAG, Log.getStackTraceString(e));
-                addReference(identifier, null, preview);
+                addReference(identifier, NO_RENDITION, preview);
                 ctxt.runOnUiThread(new urlDisplayer(null, imageViewReference, initDrawableId));
             }
         }
@@ -336,7 +358,8 @@ public class RenditionManager
 
     private void addReference(String identifier, String url, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && previewUriStore.get(identifier) != null
+                && !previewUriStore.get(identifier).equals(NO_RENDITION))
         {
             previewUriStore.put(identifier, url);
         }
@@ -350,11 +373,11 @@ public class RenditionManager
     {
         if (preview != null)
         {
-            return previewUriStore.containsKey(identifier);
+            return previewUriStore.containsKey(identifier) && !previewUriStore.get(identifier).equals(AWAIT);
         }
         else
         {
-            return streamUriStore.containsKey(identifier);
+            return streamUriStore.containsKey(identifier) && !streamUriStore.get(identifier).equals(AWAIT);
         }
     }
 
@@ -392,7 +415,7 @@ public class RenditionManager
             {
                 startPicasso(url, initDrawableId, imageView);
             }
-            else
+            else if (imageView != null)
             {
                 imageView.setImageResource(initDrawableId);
                 displayErrorMessage(imageView);

@@ -99,6 +99,7 @@
                 android:text="@string/metadata_modification_date" />
 
             <LinearLayout
+                android:id="@+id/modified_by_group"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"

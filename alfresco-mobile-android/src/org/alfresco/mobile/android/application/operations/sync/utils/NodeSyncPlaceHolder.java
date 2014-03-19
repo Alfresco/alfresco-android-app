@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServi
 import org.apache.chemistry.opencmis.client.api.ObjectType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
+import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -130,11 +131,11 @@ public class NodeSyncPlaceHolder implements Node
                 return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
                         AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
             }
-            else if (ObjectType.DOCUMENT_BASETYPE_ID.equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
+            else if (BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
             {
                 return ContentModel.TYPE_CONTENT;
             }
-            else if (ObjectType.FOLDER_BASETYPE_ID.equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID))) { return ContentModel.TYPE_FOLDER; }
+            else if (BaseTypeId.CMIS_FOLDER.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID))) { return ContentModel.TYPE_FOLDER; }
             return getPropertyValue(PropertyIds.OBJECT_TYPE_ID);
         }
         else
@@ -253,13 +254,13 @@ public class NodeSyncPlaceHolder implements Node
     /** {@inheritDoc} */
     public boolean isFolder()
     {
-        return ObjectType.FOLDER_BASETYPE_ID.equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
+        return BaseTypeId.CMIS_FOLDER.value().equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
     }
 
     /** {@inheritDoc} */
     public boolean isDocument()
     {
-        return ObjectType.DOCUMENT_BASETYPE_ID.equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
+        return BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.BASE_TYPE_ID));
     }
 
     // ////////////////////////////////////////////////////

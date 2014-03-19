@@ -30,6 +30,7 @@ import java.util.TimeZone;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -312,24 +313,32 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         });
 
         // Last Modification by
-        ib = (ImageButton) rootView.findViewById(R.id.action_metadata_prop_modified_by);
-        ib.setOnClickListener(new OnClickListener()
+        if (alfSession instanceof CloudSession)
         {
-            @Override
-            public void onClick(View v)
-            {
-                startPersonPicker();
-            }
-        });
-        modifiedByButton = (Button) rootView.findViewById(R.id.metadata_prop_modified_by);
-        modifiedByButton.setOnClickListener(new OnClickListener()
+            rootView.findViewById(R.id.modified_by_group).setVisibility(View.GONE);
+        }
+        else
         {
-            @Override
-            public void onClick(View v)
+            rootView.findViewById(R.id.modified_by_group).setVisibility(View.VISIBLE);
+            ib = (ImageButton) rootView.findViewById(R.id.action_metadata_prop_modified_by);
+            modifiedByButton = (Button) rootView.findViewById(R.id.metadata_prop_modified_by);
+            ib.setOnClickListener(new OnClickListener()
             {
-                startPersonPicker();
-            }
-        });
+                @Override
+                public void onClick(View v)
+                {
+                    startPersonPicker();
+                }
+            });
+            modifiedByButton.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    startPersonPicker();
+                }
+            });
+        }
 
         // BUTTON
         Button validationButton = UIUtils.initValidation(rootView, R.string.search);
@@ -420,13 +429,13 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             case HistorySearch.TYPE_FOLDER:
                 if (isEmpty(name, title, description, null, modifiedId, modificationDateFromValue,
                         modificationDateToValue)) { return null; }
-                return QueryHelper.createQuery(name, title, description, -1, modifiedId, modificationDateFromValue,
+                return QueryHelper.createQuery(false, name, title, description, -1, modifiedId, modificationDateFromValue,
                         modificationDateToValue, tmpParentFolder);
             case HistorySearch.TYPE_DOCUMENT:
                 Integer mimetype = (Integer) spinnerMimeType.getSelectedItem();
                 if (isEmpty(name, title, description, mimetype, modifiedId, modificationDateFromValue,
                         modificationDateToValue)) { return null; }
-                return QueryHelper.createQuery(name, title, description, mimetype, modifiedId,
+                return QueryHelper.createQuery(true, name, title, description, mimetype, modifiedId,
                         modificationDateFromValue, modificationDateToValue, tmpParentFolder);
             default:
                 break;
@@ -519,9 +528,18 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         {
             builder.append(", ");
         }
+
         builder.append(key);
         builder.append(":");
+        if (value.contains(" "))
+        {
+            builder.append("\"");
+        }
         builder.append(value);
+        if (value.contains(" "))
+        {
+            builder.append("\"");
+        }
     }
 
     private static void addParameter(StringBuilder builder, String key, GregorianCalendar calendar)

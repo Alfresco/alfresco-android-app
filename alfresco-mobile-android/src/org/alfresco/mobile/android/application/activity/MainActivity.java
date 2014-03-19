@@ -500,8 +500,8 @@ public class MainActivity extends BaseActivity
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
                 Fragment fr = SearchFragment.newInstance();
-                FragmentDisplayer.replaceFragment(this, fr, DisplayUtils.getLeftFragmentId(this),
-                        SearchFragment.TAG, true);
+                FragmentDisplayer.replaceFragment(this, fr, DisplayUtils.getLeftFragmentId(this), SearchFragment.TAG,
+                        true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
@@ -532,15 +532,6 @@ public class MainActivity extends BaseActivity
                     startActivity(new Intent(IntentIntegrator.ACTION_DISPLAY_OPERATIONS).putExtra(
                             IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId()));
                 }
-                break;
-            case R.id.menu_prefs:
-                displayPreferences();
-                break;
-            case R.id.menu_about:
-                displayAbout();
-                break;
-            case R.id.menu_help:
-                UIUtils.displayHelp(this);
                 break;
             default:
                 break;
@@ -578,7 +569,8 @@ public class MainActivity extends BaseActivity
         {
             ActionManager.loadAccount(this, accountManager.getDefaultAccount());
         }
-        else if (sessionState == SESSION_ERROR && getCurrentSession() == null && ConnectivityUtils.hasInternetAvailable(this))
+        else if (sessionState == SESSION_ERROR && getCurrentSession() == null
+                && ConnectivityUtils.hasInternetAvailable(this))
         {
             ActionManager.loadAccount(this, getCurrentAccount());
         }
@@ -625,7 +617,7 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addNavigationFragment(f);
     }
-    
+
     public void addNavigationFragment(Folder f, boolean isShortCut)
     {
         clearScreen();
@@ -639,7 +631,7 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addBrowserFragment(path);
     }
-    
+
     public void addNavigationFragmentById(String folderIdentifier)
     {
         clearScreen();
@@ -915,7 +907,11 @@ public class MainActivity extends BaseActivity
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
-        if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
+        if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
+        {
+            MainMenuFragment.getMenu(menu);
+            return true;
+        }
 
         if (isVisible(TaskDetailsFragment.TAG))
         {
@@ -934,7 +930,7 @@ public class MainActivity extends BaseActivity
             SearchFragment.getMenu(menu);
             return true;
         }
-        
+
         if (isVisible(TasksFragment.TAG))
         {
             TasksFragment.getMenu(menu);
@@ -1025,8 +1021,8 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
-                FragmentDisplayer.replaceFragment(this, SearchFragment.newInstance(), getFragmentPlace(), SearchFragment.TAG,
-                        true);
+                FragmentDisplayer.replaceFragment(this, SearchFragment.newInstance(), getFragmentPlace(),
+                        SearchFragment.TAG, true);
                 return true;
 
             case MenuActionItem.MENU_CREATE_FOLDER:
@@ -1135,7 +1131,13 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_SYNC_WARNING:
                 ((FavoritesSyncFragment) getFragment(FavoritesSyncFragment.TAG)).displayWarning();
                 return true;
-            case MenuActionItem.ABOUT_ID:
+            case MenuActionItem.MENU_SETTINGS_ID:
+                displayPreferences();
+                return true;
+            case MenuActionItem.MENU_HELP_ID:
+                UIUtils.displayHelp(this);
+                return true;
+            case MenuActionItem.MENU_ABOUT_ID:
                 displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
                 return true;
@@ -1358,7 +1360,7 @@ public class MainActivity extends BaseActivity
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
-               removeWaitingDialog();
+                removeWaitingDialog();
 
                 // Used for launching last pressed action button from main menu
                 if (fragmentQueue != -1)

@@ -969,6 +969,9 @@ public final class SynchroManager extends OperationManager
     // ////////////////////////////////////////////////////
     public SyncScanInfo getScanInfo(Account acc)
     {
+        //IF sync is disabled scanInfo is success by default.
+        if (!hasActivateSync(acc)) { return new SyncScanInfo(0, 0, SyncScanInfo.RESULT_SUCCESS); }
+
         long dataFinalStored = getAmountDataStored();
         long deltaStorage = getPreviousAmountDataStored();
         float totalBytes = StorageManager.getTotalBytes(mAppContext);
@@ -1026,9 +1029,9 @@ public final class SynchroManager extends OperationManager
 
     private boolean respectEnoughStorageSpace(float availableBytes, long deltaStorage)
     {
-        //In case we remove data or no data
-        if (deltaStorage <= 0){ return true; }
-        
+        // In case we remove data or no data
+        if (deltaStorage <= 0) { return true; }
+
         // POLICY 1 : Enough Storage
         if ((availableBytes - deltaStorage) <= 0)
         {
@@ -1041,9 +1044,9 @@ public final class SynchroManager extends OperationManager
 
     private boolean respectLimitStorageSpace(Account acc, float availableBytes, long deltaStorage, float totalBytes)
     {
-        //In case we remove data or no data
-        if (deltaStorage <= 0){ return true; }
-        
+        // In case we remove data or no data
+        if (deltaStorage <= 0) { return true; }
+
         float percentTotalSpace = GeneralPreferences.getDataSyncPercentFreeSpace(mAppContext, acc);
 
         // Check Delta data storage after sync

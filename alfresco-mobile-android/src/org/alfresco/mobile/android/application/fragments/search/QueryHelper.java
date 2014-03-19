@@ -25,6 +25,10 @@ public class QueryHelper
 
     private static final String QUERY_DOCUMENT = "SELECT * FROM cmis:document WHERE ";
 
+    private static final String QUERY_FOLDER_TITLED = "SELECT d.* FROM cmis:folder as d JOIN cm:titled as t ON d.cmis:objectId = t.cmis:objectId WHERE ";
+
+    private static final String QUERY_FOLDER = "SELECT * FROM cmis:folder WHERE ";
+
     private static final String CMIS_PROP_TITLE = " cm:title ";
 
     private static final String CMIS_PROP_DESCRIPTION = " cm:description ";
@@ -38,29 +42,39 @@ public class QueryHelper
     // ///////////////////////////////////////////////////////////////////////////
     // QUERY
     // ///////////////////////////////////////////////////////////////////////////
-    public static String createQuery(String name, String title, String description, String modifiedById,
-            GregorianCalendar modificationFrom, GregorianCalendar modificationTo)
-    {
-        return createQuery(name, title, description, -1, modifiedById, modificationFrom, modificationTo, null);
-    }
-
-    public static String createQuery(String name, String title, String description, int mimetype, String modifiedById,
-            GregorianCalendar modificationFrom, GregorianCalendar modificationTo, Folder parentFolder)
+    public static String createQuery(boolean isSearchDocument, String name, String title, String description,
+            int mimetype, String modifiedById, GregorianCalendar modificationFrom, GregorianCalendar modificationTo,
+            Folder parentFolder)
     {
         // Detect if cm:titled is applied
         StringBuilder queryBuilder;
-        if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description))
+
+        if (isSearchDocument)
         {
-            queryBuilder = new StringBuilder(QUERY_DOCUMENT);
+            if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description))
+            {
+                queryBuilder = new StringBuilder(QUERY_DOCUMENT);
+            }
+            else
+            {
+                queryBuilder = new StringBuilder(QUERY_DOCUMENT_TITLED);
+            }
         }
         else
         {
-            queryBuilder = new StringBuilder(QUERY_DOCUMENT_TITLED);
+            if (TextUtils.isEmpty(title) && TextUtils.isEmpty(description))
+            {
+                queryBuilder = new StringBuilder(QUERY_FOLDER);
+            }
+            else
+            {
+                queryBuilder = new StringBuilder(QUERY_FOLDER_TITLED);
+            }
         }
 
         // Create the query based on properties
         StringBuilder whereClause = new StringBuilder();
-        
+
         // Name
         addParenFolderParameter(whereClause, parentFolder);
 
@@ -103,7 +117,7 @@ public class QueryHelper
 
         return queryBuilder.toString();
     }
-    
+
     public static String createPersonSearchQuery(String name, String jobTitle, String company, String location)
     {
         StringBuilder queryBuilder = new StringBuilder(name);
@@ -113,7 +127,6 @@ public class QueryHelper
         return queryBuilder.toString();
     }
 
-    
     // ///////////////////////////////////////////////////////////////////////////
     // HELPER
     // ///////////////////////////////////////////////////////////////////////////
@@ -122,12 +135,13 @@ public class QueryHelper
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(calendar.getTime()).concat("T00:00:00.000Z");
     }
+
     public static String formatLast(GregorianCalendar calendar)
     {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(calendar.getTime()).concat("T23:59:59.999Z");
     }
-    
+
     private static void addParenFolderParameter(StringBuilder builder, Folder value)
     {
         if (value == null) { return; }
@@ -191,9 +205,14 @@ public class QueryHelper
         {
             builder.append(" ");
         }
-        builder.append(key);
-        builder.append(":");
-        builder.append(value);
+        String[] values = value.split(" ");
+        for (int i = 0; i < values.length; i++)
+        {
+            builder.append(key);
+            builder.append(":");
+            builder.append(values[i]);
+            builder.append(" ");
+        }
     }
 
     private static void addMimeTypeParameter(StringBuilder builder, int mimetypeKey)
