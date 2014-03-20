@@ -364,7 +364,10 @@ public abstract class PrepareBaseHelper
                     {
                         repoSyncIds = new ArrayList<String>();
                     }
-                    tmpNode.add(node);
+                    if (session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+                    {
+                        tmpNode.add(node);
+                    }
                 }
                 prepareUpdate(tmpNode);
                 break;
@@ -657,8 +660,7 @@ public abstract class PrepareBaseHelper
                     // Document : We add it
                     if (parentFolder != null && favoriteRootFolder != null)
                     {
-                        prepareChildCreation((Document) childrenNode, parentFolder.getIdentifier(),
-                                favoriteRootFolder.getIdentifier());
+                        prepareChildCreation((Document) childrenNode, parentFolder.getIdentifier());
                     }
                     else
                     {
@@ -1028,7 +1030,7 @@ public abstract class PrepareBaseHelper
             {
                 if (node.isDocument())
                 {
-                    prepareChildCreation((Document) node, folder.getIdentifier(), rootFavoriteFolder.getIdentifier());
+                    prepareChildCreation((Document) node, folder.getIdentifier());
                     length += ((Document) node).getContentStreamLength();
                 }
                 else if (node.isFolder())
@@ -1065,7 +1067,7 @@ public abstract class PrepareBaseHelper
         }
     }
 
-    private void prepareChildCreation(Document doc, String parentFolder, String favoriteFolderId)
+    private void prepareChildCreation(Document doc, String parentFolder)
     {
         Uri uri = syncManager.getUri(acc, doc.getIdentifier());
         if (uri == null)

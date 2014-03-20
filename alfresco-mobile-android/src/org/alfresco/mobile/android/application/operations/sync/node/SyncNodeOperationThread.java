@@ -131,6 +131,8 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
         {
             try
             {
+                if (parentFolder == null && parentFolderIdentifier == null && node == null) { return null; }
+
                 if (parentFolder == null && parentFolderIdentifier != null && !parentFolderIdentifier.isEmpty())
                 {
                     parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
