@@ -325,6 +325,8 @@ public class FavoritesSyncFragment extends BaseCursorGridFragment implements Ref
         else
         {
             selection.append(SynchroSchema.COLUMN_IS_FAVORITE + " == '" + SynchroProvider.FLAG_FAVORITE + "'");
+            selection.append(" OR ");
+            selection.append(SynchroSchema.COLUMN_STATUS + " == '" + SyncOperation.STATUS_REQUEST_USER + "'");
         }
 
         if (selection.length() > 0)
