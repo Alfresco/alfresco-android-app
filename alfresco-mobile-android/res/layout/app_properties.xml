@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -31,7 +31,7 @@
 
         <TextView
             android:id="@+id/description_title"
-            style="@style/sectionHeader"
+            style="?AlfrescoTheme.TextView.SectionHeader.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/metadata" />

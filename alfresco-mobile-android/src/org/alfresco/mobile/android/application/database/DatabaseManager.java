@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.application.database;
 
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
+import org.alfresco.mobile.android.application.fragments.search.HistorySearchSchema;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeSchema;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 
@@ -25,11 +27,14 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+/**
+ * @author Jean Marie Pascal
+ */
 public class DatabaseManager implements DatabaseVersionNumber
 {
     private static final String DATABASE_NAME = "AlfrescoMobileDataBase";
 
-    public static final int DATABASE_VERSION = VERSION_1_2_0;
+    public static final int DATABASE_VERSION = LATEST_VERSION;
 
     private final GenericDbHelper dbHelper;
 
@@ -82,6 +87,8 @@ public class DatabaseManager implements DatabaseVersionNumber
             AccountSchema.onCreate(ctx, db);
             BatchOperationSchema.onCreate(ctx, db);
             SynchroSchema.onCreate(ctx, db);
+            HistorySearchSchema.onCreate(ctx, db);
+            MimeTypeSchema.onCreate(ctx, db);
         }
 
         @Override
@@ -90,6 +97,9 @@ public class DatabaseManager implements DatabaseVersionNumber
             AccountSchema.onUpgrade(ctx, db, oldVersion, newVersion);
             BatchOperationSchema.onUpgrade(ctx, db, oldVersion, newVersion);
             SynchroSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+            HistorySearchSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+            MimeTypeSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+
         }
     }
 

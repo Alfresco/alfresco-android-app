@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,15 +14,13 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
 
     <include layout="@layout/app_icon_status" />
-    
-    
+
     <LinearLayout
         android:layout_width="0dip"
         android:layout_height="wrap_content"
@@ -32,38 +30,34 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="@style/list_item_toptext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
+             />
 
         <ProgressBar
             android:id="@+id/status_progress"
-            style="@style/operation_progress"
+            style="?AlfrescoTheme.Progress.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
             android:visibility="gone" />
 
         <LinearLayout
-            style="@style/list_item_bottomtext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
             android:orientation="horizontal" >
 
             <ImageView
                 android:id="@+id/favorite_icon"
                 android:layout_width="12dip"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/thumbnail"
+                android:layout_marginLeft="0dip"
+                android:layout_marginRight="3dip"
+                android:contentDescription="@null"
                 android:scaleType="centerInside"
                 android:src="@drawable/mime_file"
-                android:visibility="gone"
-                android:layout_marginLeft="0dip"
-                android:layout_marginRight="3dip" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/bottomtext"
-                style="@style/list_item_bottomtext"
+                style="?AlfrescoTheme.TextView.ListItem.Secondary"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="0dip" />
@@ -72,10 +66,9 @@
 
     <ImageView
         android:id="@+id/choose"
-        style="@style/list_item_icon"
+        style="?AlfrescoTheme.ImageView.Thumbnail"
         android:background="@drawable/btn_default_holo_light"
         android:contentDescription="@string/thumbnail"
-        android:visibility="visible"
-        />
+        android:visibility="visible" />
 
 </LinearLayout>

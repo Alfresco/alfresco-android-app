@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -196,7 +197,7 @@ public class ActivitiesFragment extends BaseGridFragment implements
 
         if (adapter == null)
         {
-            adapter = new ActivityEventAdapter(this, alfSession, R.layout.app_grid_row_activities2,
+            adapter = new ActivityEventAdapter(this, alfSession, R.layout.app_grid_row_activities,
                     new ArrayList<ActivityEntry>(0), selectedEntry);
             ((BaseListAdapter) adapter).setFragmentSettings(getArguments());
         }
@@ -209,6 +210,7 @@ public class ActivitiesFragment extends BaseGridFragment implements
         {
             displayPagingData(results.getData(), loaderId, callback);
         }
+        AccessibilityHelper.sendAccessibilityEvent(getActivity());
     }
 
     @Override

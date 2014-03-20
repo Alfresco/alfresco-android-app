@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
   
@@ -28,24 +28,20 @@
         android:orientation="horizontal" >
 
         <LinearLayout
-                     android:id="@+id/icon_group"
+            android:id="@+id/icon_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top"
-            android:orientation="vertical" 
             android:background="@drawable/btn_default_holo_light"
+            android:clickable="true"
             android:focusable="true"
-            android:clickable="true">
-        
-        <ImageView
-        android:id="@+id/icon"
-        android:contentDescription="@string/thumbnail"
-        android:scaleType="fitXY"
-        android:layout_gravity="center"
-        android:layout_width="@dimen/thumbnail_height"
-        android:layout_height="@dimen/thumbnail_height"
-        android:layout_margin="@dimen/thumbnail_margin"
-        android:src="@drawable/mime_file" />
+            android:orientation="vertical" >
+
+            <ImageView
+                android:id="@+id/icon"
+                style="?AlfrescoTheme.ImageView.Thumbnail"
+        		android:contentDescription="@null"
+                android:src="@drawable/mime_file" />
         </LinearLayout>
 
         <LinearLayout
@@ -61,14 +57,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dip"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"
+                android:focusable="true" />
 
             <TextView
-                style="@style/comment_username"
                 android:id="@+id/toptext"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                />
+                style="?AlfrescoTheme.TextView.Secondary" />
 
             <TextView
                 android:id="@+id/bottomtext"

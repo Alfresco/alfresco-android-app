@@ -206,6 +206,11 @@ public interface MenuActionItem
     int MENU_TEL = 656;
 
     int MENU_MOBILE = 657;
+    
+    // ///////////////////////////////////////////
+    // SYNC
+    // ///////////////////////////////////////////
+    int MENU_SYNC_WARNING = 700;
 
     // ///////////////////////////////////////////
     // GENERAL
@@ -219,6 +224,11 @@ public interface MenuActionItem
 
     int PARAMETER_HIDE_SHOW_TAB = 3000;
 
-    int ABOUT_ID = 4000;
+    // ///////////////////////////////////////////
+    // OVERFLOW GENERAL MENU
+    // ///////////////////////////////////////////
+    int MENU_SETTINGS_ID = 4000;
+    int MENU_HELP_ID = 4002;
+    int MENU_ABOUT_ID = 4003;
 
 }

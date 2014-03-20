@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -36,9 +36,11 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.content.Loader;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -47,8 +49,8 @@ import android.widget.GridView;
 import android.widget.ListView;
 
 /**
- * @version 1.3
- * @author jpascal
+ * @since 1.3
+ * @author Jean Marie Pascal
  */
 public class DocumentFolderSearchFragment extends GridSearchFragment
 {
@@ -61,11 +63,19 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
     private static final String PARAM_SEARCH_FOLDER = "searchFolder";
 
+    private static final String PARAM_TITLE = "queryDescription";
+
+    private static final String PARAM_CMIS_QUERY = "cmisQuery";
+
     private List<Node> selectedItems = new ArrayList<Node>(1);
 
     private String keywords;
 
     private boolean searchFolder = false;
+
+    private String cmisQuery;
+
+    private Folder tmpParentFolder;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -90,7 +100,38 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
         return ssf;
     }
 
+    public static DocumentFolderSearchFragment newInstance(String query)
+    {
+        return newInstance(query, null);
+    }
+
+    public static DocumentFolderSearchFragment newInstance(String query, String description)
+    {
+        DocumentFolderSearchFragment ssf = new DocumentFolderSearchFragment();
+        Bundle b = new Bundle();
+        ListingContext lc = new ListingContext();
+        b.putAll(createBundleArgs(lc, LOAD_MANUAL));
+        b.putString(PARAM_CMIS_QUERY, query);
+        if (description != null)
+        {
+            b.putString(PARAM_TITLE, description);
+        }
+        ssf.setArguments(b);
+        return ssf;
+    }
+
     public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder)
+    {
+        return newInstance(query, searchFolder, null);
+    }
+    
+    public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder, String description)
+    {
+        return newInstance(query, searchFolder, null, description);
+    }
+
+    public static DocumentFolderSearchFragment newInstance(String query, boolean searchFolder, Folder parentFolder,
+            String description)
     {
         DocumentFolderSearchFragment ssf = new DocumentFolderSearchFragment();
         Bundle b = new Bundle();
@@ -99,7 +140,12 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
         lc.setIsSortAscending(true);
         b.putAll(createBundleArgs(lc, LOAD_MANUAL));
         b.putSerializable(PARAM_KEYWORD, query);
+        b.putSerializable(PARAM_TITLE, description);
         b.putBoolean(PARAM_SEARCH_FOLDER, searchFolder);
+        if (parentFolder != null)
+        {
+            b.putSerializable(FOLDER, parentFolder);
+        }
         ssf.setArguments(b);
         return ssf;
     }
@@ -123,11 +169,14 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
 
         if (getArguments() != null)
         {
+            title = getArguments().getString(PARAM_TITLE);
             searchFolder = getArguments().getBoolean(PARAM_SEARCH_FOLDER);
             keywords = getArguments().getString(PARAM_KEYWORD);
+            cmisQuery = getArguments().getString(PARAM_CMIS_QUERY);
+            tmpParentFolder = (Folder) getArguments().getSerializable(FOLDER);
         }
 
-        if (keywords != null && !keywords.isEmpty())
+        if (!TextUtils.isEmpty(keywords))
         {
             if (searchFolder)
             {
@@ -135,16 +184,50 @@ public class DocumentFolderSearchFragment extends GridSearchFragment
             }
             else
             {
-                search(keywords, true, false);
+                search(keywords, true, false, tmpParentFolder);
             }
+        }
+        else if (cmisQuery != null)
+        {
+            search(cmisQuery);
         }
 
         return v;
     }
 
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        if (title != null)
+        {
+            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), title));
+        }
+        else if (keywords != null)
+        {
+            UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), keywords));
+        }
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////
+    private void search(String query)
+    {
+        Bundle b = new Bundle();
+        b.putAll(getArguments());
+        b.putString(STATEMENT, query);
+        b.putString(LANGUAGE, SearchLanguage.CMIS.value());
+
+        // Reduce voluntary result list for cloud.
+        if (alfSession instanceof CloudSession)
+        {
+            b.putSerializable(ARGUMENT_GRID, new ListingContext("", MAX_RESULT_ITEMS, 0, false));
+        }
+
+        reload(b, SearchLoader.ID, this);
+    }
+
     protected void search(Folder parentFolder, String keywords, boolean fullText, boolean isExact)
     {
         Bundle b = new Bundle();

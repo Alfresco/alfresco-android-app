@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -63,8 +63,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
 import org.alfresco.mobile.android.application.fragments.properties.PreviewGallery;
-import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
-import org.alfresco.mobile.android.application.fragments.search.SearchAggregatorFragment;
+import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sites.SiteMembersFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
@@ -262,7 +261,7 @@ public class MainActivity extends BaseActivity
         {
             PasscodePreferences.updateLastActivity(this);
         }
-        SynchroManager.updateLastActivity(this);
+        SynchroManager.saveSyncPrepareTimestamp(this);
     }
 
     @Override
@@ -500,9 +499,9 @@ public class MainActivity extends BaseActivity
                 break;
             case R.id.menu_search:
                 if (!checkSession(R.id.menu_search)) { return; }
-                frag = SearchAggregatorFragment.newInstance();
-                FragmentDisplayer.replaceFragment(this, frag, DisplayUtils.getLeftFragmentId(this),
-                        SearchAggregatorFragment.TAG, true);
+                Fragment fr = SearchFragment.newInstance();
+                FragmentDisplayer.replaceFragment(this, fr, DisplayUtils.getLeftFragmentId(this), SearchFragment.TAG,
+                        true);
                 break;
             case R.id.menu_favorites:
                 Fragment syncFrag = FavoritesSyncFragment.newInstance(ListingModeFragment.MODE_LISTING);
@@ -534,15 +533,6 @@ public class MainActivity extends BaseActivity
                             IntentIntegrator.EXTRA_ACCOUNT_ID, currentAccount.getId()));
                 }
                 break;
-            case R.id.menu_prefs:
-                displayPreferences();
-                break;
-            case R.id.menu_about:
-                displayAbout();
-                break;
-            case R.id.menu_help:
-                UIUtils.displayHelp(this);
-                break;
             default:
                 break;
         }
@@ -550,7 +540,6 @@ public class MainActivity extends BaseActivity
 
     public void showMainMenuFragment(View v)
     {
-        DisplayUtils.hideLeftTitlePane(this);
         doMainMenuAction(v.getId());
     }
 
@@ -580,7 +569,8 @@ public class MainActivity extends BaseActivity
         {
             ActionManager.loadAccount(this, accountManager.getDefaultAccount());
         }
-        else if (sessionState == SESSION_ERROR && getCurrentSession() == null && ConnectivityUtils.hasInternetAvailable(this))
+        else if (sessionState == SESSION_ERROR && getCurrentSession() == null
+                && ConnectivityUtils.hasInternetAvailable(this))
         {
             ActionManager.loadAccount(this, getCurrentAccount());
         }
@@ -627,7 +617,7 @@ public class MainActivity extends BaseActivity
         clearCentralPane();
         super.addNavigationFragment(f);
     }
-    
+
     public void addNavigationFragment(Folder f, boolean isShortCut)
     {
         clearScreen();
@@ -640,6 +630,13 @@ public class MainActivity extends BaseActivity
         clearScreen();
         clearCentralPane();
         super.addBrowserFragment(path);
+    }
+
+    public void addNavigationFragmentById(String folderIdentifier)
+    {
+        clearScreen();
+        clearCentralPane();
+        super.addNavigationFragment(folderIdentifier);
     }
 
     public void addNavigationFragment(Site s)
@@ -910,7 +907,11 @@ public class MainActivity extends BaseActivity
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
-        if (isSlideMenuVisible() && !DisplayUtils.hasCentralPane(this)) { return true; }
+        if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
+        {
+            MainMenuFragment.getMenu(menu);
+            return true;
+        }
 
         if (isVisible(TaskDetailsFragment.TAG))
         {
@@ -921,6 +922,12 @@ public class MainActivity extends BaseActivity
         if (isVisible(ProcessesFragment.TAG))
         {
             ProcessesFragment.getMenu(menu);
+            return true;
+        }
+
+        if (isVisible(SearchFragment.TAG))
+        {
+            SearchFragment.getMenu(menu);
             return true;
         }
 
@@ -949,7 +956,7 @@ public class MainActivity extends BaseActivity
         if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
-            AccountsFragment.getMenu(menu);
+            AccountsFragment.getMenu(this, menu);
             return true;
         }
 
@@ -1014,8 +1021,8 @@ public class MainActivity extends BaseActivity
                 return true;
 
             case MenuActionItem.MENU_SEARCH:
-                FragmentDisplayer.replaceFragment(this, new KeywordSearch(), getFragmentPlace(), KeywordSearch.TAG,
-                        true);
+                FragmentDisplayer.replaceFragment(this, SearchFragment.newInstance(), getFragmentPlace(),
+                        SearchFragment.TAG, true);
                 return true;
 
             case MenuActionItem.MENU_CREATE_FOLDER:
@@ -1121,7 +1128,16 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_PROCESS_DETAILS:
                 ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).showProcessDiagram();
                 return true;
-            case MenuActionItem.ABOUT_ID:
+            case MenuActionItem.MENU_SYNC_WARNING:
+                ((FavoritesSyncFragment) getFragment(FavoritesSyncFragment.TAG)).displayWarning();
+                return true;
+            case MenuActionItem.MENU_SETTINGS_ID:
+                displayPreferences();
+                return true;
+            case MenuActionItem.MENU_HELP_ID:
+                UIUtils.displayHelp(this);
+                return true;
+            case MenuActionItem.MENU_ABOUT_ID:
                 displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
                 return true;
@@ -1166,9 +1182,8 @@ public class MainActivity extends BaseActivity
                     backStack = false;
                 }
 
-                if (fr instanceof KeywordSearch)
+                if (fr instanceof SearchFragment)
                 {
-                    ((KeywordSearch) fr).unselect();
                     backStack = false;
                 }
 
@@ -1345,7 +1360,7 @@ public class MainActivity extends BaseActivity
                             FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 }
 
-               removeWaitingDialog();
+                removeWaitingDialog();
 
                 // Used for launching last pressed action button from main menu
                 if (fragmentQueue != -1)

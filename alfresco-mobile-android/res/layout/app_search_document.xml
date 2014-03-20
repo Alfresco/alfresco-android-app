@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="@dimen/browse_margin"
+        android:layout_marginRight="@dimen/browse_margin"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metadata_prop_name" />
+
+            <EditText
+                android:id="@+id/metadata_prop_name"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metadata_prop_title" />
+
+            <EditText
+                android:id="@+id/metadata_prop_title"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metadata_prop_description" />
+
+            <EditText
+                android:id="@+id/metadata_prop_description"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                >
+            </EditText>
+
+            <TextView
+                android:id="@+id/metadata_prop_mimetype_header"
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metadata_type" />
+
+            <Spinner
+                android:id="@+id/metadata_prop_mimetype"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/spinner_holo_light"
+                android:gravity="left|bottom"
+                android:textColor="@color/hint_foreground_holo_light" />
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/metadata_modification_date" />
+
+            <LinearLayout
+                android:id="@+id/modified_by_group"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|bottom"
+                android:layout_margin="0dip"
+                android:orientation="horizontal"
+                android:padding="0dip" >
+
+                <TextView
+                    style="?AlfrescoTheme.TextView.SearchHeader"
+                    android:layout_width="50dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="left|bottom"
+                    android:text="@string/modified_by" />
+
+                <Button
+                    android:id="@+id/metadata_prop_modified_by"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinner_holo_light"
+                    android:gravity="left|bottom"
+                    android:paddingLeft="10dip" />
+
+                <ImageButton
+                    android:id="@+id/action_metadata_prop_modified_by"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/picker_user" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="?AlfrescoTheme.TextView.SearchHeader"
+                    android:layout_width="50dip"
+                    android:layout_height="fill_parent"
+                    android:text="@string/metadata_modification_date_from" />
+
+                <Button
+                    android:id="@+id/metadata_modification_date_from"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinner_holo_light"
+                    android:gravity="left|bottom"
+                    android:paddingLeft="10dip" />
+
+                <ImageButton
+                    android:id="@+id/action_metadata_modification_date_from"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_date_from"  />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:orientation="horizontal" >
+
+                <TextView
+                    style="?AlfrescoTheme.TextView.SearchHeader"
+                    android:layout_width="50dip"
+                    android:layout_height="fill_parent"
+                    android:text="@string/metadata_modification_date_to" />
+
+                <Button
+                    android:id="@+id/metadata_modification_date_to"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/spinner_holo_light"
+                    android:gravity="left|bottom"
+                    android:paddingLeft="10dip" />
+
+                <ImageButton
+                    android:id="@+id/action_metadata_modification_date_to"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_date_to" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical" />
+    
+      <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/app_validation_button" />
+
+</LinearLayout>

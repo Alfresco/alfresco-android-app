@@ -55,6 +55,8 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
     public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/syncs";
 
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/sync";
+    
+    public static final int FLAG_FAVORITE = 1;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     static
@@ -206,6 +208,11 @@ public class SynchroProvider extends ContentProvider implements AlfrescoContentP
     public static String getAccountFilter(Account acc)
     {
         return SynchroSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
+    }
+    
+    public static String getAccountFilter(long accId)
+    {
+        return SynchroSchema.COLUMN_ACCOUNT_ID + " == " + accId;
     }
 
 }

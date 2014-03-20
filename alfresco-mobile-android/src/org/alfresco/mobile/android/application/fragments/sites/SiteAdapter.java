@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -77,6 +78,7 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
         vh.choose.setVisibility(View.VISIBLE);
+        AccessibilityHelper.addContentDescription(vh.choose, String.format(getContext().getString(R.string.more_options_site), item.getTitle()));
         vh.choose.setTag(R.id.site_action, item);
         vh.choose.setOnClickListener(new OnClickListener()
         {
@@ -107,6 +109,13 @@ public class SiteAdapter extends org.alfresco.mobile.android.ui.site.SiteAdapter
                 popup.show();
             }
         });
+    }
+    
+    @Override
+    protected void updateIcon(GenericViewHolder vh, Site item)
+    {
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_flatten));
+        AccessibilityHelper.addContentDescription(vh.icon, R.string.mime_site);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

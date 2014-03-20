@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.ui.fragments.BaseLoaderCallback;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
@@ -86,10 +87,12 @@ public class IsLikedLoaderCallBack extends BaseLoaderCallback implements LoaderC
         else if (isLiked.getData())
         {
             likeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_like));
+            AccessibilityHelper.addContentDescription(likeButton, R.string.unlike);
         }
         else
         {
             likeButton.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_unlike));
+            AccessibilityHelper.addContentDescription(likeButton, R.string.like);
         }
     }
 

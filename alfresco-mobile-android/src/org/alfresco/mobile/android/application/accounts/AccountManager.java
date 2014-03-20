@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -16,6 +16,9 @@
  *  limitations under the License.
  ******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -125,7 +128,7 @@ public final class AccountManager
         // Default account to load
         SharedPreferences settings = appContext.getSharedPreferences(AccountsPreferences.ACCOUNT_PREFS, 0);
         long id = settings.getLong(AccountsPreferences.ACCOUNT_DEFAULT, -1);
-        Log.d(TAG, "Default AccountId " + id);
+        //Log.d(TAG, "Default AccountId " + id);
         if (id == -1)
         {
             return retrieveFirstAccount(appContext);
@@ -135,11 +138,34 @@ public final class AccountManager
             return retrieveAccount(appContext, id);
         }
     }
+    
+    public static List<Account> retrieveAccounts(Context context)
+    {
+        List<Account> accounts = new ArrayList<Account>();
+        try
+        {
+            Cursor cursor = context.getContentResolver().query(CONTENT_URI, COLUMN_ALL, null, null, null);
+            accounts = new ArrayList<Account>(cursor.getCount());
+            while (cursor.moveToNext())
+            {
+                accounts.add(createAccountWithoutClose(cursor));
+            }
+            //Log.d(TAG, "accounts " + accounts.size());
+
+            cursor.close();
+        }
+        catch (Exception e)
+        {
+            Log.d(TAG, Log.getStackTraceString(e));
+        }
+      
+        return accounts;
+    }
 
     public static Account retrieveAccount(Context context, long id)
     {
         Cursor cursor = context.getContentResolver().query(getUri(id), COLUMN_ALL, null, null, null);
-        Log.d(TAG, cursor.getCount() + " ");
+        //Log.d(TAG, cursor.getCount() + " ");
         if (cursor.getCount() == 1)
         {
             cursor.moveToFirst();
@@ -147,6 +173,18 @@ public final class AccountManager
         }
         cursor.close();
         return null;
+    }
+    
+    
+    private static Account createAccountWithoutClose(Cursor c)
+    {
+        Account account = new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
+                c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
+                c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
+                c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
+                c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
+                c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
+        return account;
     }
 
     public static Account createAccount(Cursor c)
@@ -178,7 +216,7 @@ public final class AccountManager
     public static Account retrieveFirstAccount(Context context)
     {
         Cursor cursor = context.getContentResolver().query(AccountProvider.CONTENT_URI, COLUMN_ALL, null, null, null);
-        Log.d(TAG, cursor.getCount() + " ");
+       //Log.d(TAG, cursor.getCount() + " ");
         if (cursor.getCount() == 0)
         {
             cursor.close();
@@ -217,8 +255,6 @@ public final class AccountManager
     // ///////////////////////////////////////////////////////////////////////////
     private void register()
     {
-        Log.d(TAG, "register()");
-
         if (receiver != null)
         {
             receiver = new AccountManagerReceiver();
@@ -370,6 +406,10 @@ public final class AccountManager
             accountsSize = cursor.getCount();
             cursor.close();
         }
+        else
+        {
+            accountsSize = 0;
+        }
     }
 
     public void clear()
@@ -386,7 +426,7 @@ public final class AccountManager
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            Log.d(TAG, "RECEIVE : " + intent.getAction());
+            //Log.d(TAG, "RECEIVE : " + intent.getAction());
 
             if (IntentIntegrator.ACTION_CREATE_ACCOUNT.equals(intent.getAction()))
             {
@@ -411,7 +451,7 @@ public final class AccountManager
             if (intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
             {
                 acc = retrieveAccount(appContext, intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
-                Log.d(TAG, "AccountId : " + acc);
+                //Log.d(TAG, "AccountId : " + acc);
             }
 
             if (IntentIntegrator.ACTION_LOAD_ACCOUNT.equals(intent.getAction()))

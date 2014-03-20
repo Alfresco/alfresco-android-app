@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -15,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-
 package org.alfresco.mobile.android.application.preferences;
 
 import java.io.File;
@@ -66,11 +65,21 @@ public class GeneralPreferences extends PreferenceFragment
     private static final String PRIVATE_FOLDERS_BUTTON = "privatefoldersbutton";
 
     private static final String SYNCHRO_PREFIX = "SynchroEnable-";
+    
+    private static final String SYNCHRO_EVEYTHING_PREFIX = "SynchroEverythingEnable-";
 
     private static final String SYNCHRO_WIFI_PREFIX = "SynchroWifiEnable-";
 
     private static final String SYNCHRO_DISPLAY_PREFIX = "SynchroDisplayEnable-";
-
+    
+    private static final String SYNCHRO_DATA_ALERT_PREFIX = "SynchroDataAlert-";
+    
+    private static final long SYNCHRO_DATA_ALERT_LENGTH = 20971520; //20Mb
+    
+    private static final String SYNCHRO_FREE_SPACE_ALERT_PREFIX = "SynchroDataAlert-";
+    
+    private static final float SYNCHRO_FREE_SPACE_ALERT_LENGTH = 0.1f; //In Percent of total space
+    
     private Account account;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -269,7 +278,7 @@ public class GeneralPreferences extends PreferenceFragment
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // UTILS
+    // SYNC
     // ///////////////////////////////////////////////////////////////////////////
     public static boolean hasWifiOnlySync(Context context, Account account)
     {
@@ -320,5 +329,69 @@ public class GeneralPreferences extends PreferenceFragment
             return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false);
         }
         return false;
+    }
+    
+    public static boolean canSyncEverything(Context context, Account account)
+    {
+        if (account != null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), false);
+        }
+        return false;
+    }
+
+    public static void setSyncEverything(Activity activity, boolean isActive)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            sharedPref.edit().putBoolean(SYNCHRO_EVEYTHING_PREFIX + account.getId(), isActive).commit();
+        }
+    }
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // SYNC FOLDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static long getDataSyncTransferAlert(Context context, Account account)
+    {
+        if (account != null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), SYNCHRO_DATA_ALERT_LENGTH);
+        }
+        return SYNCHRO_DATA_ALERT_LENGTH;
+    }
+    
+    
+    public static void setDataSyncTransferAlert(Activity activity, long length)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            sharedPref.edit().putLong(SYNCHRO_DATA_ALERT_PREFIX + account.getId(), length).commit();
+        }
+    }
+    
+    public static float getDataSyncPercentFreeSpace(Context context, Account account)
+    {
+        if (account != null)
+        {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+            return sharedPref.getFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), SYNCHRO_FREE_SPACE_ALERT_LENGTH);
+        }
+        return SYNCHRO_FREE_SPACE_ALERT_LENGTH;
+    }
+    
+    public static void setDataSyncTransferAlert(Activity activity, float percent)
+    {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(activity);
+        if (SessionUtils.getAccount(activity) != null)
+        {
+            final Account account = SessionUtils.getAccount(activity);
+            sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).commit();
+        }
     }
 }

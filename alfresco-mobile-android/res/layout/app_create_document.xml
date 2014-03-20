@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
   
@@ -14,8 +14,7 @@
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
    See the License for the specific language governing permissions and
-   limitations under the License.
--->
+   limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -35,61 +34,24 @@
             android:layout_margin="5dip"
             android:layout_weight="1"
             android:hint="@string/create_document_name_hint" >
-
-            <requestFocus />
         </EditText>
 
         <TextView
             android:id="@+id/document_extension"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dip"
             android:layout_marginRight="5dip"
-            />
+            android:layout_marginTop="5dip" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="3dip"
-        android:text="@string/create_document_filename_error"
-        android:textColor="@color/dark_red"
-        android:visibility="gone" />
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
 
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
-
-        <Button
-            android:id="@+id/cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/cancel" />
-
-        <Button
-            android:id="@+id/create_document"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/create" />
-    </LinearLayout>
+        layout="@layout/app_validation_button" />
 
 </LinearLayout>

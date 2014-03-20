@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -37,8 +37,13 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
@@ -156,7 +161,6 @@ public class AccountDetailsFragment extends BaseFragment
     @Override
     public void onResume()
     {
-        DisplayUtils.hideLeftTitlePane(getActivity());
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
             UIUtils.displayTitle(getActivity(), getText(R.string.accounts_details) + " : " + acc.getDescription());
@@ -292,6 +296,7 @@ public class AccountDetailsFragment extends BaseFragment
         final CheckBox sw = (CheckBox) v.findViewById(R.id.repository_https);
         sw.setChecked(tmprUrl.getProtocol().equals("https"));
         sw.setEnabled(isEditable);
+
         final EditText portForm = (EditText) v.findViewById(R.id.repository_port);
         sw.setOnCheckedChangeListener(new OnCheckedChangeListener()
         {
@@ -326,6 +331,19 @@ public class AccountDetailsFragment extends BaseFragment
         formValue = (EditText) v.findViewById(R.id.repository_servicedocument);
         formValue.setText(tmprUrl.getPath());
         formValue.setEnabled(isEditable);
+        
+        
+        // Accessibility
+        if (AccessibilityHelper.isEnabled(getActivity()))
+        {
+            ((EditText)v.findViewById(R.id.repository_username)).setHint(getString(R.string.account_username_required_hint));
+            ((EditText)v.findViewById(R.id.repository_password)).setHint(getString(R.string.account_password_required_hint));
+            ((EditText)v.findViewById(R.id.repository_hostname)).setHint(getString(R.string.account_hostname_required_hint));
+            ((EditText)v.findViewById(R.id.repository_description)).setHint(getString(R.string.account_description_optional_hint));
+            AccessibilityHelper.addContentDescription(sw, sw.isChecked() ? R.string.account_https_on_hint : R.string.account_https_off_hint);
+            portForm.setHint(getString(R.string.account_port_hint));
+            ((EditText)v.findViewById(R.id.repository_servicedocument)).setHint(getString(R.string.account_servicedocument_hint));
+        }
     }
 
     private boolean retrieveFormValues()
@@ -338,6 +356,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
         else
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
             return false;
         }
 
@@ -348,6 +367,7 @@ public class AccountDetailsFragment extends BaseFragment
         }
         else
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
             return false;
         }
 
@@ -363,6 +383,7 @@ public class AccountDetailsFragment extends BaseFragment
             }
             else
             {
+                AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_hint);
                 return false;
             }
         }
@@ -390,10 +411,12 @@ public class AccountDetailsFragment extends BaseFragment
         }
         catch (MalformedURLException e)
         {
+            AccessibilityHelper.addContentDescription(validate, R.string.account_validate_disable_url_hint);
             return false;
         }
 
         url = u.toString();
+        AccessibilityHelper.addContentDescription(validate, R.string.account_validate_hint);
 
         return true;
 
@@ -597,6 +620,14 @@ public class AccountDetailsFragment extends BaseFragment
     // TODO move to mainActivity + broadcast !
     private void deleteAccount()
     {
+        
+        //Remove all Sync
+        if (acc == null) { return; }
+        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), acc);
+        group.enqueue(new CleanSyncFavoriteRequest(acc, true).setNotificationVisibility(OperationRequest.VISIBILITY_HIDDEN));
+        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+        
+        //Delete Account
         getActivity().getContentResolver().delete(AccountManager.getUri(acc.getId()), null, null);
 
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
@@ -681,14 +712,14 @@ public class AccountDetailsFragment extends BaseFragment
         if (acc.getActivation() == null)
         {
             mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_EDIT, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
-                    R.string.edit);
+                    String.format(getString(R.string.account_edit_hint), acc.getDescription()));
             mi.setIcon(R.drawable.ic_edit);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_DELETE, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
-                R.string.delete);
+                String.format(getString(R.string.account_delete_hint), acc.getDescription()));
         mi.setIcon(R.drawable.ic_delete);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 }

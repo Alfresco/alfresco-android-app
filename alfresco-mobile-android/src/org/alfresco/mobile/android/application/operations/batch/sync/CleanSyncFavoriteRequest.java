@@ -17,6 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.operations.batch.sync;
 
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
 
 public class CleanSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
@@ -26,14 +27,24 @@ public class CleanSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
     public static final int TYPE_ID = 1010;
 
     public static final String MIME_SYNC = "UnSync";
+    
+    private String accountUsername;
+
+    private String accountUrl;
+
+    private boolean isDeletion;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public CleanSyncFavoriteRequest()
+    public CleanSyncFavoriteRequest(Account acc, boolean isDeletion)
     {
         super();
         requestTypeId = TYPE_ID;
+
+        this.accountUsername = acc.getUsername();
+        this.accountUrl = acc.getUrl();
+        this.isDeletion = isDeletion;
 
         setMimeType(MIME_SYNC);
     }
@@ -45,6 +56,21 @@ public class CleanSyncFavoriteRequest extends AbstractBatchOperationRequestImpl
     public String getRequestIdentifier()
     {
         return MIME_SYNC + "_" + getAccountId();
+    }
+
+    public String getAccountUsername()
+    {
+        return accountUsername;
+    }
+
+    public String getAccountUrl()
+    {
+        return accountUrl;
+    }
+
+    public Boolean isDeletion()
+    {
+        return isDeletion;
     }
 }
 

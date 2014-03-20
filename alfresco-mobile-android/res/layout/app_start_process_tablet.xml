@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,13 +14,10 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="?AlfrescoTheme.Background.White"
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
@@ -39,7 +36,7 @@
 
             <TextView
                 android:id="@+id/account_authentication"
-                style="@style/sectionHeader"
+                style="?AlfrescoTheme.TextView.SectionHeader.Primary"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/account_authentication"
@@ -74,25 +71,6 @@
                 </TableRow>
 
                 <TableRow
-                    android:id="@+id/error_message_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <TextView
-                        android:id="@+id/error_message"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="3dip"
-                        android:text="@string/filename_error_character"
-                        android:textColor="@color/dark_red" />
-                </TableRow>
-
-                <TableRow
                     android:id="@+id/process_due_on_group"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -110,7 +88,7 @@
                         android:layout_gravity="bottom"
                         android:orientation="horizontal" >
 
-                         <Button
+                        <Button
                             android:id="@+id/process_due_on"
                             android:layout_width="0dip"
                             android:layout_height="wrap_content"
@@ -119,13 +97,52 @@
                             android:gravity="left|bottom"
                             android:paddingLeft="10dip"
                             android:textColor="@color/hint_foreground_holo_light" />
-                        
+
                         <ImageButton
                             android:id="@+id/action_process_due_on"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:contentDescription="@string/picker_due_date"
                             android:src="@drawable/ic_calendar_pick" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/thumbnail_height"
+                    android:minHeight="@dimen/thumbnail_height" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_assignees" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/process_assignee"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_assignee"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/picker_assignees"
+                            android:src="@drawable/ic_person" />
                     </LinearLayout>
                 </TableRow>
 
@@ -161,45 +178,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_repository_dark" />
-                    </LinearLayout>
-                </TableRow>
-
-                <TableRow
-                    android:id="@+id/repository_hostname_group"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/thumbnail_height"
-                    android:minHeight="@dimen/thumbnail_height" >
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/process_assignees" />
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:baselineAligned="true"
-                        android:orientation="horizontal" >
-
-                        <Button
-                            android:id="@+id/process_assignee"
-                            android:layout_width="0dip"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:background="@drawable/spinner_holo_light"
-                            android:gravity="left|bottom"
-                            android:paddingLeft="10dip"
-                            android:textColor="@color/hint_foreground_holo_light" />
-
-                        <ImageButton
-                            android:id="@+id/action_process_assignee"
-                            style="?android:attr/buttonBarButtonStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_person" />
+                            android:src="@drawable/ic_repository_dark"
+                            android:contentDescription="@string/picker_attachments" />
                     </LinearLayout>
                 </TableRow>
 
@@ -233,14 +213,16 @@
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_remove" />
+                            android:src="@drawable/ic_remove"
+                            android:contentDescription="@string/action_remove_approvers" />
 
                         <ImageButton
                             android:id="@+id/action_add_approvers"
                             style="?android:attr/buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/ic_add" />
+                            android:src="@drawable/ic_add"
+                            android:contentDescription="@string/action_add_approvers" />
                     </LinearLayout>
                 </TableRow>
 
@@ -313,13 +295,10 @@
                         android:layout_gravity="center_vertical"
                         android:text="@string/process_notification" />
 
-                    <Switch
-                        android:id="@+id/action_send_notification"
+                    <include
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right|center"
-                        android:layout_marginTop="5dip"
-                        android:checked="true" />
+                        layout="@layout/app_task_switch" />
                 </TableRow>
             </TableLayout>
         </LinearLayout>
@@ -331,29 +310,9 @@
         android:layout_marginTop="@dimen/margin_top"
         android:background="?android:attr/dividerVertical" />
 
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
-
-        <Button
-            android:id="@+id/action_create"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/done" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="?android:attr/dividerVertical" />
+        layout="@layout/app_validation_button" />
 
 </LinearLayout>

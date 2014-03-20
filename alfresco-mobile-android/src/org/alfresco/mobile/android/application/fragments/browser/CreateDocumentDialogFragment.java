@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of the Alfresco Mobile SDK.
  * 
@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -41,7 +42,6 @@ import org.alfresco.mobile.android.application.operations.batch.node.create.Retr
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
-import org.alfresco.mobile.android.ui.manager.MimeTypeManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 
 import android.content.BroadcastReceiver;
@@ -95,8 +95,6 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
 
     private ContentFile contentFile;
 
-    private TextView errorMessage;
-
     private EditText tv;
 
     // //////////////////////////////////////////////////////////////////////
@@ -130,7 +128,6 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        errorMessage = (TextView) v.findViewById(R.id.error_message);
         tv = (EditText) v.findViewById(R.id.content_name);
         final EditText desc = (EditText) v.findViewById(R.id.content_description);
         TextView tsize = (TextView) v.findViewById(R.id.content_size);
@@ -155,7 +152,7 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
             }
         });
 
-        final Button bcreate = (Button) v.findViewById(R.id.create_content);
+        final Button bcreate = UIUtils.initValidation(v, R.string.confirm);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -185,29 +182,28 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 if (tv.getText().length() == 0)
                 {
                     bcreate.setEnabled(false);
-                    errorMessage.setVisibility(View.GONE);
+                    tv.setError(null);
                 }
                 else
                 {
                     bcreate.setEnabled(true);
                     if (UIUtils.hasInvalidName(tv.getText().toString().trim()))
                     {
-                        errorMessage.setVisibility(View.VISIBLE);
-                        errorMessage.setText(R.string.filename_error_character);
+                        tv.setError(getString(R.string.filename_error_character));
                         bcreate.setEnabled(false);
                     }
                     else
                     {
-                        errorMessage.setVisibility(View.GONE);
+                        tv.setError(null);
                     }
                 }
                 if (originalName.equals(tv.getText().toString()))
                 {
-                    errorMessage.setVisibility(View.VISIBLE);
+                    tv.setError(getString(R.string.create_document_filename_error));
                 }
                 else
                 {
-                    errorMessage.setVisibility(View.GONE);
+                    tv.setError(null);
                 }
             }
 
@@ -252,7 +248,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
         if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
         {
             ContentFile f = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, MimeTypeManager.getIcon(f.getFileName()));
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
+                    MimeTypeManager.getIcon(getActivity(), f.getFileName()));
         }
         else
         {
@@ -357,9 +354,8 @@ public abstract class CreateDocumentDialogFragment extends BaseFragment
                 recommandedName = b.getString(IntentIntegrator.EXTRA_DOCUMENT_NAME);
                 if (!recommandedName.equals(originalName))
                 {
-                    errorMessage.setVisibility(View.VISIBLE);
+                    tv.setError(context.getString(R.string.create_document_filename_error));
                 }
-
             }
         }
     }

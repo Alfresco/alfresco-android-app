@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -25,11 +25,13 @@ import org.alfresco.mobile.android.application.fragments.activities.ActivitiesFr
 import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
-import org.alfresco.mobile.android.application.fragments.search.KeywordSearch;
 
 import android.app.Fragment;
 import android.util.Log;
 
+/**
+ * @author Jean Marie Pascal
+ */
 public final class FragmentFactory
 {
 
@@ -67,7 +69,6 @@ public final class FragmentFactory
             put(ActivitiesFragment.TAG, ActivitiesFragment.class);
             put(MainMenuFragment.TAG, MainMenuFragment.class);
             put(AccountsFragment.TAG, AccountsFragment.class);
-            put(KeywordSearch.TAG, KeywordSearch.class);
             put(FileExplorerFragment.TAG, FileExplorerFragment.class);
 
         }

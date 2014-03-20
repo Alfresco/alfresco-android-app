@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -30,7 +30,7 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public abstract class OperationManager
 {
-    //private static final String TAG = OperationManager.class.getName();
+    // private static final String TAG = OperationManager.class.getName();
 
     protected final Context mAppContext;
 
@@ -67,39 +67,37 @@ public abstract class OperationManager
         }
         return true;
     }
-    
+
     public OperationsGroupRecord getOperationGroup(String operationId)
     {
         return indexOperationGroup.get(operationId);
     }
-    
+
     public OperationsGroupRecord removeOperationGroup(String operationId)
     {
         return indexOperationGroup.get(operationId);
     }
-    
-    public OperationsGroupInfo next(){
+
+    public OperationsGroupInfo next()
+    {
         OperationsGroupRecord group = null;
         ArrayList<Integer> ints = new ArrayList<Integer>();
         for (int i = 0; i < operationsGroups.size(); i++)
         {
             group = operationsGroups.get(i);
-            if (group.hasPendingRequest())
-            {
-                return group.next();
-            }
+            if (group.hasPendingRequest()) { return group.next(); }
             if (!group.hasPendingRequest() && !group.hasRunningRequest())
             {
                 ints.add(i);
             }
         }
-        
+
         for (Integer index : ints)
         {
             operationsGroups.remove(index);
         }
-       
-       return null;
+
+        return null;
     }
 
     public OperationsGroupResult getResult(String operationId)

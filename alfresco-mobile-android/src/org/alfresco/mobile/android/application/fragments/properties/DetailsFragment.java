@@ -53,10 +53,12 @@ import org.alfresco.mobile.android.application.fragments.tags.TagsListNodeFragme
 import org.alfresco.mobile.android.application.fragments.versions.VersionFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeType;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.OperationRequest;
 import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
 import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
@@ -144,6 +146,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
     private UpdateReceiver receiver;
 
+    private String nodeIdentifier;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -189,6 +193,20 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             SessionUtils.checkSession(getActivity(), alfSession);
         }
         super.onActivityCreated(savedInstanceState);
+
+        if (node != null)
+        {
+            // Detect if isRestrictable
+            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
+            if (DisplayUtils.hasCentralPane(getActivity()))
+            {
+                display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
+            }
+        }
+        else if (nodeIdentifier != null)
+        {
+            getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
+        }
     }
 
     @Override
@@ -210,7 +228,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         }
 
         node = (Node) getArguments().get(ARGUMENT_NODE);
-        String nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
+        nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
         parentNode = (Folder) getArguments().get(ARGUMENT_NODE_PARENT);
         if (node == null && nodeIdentifier == null) { return null; }
 
@@ -221,19 +239,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             savedInstanceState.remove(TAB_SELECTED);
         }
 
-        if (node != null)
-        {
-            // Detect if isRestrictable
-            isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                display(node, (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE));
-            }
-        }
-        else if (nodeIdentifier != null)
-        {
-            getActivity().getLoaderManager().restartLoader(NodeLoader.ID, getArguments(), this);
-        }
         return vRoot;
     }
 
@@ -347,7 +352,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
                                 null);
                     }
-                    
+
                     // Encrypt sync file if necessary
                     StorageManager.manageFile(getActivity(), dlFile);
                 }
@@ -376,7 +381,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                         // Sync if it's possible.
                         if (SynchroManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
                         {
-                            SynchroManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
+                            SynchroManager.getInstance(getActivity())
+                                    .sync(SessionUtils.getAccount(getActivity()), node);
                         }
                     }
                     else
@@ -650,7 +656,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         int iconId = defaultIconId;
         if (node.isDocument())
         {
-            iconId = MimeTypeManager.getIcon(node.getName(), isLarge);
+            MimeType mime = MimeTypeManager.getMimetype(getActivity(), node.getName());
+            iconId = MimeTypeManager.getIcon(getActivity(), node.getName(), isLarge);
             if (((Document) node).isLatestVersion())
             {
                 if (isLarge)
@@ -666,8 +673,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 iv.setImageResource(iconId);
             }
+            AccessibilityHelper.addContentDescription(iv, mime != null ? mime.getDescription() : ((Document) node)
+                    .getContentStreamMimeType());
 
-            if (!isRestrictable)
+            if (!isRestrictable && !AccessibilityHelper.isEnabled(getActivity()))
             {
                 iv.setOnClickListener(new OnClickListener()
                 {
@@ -682,6 +691,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         else
         {
             iv.setImageResource(defaultIconId);
+            AccessibilityHelper.addContentDescription(iv, R.string.mime_folder);
         }
     }
 
@@ -701,13 +711,13 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         // Preview + Thumbnail
         if (vRoot.findViewById(R.id.icon) != null)
         {
-            ((ImageView) vRoot.findViewById(R.id.icon))
-                    .setImageResource(MimeTypeManager.getIcon(node.getName(), false));
+            ((ImageView) vRoot.findViewById(R.id.icon)).setImageResource(MimeTypeManager.getIcon(getActivity(),
+                    node.getName(), false));
         }
         if (vRoot.findViewById(R.id.preview) != null)
         {
-            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(node.getName(),
-                    true));
+            ((ImageView) vRoot.findViewById(R.id.preview)).setImageResource(MimeTypeManager.getIcon(getActivity(),
+                    node.getName(), true));
         }
 
         // Description
@@ -802,7 +812,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
-            if (!isRestrictable)
+            if (!isRestrictable && !AccessibilityHelper.isEnabled(getActivity()))
             {
                 vRoot.findViewById(R.id.icon).setOnClickListener(new OnClickListener()
                 {
@@ -842,7 +852,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             SynchroManager syncManager = SynchroManager.getInstance(getActivity());
             Account acc = SessionUtils.getAccount(getActivity());
             final File syncFile = syncManager.getSyncFile(acc, node);
-            if (syncFile == null) { return; }
+            if (syncFile == null || !syncFile.exists())
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                return;
+            }
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
@@ -955,7 +969,11 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
         {
             final File syncFile = syncManager.getSyncFile(acc, node);
-            if (syncFile == null) { return; }
+            if (syncFile == null || !syncFile.exists())
+            {
+                MessengerManager.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                return;
+            }
             long datetime = syncFile.lastModified();
             setDownloadDateTime(new Date(datetime));
 
@@ -975,7 +993,7 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             else
             {
                 // If sync file + sync activate
-                ActionManager.openIn(this, syncFile, MimeTypeManager.getMIMEType(syncFile.getName()),
+                ActionManager.openIn(this, syncFile, MimeTypeManager.getMIMEType(getActivity(), syncFile.getName()),
                         PublicIntent.REQUESTCODE_SAVE_BACK);
             }
         }
@@ -1474,6 +1492,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isLiked ? R.drawable.ic_like : R.drawable.ic_unlike;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                                AccessibilityHelper.addContentDescription(imageView, isLiked ? R.string.unlike
+                                        : R.string.like);
+                                AccessibilityHelper.notifyActionCompleted(context, isLiked ? R.string.like_completed
+                                        : R.string.unlike_completed);
                             }
                             return;
                         }
@@ -1492,6 +1514,10 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                             {
                                 int drawable = isFavorite ? R.drawable.ic_favorite_dark : R.drawable.ic_unfavorite_dark;
                                 imageView.setImageDrawable(context.getResources().getDrawable(drawable));
+                                AccessibilityHelper.addContentDescription(imageView, isFavorite ? R.string.unfavorite
+                                        : R.string.favorite);
+                                AccessibilityHelper.notifyActionCompleted(context,
+                                        isFavorite ? R.string.favorite_completed : R.string.unfavorite_completed);
                             }
                             return;
                         }
@@ -1502,8 +1528,6 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
                             Node updatedNode = (Node) b.getParcelable(IntentIntegrator.EXTRA_UPDATED_NODE);
 
-                            ApplicationManager.getInstance(getActivity()).getRenditionManager(getActivity())
-                                    .removeFromCache(_node.getIdentifier());
                             Boolean backstack = false;
                             if (!DisplayUtils.hasCentralPane(getActivity()))
                             {

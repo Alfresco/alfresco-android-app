@@ -50,21 +50,27 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     public static final String ARGUMENT_SITE = "site";
 
     public static final String ARGUMENT_FOLDERPATH = "folderPath";
-    
-    public static final String ARGUMENT_FOLDER_TYPE_ID = "folderId";
+
+    public static final String ARGUMENT_FOLDER_TYPE_ID = "folderTypeId";
+
+    private static final String ARGUMENT_FOLDER_ID = "folderIdentifier";
 
     // Browser Parameters
     protected Folder parentFolder;
-    
+
     protected Site currentSiteParameter = null;
+
     protected String pathParameter = null;
+
     protected Folder folderParameter = null;
+
     protected int folderTypeId = -1;
-    
+
+    protected String folderIdentifier;
+
     private Boolean activateThumbnail = Boolean.FALSE;
 
     protected List<Node> selectedItems = new ArrayList<Node>(1);
-
 
     public GridNavigationFragment()
     {
@@ -87,11 +93,18 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     {
         return createBundleArgs(null, null, site);
     }
-    
+
     public static Bundle createBundleArgs(int folderId)
     {
         Bundle args = new Bundle();
         args.putInt(ARGUMENT_FOLDER_TYPE_ID, folderId);
+        return args;
+    }
+
+    public static Bundle createBundleArg(String folderIdentifier)
+    {
+        Bundle args = new Bundle();
+        args.putString(ARGUMENT_FOLDER_ID, folderIdentifier);
         return args;
     }
 
@@ -119,6 +132,7 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
 
         if (bundle != null)
         {
+            folderIdentifier = (String) bundle.getSerializable(ARGUMENT_FOLDER_ID);
             folderParameter = (Folder) bundle.getSerializable(ARGUMENT_FOLDER);
             pathParameter = bundle.getString(ARGUMENT_FOLDERPATH);
             folderTypeId = bundle.containsKey(ARGUMENT_FOLDER_TYPE_ID) ? bundle.getInt(ARGUMENT_FOLDER_TYPE_ID) : -1;
@@ -133,7 +147,8 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
         NodeChildrenLoader loader = null;
         if (pathParameter != null)
         {
-            title = (pathParameter.equals("/") ? "/" : pathParameter.substring(pathParameter.lastIndexOf("/") + 1, pathParameter.length()));
+            title = (pathParameter.equals("/") ? "/" : pathParameter.substring(pathParameter.lastIndexOf("/") + 1,
+                    pathParameter.length()));
             loader = new NodeChildrenLoader(getActivity(), alfSession, pathParameter);
         }
         else if (currentSiteParameter != null && folderParameter == null)
@@ -161,6 +176,10 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
                     break;
             }
             loader = new NodeChildrenLoader(getActivity(), alfSession, folderTypeId);
+        }
+        else if (folderIdentifier != null)
+        {
+            loader = new NodeChildrenLoader(folderIdentifier, getActivity(), alfSession);
         }
 
         if (loader != null)
@@ -196,7 +215,7 @@ public abstract class GridNavigationFragment extends BaseGridFragment implements
     {
         this.activateThumbnail = activateThumbnail;
     }
-    
+
     public Folder getParent()
     {
         return parentFolder;

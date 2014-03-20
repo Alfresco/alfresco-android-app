@@ -37,9 +37,9 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
     protected String nodeIdentifier;
 
     protected String parentFolderIdentifier;
-    
+
     protected Node node;
-    
+
     protected Folder parentFolder;
 
     protected Cursor cursor;
@@ -66,19 +66,33 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
         {
             super.doInBackground();
 
-            cursor = context.getContentResolver().query(SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
-                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '" + nodeIdentifier + "%'", null, null);
+            cursor = context.getContentResolver().query(
+                    SynchroProvider.CONTENT_URI,
+                    SynchroSchema.COLUMN_ALL,
+                    SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_NODE_ID + " LIKE '"
+                            + nodeIdentifier + "%'", null, null);
 
             try
             {
-                node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                node = retrieveNode();
+            }
+            catch (AlfrescoServiceException e)
+            {
+                // Do Nothing
+                Log.d(TAG, "Node Error " + nodeIdentifier);
+                Log.d(TAG, "Session Error " + session + " " + session.getServiceRegistry().getDocumentFolderService());
+            }
+
+            try
+            {
                 parentFolder = retrieveParentFolder();
             }
             catch (AlfrescoServiceException e)
             {
                 // Do Nothing
+                Log.d(TAG, "PArent Error " + parentFolderIdentifier);
+                Log.d(TAG, "Session Error " + session + " " + session.getServiceRegistry().getDocumentFolderService());
             }
-            
 
             if (listener != null)
             {
@@ -91,23 +105,51 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
         }
         return new LoaderResult<T>();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    protected Node retrieveNode()
+    {
+        while (node == null)
+        {
+            try
+            {
+                node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+        return node;
+    }
+
     protected Folder retrieveParentFolder()
     {
-        if (parentFolder == null && parentFolderIdentifier != null && !parentFolderIdentifier.isEmpty())
+        while (parentFolder == null)
         {
-            parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
-                    .getNodeByIdentifier(parentFolderIdentifier);
-        }
+            try
+            {
+                if (parentFolder == null && parentFolderIdentifier == null && node == null) { return null; }
 
-        if (parentFolder == null && node != null)
-        {
-            parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
-        }
+                if (parentFolder == null && parentFolderIdentifier != null && !parentFolderIdentifier.isEmpty())
+                {
+                    parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(parentFolderIdentifier);
+                }
 
+                if (parentFolder == null && node != null)
+                {
+                    parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService()
+                            .getParentFolder(node);
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
         return parentFolder;
     }
 
@@ -118,7 +160,7 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
     {
         return node;
     }
-    
+
     public Folder getParentFolder()
     {
         return parentFolder;

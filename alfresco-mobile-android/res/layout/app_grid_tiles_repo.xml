@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
@@ -64,16 +64,15 @@
 
                     <TextView
                         android:id="@+id/toptext"
-                        style="@style/grid_item_toptext"
+                        style="?AlfrescoTheme.TextView.GridItem.Primary"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content" />
 
                     <ProgressBar
                         android:id="@+id/status_progress"
-                        style="@style/operation_progress"
+                        style="?AlfrescoTheme.Progress.Horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:indeterminate="true"
                         android:visibility="gone" />
 
                     <LinearLayout
@@ -87,14 +86,25 @@
                             android:layout_height="match_parent"
                             android:layout_marginLeft="0dip"
                             android:layout_marginRight="3dip"
-                            android:contentDescription="@string/thumbnail"
+                        	android:contentDescription="@null"
                             android:scaleType="centerInside"
                             android:src="@drawable/mime_file"
                             android:visibility="gone" />
 
+                        <ImageView
+                            android:id="@+id/icon_bottom_right"
+                            android:layout_width="12dip"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dip"
+                            android:layout_marginRight="3dip"
+                        	android:contentDescription="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/sync_status_pending"
+                            android:visibility="gone" />
+
                         <TextView
                             android:id="@+id/bottomtext"
-                            style="@style/grid_item_bottomtext"
+                            style="?AlfrescoTheme.TextView.ListItem.Secondary"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -102,9 +112,7 @@
 
                 <ImageView
                     android:id="@+id/choose"
-                    style="@style/details_action_icon"
-                    android:layout_width="40dip"
-                    android:layout_height="40dip"
+                    style="?AlfrescoTheme.ImageView.ActionIcon.Fixed"
                     android:layout_gravity="center"
                     android:background="@drawable/quickcontact_badge_overlay_light"
                     android:visibility="visible" />

@@ -260,17 +260,11 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         {
             nActions.finish();
         }
-        super.onStop();
-    }
-
-    @Override
-    public void onDestroy()
-    {
         if (receiver != null)
         {
             LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         }
-        super.onDestroy();
+        super.onStop();
     }
 
     private void displayNavigation(File file, boolean backstack)
@@ -410,7 +404,7 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
             }
 
             SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.upload);
+                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -27,60 +27,9 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Display;
 import android.view.View;
-import android.widget.TextView;
 
 public abstract class DisplayUtils
 {
-
-    // ///////////////////////////////////////////
-    // TITLE
-    // ///////////////////////////////////////////
-    public static void setTitleFragmentPlace(Activity a, int title)
-    {
-        getTitleFragmentPlace(a).setVisibility(View.VISIBLE);
-        getTitleFragmentPlace(a).setText(title);
-    }
-
-    public static void setTitleFragmentPlace(Activity a, String title)
-    {
-        getTitleFragmentPlace(a).setVisibility(View.VISIBLE);
-        getTitleFragmentPlace(a).setText(title);
-    }
-
-    public static void hideTitleFragmentPlace(Activity a)
-    {
-        getTitleFragmentPlace(a).setVisibility(View.GONE);
-    }
-
-    public static TextView getTitleFragmentPlace(Activity a)
-    {
-        return (TextView) a.findViewById(getFragmentTitlePlace(a));
-    }
-
-    public static int getFragmentTitlePlace(Activity a)
-    {
-        int id = R.id.left_pane_title;
-        if (DisplayUtils.hasCentralPane(a))
-        {
-            id = R.id.central_pane_title;
-        }
-        return id;
-    }
-
-    public static void setLeftTitle(Activity a, String title)
-    {
-        a.findViewById(R.id.left_pane_title).setVisibility(View.VISIBLE);
-        if (a.findViewById(R.id.left_pane_title) != null)
-        {
-            a.findViewById(R.id.left_pane_title).setVisibility(View.VISIBLE);
-        }
-        ((TextView) a.findViewById(R.id.left_pane_title)).setText(title);
-    }
-
-    public static void hideLeftTitlePane(Activity a)
-    {
-        a.findViewById(R.id.left_pane_title).setVisibility(View.GONE);
-    }
 
     public static int getFragmentPlace(Activity a)
     {

@@ -41,7 +41,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 @TargetApi(11)
-public abstract class BaseGridFragment extends BaseFragment
+public abstract class BaseGridFragment extends BaseFragment implements GridFragment
 {
 
     /** Principal ListView of the fragment */
@@ -106,6 +106,9 @@ public abstract class BaseGridFragment extends BaseFragment
 
     protected boolean checkSession = true;
 
+    // /////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ////////////////////////////////////////////////////////////
     public static Bundle createBundleArgs(ListingContext lc, int loadState)
     {
         Bundle args = new Bundle();
@@ -114,6 +117,9 @@ public abstract class BaseGridFragment extends BaseFragment
         return args;
     }
 
+    // /////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -137,6 +143,9 @@ public abstract class BaseGridFragment extends BaseFragment
         }
     }
 
+    // /////////////////////////////////////////////////////////////
+    // UTILS
+    // ////////////////////////////////////////////////////////////
     protected void checkSession(boolean activate)
     {
         if (activate && alfSession == null)
@@ -325,6 +334,7 @@ public abstract class BaseGridFragment extends BaseFragment
         hasmore = Boolean.FALSE;
         skipCount = 0;
         adapter = null;
+        gv.invalidateViews();
         if (getArguments() == null) { return; }
         getLoaderManager().restartLoader(loaderId, getArguments(), callback);
         getLoaderManager().getLoader(loaderId).forceLoad();
@@ -357,6 +367,7 @@ public abstract class BaseGridFragment extends BaseFragment
                 isFullLoad = Boolean.TRUE;
                 if (adapter != null)
                 {
+                    gv.invalidateViews();
                     gv.setAdapter(null);
                 }
                 // Log.d("BaseListFragment", "ITEMS : Empty !");
@@ -385,6 +396,7 @@ public abstract class BaseGridFragment extends BaseFragment
                     {
                         loadMore();
                     }
+                    gv.invalidateViews();
                     gv.setAdapter(adapter);
                 }
             }
@@ -426,6 +438,7 @@ public abstract class BaseGridFragment extends BaseFragment
         if (adapter != null && adapter instanceof ProgressNodeAdapter)
         {
             ((ProgressNodeAdapter) adapter).setContext(getActivity());
+            ((ProgressNodeAdapter) adapter).refreshOperations();
         }
         gv.setAdapter(adapter);
     }

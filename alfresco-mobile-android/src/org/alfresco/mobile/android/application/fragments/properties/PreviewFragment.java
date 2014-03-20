@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -32,8 +32,8 @@ import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFra
 import org.alfresco.mobile.android.application.fragments.browser.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.intent.PublicIntent;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
@@ -50,6 +50,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+/**
+ * @since 1.1
+ * @author Jean Marie Pascal
+ */
 public class PreviewFragment extends BaseFragment
 {
 
@@ -116,7 +120,7 @@ public class PreviewFragment extends BaseFragment
         preview.setTag(v.findViewById(R.id.preview_message));
         if (node.isDocument() && node instanceof NodeImpl)
         {
-            iconId = MimeTypeManager.getIcon(node.getName(), true);
+            iconId = MimeTypeManager.getIcon(getActivity(), node.getName(), true);
             if (((Document) node).isLatestVersion())
             {
                 ((ImageViewTouch)preview).setScaleEnabled(false);
@@ -126,7 +130,7 @@ public class PreviewFragment extends BaseFragment
         }
         else if (node.isDocument() && node instanceof NodeSyncPlaceHolder)
         {
-            preview.setImageResource(MimeTypeManager.getIcon(node.getName(), true));
+            preview.setImageResource(MimeTypeManager.getIcon(getActivity(), node.getName(), true));
         }
         else
         {
@@ -173,7 +177,7 @@ public class PreviewFragment extends BaseFragment
             else
             {
                 // If sync file + sync activate
-                ActionManager.openIn(detailsFragment, syncFile, MimeTypeManager.getMIMEType(syncFile.getName()),
+                ActionManager.openIn(detailsFragment, syncFile, MimeTypeManager.getMIMEType(getActivity(), syncFile.getName()),
                         PublicIntent.REQUESTCODE_SAVE_BACK);
             }
         }

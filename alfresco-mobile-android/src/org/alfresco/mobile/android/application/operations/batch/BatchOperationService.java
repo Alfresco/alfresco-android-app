@@ -83,8 +83,8 @@ import org.alfresco.mobile.android.application.operations.batch.node.update.Upda
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.application.operations.batch.sync.CleanSyncFavoriteThread;
 import org.alfresco.mobile.android.application.operations.batch.sync.SyncCallBack;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteRequest;
-import org.alfresco.mobile.android.application.operations.batch.sync.SyncFavoriteThread;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncPrepareRequest;
+import org.alfresco.mobile.android.application.operations.batch.sync.SyncPrepareThread;
 import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessCallback;
 import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessRequest;
 import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessThread;
@@ -246,9 +246,9 @@ public class BatchOperationService<T> extends Service
                 task = (AbstractBatchOperationThread<T>) new RenameThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new RenameCallback(getBaseContext(), totalItems, pendingRequest);
                 break;
-            case SyncFavoriteRequest.TYPE_ID:
+            case SyncPrepareRequest.TYPE_ID:
                 parallelOperation = 1;
-                task = (AbstractBatchOperationThread<T>) new SyncFavoriteThread(getBaseContext(), request);
+                task = (AbstractBatchOperationThread<T>) new SyncPrepareThread(getBaseContext(), request);
                 callback = (OperationCallBack<T>) new SyncCallBack(getBaseContext(), totalItems, pendingRequest);
                 break;
             case CleanSyncFavoriteRequest.TYPE_ID:

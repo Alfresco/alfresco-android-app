@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -24,23 +23,26 @@
 
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_margin="5dip"
-        android:background="@drawable/card_flat"
         android:orientation="vertical" >
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical" >
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:background="@color/grey_lighter" />
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:orientation="horizontal" >
 
                 <FrameLayout
@@ -57,65 +59,55 @@
                         android:layout_width="@dimen/thumbnail_height"
                         android:layout_height="@dimen/thumbnail_height"
                         android:layout_gravity="top"
-                        android:contentDescription="@string/thumbnail"
+                        android:contentDescription="@null"
                         android:scaleType="fitCenter"
                         android:src="@drawable/mime_file" />
                 </FrameLayout>
 
                 <LinearLayout
-                    android:layout_width="0dip"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="5dip"
-                    android:layout_weight="1"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/toptext"
-                        style="@style/list_item_toptext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:ellipsize="middle"
-                        android:maxLines="1"
-                        android:scrollHorizontally="true"
-                        android:singleLine="true"
-                        android:text="dmlkjfmqlsdkjfmlsqkdjmlfqksjdlkfqjsd.qsdfqs" />
-
-                    <TextView
-                        android:id="@+id/bottomtext"
-                        style="@style/list_item_bottomtext"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:text="dmlkjfmqlsdkjfmlsqkdjmlfqksjdlkfqjsd.qsdfqs" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="1dip"
-                android:layout_marginLeft="5dip"
-                android:layout_marginRight="5dip"
-                android:background="@color/grey_lighter" />
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dip"
-                android:orientation="horizontal" >
-
-                <TextView
-                    android:id="@+id/content"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="5dip"
                     android:layout_marginRight="5dip"
-                    android:ellipsize="end"
-                    android:lines="3"
-                    android:maxLines="3"
-                    android:scrollHorizontally="true"
-                    android:text="dmlkjfmqlsdkjfmlsqkdjmlfqksjdlkfqjsd.qsdfqs" />
+                    android:orientation="vertical" >
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top"
+                        android:gravity="top" >
+
+                        <TextView
+                            android:id="@+id/toptext"
+                            style="?AlfrescoTheme.TextView.GridItem.Primary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ellipsize="middle"
+                            android:maxLines="1"
+                            android:scrollHorizontally="true"
+                            android:singleLine="true"
+                            android:text="dmlkjfmqlsdkjfmlsqkdjmlfqksjdlkfqjsd.qsdfqs" />
+
+                        <TextView
+                            android:id="@+id/bottomtext"
+                            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_weight="1"
+                            android:gravity="right"
+                            android:text="12 days ago" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/content"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:scrollHorizontally="true"
+                        android:text="dmlkjfmqlsdkjfmlsqkdjmlfqksjdlkfqjsd.qsdfqs" />
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -32,32 +32,27 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="@style/list_item_toptext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
+             />
 
         <ProgressBar
             android:id="@+id/status_progress"
-            style="@style/operation_progress"
+            style="?AlfrescoTheme.Progress.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="@style/list_item_bottomtext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+            />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/choose"
-        style="@style/list_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="?AlfrescoTheme.ImageView"
         android:background="@drawable/btn_default_holo_light"
-        android:contentDescription="@string/thumbnail"
+        android:contentDescription="@null"
         android:src="@drawable/ic_validate"
         android:visibility="visible" />
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,8 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
--->
+  limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -23,14 +22,13 @@
 
     <TextView
         android:id="@+id/title"
-        style="@style/sectionHeader"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        style="?AlfrescoTheme.TextView.SectionHeader.Primary" />
 
     <LinearLayout
         android:id="@+id/group_panel"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" />
+        android:orientation="vertical"
+       />
 
 </LinearLayout>

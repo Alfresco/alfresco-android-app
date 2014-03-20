@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -17,7 +17,9 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.operations;
 
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.manager.NotificationHelper;
@@ -28,9 +30,14 @@ import org.alfresco.mobile.android.application.operations.batch.BatchOperationSc
 import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
 import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
+import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
+import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.utils.CursorUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -95,7 +102,7 @@ public class OperationsFragment extends BaseCursorListFragment
     protected void init(View v, int estring)
     {
         super.init(v, estring);
-        cancelAll = (Button) v.findViewById(R.id.cancel_all);
+        cancelAll = UIUtils.initCancel(v, R.string.cancel_all, true);
         cancelAll.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -105,7 +112,7 @@ public class OperationsFragment extends BaseCursorListFragment
             }
         });
 
-        dismissAll = (Button) v.findViewById(R.id.dismiss_all);
+        dismissAll = UIUtils.initValidation(v, R.string.dismiss_all);
         dismissAll.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -222,5 +229,27 @@ public class OperationsFragment extends BaseCursorListFragment
                 cancelAll.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    // /////////////////////////////////////////////////////////////
+    // MAIN MENU DISPLAY ITEM
+    // ////////////////////////////////////////////////////////////
+    public static boolean canDisplay(Context context, Account account)
+    {
+        if (account == null) { return false; }
+        Cursor operationsToDisplay = null;
+        boolean result = false;
+        try
+        {
+            operationsToDisplay = context.getContentResolver().query(BatchOperationContentProvider.CONTENT_URI,
+                    BatchOperationSchema.COLUMN_ALL,
+                    BatchOperationContentProvider.getAccountFilter(account) + " AND " + ALL_REQUESTS, null, null);
+            result = operationsToDisplay.getCount() > 0;
+        }
+        catch (Exception e)
+        {
+            CursorUtils.closeCursor(operationsToDisplay);
+        }
+        return result;
     }
 }

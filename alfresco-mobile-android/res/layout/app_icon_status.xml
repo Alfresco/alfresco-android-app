@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -23,8 +23,8 @@
 
     <ImageView
         android:id="@+id/icon"
-        style="@style/list_item_icon"
-        android:contentDescription="@string/thumbnail"
+        style="?AlfrescoTheme.ImageView.Thumbnail"
+        android:contentDescription="@null"
         android:scaleType="centerInside"
         android:src="@drawable/mime_file" />
 

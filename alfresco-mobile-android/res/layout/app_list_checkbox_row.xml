@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -31,22 +31,18 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="@style/list_item_toptext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
+            />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="@style/list_item_bottomtext"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+             />
     </LinearLayout>
-
+    
     <CheckBox
         android:id="@+id/checkbox"
-        style="@style/list_item_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="?AlfrescoTheme.ImageView"
         android:focusable="false"
         android:clickable="false"
         />

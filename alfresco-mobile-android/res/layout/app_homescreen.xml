@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -17,13 +17,10 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/white_background"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    style="?AlfrescoTheme.Background.White"
     android:gravity="center" >
 
     <LinearLayout
-        android:id="@+id/left_pane_body"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -32,6 +29,7 @@
         android:visibility="visible" >
 
         <TextView
+            android:focusable="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dip"
@@ -40,11 +38,11 @@
             android:textSize="@dimen/home_title_size" />
 
         <Button
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_cloud"
             android:onClick="cloud"
             android:text="@string/home_sign_cloud"
+            android:contentDescription="@string/home_sign_cloud"
             />
 
         <TextView
@@ -56,11 +54,12 @@
             android:textSize="@dimen/home_description_size" />
 
         <Button
-            style="@style/round_button_large"
-            android:layout_marginTop="15dip"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="launch"
-            android:text="@string/home_account" />
+            android:text="@string/home_account"
+            android:contentDescription="@string/home_account"
+             />
 
         <TextView
             android:layout_width="match_parent"

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="@dimen/browse_margin"
+        android:layout_marginRight="@dimen/browse_margin"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/search_name" />
+
+            <EditText
+                android:id="@+id/search_name"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/jobTitle" />
+
+            <EditText
+                android:id="@+id/jobTitle"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/company" />
+
+            <EditText
+                android:id="@+id/company"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+
+            <TextView
+                style="?AlfrescoTheme.TextView.SearchHeader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/location" />
+
+            <EditText
+                android:id="@+id/location"
+                style="?AlfrescoTheme.TextView"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" >
+            </EditText>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical" />
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/app_validation_button" />
+    
+</LinearLayout>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -38,8 +38,28 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 {
     public static final String TAG = DatePickerFragment.class.getName();
 
+    private static final String PARAM_FRAGMENT_TAG = "fragmentTag";
+
+    private static final String PARAM_DATE_ID = "dateId";
+
     private OnDateSetListener mListener;
 
+    // //////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // //////////////////////////////////////////////////////////////////////
+    public static DatePickerFragment newInstance(int dateId, String fragmentTag)
+    {
+        DatePickerFragment bf = new DatePickerFragment();
+        Bundle b = new Bundle();
+        b.putInt(PARAM_DATE_ID, dateId);
+        b.putString(PARAM_FRAGMENT_TAG, fragmentTag);
+        bf.setArguments(b);
+        return bf;
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // LIFE CYCLE
+    // //////////////////////////////////////////////////////////////////////
     @Override
     public void onAttach(Activity activity)
     {
@@ -90,6 +110,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     }
 
+    // //////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // //////////////////////////////////////////////////////////////////////
     private OnDateSetListener getConstructorListener()
     {
         return AndroidVersion.isJBOrAbove() ? null : mListener;
@@ -97,8 +120,26 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        CreateTaskFragment sf = (CreateTaskFragment) getFragmentManager().findFragmentByTag(
-                CreateTaskFragment.TAG);
-        sf.setDueAt(new GregorianCalendar(year, month, day));
+
+        if (getArguments() != null && getArguments().containsKey(PARAM_FRAGMENT_TAG))
+        {
+            String pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
+            int dateId = getArguments().getInt(PARAM_DATE_ID);
+            onPickDateFragment fragmentPick = ((onPickDateFragment) getFragmentManager().findFragmentByTag(
+                    pickFragmentTag));
+            if (fragmentPick != null)
+            {
+                fragmentPick.onDatePicked(dateId, new GregorianCalendar(year, month, day, 0, 0, 0));
+            }
+        }
     }
+
+    // //////////////////////////////////////////////////////////////////////
+    // INTERFACE
+    // //////////////////////////////////////////////////////////////////////
+    public interface onPickDateFragment
+    {
+        void onDatePicked(int dateId, GregorianCalendar gregorianCalendar);
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -30,13 +30,14 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.BaseGridFragment;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.RenditionManager;
+import org.alfresco.mobile.android.application.mimetype.MimeType;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -81,8 +82,6 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     private Map<String, Document> selectedMapItems;
 
     protected Activity context;
-
-    private int width;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -155,59 +154,14 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     public View getView(int position, View convertView, ViewGroup parent)
     {
         // Specific part for dynaminc resize
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(getContext(), gridFragment);
 
         // First init ==> always
-        width = 1000;
-        int columnWidth = 2048;
-
-        int layoutId = R.layout.app_grid_progress_row;
-        int flagLayoutId = R.id.app_grid_progress;
-
-        if (context instanceof MainActivity)
-        {
-            width = DisplayUtils.getSplitterWidth((MainActivity) context);
-            columnWidth = 240;
-            if (width <= 480)
-            {
-                layoutId = R.layout.app_grid_progress_row;
-                flagLayoutId = R.id.app_grid_progress;
-                columnWidth = 320;
-            }
-            else if (width < 600)
-            {
-                layoutId = R.layout.app_grid_card_repo;
-                flagLayoutId = R.id.app_grid_card;
-                columnWidth = 150;
-            }
-            else if (width < 800)
-            {
-                layoutId = R.layout.app_grid_card_repo;
-                flagLayoutId = R.id.app_grid_card;
-                columnWidth = 160;
-            }
-            else if (width < 1000)
-            {
-                layoutId = R.layout.app_grid_tiles_repo;
-                flagLayoutId = R.id.app_grid_tiles;
-                columnWidth = 200;
-            }
-            else
-            {
-                layoutId = R.layout.app_grid_tiles_repo;
-                flagLayoutId = R.id.app_grid_tiles;
-                columnWidth = 240;
-            }
-        }
-
-        if (gridFragment != null)
-        {
-            gridFragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
-        }
 
         View v = convertView;
-        if (convertView == null || convertView.findViewById(flagLayoutId) == null)
+        if (convertView == null || convertView.findViewById(layouts[1]) == null)
         {
-            v = createView(getContext(), convertView, layoutId);
+            v = createView(getContext(), convertView, layouts[0]);
         }
         else
         {
@@ -315,32 +269,39 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
     }
 
+    private LinearLayout getSelectionLayout(ProgressViewHolder vh)
+    {
+        return (LinearLayout) vh.icon.getParent();
+    }
+
     @Override
     protected void updateBottomText(ProgressViewHolder vh, Node item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
+        AccessibilityHelper.addContentDescription(vh.bottomText, createContentDescriptionBottomText(context, item));
+
         if (mode == ListingModeFragment.MODE_PICK)
         {
             if (selectedMapItems.containsKey(item.getIdentifier()))
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
+                UIUtils.setBackground(getSelectionLayout(vh),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
+                UIUtils.setBackground(getSelectionLayout(vh), null);
             }
         }
         else
         {
             if (selectedItems != null && selectedItems.contains(item))
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
+                UIUtils.setBackground(getSelectionLayout(vh),
                         getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
+                UIUtils.setBackground(getSelectionLayout(vh), null);
             }
         }
 
@@ -371,6 +332,25 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         return s;
     }
 
+    private String createContentDescriptionBottomText(Context context, Node node)
+    {
+        StringBuilder s = new StringBuilder();
+
+        if (node.getCreatedAt() != null)
+        {
+            s.append(context.getString(R.string.metadata_modified));
+            s.append(formatDate(context, node.getCreatedAt().getTime()));
+            if (node.isDocument())
+            {
+                Document doc = (Document) node;
+                s.append(" - ");
+                s.append(context.getString(R.string.metadata_size));
+                s.append(Formatter.formatFileSize(context, doc.getContentStreamLength()));
+            }
+        }
+        return s.toString();
+    }
+
     @Override
     protected void updateIcon(ProgressViewHolder vh, final Node item)
     {
@@ -396,15 +376,23 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
         if (item.isDocument())
         {
+            MimeType mime = MimeTypeManager.getMimetype(context, item.getName());
             if (!activateThumbnail)
             {
-                vh.icon.setImageResource(MimeTypeManager.getIcon(item.getName(), true));
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context,
+                        item.getName(), true));
             }
             else
             {
-                renditionManager.display(vh.icon, item, MimeTypeManager.getIcon(item.getName(), true));
+                renditionManager.display(
+                        vh.icon,
+                        item,
+                        mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getIcon(context, item.getName(),
+                                true));
             }
             vh.choose.setVisibility(View.GONE);
+            AccessibilityHelper.addContentDescription(vh.icon, mime != null ? mime.getDescription() : ((Document) item)
+                    .getContentStreamMimeType());
         }
         else if (item.isFolder())
         {
@@ -417,6 +405,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
                 vh.choose.setVisibility(View.GONE);
             }
             vh.icon.setImageResource(R.drawable.mime_256_folder);
+            AccessibilityHelper.addContentDescription(vh.icon, R.string.mime_folder);
         }
     }
 

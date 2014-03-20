@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -28,9 +28,11 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridAdapterHelper;
+import org.alfresco.mobile.android.application.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.GridFragment;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.RefreshFragment;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
@@ -66,11 +68,16 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
+import android.widget.GridView;
 
-public class FavoritesSyncFragment extends BaseCursorListFragment implements RefreshFragment, ListingModeFragment
+public class FavoritesSyncFragment extends BaseCursorGridFragment implements RefreshFragment, ListingModeFragment,
+        GridFragment
 {
     public static final String TAG = FavoritesSyncFragment.class.getName();
+
+    private static final String PARAM_FOLDER_ID = "FolderId";
+
+    private static final String PARAM_FOLDER_NAME = "FolderName";
 
     protected List<String> selectedItems = new ArrayList<String>(1);
 
@@ -92,6 +99,8 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
     private Account acc;
 
+    private SyncScanInfo info;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
@@ -99,6 +108,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         super();
         emptyListMessageId = R.string.empty_favorites;
+        checkSession = false;
     }
 
     public static FavoritesSyncFragment newInstance(int mode)
@@ -106,6 +116,17 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         FavoritesSyncFragment bf = new FavoritesSyncFragment();
         Bundle settings = new Bundle();
         settings.putInt(PARAM_MODE, mode);
+        bf.setArguments(settings);
+        return bf;
+    }
+
+    public static FavoritesSyncFragment newInstance(int mode, String folderId, String folderName)
+    {
+        FavoritesSyncFragment bf = new FavoritesSyncFragment();
+        Bundle settings = new Bundle();
+        settings.putInt(PARAM_MODE, mode);
+        settings.putString(PARAM_FOLDER_ID, folderId);
+        settings.putString(PARAM_FOLDER_NAME, folderName);
         bf.setArguments(settings);
         return bf;
     }
@@ -120,8 +141,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
         acc = SessionUtils.getAccount(getActivity());
 
-        adapter = new FavoriteCursorAdapter(this, null, R.layout.app_list_progress_row, selectedItems, getMode());
-        lv.setAdapter(adapter);
+        int[] layouts = BaseCursorGridAdapterHelper.getGridLayoutId(getActivity(), this);
+        adapter = new FavoriteCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+        gv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
     }
@@ -163,7 +185,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         {
             titleId = R.string.synced_documents;
         }
-        UIUtils.displayTitle(getActivity(), getString(titleId));
+
+        if (getFolderName() != null)
+        {
+            UIUtils.displayTitle(getActivity(), getFolderName());
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), getString(titleId));
+        }
 
         super.onResume();
     }
@@ -277,22 +307,49 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
         setListShown(false);
-        String selection = null;
+        StringBuilder selection = new StringBuilder();
         if (acc != null)
         {
-            selection = SynchroProvider.getAccountFilter(acc);
+            selection.append(SynchroProvider.getAccountFilter(acc));
         }
-        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL, selection, null,
-                SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
+
+        if (selection.length() > 0)
+        {
+            selection.append(" AND ");
+        }
+
+        if (getFolderId() != null)
+        {
+            selection.append(SynchroSchema.COLUMN_PARENT_ID + " == '" + getFolderId() + "'");
+        }
+        else
+        {
+            selection.append(SynchroSchema.COLUMN_IS_FAVORITE + " == '" + SynchroProvider.FLAG_FAVORITE + "'");
+            selection.append(" OR ");
+            selection.append(SynchroSchema.COLUMN_STATUS + " == '" + SyncOperation.STATUS_REQUEST_USER + "'");
+        }
+
+        if (selection.length() > 0)
+        {
+            selection.append(" AND ");
+        }
+
+        selection.append(SynchroSchema.COLUMN_STATUS + " NOT IN (" + SyncOperation.STATUS_HIDDEN + ")");
+
+        Log.d(TAG, selection.toString());
+
+        return new CursorLoader(getActivity(), SynchroProvider.CONTENT_URI, SynchroSchema.COLUMN_ALL,
+                selection.toString(), null, SynchroSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public void onListItemClick(ListView l, View v, int position, long id)
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String documentId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
+        String nodeId = cursor.getString(SynchroSchema.COLUMN_NODE_ID_ID);
+        String documentName = cursor.getString(SynchroSchema.COLUMN_TITLE_ID);
 
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
@@ -302,13 +359,13 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
-            hideDetails = selectedItems.get(0).equals(documentId);
+            hideDetails = selectedItems.get(0).equals(nodeId);
         }
         l.setItemChecked(position, true);
 
         if (nActions != null)
         {
-            nActions.selectNode(documentId);
+            nActions.selectNode(nodeId);
             if (selectedItems.size() == 0)
             {
                 hideDetails = true;
@@ -319,7 +376,7 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             selectedItems.clear();
             if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
             {
-                selectedItems.add(documentId);
+                selectedItems.add(nodeId);
             }
         }
 
@@ -329,14 +386,32 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         }
         else if (nActions == null)
         {
-            // Show properties
-            ((MainActivity) getActivity()).addPropertiesFragment(true, documentId);
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            if (SynchroManager.isFolder(cursor))
+            {
+                selectedItems.clear();
+                if (SynchroManager.getInstance(getActivity()).hasActivateSync(acc))
+                {
+                    // GO TO Local subfolder
+                    Fragment syncFrag = FavoritesSyncFragment.newInstance(getMode(), nodeId, documentName);
+                    FragmentDisplayer.replaceFragment(getActivity(), syncFrag,
+                            DisplayUtils.getLeftFragmentId(getActivity()), FavoritesSyncFragment.TAG, true);
+                }
+                else
+                {
+                    ((MainActivity) getActivity()).addNavigationFragmentById(nodeId);
+                }
+            }
+            else
+            {
+                // Show properties
+                ((MainActivity) getActivity()).addPropertiesFragment(true, nodeId);
+                DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            }
         }
         adapter.notifyDataSetChanged();
     }
 
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    public boolean onItemLongClick(GridView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
 
@@ -355,7 +430,9 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 nActions = null;
                 selectedItems.clear();
-                refreshListView();
+                adapter.notifyDataSetChanged();
+                ((FavoriteCursorAdapter) adapter).refresh();
+                gv.setAdapter(adapter);
             }
         });
         getActivity().startActionMode(nActions);
@@ -368,6 +445,18 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     {
         Bundle b = getArguments();
         return b.getInt(PARAM_MODE);
+    }
+
+    public String getFolderId()
+    {
+        Bundle b = getArguments();
+        return b.getString(PARAM_FOLDER_ID);
+    }
+
+    public String getFolderName()
+    {
+        Bundle b = getArguments();
+        return b.getString(PARAM_FOLDER_NAME);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -389,8 +478,17 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
 
     public void getMenu(Menu menu)
     {
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                R.string.refresh);
+        info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+        if (info != null && (info.hasWarning() && !info.hasResponse()))
+        {
+            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SYNC_WARNING, Menu.FIRST + MenuActionItem.MENU_SYNC_WARNING,
+                    R.string.sync_warning);
+            mi.setIcon(R.drawable.ic_warning);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, MenuActionItem.MENU_SYNC_WARNING
+                + MenuActionItem.MENU_REFRESH, R.string.refresh);
         mi.setIcon(R.drawable.ic_refresh);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
@@ -408,11 +506,19 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
         if (mi != null)
         {
             // Display spinning wheel instead of refresh
-            mi.setActionView(R.layout.spinning);
+            mi.setActionView(R.layout.app_spinning);
         }
         ((FavoriteCursorAdapter) adapter).refresh();
-        lv.setAdapter(adapter);
+        gv.setAdapter(adapter);
+    }
 
+    public void displayWarning()
+    {
+        if (info != null && info.hasWarning())
+        {
+            SyncErrorDialogFragment.newInstance().show(getActivity().getFragmentManager(), SyncErrorDialogFragment.TAG);
+            return;
+        }
     }
 
     public void select(Node updatedNode)
@@ -425,7 +531,6 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
     // ///////////////////////////////////////////////////////////////////////////
     private class FavoriteSyncReceiver extends BroadcastReceiver
     {
-
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -437,6 +542,15 @@ public class FavoritesSyncFragment extends BaseCursorListFragment implements Ref
             {
                 // Hide spinning wheel
                 mi.setActionView(null);
+                info = SyncScanInfo.getLastSyncScanData(context, acc);
+                getActivity().invalidateOptionsMenu();
+
+                if (info.hasWarning())
+                {
+                    SyncErrorDialogFragment.newInstance().show(getActivity().getFragmentManager(),
+                            SyncErrorDialogFragment.TAG);
+                    return;
+                }
             }
 
             if (acc == null) { return; }

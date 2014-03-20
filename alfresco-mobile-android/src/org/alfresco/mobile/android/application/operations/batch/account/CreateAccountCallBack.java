@@ -52,7 +52,7 @@ public class CreateAccountCallBack extends AbstractBatchOperationCallback<Accoun
         CreateAccountThread createTask = ((CreateAccountThread) task);
 
         ApplicationManager.getInstance(context).saveSession(account, createTask.getSession());
-
+        ApplicationManager.getInstance(context).saveAccount(account);
     }
 
     @Override

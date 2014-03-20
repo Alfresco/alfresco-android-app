@@ -18,9 +18,11 @@
 package org.alfresco.mobile.android.application.accounts.fragment;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
@@ -56,7 +58,7 @@ public class AccountTypesFragment extends DialogFragment
         }
         else
         {
-            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step1_description);
+            UIUtils.displayTitle(getActivity(), R.string.account_wizard_step1_description, !(getActivity() instanceof HomeScreenActivity));
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step1, container, false);
@@ -98,7 +100,7 @@ public class AccountTypesFragment extends DialogFragment
 
         return v;
     }
-    
+
     @Override
     public void onStart()
     {
@@ -107,6 +109,7 @@ public class AccountTypesFragment extends DialogFragment
             getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
         }
         getActivity().invalidateOptionsMenu();
+        AccessibilityHelper.sendAccessibilityEvent(getActivity());
         super.onStart();
     }
 }

@@ -138,7 +138,7 @@ public class NodeIdActions extends AbstractActions<String>
         OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (String node : selectedItems)
         {
-            group.enqueue(new FavoriteNodeRequest(null, node, doFavorite)
+            group.enqueue(new FavoriteNodeRequest(null, node, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
 

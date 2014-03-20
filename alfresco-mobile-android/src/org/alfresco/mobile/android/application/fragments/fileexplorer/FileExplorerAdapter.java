@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -31,9 +31,10 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.application.manager.MimeTypeManager;
 import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
@@ -153,11 +154,13 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     {
         if (item.isFile())
         {
-            vh.icon.setImageDrawable(getContext().getResources().getDrawable(MimeTypeManager.getIcon(item.getName())));
+            vh.icon.setImageDrawable(getContext().getResources().getDrawable(MimeTypeManager.getIcon(getContext(), item.getName())));
+            AccessibilityHelper.addContentDescription(vh.icon, R.string.mime_document);
         }
         else if (item.isDirectory())
         {
             vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_folder));
+            AccessibilityHelper.addContentDescription(vh.icon, R.string.mime_folder);
         }
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragment.getActivity() instanceof MainActivity

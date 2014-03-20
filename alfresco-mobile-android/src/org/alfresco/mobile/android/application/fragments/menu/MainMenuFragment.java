@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -28,10 +28,12 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAd
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
+import org.alfresco.mobile.android.application.fragments.favorites.SyncScanInfo;
+import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
+import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
 import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
 import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
 import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
@@ -56,6 +58,8 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -139,8 +143,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     {
         super.onStart();
 
-        DisplayUtils.hideLeftTitlePane(getActivity());
-
         if (isAdded() && TAG.equals(getTag())
                 && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
                 && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
@@ -160,6 +162,8 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
         IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_STARTED);
         intentFilter.addAction(IntentIntegrator.ACTION_CONFIGURATION_MENU);
         receiver = new MainMenuReceiver();
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
@@ -316,7 +320,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         rootView.findViewById(R.id.menu_favorites).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+        rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
         rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
         rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
     }
@@ -389,6 +393,15 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         }
 
         spinnerAccount.setSelection(accountIndex);
+
+        if (OperationsFragment.canDisplay(getActivity(), currentAccount))
+        {
+            rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
+        }
     }
 
     private void hideSlidingMenu(boolean goHome)
@@ -428,6 +441,29 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             Account acc = SessionUtils.getAccount(getActivity());
             Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
 
+            long startTimeStamp = SynchroManager.getStartSyncPrepareTimestamp(getActivity(), acc);
+            long finalTimeStamp = SynchroManager.getSyncPrepareTimestamp(getActivity(), acc);
+
+            // Sync Prepare in Progress ?
+            if (startTimeStamp > finalTimeStamp)
+            {
+                // Sync Prepare in progress
+                statut = getActivity().getResources().getDrawable(R.drawable.ic_action_reload);
+            }
+            else
+            {
+                // Sync Prepare done
+
+                // Is there a policy warning ?
+                SyncScanInfo syncScanInfo = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+                if (syncScanInfo != null && syncScanInfo.hasWarning())
+                {
+                    // ==> Sync requires a user input
+                    statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
+                }
+            }
+
+            // Is there a doc warning ?
             if (hasSynchroActive && acc != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
@@ -440,13 +476,17 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
                 }
                 statutCursor.close();
-
-                if (menuSlidingFavorites != null)
-                {
-                    menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
-                }
-                menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
             }
+            else
+            {
+                statut = null;
+            }
+
+            if (menuSlidingFavorites != null)
+            {
+                menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+            }
+            menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
         }
         catch (Exception e)
         {
@@ -462,6 +502,29 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // OVERFLOW MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void getMenu(Menu menu)
+    {
+        MenuItem mi;
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SETTINGS_ID, Menu.FIRST + MenuActionItem.MENU_SETTINGS_ID,
+                R.string.menu_prefs);
+        mi.setIcon(R.drawable.ic_settings_light);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_HELP_ID, Menu.FIRST + MenuActionItem.MENU_HELP_ID,
+                R.string.menu_help);
+        mi.setIcon(R.drawable.ic_help);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_ABOUT_ID, Menu.FIRST + MenuActionItem.MENU_ABOUT_ID,
+                R.string.menu_about);
+        mi.setIcon(R.drawable.ic_about_light);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
     private class MainMenuReceiver extends BroadcastReceiver
@@ -472,7 +535,9 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             Log.d(TAG, intent.getAction());
             if (intent.getAction() == null) { return; }
 
-            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction()))
+            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED.equals(intent.getAction())
+                    || IntentIntegrator.ACTION_SYNC_SCAN_STARTED.equals(intent.getAction()))
             {
                 displayFavoriteStatut();
             }

@@ -32,6 +32,16 @@ public final class AndroidVersion
     {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN;
     }
+    
+    public static boolean isJBMR2OrAbove()
+    {
+        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+    }
+    
+    public static boolean isKitKatOrAbove()
+    {
+        return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT;
+    }
 
     public static boolean isHCOrAbove()
     {

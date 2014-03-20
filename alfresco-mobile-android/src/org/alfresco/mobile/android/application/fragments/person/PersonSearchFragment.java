@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -31,8 +31,10 @@ import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.search.AdvancedSearchFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.utils.UIUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
 import org.alfresco.mobile.android.ui.manager.MessengerManager;
@@ -57,7 +59,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 /**
  * @since 1.3
- * @author jpascal
+ * @author Jean Marie Pascal
  */
 public class PersonSearchFragment extends BaseListFragment implements
         LoaderCallbacks<LoaderResult<PagingResult<Person>>>, ListingModeFragment
@@ -66,6 +68,8 @@ public class PersonSearchFragment extends BaseListFragment implements
     public static final String TAG = PersonSearchFragment.class.getName();
 
     private static final String PARAM_KEYWORD = "keyword";
+
+    private static final String PARAM_TITLE = "queryDescription";
 
     private Map<String, Person> selectedItems = new HashMap<String, Person>(1);
 
@@ -101,12 +105,13 @@ public class PersonSearchFragment extends BaseListFragment implements
         return bf;
     }
 
-    public static BaseFragment newInstance(String keywords)
+    public static BaseFragment newInstance(String keywords, String description)
     {
         PersonSearchFragment bf = new PersonSearchFragment();
         Bundle b = new Bundle();
         b.putInt(PARAM_MODE, MODE_LISTING);
         b.putString(PARAM_KEYWORD, keywords);
+        b.putString(PARAM_TITLE, description);
         bf.setArguments(b);
         return bf;
     }
@@ -140,6 +145,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         if (getArguments() != null && getArguments().containsKey(PARAM_MODE))
         {
             keywords = getArguments().getString(PARAM_KEYWORD);
+            title = getArguments().getString(PARAM_TITLE);
             mode = getArguments().getInt(PARAM_MODE);
             singleChoice = getArguments().getBoolean(PARAM_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
@@ -151,7 +157,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
 
         // Create View
-        vRoot = inflater.inflate(R.layout.app_search_person, container, false);
+        vRoot = inflater.inflate(R.layout.app_pick_person, container, false);
         if (alfSession == null) { return vRoot; }
 
         // Init list
@@ -182,8 +188,6 @@ public class PersonSearchFragment extends BaseListFragment implements
                         if (searchForm.getText().length() > 0)
                         {
                             search(searchForm.getText().toString());
-                            View vr = vRoot.findViewById(R.id.empty_focus);
-                            vr.requestFocus();
                         }
                         else
                         {
@@ -198,8 +202,8 @@ public class PersonSearchFragment extends BaseListFragment implements
 
         if (getMode() == MODE_PICK)
         {
-            vRoot.findViewById(R.id.pick_actions).setVisibility(View.VISIBLE);
-            validation = (Button) vRoot.findViewById(R.id.validate);
+            vRoot.findViewById(R.id.validation_panel).setVisibility(View.VISIBLE);
+            validation = UIUtils.initValidation(vRoot, R.string.done);
             updatePickButton();
             validation.setOnClickListener(new OnClickListener()
             {
@@ -218,7 +222,7 @@ public class PersonSearchFragment extends BaseListFragment implements
                 }
             });
 
-            Button cancel = (Button) vRoot.findViewById(R.id.cancel);
+            Button cancel = UIUtils.initCancel(vRoot, R.string.cancel);
             cancel.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -237,7 +241,7 @@ public class PersonSearchFragment extends BaseListFragment implements
         }
         else
         {
-            vRoot.findViewById(R.id.pick_actions).setVisibility(View.GONE);
+            vRoot.findViewById(R.id.validation_panel).setVisibility(View.GONE);
         }
 
         return vRoot;
@@ -253,6 +257,23 @@ public class PersonSearchFragment extends BaseListFragment implements
                 getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_reassign);
                 getDialog().setTitle(R.string.task_reassign_long);
             }
+            else if (fragmentPick instanceof AdvancedSearchFragment)
+            {
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setTitle(R.string.metadata_modified_by);
+            }
+        }
+        else
+        {
+            if (title != null)
+            {
+                UIUtils.displayTitle(getActivity(), String.format(getString(R.string.search_title), title));
+            }
+            else if (keywords != null)
+            {
+                UIUtils.displayTitle(getActivity(),String.format(getString(R.string.search_title), keywords));
+            }
+
         }
         super.onStart();
     }
@@ -318,7 +339,7 @@ public class PersonSearchFragment extends BaseListFragment implements
     {
         // Nothing special
     }
-    
+
     @Override
     public void onLoaderException(Exception e)
     {

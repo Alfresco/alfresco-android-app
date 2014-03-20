@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  * 
  * This file is part of Alfresco Mobile for Android.
  * 
@@ -26,12 +26,14 @@ import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.security.DataProtectionManager;
 import org.alfresco.mobile.android.application.utils.IOUtils;
 import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.StatFs;
 import android.util.Log;
 
 public class StorageManager extends org.alfresco.mobile.android.ui.manager.StorageManager
@@ -47,7 +49,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     private static final String SYNCHRO_DIRECTORY = "Synchro";
 
     private static final String SHARE_DIRECTORY = "Share";
-    
+
     private static final String CONFIGURATION_DIRECTORY = "Configuration";
 
     private static final String ASSETDIR = "Assets";
@@ -67,7 +69,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     {
         return getPrivateFolder(context, CONFIGURATION_DIRECTORY, acc);
     }
-    
+
     public static File getShareFolder(Context context, Account acc)
     {
         return getPrivateFolder(context, SHARE_DIRECTORY, acc);
@@ -91,6 +93,11 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
     public static File getSynchroFolder(Context context, Account acc)
     {
         return getPrivateFolder(context, SYNCHRO_DIRECTORY, acc);
+    }
+
+    public static File getSynchroFolder(Context context, String username, String accountUrl)
+    {
+        return getPrivateFolder(context, SYNCHRO_DIRECTORY, username, accountUrl);
     }
 
     public static File getSynchroFile(Context context, Account acc, Document doc)
@@ -141,7 +148,7 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
         return file;
     }
-    
+
     public static File getRootPrivateFolder(Context context)
     {
         File file = null;
@@ -191,6 +198,36 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
         return folder;
     }
 
+    public static File getPrivateFolder(Context context, String requestedFolder, String username, String url)
+    {
+        File folder = null;
+        try
+        {
+            // NOTE: We must have access to external storage in order to get a
+            // private folder for this Android logged in user.
+            if (isExternalStorageAccessible())
+            {
+                folder = context.getExternalFilesDir(null);
+
+                if (url != null && url.length() > 0 && username != null && username.length() > 0)
+                {
+                    folder = IOUtils.createFolder(folder, getAccountFolder(url, username)
+                            + File.separator + requestedFolder);
+                }
+                else
+                {
+                    folder = IOUtils.createFolder(folder, requestedFolder);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return folder;
+    }
+
     private static String getAccountFolder(String urlValue, String username)
     {
         String name = null;
@@ -224,13 +261,14 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
 
         return (tempFolder != null && file.getParentFile().getParent().compareTo(tempFolder.getPath()) == 0);
     }
-    
+
     public static boolean isSynchroFile(Context c, File file)
     {
         File tempFolder = c.getExternalFilesDir(null);
         String path = file.getPath();
         String[] pathS = path.split("/");
-        return (tempFolder != null && file.getPath().startsWith(tempFolder.getPath()) &&  pathS[pathS.length - 3].contains(SYNCHRO_DIRECTORY));
+        return (tempFolder != null && file.getPath().startsWith(tempFolder.getPath()) && pathS[pathS.length - 3]
+                .contains(SYNCHRO_DIRECTORY));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -249,4 +287,44 @@ public class StorageManager extends org.alfresco.mobile.android.ui.manager.Stora
             DataProtectionManager.getInstance(c).checkEncrypt(SessionUtils.getAccount(c), file);
         }
     }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // STORAGE SPACE
+    // ///////////////////////////////////////////////////////////////////////////
+    public static float getAvailableBytesByPath(File f)
+    {
+        StatFs stat = new StatFs(f.getPath());
+        if (AndroidVersion.isJBMR2OrAbove())
+        {
+            return stat.getAvailableBytes();
+        }
+        else
+        {
+            return (long) stat.getBlockSize() * (long) stat.getAvailableBlocks();
+        }
+    }
+
+    public static float getTotalBytesByPath(File f)
+    {
+        StatFs stat = new StatFs(f.getPath());
+        if (AndroidVersion.isJBMR2OrAbove())
+        {
+            return stat.getTotalBytes();
+        }
+        else
+        {
+            return (long) stat.getBlockSize() * (long) stat.getBlockCount();
+        }
+    }
+
+    public static float getAvailableBytes(Context context)
+    {
+        return getAvailableBytesByPath(context.getExternalFilesDir(null));
+    }
+
+    public static float getTotalBytes(Context context)
+    {
+        return getTotalBytesByPath(context.getExternalFilesDir(null));
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *  
  *  This file is part of Alfresco Mobile for Android.
  *  
@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
@@ -68,7 +69,6 @@ public class AccountsFragment extends BaseCursorListFragment
     @Override
     public void onStart()
     {
-        DisplayUtils.hideLeftTitlePane(getActivity());
         UIUtils.displayTitle(getActivity(), R.string.accounts_manage);
         super.onStart();
     }
@@ -149,14 +149,14 @@ public class AccountsFragment extends BaseCursorListFragment
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
 
-    public static void getMenu(Menu menu)
+    public static void getMenu(Context context, Menu menu)
     {
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_ADD, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_ADD,
                 R.string.action_add_account);
         mi.setIcon(R.drawable.ic_account_add);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -14,7 +14,8 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.-->
+  limitations under the License.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -29,11 +30,11 @@
 
         <ImageView
             android:id="@+id/icon"
-            style="@style/list_item_icon"
-            android:layout_width="42dip"
-            android:layout_height="42dip"
+            style="?AlfrescoTheme.ImageView.Thumbnail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/button_padding"
-            android:contentDescription="@string/thumbnail"
+        	android:contentDescription="@null"
             android:src="@drawable/mime_file" />
     </LinearLayout>
 
@@ -46,20 +47,20 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="@style/list_item_toptext"
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="@style/list_item_bottomtext"
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>
 
     <Button
         android:id="@+id/cancel_request"
-        style="@style/round_button"
+        style="?AlfrescoTheme.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -23,8 +23,8 @@
     <string name="cancel">Cancel</string>
     <string name="search">Search</string>
     <string name="search_hint">Enter search term</string>
-    <string name="comment_add_hint">Saisissez votre commentaire ici&#8230;</string>
-    <string name="add">Ajouter</string>
+    <string name="comment_add_hint">Enter your comment here&#8230;</string>
+    <string name="add">Add</string>
     
     
     <!-- Samsung -->

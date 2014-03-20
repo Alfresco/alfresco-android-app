@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2013 Alfresco Software Limited.
+  Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -35,7 +35,7 @@
             android:orientation="vertical" >
 
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_title" />
@@ -48,23 +48,8 @@
                 android:inputType="text" >
             </EditText>
 
-            <LinearLayout
-                android:id="@+id/error_message_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" >
-
-                <TextView
-                    android:id="@+id/error_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="3dip"
-                    android:text="@string/filename_error_character"
-                    android:textColor="@color/dark_red" />
-            </LinearLayout>
-
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_due_on" />
@@ -90,11 +75,12 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_calendar_pick" />
+                    android:src="@drawable/ic_calendar_pick"
+                    android:contentDescription="@string/picker_due_date" />
             </LinearLayout>
 
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_assignees" />
@@ -120,11 +106,12 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_person" />
+                    android:src="@drawable/ic_person"
+                    android:contentDescription="@string/picker_assignees" />
             </LinearLayout>
 
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_attachments" />
@@ -150,12 +137,13 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_repository_dark" />
+                    android:src="@drawable/ic_repository_dark"
+                    android:contentDescription="@string/picker_attachments" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/process_approvers_group_title"
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_approvers" />
@@ -180,18 +168,20 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_remove" />
+                    android:src="@drawable/ic_remove"
+                    android:contentDescription="@string/action_remove_approvers" />
 
                 <ImageButton
                     android:id="@+id/action_add_approvers"
                     style="?android:attr/buttonBarButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_add" />
+                    android:src="@drawable/ic_add"
+                    android:contentDescription="@string/action_add_approvers" />
             </LinearLayout>
 
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_priority" />
@@ -242,18 +232,15 @@
             </LinearLayout>
 
             <TextView
-                style="@style/workflowSectionHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_notification" />
 
-            <Switch
-                android:id="@+id/action_send_notification"
+            <include
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right|center"
-                android:layout_marginBottom="10dip"
-                android:checked="true" />
+                layout="@layout/app_task_switch" />
         </LinearLayout>
     </ScrollView>
 
@@ -263,29 +250,9 @@
         android:layout_marginTop="@dimen/margin_top"
         android:background="?android:attr/dividerVertical" />
 
-    <LinearLayout
-        style="?android:attr/buttonBarStyle"
+    <include
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:measureWithLargestChild="true"
-        android:orientation="horizontal"
-        android:paddingLeft="2dip"
-        android:paddingRight="2dip"
-        android:paddingTop="0dip" >
-
-        <Button
-            android:id="@+id/action_create"
-            style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:enabled="false"
-            android:text="@string/done" />
-    </LinearLayout>
-
-    <View
-        android:layout_width="fill_parent"
-        android:layout_height="1dip"
-        android:background="?android:attr/dividerVertical" />
+        layout="@layout/app_validation_button" />
 
 </LinearLayout>
