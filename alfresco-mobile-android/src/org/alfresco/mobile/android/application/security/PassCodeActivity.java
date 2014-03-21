@@ -67,8 +67,11 @@ public class PassCodeActivity extends Activity
     @Override
     public void onBackPressed()
     {
-        setResult(RESULT_CANCELED);
-        finish();
+        //We go back to the device home.
+        Intent startMain = new Intent(Intent.ACTION_MAIN);
+        startMain.addCategory(Intent.CATEGORY_HOME);
+        startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(startMain);
     }
 
 }

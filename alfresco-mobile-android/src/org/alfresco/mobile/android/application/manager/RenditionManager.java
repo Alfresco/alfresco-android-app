@@ -41,7 +41,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -167,9 +166,7 @@ public class RenditionManager
             iv.setImageResource(initDrawableId);
             return;
         }
-        // Log.d(TAG, identifier);
 
-        //
         switch (type)
         {
             case TYPE_NODE:
@@ -232,12 +229,10 @@ public class RenditionManager
             {
                 thread.start();
             }
-        } else {
-            Log.d(TAG, "AWAIT URL" + identifier);
         }
     }
 
-    private void startPicasso(String url, int initDrawableId, final ImageView iv)
+    private void startPicasso(String url, final int initDrawableId, final ImageView iv)
     {
         if (url == null)
         {
@@ -265,6 +260,7 @@ public class RenditionManager
             @Override
             public void onError()
             {
+                iv.setImageResource(initDrawableId);
                 displayErrorMessage(iv);
             }
         });
@@ -358,12 +354,11 @@ public class RenditionManager
 
     private void addReference(String identifier, String url, Integer preview)
     {
-        if (preview != null && previewUriStore.get(identifier) != null
-                && !previewUriStore.get(identifier).equals(NO_RENDITION))
+        if (preview != null)
         {
             previewUriStore.put(identifier, url);
         }
-        else
+        else 
         {
             streamUriStore.put(identifier, url);
         }

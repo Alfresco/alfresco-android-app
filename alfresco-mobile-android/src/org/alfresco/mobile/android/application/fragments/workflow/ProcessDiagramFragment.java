@@ -43,6 +43,8 @@ public class ProcessDiagramFragment extends BaseFragment
 
     private ImageView preview;
 
+    private RenditionManager renditionManager;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -88,7 +90,7 @@ public class ProcessDiagramFragment extends BaseFragment
         preview = (ImageView) v.findViewById(R.id.preview);
         int iconId = R.drawable.ic_px;
 
-        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
+        renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
         renditionManager.displayDiagram((ImageView) preview, iconId, processId);
         return v;

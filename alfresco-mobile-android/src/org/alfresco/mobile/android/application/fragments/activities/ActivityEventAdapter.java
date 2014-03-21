@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.constants.CloudConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
@@ -73,7 +74,7 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     {
         super(fr.getActivity(), textViewResourceId, listItems);
         this.vhClassName = GenericViewHolder.class.getCanonicalName();
-        this.renditionManager = new RenditionManager(fr.getActivity(), session);
+        this.renditionManager = ApplicationManager.getInstance(fr.getActivity()).getRenditionManager(fr.getActivity());
         this.selectedItems = selectedItems;
         this.fr = fr;
     }
@@ -129,7 +130,8 @@ public class ActivityEventAdapter extends BaseListAdapter<ActivityEntry, Generic
     protected void updateIcon(GenericViewHolder vh, ActivityEntry item)
     {
         getCreatorAvatar(vh, item);
-        AccessibilityHelper.addContentDescription( vh.icon, String.format(getContext().getString(R.string.contact_card), getUser(item)));
+        AccessibilityHelper.addContentDescription(vh.icon,
+                String.format(getContext().getString(R.string.contact_card), getUser(item)));
     }
 
     private void getCreatorAvatar(GenericViewHolder vh, ActivityEntry item)

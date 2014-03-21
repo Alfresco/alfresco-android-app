@@ -34,7 +34,6 @@ import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFrag
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
@@ -176,18 +175,6 @@ public class PrivateDialogActivity extends BaseActivity
             broadcastManager.registerReceiver(receiver, filters);
         }
         super.onStart();
-        PassCodeActivity.requestUserPasscode(this);
-        activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
-    }
-
-    @Override
-    protected void onPause()
-    {
-        super.onPause();
-        if (!activateCheckPasscode)
-        {
-            PasscodePreferences.updateLastActivityDisplay(this);
-        }
     }
 
     @Override

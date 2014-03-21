@@ -144,7 +144,7 @@
 		<junit.version>4.10</junit.version>
 		
 		<!-- Square Dependencies -->
-		<okhttp.version>1.2.1</okhttp.version>
+		<okhttp.version>1.5.2</okhttp.version>
 		<picasso.version>2.2.0</picasso.version>
 		
 		<!-- Alfresco Configuration -->

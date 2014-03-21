@@ -28,7 +28,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
+        android:scaleType="matrix"
         />
 
  	<TextView

@@ -369,8 +369,6 @@ public abstract class BaseActivity extends Activity
 
             if (activity.isFinishing() || activity.isChangingConfigurations()) { return; }
 
-            Log.d("UtilsReceiver", intent.getAction());
-
             //
             if (IntentIntegrator.ACTION_DISPLAY_DIALOG.equals(intent.getAction()))
             {
