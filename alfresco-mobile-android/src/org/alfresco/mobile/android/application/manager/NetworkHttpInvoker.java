@@ -21,16 +21,20 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.alfresco.mobile.android.application.ApplicationManager;
+
+import android.util.Log;
+
+import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.OkHttpClient;
 
 public class NetworkHttpInvoker extends org.alfresco.mobile.android.api.network.NetworkHttpInvoker
 {
-
     private OkHttpClient httpClient;
     
     public NetworkHttpInvoker()
     {
-        httpClient = new OkHttpClient();
+        httpClient = NetworkSingleton.getInstance().getHttpClient();
     }
     
     @Override

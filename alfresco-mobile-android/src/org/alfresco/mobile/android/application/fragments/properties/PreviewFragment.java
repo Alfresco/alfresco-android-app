@@ -67,6 +67,8 @@ public class PreviewFragment extends BaseFragment
 
     protected boolean isRestrictable = false;
 
+    private RenditionManager renditionManager;
+
     public File getTempFile()
     {
         return tempFile;
@@ -112,7 +114,7 @@ public class PreviewFragment extends BaseFragment
         // Detect if isRestrictable
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
 
-        RenditionManager renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
+        renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
                 getActivity());
 
         ImageView preview = (ImageView) v.findViewById(R.id.preview);

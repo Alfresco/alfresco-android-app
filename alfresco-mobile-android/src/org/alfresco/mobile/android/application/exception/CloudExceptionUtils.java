@@ -138,14 +138,10 @@ public final class CloudExceptionUtils
     {
         if (forceRefresh)
         {
-            // MessengerManager.showLongToast(activity, (String)
-            // activity.getText(R.string.error_session_expired));
             ActionManager.actionRequestUserAuthentication(activity, SessionUtils.getAccount(activity));
         }
         else
         {
-            // MessengerManager.showLongToast(activity, (String)
-            // activity.getText(R.string.error_session_refresh));
             ActionManager.actionRequestAuthentication(activity, SessionUtils.getAccount(activity));
         }
     }
