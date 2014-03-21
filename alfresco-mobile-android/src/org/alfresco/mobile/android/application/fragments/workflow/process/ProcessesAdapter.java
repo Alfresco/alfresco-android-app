@@ -143,7 +143,7 @@ public class ProcessesAdapter extends BaseListAdapter<Process, GenericViewHolder
         {
             nameId = R.string.process_review;
         }
-        else if (WorkflowModel.FAMILY_REVIEW.contains(keyId))
+        else if (WorkflowModel.FAMILY_PROCESS_REVIEW.contains(keyId))
         {
             nameId = R.string.process_review;
         }

@@ -842,16 +842,16 @@ public final class SynchroManager extends OperationManager
             + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_PARENT_ID + " = '%s';";
 
     private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
-            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " IN ( "
+            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " IN ( "
             + SyncOperation.STATUS_PENDING + "," + SyncOperation.STATUS_HIDDEN + ");";
 
     private static final String QUERY_SUM_TOTAL_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES
-            + ") FROM " + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " = "
+            + ") FROM " + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " = "
             + SyncOperation.STATUS_PENDING + " AND " + SynchroSchema.COLUMN_MIMETYPE + " NOT IN ('"
             + ContentModel.TYPE_FOLDER + "');";
 
     private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
-            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_STATUS + " IN ("
+            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " IN ("
             + SyncOperation.STATUS_PENDING + ", " + SyncOperation.STATUS_SUCCESSFUL + ");";
 
     private static final String QUERY_SUM_TOTAL = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES + ") FROM "
@@ -949,19 +949,19 @@ public final class SynchroManager extends OperationManager
         return totalSize;
     }
 
-    public Long getAmountDataToTransfert()
+    public Long getAmountDataToTransfert(Account acc)
     {
-        return retrieveSize(QUERY_SUM_TOTAL_IN_PENDING);
+        return retrieveSize(String.format(QUERY_SUM_TOTAL_IN_PENDING, acc.getId()));
     }
 
-    public Long getAmountDataStored()
+    public Long getAmountDataStored(Account acc)
     {
-        return retrieveSize(QUERY_TOTAL_STORED);
+        return retrieveSize(String.format(QUERY_TOTAL_STORED, acc.getId()));
     }
 
-    public Long getPreviousAmountDataStored()
+    public Long getPreviousAmountDataStored(Account acc)
     {
-        return retrieveSize(QUERY_SUM_IN_PENDING);
+        return retrieveSize(String.format(QUERY_SUM_IN_PENDING, acc.getId()));
     }
 
     // ////////////////////////////////////////////////////
@@ -972,11 +972,11 @@ public final class SynchroManager extends OperationManager
         //IF sync is disabled scanInfo is success by default.
         if (!hasActivateSync(acc)) { return new SyncScanInfo(0, 0, SyncScanInfo.RESULT_SUCCESS); }
 
-        long dataFinalStored = getAmountDataStored();
-        long deltaStorage = getPreviousAmountDataStored();
+        long dataFinalStored = getAmountDataStored(acc);
+        long deltaStorage = getPreviousAmountDataStored(acc);
         float totalBytes = StorageManager.getTotalBytes(mAppContext);
         float availableBytes = StorageManager.getAvailableBytes(mAppContext);
-        long dataToTransfer = getAmountDataToTransfert();
+        long dataToTransfer = getAmountDataToTransfert(acc);
 
         Log.d(TAG, "Data Transfer : " + dataToTransfer);
         Log.d(TAG, "Data Final : " + dataFinalStored);
