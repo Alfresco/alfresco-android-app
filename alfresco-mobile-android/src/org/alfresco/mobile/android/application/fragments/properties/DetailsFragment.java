@@ -523,14 +523,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
 
         if (mTabHost == null)
         {
-            ViewGroup parent = (ViewGroup) vRoot.findViewById(R.id.metadata);
-            ViewGroup generalGroup = createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GENERAL, false,
-                    generalPropertyTitle, filter);
-            addPathProperty(generalGroup, inflater);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_GEOGRAPHIC);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_EXIF);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_AUDIO);
-            createAspectPanel(inflater, parent, node, ContentModel.ASPECT_RESTRICTABLE);
+            grouprootview = (ViewGroup) vRoot.findViewById(R.id.metadata);
+            createPropertiesPanel(inflater, generalPropertyTitle, filter);
         }
 
         // BUTTONS
