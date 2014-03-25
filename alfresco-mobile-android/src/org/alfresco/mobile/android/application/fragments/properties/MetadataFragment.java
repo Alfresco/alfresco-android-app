@@ -64,7 +64,7 @@ public class MetadataFragment extends BaseFragment
 
     protected boolean isRestrictable = false;
 
-    private ViewGroup grouprootview;
+    protected ViewGroup grouprootview;
 
     public static Bundle createBundleArgs(Node node)
     {
@@ -157,21 +157,23 @@ public class MetadataFragment extends BaseFragment
             generalPropertyTitle = R.string.metadata_general;
         }
 
-        // ASPECTS
-        ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false,
-                generalPropertyTitle, filter);
-        addPathProperty(generalGroup, inflater);
-        View vr = addPropertyLine(generalGroup, inflater, node, R.string.metadata_prop_creator, PropertyIds.CREATED_BY,
-                null, false);
-
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
-        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_RESTRICTABLE);
+        createPropertiesPanel(inflater, generalPropertyTitle, filter);
 
         sv.addView(v);
 
         return sv;
+    }
+
+    protected void createPropertiesPanel(LayoutInflater inflater, Integer generalPropertyTitle, List<String> filter)
+    {
+        // ASPECTS
+        ViewGroup generalGroup = createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GENERAL, false,
+                generalPropertyTitle, filter);
+        addPathProperty(generalGroup, inflater);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_GEOGRAPHIC);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_EXIF);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_AUDIO);
+        createAspectPanel(inflater, grouprootview, node, ContentModel.ASPECT_RESTRICTABLE);
     }
 
     protected View addPropertyLine(ViewGroup generalGroup, LayoutInflater inflater, Node node, int propertyLabel,
