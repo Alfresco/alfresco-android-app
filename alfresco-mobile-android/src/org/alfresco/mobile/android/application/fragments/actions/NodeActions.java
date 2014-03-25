@@ -24,6 +24,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -197,15 +198,21 @@ public class NodeActions extends AbstractActions<Node>
         createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
                 + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
 
-        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
-                + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
-        createMenu.setIcon(R.drawable.ic_like);
-        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        AlfrescoSession alfSession = SessionUtils.getSession(activity);
+        if (alfSession != null && alfSession.getRepositoryInfo() != null
+                && alfSession.getRepositoryInfo().getCapabilities() != null
+                && alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
+            createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
+                    + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
+            createMenu.setIcon(R.drawable.ic_like);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_LIKE,
-                Menu.FIRST + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
-                + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_LIKE, Menu.FIRST
+                    + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
+            createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
+                    + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
+        }
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE, R.string.delete);
         mi.setIcon(R.drawable.ic_delete);
