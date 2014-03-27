@@ -1133,13 +1133,16 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_SETTINGS_ID:
                 displayPreferences();
+                hideSlideMenu();
                 return true;
             case MenuActionItem.MENU_HELP_ID:
                 UIUtils.displayHelp(this);
+                hideSlideMenu();
                 return true;
             case MenuActionItem.MENU_ABOUT_ID:
                 displayAbout();
                 DisplayUtils.switchSingleOrTwo(this, true);
+                hideSlideMenu();
                 return true;
             case android.R.id.home:
                 // app icon in action bar clicked; go home
