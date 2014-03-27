@@ -216,16 +216,13 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         }
         getActivity().invalidateOptionsMenu();
 
-        if (receiver == null)
-        {
-            IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
-            intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
-            intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
-            intentFilter.addAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
-            intentFilter.addAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
-            receiver = new FileExplorerReceiver();
-            LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-        }
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
+        receiver = new FileExplorerReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
 
         refreshListView();
     }
@@ -252,6 +249,16 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
                 break;
         }
     }
+    
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        }
+    }
 
     @Override
     public void onStop()
@@ -259,10 +266,6 @@ public class FileExplorerFragment extends AbstractFileExplorerFragment
         if (nActions != null)
         {
             nActions.finish();
-        }
-        if (receiver != null)
-        {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
         }
         super.onStop();
     }

@@ -55,7 +55,7 @@ public final class NetworkSingleton
     private NetworkSingleton()
     {
         httpClient = new OkHttpClient();
-        httpClient.setConnectionPool(new ConnectionPool(2, 100));
+        httpClient.setConnectionPool(new ConnectionPool(1, 100));
         URL.setURLStreamHandlerFactory(httpClient);
     }
 

@@ -80,7 +80,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             {
                 // Do Nothing
                 Log.d(TAG, "Node Error " + nodeIdentifier);
-                Log.d(TAG, "Session Error " + session + " " + session.getServiceRegistry().getDocumentFolderService());
             }
 
             try
@@ -91,7 +90,6 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
             {
                 // Do Nothing
                 Log.d(TAG, "PArent Error " + parentFolderIdentifier);
-                Log.d(TAG, "Session Error " + session + " " + session.getServiceRegistry().getDocumentFolderService());
             }
 
             if (listener != null)
@@ -111,16 +109,26 @@ public abstract class SyncNodeOperationThread<T> extends AbstractSyncOperationTh
     // ///////////////////////////////////////////////////////////////////////////
     protected Node retrieveNode()
     {
-        while (node == null)
+        try
         {
-            try
-            {
-                node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
-            }
-            catch (Exception e)
-            {
-                return null;
-            }
+            node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+        }
+        catch (Exception e)
+        {
+            return retryRetrieveNode();
+        }
+        return node;
+    }
+    
+    private Node retryRetrieveNode()
+    {
+        try
+        {
+            node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+        }
+        catch (Exception e)
+        {
+            return null;
         }
         return node;
     }
