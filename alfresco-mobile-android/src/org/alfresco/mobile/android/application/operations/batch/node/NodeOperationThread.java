@@ -109,6 +109,11 @@ public abstract class NodeOperationThread<T> extends AbstractBatchOperationThrea
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
+    public String getNodeIdentifier()
+    {
+        return nodeIdentifier;
+    }
+    
     public Node getNode()
     {
         return node;

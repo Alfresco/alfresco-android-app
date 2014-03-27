@@ -130,7 +130,10 @@ public class IsFavoriteLoaderCallBack extends BaseLoaderCallback implements Load
         {
             getLoaderManager().initLoader(id, b, this);
         }
-        getLoaderManager().restartLoader(id, b, this);
+        else
+        {
+            getLoaderManager().restartLoader(id, b, this);
+        }
         getLoaderManager().getLoader(id).forceLoad();
 
     }

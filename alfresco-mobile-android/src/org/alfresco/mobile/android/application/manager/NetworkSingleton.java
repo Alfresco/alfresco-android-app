@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.manager;
 
+import java.net.URL;
+
 import com.squareup.okhttp.ConnectionPool;
 import com.squareup.okhttp.OkHttpClient;
 
@@ -54,6 +56,7 @@ public final class NetworkSingleton
     {
         httpClient = new OkHttpClient();
         httpClient.setConnectionPool(new ConnectionPool(1, 100));
+        URL.setURLStreamHandlerFactory(httpClient);
     }
 
     public OkHttpClient getHttpClient()

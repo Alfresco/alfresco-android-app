@@ -167,13 +167,9 @@ public class PrivateDialogActivity extends BaseActivity
     protected void onStart()
     {
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        if (receiver == null)
-        {
-            receiver = new PrivateDialogActivityReceiver();
-            IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
-            filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
-            broadcastManager.registerReceiver(receiver, filters);
-        }
+        IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
+        filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
+        registerPrivateReceiver(new PrivateDialogActivityReceiver(), filters);
         super.onStart();
     }
 
@@ -223,8 +219,10 @@ public class PrivateDialogActivity extends BaseActivity
 
     public void doCancel(View v)
     {
-        getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG,
+                FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
+
     // ////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////
@@ -239,12 +237,12 @@ public class PrivateDialogActivity extends BaseActivity
                     || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
             {
                 removeWaitingDialog();
-                
+
                 if (getFragment(GeneralPreferences.TAG) != null)
                 {
                     ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
                 }
-                
+
                 return;
             }
         }
