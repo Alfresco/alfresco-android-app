@@ -61,8 +61,10 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
 
     private static final String PARAM_TYPEID = "typeId";
 
+    private static final String PARAM_INTENTID = "intentId";
+
     private static final String PARAM_SIZE = "nbItems";
-    
+
     private static final String PARAM_FINISH = "nbItems";
 
     private boolean canDismiss = false;
@@ -73,8 +75,31 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
 
     private Integer nbItems;
 
+    private OperationReceiver receiver;
+
+    private String intentId;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
     public OperationWaitingDialogFragment()
     {
+    }
+
+    public static OperationWaitingDialogFragment newInstance(String intentActionDismiss, int operationType, int iconId,
+            String title, String message, Node parent, int nbItems)
+    {
+        OperationWaitingDialogFragment fragment = new OperationWaitingDialogFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_INTENTID, intentActionDismiss);
+        bundle.putInt(PARAM_TYPEID, operationType);
+        bundle.putInt(PARAM_ICONID, iconId);
+        bundle.putInt(PARAM_SIZE, nbItems);
+        bundle.putString(PARAM_TITLEID, title);
+        bundle.putString(PARAM_MESSAGEID, message);
+        bundle.putParcelable(PARAM_NODEID, parent);
+        fragment.setArguments(bundle);
+        return fragment;
     }
 
     public static OperationWaitingDialogFragment newInstance(int operationType, int iconId, String title,
@@ -91,7 +116,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         fragment.setArguments(bundle);
         return fragment;
     }
-    
+
     public static OperationWaitingDialogFragment newInstance(int operationType, int iconId, String title,
             String message, Node parent, int nbItems, boolean finishActivity)
     {
@@ -107,12 +132,16 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         return fragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(final Bundle savedInstanceState)
     {
         setRetainInstance(true);
         if (getArguments() != null)
         {
             operationType = getArguments().getInt(PARAM_TYPEID);
+            intentId = getArguments().getString(PARAM_INTENTID);
             iconId = getArguments().getInt(PARAM_ICONID);
             title = getArguments().getString(PARAM_TITLEID);
             message = getArguments().getString(PARAM_MESSAGEID);
@@ -146,18 +175,46 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         }
         dialog.setIndeterminate(indeterminate);
         dialog.setCancelable(false);
-        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.dismiss();
-            }
-        });
+        dialog.setButton(DialogInterface.BUTTON_NEGATIVE, getString(R.string.cancel),
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
 
         getActivity().getLoaderManager().restartLoader(this.hashCode(), null, this);
 
         return dialog;
+    }
+
+    @Override
+    public void onResume()
+    {
+        setCancelable(false);
+        super.onResume();
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATIONS_COMPLETED);
+        if (intentId != null)
+        {
+            intentFilter.addAction(intentId);
+        }
+        if (receiver == null)
+        {
+            receiver = new OperationReceiver();
+        }
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        }
     }
 
     @Override
@@ -177,6 +234,9 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         super.onDismiss(dialog);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
@@ -222,36 +282,20 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         // DO Nothing
     }
 
-    @Override
-    public void onPause()
-    {
-        super.onPause();
-        if (receiver != null)
-        {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
-        }
-    }
-
-    @Override
-    public void onResume()
-    {
-        setCancelable(false);
-        super.onResume();
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_OPERATIONS_COMPLETED);
-        if (receiver == null)
-        {
-            receiver = new OperationReceiver();
-        }
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-    }
-
-    private OperationReceiver receiver;
-
+    // //////////////////////////////////////////////////////////////////////
+    // BROADCAST RECEIVER
+    // //////////////////////////////////////////////////////////////////////
     public class OperationReceiver extends BroadcastReceiver
     {
         @Override
         public void onReceive(Context context, Intent intent)
         {
+            if (intentId != null && intentId.equals(intent.getAction()))
+            {
+                dismiss();
+                return;
+            }
+
             if (canDismiss && IntentIntegrator.ACTION_OPERATIONS_COMPLETED.equals(intent.getAction()))
             {
                 dismiss();

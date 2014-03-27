@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.operations.batch.file.encryption;
 
 import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.operations.batch.file.FileOperationThread;
 import org.alfresco.mobile.android.application.operations.batch.impl.AbstractBatchOperationRequestImpl;
@@ -29,6 +30,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.Preference;
 import android.preference.PreferenceManager;
 import android.util.Log;
 

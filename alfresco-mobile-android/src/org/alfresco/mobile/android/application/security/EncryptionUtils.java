@@ -143,6 +143,8 @@ public class EncryptionUtils
                 int nBytes = 0;
 
                 byte[] buffer = new byte[MAX_BUFFER_SIZE];
+                
+                Log.i(TAG, "Decrypting file " + filename);
 
                 while (size - copied > 0)
                 {
