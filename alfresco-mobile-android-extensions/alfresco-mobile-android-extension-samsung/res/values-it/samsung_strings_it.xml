@@ -2,19 +2,19 @@
 <!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  This file is part of Alfresco Mobile for Android.
+  Questo file è parte integrante dell\'Alfresco Mobile per Android.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Concesso con licenza Apache License, versione 2.0 (la "Licenza");
+  non è possibile utilizzare questo file a meno che l\'utilizzo non sia conforme con la licenza.
+  È possibile ottenere una copia della licenza collegandosi al sito Internet
   
     http://www.apache.org/licenses/LICENSE-2.0
   
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  A meno che diversamente indicato dalla legge o da comunicazione scritta,
+  il software distribuito con licenza viene fornito "COSÌ COM\'È",
+  SENZA GARANZIE O CONDIZIONI DI QUALSIASI TIPO, espresse o implicite.
+  Consultare la licenza per le autorizzazioni di governo e le
+  limitazioni della licenza specifiche per ogni lingua.
 -->
 <resources>
 
@@ -23,7 +23,7 @@
     <string name="cancel">Annulla</string>
     <string name="search">Cerca</string>
     <string name="search_hint">Immetti termine da cercare</string>
-    <string name="comment_add_hint">Aggiungi qui il commento...</string>
+    <string name="comment_add_hint">Immetti qui il commento...</string>
     <string name="add">Aggiungi</string>
     
     
@@ -70,11 +70,11 @@
 
     <!-- Extra -->
     <string name="editor_error_open">Impossibile aprire questa S Note.</string>
-    <string name="editor_save_request">L\'S Note è stata modificata.</string>
+    <string name="editor_save_request">S Note modificata.</string>
     <string name="editor_save_description"><![CDATA[Uscire senza salvare le modifiche? <br/> Le modifiche non salvate saranno perse.]]></string>
     <string name="editor_save">Salva</string>
     <string name="editor_discard">Elimina</string>
-    <string name="editor_save_confirmation">L\'S Note è stata salvata.</string>
+    <string name="editor_save_confirmation">S Note salvata.</string>
     <string name="editor_paging">Pagina %1$s / %2$s</string>
 
     <!-- CREATION -->
@@ -84,7 +84,7 @@
     <string name="error_sdk_dialog">Requisiti S Note</string>
     <string name="error_sdk_unsupported">Questo dispositivo non supporta l\'S Pen.</string>
     <string name="error_sdk_library_not_installed"><![CDATA[<p>Per utilizzare questa funzione, installare software aggiuntivo dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Per utilizzare questa funzione, aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Per utilizzare questa funzione, aggiornare software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>Prima di utilizzare questa funzione, si consiglia di aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
     
 </resources>

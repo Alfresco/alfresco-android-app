@@ -2,19 +2,19 @@
 <!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  This file is part of Alfresco Mobile for Android.
+  Este archivo forma parte de Alfresco Mobile para Android.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Autorizado bajo la licencia Apache, Versión 2.0 (la "Licencia"),
+  solo se puede utilizar este archivo en conformidad con la Licencia.
+  Puede obtener una copia de la licencia en
   
     http://www.apache.org/licenses/LICENSE-2.0
   
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  A menos que lo requiera la ley aplicable o se acuerde por escrito,
+  el software distribuido bajo la licencia se distribuye "TAL CUAL",
+  SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
+  Consulte la licencia para los permisos específicos de lenguaje que rige y 
+  limitaciones bajo la Licencia.
 -->
 <resources>
 
@@ -23,7 +23,7 @@
     <string name="cancel">Cancelar</string>
     <string name="search">Buscar</string>
     <string name="search_hint">Introduzca el término de búsqueda</string>
-    <string name="comment_add_hint">Deje su comentario aquí&#8230;</string>
+    <string name="comment_add_hint">Introduzca su comentario aquí&#8230;</string>
     <string name="add">Añadir</string>
     
     
@@ -54,7 +54,7 @@
     <string name="editor_forward">Adelantar</string>
     <string name="editor_front">Traer al frente</string>
     <string name="editor_back_menu">Enviar atrás</string>
-    <string name="editor_backward">Retrasar</string>
+    <string name="editor_backward">Enviar al fondo</string>
     <string name="editor_back">Enviar atrás</string>
 
     <!-- Add -->
@@ -84,7 +84,7 @@
     <string name="error_sdk_dialog">Requisitos de S Note</string>
     <string name="error_sdk_unsupported">Este dispositivo no admite S Pen</string>
     <string name="error_sdk_library_not_installed"><![CDATA[<p>Es necesario instalar el software S Pen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Es necesario actualizar el software S Pen para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Es necesario actualizar el software S Pen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>Recomendamos actualizar el software S Pen antes de usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
     
 </resources>
