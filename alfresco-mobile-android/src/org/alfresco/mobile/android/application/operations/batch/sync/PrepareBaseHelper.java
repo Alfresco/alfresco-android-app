@@ -87,6 +87,8 @@ public abstract class PrepareBaseHelper
     // SCAN NODE
     private Node node;
 
+    private String nodeIdentifier;
+
     // Mode, Context
     public PrepareBaseHelper(Context context, SyncPrepareThread syncScanThread, long syncScanningTimeStamp)
     {
@@ -99,6 +101,7 @@ public abstract class PrepareBaseHelper
         this.syncManager = SynchroManager.getInstance(context);
         this.dataProtectionManager = DataProtectionManager.getInstance(context);
         this.node = syncScanThread.getNode();
+        this.nodeIdentifier = syncScanThread.getNodeIdentifier();
     }
 
     public abstract OperationsRequestGroup prepare();
@@ -364,7 +367,9 @@ public abstract class PrepareBaseHelper
                     {
                         repoSyncIds = new ArrayList<String>();
                     }
-                    if (session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+                    if (session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(node.getIdentifier()) != null
+                            && session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
                     {
                         tmpNode.add(node);
                     }
@@ -753,8 +758,17 @@ public abstract class PrepareBaseHelper
         Cursor nodeCursor = null, parentCursor = null;
         try
         {
-            nodeCursor = SynchroManager.getCursorForId(context, acc, node.getIdentifier());
-            if (!session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+            String nodeId = nodeIdentifier;
+            // Case favorited node has been deleted from the server
+            if (node != null)
+            {
+                nodeId = node.getIdentifier();
+            }
+
+            // Retrieve local Cursor
+            nodeCursor = SynchroManager.getCursorForId(context, acc, nodeId);
+
+            if (node != null && !session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
             {
                 // Node is unfavorited, Check if the parent is Sync/favorited
                 Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
@@ -769,35 +783,12 @@ public abstract class PrepareBaseHelper
                 }
                 else
                 {
-                    // No Parent, we remove everything
-                    if (nodeCursor.getCount() > 1)
-                    {
-                        while (nodeCursor.moveToNext())
-                        {
-                            // Check status
-                            switch (nodeCursor.getInt(SynchroSchema.COLUMN_STATUS_ID))
-                            {
-                                case SyncOperation.STATUS_HIDDEN:
-                                    prepareDelete(node.getIdentifier(), nodeCursor);
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    }
-                    else if (nodeCursor.getCount() == 1 && nodeCursor.moveToFirst())
-                    {
-                        if (node.isFolder())
-                        {
-                            prepareChildrenFolderDelete(node.getIdentifier());
-                            prepareDelete(node.getIdentifier(), nodeCursor);
-                        }
-                        else
-                        {
-                            prepareDelete(node.getIdentifier(), nodeCursor);
-                        }
-                    }
+                    prepareDelete(nodeCursor, nodeId);
                 }
+            }
+            else
+            {
+                prepareDelete(nodeCursor, nodeId);
             }
         }
         catch (Exception e)
@@ -809,6 +800,42 @@ public abstract class PrepareBaseHelper
         {
             CursorUtils.closeCursor(nodeCursor);
             CursorUtils.closeCursor(parentCursor);
+        }
+    }
+
+    private void prepareDelete(Cursor nodeCursor, String nodeId)
+    {
+        // No Parent, we remove everything
+        if (nodeCursor.getCount() > 1)
+        {
+            while (nodeCursor.moveToNext())
+            {
+                // Check status
+                switch (nodeCursor.getInt(SynchroSchema.COLUMN_STATUS_ID))
+                {
+                    case SyncOperation.STATUS_HIDDEN:
+                        prepareDelete(nodeId, nodeCursor);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+        else if (nodeCursor.getCount() == 1 && nodeCursor.moveToFirst())
+        {
+            if (node == null)
+            {
+                prepareDelete(nodeId, nodeCursor);
+            }
+            else if (node.isFolder())
+            {
+                prepareChildrenFolderDelete(nodeId);
+                prepareDelete(nodeId, nodeCursor);
+            }
+            else
+            {
+                prepareDelete(nodeId, nodeCursor);
+            }
         }
     }
 
