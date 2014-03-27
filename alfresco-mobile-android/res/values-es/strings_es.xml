@@ -2,19 +2,19 @@
 <!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  This file is part of Alfresco Mobile for Android.
+  Este fichero forma parte de Alfresco Mobile para Android.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Autorizado bajo la licencia Apache, Versión 2.0 (la "Licencia"),
+  solo se puede utilizar este fichero en conformidad con la Licencia.
+  Puede obtener una copia de la licencia en
   
     http://www.apache.org/licenses/LICENSE-2.0
   
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  A menos que lo requiera la ley aplicable o se acuerde por escrito,
+  el software distribuido bajo la licencia se distribuye "TAL CUAL",
+  SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
+  Consulte la licencia para los permisos específicos de lenguaje que rige y 
+  limitaciones bajo la Licencia.
 -->
 <resources>
 
@@ -25,10 +25,10 @@
     <!-- HOME SCREEN -->
     <string name="home_title">Vamos a empezar&#8230; </string>
     <string name="home_sign_cloud">Registrarse en Alfresco Cloud</string>
-    <string name="home_sign_cloud_description">¿Es nuevo en Alfresco? Cree una cuenta en línea gratis para almacenar documentos y acceder a ellos desde todas partes.</string>
+    <string name="home_sign_cloud_description">¿Es nuevo en Alfresco? Cree una cuenta en línea gratuita para almacenar su contenido y acceder a este</string>
     <string name="home_account">Ya tengo una cuenta</string>
     <string name="home_account_description">Elija esta opción si ya tiene una cuenta de Alfresco Cloud o desea conectarse a un servidor de Alfresco</string>
-    <string name="home_helper">Si desea más información acerca de Alfresco Mobile, consulte <a href="alfresco://view_help_guide/">nuestra guía</a> en el área Ayuda</string>
+    <string name="home_helper">Si desea obtener más información acerca de Alfresco Mobile, consulte <a href="alfresco://view_help_guide/">nuestra guía</a> en el área Ayuda</string>
 
     <!-- ACCOUNT WIZARD SCRE STEP 1 -->
     <string name="account_wizard_alfresco_server">Servidor de Alfresco</string>
@@ -40,22 +40,34 @@
 
     <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
     <string name="account">Cuenta</string>
-    <string name="action_add_account">Añadir</string>
+    <string name="action_add_account">Agregar una cuenta</string>
     <string name="account_username">Nombre de usuario</string>
+    <string name="account_username_required_hint">Nombre de usuario (obligatorio)</string>
     <string name="account_password">Contraseña</string>
+    <string name="account_password_required_hint">Contraseña (obligatorio)</string>
     <string name="account_hostname">Nombre de host</string>
+    <string name="account_hostname_required_hint">Nombre de host como www.example.com (obligatorio)</string>
     <string name="account_hostname_hint">www.example.com (obligatorio)</string>
     <string name="account_description">Descripción</string>
+    <string name="account_description_optional_hint">Descripción (opcional) La descripción predeterminada es Servidor de Alfresco</string>
     <string name="account_description_hint">Servidor de Alfresco (opcional)</string>
     <string name="account_advanced">Avanzada</string>
     <string name="account_authentication">Autenticación de cuenta</string>
     <string name="account_https">HTTPS</string>
+    <string name="account_https_on_hint">HTTPS activado</string>
+    <string name="account_https_off_hint">HTTPS desactivado</string>
     <string name="account_port">Puerto</string>
+    <string name="account_port_hint">Puerto (opcional)</string>
     <string name="account_servicedocument">URL del servicio</string>
+    <string name="account_servicedocument_hint">URL del servicio (opcional) </string>
     <string name="account_wizard_step2_title">Información de autenticación de cuenta</string>
     <string name="account_verify">Verificando información de cuenta&#8230;</string>
     <string name="email_hint">ejemplo@acme.com</string>
     <string name="account_validate">Guardar</string>
+    <string name="account_validate_hint">Guardar la información de su cuenta</string>
+    <string name="account_validate_disable_hint">Introduzca su nombre de usuario, contraseña y nombre de host.</string>
+    <string name="account_validate_disable_url_hint">El nombre de host y la URL del servicio son incorrectos.. Compruebe la configuración de la cuenta.</string>
+
 
     <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
     <string name="account_wizard_alldone_description">Su cuenta está lista para usarse.</string>
@@ -71,13 +83,16 @@
     <string name="account_not_activated_description">La cuenta sigue en espera de verificación</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Servidor de Alfresco</string>
+    <string name="account_edit_hint">Editar información de la cuenta de "%s"</string>
+    <string name="account_delete_hint">Eliminar la cuenta de "%s"</string>
+
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Espere</string>
     <string name="wait_message">Contactando con el servidor&#8230;</string>
 
     <!-- SESSION ERROR -->
-    <string name="retry_account_loading">Reintentar</string>
+    <string name="retry_account_loading">Intentar de nuevo</string>
     <string name="error_session_creation_title">Guardar cuenta</string>
     <string name="error_session_creation_message">Error de conexión</string>
     <string name="error_session_creation">No se puede autenticar. Compruebe la configuración de la cuenta.</string>
@@ -96,8 +111,8 @@
     </string>
     <string name="error_session_certificate_expired">
 <![CDATA[<p><b>El certificado de seguridad del servidor ha caducado o aún no es válido.</b><br/></p>
-		Compruebe la fecha y hora establecida en su dispositivo.<br/> Si el problema persiste, póngase en contacto con su administrador. ]]>
-    </string>
+		Compruebe la fecha y hora establecida en su dispositivo.<br/> Si el problema persiste, póngase en contacto con su administrador.]]>
+     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>Se ha producido un error con el protocolo SSL.</b><br/></p>
         Compruebe la configuración de la cuenta y vuelva a intentarlo.<br/> Si el problema persiste, póngase en contacto con su administrador.]]>
@@ -108,6 +123,7 @@
     </string>
     <string name="error_session_expired">Su sesión ha caducado. Vuelva a iniciar una sesión.</string>
     <string name="error_session_refresh">Actualizando sesión.</string>
+    <string name="error_chunk_transfert"><![CDATA[El servidor no es compatible con transferencias en bloques.<br/> Vuelva a cargar su cuenta</b>.]]></string>
 
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">Se ha producido un error.</string>
@@ -123,7 +139,7 @@
     <string name="document_version_header">Versión</string>
 
     <!-- DOWNLOAD -->
-    <string name="empty_download">Ningún documento</string>
+    <string name="empty_download">Ningún fichero</string>
 
     <!-- SEARCH -->
     <string name="search_form_hint">Introduzca el término de búsqueda</string>
@@ -134,7 +150,7 @@
 
     <!-- LOCAL FIlE -->
     <string name="action_rename">Cambiar nombre</string>
-    <string name="action_rename_desc">Nuevo nombre para %s</string>
+    <string name="action_rename_desc">Nuevo nombre de %s</string>
 
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repositorio</string>
@@ -159,7 +175,7 @@
 
     <!-- UPLOAD -->
     <string name="upload_title">Cargar&#8230;</string>
-    <string name="upload_pick_document">Elija un documento&#8230;</string>
+    <string name="upload_pick_document">Elija el contenido&#8230;</string>
     <string name="upload_photos">Fotos</string>
     <string name="upload_videos">Vídeos</string>
     <string name="upload_files">Ficheros</string>
@@ -168,7 +184,7 @@
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Cuentas</string>
     <string name="accounts_details">Detalles</string>
-    <string name="browse_documents">Examinar documentos</string>
+    <string name="browse_documents">Buscar contenido</string>
 
     <!-- PROPERTIES -->
     <string name="details">Detalles</string>
@@ -182,25 +198,30 @@
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">Nombre</string>
+    <string name="cloud_signup_firstname_hint">Nombre (obligatorio)</string>
     <string name="cloud_signup_lastname">Apellidos</string>
-    <string name="cloud_signup_email">Email</string>
+    <string name="cloud_signup_lastname_hint">Apellidos (obligatorio)</string>
+    <string name="cloud_signup_email">Correo electrónico</string>
+    <string name="cloud_signup_email_hint">Correo electrónico (obligatorio) como ejemplo@acme.com</string>
     <string name="cloud_signup_password">Contraseña</string>
-    <string name="cloud_signup_password_hint">6 caracteres mín.</string>
+    <string name="cloud_signup_password_hint_long">Contraseña (obligatorio) de mínimo 6 caracteres.</string>
+    <string name="cloud_signup_password_hint">6 caracteres mínimo.</string>
     <string name="cloud_signup_confirm">Confirmar contraseña</string>
+    <string name="cloud_signup_confirm_hint">Confirmar contraseña (obligatorio)</string>
     <string name="cloud_signup_action">Registrarse</string>
     <string name="cloud_signup_hint">Al tocar en Registrarse, acepta las <a href="http://www.alfresco.com/legal/agreements/cloud">Condiciones de servicio</a> y la <a href="http://www.alfresco.com/privacy">Política de privacidad</a> de Alfresco.</string>
     <string name="sign_up_cloud">Registrarse en Alfresco Cloud</string>
-    <string name="sign_up_cloud_email_verification">Cuenta esperando verificación de email</string>
-    <string name="sign_up_cloud_email_verification_line1">Se ha registrado en Alfresco en la nube con la dirección de email:</string>
-    <string name="sign_up_cloud_email_verification_line2">Compruebe su email. Le hemos enviado un enlace que necesita usar para completar el registro.</string>
+    <string name="sign_up_cloud_email_verification">Cuenta en espera de verificación de correo electrónico</string>
+    <string name="sign_up_cloud_email_verification_line1">Se ha registrado en Alfresco en la nube con la dirección de correo electrónico:</string>
+    <string name="sign_up_cloud_email_verification_line2">Compruebe su correo electrónico. Le hemos enviado un enlace que necesita usar para completar el registro.</string>
     <string name="sign_up_cloud_email_having_trouble">¿Tiene problemas para activar?</string>
     <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Díganos</a> si no puede activar su cuenta.</string>
-    <string name="sign_up_cloud_awaiting_email">Esperando verificación de email</string>
-    <string name="cloud_signup_resend">Reenviar email</string>
-    <string name="cloud_signup_resend_successfull">Email reenviado correctamente</string>
-    <string name="cloud_signup_resend_body">¿No recibe nuestro email? Compruebe si ha introducido la dirección de email correctamente y recuerde buscar el las carpetas de spam</string>
-    <string name="cloud_signup_error_email">Alfresco requiere que use su dirección de email de empresa para poder añadirlo a la red de colaboración de su empresa.</string>
-    <string name="cloud_signup_error_email_title">Alfresco Cloud: registro.</string>
+    <string name="sign_up_cloud_awaiting_email">Esperando verificación de correo electrónico</string>
+    <string name="cloud_signup_resend">Reenviar correo electrónico</string>
+    <string name="cloud_signup_resend_successfull">Correo electrónico reenviado correctamente</string>
+    <string name="cloud_signup_resend_body">¿No recibe nuestro correo electrónico? Compruebe si ha introducido la dirección de correo electrónico correctamente y recuerde buscar el las carpetas de spam</string>
+    <string name="cloud_signup_error_email">Alfresco requiere que use su dirección de correo electrónico de empresa para poder añadirlo a la red de colaboración de su empresa.</string>
+    <string name="cloud_signup_error_email_title">Alfresco Cloud: registrarse.</string>
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">Autenticación</string>
@@ -210,7 +231,7 @@
     <string name="error_network_details">Su dispositivo no está conectado a una red, es posible que algunas funciones estén desactivadas.</string>
 
     <!-- NOTIFICATION -->
-    <string name="upload">Carga </string>
+    <string name="upload">Cargar </string>
     <string name="upload_complete">Carga completa.</string>
     <string name="upload_in_progress">Carga en curso&#8230;</string>
     <string name="update_complete">Actualización completa.</string>
@@ -225,10 +246,10 @@
     <string name="next">Siguiente</string>
     <string name="save">Guardar</string>
     <string name="enter_details">Introduzca sus detalles</string>
-    <string name="share_content">Compartir documento con&#8230;</string>
+    <string name="share_content">Compartir contenido con&#8230;</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">es</string>
+    <string name="asset_folder_prefix">en</string>
 
     <!-- About Message -->
     <string name="about_description_title">Descripción</string>
@@ -236,10 +257,10 @@
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobile se conecta a Alfresco en la nube y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a sus documentos corporativos sobre la marcha.</p> 
+<p>Alfresco Mobile se conecta a Alfresco en la nube y servidores en instalaciones de Alfresco (3.4 y superior) para proporcionar acceso seguro a sus documentos corporativos sobre la marcha.</p>
 
-<p>Alfresco Mobile se conecta a su repositorio de Alfresco usando las credenciales de inicio de sesión de Alfresco (en HTTP o HTTPS) y gestiona el acceso del usuario basado en sus permisos.</p> 
-]]>
+<p>Alfresco Mobile se conecta a su repositorio de Alfresco usando las credenciales de inicio de sesión de Alfresco (en HTTP o HTTPS) y gestiona el acceso del usuario basado en sus permisos.</p>
+ ]]>
     </string>
 
     <!-- Waiting Message -->
@@ -252,17 +273,17 @@
 
     <!-- Delete -->
     <plurals name="delete_items">
-        <item quantity="one">¿Está seguro de que desea eliminar \&quot;%s\&quot;?</item>
-        <item quantity="other">¿Está seguro de que desea eliminar \&quot;%s\&quot; elementos?</item>
+        <item quantity="one">¿Está seguro de que desea eliminar \"%s\"?</item>
+        <item quantity="other">¿Está seguro de que desea eliminar los elementos \"%s\"?</item>
     </plurals>
 
-    <string name="delete_description_data_protection">La protección de datos está activa.\n\nSi elimina esta cuenta, sus documentos volverán a su estado desprotegido.\n\n¿Está seguro de que desea eliminar \&quot;%s\&quot;?</string>
+    <string name="delete_description_data_protection">La protección de datos está activada.\n\nSi elimina esta cuenta, sus documentos volverán a su estado desprotegido.\n\n¿Está seguro de que desea eliminar \"%s\"?</string>
     <string name="delete_in_progress">Eliminación en curso&#8230;</string>
     <string name="delete_complete">Eliminación completa</string>
 
     <!-- Save Back -->
-    <string name="save_back_description">\&quot;%s\&quot; se ha modificado. ¿Desea cargar esta nueva versión?</string>
-    <string name="update_sucess">\&quot;%s\&quot; se ha actualizado correctamente.</string>
+    <string name="save_back_description">\"%s\" se ha modificado. ¿Desea cargar esta nueva versión?</string>
+    <string name="update_sucess">\"%s\" se ha actualizado correctamente.</string>
     <string name="no_voice_recorder">No tiene una grabadora de voz en este dispositivo</string>
     <string name="cannot_capture">No se puede completar la captura de esta información</string>
 
@@ -275,13 +296,13 @@
     <string name="create_document">Crear&#8230;</string>
     <string name="create_document_title">Crear&#8230;</string>
     <string name="create_document_word">Documento Word</string>
-    <string name="create_document_powerpoint">Presentación de Powerpoint</string>
+    <string name="create_document_powerpoint">Presentación de PowerPoint</string>
     <string name="create_document_excel">Hoja de cálculo de Excel</string>
     <string name="create_document_text">Documento de texto</string>
     <string name="create_document_name_hint">Escriba el nombre del documento aquí</string>
     <string name="filename_error_character">Este nombre no es válido.</string>
     <string name="create_document_filename_error">Este nombre ya está en uso.</string>
-    <string name="create_document_save">Se ha producido un error: su documento se ha guardado en &quot;Descargas&quot;.</string>
+    <string name="create_document_save">Se ha producido un error: su documento se ha guardado en "Descargas".</string>
     <string name="upload_error_alreadyexist">Se ha producido un error: este nombre ya está en uso.</string>
     <string name="create_document_editor_title">Complete la acción con</string>
     <string name="create_document_editor_not_available">Ninguna aplicación disponible</string>
@@ -290,23 +311,26 @@
     <string name="sdinaccessible">La tarjeta SD debe estar accesible para esta operación</string>
     <string name="loginfirst">Inicie una sesión en una cuenta antes</string>
 
+    <!-- Comment -->
+    <string name="comment_add_hint">Añada su comentario aquí&#8230;</string>
+
     <!-- DATA PROTECTION -->
     <string name="encrypt_title">Cifrando contenido</string>
     <string name="content_being_encrypted">El contenido se está protegiendo. Espere</string>
     <string name="content_being_decrypted">El contenido se está desprotegiendo. Espere</string>
     <string name="data_protection">Protección de datos</string>
-    <string name="data_protection_blurb"><![CDATA[<p><b>La protección de datos está disponible.</b><br/> ¿Desea activarla? <p>  Esto cifrará todo el contenido de Alfresco descargado para cada cuenta, lo que significa que estos documentos no se pueden leer en otras aplicaciones, solo dentro de la aplicación de Alfresco. ]]></string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>La protección de datos está disponible.</b><br/> ¿Desea activarla? <p> Esto cifrará todo el contenido de Alfresco descargado para cada cuenta, lo que significa que estos documentos no se pueden leer en otras aplicaciones, solo dentro de la aplicación de Alfresco. ]]></string>
     <string name="encryption_failed">Error en el cifrado</string>
     <string name="decryption_failed">Error en el descifrado</string>
-    <string name="protect_question"><![CDATA[<p><b>¿Desea proteger todo el contenido de Alfresco ahora?</b><p>  Esto se aplicará a todos los documentos que ha descargado de todas las cuentas de Alfresco y significa que estos documentos no se pueden leer en otras aplicaciones, solo dentro de la aplicación de Alfresco.]]></string>
-    <string name="unprotect_question"><![CDATA[<p><b>¿Desea desproteger todo el contenido de Alfresco ahora?</b><p>  Esto se aplicará a todos los documentos que ha descargado de todas las cuentas de Alfresco.]]></string>
+    <string name="protect_question"><![CDATA[<p><b>¿Desea proteger todo el contenido de Alfresco ahora?</b><p> Esto se aplicará a todos los documentos que ha descargado de todas las cuentas de Alfresco y significa que estos documentos no se pueden leer en otras aplicaciones, solo dentro de la aplicación de Alfresco.]]></string>
+    <string name="unprotect_question"><![CDATA[<p><b>¿Desea desproteger todo el contenido de Alfresco ahora?</b><p> Esto se aplicará a todos los documentos que ha descargado de todas las cuentas de Alfresco.]]></string>
     <string name="already_encrypted">Este documento ya está cifrado.</string>
     <string name="already_decrypted">Este documento ya está descifrado.</string>
     <string name="decryption_title">Desactivando protección de datos&#8230;</string>
     <string name="encryption_title">Activando protección de datos&#8230;</string>
     <string name="copy_file_title">Copia en curso&#8230;</string>
     <string name="copy_file_completed">Copia completada</string>
-    <string name="copy_file_description">Copia del documento en curso&#8230;</string>
+    <string name="copy_file_description">Copia de fichero en curso&#8230;</string>
     <string name="metadata_general">General</string>
     <string name="encrypt_action">Cifrar</string>
     <string name="decrypt_action">Descrifrar</string>
@@ -324,37 +348,37 @@
     <string name="action_leave_site">Abandonar</string>
     <string name="action_favorite_site">Favorito</string>
     <string name="action_unfavorite_site">No favorito</string>
-    <string name="action_join_site_validation">Ya es miembro de \&quot;%s\&quot;.</string>
-    <string name="action_leave_site_validation">Ha abandonado \&quot;%s\&quot;.</string>
-    <string name="action_favorite_site_validation">\&quot;%s\&quot; es ahora un favorito.</string>
-    <string name="action_unfavorite_site_validation">\&quot;%s\&quot; ya no es un favorito.</string>
-    <string name="action_join_request_site_validation">Ha solicitado unirse a \&quot;%s\&quot;</string>
+    <string name="action_join_site_validation">Ya es miembro de \"%s\".</string>
+    <string name="action_leave_site_validation">Ha abandonado \"%s\".</string>
+    <string name="action_favorite_site_validation">\"%s\" es ahora un favorito.</string>
+    <string name="action_unfavorite_site_validation">\"%s\" ya no es un favorito.</string>
+    <string name="action_join_request_site_validation">Ha solicitado unirse a \"%s\"</string>
     <string name="empty_joinsiterequest">Ninguna solicitud pendiente</string>
     <string name="joinsiterequest_list_title">Lista de solicitudes pendientes</string>
-    <string name="action_cancel_join_site_request">Su solicitud de unirse a \&quot;%s\&quot; se ha cancelado.</string>
-    <string name="action_join_site_error">Un problema ha impedido que se una al sitio \&quot;%s\&quot;.</string>
-    <string name="action_leave_site_error">Un problema ha impedido que abandone el sitio \&quot;%s\&quot;.</string>
-    <string name="action_favorite_error">Un problema ha impedido que marque como favorito el sitio \&quot;%s\&quot;.</string>
-    <string name="action_unfavorite_site_error">Un problema ha impedido que quite de favorito el sitio \&quot;%s\&quot;.</string>
+    <string name="action_cancel_join_site_request">Su solicitud de unirse a \"%s\" se ha cancelado.</string>
+    <string name="action_join_site_error">Un problema ha impedido que se una al sitio \"%s\".</string>
+    <string name="action_leave_site_error">Un problema ha impedido que abandone al sitio \"%s\".</string>
+    <string name="action_favorite_error">Un problema ha impedido que añadir el sitio \"%s\" a favoritos.</string>
+    <string name="action_unfavorite_site_error">Un problema ha impedido que quite el sitio \"%s\" de favoritos.</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Carga en Alfresco Mobile</string>
-    <string name="import_document_name">Nombre de documento</string>
-    <string name="import_documents">Documentos</string>
+    <string name="import_document_title">Cargar con Alfresco Mobile</string>
+    <string name="import_document_name">Nombre de fichero</string>
+    <string name="import_documents">Fichero</string>
     <string name="import_account">Cuenta</string>
-    <string name="import_send_download">El documento está disponible en la carpeta de descargas de \&quot;%s\&quot;.</string>
-    <string name="import_send_downloads">Los documentos están disponibles en la carpeta \&quot;Descargas\&quot;.</string>
+    <string name="import_send_download">El documento está disponible en la carpeta de descargas de \"%s\".</string>
+    <string name="import_send_downloads">Los documentos están disponibles en la carpeta \"Descargas\".</string>
     <string name="import_folder">Cargar carpeta</string>
     <string name="import_error">Se ha producido un error durante la carga.</string>
     <string name="import_unsupported_intent">Alfresco Mobile: no se puede recuperar la información.</string>
-    <string name="action_upload">Carga</string>
+    <string name="action_upload">Cargar</string>
     <string name="action_import">Importar</string>
 
     <!-- SSL -->
     <string name="security_ssl_disable">La validación del certificado SSL se ha deshabilitado.</string>
-    <string name="data_protection_unavailable">La protección de datos no está disponible (solo titulares de cuentas de pago)&quot;</string>
-    <string name="data_protection_off">La protección de datos está desactivada&quot;</string>
-    <string name="data_protection_on">La protección de datos está activada&quot;</string>
+    <string name="data_protection_unavailable">La protección de datos no está disponible (solo titulares de cuentas de pago)"</string>
+    <string name="data_protection_off">La protección de datos está desactivada"</string>
+    <string name="data_protection_on">La protección de datos está activada"</string>
 
     <!-- PIN Code -->
     <string name="passcode_title">Introduzca la contraseña</string>
@@ -364,7 +388,7 @@
     <string name="passcode_disable">Deshabilitado</string>
     <string name="passcode_change">Cambiar contraseña</string>
     <string name="passcode_timeout">Caducidad</string>
-    <string name="passcode_timeout_summary">{0,choice,0#Después de 0 minuto|1#Después de 1 minuto|1&lt;Después de {0} minutos}</string>
+    <string name="passcode_timeout_summary">{0,opción,0#Después de 0 minuto|1#Después de 1 minuto|1&lt;Después de {0} minutos}</string>
     <string name="passcode_erase_data">Borrar datos</string>
     <string name="passcode_erase_data_summary">Borrar todos los datos de Alfresco Mobile de este dispositivo tras 10 intentos de contraseña fallidos</string>
     <string name="passcode_edit">Introduzca la nueva contraseña</string>
@@ -408,22 +432,22 @@
     <string name="settings_links_website">Alfresco</string>
     <string name="settings_links_website_summary">Visite el sitio web oficial de Alfresco</string>
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
-    <string name="settings_rating">Escribir un opinión</string>
+    <string name="settings_rating">Escribir una opinión</string>
     <string name="settings_rating_summary">Calificar Alfresco Mobile en Google Play</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
     <string name="settings_links_facebook">Me gusta Alfresco en Facebook</string>
     <string name="settings_links_facebook_summary">Me gusta en Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favoritos</string>
-    <string name="settings_favorite_sync">Activar sincr. para \&quot;%s\&quot;</string>
+    <string name="settings_favorite_sync">Activar sincronización para \"%s\"</string>
     <string name="settings_favorite_sync_data">Uso de datos</string>
-    <string name="settings_favorite_sync_data_all">Usar datos celulares para sincr.</string>
+    <string name="settings_favorite_sync_data_all">Usar datos celulares para sincronización</string>
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
-        <item quantity="zero">ningún documento</item>
-        <item quantity="one">1 documento</item>
-        <item quantity="other">%1$s documentos</item>
+        <item quantity="zero">Ningún fichero</item>
+        <item quantity="one">1 fichero</item>
+        <item quantity="other">%1$s ficheros</item>
     </plurals>
     <plurals name="selected_folders">
         <item quantity="zero">ninguna carpeta</item>
@@ -436,52 +460,52 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Carpetas favoritas</string>
     <string name="menu_favorites">Favoritos</string>
-    <string name="synced_documents">Documentos sincronizados</string>
-    <string name="empty_favorites">Sin favoritos</string>
-    <string name="favorites_document">Documentos favoritos</string>
-    <string name="error_retrieve_favorite">La info. de favoritos para este documento no se pudo recuperar.</string>
-    <string name="favorites_activate">Sincr. documentos para \&quot;%s\&quot;</string>
+    <string name="synced_documents">Contenido sincronizado</string>
+    <string name="empty_favorites">Ningún favorito</string>
+    <string name="favorites_document">Favorito</string>
+    <string name="error_retrieve_favorite">La información de favoritos para este documento no se pudo recuperar.</string>
+    <string name="favorites_activate">Contenido sincronizado para \"%s\"</string>
     <string name="favorites_activate_description">¿Desea mantener automáticamente sus documentos favoritos sincronizados con este dispositivo?</string>
     <string name="favorites_deactivate">Desactivar sincronización</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>¿Desea desactivar la sincronización?</p> Todos los ficheros sincr. se eliminarán en el dispositivo.]]></string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>¿Desea desactivar la sincronización?</p> Todos los ficheros sincronización se eliminarán en el dispositivo.]]></string>
     <string name="sync_error_title">Errores de sincronización</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>Ha quitado <b>%s</b> de Favoritos ya que ha empezado a editarlo. <br/> <b>Sincr.</b> su versión editada en el servidor o <b>guárdela</b> en su carpeta \"Descargas\". </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>Ha quitado <b>%s</b> de favoritos ya que ha empezado a editarlo. <br/> <b>Sincronización</b> su versión editada en el servidor o <b>guárdela</b> en su carpeta \"Descargas\". </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> se ha eliminado del servidor, pero se ha guardado una copia en su carpeta \"Descargas\".</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> No tiene el permiso necesario para cargar su versión editada de <b>%s</b>. Puede <b>guardarla</b> en su carpeta Descargas o <b>sobrescribirla</b> con la versión del servidor, que descartará los cambios.]]></string>
     <string name="sync_error_node_local_modification">Errores de sincronización</string>
-    <string name="sync_action">Sincr.</string>
+    <string name="sync_action">Sincronizar</string>
     <string name="sync_override_action">Sobrescribir</string>
     <string name="sync_save_action">Guardar</string>
     <string name="sync_resolve_conflict">Resolver conflicto</string>
-    <string name="sync_complete">Sincr. completada</string>
-    <string name="sync_in_progress">Sincr. en curso&#8230;</string>
+    <string name="sync_complete">Sincronización completada</string>
+    <string name="sync_in_progress">Sincronización en curso&#8230;</string>
     <string name="upload_await">Esperando carga&#8230;</string>
     <string name="download_await">Esperando descarga&#8230;</string>
 
     <plurals name="sync_complete_description">
-        <item quantity="zero">ningún documento sincronizado</item>
-        <item quantity="one">1 documento sincronizado</item>
-        <item quantity="other">%1$s documentos sincronizados</item>
+        <item quantity="zero">ningún contenido sincronizado</item>
+        <item quantity="one">1 fichero sincronizado</item>
+        <item quantity="other">%1$s ficheros sincronizados</item>
     </plurals>
     <plurals name="download_complete_description">
-        <item quantity="zero">ningún documento descargado</item>
-        <item quantity="one">1 documento disponible sin conexión</item>
+        <item quantity="zero">ningún contenido descargado</item>
+        <item quantity="one">1 fichero disponible sin conexión</item>
         <item quantity="other">%1$s documentos disponibles sin conexión</item>
     </plurals>
     <plurals name="upload_complete_description">
-        <item quantity="zero">ningún documento cargado.</item>
-        <item quantity="one">1 documento cargado.</item>
-        <item quantity="other">%1$s documentos cargados.</item>
+        <item quantity="zero">ningún contenido cargado.</item>
+        <item quantity="one">1 elemento cargado.</item>
+        <item quantity="other">%1$s elementos cargados.</item>
     </plurals>
     <plurals name="update_complete_description">
-        <item quantity="zero">ningún documento actualizado.</item>
-        <item quantity="one">1 documento actualizado.</item>
-        <item quantity="other">%1$s documentos actualizados.</item>
+        <item quantity="zero">ningún contenido actualizado.</item>
+        <item quantity="one">1 fichero actualizado.</item>
+        <item quantity="other">%1$s ficheros actualizados.</item>
     </plurals>
     <plurals name="batch_failed">
-        <item quantity="zero">ninguna transferencia fallida.</item>
-        <item quantity="one">1 transferencia fallida.</item>
-        <item quantity="other">%1$s transferencias fallidas.</item>
+        <item quantity="zero">ninguna transferencia ha fallado.</item>
+        <item quantity="one">1 transferencia ha fallado.</item>
+        <item quantity="other">%1$s transferencia han fallado.</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">ninguna transferencia en curso.</item>
@@ -489,25 +513,36 @@
         <item quantity="other">%1$s transferencias en curso.</item>
     </plurals>
     <plurals name="download_in_progress">
-        <item quantity="zero">ninguna descarga en curso.</item>
+        <item quantity="zero">ninguna descarga en curso</item>
         <item quantity="one">1 descarga en curso.</item>
         <item quantity="other">%1$s descargas en curso.</item>
     </plurals>
 
+    <string name="sync_warning">Aviso de sincronización</string>
+    <string name="sync_error">Error de sincronización</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> Está a punto de sincronizar <b>%s</b> con una conexión de operador.</p> ¿Desea continuar?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Está intentando sincronizar <b>%1$s</b>, solo %2$s están disponibles.</p> You need to free some space in your device or unfavorite some content.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> Está a punto de sincronizar <b>%1$s</b>, solo hay %2$s disponibles en su dispositivo.</p> ¿Desea continuar?]]></string>
+    <string name="sync_document_not_available">Este documento no está disponible en su dispositivo.</string>
+
     <!-- Handling duplicate name -->
-    <string name="error_duplicate_title">El documento ya existe</string>
+    <string name="error_duplicate_title">Nombre duplicado</string>
     <string name="error_duplicate_description"><![CDATA[<p>Ya hay un fichero descargado con el mismo nombre.</p> ¿Desea sobrescribir el fichero existente?]]></string>
     <string name="error_duplicate_rename"><![CDATA[ <b>%s</b> ya está en uso. <br/> Inténtelo con otro.]]></string>
 
     <!-- Quick Action Folder -->
     <string name="action_view_properties">Ver propiedades</string>
     <string name="action_edit_properties">Editar propiedades</string>
-    <string name="like_in_progress">&quot;Me gusta&quot; en curso</string>
+    <string name="like_in_progress">"Me gusta" en curso</string>
+    <string name="like_completed">Me gusta completado</string>
     <string name="like_complete">Me gusta completado</string>
+    <string name="unlike_completed">Ya no me gusta completado</string>
     <string name="favorite">Favorito</string>
     <string name="unfavorite">No favorito</string>
-    <string name="favorite_in_progress">&quot;Favorito&quot; en curso</string>
+    <string name="favorite_in_progress">"Favorito" en curso</string>
+    <string name="favorite_completed">Favorito completado</string>
     <string name="favorite_complete">Favorito completado</string>
+    <string name="unfavorite_completed">No favorito completado</string>
 
     <!-- Operations Status -->
     <string name="status_pending">Pendiente</string>
@@ -522,8 +557,8 @@
     <string name="notifications">Notificaciones</string>
     <string name="operation_default">Notificaciones</string>
     <string name="DownloadRequest">Descargar</string>
-    <string name="CreateDocumentRequest">Crear documento</string>
-    <string name="UpdateContentRequest">Actualizar documento</string>
+    <string name="CreateDocumentRequest">Crear contenido</string>
+    <string name="UpdateContentRequest">Cargar contenido</string>
     <string name="DeleteNodeRequest">Eliminar</string>
     <string name="LikeNodeRequest">Me gusta</string>
     <string name="FavoriteNodeRequest">Favorito</string>
@@ -532,14 +567,14 @@
     <string name="CreateAccountRequest">Crear cuenta</string>
     <string name="UpdatePropertiesRequest">Actualizar propiedades</string>
     <string name="DeleteFileRequest">Eliminar fichero</string>
-    <string name="CreateDirectoryRequest">Crear directorio</string>
+    <string name="CreateDirectoryRequest">Crear carpeta</string>
     <string name="RenameRequest">Cambiar nombre de fichero</string>
-    <string name="SyncFavoriteRequest">Sincr.</string>
-    <string name="UnSyncFavoriteRequest">Desincr.</string>
-    <string name="RetrieveDocumentNameRequest">Comprobar nombre de documento</string>
+    <string name="SyncFavoriteRequest">Sincronizar</string>
+    <string name="UnSyncFavoriteRequest">Desincronizar</string>
+    <string name="RetrieveDocumentNameRequest">Comprobar nombre de fichero</string>
 
     <!-- Multi selection -->
-    <string name="empty">Nada de nada</string>
+    <string name="empty">Nada en absoluto</string>
     <string name="operations_empty">Ninguna operación</string>
     <string name="operations">Operaciones</string>
     <string name="select_all">Seleccionar todo</string>
@@ -563,7 +598,7 @@
     <string name="shortcuts">Accesos directos</string>
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="shortcut_alfresco_downloads">Descargas</string>
-    <string name="shortcut_alfresco_sync">Sincr.</string>
+    <string name="shortcut_alfresco_sync">Sincronizar</string>
     <string name="shortcut_library">Biblioteca</string>
     <string name="shortcut_library_images">Imágenes</string>
     <string name="shortcut_library_videos">Vídeos</string>
@@ -586,8 +621,8 @@
     <string name="file_editor_save_description"><![CDATA[¿Desea salir sin guardar? <br/> Los cambios no guardados se perderán.]]></string>
     <string name="file_editor_save">Guardar</string>
     <string name="file_editor_discard">Descartar</string>
-    <string name="file_editor_save_confirmation">El documento se ha guardado.</string>
-    <string name="file_editor_loading">Espero un momento&#8230;</string>
+    <string name="file_editor_save_confirmation">Se ha guardado el fichero.</string>
+    <string name="file_editor_loading">Espere un momento&#8230;</string>
     <string name="file_editor_encoding">Codificación</string>
     <string name="file_editor_encoding">Codificación</string>
     <string name="file_editor_text_size">Tamaño de texto</string>
@@ -608,11 +643,12 @@
     <string name="location">Ubicación</string>
     <string name="summary">Resumen</string>
     <string name="contactInformation">Información de contacto</string>
-    <string name="email">Email</string>
+    <string name="email">Correo electrónico</string>
     <string name="telephone">Teléfono</string>
     <string name="mobile">Móvil</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">Mensajería instantánea</string>
+    <string name="instantMessaging">Mensajería instantánea</string>
     <string name="googleId">Nombre de usuario de Google</string>
     <string name="company">Empresa</string>
     <string name="companyDetails">Detalles de la empresa</string>
@@ -621,7 +657,9 @@
     <string name="companyPostCode">Código postal</string>
     <string name="companyTelephone">Teléfono</string>
     <string name="companyFax">Fax</string>
-    <string name="companyEmail">Email</string>
+    <string name="companyEmail">Correo electrónico</string>
+    <string name="call">Llamada</string>
+    <string name="skype">Skype</string>
     <string name="start_chat">Iniciar chat</string>
     <string name="start_call">Iniciar llamada</string>
     <string name="start_video_call">Iniciar videollamada</string>
@@ -647,12 +685,12 @@
     <string name="my_tasks">Mis tareas</string>
     <string name="empty_tasks">Sin tareas</string>
     <string name="empty_items">Sin adjuntos</string>
-    <string name="task_items">Elementos</string>
+    <string name="task_items">Adjunto(s)</string>
     <string name="empty_process_definition">Ningún proceso</string>
-    <string name="workflow_start">Iniciar un flujo de trabajo</string>
+    <string name="workflow_start">Crear tarea</string>
     <string name="task_actions">Respuesta</string>
     <string name="tasks">Tareas</string>
-    <string name="task_items">Documentos</string>
+    <string name="task_items">Adjuntos</string>
     <string name="task_workflow">Proceso</string>
 
     <!-- Workflow FILTERS -->
@@ -662,14 +700,14 @@
     <string name="tasks_due">Vencimiento</string>
     <string name="tasks_due_today">Hoy</string>
     <string name="tasks_due_tomorrow">Mañana</string>
-    <string name="tasks_due_week">próximos 7 días</string>
+    <string name="tasks_due_week">Próximos 7 días</string>
     <string name="tasks_due_over">Vencido</string>
     <string name="tasks_due_no_date">Sin fecha</string>
     <string name="tasks_priority">Prioridad</string>
     <string name="tasks_priority_low">Baja</string>
     <string name="tasks_priority_medium">Media</string>
     <string name="tasks_priority_high">Alta</string>
-    <string name="tasks_assignee">Usuario</string>
+    <string name="tasks_assignee">Asignado</string>
     <string name="tasks_assignee_me">Yo</string>
     <string name="tasks_assignee_all">Todo</string>
     <string name="tasks_assignee_unassigned">No asignado</string>
@@ -687,11 +725,11 @@
     <string name="workflow_priority_low">Prioridad baja</string>
     <string name="workflow_priority_medium">Prioridad media</string>
     <string name="workflow_priority_high">Prioridad alta</string>
-    <string name="task_user_approved"><![CDATA[%s <b>aprobó los documentos</b>]]></string>
-    <string name="task_user_rejected"><![CDATA[%s <b>rechazó los documentos</b>]]></string>
+    <string name="task_user_approved"><![CDATA[%s <b>aprobó el contenido</b>]]></string>
+    <string name="task_user_rejected"><![CDATA[%s <b>rechazó el contenido</b>]]></string>
     <string name="task_user_commented">y comentó:</string>
     <string name="task_user_no_comment">, pero no hizo comentarios</string>
-    <string name="task_user_completed"><![CDATA[%s <b>rechazó esta tarea</b>]]></string>
+    <string name="task_user_completed"><![CDATA[%s <b>completó esta tarea</b>]]></string>
     <string name="task_user_not_completed"><![CDATA[%s <b>aún no completó esta tarea</b>]]></string>
     <string name="task_approve">Aprobar</string>
     <string name="task_reject">Rechazar</string>
@@ -700,7 +738,7 @@
     <string name="done">Hecho</string>
     <string name="task_completing">Completando tarea</string>
     <string name="task_reassign">Reasignar</string>
-    <string name="task_reassign_long">Reasignar esta tarea a...</string>
+    <string name="task_reassign_long">Reasignar esta tarea a&#8230;</string>
     <string name="task_claim">Reclamar</string>
     <string name="task_unclaim">Liberara a grupo</string>
     <string name="task_priority">Prioridad</string>
@@ -709,8 +747,7 @@
     <string name="task_dueat">Fecha de vencimiento</string>
     <string name="task_no_dueat">Fecha de vencimiento</string>
     <string name="tasks_history">Histórico de tareas</string>
-    
-    
+
     <!-- Tasks Filters -->
     <string name="task_filter_active">Tareas activas</string>
     <string name="task_filter_initiator">Tareas que he iniciado</string>
@@ -719,7 +756,7 @@
     <string name="task_filter_due_today">Tareas que vencen hoy</string>
     <string name="task_filter_overdue">Tareas vencidas</string>
     <string name="task_filter_assigned_me">Tareas asignadas a mi</string>
-    <string name="task_filter_custom">Mi filtro...</string>
+    <string name="task_filter_custom">Mi filtro&#8230;</string>
 
     <!-- Process Start -->
     <string name="process_start_review">Iniciar revisión</string>
@@ -729,31 +766,26 @@
     <string name="process_choose_attachments">Seleccionar adjuntos</string>
     <string name="process_start_title">Iniciar proceso</string>
     <string name="process_title">Título</string>
-    <string name="process_title_hint">Nueva tarea</string>
+    <string name="process_title_hint">Título de tarea nueva (obligatorio)</string>
     <string name="process_due_on">Vencimiento el</string>
     <string name="process_no_date">Sin fecha</string>
-    <string name="process_assignees">Usuarios</string>
+    <string name="process_assignees">Asignados</string>
     <string name="process_diagram">Diagrama de proceso</string>
-    
     <string name="task_review_document">Revise %s</string>
-    <string name="task_review_documents">Revise estos documentos</string>
-       
-    <string name="task_assignees_plurals">{0,choice,0#Ningún asignado|1#1 asignado|1&lt;{0} asignados}</string>
-    <string name="task_assignees">Usuarios</string>
+    <string name="task_review_documents">Revise este contenido</string>
+    <string name="task_assignees_plurals">{0,opción,0#Ningún asignado|1#1 asignado|1&lt;{0} asignados}</string>
+    <string name="task_assignees">Asignados</string>
     <string name="task_assignees_selection">Seleccionar asignados&#8230;</string>
-    
-    <string name="process_approvers_plurals">{0,choice,0#Ningún aprobador|1#1 de 1 aprobador|1&lt;%s de {0} aprobadores}</string>
-    
-    <string name="task_attachments_plurals">{0,choice,0#Ningún adjunto|1#1 adjunto|1&lt;{0} adjuntos}</string>
+    <string name="process_approvers_plurals">{0,opción,0#Ningún aprobador|1#1 de 1 aprobador|1&lt;%s de {0} aprobadores}</string>
+    <string name="task_attachments_plurals">{0,opción,0#Ningún adjunto|1#1 adjunto|1&lt;{0} adjuntos}</string>
     <string name="task_attachments_selection">Seleccionar adjuntos&#8230;</string>
     <string name="task_attachments">Adjuntos</string>
-
     <string name="process_no_description">(No hay mensajes)</string>
     <string name="process_no_assignees">Ningún asignado</string>
     <string name="process_initiator">Iniciador</string>
     <string name="process_diagram">Diagrama</string>
     <string name="process_attachments">Adjuntos</string>
-    <string name="process_no_attachments">Ningún documento adjunto</string>
+    <string name="process_no_attachments">Ningún contenido adjunto</string>
     <string name="process_priority">Prioridad</string>
     <string name="process_notification">Notificación por correo electrónico</string>
     <string name="process_approvers">Aprobadores</string>
@@ -764,35 +796,89 @@
     <string name="task_todo_description">Asignar una tarea a una persona</string>
     <string name="task_review_approve">Revisión y aprobación</string>
     <string name="task_review_approve_description">Asignar una tarea a una o más personas para revisar y aprobar documentos.</string>
-    
-    <string name="task_delegate_in_progress">Reasignar en curso&#8230;</string>
+    <string name="task_delegate_in_progress">Reasignación en curso&#8230;</string>
     <string name="task_delegate_complete">Reasignación completada</string>
-    
-    <!-- PROCESS NAME -->    
+    <string name="picker_assignees">Seleccionar asignados</string>
+    <string name="picker_due_date">Seleccionar fecha de vencimiento</string>
+    <string name="picker_attachments">Seleccionar adjuntos</string>
+    <string name="action_remove_approvers">Quitar un aprobador</string>
+    <string name="action_add_approvers">Agregar un aprobador</string>
+
+
+
+    <!-- PROCESS NAME -->
     <string name="process_adhoc">Flujo de trabajo adhoc</string>
     <string name="process_parallel_review">Revisión y aprobación paralelas</string>
     <string name="process_review">Revisión y aprobación</string>
     <string name="process_pooled_review">Revisión y aprobación en grupo</string>
-    
-    
+
     <!-- AGGREGATOR SEARCH -->
     <string name="search">Buscar</string>
-    <string name="search_person">Personas</string>
-    <string name="search_documents">Documentos</string>
+    <string name="search_person">Gente</string>
+    <string name="search_documents">Ficheros</string>
     <string name="search_folders">Carpetas</string>
     <string name="search_advanced">Búsqueda avanzada</string>
-    
+
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">Seleccionar adjuntos</string>
-    <string name="picker_assign_person">{0,choice,0#Asignar|1#Asignar 1 persona|1&lt;Asignar {0} personas}</string>
-    <string name="picker_attach_document">{0,choice,0#Adjuntar|1#Adjuntar 1 documento|1&lt;Adjuntar {0} documentos}</string>
-    
+    <string name="picker_assign_person">{0,opción,0#Asignar|1#Asignar 1 persona|1&lt;Asignar {0} personas}</string>
+    <string name="picker_attach_document">{0,opción,0#Adjuntar|1#Adjuntar 1 documento|1&lt;Adjuntar {0} documentos}</string>
+
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">Vistas</string>
     <string name="display_gallery">Mostrar galería</string>
-    
+
     <!-- Metadata RESTRICTABLE -->
     <string name="metadata_aspect_restrictable">Restringible</string>
     <string name="metadata_prop_offline_expires_after">El modo sin conexión caduca después de (horas)</string>
-    
+
+    <!-- Advanced Search -->
+    <string name="search_title">Buscar: %s</string>
+    <string name="clear">Borrar</string>
+    <string name="metadata_type">Tipo</string>
+    <string name="metadata_modified_by">Modificado por</string>
+    <string name="modified_by">Por</string>
+    <string name="metadata_modification_date">Última modificación</string>
+    <string name="metadata_modification_date_from">De</string>
+    <string name="metadata_modification_date_to">Para</string>
+    <string name="search_name">Nombre o nombre de usuario</string>
+    <string name="mimetype_unknown">Desconocido</string>
+    <string name="mimetype_documents">Documentos</string>
+    <string name="mimetype_presentations">Presentaciones</string>
+    <string name="mimetype_spreadsheets">Hojas de cálculo</string>
+    <string name="mimetype_images">Imágenes</string>
+    <string name="mimetype_videos">Vídeos</string>
+    <string name="mimetype_music">Música</string>
+    <string name="mimetype_text">Texto</string>
+    <string name="error_search_fields_empty">Llene al menos un campold</string>
+    <string name="picker_user">Seleccione una persona</string>
+    <string name="picker_date_from">Selecciona una fecha de</string>
+    <string name="picker_date_to">Seleccione una fecha para</string>
+
+
+    <!-- Storage Access Framework -->
+    <string name="menu_browse_favorites_folder">Carpeta de favoritos</string>
+    <string name="account_alfresco">Alfresco</string>
+    <string name="account_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_alfresco_onpremise">Alfresco On Premise</string>
+
+
+    <!-- Accessibility -->
+    <string name="mime_folder">Carpeta</string>
+    <string name="mime_document">Documento</string>
+    <string name="more_options_folder">Más opciones para carpeta %s</string>
+    <string name="more_options_favorite">Más opciones para %s</string>
+    <string name="mime_site">Sitio</string>
+    <string name="more_options_site">Más opciones para sitio %s</string>
+    <string name="navigation_drawer_description">Alfresco: Open Navigation Drawer</string>
+    <string name="metadata_modified">Modificado </string>
+    <string name="metadata_created_by">Creado por %s</string>
+    <string name="metadata_size">Tamaño </string>
+    <string name="contact_card">Tarjeta de contacto abierto %s </string>
+    <string name="add_comment">Enviar comentario</string>
+    <string name="advanced_search_hint">Botón de búsqueda avanzada</string>
+    <string name="add_menu">Añadir a esta carpeta</string>
+
+
 </resources>
+

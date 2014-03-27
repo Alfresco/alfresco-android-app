@@ -2,19 +2,19 @@
 <!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  This file is part of Alfresco Mobile for Android.
+  Ce fichier fait partie d\'Alfresco Mobile pour Android.
   
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
+  Sous licence Apache Version 2.0 (la « Licence »),
+  vous ne pouvez utiliser ce fichier qu\'à condition de respecter la Licence.
+  Vous pouvez obtenir une copie de la Licence sur
   
     http://www.apache.org/licenses/LICENSE-2.0
   
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
+  Sauf si requis par la loi en vigueur ou accord écrit,
+  le logiciel distribué sous cette Licence est distribué « TEL QUEL »,
+  SANS GARANTIES OU CONDITIONS DE QUELQUE NATURE QUE CE SOIT, expresse ou implicite.
+  Consultez la Licence pour les autorisations d\'administration
+  linguistiques spécifiques et les limitations en vertu de la Licence.
 -->
 <resources>
 
@@ -23,7 +23,7 @@
     <string name="cancel">Annuler</string>
     <string name="search">Recherche</string>
     <string name="search_hint">Saisissez un terme de recherche</string>
-    <string name="comment_add_hint">Saisissez votre commentaire ici&#8230;</string>
+    <string name="comment_add_hint">Saisissez votre commentaire ici &#8230;</string>
     <string name="add">Ajouter</string>
     
     
@@ -71,7 +71,7 @@
     <!-- Extra -->
     <string name="editor_error_open">Impossible d\'ouvrir ce S Note.</string>
     <string name="editor_save_request">Le S Note a été modifié.</string>
-    <string name="editor_save_description"><![CDATA[Voulez-vous quitter sans enregistrer ? <br/> Toutes vos modifications non enregistrées seront perdues.]]></string>
+    <string name="editor_save_description"><![CDATA[Voulez-vous quitter sans enregistrer ? <br/> Toutes vos modifications non enregistrées seront perdues.]]></string>
     <string name="editor_save">Enregistrer</string>
     <string name="editor_discard">Ignorer</string>
     <string name="editor_save_confirmation">S Note a été enregistré.</string>
@@ -82,9 +82,9 @@
 
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">Exigences S Note</string>
-    <string name="error_sdk_unsupported">Cet appareil ne prend pas S Pen en charge</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>Vous devez installer le logiciel S Pen supplémentaire pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>Vous devez mettre à jour votre logiciel S Pen pour utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
+    <string name="error_sdk_unsupported">Cet appareil ne prend pas en charge le S Pen</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Vous devez installer un logiciel S Pen additionnel pour utiliser cette fonctionnalité. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Vous devez mettre à jour votre logiciel S Pen pour utiliser cette fonctionnalité. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>Nous vous recommandons de mettre à jour votre logiciel S Pen avant d\'utiliser cette fonction. <br/>Vous allez être redirigé vers l\'écran d\'installation.</p> Redémarrez cette application après l\'installation du logiciel.]]></string>
     
 </resources>
