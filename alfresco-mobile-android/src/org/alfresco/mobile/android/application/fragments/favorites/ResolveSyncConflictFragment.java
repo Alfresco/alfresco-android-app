@@ -266,7 +266,7 @@ public class ResolveSyncConflictFragment extends DialogFragment
         File parentFolder = StorageManager.getDownloadFolder(getActivity(), SessionUtils.getAccount(getActivity()));
         File newLocalFile = new File(parentFolder, c.getString(SynchroSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
-
+        
         // Move to "Download"
         cValues.clear();
         if (localFile.renameTo(newLocalFile))
@@ -278,6 +278,9 @@ public class ResolveSyncConflictFragment extends DialogFragment
             cValues.put(BatchOperationSchema.COLUMN_STATUS, SyncOperation.STATUS_FAILED);
             getActivity().getContentResolver().update(SynchroManager.getUri(favoriteId), cValues, null, null);
         }
+        
+        // Encrypt file if necessary
+        StorageManager.manageFile(getActivity(), newLocalFile);
 
         c.close();
     }
