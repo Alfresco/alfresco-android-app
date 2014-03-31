@@ -238,7 +238,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                         vh.iconBottomRight.setVisibility(View.GONE);
                         break;
                 }
-            } else {
+            }
+            else
+            {
                 vh.iconBottomRight.setVisibility(View.GONE);
             }
         }
@@ -307,7 +309,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
-            AccessibilityHelper.addContentDescription(vh.choose, String.format(context.getString(R.string.more_options_folder), item.getName()));
+            AccessibilityHelper.addContentDescription(vh.choose,
+                    String.format(context.getString(R.string.more_options_folder), item.getName()));
             vh.choose.setTag(R.id.node_action, item);
             vh.choose.setOnClickListener(new OnClickListener()
             {
@@ -360,7 +363,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
         else if (id == LOADER_SYNC_ID) { return new CursorLoader(context, SynchroProvider.CONTENT_URI,
                 SynchroSchema.COLUMN_ALL, SynchroSchema.COLUMN_PARENT_ID + " =\"" + parentNode.getIdentifier()
-                        + "\" AND " + SynchroSchema.COLUMN_STATUS + " NOT IN (" + SyncOperation.STATUS_HIDDEN +")", null, null); }
+                        + "\" AND " + SynchroSchema.COLUMN_STATUS + " NOT IN (" + SyncOperation.STATUS_HIDDEN + ")",
+                null, null); }
         return null;
     }
 
@@ -415,6 +419,10 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                                     && getNode(name) instanceof NodePlaceHolder)
                             {
                                 notifyDataSetChanged();
+                            }
+                            else if (hasNode(name) && getNode(name) instanceof NodePlaceHolder)
+                            {
+                                remove(name);
                             }
                             break;
                         default:
@@ -501,12 +509,13 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ///////////////////////////////////////////////////////////////////////////
     // FAVORITES
     // ///////////////////////////////////////////////////////////////////////////
-    public void refreshOperations(){
+    public void refreshOperations()
+    {
         context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
         context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
         notifyDataSetChanged();
     }
-    
+
     private static class FavoriteInfo
     {
         long id;

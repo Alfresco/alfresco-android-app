@@ -175,6 +175,9 @@ public class SyncDeleteThread extends SyncNodeOperationThread<Void>
             cValues.put(BatchOperationSchema.COLUMN_STATUS, SyncOperation.STATUS_FAILED);
             context.getContentResolver().update(SynchroManager.getUri(favoriteId), cValues, null, null);
         }
+        
+        //Data Protection if necessary
+        StorageManager.manageFile(context, newLocalFile);
 
         c.close();
     }

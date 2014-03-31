@@ -1340,6 +1340,15 @@ public class MainActivity extends BaseActivity
                 if (getCurrentSession() instanceof RepositorySession)
                 {
                     ConfigurationManager.getInstance(activity).retrieveConfiguration(activity, currentAccount);
+                    if (getFragment(MainMenuFragment.TAG) != null)
+                    {
+                        ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFolderShortcut(getCurrentSession());
+                    }
+
+                    if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
+                    {
+                        ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displayFolderShortcut(getCurrentSession());
+                    }
                 }
 
                 if (!isCurrentAccountToLoad(intent)) { return; }

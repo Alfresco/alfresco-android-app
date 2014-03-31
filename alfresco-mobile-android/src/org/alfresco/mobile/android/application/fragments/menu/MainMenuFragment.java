@@ -19,6 +19,9 @@ package org.alfresco.mobile.android.application.fragments.menu;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.model.RepositoryInfo;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
@@ -321,8 +324,7 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
-        rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
-        rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
+        displayFolderShortcut(SessionUtils.getSession(getActivity()));
     }
 
     private void hideOrDisplay(Map<String, Object> menuConfig, String configKey, int viewId)
@@ -428,6 +430,30 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         {
             rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
         }
+        displayFolderShortcut(SessionUtils.getSession(getActivity(), currentAccount.getId()));
+    }
+
+    public void displayFolderShortcut(AlfrescoSession alfSession)
+    {
+        if (alfSession != null)
+        {
+            RepositoryInfo repoInfo = alfSession.getRepositoryInfo();
+            boolean globalCheck = repoInfo.getMajorVersion() > 4;
+            boolean global42Check = repoInfo.getMajorVersion() == 4 && repoInfo.getMinorVersion() > 2;
+            boolean enterpriseCheck = repoInfo.getMajorVersion() >= 4 && repoInfo.getMinorVersion() >= 2
+                    && repoInfo.getEdition().equals(OnPremiseConstant.ALFRESCO_EDITION_ENTERPRISE);
+            boolean communityCheck = repoInfo.getMajorVersion() >= 4 && repoInfo.getMinorVersion() >= 2
+                    && repoInfo.getEdition().equals(OnPremiseConstant.ALFRESCO_EDITION_COMMUNITY)
+                    && (repoInfo.getVersion().contains(".e") || repoInfo.getVersion().contains(".f"));
+            if (globalCheck || global42Check || enterpriseCheck || communityCheck)
+            {
+                rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.VISIBLE);
+                rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.VISIBLE);
+                return;
+            }
+        }
+        rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
+        rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
     }
 
     public void displayFavoriteStatut()
