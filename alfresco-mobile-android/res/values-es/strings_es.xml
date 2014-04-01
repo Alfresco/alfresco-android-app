@@ -388,7 +388,7 @@
     <string name="passcode_disable">Deshabilitado</string>
     <string name="passcode_change">Cambiar contraseña</string>
     <string name="passcode_timeout">Caducidad</string>
-    <string name="passcode_timeout_summary">{0,opción,0#Después de 0 minuto|1#Después de 1 minuto|1&lt;Después de {0} minutos}</string>
+    <string name="passcode_timeout_summary">{0,choice,0#Después de 0 minuto|1#Después de 1 minuto|1&lt;Después de {0} minutos}</string>
     <string name="passcode_erase_data">Borrar datos</string>
     <string name="passcode_erase_data_summary">Borrar todos los datos de Alfresco Mobile de este dispositivo tras 10 intentos de contraseña fallidos</string>
     <string name="passcode_edit">Introduzca la nueva contraseña</string>
@@ -773,11 +773,11 @@
     <string name="process_diagram">Diagrama de proceso</string>
     <string name="task_review_document">Revise %s</string>
     <string name="task_review_documents">Revise este contenido</string>
-    <string name="task_assignees_plurals">{0,opción,0#Ningún asignado|1#1 asignado|1&lt;{0} asignados}</string>
+    <string name="task_assignees_plurals">{0,choice,0#Ningún asignado|1#1 asignado|1&lt;{0} asignados}</string>
     <string name="task_assignees">Asignados</string>
     <string name="task_assignees_selection">Seleccionar asignados&#8230;</string>
-    <string name="process_approvers_plurals">{0,opción,0#Ningún aprobador|1#1 de 1 aprobador|1&lt;%s de {0} aprobadores}</string>
-    <string name="task_attachments_plurals">{0,opción,0#Ningún adjunto|1#1 adjunto|1&lt;{0} adjuntos}</string>
+    <string name="process_approvers_plurals">{0,choice,0#Ningún aprobador|1#1 de 1 aprobador|1&lt;%s de {0} aprobadores}</string>
+    <string name="task_attachments_plurals">{0,choice,0#Ningún adjunto|1#1 adjunto|1&lt;{0} adjuntos}</string>
     <string name="task_attachments_selection">Seleccionar adjuntos&#8230;</string>
     <string name="task_attachments">Adjuntos</string>
     <string name="process_no_description">(No hay mensajes)</string>
@@ -821,8 +821,8 @@
 
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">Seleccionar adjuntos</string>
-    <string name="picker_assign_person">{0,opción,0#Asignar|1#Asignar 1 persona|1&lt;Asignar {0} personas}</string>
-    <string name="picker_attach_document">{0,opción,0#Adjuntar|1#Adjuntar 1 documento|1&lt;Adjuntar {0} documentos}</string>
+    <string name="picker_assign_person">{0,choice,0#Asignar|1#Asignar 1 persona|1&lt;Asignar {0} personas}</string>
+    <string name="picker_attach_document">{0,choice,0#Adjuntar|1#Adjuntar 1 documento|1&lt;Adjuntar {0} documentos}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">Vistas</string>

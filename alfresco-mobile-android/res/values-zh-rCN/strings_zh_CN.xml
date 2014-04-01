@@ -388,7 +388,7 @@
     <string name="passcode_disable">已禁用</string>
     <string name="passcode_change">更改密码</string>
     <string name="passcode_timeout">到期</string>
-    <string name="passcode_timeout_summary">{0,选择，0#0 分钟之后|1#1 分钟之后|1&lt;{0} 分钟之后}</string>
+    <string name="passcode_timeout_summary">{0,choice,0#0 分钟之后|1#1 分钟之后|1&lt;{0} 分钟之后}</string>
     <string name="passcode_erase_data">擦除数据</string>
     <string name="passcode_erase_data_summary">如果密码输错10 次，将从此设备上删除所有 Alfresco Mobile 数据</string>
     <string name="passcode_edit">输入您的新密码</string>
@@ -773,11 +773,11 @@
     <string name="process_diagram">进度图</string>
     <string name="task_review_document">请复查 %s</string>
     <string name="task_review_documents">请复查此内容</string>
-    <string name="task_assignees_plurals">{0，选择，0#无被指派者|1#1 个被指派者|1&lt;{0} 个被指派者}</string>
+    <string name="task_assignees_plurals">{0,choice,0#无被指派者|1#1 个被指派者|1&lt;{0} 个被指派者}</string>
     <string name="task_assignees">被指派者</string>
     <string name="task_assignees_selection">选择被指派者&#8230;</string>
-    <string name="process_approvers_plurals">{0，选择，0#无审批人|1#1 / 1 审批人|1&lt;%s / {0} 审批人}</string>
-    <string name="task_attachments_plurals">{0，选择，0#无附件|1#1 个附件|1&lt;{0} 个附件}</string>
+    <string name="process_approvers_plurals">{0,choice,0#无审批人|1#1 / 1 审批人|1&lt;%s / {0} 审批人}</string>
+    <string name="task_attachments_plurals">{0,choice,0#无附件|1#1 个附件|1&lt;{0} 个附件}</string>
     <string name="task_attachments_selection">选择附件&#8230;</string>
     <string name="task_attachments">附件</string>
     <string name="process_no_description">（无消息）</string>
@@ -821,8 +821,8 @@
 
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">选择附件</string>
-    <string name="picker_assign_person">{0，选择，0#指派|1#指派 1 人|1&lt;指派 {0} 人}</string>
-    <string name="picker_attach_document">{0，选择，0#附件|1#附加 1 个文件|1&lt;附加 {0} 个文件}</string>
+    <string name="picker_assign_person">{0,choice,0#指派|1#指派 1 人|1&lt;指派 {0} 人}</string>
+    <string name="picker_attach_document">{0,choice,0#附件|1#附加 1 个文件|1&lt;附加 {0} 个文件}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">视图</string>
