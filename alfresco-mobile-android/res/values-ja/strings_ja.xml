@@ -249,7 +249,7 @@
     <string name="share_content">コンテンツの共有化...</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
+    <string name="asset_folder_prefix">ja</string>
 
     <!-- About Message -->
     <string name="about_description_title">説明</string>
@@ -388,7 +388,7 @@
     <string name="passcode_disable">無効</string>
     <string name="passcode_change">パスコードの変更</string>
     <string name="passcode_timeout">期限</string>
-    <string name="passcode_timeout_summary">{0,choice,0#After 0 minute|1#1分後|1&lt;After {0} minutes}</string>
+    <string name="passcode_timeout_summary">{0,choice,0# 0分後|1#1分後|1&lt;{0}分後}</string>
     <string name="passcode_erase_data">データを消去</string>
     <string name="passcode_erase_data_summary">パスコードの入力を10回間違えると、このデバイスからAlfresco Mobileデータがすべて消去されます。</string>
     <string name="passcode_edit">新しいパスコードを入力</string>
@@ -773,11 +773,11 @@
     <string name="process_diagram">プロセスの図</string>
     <string name="task_review_document">%sをレビューしてください</string>
     <string name="task_review_documents">このコンテンツをレビューしてください</string>
-    <string name="task_assignees_plurals">{0,choice,0#No assignees|1#1 assignee|1&lt;{0} assignees}</string>
+    <string name="task_assignees_plurals">{0,choice,0#担当者なし|1#1名の担当者|1&lt;{0}名の担当者}</string>
     <string name="task_assignees">担当者</string>
     <string name="task_assignees_selection">担当者を選択...</string>
-    <string name="process_approvers_plurals">{0,choice,0#No approvers|1#1 of 1 approver|1&lt;%s of {0} approvers}</string>
-    <string name="task_attachments_plurals">{0,choice,0#No attachments|1#1 attachment|1&lt;{0} attachments}</string>
+    <string name="process_approvers_plurals">{0,choice,0#承認者なし|1#1/1名の承認者|1&lt;%s/{0}名の承認者}</string>
+    <string name="task_attachments_plurals">{0,choice,0#添付ファイルなし|1#1個の添付ファイル|1&lt;{0}個の添付ファイル}</string>
     <string name="task_attachments_selection">添付ファイルを選択...</string>
     <string name="task_attachments">添付ファイル</string>
     <string name="process_no_description">(メッセージなし)</string>
@@ -821,8 +821,8 @@
 
     <!-- DOCUMENT PICKER -->
     <string name="picker_document_title">添付ファイルを選択</string>
-    <string name="picker_assign_person">{0,choice,0#Assign|1#Assign 1 person|1&lt;Assign {0} people}</string>
-    <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 file|1&lt;Attach {0} files}</string>
+    <string name="picker_assign_person">{0,choice,0#割り当て|1#1名に割り当て|1&lt;{0}名に割り当て}</string>
+    <string name="picker_attach_document">{0,choice,0#添付|1#1個のファイルを添付|1&lt; {0}個のファイルを添付}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_views">表示</string>
