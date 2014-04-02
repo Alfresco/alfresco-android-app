@@ -249,7 +249,7 @@
     <string name="share_content">与&#8230;共享内容</string>
 
     <!-- HELP -->
-    <string name="asset_folder_prefix">en</string>
+    <string name="asset_folder_prefix">zh</string>
 
     <!-- About Message -->
     <string name="about_description_title">说明</string>
