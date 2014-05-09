@@ -111,6 +111,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.AnimationUtils;
 
+
 /**
  * Main activity of the application.
  * 
@@ -140,13 +141,15 @@ public class MainActivity extends BaseActivity
 
     private Node currentNode;
 
-    // Device capture
-    private DeviceCapture capture;
+    // Device capture (made static as we don't seem to be getting instance state back through creation).
+    private static DeviceCapture capture = null;
 
     private int fragmentQueue = -1;
 
     private boolean activateCheckPasscode = false;
 
+    private Intent callBackIntent = null;
+        
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -172,17 +175,15 @@ public class MainActivity extends BaseActivity
 
         setProgressBarIndeterminateVisibility(false);
 
+        if (capture != null)
+            capture.setActivity(this);
+        
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
             currentAccount = helper.getCurrentAccount();
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
-            if (helper.getDeviceCapture() != null)
-            {
-                capture = helper.getDeviceCapture();
-                capture.setActivity(this);
-            }
             stackCentral = helper.getStackCentral();
         }
         else
@@ -216,7 +217,11 @@ public class MainActivity extends BaseActivity
 
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
+        
+        //Check if there is a Fujistu scanner intent coming back to us.
+        checkScan();
     }
+    
 
     @Override
     protected void onStart()
@@ -368,7 +373,7 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
 
         outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, stackCentral,
-                currentAccount, capture, fragmentQueue, importParent));
+                currentAccount, null, fragmentQueue, importParent));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -999,11 +1004,14 @@ public class MainActivity extends BaseActivity
                 PersonProfileFragment frag = PersonProfileFragment.newInstance(getCurrentAccount().getUsername());
                 frag.show(getFragmentManager(), PersonProfileFragment.TAG);
                 return true;
+                
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
+                
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
@@ -1557,5 +1565,21 @@ public class MainActivity extends BaseActivity
         if (currentAccount == null) { return false; }
         if (!intent.hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID)) { return false; }
         return (currentAccount.getId() == intent.getExtras().getLong(IntentIntegrator.EXTRA_ACCOUNT_ID));
+    }
+    
+    private void checkScan()
+    {    
+        callBackIntent = getIntent();
+        
+        if (callBackIntent != null  &&  callBackIntent.getScheme() != null  &&
+            callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
+        {
+            if (capture != null)
+            {
+                capture.capturedCallback(capture.getRequestCode(), Activity.RESULT_OK, callBackIntent);
+            }
+            else
+                MessengerManager.showLongToast(this, "No capture object for scanner result!"); 
+        }
     }
 }

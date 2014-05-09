@@ -81,7 +81,7 @@ public abstract class DeviceCapture implements Serializable
 
     public abstract boolean captureData();
 
-    protected abstract void payloadCaptured(int requestCode, int resultCode, Intent data);
+    protected abstract boolean payloadCaptured(int requestCode, int resultCode, Intent data);
 
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC
@@ -90,9 +90,7 @@ public abstract class DeviceCapture implements Serializable
     {
         if (requestCode == getRequestCode() && resultCode == Activity.RESULT_OK)
         {
-            payloadCaptured(requestCode, resultCode, data);
-
-            if (repositoryFolder != null)
+            if (repositoryFolder != null  &&  payloadCaptured(requestCode, resultCode, data))
             {
                 upload();
             }

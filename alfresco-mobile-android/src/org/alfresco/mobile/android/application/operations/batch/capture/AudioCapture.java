@@ -87,7 +87,7 @@ public class AudioCapture extends DeviceCapture
     }
 
     @Override
-    protected void payloadCaptured(int requestCode, int resultCode, Intent data)
+    protected boolean payloadCaptured(int requestCode, int resultCode, Intent data)
     {
         Uri savedUri = data.getData();
 
@@ -112,16 +112,20 @@ public class AudioCapture extends DeviceCapture
                 {
                     mimeType = fileType;
                 }
+                
+                return true;
             }
             else
             {
                 MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+                return false;
             }
         }
         catch (IOException e)
         {
             MessengerManager.showLongToast(context, context.getString(R.string.cannot_capture));
             Log.d(TAG, Log.getStackTraceString(e));
+            return false;
         }
     }
 
