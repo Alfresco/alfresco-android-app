@@ -18,7 +18,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="31"
+    android:versionCode="32"
     android:versionName="1.4.0" >
 
     <uses-sdk
