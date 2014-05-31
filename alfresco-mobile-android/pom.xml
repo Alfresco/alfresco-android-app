@@ -80,7 +80,7 @@
 			<id>extension-samsung</id>
 			<dependencies>
 				<dependency>
-					<groupId>org.alfresco.mobile.android.apps</groupId>
+					<groupId>org.alfresco.mobile.android.extensions</groupId>
 					<artifactId>alfresco-mobile-android-extension-samsung</artifactId>
 					<version>${project.version}</version>
 					<type>apklib</type>
@@ -190,8 +190,14 @@
 			<dependencies>
 				<!-- HockeyApp -->
 				<dependency>
-					<groupId>org.alfresco.mobile.android.apps</groupId>
+					<groupId>org.alfresco.mobile.android.extensions</groupId>
 					<artifactId>alfresco-mobile-android-extension-hockeyapp</artifactId>
+					<version>${project.version}</version>
+					<type>apklib</type>
+				</dependency>
+				<dependency>
+					<groupId>org.alfresco.mobile.android.extensions</groupId>
+					<artifactId>alfresco-mobile-android-extension-tools</artifactId>
 					<version>${project.version}</version>
 					<type>apklib</type>
 				</dependency>
