@@ -74,7 +74,7 @@
 
             <TextView
                 android:id="@+id/contentweb"
-                style="?AlfrescoTheme.TextView.Secondary"
+                style="?MainTheme.TextView.Secondary"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dip"

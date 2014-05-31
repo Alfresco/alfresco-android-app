@@ -23,11 +23,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.alfresco.mobile.android.application.extension.samsung.impl.R;
+import org.alfresco.mobile.android.application.extension.samsung.R;
 import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtils;
-import org.alfresco.mobile.android.ui.manager.ActionManager;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
-import org.alfresco.mobile.android.ui.manager.RenditionManager;
+import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
+import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -142,12 +141,12 @@ public class SNoteEditorActivity extends Activity
         {
             if (getIntent().getData() != null)
             {
-                String filePath = ActionManager.getPath(this, getIntent().getData());
+                String filePath = BaseActionUtils.getPath(this, getIntent().getData());
                 file = new File(filePath);
             }
             else
             {
-                MessengerManager.showLongToast(this, getString(R.string.editor_error_open));
+                MessengerUtils.showLongToast(this, getString(R.string.editor_error_open));
                 finish();
                 return;
             }
@@ -417,7 +416,7 @@ public class SNoteEditorActivity extends Activity
         try
         {
             spenNoteDoc.save(file.getAbsolutePath());
-            MessengerManager.showToast(this, R.string.editor_save_confirmation);
+            MessengerUtils.showToast(this, R.string.editor_save_confirmation);
 
             if (stopActivity)
             {
@@ -603,7 +602,7 @@ public class SNoteEditorActivity extends Activity
             {
                 try
                 {
-                    String imagePath = ActionManager.getPath(context, data.getData());
+                    String imagePath = BaseActionUtils.getPath(context, data.getData());
                     String attachmentId = IMAGE_KEY + spenNoteDoc.getAttachedFileCount();
                     spenNoteDoc.attachFile(attachmentId, imagePath);
 
@@ -683,7 +682,7 @@ public class SNoteEditorActivity extends Activity
                 dm = new DisplayMetrics();
                 ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
             }
-            imageBitmap = RenditionManager.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
+            imageBitmap = SNoteUtils.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
                     spenSurfaceView.getCanvasWidth(), dm.densityDpi);
         }
         else

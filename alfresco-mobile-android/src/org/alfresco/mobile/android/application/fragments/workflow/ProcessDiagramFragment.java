@@ -1,29 +1,28 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
-import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.manager.RenditionManager;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.rendition.RenditionManager;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,9 +31,8 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
 
-public class ProcessDiagramFragment extends BaseFragment
+public class ProcessDiagramFragment extends AlfrescoFragment
 {
-
     public static final String TAG = ProcessDiagramFragment.class.getName();
 
     public static final String ARGUMENT_PROCESSID = "processId";
@@ -42,8 +40,6 @@ public class ProcessDiagramFragment extends BaseFragment
     private String processId;
 
     private ImageView preview;
-
-    private RenditionManager renditionManager;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -55,7 +51,7 @@ public class ProcessDiagramFragment extends BaseFragment
         return args;
     }
 
-    public static BaseFragment newInstance(String processId)
+    public static AlfrescoFragment newInstance(String processId)
     {
         ProcessDiagramFragment bf = new ProcessDiagramFragment();
         bf.setArguments(createBundleArgs(processId));
@@ -79,20 +75,16 @@ public class ProcessDiagramFragment extends BaseFragment
         {
             container.setVisibility(View.VISIBLE);
         }
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        setSession(SessionUtils.getSession(getActivity()));
+        SessionUtils.checkSession(getActivity(), getSession());
 
         View v = inflater.inflate(R.layout.app_process_preview, container, false);
-        if (alfSession == null) { return v; }
+        if (getSession() == null) { return v; }
 
         processId = getArguments().getString(ARGUMENT_PROCESSID);
         if (processId == null || processId.isEmpty()) { return null; }
         preview = (ImageView) v.findViewById(R.id.preview);
-        int iconId = R.drawable.ic_px;
-
-        renditionManager = ApplicationManager.getInstance(getActivity()).getRenditionManager(
-                getActivity());
-        renditionManager.displayDiagram((ImageView) preview, iconId, processId);
+        RenditionManager.with(getActivity()).loadProcessDiagram(processId).placeHolder(R.drawable.ic_px).into(preview);
         return v;
     }
 

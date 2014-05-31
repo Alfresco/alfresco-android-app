@@ -1,41 +1,38 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.asynchronous.LoaderResult;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.ListingFilter;
-import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Task;
-import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseListFragment;
+import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
+import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.workflow.process.ProcessDefinitionsEvent;
+import org.alfresco.mobile.android.async.workflow.task.TasksRequest;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.Loader;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -44,26 +41,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.ListView;
+import android.widget.ArrayAdapter;
+import android.widget.GridView;
 
-public class ProcessTasksFragment extends BaseListFragment implements LoaderCallbacks<LoaderResult<PagingResult<Task>>>
+import com.squareup.otto.Subscribe;
+
+public class ProcessTasksFragment extends BaseGridFragment
 {
-
-    private static final String PARAM_PROCESS = "TaskProcess";
+    private static final String ARGUMENT_PROCESS = "TaskProcess";
 
     public static final String TAG = ProcessTasksFragment.class.getName();
 
     protected List<Task> selectedItems = new ArrayList<Task>(1);
+
+    private String processId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
     public ProcessTasksFragment()
     {
-        loaderId = ProcessTasksLoader.ID;
-        callback = this;
         emptyListMessageId = R.string.empty_tasks;
-        initLoader = false;
+        retrieveDataOnCreation = false;
         checkSession = false;
     }
 
@@ -77,7 +76,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     {
         ProcessTasksFragment bf = new ProcessTasksFragment();
         Bundle b = new Bundle();
-        b.putSerializable(PARAM_PROCESS, processIdentifier);
+        b.putSerializable(ARGUMENT_PROCESS, processIdentifier);
         bf.setArguments(b);
         return bf;
     };
@@ -98,8 +97,8 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         {
             container.setVisibility(View.VISIBLE);
         }
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        setSession(SessionUtils.getSession(getActivity()));
+        SessionUtils.checkSession(getActivity(), getSession());
 
         View v = super.onCreateView(inflater, container, savedInstanceState);
         if (v == null && getDialog() != null)
@@ -114,11 +113,12 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        SessionUtils.checkSession(getActivity(), getSession());
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().restartLoader(ProcessTasksLoader.ID, null, this);
-        lv.setDivider(null);
+
+        processId = getArguments().getString(ARGUMENT_PROCESS);
+
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(new TasksRequest.Builder(processId));
     }
 
     @Override
@@ -136,74 +136,26 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     // LOADERS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public Loader<LoaderResult<PagingResult<Task>>> onCreateLoader(int id, Bundle ba)
+    protected OperationBuilder onCreateOperationRequest(ListingContext listingContext)
     {
-        setListShown(false);
-
-        bundle = (ba == null) ? getArguments() : ba;
-
-        ListingContext lc = null, lcorigin = null;
-        ProcessTasksLoader st = null;
-        ListingFilter lf = new ListingFilter();
-        lf.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ANY);
-        lf.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_NO_ASSIGNEE);
-        String processIdentifier = bundle.getString(PARAM_PROCESS);
-        if (bundle != null)
-        {
-            lcorigin = (ListingContext) bundle.getSerializable(ARGUMENT_LISTING);
-            lc = copyListing(lcorigin);
-            loadState = bundle.getInt(LOAD_STATE);
-            st = new ProcessTasksLoader(getActivity(), alfSession, processIdentifier);
-        }
-        else
-        {
-            st = new ProcessTasksLoader(getActivity(), alfSession, processIdentifier);
-        }
-        calculateSkipCount(lc);
-        if (lc == null)
-        {
-            lc = new ListingContext();
-        }
-        lc.setFilter(lf);
-        st.setListingContext(lc);
-        return st;
+        return new TasksRequest.Builder(processId).setListingContext(listingContext);
     }
 
     @Override
-    public void onLoadFinished(Loader<LoaderResult<PagingResult<Task>>> arg0, LoaderResult<PagingResult<Task>> results)
+    protected ArrayAdapter<?> onAdapterCreation()
     {
-        if (adapter == null)
-        {
-            adapter = new ProcessTasksAdapter(getActivity(), R.layout.app_task_history_row, new ArrayList<Task>(0));
-        }
-        if (checkException(results))
-        {
-            onLoaderException(results.getException());
-        }
-        else
-        {
-            displayPagingData(results.getData(), loaderId, callback);
-        }
-        setListShown(true);
+        return new ProcessTasksAdapter(getActivity(), R.layout.app_task_history_row, new ArrayList<Task>(0));
     }
 
-    @Override
-    public void onLoaderReset(Loader<LoaderResult<PagingResult<Task>>> arg0)
+    @Subscribe
+    public void onResult(ProcessDefinitionsEvent event)
     {
-        // Nothing special
-    }
-    
-    @Override
-    public void onLoaderException(Exception e)
-    {
-        setListShown(true);
-        CloudExceptionUtils.handleCloudException(getActivity(), e, false);
+        displayData(event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-
     public static void getMenu(Menu menu)
     {
         MenuItem mi;
@@ -217,7 +169,8 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-    public void onListItemClick(ListView l, View v, int position, long id)
+    @Override
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         Task item = (Task) l.getItemAtPosition(position);
 
@@ -240,9 +193,7 @@ public class ProcessTasksFragment extends BaseListFragment implements LoaderCall
         }
         else
         {
-            // Show properties
-            ((MainActivity) getActivity()).addTaskDetailsFragment(item, true);
-            DisplayUtils.switchSingleOrTwo(getActivity(), true);
+            TaskDetailsFragment.with(getActivity()).task(item).display();
         }
         adapter.notifyDataSetChanged();
     }

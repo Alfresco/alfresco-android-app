@@ -1,26 +1,26 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
@@ -38,9 +38,9 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
 {
     public static final String TAG = DatePickerFragment.class.getName();
 
-    private static final String PARAM_FRAGMENT_TAG = "fragmentTag";
+    private static final String ARGUMENT_FRAGMENT_TAG = "fragmentTag";
 
-    private static final String PARAM_DATE_ID = "dateId";
+    private static final String ARGUMENT_DATE_ID = "dateId";
 
     private OnDateSetListener mListener;
 
@@ -51,8 +51,8 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     {
         DatePickerFragment bf = new DatePickerFragment();
         Bundle b = new Bundle();
-        b.putInt(PARAM_DATE_ID, dateId);
-        b.putString(PARAM_FRAGMENT_TAG, fragmentTag);
+        b.putInt(ARGUMENT_DATE_ID, dateId);
+        b.putString(ARGUMENT_FRAGMENT_TAG, fragmentTag);
         bf.setArguments(b);
         return bf;
     }
@@ -121,10 +121,10 @@ public class DatePickerFragment extends DialogFragment implements DatePickerDial
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
 
-        if (getArguments() != null && getArguments().containsKey(PARAM_FRAGMENT_TAG))
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_FRAGMENT_TAG))
         {
-            String pickFragmentTag = getArguments().getString(PARAM_FRAGMENT_TAG);
-            int dateId = getArguments().getInt(PARAM_DATE_ID);
+            String pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
+            int dateId = getArguments().getInt(ARGUMENT_DATE_ID);
             onPickDateFragment fragmentPick = ((onPickDateFragment) getFragmentManager().findFragmentByTag(
                     pickFragmentTag));
             if (fragmentPick != null)

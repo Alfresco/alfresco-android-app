@@ -1,33 +1,37 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
-import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoritesFragment;
-import org.alfresco.mobile.android.application.fragments.sites.BrowserSitesFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import java.util.Map;
 
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +39,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class CreateTaskDocumentPickerFragment extends BaseFragment
+public class CreateTaskDocumentPickerFragment extends AlfrescoFragment
 {
     public static final String TAG = CreateTaskDocumentPickerFragment.class.getName();
 
@@ -48,10 +52,9 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
     {
     }
 
-    public static CreateTaskDocumentPickerFragment newInstance()
+    protected static CreateTaskDocumentPickerFragment newInstanceByTemplate(Bundle b)
     {
         CreateTaskDocumentPickerFragment bf = new CreateTaskDocumentPickerFragment();
-        Bundle b = new Bundle();
         bf.setArguments(b);
         return bf;
     }
@@ -65,11 +68,11 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
         setRetainInstance(true);
 
         container.setVisibility(View.VISIBLE);
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        setSession(SessionUtils.getSession(getActivity()));
+        SessionUtils.checkSession(getActivity(), getSession());
         vRoot = inflater.inflate(R.layout.app_document_picker, container, false);
 
-        if (alfSession == null) { return vRoot; }
+        if (getSession() == null) { return vRoot; }
 
         // BUTTONS
         Button b = (Button) vRoot.findViewById(R.id.picker_root);
@@ -78,7 +81,7 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
-                ((BaseActivity) getActivity()).addNavigationFragment(alfSession.getRootFolder());
+                DocumentFolderBrowserFragment.with(getActivity()).folder(getSession().getRootFolder()).display();
             }
         });
 
@@ -88,9 +91,7 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
-                BrowserSitesFragment frag = BrowserSitesFragment.newInstance();
-                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
-                        BrowserSitesFragment.TAG, true);
+                BrowserSitesFragment.with(getActivity()).display();
             }
         });
 
@@ -100,9 +101,7 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
             @Override
             public void onClick(View v)
             {
-                FavoritesFragment frag = FavoritesFragment.newInstance(FavoritesFragment.MODE_FOLDERS);
-                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
-                        FavoritesFragment.TAG, true);
+                FavoritesFragment.with(getActivity()).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
             }
         });
 
@@ -112,15 +111,14 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        SessionUtils.checkSession(getActivity(), getSession());
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onResume()
     {
-        if (getArguments() != null && getArguments().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+        if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
         {
             UIUtils.displayTitle(getActivity(), getString(R.string.process_choose_attachments));
         }
@@ -131,5 +129,38 @@ public class CreateTaskDocumentPickerFragment extends BaseFragment
         getActivity().invalidateOptionsMenu();
 
         super.onResume();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
     }
 }

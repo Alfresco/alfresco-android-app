@@ -1,230 +1,318 @@
 /*******************************************************************************
- * Copyright (C) 2005-2012 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments;
 
-import java.util.Stack;
+import java.lang.ref.WeakReference;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.util.Log;
 
 public final class FragmentDisplayer
 {
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTANTS
+    // ///////////////////////////////////////////////////////////////////////////
+    private static final String TAG = FragmentDisplayer.class.getSimpleName();
 
+    protected static final int ACTION_ADD = 0;
+
+    protected static final int ACTION_REPLACE = 1;
+
+    protected static final int ACTION_REMOVE = 2;
+
+    protected static final int ACTION_CLEAN = 3;
+
+    public static final int PANEL_LEFT = -100;
+
+    public static final int PANEL_CENTRAL = -200;
+
+    public static final int PANEL_DIALOG = -300;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
     private FragmentDisplayer()
     {
+
     }
 
-    public static void loadFragment(Activity a, Integer viewId, String tag)
+    public static Creator with(Activity activity)
     {
-        if (a.getFragmentManager().findFragmentByTag(tag) == null)
+        return new Creator(activity);
+    }
+
+    public static Creator load(AlfrescoFragmentBuilder builder)
+    {
+        return new Creator(builder);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILITY
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void clearCentralPane(Activity a)
+    {
+        if (DisplayUtils.hasCentralPane(a))
         {
-            loadFragment(a, FragmentFactory.createInstance(tag), viewId, tag);
+            FragmentDisplayer.with(a).remove(DisplayUtils.getCentralFragmentId(a));
+            FragmentDisplayer.with(a).remove(android.R.id.tabcontent);
         }
     }
 
-    public static void loadFragment(Activity a, Fragment f, Integer viewId, String tag)
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static final int[] SLIDE = new int[] { R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
+            R.anim.slide_out_right };
+
+    public static class Creator
     {
-        if (f == null)
+        private int action;
+
+        private AlfrescoFragmentBuilder builder;
+
+        private int targetId;
+
+        private WeakReference<Activity> activity;
+
+        private WeakReference<Fragment> fragmentRef;
+
+        private boolean backStack = true;
+
+        private int[] animation = SLIDE;
+
+        private String tag;
+
+        private boolean hasAnimation = true;
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Creator()
         {
-            loadFragment(a, viewId, tag);
         }
-        else
+
+        public Creator(AlfrescoFragmentBuilder builder)
         {
-            if (a.getFragmentManager().findFragmentByTag(tag) == null)
+            this();
+            this.activity = new WeakReference<Activity>(builder.getActivity());
+            this.builder = builder;
+            this.action = ACTION_REPLACE;
+            this.backStack = builder.hasBackStack();
+        }
+
+        public Creator(Activity activity)
+        {
+            this();
+            this.activity = new WeakReference<Activity>(activity);
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Creator back(boolean hasBackStack)
+        {
+            this.backStack = hasBackStack;
+            return this;
+        }
+
+        public Creator load(Fragment frag)
+        {
+            this.fragmentRef = new WeakReference<Fragment>(frag);
+            this.action = ACTION_ADD;
+            return this;
+        }
+
+        public Creator replace(Fragment frag)
+        {
+            this.fragmentRef = new WeakReference<Fragment>(frag);
+            this.action = ACTION_REPLACE;
+            return this;
+        }
+
+        public Creator animate(int[] animation)
+        {
+            this.animation = animation;
+            if (animation == null)
             {
-                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                            R.anim.slide_out_right);
-                }
-                t2.add(viewId, f, tag);
-                t2.commit();
+                hasAnimation = false;
             }
+            return this;
         }
 
-    }
-
-    public static void removeFragment(Activity a, Stack<String> tags)
-    {
-        Fragment fr;
-        FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-        for (String tag : tags)
+        public Creator removeAll()
         {
-            fr = a.getFragmentManager().findFragmentByTag(tag);
-            if (fr != null && fr.isAdded())
-            {
-                t2.remove(fr);
-            }
+            this.action = ACTION_CLEAN;
+            hasAnimation = false;
+            return this;
         }
-        t2.commit();
-    }
 
-    public static void hide(Activity a, String tag)
-    {
-        Fragment fr = a.getFragmentManager().findFragmentByTag(tag);
-        if (fr != null && fr.isAdded())
+        // ///////////////////////////////////////////////////////////////////////////
+        // EXECUTION
+        // ///////////////////////////////////////////////////////////////////////////
+        public void into(int targetId)
         {
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            t2.hide(fr);
-            t2.addToBackStack(null);
-            t2.commit();
+            this.targetId = targetId;
+            execute();
         }
-    }
 
-    public static void remove(Activity a, Fragment fr)
-    {
-        if (fr != null && fr.isAdded())
+        public void asDialog()
         {
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            t2.remove(fr);
-            t2.addToBackStack(null);
-            t2.commit();
+            this.targetId = PANEL_DIALOG;
+            execute();
         }
-    }
 
-    public static void remove(Activity a, Fragment fr, boolean backStack)
-    {
-        if (fr != null && fr.isAdded())
-        {
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            t2.remove(fr);
-            if (backStack)
-            {
-                t2.addToBackStack(null);
-            }
-            t2.commit();
-        }
-    }
-
-    public static void removeFragment(Activity a, String tag)
-    {
-        Fragment fr = a.getFragmentManager().findFragmentByTag(tag);
-        try
-        {
-            if (fr != null && fr.isVisible())
-            {
-                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                t2.remove(fr);
-                t2.commit();
-            }
-        }
-        catch (Exception e)
-        {
-            // Specific use case in Honeycomb. Sometimes the fragment has not
-            // been added and we must force the add.
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            t2.add(fr, fr.getTag());
-            t2.remove(fr);
-            t2.commit();
-        }
-    }
-
-    public static void removeFragment(Activity a, int id)
-    {
-        Fragment fr = a.getFragmentManager().findFragmentById(id);
-        try
-        {
-            if (fr != null && fr.isAdded())
-            {
-                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
-                else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                            R.anim.slide_out_right);
-                }
-                t2.remove(fr);
-                t2.commit();
-            }
-        }
-        catch (Exception e)
-        {
-            // Specific use case in Honeycomb. Sometimes the fragment has not
-            // been added and we must force the add.
-            FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-            t2.add(fr, fr.getTag());
-            t2.remove(fr);
-            t2.commit();
-        }
-    }
-
-    public static void replaceFragment(Activity a, Integer viewId, String tag, boolean backStack)
-    {
-        replaceFragment(a, FragmentFactory.createInstance(tag), viewId, tag, backStack);
-    }
-
-    public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack)
-    {
-        replaceFragment(a, f, viewId, tag, backStack, true);
-    }
-
-    public static void replaceFragment(Activity a, Fragment f, Integer viewId, String tag, boolean backStack,
-            boolean hasAnimation)
-    {
-        if (f == null)
-        {
-            replaceFragment(a, viewId, tag, backStack);
-        }
-        else
+        public void remove(Fragment fr)
         {
             try
             {
-                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                if (hasAnimation && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
-                        && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left);
-                }
-                else if (hasAnimation
-                        && android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-                {
-                    t2.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left,
-                            R.anim.slide_out_right);
-                }
-                t2.replace(viewId, f, tag);
-                if (backStack)
-                {
-                    t2.addToBackStack(tag);
-                }
-                t2.commit();
+                this.fragmentRef = new WeakReference<Fragment>(fr);
+                this.action = ACTION_REMOVE;
+                this.backStack = false;
+                execute();
             }
             catch (Exception e)
             {
                 // Specific use case in Honeycomb. Sometimes the fragment has
                 // not been added and we must force the add.
-                FragmentTransaction t2 = a.getFragmentManager().beginTransaction();
-                t2.add(f, f.getTag());
-                t2.remove(f);
+                FragmentTransaction t2 = activity.get().getFragmentManager().beginTransaction();
+                t2.add(fr, fr.getTag());
+                t2.remove(fr);
                 t2.commit();
+            }
+
+        }
+
+        public void remove(String fragmentTag)
+        {
+            remove(activity.get().getFragmentManager().findFragmentByTag(fragmentTag));
+        }
+
+        public void remove(int viewId)
+        {
+            remove(activity.get().getFragmentManager().findFragmentById(viewId));
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // Creation
+        // ///////////////////////////////////////////////////////////////////////////
+        private void execute()
+        {
+            try
+            {
+
+                if (activity.get() instanceof MainActivity && DisplayUtils.hasCentralPane(activity.get())
+                        && targetId == PANEL_LEFT)
+                {
+                    FragmentDisplayer.clearCentralPane(activity.get());
+                }
+
+                Fragment frag = null;
+                // Create Fragment
+                if (builder != null)
+                {
+                    frag = builder.createFragment();
+                }
+                else if (fragmentRef != null)
+                {
+                    frag = fragmentRef.get();
+                }
+
+                // If null we consider the fragment creation is done elsewhere.
+                if (frag == null) { return; }
+
+                // Create Tag based on Fragment className
+                tag = frag.getClass().getName();
+
+                // Create Transaction
+                FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
+
+                // Set Animation
+                if (hasAnimation)
+                {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB_MR2
+                            && android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    {
+                        transaction.setCustomAnimations(animation[0], animation[1]);
+                    }
+                    else if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+                    {
+                        transaction.setCustomAnimations(animation[0], animation[1], animation[2], animation[3]);
+                    }
+                }
+
+                // Define target
+                switch (targetId)
+                {
+                    case PANEL_LEFT:
+                        targetId = DisplayUtils.getLeftFragmentId(activity.get());
+                        break;
+                    case PANEL_CENTRAL:
+                        targetId = DisplayUtils.getFragmentPlace(activity.get());
+                        break;
+                    case PANEL_DIALOG:
+                        if (frag instanceof DialogFragment)
+                        {
+                            ((DialogFragment) frag).show(activity.get().getFragmentManager(), tag);
+                        }
+                        return;
+                    default:
+                        break;
+                }
+
+                switch (action)
+                {
+                    case ACTION_ADD:
+                        transaction.add(targetId, frag, tag);
+                        break;
+                    case ACTION_REPLACE:
+                        transaction.replace(targetId, frag, tag);
+                        break;
+                    case ACTION_REMOVE:
+                        hasAnimation = false;
+                        transaction.remove(frag);
+                        break;
+                    case ACTION_CLEAN:
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                // BackStack
+                if (backStack)
+                {
+                    transaction.addToBackStack(tag);
+                }
+
+                // Commit
+                transaction.commit();
+            }
+            catch (Exception e)
+            {
+                Log.w(TAG, Log.getStackTraceString(e));
             }
         }
     }

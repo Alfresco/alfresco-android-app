@@ -25,7 +25,7 @@
 
     <ImageView
         android:id="@+id/icon"
-        style="?AlfrescoTheme.ImageView"
+        style="?MainTheme.ImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@null"
@@ -40,12 +40,12 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?AlfrescoTheme.TextView.ListItem.Primary"
+            style="?MainTheme.TextView.ListItem.Primary"
             android:textColor="@color/grey_lighter" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+            style="?MainTheme.TextView.ListItem.Secondary"
             android:textColor="@color/grey_lighter"
             android:visibility="gone" />
     </LinearLayout>

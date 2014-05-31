@@ -1,35 +1,37 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.actions;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.favorites.FavoritesSyncFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.operations.OperationRequest;
-import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.async.OperationRequest;
+import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -44,8 +46,8 @@ public class NodeIdActions extends AbstractActions<String>
 
     public NodeIdActions(Fragment f, List<String> selectedNodes)
     {
-        this.fragment = f;
-        this.activity = f.getActivity();
+        this.fragmentRef = new WeakReference<Fragment>(f);
+        this.activityRef = new WeakReference<Activity>(f.getActivity());
         this.selectedItems = selectedNodes;
         for (String nodeId : selectedNodes)
         {
@@ -63,7 +65,8 @@ public class NodeIdActions extends AbstractActions<String>
         int size = selectedItems.size();
         if (size > 0)
         {
-            title += String.format(activity.getResources().getQuantityString(R.plurals.selected_document, size), size);
+            title += String.format(getFragment().getResources().getQuantityString(R.plurals.selected_document, size),
+                    size);
         }
 
         return title;
@@ -135,16 +138,15 @@ public class NodeIdActions extends AbstractActions<String>
     // ///////////////////////////////////////////////////////////////////////////
     private void favorite(boolean doFavorite)
     {
-        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
-        for (String node : selectedItems)
+        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        for (String nodeId : selectedItems)
         {
-            group.enqueue(new FavoriteNodeRequest(null, node, doFavorite, true)
+            requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
+        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
 
-        BatchOperationManager.getInstance(activity).enqueue(group);
-
-        if (fragment instanceof ChildrenBrowserFragment || fragment instanceof FavoritesSyncFragment)
+        if (getFragment() instanceof DocumentFolderBrowserFragment || getFragment() instanceof SyncFragment)
         {
             int titleId = R.string.unfavorite;
             int iconId = R.drawable.ic_unfavorite_dark;
@@ -154,22 +156,22 @@ public class NodeIdActions extends AbstractActions<String>
                 iconId = R.drawable.ic_favorite_dark;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    fragment.getString(titleId), null, null, selectedItems.size()).show(
-                    fragment.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
+                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
     private void like(boolean doLike)
     {
-        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
+        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
         for (String node : selectedItems)
         {
-            group.enqueue(new LikeNodeRequest(null, node, doLike)
+            requestsBuilder.add(new LikeNodeRequest.Builder(node, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        BatchOperationManager.getInstance(activity).enqueue(group);
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
 
-        if (fragment instanceof ChildrenBrowserFragment)
+        if (getFragment() instanceof DocumentFolderBrowserFragment)
         {
             int titleId = R.string.unlike;
             int iconId = R.drawable.ic_unlike;
@@ -178,9 +180,9 @@ public class NodeIdActions extends AbstractActions<String>
                 titleId = R.string.like;
                 iconId = R.drawable.ic_like;
             }
-            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId, fragment.getString(titleId),
-                    null, null, selectedItems.size()).show(fragment.getActivity().getFragmentManager(),
-                    OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
+                    getActivity().getString(titleId), null, null, selectedItems.size(), null).show(
+                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 

@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.io.Serializable;
@@ -33,37 +33,31 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.browser.onPickDocumentFragment;
-import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderPickerCallback;
+import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
+import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.application.operations.OperationRequest;
-import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.workflow.process.start.StartProcessRequest;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEvent;
+import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
+import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,14 +71,14 @@ import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.ToggleButton;
 
-public class CreateTaskFragment extends BaseFragment implements onPickPersonFragment, onPickDocumentFragment,
+import com.squareup.otto.Subscribe;
+
+public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCallback, DocumentFolderPickerCallback,
         onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
 
-    private static final String PARAM_PROCESS_DEFINITION = "processDefinition";
-
-    private View vRoot;
+    private static final String ARGUMENT_PROCESS_DEFINITION = "processDefinition";
 
     private ProcessDefinition processDefinition;
 
@@ -114,8 +108,6 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     private ImageButton addApprover;
 
-    private StartProcessReceiver receiver;
-
     private Button assigneesButton;
 
     private Button attachmentsButton;
@@ -129,19 +121,9 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     {
     }
 
-    public static CreateTaskFragment newInstance(ProcessDefinition processDefinition)
+    public static CreateTaskFragment newInstanceByTemplate(Bundle b)
     {
         CreateTaskFragment bf = new CreateTaskFragment();
-        Bundle b = new Bundle();
-        b.putSerializable(PARAM_PROCESS_DEFINITION, processDefinition);
-        bf.setArguments(b);
-        return bf;
-    }
-
-    public static CreateTaskFragment newInstance(ProcessDefinition processDefinition, Bundle b)
-    {
-        CreateTaskFragment bf = new CreateTaskFragment();
-        b.putSerializable(PARAM_PROCESS_DEFINITION, processDefinition);
         bf.setArguments(b);
         return bf;
     }
@@ -153,28 +135,27 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         // Retrieve parameters
-        if (getArguments() == null && !getArguments().containsKey(PARAM_PROCESS_DEFINITION)) { return null; }
-        processDefinition = (ProcessDefinition) getArguments().getSerializable(PARAM_PROCESS_DEFINITION);
+        if (getArguments() == null && !getArguments().containsKey(ARGUMENT_PROCESS_DEFINITION)) { return null; }
+        processDefinition = (ProcessDefinition) getArguments().getSerializable(ARGUMENT_PROCESS_DEFINITION);
 
-        if (getArguments() != null && getArguments().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+        if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
         {
             @SuppressWarnings("unchecked")
-            List<Document> docs = (List<Document>) getArguments().get(IntentIntegrator.EXTRA_DOCUMENTS);
+            List<Document> docs = (List<Document>) getArguments().get(PrivateIntent.EXTRA_DOCUMENTS);
             for (Document document : docs)
             {
                 items.put(document.getIdentifier(), document);
             }
-            getArguments().remove(IntentIntegrator.EXTRA_DOCUMENTS);
+            getArguments().remove(PrivateIntent.EXTRA_DOCUMENTS);
         }
 
         setRetainInstance(true);
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
-        vRoot = inflater.inflate(R.layout.app_start_process, container, false);
-        if (alfSession == null) { return vRoot; }
+        checkSession();
+        setRootView(inflater.inflate(R.layout.app_start_process, container, false));
+        if (getSession() == null) { return getRootView(); }
 
         // DESCRIPTION
-        titleTask = (EditText) vRoot.findViewById(R.id.process_title);
+        titleTask = (EditText) viewById(R.id.process_title);
         if (items != null && items.size() > 0 && titleTask.getText().length() == 0)
         {
             if (items.size() == 1)
@@ -192,7 +173,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         titleTask.addTextChangedListener(watcher);
 
         // DatePicker
-        ImageButton ib = (ImageButton) vRoot.findViewById(R.id.action_process_due_on);
+        ImageButton ib = (ImageButton) viewById(R.id.action_process_due_on);
         ib.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -201,13 +182,13 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 DatePickerFragment.newInstance(0, TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
-        dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
+        dueOn = (Button) viewById(R.id.process_due_on);
         if (dueAt != null)
         {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
         }
 
-        Button b = (Button) vRoot.findViewById(R.id.process_due_on);
+        Button b = (Button) viewById(R.id.process_due_on);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -219,7 +200,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         b.setText(getString(R.string.tasks_due_no_date));
 
         // ASSIGNEES
-        ib = (ImageButton) vRoot.findViewById(R.id.action_process_assignee);
+        ib = (ImageButton) viewById(R.id.action_process_assignee);
         ib.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -228,7 +209,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 startPersonPicker();
             }
         });
-        assigneesButton = (Button) vRoot.findViewById(R.id.process_assignee);
+        assigneesButton = (Button) viewById(R.id.process_assignee);
         assigneesButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -243,18 +224,15 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         // APPROVERS
         if (WorkflowModel.FAMILY_PROCESS_ADHOC.contains(processDefinition.getKey()))
         {
-            vRoot.findViewById(R.id.process_approvers_group).setVisibility(View.GONE);
-            if (vRoot.findViewById(R.id.process_approvers_group_title) != null)
-            {
-                vRoot.findViewById(R.id.process_approvers_group_title).setVisibility(View.GONE);
-            }
+            hide(R.id.process_approvers_group);
+            hide(R.id.process_approvers_group_title);
             isAdhoc = true;
         }
         else
         {
-            approversEditText = (EditText) vRoot.findViewById(R.id.process_approvers);
-            removeApprover = (ImageButton) vRoot.findViewById(R.id.action_remove_approvers);
-            addApprover = (ImageButton) vRoot.findViewById(R.id.action_add_approvers);
+            approversEditText = (EditText) viewById(R.id.process_approvers);
+            removeApprover = (ImageButton) viewById(R.id.action_remove_approvers);
+            addApprover = (ImageButton) viewById(R.id.action_add_approvers);
             updateApprovers();
 
             removeApprover.setOnClickListener(new OnClickListener()
@@ -284,7 +262,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         }
 
         // ATTACHMENTS
-        ib = (ImageButton) vRoot.findViewById(R.id.action_process_attachments);
+        ib = (ImageButton) viewById(R.id.action_process_attachments);
         ib.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -293,7 +271,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
                 startDocumentPicker();
             }
         });
-        attachmentsButton = (Button) vRoot.findViewById(R.id.process_attachments);
+        attachmentsButton = (Button) viewById(R.id.process_attachments);
         attachmentsButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -306,16 +284,16 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         attachmentsButton.setText(MessageFormat.format(getString(R.string.task_attachments_plurals), items.size()));
 
         // PRIORITY
-        bM = (ToggleButton) vRoot.findViewById(R.id.action_priority_medium);
+        bM = (ToggleButton) viewById(R.id.action_priority_medium);
         bM.setOnTouchListener(priorityClickListener);
-        bL = (ToggleButton) vRoot.findViewById(R.id.action_priority_low);
+        bL = (ToggleButton) viewById(R.id.action_priority_low);
         bL.setOnTouchListener(priorityClickListener);
-        bH = (ToggleButton) vRoot.findViewById(R.id.action_priority_high);
+        bH = (ToggleButton) viewById(R.id.action_priority_high);
         bH.setOnTouchListener(priorityClickListener);
         updatePriority();
 
         // VALIDATION
-        validation = UIUtils.initValidation(vRoot, R.string.done, true);
+        validation = UIUtils.initValidation(getRootView(), R.string.done, true);
         validation.setEnabled(false);
         validation.setOnClickListener(new OnClickListener()
         {
@@ -329,22 +307,20 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         // Email Notification
         if (AndroidVersion.isICSOrAbove())
         {
-            emailNotification = (Switch) vRoot.findViewById(R.id.action_send_notification);
+            emailNotification = (Switch) viewById(R.id.action_send_notification);
         }
         else
         {
-            emailNotification = (CheckBox) vRoot.findViewById(R.id.action_send_notification);
+            emailNotification = (CheckBox) viewById(R.id.action_send_notification);
         }
 
-        return vRoot;
+        return getRootView();
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
-        getActivity().invalidateOptionsMenu();
+        checkSession();
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -356,13 +332,9 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         {
             UIUtils.displayTitle(getActivity(), R.string.task_create);
         }
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_START_PROCESS_COMPLETED);
-        receiver = new StartProcessReceiver();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-
         super.onResume();
 
-        dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
+        dueOn = (Button) viewById(R.id.process_due_on);
         if (dueAt != null)
         {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
@@ -380,7 +352,7 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         gregorianCalendar.set(Calendar.SECOND, 59);
         gregorianCalendar.set(Calendar.MILLISECOND, 999);
         dueAt = gregorianCalendar;
-        Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
+        Button dueOn = (Button) viewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
     }
 
@@ -403,21 +375,19 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         }
 
         // Assignees
-        List<Person> people = new ArrayList<Person>(assignees.values());
+        List<Person> persons = new ArrayList<Person>(assignees.values());
 
         // Items
         List<Document> attachments = new ArrayList<Document>(items.values());
 
-        // Start an adhoc process with no items
-        OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils.getAccount(getActivity()));
-        group.enqueue(new StartProcessRequest(processDefinition, people, variables, attachments).setNotificationTitle(
-                titleTask.getText().toString()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        // Start process
+        String operationId = Operator.with(getActivity(), getAccount()).load(
+                new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
 
+        // Display waiting dialog
         OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_action_inbox,
-                getString(R.string.process_starting), null, null, 0).show(getActivity().getFragmentManager(),
-                OperationWaitingDialogFragment.TAG);
-
-        BatchOperationManager.getInstance(getActivity()).enqueue(group);
+                getString(R.string.process_starting), null, null, 0, operationId).show(
+                getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -656,27 +626,12 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // BROADCAST RECEIVER
+    // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    public class StartProcessReceiver extends BroadcastReceiver
+    @Subscribe
+    public void onProcessStarted(StartProcessEvent event)
     {
-
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            Log.d(TAG, intent.getAction());
-
-            if (getActivity() == null) { return; }
-
-            if (intent.getExtras() != null)
-            {
-                if (intent.getAction().equals(IntentIntegrator.ACTION_START_PROCESS_COMPLETED))
-                {
-                    getActivity().finish();
-                    return;
-                }
-            }
-        }
+        getActivity().finish();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -701,20 +656,61 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
 
     public void startPersonPicker()
     {
-        PersonSearchFragment frag = PersonSearchFragment.newInstance(ListingModeFragment.MODE_PICK, TAG, isAdhoc);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
-                PersonSearchFragment.TAG, true);
+        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(isAdhoc)
+                .mode(ListingModeFragment.MODE_PICK).display();
     }
 
     public void startDocumentPicker()
     {
-        CreateTaskDocumentPickerFragment frag = CreateTaskDocumentPickerFragment.newInstance();
-        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
-                CreateTaskDocumentPickerFragment.TAG, true);
+        CreateTaskDocumentPickerFragment.with(getActivity()).display();
     }
 
     public List<Node> getAttachments()
     {
         return new ArrayList<Node>(items.values());
     }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+            this.extraConfiguration = new Bundle();
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder processDefinition(ProcessDefinition processDefinition)
+        {
+            extraConfiguration.putSerializable(ARGUMENT_PROCESS_DEFINITION, processDefinition);
+            return this;
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CREATE FRAGMENT
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        }
+    }
+
 }

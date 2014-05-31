@@ -18,7 +18,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    style="?AlfrescoTheme.Background.White"
+    style="?MainTheme.Background.White"
     android:gravity="center" >
 
     <LinearLayout
@@ -47,7 +47,7 @@
 
         <Button
             android:id="@+id/home_sign_cloud"
-            style="?AlfrescoTheme.Button.Large"
+            style="?MainTheme.Button.Large"
             android:drawableLeft="@drawable/ic_cloud"
             android:onClick="cloud"
             android:text="@string/home_sign_cloud" />
@@ -62,7 +62,7 @@
             android:textSize="@dimen/home_description_size" />
 
         <Button
-            style="?AlfrescoTheme.Button.Large"
+            style="?MainTheme.Button.Large"
             android:drawableLeft="@drawable/ic_login"
             android:onClick="launch"
             android:text="@string/home_account" />

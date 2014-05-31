@@ -32,18 +32,18 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?AlfrescoTheme.TextView.ListItem.Primary"
+            style="?MainTheme.TextView.ListItem.Primary"
              />
 
         <ProgressBar
             android:id="@+id/status_progress"
-            style="?AlfrescoTheme.Progress"
+            style="?MainTheme.Progress"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
         <LinearLayout
-            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+            style="?MainTheme.TextView.ListItem.Secondary"
             android:orientation="horizontal" >
 
             <ImageView
@@ -59,14 +59,14 @@
 
             <TextView
                 android:id="@+id/bottomtext"
-                style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                style="?MainTheme.TextView.ListItem.Secondary"
                 android:layout_marginLeft="0dip" />
         </LinearLayout>
     </LinearLayout>
 
     <ImageView
         android:id="@+id/choose"
-        style="?AlfrescoTheme.ImageView.ActionIcon"
+        style="?MainTheme.ImageView.ActionIcon"
         android:background="@drawable/btn_default_holo_light"
         android:contentDescription="@string/thumbnail"
         />

@@ -35,7 +35,7 @@
             android:orientation="vertical" >
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_title" />
@@ -49,7 +49,7 @@
             </EditText>
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_due_on" />
@@ -80,7 +80,7 @@
             </LinearLayout>
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_assignees" />
@@ -111,7 +111,7 @@
             </LinearLayout>
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_attachments" />
@@ -143,7 +143,7 @@
 
             <TextView
                 android:id="@+id/process_approvers_group_title"
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_approvers" />
@@ -181,7 +181,7 @@
             </LinearLayout>
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_priority" />
@@ -232,7 +232,7 @@
             </LinearLayout>
 
             <TextView
-                style="?AlfrescoTheme.TextView.SearchHeader"
+                style="?MainTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_notification" />

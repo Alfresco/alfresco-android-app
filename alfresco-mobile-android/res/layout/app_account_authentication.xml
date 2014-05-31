@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?AlfrescoTheme.Background.White"
+    style="?MainTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center"
     android:minWidth="600dp" >
@@ -32,7 +32,7 @@
 
         <TextView
             android:id="@+id/advanced"
-            style="?AlfrescoTheme.TextView.SectionHeader.Primary"
+            style="?MainTheme.TextView.SectionHeader.Primary"
             android:text="@string/cloud_authentication" />
 
         <include

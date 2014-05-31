@@ -33,12 +33,12 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+            style="?MainTheme.TextView.ListItem.Secondary"
              />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?AlfrescoTheme.TextView.ListItem.Primary"
+            style="?MainTheme.TextView.ListItem.Primary"
             />
     </LinearLayout>
 </LinearLayout>

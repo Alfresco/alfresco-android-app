@@ -30,7 +30,7 @@
 
         <ImageView
             android:id="@+id/icon"
-            style="?AlfrescoTheme.ImageView.Thumbnail.Large"
+            style="?MainTheme.ImageView.Thumbnail.Large"
         	android:contentDescription="@null"
             android:src="@drawable/mime_file" />
 
@@ -43,16 +43,16 @@
 
             <TextView
                 android:id="@+id/toptext"
-                style="?AlfrescoTheme.TextView.ListItem.Primary" />
+                style="?MainTheme.TextView.ListItem.Primary" />
 
             <TextView
                 android:id="@+id/bottomtext"
-                style="?AlfrescoTheme.TextView.ListItem.Secondary" />
+                style="?MainTheme.TextView.ListItem.Secondary" />
         </LinearLayout>
 
         <ImageView
             android:id="@+id/choose"
-            style="?AlfrescoTheme.ImageView.Thumbnail"
+            style="?MainTheme.ImageView.Thumbnail"
         	android:contentDescription="@null"
             android:visibility="gone" />
     </LinearLayout>

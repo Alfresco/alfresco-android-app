@@ -1,33 +1,33 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
-import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -38,7 +38,7 @@ import android.widget.Button;
 import android.widget.ExpandableListView;
 import android.widget.ExpandableListView.OnChildClickListener;
 
-public class TaskFilterFragment extends BaseFragment
+public class TaskFilterFragment extends AlfrescoFragment
 {
     public static final String TAG = TaskFilterFragment.class.getName();
 
@@ -53,9 +53,11 @@ public class TaskFilterFragment extends BaseFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static TaskFilterFragment newInstance()
+    protected static TaskFilterFragment newInstanceByTemplate(Bundle b)
     {
-        return new TaskFilterFragment();
+        TaskFilterFragment cbf = new TaskFilterFragment();
+        cbf.setArguments(b);
+        return cbf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -65,11 +67,11 @@ public class TaskFilterFragment extends BaseFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(true);
-        
+
         View rootView = inflater.inflate(R.layout.app_task_filters, container, false);
 
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        setSession(SessionUtils.getSession(getActivity()));
+        SessionUtils.checkSession(getActivity(), getSession());
 
         expandableList = (ExpandableListView) rootView.findViewById(R.id.filters_list);
         expandableList.setGroupIndicator(null);
@@ -81,21 +83,23 @@ public class TaskFilterFragment extends BaseFragment
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
             {
-                expListAdapter.select(v,  groupPosition,  childPosition);
+                expListAdapter.select(v, groupPosition, childPosition);
                 return false;
             }
         });
-        
+
         validate = UIUtils.initValidation(rootView, R.string.task_filter_view, true);
         validate.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                createFilter();
+                ListingContext lc = new ListingContext();
+                ListingFilter lf = TasksHelper.createFilter(selectedItems.values());
+                lc.setFilter(lf);
+                TasksFragment.with(getActivity()).setListingContext(lc).display();
             }
         });
-        
 
         return rootView;
     }
@@ -106,59 +110,38 @@ public class TaskFilterFragment extends BaseFragment
         UIUtils.displayTitle(getActivity(), getString(R.string.my_tasks));
         super.onResume();
     }
-    
-    
-    private void createFilter(){
-        ListingFilter f = new ListingFilter();
-        
-        selectedItems = expListAdapter.getSelectedItems();
-        for (Integer value : selectedItems.values())
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
         {
-            switch (value)
-            {
-                case R.string.tasks_active:
-                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
-                    break;
-                case R.string.tasks_completed:
-                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
-                    break;
-                case R.string.tasks_due_today:
-                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TODAY);
-                    break;
-                case R.string.tasks_due_tomorrow:
-                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TOMORROW);
-                    break;
-                case R.string.tasks_due_week:
-                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_7DAYS);
-                    break;
-                case R.string.tasks_due_over:
-                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_OVERDUE);
-                    break;
-                case R.string.tasks_due_no_date:
-                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_NODATE);
-                    break;
-                case R.string.tasks_priority_low:
-                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_LOW);
-                    break;
-                case R.string.tasks_priority_medium:
-                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_MEDIUM);
-                    break;
-                case R.string.tasks_priority_high:
-                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
-                    break;
-                case R.string.tasks_assignee_me:
-                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
-                    break;
-                case R.string.tasks_assignee_unassigned:
-                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
-                    break;
-                default:
-                    break;
-            }
+            super(activity);
+            this.extraConfiguration = new Bundle();
         }
 
-        Fragment taskFragment = TasksFragment.newInstance(f);
-        FragmentDisplayer.replaceFragment(getActivity(), taskFragment, DisplayUtils.getLeftFragmentId(getActivity()),
-                TasksFragment.TAG, true);
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
     }
+
 }
