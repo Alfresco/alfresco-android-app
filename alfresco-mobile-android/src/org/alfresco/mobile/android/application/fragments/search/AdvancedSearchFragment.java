@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.search;
 
 import java.text.SimpleDateFormat;
@@ -32,22 +32,25 @@ import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
-import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.onPickPersonFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
+import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
+import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
+import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
-import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.application.providers.search.HistorySearch;
+import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
+import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
+import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
@@ -66,7 +69,7 @@ import android.widget.TextView;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class AdvancedSearchFragment extends BaseFragment implements onPickPersonFragment, onPickDateFragment
+public class AdvancedSearchFragment extends AlfrescoFragment implements UserPickerCallback, onPickDateFragment
 {
     public static final String TAG = AdvancedSearchFragment.class.getName();
 
@@ -76,9 +79,9 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
 
     private static final String SEARCH_TYPE = "SearchType";
 
-    private static final String PARAM_SITE = "site";
+    private static final String ARGUMENT_SITE = "site";
 
-    private static final String PARAM_FOLDER = "parentFolder";
+    private static final String ARGUMENT_FOLDER = "parentFolder";
 
     private Map<String, Person> assignees = new HashMap<String, Person>(1);
 
@@ -113,24 +116,11 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static AdvancedSearchFragment newInstance(int searchkey)
+    protected static AdvancedSearchFragment newInstanceByTemplate(Bundle b)
     {
-        Bundle b = new Bundle();
-        b.putInt(SEARCH_TYPE, searchkey);
-        AdvancedSearchFragment fr = new AdvancedSearchFragment();
-        fr.setArguments(b);
-        return fr;
-    }
-
-    public static AdvancedSearchFragment newInstance(int searchkey, Site site, Folder parentFolder)
-    {
-        Bundle b = new Bundle();
-        b.putInt(SEARCH_TYPE, searchkey);
-        b.putSerializable(PARAM_FOLDER, parentFolder);
-        b.putSerializable(PARAM_SITE, site);
-        AdvancedSearchFragment fr = new AdvancedSearchFragment();
-        fr.setArguments(b);
-        return fr;
+        AdvancedSearchFragment cbf = new AdvancedSearchFragment();
+        cbf.setArguments(b);
+        return cbf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -159,13 +149,13 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             }
 
             // Search inside a folder
-            tmpParentFolder = (Folder) getArguments().getSerializable(PARAM_FOLDER);
+            tmpParentFolder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
         }
 
         rootView = inflater.inflate(layoutId, container, false);
 
-        alfSession = SessionUtils.getSession(getActivity());
-        SessionUtils.checkSession(getActivity(), alfSession);
+        setSession(SessionUtils.getSession(getActivity()));
+        SessionUtils.checkSession(getActivity(), getSession());
 
         switch (searchKey)
         {
@@ -223,12 +213,12 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         });
 
         // ACCESSIBILITY
-        if (AccessibilityHelper.isEnabled(getActivity()))
+        if (AccessibilityUtils.isEnabled(getActivity()))
         {
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.search_name), R.string.search_name);
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.jobTitle), R.string.jobTitle);
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.company), R.string.company);
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.location), R.string.location);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.search_name), R.string.search_name);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.jobTitle), R.string.jobTitle);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.company), R.string.company);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.location), R.string.location);
         }
     }
 
@@ -313,7 +303,7 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         });
 
         // Last Modification by
-        if (alfSession instanceof CloudSession)
+        if (getSession() instanceof CloudSession)
         {
             rootView.findViewById(R.id.modified_by_group).setVisibility(View.GONE);
         }
@@ -362,19 +352,18 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         });
 
         // ACCESSIBILITY
-        if (AccessibilityHelper.isEnabled(getActivity()))
+        if (AccessibilityUtils.isEnabled(getActivity()))
         {
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_name), R.string.metadata_prop_name);
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_title), R.string.metadata_prop_title);
-            AccessibilityHelper.addHint(rootView.findViewById(R.id.metadata_prop_description),
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.metadata_prop_name), R.string.metadata_prop_name);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.metadata_prop_title), R.string.metadata_prop_title);
+            AccessibilityUtils.addHint(rootView.findViewById(R.id.metadata_prop_description),
                     R.string.metadata_prop_description);
         }
     }
 
     private void startPersonPicker()
     {
-        PersonSearchFragment frag = PersonSearchFragment.newInstance(ListingModeFragment.MODE_PICK, TAG, true);
-        frag.show(getActivity().getFragmentManager(), PersonSearchFragment.TAG);
+        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(true).displayAsDialog();
     }
 
     private void search()
@@ -383,34 +372,24 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         String description = createDescriptionQuery();
         if (statement == null)
         {
-            MessengerManager.showLongToast(getActivity(), getActivity().getString(R.string.error_search_fields_empty));
+            MessengerUtils.showLongToast(getActivity(), getActivity().getString(R.string.error_search_fields_empty));
             return;
         }
-        BaseFragment frag = null;
-        String tag = "";
         switch (searchKey)
         {
             case HistorySearch.TYPE_PERSON:
-                frag = PersonSearchFragment.newInstance(statement, description);
-                frag.setSession(alfSession);
-                tag = PersonSearchFragment.TAG;
+                UsersFragment.with(getActivity()).keywords(statement).title(description).display();
                 break;
             case HistorySearch.TYPE_FOLDER:
             case HistorySearch.TYPE_DOCUMENT:
-                frag = DocumentFolderSearchFragment.newInstance(statement, description);
-                tag = DocumentFolderSearchFragment.TAG;
+                DocumentFolderSearchFragment.with(getActivity()).query(statement).title(description).display();
                 break;
             default:
                 break;
         }
-
         // Save history or update
         HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
                 searchKey, 1, description, statement, new Date().getTime());
-
-        frag.setSession(alfSession);
-        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()), tag,
-                true, true);
     }
 
     private String createQuery()
@@ -429,8 +408,8 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
             case HistorySearch.TYPE_FOLDER:
                 if (isEmpty(name, title, description, null, modifiedId, modificationDateFromValue,
                         modificationDateToValue)) { return null; }
-                return QueryHelper.createQuery(false, name, title, description, -1, modifiedId, modificationDateFromValue,
-                        modificationDateToValue, tmpParentFolder);
+                return QueryHelper.createQuery(false, name, title, description, -1, modifiedId,
+                        modificationDateFromValue, modificationDateToValue, tmpParentFolder);
             case HistorySearch.TYPE_DOCUMENT:
                 Integer mimetype = (Integer) spinnerMimeType.getSelectedItem();
                 if (isEmpty(name, title, description, mimetype, modifiedId, modificationDateFromValue,
@@ -687,4 +666,54 @@ public class AdvancedSearchFragment extends BaseFragment implements onPickPerson
         }
     };
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
+
+        public Builder searchkey(int searchkey)
+        {
+            extraConfiguration.putInt(SEARCH_TYPE, searchkey);
+            return this;
+        }
+
+        public Builder site(Site site)
+        {
+            extraConfiguration.putSerializable(ARGUMENT_SITE, site);
+            return this;
+        }
+
+        public Builder folder(Folder folder)
+        {
+            extraConfiguration.putSerializable(ARGUMENT_FOLDER, folder);
+            return this;
+        }
+    }
 }

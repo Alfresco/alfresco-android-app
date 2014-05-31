@@ -1,0 +1,406 @@
+{
+  "application": {
+    "default": {
+      "rootMenu": {
+        "default-menu": {
+          "alf:merge": "views-group/default-menu",
+          "header": true
+        }
+      },
+      "details": {
+        "properties-content-default": {
+          "alf:merge": "models-group/properties-content-default"
+        }
+      },
+      "creation": {
+        "creation-default": {
+          "alf:merge": "models-group/properties-content-default"
+        }
+      }
+    }
+  },
+  "views-group": {
+    "default-menu": {
+      "label-id": "Views",
+      "view-activities-default": {
+        "alf:merge": "views/view-activities-default"
+      },
+      "view-repository-default": {
+        "alf:merge": "views/view-repository-default"
+      },
+      "view-repository-shared-default": {
+        "alf:merge": "views/view-repository-shared-default"
+      },
+      "view-sites-default": {
+        "alf:merge": "views/view-sites-default"
+      },
+      "view-repository-userhome-default": {
+        "alf:merge": "views/view-repository-userhome-default"
+      },
+      "view-task-default": {
+        "alf:merge": "views/view-task-default"
+      },
+      "view-favorite-default": {
+        "alf:merge": "views/view-favorite-default"
+      },
+      "view-search-default": {
+        "alf:merge": "views/view-search-default"
+      },
+      "view-local-default": {
+        "alf:merge": "views/view-local-default"
+      }
+    },
+    "default-overflow-menu": {
+      "view-settings-default": {
+        "alf:merge": "views/view-settings-default"
+      },
+      "view-help-default": {
+        "alf:merge": "views/view-help-default"
+      },
+      "view-about-default": {
+        "alf:merge": "views/view-about-default"
+      }
+    }
+  },
+  "rules": {
+    "display-content-details": {
+      "evaluators": {
+        "isOnPremiseAccount": {
+          "alf:merge": "evaluators"
+        }
+      },
+      "view": {
+        "view-task-default": {
+          "alf:merge": "views/view-task-default"
+        }
+      }
+    }
+  },
+  "views": {
+    "view-activities-default": {
+      "type": "com.alfresco.type.activities"
+    },
+    "view-repository-default": {
+      "type": "com.alfresco.type.repository"
+    },
+    "view-repository-shared-default": {
+      "type": "com.alfresco.type.repository",
+      "folderTypeId": "shared",
+      "evaluators": {
+        "isOnPremiseAccount": {
+          "alf:merge": "evaluators"
+        }
+      }
+    },
+    "view-sites-default": {
+      "type": "com.alfresco.type.sites"
+    },
+    "view-repository-userhome-default": {
+      "type": "com.alfresco.type.repository",
+      "folderTypeId": "userhome"
+    },
+    "view-task-default": {
+      "type": "com.alfresco.type.tasks"
+    },
+    "view-favorite-default": {
+      "type": "com.alfresco.type.favorites"
+    },
+    "view-search-default": {
+      "type": "com.alfresco.type.search"
+    },
+    "view-local-default": {
+      "type": "com.alfresco.type.local"
+    },
+    "view-settings-default": {
+      "type": "com.alfresco.type.settings"
+    },
+    "view-help-default": {
+      "type": "com.alfresco.type.help"
+    },
+    "view-about-default": {
+      "type": "com.alfresco.type.about"
+    }
+  },
+  "models-group": {
+    "properties-content-default": {
+      "cm:content": {
+        "alf:merge": "models/types/cm:content/view"
+      },
+      "fdk:company": {
+        "alf:merge": "models/types/fdk:company/view"
+      },
+      "cm:dublincore": {
+        "evaluators": {
+          "hasAspect": {
+            "type": "com.alfresco.evaluator.hasAspect",
+            "params": {
+              "aspect": "cm:dublincore"
+            }
+          }
+        },
+        "alf:merge": "models/aspects/cm:dublincore/view"
+      }
+    }
+  },
+  "models": {
+    "types": {
+      "cm:content": {
+        "view": {
+          "label-id": "General",
+          "cm:name": {
+            "visibility": true
+          },
+          "cm:title": {
+            "visibility": true
+          },
+          "cm:description": {
+            "visibility": true
+          },
+          "mimetype": {
+            "visibility": true
+          },
+          "cm:author": {
+            "visibility": true
+          },
+          "size": {
+            "visibility": true
+          },
+          "cm:creator": {
+            "visibility": true
+          },
+          "cm:created": {
+            "visibility": true
+          },
+          "cm:modifier": {
+            "visibility": true
+          },
+          "cm:modified": {
+            "visibility": true
+          }
+        },
+        "edit": {
+          "cm:name": {
+            "visibility": true,
+            "maxLength": 255
+          },
+          "cm:title": {
+            "visibility": true
+          },
+          "cm:description": {
+            "visibility": true
+          }
+        }
+      },
+      "cm:folder": {
+        "view": {
+          "cm:name": {
+            "visibility": true
+          },
+          "cm:title": {
+            "visibility": true
+          },
+          "cm:description": {
+            "visibility": true
+          }
+        }
+      },
+      "fdk:company": {
+        "view": {
+          "label-id": "Company Details Properties",
+          "fdk:email": {
+            "visibility": true
+          },
+          "fdk:url": {
+            "visibility": true
+          },
+          "fdk:tel": {
+            "visibility": true
+          }
+        }
+      }
+    },
+    "aspects": {
+      "cm:dublincore": {
+        "view": {
+          "label-id": "Dublin Core",
+          "cm:publisher": {
+            "visibility": false
+          },
+          "cm:contributor": {
+            "visibility": false
+          },
+          "cm:type": {
+            "visibility": false
+          },
+          "cm:identifier": {
+            "visibility": true
+          },
+          "cm:dcsource": {
+            "visibility": true
+          },
+          "cm:coverage": {
+            "visibility": true
+          },
+          "cm:rights": {
+            "visibility": true
+          },
+          "cm:subject": {
+            "visibility": true
+          }
+        }
+      },
+      "cm:emailed": {
+        "view": {
+          "label-id": "Emailed",
+          "cm:originator": {
+            "visibility": true
+          },
+          "cm:addressee": {
+            "visibility": true
+          },
+          "cm:addressees": {
+            "visibility": true
+          },
+          "cm:sentdate": {
+            "visibility": true
+          },
+          "cm:subjectline": {
+            "visibility": true
+          }
+        }
+      },
+      "exif:exif": {
+        "view": {
+          "label-id": "EXIF",
+          "exif:dateTimeOriginal": {
+            "visibility": true
+          },
+          "exif:pixelXDimension": {
+            "visibility": true
+          },
+          "exif:pixelYDimension": {
+            "visibility": true
+          },
+          "exif:exposureTime": {
+            "visibility": true
+          },
+          "exif:fNumber": {
+            "visibility": true
+          },
+          "exif:flash": {
+            "visibility": true
+          },
+          "exif:focalLength": {
+            "visibility": true
+          },
+          "exif:isoSpeedRatings": {
+            "visibility": true
+          },
+          "exif:manufacturer": {
+            "visibility": true
+          },
+          "exif:model": {
+            "visibility": true
+          },
+          "exif:software": {
+            "visibility": true
+          },
+          "exif:orientation": {
+            "visibility": true
+          },
+          "exif:xResolution": {
+            "visibility": true
+          },
+          "exif:yResolution": {
+            "visibility": true
+          },
+          "exif:resolutionUnit": {
+            "visibility": true
+          }
+        }
+      },
+      "audio:audio": {
+        "view": {
+          "label-id": "Audio",
+          "audio:album": {
+            "visibility": true
+          },
+          "audio:artist": {
+            "visibility": true
+          },
+          "audio:composer": {
+            "visibility": true
+          },
+          "audio:engineer": {
+            "visibility": true
+          },
+          "audio:genre": {
+            "visibility": true
+          },
+          "audio:trackNumber": {
+            "visibility": true
+          },
+          "audio:releaseDate": {
+            "visibility": true
+          },
+          "audio:sampleRate": {
+            "visibility": true
+          },
+          "audio:sampleType": {
+            "visibility": true
+          },
+          "audio:channelType": {
+            "visibility": true
+          },
+          "audio:compressor": {
+            "visibility": true
+          }
+        }
+      },
+      "cm:geographic": {
+        "view": {
+          "label-id": "Geographic",
+          "cm:latitude": {
+            "visibility": false
+          },
+          "cm:longitude": {
+            "visibility": false
+          }
+        }
+      }
+    }
+  },
+  "evaluators-group": {
+    "rules1": {
+      "chain": "matchAll",
+      "isOnPremiseAccount": {
+        "alf:merge": "evaluators/isOnPremiseAccount"
+      },
+      "hasVersionNumberGreaterOrEqualTo4": {
+        "alf:merge": "evaluators/hasVersionNumberGreaterOrEqualTo42EE"
+      }
+    }
+  },
+  "evaluators": {
+    "hasVersionNumberGreaterOrEqualTo42EE": {
+      "type": "com.alfresco.evaluator.repositoryInfo",
+      "params": {
+        "operator": ">=",
+        "versionNumber": "4.2",
+        "edition": "Enterprise"
+      }
+    },
+    "isCloudAccount": {
+      "type": "com.alfresco.evaluator.repositoryInfo",
+      "params": {
+        "type": "cloud"
+      }
+    },
+    "isOnPremiseAccount": {
+      "type": "com.alfresco.evaluator.repositoryInfo",
+      "params": {
+        "type": "onPremise"
+      }
+    }
+  }
+}

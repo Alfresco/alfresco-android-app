@@ -17,7 +17,7 @@
   limitations under the License
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?AlfrescoTheme.Background.White"
+    style="?MainTheme.Background.White"
     android:layout_width="match_parent"
     android:layout_gravity="center"
     android:fillViewport="true"
@@ -40,12 +40,12 @@
 
             <TextView
                 android:id="@+id/toptext"
-                style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                style="?MainTheme.TextView.ListItem.Secondary"
                 android:text="@string/account_wizard_step1" />
 
             <TextView
                 android:id="@+id/bottomtext"
-                style="?AlfrescoTheme.TextView.ListItem.Primary"
+                style="?MainTheme.TextView.ListItem.Primary"
                 android:text="@string/account_wizard_step1_description" />
         </LinearLayout>
 
@@ -81,7 +81,7 @@
 
             <Button
                 android:id="@+id/alfresco_cloud"
-                style="?AlfrescoTheme.Button.Large"
+                style="?MainTheme.Button.Large"
                 android:drawableLeft="@drawable/ic_cloud"
                 android:maxWidth="600dip"
                 android:text="@string/account_wizard_alfresco_cloud" />
@@ -106,7 +106,7 @@
 
             <Button
                 android:id="@+id/alfresco_server"
-                style="?AlfrescoTheme.Button.Large"
+                style="?MainTheme.Button.Large"
                 android:drawableLeft="@drawable/ic_onpremise"
                 android:maxWidth="600dip"
                 android:text="@string/account_wizard_alfresco_server" />

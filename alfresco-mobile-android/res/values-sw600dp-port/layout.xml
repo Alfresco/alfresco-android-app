@@ -17,12 +17,5 @@
   limitations under the License.
 -->
 <resources>
-
-    <item name="app_main" type="layout">@layout/app_main_two_panes</item>
-    <item name="app_details" type="layout">@layout/app_details_tabpanes</item>
     <item name="app_start_process" type="layout">@layout/app_start_process_tablet</item>
-    
-
-    <bool name="tablet_middle">true</bool>
-
 </resources>

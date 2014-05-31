@@ -14,30 +14,30 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.-->
+  limitations under the License.
+-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="center"
     android:orientation="vertical" >
 
-    <org.alfresco.mobile.android.application.utils.thirdparty.imagezoom.ImageViewTouch
+    <it.sephiroth.android.library.imagezoom.ImageViewTouch
         android:id="@+id/preview"
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:gravity="center"
         android:contentDescription="@null"
-        android:scaleType="matrix"
-        />
+        android:gravity="center"
+        android:scaleType="matrix" />
 
- 	<TextView
-            android:id="@+id/preview_message"
-            style="?AlfrescoTheme.TextView.ListItem.Primary"
-            android:layout_margin="0dip"
-            android:gravity="center"
-            android:text="@string/preview_unavailable"
-            android:visibility="gone"
-            android:layout_below="@+id/preview" />
+    <TextView
+        android:id="@+id/preview_message"
+        style="?MainTheme.TextView.ListItem.Primary"
+        android:layout_below="@+id/preview"
+        android:layout_margin="0dip"
+        android:gravity="center"
+        android:text="@string/preview_unavailable"
+        android:visibility="gone" />
 
 </LinearLayout>

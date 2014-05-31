@@ -16,7 +16,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?AlfrescoTheme.Background.White"
+    style="?MainTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center" >
 

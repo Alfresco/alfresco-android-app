@@ -62,7 +62,7 @@
 
                     <TextView
                         android:id="@+id/name"
-                        style="?AlfrescoTheme.TextView.ListItem.Primary"
+                        style="?MainTheme.TextView.ListItem.Primary"
                         android:layout_margin="0dp"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -72,7 +72,7 @@
 
                     <TextView
                         android:id="@+id/jobTitle"
-                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                        style="?MainTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -82,7 +82,7 @@
 
                     <TextView
                         android:id="@+id/location"
-                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                        style="?MainTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:gravity="left"
                         android:paddingLeft="0dip"
@@ -100,37 +100,37 @@
 
                 <ImageView
                     android:id="@+id/action_call"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/call"
                     android:src="@drawable/ic_call" />
 
                 <ImageView
                     android:id="@+id/action_skype"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/skype"
                     android:src="@drawable/ic_skype" />
 
                 <ImageView
                     android:id="@+id/action_email"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/email"
                     android:src="@drawable/ic_send_mail" />
 
                 <ImageView
                     android:id="@+id/action_im"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/instantMessaging"
                     android:src="@drawable/ic_im" />
 
                 <ImageView
                     android:id="@+id/action_addcontact"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/contact_add"
                     android:src="@drawable/ic_add_contact" />
 
                 <ImageView
                     android:id="@+id/action_geolocation"
-                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    style="?MainTheme.ImageView.ActionIcon"
                     android:contentDescription="@string/geolocation"
                     android:src="@drawable/ic_location" />
             </LinearLayout>
@@ -148,7 +148,7 @@
 
                 <TextView
                     android:id="@+id/summary"
-                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -178,7 +178,7 @@
 
                 <TextView
                     android:id="@+id/contactInfo_title"
-                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -191,7 +191,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/email" />
@@ -213,7 +213,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/telephone" />
@@ -235,7 +235,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/mobile" />
@@ -257,7 +257,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/skypeId" />
@@ -279,7 +279,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/instantMessagingId" />
@@ -301,7 +301,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/googleId" />
@@ -330,7 +330,7 @@
 
                 <TextView
                     android:id="@+id/company_title"
-                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dip"
@@ -343,7 +343,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyName" />
@@ -365,7 +365,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyAdress" />
@@ -387,7 +387,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -408,7 +408,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -429,7 +429,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyPostCode" />
@@ -451,7 +451,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyTelephone" />
@@ -473,7 +473,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyFax" />
@@ -495,7 +495,7 @@
                     android:orientation="horizontal" >
 
                     <TextView
-                        style="?AlfrescoTheme.TextView.SecondaryBold"
+                        style="?MainTheme.TextView.SecondaryBold"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/companyEmail" />

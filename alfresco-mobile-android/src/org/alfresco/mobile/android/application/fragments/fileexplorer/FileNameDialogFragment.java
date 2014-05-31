@@ -1,37 +1,34 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *  
- *  This file is part of Alfresco Mobile for Android.
- *  
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- ******************************************************************************/
+ *
+ * This file is part of Alfresco Mobile for Android.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
-import org.alfresco.mobile.android.application.operations.OperationRequest;
-import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.file.create.CreateDirectoryRequest;
-import org.alfresco.mobile.android.application.operations.batch.file.update.RenameRequest;
-import org.alfresco.mobile.android.application.utils.IOUtils;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.async.OperationRequest;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.file.create.CreateDirectoryRequest;
+import org.alfresco.mobile.android.async.file.update.RenameFileRequest;
+import org.alfresco.mobile.android.platform.io.IOUtils;
+import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
@@ -43,7 +40,6 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -191,32 +187,29 @@ public class FileNameDialogFragment extends DialogFragment
         {
             public void onClick(View v)
             {
-                InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(textName.getWindowToken(), 0);
+                UIUtils.hideKeyboard(getActivity());
 
-                OperationsRequestGroup group = new OperationsRequestGroup(getActivity(), SessionUtils
-                        .getAccount(getActivity()));
                 if (fileToRename != null)
                 {
-                    group.enqueue(new RenameRequest(fileToRename, textName.getText().toString().trim())
-                            .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                    
-                    OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID,
-                            R.drawable.ic_edit, getString(R.string.action_rename), null, null, 0).show(
+                    String operationId = Operator.with(getActivity()).load(
+                            new RenameFileRequest.Builder(fileToRename, textName.getText().toString().trim())
+                                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+
+                    OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID, R.drawable.ic_edit,
+                            getString(R.string.action_rename), null, null, 0, operationId).show(
                             getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
                 }
                 else
                 {
-                    group.enqueue(new CreateDirectoryRequest((File) getArguments().get(ARGUMENT_FOLDER), textName
-                            .getText().toString().trim()).setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-                    
+                    String operationId = Operator.with(getActivity()).load(
+                            new CreateDirectoryRequest.Builder((File) getArguments().get(ARGUMENT_FOLDER), textName
+                                    .getText().toString().trim())
+                                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+
                     OperationWaitingDialogFragment.newInstance(CreateDirectoryRequest.TYPE_ID,
-                            R.drawable.ic_add_folder, getString(R.string.folder_create), null, null, 0).show(
-                            getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                            R.drawable.ic_add_folder, getString(R.string.folder_create), null, null, 0, operationId)
+                            .show(getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
                 }
-                
-                BatchOperationManager.getInstance(getActivity()).enqueue(group);
 
                 dismiss();
             }

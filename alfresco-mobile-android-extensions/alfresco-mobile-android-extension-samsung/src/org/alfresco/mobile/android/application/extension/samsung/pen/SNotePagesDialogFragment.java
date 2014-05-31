@@ -17,8 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.extension.samsung.pen;
 
-import org.alfresco.mobile.android.application.commons.utils.UIUtils;
-import org.alfresco.mobile.android.application.extension.samsung.impl.R;
+import org.alfresco.mobile.android.application.extension.samsung.R;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.DialogFragment;
 import android.content.res.Configuration;

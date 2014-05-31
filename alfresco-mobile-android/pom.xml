@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.apps</groupId>
 		<artifactId>alfresco-mobile-android-apps</artifactId>
-		<version>1.4.0</version>
+		<version>1.5.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android</artifactId>
@@ -34,72 +34,50 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk</groupId>
-			<artifactId>alfresco-mobile-android-ui-library</artifactId>
-			<version>${alfresco.sdk.version}</version>
-			<type>apklib</type>
-		</dependency>
-		<dependency>
-			<groupId>org.alfresco.mobile.android.apps</groupId>
-			<artifactId>alfresco-mobile-android-commons</artifactId>
-			<version>${project.version}</version>
-			<type>apklib</type>
-		</dependency>
+		<!-- ANDROID -->
 		<dependency>
 			<groupId>android</groupId>
 			<artifactId>android</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android.annotations</groupId>
 			<artifactId>annotations</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.squareup.okhttp</groupId>
-			<artifactId>okhttp</artifactId>
+			<groupId>com.android.support</groupId>
+			<artifactId>support-v4</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>com.squareup.picasso</groupId>
-			<artifactId>picasso</artifactId>
+			<groupId>com.android.support</groupId>
+			<artifactId>support-v13</artifactId>
+		</dependency>
+		<!-- ALFRESCO PLATFORM & SDK -->
+		<dependency>
+			<groupId>org.alfresco.mobile.android.platform</groupId>
+			<artifactId>alfresco-mobile-android-foundation</artifactId>
+			<version>${project.version}</version>
+			<type>apklib</type>
 		</dependency>
 		<dependency>
-			<groupId>android.support</groupId>
-			<artifactId>compatibility-v13</artifactId>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-client-api</artifactId>
+			<version>${alfresco.sdk.version}</version>
 		</dependency>
+		<!-- Optional Extension for testing purpose only 
+		<dependency>
+			<groupId>org.alfresco.mobile.android.extensions</groupId>
+			<artifactId>alfresco-mobile-android-extension-hockeyapp</artifactId>
+			<version>${project.version}</version>
+			<type>apklib</type>
+		</dependency>-->
 	</dependencies>
 
 
 	<profiles>
 		<profile>
 			<id>extension-samsung</id>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<executions>
-							<execution>
-								<phase>initialize</phase>
-								<configuration>
-									<tasks>
-										<replace file="${project.basedir}/AndroidManifest.xml"
-											token="!--@@SAMSUNG@@-" value="!--@@SAMSUNG BEGIN@@--" />
-										<replace file="${project.basedir}/AndroidManifest.xml"
-											token="!-@@SAMSUNG@@--" value="!--@@SAMSUNG END@@--" />
-									</tasks>
-								</configuration>
-								<goals>
-									<goal>run</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 			<dependencies>
 				<dependency>
 					<groupId>org.alfresco.mobile.android.apps</groupId>
@@ -111,7 +89,6 @@
 		</profile>
 		<profile>
 			<id>android-release</id>
-
 			<build>
 				<resources>
 					<resource>
@@ -202,7 +179,6 @@
 						</executions>
 					</plugin>
 				</plugins>
-
 			</build>
 		</profile>
 		<profile>
@@ -211,6 +187,15 @@
 				<!-- Common -->
 				<packageName.beta>org.alfresco.mobile.android.application.beta</packageName.beta>
 			</properties>
+			<dependencies>
+				<!-- HockeyApp -->
+				<dependency>
+					<groupId>org.alfresco.mobile.android.apps</groupId>
+					<artifactId>alfresco-mobile-android-extension-hockeyapp</artifactId>
+					<version>${project.version}</version>
+					<type>apklib</type>
+				</dependency>
+			</dependencies>
 			<build>
 				<resources>
 					<resource>
@@ -295,13 +280,6 @@
 					</plugin>
 				</plugins>
 			</build>
-			<dependencies>
-				<dependency>
-					<groupId>net.hockeyapp.android</groupId>
-					<artifactId>HockeySDK</artifactId>
-					<version>2.2.1</version>
-				</dependency>
-			</dependencies>
 		</profile>
 	</profiles>
 

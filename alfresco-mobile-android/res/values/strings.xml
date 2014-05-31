@@ -20,17 +20,17 @@
 
     <string name="app_name">Alfresco</string>
     <string name="app_name_beta">Beta</string>
-    <string name="empty_accounts">No account available</string>
+    <string name="empty_accounts">No AlfrescoAccount available</string>
 
     <!-- HOME SCREEN -->
     <string name="home_title">Let\'s get you started&#8230; </string>
     <string name="home_sign_cloud">Sign up for Alfresco Cloud</string>
-    <string name="home_sign_cloud_description">New to Alfresco? Create a free online account to store and access your content from anywhere.</string>
+    <string name="home_sign_cloud_description">New to Alfresco? Create a free online AlfrescoAccount to store and access your content from anywhere.</string>
     <string name="home_account">I already have an account</string>
-    <string name="home_account_description">Choose this option if you already have an Alfresco Cloud account or you want to connect to an Alfresco Server</string>
+    <string name="home_account_description">Choose this option if you already have an Alfresco Cloud AlfrescoAccount or you want to connect to an Alfresco Server</string>
     <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
-    <!-- ACCOUNT WIZARD SCRE STEP 1 -->
+    <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
     <string name="account_wizard_alfresco_server">Alfresco Server</string>
     <string name="account_wizard_alfresco_server_description">Connect to an Alfresco Server</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
@@ -38,7 +38,7 @@
     <string name="account_wizard_alfresco_help">New to Alfresco? <a href="alfresco://sign_up_cloud/">Sign Up</a> for a free account</string>
     <string name="account_wizard_alfresco_help_inside_app">New to Alfresco? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">Account</string>
     <string name="action_add_account">Add an account</string>
     <string name="account_username">Username</string>
@@ -61,29 +61,29 @@
     <string name="account_servicedocument">Service URL</string>
     <string name="account_servicedocument_hint">Service URL (Optional). </string>
     <string name="account_wizard_step2_title">Account Authentication Information</string>
-    <string name="account_verify">Verifying Account Information&#8230;</string>
+    <string name="account_verify">Verifying AlfrescoAccount Information&#8230;</string>
     <string name="email_hint">example@acme.com</string>
     <string name="account_validate">Save</string>
-    <string name="account_validate_hint">Save your account information</string>
+    <string name="account_validate_hint">Save your AlfrescoAccount information</string>
     <string name="account_validate_disable_hint">Please fill Username, Password and Hostname fields.</string>
-    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your account settings.</string>
+    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your AlfrescoAccount settings.</string>
 
 
-    <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">Your account is ready for you to use.</string>
+    <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
+    <string name="account_wizard_alldone_description">Your AlfrescoAccount is ready for you to use.</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
     <string name="account_wizard_step1">Step 1 of 2</string>
     <string name="account_wizard_step1_description">Select Account</string>
     <string name="account_wizard_step2">Step 2 of 2</string>
     <string name="account_wizard_step2_description">Account Information</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">Your account is not activated. Please check the Manage Account screen.</string>
-    <string name="account_not_activated_description">Your account is still waiting for verification</string>
+    <string name="account_not_activated">Your AlfrescoAccount is not activated. Please check the Manage AlfrescoAccount screen.</string>
+    <string name="account_not_activated_description">Your AlfrescoAccount is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_edit_hint">Edit "%s" account information</string>
+    <string name="account_edit_hint">Edit "%s" AlfrescoAccount information</string>
     <string name="account_delete_hint">Delete "%s" account</string>
 
 
@@ -95,14 +95,14 @@
     <string name="retry_account_loading">Retry</string>
     <string name="error_session_creation_title">Save Account</string>
     <string name="error_session_creation_message">Connection Error</string>
-    <string name="error_session_creation">Unable to authenticate. Check your account settings.</string>
-    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong<br/> or you may need to <b>activate your VPN</b>.<br/> Please check your account settings.]]></string>
+    <string name="error_session_creation">Unable to authenticate. Check your AlfrescoAccount settings.</string>
+    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong<br/> or you may need to <b>activate your VPN</b>.<br/> Please check your AlfrescoAccount settings.]]></string>
     <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your account settings <b>(Username/Password)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your account settings.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your AlfrescoAccount settings <b>(Username/Password)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your AlfrescoAccount settings.]]></string>
     <string name="error_session_service_unavailable"><![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]></string>
-    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your account settings.]]></string>
-    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your account settings.]]></string>
+    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your AlfrescoAccount settings.]]></string>
+    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your AlfrescoAccount settings.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
 		The third-party organization that issued your server destination\'s certificate is not one that your device recognizes.<br/>
@@ -115,7 +115,7 @@
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
-        Please check your account settings and try again.<br/> If the problem persists please contact your administrator.]]>
+        Please check your AlfrescoAccount settings and try again.<br/> If the problem persists please contact your administrator.]]>
     </string>
     <string name="error_session_cloud_unavailable">
 <![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
@@ -128,7 +128,7 @@
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">An error has occurred.</string>
     <string name="error_general">An error has occurred. Please try again.</string>
-    <string name="error_account_url">The URL is incorrect. Please check your account settings.</string>
+    <string name="error_account_url">The URL is incorrect. Please check your AlfrescoAccount settings.</string>
     <string name="error_unknown_filepath">Failed to find the resource.</string>
 
     <!-- DETAILS -->
@@ -144,7 +144,7 @@
     <!-- SEARCH -->
     <string name="search_form_hint">Enter your search term</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP -->
+    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
     <string name="required">Required</string>
 
@@ -190,11 +190,7 @@
     <string name="details">Details</string>
     <string name="metadata">Properties</string>
     <string name="preview">Preview</string>
-
-    <!-- NETWORKS -->
-    <string name="cloud_networks_empty">No networks available</string>
-    <string name="manage_accounts">Manage accounts&#8230;</string>
-    <string name="cloud_networks_switch">Switch networks&#8230;</string>
+    <string name="details">Details</string>
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
@@ -215,7 +211,7 @@
     <string name="sign_up_cloud_email_verification_line1">You\'ve signed up for Alfresco in the cloud using the email address:</string>
     <string name="sign_up_cloud_email_verification_line2">Please check your email. We\'ve sent you a link that you\'ll need to use to complete the registration.</string>
     <string name="sign_up_cloud_email_having_trouble">Having trouble activating?</string>
-    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your account.</string>
+    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Please let us know</a> if you are unable to activate your AlfrescoAccount.</string>
     <string name="sign_up_cloud_awaiting_email">Awaiting Email Verification</string>
     <string name="cloud_signup_resend">Resend Email</string>
     <string name="cloud_signup_resend_successfull">Successfully Resent Email</string>
@@ -300,7 +296,6 @@
     <string name="create_document_excel">Excel Spreadsheet</string>
     <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the file name here</string>
-    <string name="filename_error_character">This name is invalid.</string>
     <string name="create_document_filename_error">This name is already in use.</string>
     <string name="create_document_save">An error occurred: Your file is saved inside "Downloads".</string>
     <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
@@ -309,7 +304,7 @@
     <string name="create_document_editor_not_available_description">You don\'t have an app that will create this file type.</string>
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
-    <string name="loginfirst">Please login to an account first</string>
+    <string name="loginfirst">Please login to an AlfrescoAccount first</string>
 
     <!-- Comment -->
     <string name="comment_add_hint">Add your comment here&#8230;</string>
@@ -353,7 +348,6 @@
     <string name="action_favorite_site_validation">\"%s\" is now a favorite.</string>
     <string name="action_unfavorite_site_validation">\"%s\" has been unfavorited.</string>
     <string name="action_join_request_site_validation">You have requested to join \"%s\"</string>
-    <string name="empty_joinsiterequest">No Pending requests</string>
     <string name="joinsiterequest_list_title">List of pending requests</string>
     <string name="action_cancel_join_site_request">Your request to join \"%s\" has been cancelled.</string>
     <string name="action_join_site_error">A problem prevented you from joining the site \"%s\".</string>
@@ -455,8 +449,6 @@
         <item quantity="other">%1$s folders</item>
     </plurals>
 
-    <string name="waiting_operations">Please wait&#8230;</string>
-
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
@@ -481,6 +473,8 @@
     <string name="sync_in_progress">Sync in progress&#8230;</string>
     <string name="upload_await">Waiting to upload&#8230;</string>
     <string name="download_await">Waiting to download&#8230;</string>
+    <string name="sync_favorites">Favorites</string>
+    
 
     <plurals name="sync_complete_description">
         <item quantity="zero">no content synced</item>
@@ -682,11 +676,9 @@
 
     <!-- Workflow -->
     <string name="variables">Variables</string>
-    <string name="my_tasks">My Tasks</string>
     <string name="empty_tasks">No Tasks</string>
     <string name="empty_items">No Attachments</string>
     <string name="task_items">Attachment(s)</string>
-    <string name="empty_process_definition">No Process</string>
     <string name="workflow_start">Create a task</string>
     <string name="task_actions">Response</string>
     <string name="tasks">Tasks</string>
@@ -879,5 +871,6 @@
     <string name="advanced_search_hint">Advanced Search Button</string>
     <string name="add_menu">Add to this folder</string>
 
-
+    <string name="multi_selection_enable">MultiSelection</string>
+    <string name="create_content_type">Type</string>
 </resources>

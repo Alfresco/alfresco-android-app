@@ -1,16 +1,36 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco Mobile for Android.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -19,7 +39,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-public class FileExplorerMenuFragment extends BaseFragment
+public class FileExplorerMenuFragment extends AlfrescoFragment
 {
     public static final String TAG = FileExplorerMenuFragment.class.getName();
 
@@ -28,7 +48,7 @@ public class FileExplorerMenuFragment extends BaseFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static BaseFragment newInstance()
+    public static AlfrescoFragment newInstance()
     {
         return new FileExplorerMenuFragment();
     }
@@ -42,7 +62,6 @@ public class FileExplorerMenuFragment extends BaseFragment
         View rootView = inflater.inflate(R.layout.app_fileexplorer_menu, container, false);
         initClickListener(rootView);
 
-
         return rootView;
     }
 
@@ -52,7 +71,7 @@ public class FileExplorerMenuFragment extends BaseFragment
         UIUtils.displayTitle(getActivity(), getString(R.string.menu_local_files));
         super.onResume();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
@@ -91,7 +110,7 @@ public class FileExplorerMenuFragment extends BaseFragment
             switch (v.getId())
             {
                 case R.id.shortcut_alfresco_downloads:
-                    currentLocation = StorageManager.getDownloadFolder(getActivity(),
+                    currentLocation = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
                             ((BaseActivity) getActivity()).getCurrentAccount());
                     break;
                 case R.id.shortcut_local_sdcard:
@@ -126,17 +145,55 @@ public class FileExplorerMenuFragment extends BaseFragment
 
             if (currentLocation != null)
             {
-                ((MainActivity) getActivity()).addLocalFileNavigationFragment(currentLocation);
+                FileExplorerFragment.with(getActivity()).file(currentLocation).display();
             }
             else if (mediatype >= 0)
             {
-                ((MainActivity) getActivity()).addLocalFileNavigationFragment(mediatype);
+                LibraryFragment.with(getActivity()).mediaType(mediatype).display();
             }
 
-            UIUtils.setBackground(v,
-                    FileExplorerMenuFragment.this.getResources().getDrawable(R.drawable.btn_default_focused_holo_light));
+            UIUtils.setBackground(
+                    v,
+                    FileExplorerMenuFragment.this.getResources().getDrawable(
+                            R.drawable.alfrescohololight_btn_default_holo_light));
             currentSelectedButton = v;
         }
     };
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity appActivity)
+    {
+        return new Builder(appActivity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+            menuIconId = R.drawable.ic_download_light;
+            menuTitleId = R.string.menu_local_files;
+            templateArguments = new String[] {};
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CLICK
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstance();
+        };
+
+    }
 }

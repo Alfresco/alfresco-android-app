@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.activity;
 
 import java.util.ArrayList;
@@ -23,35 +23,28 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.AccountManager;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
-import org.alfresco.mobile.android.application.fragments.browser.onPickDocumentFragment;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderPickerCallback;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
+import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskDocumentPickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.security.PassCodeActivity;
-import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.squareup.otto.Subscribe;
 
 /**
  * @author Jean Marie Pascal
@@ -59,8 +52,6 @@ import android.widget.Toast;
 public class PrivateDialogActivity extends BaseActivity
 {
     private static final String TAG = PrivateDialogActivity.class.getName();
-
-    private boolean activateCheckPasscode = false;
 
     private boolean doubleBackToExitPressedOnce = false;
 
@@ -72,94 +63,44 @@ public class PrivateDialogActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        activateCheckPasscode = false;
-
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_ACTION_BAR);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        android.view.WindowManager.LayoutParams params = getWindow().getAttributes();
-
-        int[] values = UIUtils.getScreenDimension(this);
-        int height = values[1];
-        int width = values[0];
-
-        params.height = (int) Math.round(height * 0.9);
-        params.width = (int) Math
-                .round(width
-                        * (Float.parseFloat(getResources().getString(android.R.dimen.dialog_min_width_minor).replace(
-                                "%", "")) * 0.01));
-
-        params.alpha = 1.0f;
-        params.dimAmount = 0.5f;
-        getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
+        displayAsDialogActivity();
         setContentView(R.layout.app_left_panel);
 
-        if (getIntent().hasExtra(IntentIntegrator.EXTRA_ACCOUNT_ID))
-        {
-            currentAccount = AccountManager.retrieveAccount(this,
-                    getIntent().getLongExtra(IntentIntegrator.EXTRA_ACCOUNT_ID, 1));
-        }
-
         String action = getIntent().getAction();
-        if (IntentIntegrator.ACTION_DISPLAY_SETTINGS.equals(action))
+        if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action))
         {
-            Fragment f = new GeneralPreferences();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), GeneralPreferences.TAG,
-                    false, false);
+            GeneralPreferences.with(this).back(false).display();
             return;
         }
 
-        if (IntentIntegrator.ACTION_DISPLAY_OPERATIONS.equals(action))
+        if (PrivateIntent.ACTION_DISPLAY_OPERATIONS.equals(action))
         {
-            Fragment f = new OperationsFragment();
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this), OperationsFragment.TAG,
-                    false, false);
+            FragmentDisplayer.with(this).load(new OperationsFragment()).back(false).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
-        if (IntentIntegrator.ACTION_START_PROCESS.equals(action)
-                && getFragment(CreateTaskTypePickerFragment.TAG) == null)
+        if (PrivateIntent.ACTION_START_PROCESS.equals(action) && getFragment(CreateTaskTypePickerFragment.TAG) == null)
         {
             List<Document> docs = new ArrayList<Document>();
-            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENT))
+            if (getIntent().getExtras() != null && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENT))
             {
-                docs.add((Document) getIntent().getExtras().get(IntentIntegrator.EXTRA_DOCUMENT));
-                getIntent().removeExtra(IntentIntegrator.EXTRA_DOCUMENT);
+                docs.add((Document) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENT));
+                getIntent().removeExtra(PrivateIntent.EXTRA_DOCUMENT);
             }
             else if (getIntent().getExtras() != null
-                    && getIntent().getExtras().containsKey(IntentIntegrator.EXTRA_DOCUMENTS))
+                    && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
             {
-                docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(
-                        IntentIntegrator.EXTRA_DOCUMENTS));
-                getIntent().removeExtra(IntentIntegrator.EXTRA_DOCUMENTS);
+                docs.addAll((Collection<? extends Document>) getIntent().getExtras().get(PrivateIntent.EXTRA_DOCUMENTS));
+                getIntent().removeExtra(PrivateIntent.EXTRA_DOCUMENTS);
             }
 
             Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment() : CreateTaskTypePickerFragment
                     .newInstance(docs);
-            FragmentDisplayer.replaceFragment(this, f, DisplayUtils.getLeftFragmentId(this),
-                    CreateTaskTypePickerFragment.TAG, false, false);
+            FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
-        }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == PassCodeActivity.REQUEST_CODE_PASSCODE)
-        {
-            if (resultCode == RESULT_CANCELED)
-            {
-                finish();
-            }
-            else
-            {
-                activateCheckPasscode = true;
-            }
         }
     }
 
@@ -167,9 +108,6 @@ public class PrivateDialogActivity extends BaseActivity
     protected void onStart()
     {
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        IntentFilter filters = new IntentFilter(IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED);
-        filters.addAction(IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED);
-        registerPrivateReceiver(new PrivateDialogActivityReceiver(), filters);
         super.onStart();
     }
 
@@ -192,7 +130,7 @@ public class PrivateDialogActivity extends BaseActivity
         switch (item.getItemId())
         {
             case android.R.id.home:
-                if (getIntent() != null && IntentIntegrator.ACTION_PICK_FILE.equals(getIntent().getAction()))
+                if (getIntent() != null && PrivateIntent.ACTION_PICK_FILE.equals(getIntent().getAction()))
                 {
                     finish();
                 }
@@ -212,9 +150,9 @@ public class PrivateDialogActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC
     // ///////////////////////////////////////////////////////////////////////////
-    public onPickDocumentFragment getOnPickDocumentFragment()
+    public DocumentFolderPickerCallback getOnPickDocumentFragment()
     {
-        return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+        return (DocumentFolderPickerCallback) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
     }
 
     public void doCancel(View v)
@@ -223,31 +161,22 @@ public class PrivateDialogActivity extends BaseActivity
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
-    // ////////////////////////////////////////////////////////
-    // BROADCAST RECEIVER
-    // ///////////////////////////////////////////////////////
-    private class PrivateDialogActivityReceiver extends BroadcastReceiver
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onAccountProtectionEvent(AccountProtectionEvent event)
     {
-        @Override
-        public void onReceive(Context context, Intent intent)
+        removeWaitingDialog();
+        if (getFragment(GeneralPreferences.TAG) != null)
         {
-            Log.d(TAG, intent.getAction());
-
-            if (IntentIntegrator.ACTION_DECRYPT_ALL_COMPLETED.equals(intent.getAction())
-                    || IntentIntegrator.ACTION_ENCRYPT_ALL_COMPLETED.equals(intent.getAction()))
-            {
-                removeWaitingDialog();
-
-                if (getFragment(GeneralPreferences.TAG) != null)
-                {
-                    ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
-                }
-
-                return;
-            }
+            ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
         }
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // NAVIGATION
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public void onBackPressed()
     {

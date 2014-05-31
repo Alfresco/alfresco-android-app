@@ -1,37 +1,36 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.security;
 
-import static org.alfresco.mobile.android.application.preferences.PasscodePreferences.KEY_PASSCODE_ACTIVATED_AT;
-import static org.alfresco.mobile.android.application.preferences.PasscodePreferences.KEY_PASSCODE_ATTEMPT;
-import static org.alfresco.mobile.android.application.preferences.PasscodePreferences.KEY_PASSCODE_ENABLE;
-import static org.alfresco.mobile.android.application.preferences.PasscodePreferences.KEY_PASSCODE_MAX_ATTEMPT;
-import static org.alfresco.mobile.android.application.preferences.PasscodePreferences.KEY_PASSCODE_VALUE;
+import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_ACTIVATED_AT;
+import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_ATTEMPT;
+import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_ENABLE;
+import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_MAX_ATTEMPT;
+import static org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences.KEY_PASSCODE_VALUE;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
-import org.alfresco.mobile.android.application.preferences.PasscodePreferences;
-import org.alfresco.mobile.android.application.utils.UIUtils;
+import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
+import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
@@ -44,7 +43,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -57,7 +55,7 @@ import android.widget.TextView;
  */
 public class PassCodeDialogFragment extends DialogFragment
 {
-    public static final String PARAM_MODE = "Mode";
+    public static final String ARGUMENT_MODE = "Mode";
 
     public static final int MODE_CREATE = 1;
 
@@ -66,7 +64,7 @@ public class PassCodeDialogFragment extends DialogFragment
     public static final int MODE_DELETE = 3;
 
     public static final int MODE_USER_REQUEST = 4;
-    
+
     private static final int PASSCODE_LENGTH = 4;
 
     /** Public Fragment TAG. */
@@ -100,7 +98,7 @@ public class PassCodeDialogFragment extends DialogFragment
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
         Bundle b = new Bundle();
-        b.putInt(PARAM_MODE, MODE_DELETE);
+        b.putInt(ARGUMENT_MODE, MODE_DELETE);
         fragment.setArguments(b);
         return fragment;
     }
@@ -109,7 +107,7 @@ public class PassCodeDialogFragment extends DialogFragment
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
         Bundle b = new Bundle();
-        b.putInt(PARAM_MODE, MODE_CREATE);
+        b.putInt(ARGUMENT_MODE, MODE_CREATE);
         fragment.setArguments(b);
         return fragment;
     }
@@ -118,7 +116,7 @@ public class PassCodeDialogFragment extends DialogFragment
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
         Bundle b = new Bundle();
-        b.putInt(PARAM_MODE, MODE_UPDATE);
+        b.putInt(ARGUMENT_MODE, MODE_UPDATE);
         fragment.setArguments(b);
         return fragment;
     }
@@ -127,7 +125,7 @@ public class PassCodeDialogFragment extends DialogFragment
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
         Bundle b = new Bundle();
-        b.putInt(PARAM_MODE, MODE_USER_REQUEST);
+        b.putInt(ARGUMENT_MODE, MODE_USER_REQUEST);
         fragment.setArguments(b);
         return fragment;
     }
@@ -265,7 +263,7 @@ public class PassCodeDialogFragment extends DialogFragment
 
     private void validate()
     {
-        int mode = getArguments().getInt(PARAM_MODE);
+        int mode = getArguments().getInt(ARGUMENT_MODE);
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         switch (mode)
         {
@@ -375,7 +373,7 @@ public class PassCodeDialogFragment extends DialogFragment
             clearAll();
             errorMessage.setVisibility(View.VISIBLE);
             errorMessage.setText(R.string.passcode_unknown);
-            //checkAttempts();
+            // checkAttempts();
         }
     }
 
@@ -520,8 +518,7 @@ public class PassCodeDialogFragment extends DialogFragment
             getActivity().getWindow().setSoftInputMode(
                     WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
                             | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            InputMethodManager mgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            mgr.hideSoftInputFromWindow(focusValue.getWindowToken(), 0);
+            UIUtils.hideKeyboard(getActivity());
         }
     }
 

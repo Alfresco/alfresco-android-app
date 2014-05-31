@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/passcode_hint"
-            style="?AlfrescoTheme.TextView.ListItem.Primary"
+            style="?MainTheme.TextView.ListItem.Primary"
                   android:layout_width="fill_parent"
             android:layout_height="wrap_content"
       android:layout_marginLeft="0dip"
@@ -54,26 +54,26 @@
 
             <EditText
                 android:id="@+id/passcode_1"
-                style="?AlfrescoTheme.PasscodeInput"
+                style="?MainTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
             </EditText>
 
             <EditText
                 android:id="@+id/passcode_2"
-                style="?AlfrescoTheme.PasscodeInput"
+                style="?MainTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/passcode_3"
-                style="?AlfrescoTheme.PasscodeInput"
+                style="?MainTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
             <EditText
                 android:id="@+id/passcode_4"
-                style="?AlfrescoTheme.PasscodeInput"
+                style="?MainTheme.PasscodeInput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
@@ -94,62 +94,62 @@
 
                 <Button
                     android:id="@+id/keyboard_1"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="1" />
 
                 <Button
                     android:id="@+id/keyboard_2"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="2" />
 
                 <Button
                     android:id="@+id/keyboard_3"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="3" />
 
                 <Button
                     android:id="@+id/keyboard_4"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="4" />
 
                 <Button
                     android:id="@+id/keyboard_5"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="5" />
 
                 <Button
                     android:id="@+id/keyboard_6"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="6" />
 
                 <Button
                     android:id="@+id/keyboard_7"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="7" />
 
                 <Button
                     android:id="@+id/keyboard_8"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="8" />
 
                 <Button
                     android:id="@+id/keyboard_9"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="9" />
 
                 <Button
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:enabled="false"
                     android:text="" />
 
                 <Button
                     android:id="@+id/keyboard_0"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:text="0" />
 
                 <Button
                     android:id="@+id/keyboard_back"
-                    style="?AlfrescoTheme.PasscodeButton"
+                    style="?MainTheme.PasscodeButton"
                     android:drawableLeft="@drawable/sym_keyboard_feedback_delete" />
             </GridLayout>
         </LinearLayout>

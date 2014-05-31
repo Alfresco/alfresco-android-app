@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.extension.samsung.pen;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.application.extension.samsung.impl.R;
+import org.alfresco.mobile.android.application.extension.samsung.R;
 
 import android.app.Activity;
 import android.content.Context;

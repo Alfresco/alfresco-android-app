@@ -1,39 +1,39 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
-import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_ACCOUNT;
-import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
-import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_FRAGMENT_TAG;
-import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.PARAM_EDITOR;
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.ARGUMENT_ACCOUNT;
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.ARGUMENT_DOCUMENT_TYPE;
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.ARGUMENT_FRAGMENT_TAG;
+import static org.alfresco.mobile.android.application.fragments.create.EditorsDialogFragment.ARGUMENT_EDITOR;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
-import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.manager.StorageManager;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.alfresco.mobile.android.ui.manager.MessengerManager;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -80,23 +80,23 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        final String fragmentTag = (String) getArguments().get(PARAM_FRAGMENT_TAG);
-        final Account currentAccount = (Account) getArguments().get(PARAM_ACCOUNT);
-        final DocumentTypeRecord documentType = (DocumentTypeRecord) getArguments().get(PARAM_DOCUMENT_TYPE);
-        final ResolveInfo editor = (ResolveInfo) getArguments().get(PARAM_EDITOR);
+        final String fragmentTag = (String) getArguments().get(ARGUMENT_FRAGMENT_TAG);
+        final AlfrescoAccount currentAccount = (AlfrescoAccount) getArguments().get(ARGUMENT_ACCOUNT);
+        final DocumentTypeRecord documentType = (DocumentTypeRecord) getArguments().get(ARGUMENT_DOCUMENT_TYPE);
+        final ResolveInfo editor = (ResolveInfo) getArguments().get(ARGUMENT_EDITOR);
 
         File f = null;
         if (FileExplorerFragment.TAG.equals(fragmentTag))
         {
             // If creation inside the download area, we store it inside
             // download.
-            f = StorageManager.getDownloadFolder(getActivity(), currentAccount);
+            f = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(currentAccount);
         }
         else
         {
             // If creation inside a repository folder, we store temporarly
             // inside the capture.
-            f = StorageManager.getCaptureFolder(getActivity(), currentAccount);
+            f = AlfrescoStorageManager.getInstance(getActivity()).getCaptureFolder(currentAccount);
         }
 
         final File folderStorage = f;
@@ -205,10 +205,10 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                     Fragment fr = getFragmentManager().findFragmentByTag(fragmentTag);
                     if (fr != null && fr.isVisible())
                     {
-                        if (fr instanceof ChildrenBrowserFragment)
+                        if (fr instanceof DocumentFolderBrowserFragment)
                         {
                             // During Creation on a specific folder.
-                            ((ChildrenBrowserFragment) fr).setCreateFile(newFile);
+                            ((DocumentFolderBrowserFragment) fr).setCreateFile(newFile);
                         }
                         else if (fr instanceof FileExplorerFragment)
                         {
@@ -220,7 +220,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 }
                 catch (ActivityNotFoundException e)
                 {
-                    MessengerManager.showToast(getActivity(), R.string.error_unable_open_file);
+                    MessengerUtils.showToast(getActivity(), R.string.error_unable_open_file);
                 }
                 dismiss();
             }

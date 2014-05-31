@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- =============================================================== -->
+    <!-- REFERENCE : ATTRIBUTES -->
+    <!-- =============================================================== -->
+    <attr name="MainTheme" format="reference" />
+    <attr name="MainTheme.Dialog" format="reference" />
+    <attr name="MainTheme.ActionBar.Primary" format="reference" />
+    <attr name="MainTheme.ActionBar.Secondary" format="reference" />
+    <attr name="MainTheme.Background" format="reference" />
+    <attr name="MainTheme.Background.White" format="reference" />
+    <attr name="MainTheme.Background.Logo" format="reference" />
+    <attr name="MainTheme.Background.Light" format="reference" />
+    <attr name="MainTheme.Background.GreyGradient" format="reference" />
+    <attr name="MainTheme.Button" format="reference" />
+    <attr name="MainTheme.Button.Large" format="reference" />
+    <attr name="MainTheme.TextView" format="reference" />
+    <attr name="MainTheme.TextView.Primary" format="reference" />
+    <attr name="MainTheme.TextView.Primary.Task" format="reference" />
+    <attr name="MainTheme.TextView.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.SecondaryBold" format="reference" />
+    <attr name="MainTheme.TextView.MenuItem" format="reference" />
+    <attr name="MainTheme.TextView.ListItem" format="reference" />
+    <attr name="MainTheme.TextView.ListItem.Primary" format="reference" />
+    <attr name="MainTheme.TextView.ListItem.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.GridItem" format="reference" />
+    <attr name="MainTheme.TextView.GridItem.Primary" format="reference" />
+    <attr name="MainTheme.TextView.GridItem.Secondary" format="reference" />
+    <attr name="MainTheme.TextView.SearchHeader" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Grey" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Grey.Thin" format="reference" />
+    <attr name="MainTheme.TextView.SectionHeader.Primary" format="reference" />
+    <attr name="MainTheme.ImageView" format="reference" />
+    <attr name="MainTheme.ImageView.ActionIcon" format="reference" />
+    <attr name="MainTheme.ImageView.ActionIcon.Fixed" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail.Large" format="reference" />
+    <attr name="MainTheme.ImageView.Thumbnail.QuickContact" format="reference" />
+    <attr name="MainTheme.PasscodeButton" format="reference" />
+    <attr name="MainTheme.PasscodeInput" format="reference" />
+    <attr name="MainTheme.Progress" format="reference" />
+    <attr name="MainTheme.Progress.Horizontal" format="reference" />
+
+    <!-- =============================================================== -->
+    <!-- REFERENCE : THEME -->
+    <!-- =============================================================== -->
+    <style name="AlfrescoBaseTheme" parent="AlfrescoHoloLight"></style>
+
+    <!-- =============================================================== -->
+    <!-- DEFAULT THEME -->
+    <!-- =============================================================== -->
+    <style name="AlfrescoHoloTheme" parent="AlfrescoBaseTheme">
+        <item name="MainTheme">@style/AlfrescoHoloTheme</item>
+        <item name="android:actionBarStyle">@style/AlfrescoHoloTheme.ActionBar</item>
+        <item name="android:fastScrollTrackDrawable">@null</item>
+        <item name="MainTheme.ActionBar.Primary">@style/AlfrescoHoloTheme.ActionBar.Primary</item>
+        <item name="MainTheme.ActionBar.Secondary">@style/AlfrescoHoloTheme.ActionBar.Secondary</item>
+        <item name="MainTheme.Background">@style/AlfrescoHoloTheme.Background</item>
+        <item name="MainTheme.Background.White">@style/AlfrescoHoloTheme.Background.White</item>
+        <item name="MainTheme.Background.Logo">@style/AlfrescoHoloTheme.Background.Logo</item>
+        <item name="MainTheme.Background.Light">@style/AlfrescoHoloTheme.Background.Light</item>
+        <item name="MainTheme.Background.GreyGradient">@style/AlfrescoHoloTheme.Background.GreyGradient</item>
+        <item name="MainTheme.Button">@style/AlfrescoHoloTheme.Button</item>
+        <item name="MainTheme.Button.Large">@style/AlfrescoHoloTheme.Button.Large</item>
+        <item name="MainTheme.TextView">@style/AlfrescoHoloTheme.TextView</item>
+        <item name="MainTheme.TextView.Primary">@style/AlfrescoHoloTheme.TextView.Primary</item>
+        <item name="MainTheme.TextView.Primary.Task">@style/AlfrescoHoloTheme.TextView.Primary.Task</item>
+        <item name="MainTheme.TextView.Secondary">@style/AlfrescoHoloTheme.TextView.Secondary</item>
+        <item name="MainTheme.TextView.SecondaryBold">@style/AlfrescoHoloTheme.TextView.SecondaryBold</item>
+        <item name="MainTheme.TextView.MenuItem">@style/AlfrescoHoloTheme.TextView.MenuItem</item>
+        <item name="MainTheme.TextView.ListItem">@style/AlfrescoHoloTheme.TextView.ListItem</item>
+        <item name="MainTheme.TextView.ListItem.Primary">@style/AlfrescoHoloTheme.TextView.ListItem.Primary</item>
+        <item name="MainTheme.TextView.ListItem.Secondary">@style/AlfrescoHoloTheme.TextView.ListItem.Secondary</item>
+        <item name="MainTheme.TextView.GridItem">@style/AlfrescoHoloTheme.TextView.GridItem</item>
+        <item name="MainTheme.TextView.GridItem.Primary">@style/AlfrescoHoloTheme.TextView.GridItem.Primary</item>
+        <item name="MainTheme.TextView.GridItem.Secondary">@style/AlfrescoHoloTheme.TextView.GridItem.Secondary</item>
+        <item name="MainTheme.TextView.SearchHeader">@style/AlfrescoHoloTheme.TextView.SearchHeader</item>
+        <item name="MainTheme.TextView.SectionHeader">@style/AlfrescoHoloTheme.TextView.SectionHeader</item>
+        <item name="MainTheme.TextView.SectionHeader.Grey">@style/AlfrescoHoloTheme.TextView.SectionHeader.Grey</item>
+        <item name="MainTheme.TextView.SectionHeader.Grey.Thin">@style/AlfrescoHoloTheme.TextView.SectionHeader.Grey.Thin</item>
+        <item name="MainTheme.TextView.SectionHeader.Primary">@style/AlfrescoHoloTheme.TextView.SectionHeader.Primary</item>
+        <item name="MainTheme.ImageView">@style/AlfrescoHoloTheme.ImageView</item>
+        <item name="MainTheme.ImageView.ActionIcon">@style/AlfrescoHoloTheme.ImageView.ActionIcon</item>
+        <item name="MainTheme.ImageView.ActionIcon.Fixed">@style/AlfrescoHoloTheme.ImageView.ActionIcon.Fixed</item>
+        <item name="MainTheme.ImageView.Thumbnail">@style/AlfrescoHoloTheme.ImageView.Thumbnail</item>
+        <item name="MainTheme.ImageView.Thumbnail.Large">@style/AlfrescoHoloTheme.ImageView.Thumbnail.Large</item>
+        <item name="MainTheme.ImageView.Thumbnail.QuickContact">@style/AlfrescoHoloTheme.ImageView.Thumbnail.QuickContact</item>
+        <item name="MainTheme.PasscodeButton">@style/AlfrescoHoloTheme.PasscodeButton</item>
+        <item name="MainTheme.PasscodeInput">@style/AlfrescoHoloTheme.PasscodeInput</item>
+        <item name="MainTheme.Progress">@style/AlfrescoHoloTheme.Progress</item>
+        <item name="MainTheme.Progress.Horizontal">@style/AlfrescoHoloTheme.Progress.Horizontal</item>
+        <item name="MainTheme.Dialog">@style/AlfrescoHoloTheme.Dialog</item>
+    </style>
+
+    <!-- =============================================================== -->
+    <!-- DEFAULT COLOR -->
+    <!-- =============================================================== -->
+    <color name="actionbar_grey_bottom">#757575</color>
+    <color name="emphasis">#31b6e7</color>
+    <color name="grey_light">#8C8E8D</color>
+    <color name="grey_text">#818282</color>
+    <color name="grey_underline">#535554</color>
+    <color name="grey_lighter">#eeeeee</color>
+    <color name="sliding_account_background">#282828</color>
+    <color name="dark_red">#ffcc0000</color>
+    <color name="hint_foreground_holo_light">#808080</color>
+    <color name="blue_light">#33B5E5</color>
+    <!-- Alfresco Colors -->
+    <color name="alfresco_lime">#8DC63F</color>
+    <color name="alfresco_lemon">#FFE14F</color>
+    <color name="alfresco_tangerine">#F89829</color>
+    <color name="alfresco_sky">#0082C8</color>
+    <color name="alfresco_blueberry">#005DAB</color>
+    <color name="alfresco_leaf">#47AA42</color>
+    <color name="alfresco_chalkboard">#717174</color>
+    <color name="alfresco_soil">#7D6A55</color>
+    <color name="alfresco_clay">#80561B</color>
+    <color name="alfresco_sand">#A99A6F</color>
+    
+    <!-- =============================================================== -->
+    <!-- DEFAULT STYLE -->
+    <!-- =============================================================== -->
+
+
+    <!-- ========= -->
+    <!-- ACTIONBAR -->
+    <!-- ========= -->
+    <style name="AlfrescoHoloTheme.ActionBar" parent="ActionBar.Solid.Alfrescohololight"></style>
+
+    <style name="AlfrescoHoloTheme.ActionBar.Primary">
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textSize">@dimen/actionbar_dropdown_top_height</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+        <item name="android:paddingLeft">5dip</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ActionBar.Secondary">
+        <item name="android:background">@null</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:ellipsize">middle</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:lines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:paddingLeft">5dip</item>
+    </style>
+
+    <!-- ====== -->
+    <!-- DIALOG -->
+    <!-- ====== -->
+    <style name="AlfrescoHoloTheme.Dialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowSoftInputMode">stateAlwaysHidden</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <!-- ========== -->
+    <!-- BACKGROUND -->
+    <!-- ========== -->
+    <style name="AlfrescoHoloTheme.Background">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Background.White">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Background.Logo">
+        <item name="android:background">@drawable/alfresco_background_logo</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Background.Light">
+        <item name="android:background">@android:color/white</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Background.GreyGradient">
+        <item name="android:background">@drawable/bg_gradient</item>
+    </style>
+
+    <!-- ======== -->
+    <!-- PROGRESS -->
+    <!-- ======== -->
+    <style name="AlfrescoHoloTheme.Progress" parent="@android:style/Widget.ProgressBar.Large.Inverse">
+        <item name="android:indeterminate">true</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Progress.Horizontal" parent="@android:style/Widget.Holo.Light.ProgressBar.Horizontal">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_marginLeft">@dimen/browse_margin</item>
+        <item name="android:layout_marginRight">@dimen/browse_margin</item>
+        <item name="android:indeterminate">true</item>
+    </style>
+
+    <!-- ==== -->
+    <!-- TEXT -->
+    <!-- ==== -->
+    <style name="AlfrescoHoloTheme.Text">
+        <item name="android:ellipsize">end</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Text.Center">
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Text.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!-- ========= -->
+    <!-- TEXT VIEW -->
+    <!-- ========= -->
+    <style name="AlfrescoBaseTheme.TextView" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView" parent="AlfrescoBaseTheme.TextView">
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.Primary">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.Primary.Task">
+        <item name="android:layout_margin">@dimen/browse_margin</item>
+        <item name="android:maxLines">10</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.Secondary">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">@color/grey_text</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.SecondaryBold">
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.MenuItem">
+        <item name="android:layout_margin">3dip</item>
+        <item name="android:background">@drawable/btn_default_holo_light_underline</item>
+        <item name="android:drawablePadding">8dip</item>
+        <item name="android:gravity">left|center_vertical</item>
+        <item name="android:onClick">showMainMenuFragment</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.ListItem">
+        <item name="android:paddingRight">1dip</item>
+        <item name="android:singleLine">false</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.ListItem.Primary">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.SearchHeader" parent="AlfrescoHoloTheme.TextView.ListItem.Primary">
+        <item name="android:layout_marginTop">8dip</item>
+        <item name="android:layout_marginLeft">0dip</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.ListItem.Secondary">
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_gravity">bottom|center</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.GridItem">
+        <item name="android:paddingRight">1dip</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.GridItem.Primary">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@android:color/primary_text_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.GridItem.Secondary">
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_gravity">bottom|center</item>
+        <item name="android:maxLines">3</item>
+        <item name="android:textAppearance">?android:textAppearanceSmall</item>
+        <item name="android:textColor">@android:color/secondary_text_light</item>
+    </style>
+
+    <style name="AlfrescoBaseTheme.TextView.SectionHeader"></style>
+
+    <style name="AlfrescoHoloTheme.TextView.SectionHeader" parent="AlfrescoBaseTheme.TextView.SectionHeader">
+        <item name="android:paddingLeft">5dip</item>
+        <item name="android:paddingTop">@dimen/properties_padding</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.SectionHeader.Grey">
+        <item name="android:drawableBottom">@drawable/grey_section_header</item>
+        <item name="android:textColor">@color/grey_text</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.SectionHeader.Grey.Thin">
+        <item name="android:drawableBottom">@drawable/grey_thin_section_header</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.TextView.SectionHeader.Primary">
+        <item name="android:drawableBottom">@drawable/section_header</item>
+        <item name="android:textColor">@color/emphasis</item>
+    </style>
+
+    <!-- ========= -->
+    <!-- IMAGEVIEW -->
+    <!-- ========= -->
+    <style name="AlfrescoHoloTheme.ImageView">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:adjustViewBounds">false</item>
+        <item name="android:scaleType">fitXY</item>
+        <item name="android:layout_margin">@dimen/thumbnail_margin</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ImageView.Thumbnail">
+        <item name="android:layout_height">@dimen/thumbnail_height</item>
+        <item name="android:layout_width">@dimen/thumbnail_height</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ImageView.Thumbnail.Large">
+        <item name="android:layout_height">@dimen/process_thumbnail_height</item>
+        <item name="android:layout_width">@dimen/process_thumbnail_height</item>
+        <item name="android:scaleType">fitCenter</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ImageView.Thumbnail.QuickContact">
+        <item name="android:background">@drawable/quickcontact_badge_overlay_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ImageView.ActionIcon">
+        <item name="android:layout_weight">0</item>
+        <item name="android:background">@drawable/btn_default_holo_light</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.ImageView.ActionIcon.Fixed">
+        <item name="android:layout_height">@dimen/thumbnail_height</item>
+        <item name="android:layout_width">@dimen/thumbnail_height</item>
+    </style>
+
+    <!-- ===== -->
+    <!-- BUTTON -->
+    <!-- ===== -->
+    <style name="AlfrescoHoloTheme.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/btn_round_simple</item>
+        <item name="android:padding">25dip</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.Button.Large">
+        <item name="android:textSize">@dimen/home_button_size</item>
+        <item name="android:drawablePadding">10dip</item>
+        <item name="android:layout_marginTop">15dip</item>
+    </style>
+
+    <!-- ===== -->
+    <!-- ABOUT -->
+    <!-- ===== -->
+    <style name="about_logo_panel">
+        <item name="android:layout_margin">10dip</item>
+        <item name="android:layout_weight">0.4</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="about_logo">
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_margin">20dip</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:src">@drawable/alfresco_logo_large</item>
+    </style>
+
+    <style name="about_description_panel">
+        <item name="android:layout_margin">20dip</item>
+        <item name="android:layout_weight">0.7</item>
+        <item name="android:layout_gravity">bottom</item>
+    </style>
+
+    <style name="about_version_panel">
+        <item name="android:layout_margin">10dip</item>
+        <item name="android:layout_weight">0.2</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="about_text_normal" parent="AlfrescoHoloTheme.Text">
+        <item name="android:textSize">@dimen/about_text_size</item>
+    </style>
+
+    <style name="about_text_normal_center" parent="AlfrescoHoloTheme.Text">
+        <item name="android:textSize">@dimen/about_text_size</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <!-- ======== -->
+    <!-- PASSCODE -->
+    <!-- ======== -->
+    <style name="AlfrescoHoloTheme.PasscodeButton">
+        <item name="android:paddingLeft">20dip</item>
+        <item name="android:paddingRight">20dip</item>
+        <item name="android:textSize">40sp</item>
+        <item name="android:layout_width">100dip</item>
+    </style>
+
+    <style name="AlfrescoBaseTheme.PasscodeInput">
+        <item name="android:ems">2</item>
+    </style>
+
+    <style name="AlfrescoHoloTheme.PasscodeInput" parent="AlfrescoBaseTheme.PasscodeInput">
+        <item name="android:textSize">@dimen/passcode_text_size</item>
+        <item name="android:inputType">numberPassword</item>
+        <item name="android:maxLength">1</item>
+    </style>
+
+</resources>
