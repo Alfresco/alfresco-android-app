@@ -44,9 +44,6 @@
 		<!-- Platform -->
 		<module>alfresco-mobile-android-platform</module>
 
-		<!-- Extension -->
-		<module>alfresco-mobile-android-extensions</module>
-
 		<!-- Application -->
 		<module>alfresco-mobile-android</module>
 	</modules>
@@ -483,9 +480,9 @@
 
 	<profiles>
 		<profile>
-			<id>extension-samsung</id>
+			<id>extensions</id>
 			<modules>
-				<module>alfresco-mobile-android-extensions/alfresco-mobile-android-extension-samsung</module>
+				<module>alfresco-mobile-android-extensions</module>
 			</modules>
 		</profile>
 	</profiles>

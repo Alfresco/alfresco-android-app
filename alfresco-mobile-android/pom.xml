@@ -65,13 +65,6 @@
 			<artifactId>alfresco-mobile-android-client-api</artifactId>
 			<version>${alfresco.sdk.version}</version>
 		</dependency>
-		<!-- Optional Extension for testing purpose only 
-		<dependency>
-			<groupId>org.alfresco.mobile.android.extensions</groupId>
-			<artifactId>alfresco-mobile-android-extension-hockeyapp</artifactId>
-			<version>${project.version}</version>
-			<type>apklib</type>
-		</dependency>-->
 	</dependencies>
 
 
