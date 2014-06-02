@@ -157,6 +157,9 @@
 
 		<!-- Plugins -->
 		<site.basedir>${project.parent.basedir}</site.basedir>
+
+		<!-- BETA -->
+		<packageName.beta>org.alfresco.mobile.android.application.beta</packageName.beta>
 	</properties>
 
 	<build>
@@ -215,7 +218,7 @@
 				</plugin>
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>3.1</version>
+					<version>3.3</version>
 					<dependencies>
 						<dependency>
 							<groupId>org.kohsuke</groupId>

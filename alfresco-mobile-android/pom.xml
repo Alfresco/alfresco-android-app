@@ -176,10 +176,6 @@
 		</profile>
 		<profile>
 			<id>android-beta-release</id>
-			<properties>
-				<!-- Common -->
-				<packageName.beta>org.alfresco.mobile.android.application.beta</packageName.beta>
-			</properties>
 			<dependencies>
 				<!-- HockeyApp -->
 				<dependency>
@@ -234,9 +230,6 @@
 								<phase>initialize</phase>
 								<configuration>
 									<tasks>
-										<replace
-											file="${project.basedir}/src/org/alfresco/mobile/android/application/AlfrescoContentProvider.java"
-											token="org.alfresco.mobile.android.provider" value="${packageName.beta}" />
 										<replace file="${project.basedir}/AndroidManifest.xml"
 											token="org.alfresco.mobile.android.provider." value="${packageName.beta}." />
 										<replace file="${project.basedir}/AndroidManifest.xml"
