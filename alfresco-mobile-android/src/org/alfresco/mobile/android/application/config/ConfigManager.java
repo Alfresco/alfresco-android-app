@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.config.async.ConfigContextRequest
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.content.Context;

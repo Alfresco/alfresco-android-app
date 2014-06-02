@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.FileOperation;
-import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -39,7 +38,6 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 public class FileProtectionOperation extends FileOperation<Void>

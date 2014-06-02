@@ -18,24 +18,17 @@
 package org.alfresco.mobile.android.platform;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
-import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
