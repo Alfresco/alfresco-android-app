@@ -17,7 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.configuration.manager;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
@@ -31,7 +31,7 @@ public class FragmentTemplateConfigurator extends BaseConfigurator
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public FragmentTemplateConfigurator(Activity activity, ConfigContext configurationContext, String path)
+    public FragmentTemplateConfigurator(Activity activity, Configuration configurationContext, String path)
     {
         super(activity, configurationContext);
         //this.rootConfiguration = retrieveConfigurationByPath(configurationContext.getJson(), path.split("/"));

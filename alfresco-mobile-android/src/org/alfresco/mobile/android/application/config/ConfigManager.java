@@ -17,15 +17,21 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
-import org.alfresco.mobile.android.application.config.async.ConfigContextEvent;
-import org.alfresco.mobile.android.application.config.async.ConfigContextRequest;
+import org.alfresco.mobile.android.api.model.config.ConfigSource;
+import org.alfresco.mobile.android.api.model.config.Configuration;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
+import org.alfresco.mobile.android.application.config.async.ConfigurationRequest;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.content.Context;
@@ -41,7 +47,7 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private Map<Long, ConfigContext> configContextMap = new HashMap<Long, ConfigContext>();
+    private Map<Long, Configuration> configContextMap = new HashMap<Long, Configuration>();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -73,7 +79,7 @@ public class ConfigManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // CONFIG MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
-    public ConfigContext getConfig(long accountId)
+    public Configuration getConfig(long accountId)
     {
         if (configContextMap != null)
         {
@@ -100,21 +106,64 @@ public class ConfigManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // RETRIEVE CONFIG
     // ///////////////////////////////////////////////////////////////////////////
+    public void init(AlfrescoAccount acc)
+    {
+        if (acc == null)
+        {
+            acc = AlfrescoAccountManager.getInstance(appContext).getDefaultAccount();
+        }
+        if (acc == null) { return; }
+        try
+        {
+            File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(acc);
+            // TODO Add method to retrieve default config file name.
+            File configFile = new File(configFolder, "config.json");
+            Configuration configContext = Configuration.load(new ConfigSource(configFile));
+            configContextMap.put(acc.getId(), configContext);
+            if (configContext.hasLayoutConfig())
+            {
+                eventBus.post(new ConfigurationMenuEvent(acc.getId()));
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+    }
+
     /**
      * Load the default configuration file from Repository
+     * 
+     * @param alfrescoSession
      */
-    public void load()
+    public boolean load(AlfrescoSession alfrescoSession)
     {
-        //
-        MessengerUtils.showToast(appContext, "Loading Configuration");
-        Operator.with(appContext).load(new ConfigContextRequest.Builder());
+        if (alfrescoSession == null) { return false; }
+        if (alfrescoSession.getServiceRegistry().getConfigService().hasConfig())
+        {
+            MessengerUtils.showToast(appContext, "Loading Configuration");
+            Operator.with(appContext).load(new ConfigurationRequest.Builder());
+            return true;
+        }
+        return false;
+    }
+
+    public boolean load(AlfrescoAccount acc, String profileId)
+    {
+        Configuration config = getConfig(acc.getId());
+        config.swapProfile(profileId);
+        if (config.hasLayoutConfig())
+        {
+            eventBus.post(new ConfigurationMenuEvent(acc.getId()));
+        }
+        return true;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Subscribe
-    public void onConfigContextEvent(ConfigContextEvent event)
+    public void onConfigContextEvent(ConfigurationEvent event)
     {
         if (event.hasException || event.data == null)
         {

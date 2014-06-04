@@ -31,7 +31,7 @@ public class AlfrescoApplication extends Application
     {
         super.onCreate();
         sessionManager = SessionManager.getInstance(this);
-
+        
         // Execute some upgrade if necessary
         UpgradeManager.execute(this);
     }

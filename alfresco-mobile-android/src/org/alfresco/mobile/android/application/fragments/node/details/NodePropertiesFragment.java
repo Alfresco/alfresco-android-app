@@ -29,6 +29,8 @@ import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
+import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
+import org.alfresco.mobile.android.application.config.manager.MainMenuConfigManager;
 import org.alfresco.mobile.android.application.configuration.manager.FormConfigurator;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 
@@ -121,10 +123,9 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         configurationManager = ConfigManager.getInstance(getActivity());
         if (configurationManager != null && configurationManager.hasConfig(getAccount().getId()))
         {
-            //TODO Properties Configuration
-           /* config = new FormConfigurator(getActivity(), configurationManager.getConfig(SessionUtils
-                    .getAccount(getActivity())), propertyViewGroup, node);
-            config.displayProperties(inflater);*/
+            FormConfigManager config = new FormConfigManager(getActivity(), configurationManager.getConfig(getAccount().getId()),
+                    propertyViewGroup);
+            config.displayProperties(node);
         }
         else
         {

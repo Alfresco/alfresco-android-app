@@ -15,55 +15,90 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.accounts;
+package org.alfresco.mobile.android.application.fragments.profiles;
 
+import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.session.CloudNetwork;
+import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.config.ProfileConfig;
+import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.async.session.RequestSessionEvent;
-import org.alfresco.mobile.android.async.session.network.NetworksEvent;
-import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.network.CloudNetworksFragment;
+import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
+import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
-import com.squareup.otto.Subscribe;
-
-public class NetworksFragment extends CloudNetworksFragment
+public class ProfilesConfigFragment extends BaseGridFragment
 {
-    public static final String TAG = "CloudNetworksFragment";
+    public static final String TAG = ProfilesConfigFragment.class.getName();
+
+    private List<ProfileConfig> profileListing;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
-    public NetworksFragment()
+    public ProfilesConfigFragment()
     {
-        super();
+        emptyListMessageId = R.string.profiles_empty;
+        requiredSession = false;
+        checkSession = false;
+        retrieveDataOnCreation = false;
+        displayAsList = true;
     }
 
-    protected static NetworksFragment newInstanceByTemplate(Bundle b)
+    protected static ProfilesConfigFragment newInstanceByTemplate(Bundle b)
     {
-        NetworksFragment cbf = new NetworksFragment();
+        ProfilesConfigFragment cbf = new ProfilesConfigFragment();
         cbf.setArguments(b);
         return cbf;
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // RESULT
+    // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
-    @Subscribe
-    public void onResult(NetworksEvent event)
+    public void onActivityCreated(Bundle savedInstanceState)
     {
-        super.onResult(event);
+        retrieveProfiles();
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onResume()
+    {
+        UIUtils.displayTitle(getActivity(), getString(R.string.profiles_switch));
+        super.onResume();
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // REQUEST
+    // //////////////////////////////////////////////////////////////////////
+    protected OperationBuilder onCreateOperationRequest(ListingContext listingContext)
+    {
+        return null;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // RESULT
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    protected ArrayAdapter<?> onAdapterCreation()
+    {
+        return new ProfileConfigAdapter(getActivity(), R.layout.sdk_grid_row, profileListing);
+    }
+
+    private void retrieveProfiles()
+    {
+        profileListing = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId()).getProfiles();
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -73,14 +108,9 @@ public class NetworksFragment extends CloudNetworksFragment
     public void onListItemClick(GridView l, View v, int position, long id)
     {
         super.onListItemClick(l, v, position, id);
-        CloudNetwork network = (CloudNetwork) l.getItemAtPosition(position);
-        AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
-        if (currentAccount != null && !currentAccount.getRepositoryId().equals(network.getIdentifier()))
-        {
-            // TODO Replace By SessionManager or AccountManager
-            EventBusManager.getInstance().post(new RequestSessionEvent(currentAccount, network.getIdentifier(), true));
-            getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
+        ProfileConfig profile = (ProfileConfig) l.getItemAtPosition(position);
+        ConfigManager.getInstance(getActivity()).load(getAccount(), profile.getIdentifier());
+        getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

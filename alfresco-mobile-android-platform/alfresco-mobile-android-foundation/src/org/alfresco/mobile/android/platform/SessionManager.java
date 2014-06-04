@@ -285,11 +285,12 @@ public abstract class SessionManager extends Manager
     {
         return OAuthConstant.PUBLIC_API_HOSTNAME;
     }
-    
-    public Bundle getOAuthSettings(){
+
+    public Bundle getOAuthSettings()
+    {
         return null;
     }
-    
+
     public AlfrescoSessionSettings prepareSettings(AlfrescoAccount acc)
     {
         return new SettingsBuilder(appContext).prepare(acc).build();
@@ -309,6 +310,7 @@ public abstract class SessionManager extends Manager
     {
         return new SettingsBuilder(appContext).prepare(oauthData).build();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
@@ -363,14 +365,14 @@ public abstract class SessionManager extends Manager
             return this;
         }
 
-        //TODO Implement it  !
+        // TODO Implement it !
         public SettingsBuilder prepare(OAuthData oauthData)
         {
             this.isCloud = true;
             this.oAuthData = oauthData;
             return this;
         }
-        
+
         public SettingsBuilder prepare(AlfrescoAccount acc, OAuthData oauthData)
         {
             this.isCloud = true;
@@ -426,11 +428,18 @@ public abstract class SessionManager extends Manager
                     baseUrl = acc.getUrl();
                     username = acc.getUsername();
                     password = acc.getPassword();
+                    prepareConfigurationSettings(acc);
                     prepareSSLSettings();
                     break;
                 default:
                     break;
             }
+        }
+
+        protected void prepareConfigurationSettings(AlfrescoAccount acc)
+        {
+            extraSettings.put(AlfrescoSession.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
+                    .getConfigurationFolder(acc).getPath());
         }
 
         protected void prepareCommonSettings()

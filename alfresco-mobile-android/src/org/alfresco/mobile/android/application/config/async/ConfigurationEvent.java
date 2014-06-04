@@ -15,17 +15,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.config.manager;
+package org.alfresco.mobile.android.application.config.async;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.model.config.Configuration;
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationEvent;
 
-import android.app.Activity;
-import android.view.ViewGroup;
-
-public class NavigationMenuConfigManager extends BaseConfigManager
+public class ConfigurationEvent extends OperationEvent<Configuration>
 {
-    public NavigationMenuConfigManager(Activity activity, ConfigContext configurationContext, ViewGroup vRoot)
+    public final long accountId;
+
+    public ConfigurationEvent(String requestId, LoaderResult<Configuration> result, long accountId)
     {
-        
+        super(requestId, result);
+        this.accountId = accountId;
     }
 }

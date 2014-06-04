@@ -15,10 +15,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.configuration.manager;
+package org.alfresco.mobile.android.application.config.manager;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
@@ -33,28 +33,29 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MenuConfigurator extends BaseConfigurator
+public class MainMenuConfigManager extends BaseConfigManager
 {
-    private static final String TAG = MenuConfigurator.class.getName();
+    private static final String TAG = MainMenuConfigManager.class.getName();
 
     private ViewConfig rootMenuViewConfig;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public MenuConfigurator(Activity activity, ConfigContext configurationContext, ViewGroup vRoot)
+    public MainMenuConfigManager(Activity activity, Configuration configurationContext, ViewGroup vRoot)
     {
         super(activity, configurationContext);
         rootMenuViewConfig = configurationContext.getApplicationConfig().getViewConfig(
                 ConfigConstants.VIEW_ROOT_NAVIGATION_MENU);
         this.vRoot = (ViewGroup) vRoot.findViewById(R.id.custom_menu_group);
     }
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // GENERATION
     // ///////////////////////////////////////////////////////////////////////////
     public void createMenu()
     {
+        vRoot.removeAllViews();
         createMenu(rootMenuViewConfig, vRoot, LayoutInflater.from(getActivity()));
     }
 
@@ -75,9 +76,9 @@ public class MenuConfigurator extends BaseConfigurator
             }
 
             // Add Children
-            for (int i = 0; i < viewConfig.getChildCount(); i++)
+            for (ViewConfig config : viewConfig.getChildren())
             {
-                createMenu(viewConfig.getChildAt(i), hookView, li);
+                createMenu(config, hookView, li);
             }
         }
         else

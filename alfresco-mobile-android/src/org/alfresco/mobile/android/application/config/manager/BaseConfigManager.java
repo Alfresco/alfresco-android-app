@@ -17,12 +17,36 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.manager;
 
+import java.lang.ref.WeakReference;
+
+import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
+
+import android.app.Activity;
+import android.view.ViewGroup;
 
 public class BaseConfigManager implements ConfigurationConstant
 {
+    protected ViewGroup vRoot;
 
+    protected WeakReference<Activity> activity;
+
+    protected Configuration configurationContext;
     
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
+    public BaseConfigManager(Activity activity, Configuration configurationContext)
+    {
+        this.configurationContext = configurationContext;
+        this.activity = new WeakReference<Activity>(activity);
+    }
     
-    
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILITY
+    // ///////////////////////////////////////////////////////////////////////////
+    public Activity getActivity()
+    {
+        return activity.get();
+    }
 }

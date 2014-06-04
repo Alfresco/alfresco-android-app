@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 import android.content.Context;
 import android.database.Cursor;
 
-public class ConfigContextRequest extends BaseOperationRequest
+public class ConfigurationRequest extends BaseOperationRequest
 {
     private static final long serialVersionUID = 1L;
 
@@ -37,14 +37,14 @@ public class ConfigContextRequest extends BaseOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    protected ConfigContextRequest(Context context, long accountId, String networkId, int notificationVisibility,
+    protected ConfigurationRequest(Context context, long accountId, String networkId, int notificationVisibility,
             String title, String mimeType, int requestTypeId, ConfigSource source)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
         this.configSource = source;
     }
 
-    public ConfigContextRequest(Cursor cursor)
+    public ConfigurationRequest(Cursor cursor)
     {
         super(cursor);
         this.configSource = null;
@@ -70,9 +70,9 @@ public class ConfigContextRequest extends BaseOperationRequest
             mimeType = MIMETYPE;
         }
 
-        public ConfigContextRequest build(Context context)
+        public ConfigurationRequest build(Context context)
         {
-            return new ConfigContextRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
+            return new ConfigurationRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
                     requestTypeId, source);
         }
     }

@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.config.ConfigManager;
+import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
 import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -40,7 +41,6 @@ import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFr
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.CloudSignupDialogFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.NetworksFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
@@ -583,14 +583,6 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    public void displayNetworks()
-    {
-        if (getCurrentSession() instanceof CloudSession)
-        {
-            NetworksFragment.with(this).display();
-        }
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION BAR
     // ///////////////////////////////////////////////////////////////////////////
@@ -901,7 +893,11 @@ public class MainActivity extends BaseActivity
     {
         if (getCurrentSession() instanceof RepositorySession)
         {
-            ConfigManager.getInstance(this).load();
+            if (ConfigManager.getInstance(this).load(getCurrentSession()))
+            {
+                displayWaitingDialog();
+            }
+
             if (getFragment(MainMenuFragment.TAG) != null)
             {
                 ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFolderShortcut(getCurrentSession());
@@ -928,7 +924,7 @@ public class MainActivity extends BaseActivity
             getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
-        removeWaitingDialog();
+        // removeWaitingDialog();
 
         // Used for launching last pressed action button from main menu
         if (fragmentQueue != -1)
@@ -1032,6 +1028,12 @@ public class MainActivity extends BaseActivity
         {
             ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
         }
+    }
+
+    @Subscribe
+    public void onConfigContextEvent(ConfigurationEvent event)
+    {
+        removeWaitingDialog();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

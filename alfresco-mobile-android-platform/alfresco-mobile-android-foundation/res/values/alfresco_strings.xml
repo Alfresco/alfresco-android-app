@@ -333,6 +333,11 @@
     <string name="cloud_networks_empty">No networks available</string>
     <string name="manage_accounts">Manage accounts&#8230;</string>
     <string name="cloud_networks_switch">Switch networks&#8230;</string>
+    
+    <!-- PROFILES -->
+    <string name="profiles_empty">No profiles available</string>
+    <string name="manage_profiles">Manage profiles&#8230;</string>
+    <string name="profiles_switch">Switch profiles&#8230;</string>
 
     <!-- WORKFLOW -->
     <string name="empty_process_definition">No Process</string>

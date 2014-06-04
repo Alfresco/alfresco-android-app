@@ -17,38 +17,46 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.accounts;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
-import org.alfresco.mobile.android.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.rendition.RenditionManager;
+import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericViewHolder>
 {
+    public static final int NETWORK_ITEM = -3;
+
+    public static final int MANAGE_ITEM = -5;
+
+    public static final int PROFILES_ITEM = -4;
+
     private List<AlfrescoAccount> selectedItems;
 
-    private List<AlfrescoAccount> accounts;
+    private WeakReference<Activity> activityRef;
 
     private int layoutId;
 
-    public AccountsAdapter(Context context, List<AlfrescoAccount> items, int layoutId, List<AlfrescoAccount> selectedItems)
+    public AccountsAdapter(Activity activity, List<AlfrescoAccount> items, int layoutId,
+            List<AlfrescoAccount> selectedItems)
     {
-        super(context, layoutId, items);
+        super(activity, layoutId, items);
         this.selectedItems = selectedItems;
         this.layoutId = layoutId;
+        this.activityRef = new WeakReference<Activity>(activity);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -113,14 +121,17 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                 int defaultIcon = R.drawable.ic_account_light;
                 switch (itemName)
                 {
+                    case PROFILES_ITEM:
                     case NETWORK_ITEM:
                     case MANAGE_ITEM:
                         defaultIcon = R.drawable.ic_settings_light;
+                        vh.icon.setImageDrawable(getContext().getResources().getDrawable(defaultIcon));
                         break;
                     default:
+                        RenditionManager.with(activityRef.get()).loadAvatar(acc.getUsername()).placeHolder(defaultIcon)
+                                .into(vh.icon);
                         break;
                 }
-                vh.icon.setImageDrawable(getContext().getResources().getDrawable(defaultIcon));
                 break;
             default:
                 updateIconList(vh, acc);
@@ -149,30 +160,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                 descriptionId = R.string.account_alfresco_onpremise;
                 break;
         }
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(iconId));
+        RenditionManager.with(activityRef.get()).loadAvatar(acc.getUsername()).placeHolder(iconId).into(vh.icon);
         AccessibilityUtils.addContentDescription(vh.icon, descriptionId);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // UTILS
-    // ///////////////////////////////////////////////////////////////////////////
-    public static final int NETWORK_ITEM = -3;
-
-    public static final int MANAGE_ITEM = -4;
-
-    public static Cursor createMergeCursor(Context c, Cursor cursor)
-    {
-        MatrixCursor extras = new MatrixCursor(new String[] { AccountSchema.COLUMN_ID, AccountSchema.COLUMN_NAME });
-        if (SessionUtils.getAccount(c) != null)
-        {
-            long type = SessionUtils.getAccount(c).getTypeId();
-            if (type == AlfrescoAccount.TYPE_ALFRESCO_CLOUD || type == AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH)
-            {
-                extras.addRow(new String[] { NETWORK_ITEM + "", c.getString(R.string.cloud_networks_switch) });
-            }
-        }
-        extras.addRow(new String[] { MANAGE_ITEM + "", c.getString(R.string.manage_accounts) });
-        Cursor[] cursors = { cursor, extras };
-        return new MergeCursor(cursors);
     }
 }

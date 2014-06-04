@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
@@ -65,12 +65,12 @@ public class CreationConfigurator extends BaseConfigurator
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public CreationConfigurator(Activity activity, ConfigContext configurationContext)
+    public CreationConfigurator(Activity activity, Configuration configurationContext)
     {
         super(activity, configurationContext);
     }
 
-    public CreationConfigurator(Activity activity, ConfigContext configurationContext, ViewGroup vRoot)
+    public CreationConfigurator(Activity activity, Configuration configurationContext, ViewGroup vRoot)
     {
         super(activity, configurationContext);
         /*this.rootConfiguration = retrieveConfigurationByPath(configurationContext.getJson(),
