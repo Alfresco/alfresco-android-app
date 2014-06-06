@@ -116,9 +116,7 @@ public class ConfigManager extends Manager
         try
         {
             File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(acc);
-            // TODO Add method to retrieve default config file name.
-            File configFile = new File(configFolder, "config.json");
-            Configuration configContext = Configuration.load(new ConfigSource(configFile));
+            Configuration configContext = Configuration.load(new ConfigSource(appContext.getPackageName(), null), configFolder);
             configContextMap.put(acc.getId(), configContext);
             if (configContext.hasLayoutConfig())
             {

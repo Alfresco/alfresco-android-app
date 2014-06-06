@@ -32,8 +32,12 @@
     <bool name="manager_isEnable_AlfrescoAccountManager">true</bool>
     <string name="manager_AlfrescoAccountManager">org.alfresco.mobile.android.platform.accounts.DefaultAccountManager</string>
     
-      <!-- Session Manager -->
+    <!-- Session Manager -->
     <bool name="manager_isEnable_SessionManager">true</bool>
     <string name="manager_SessionManager">org.alfresco.mobile.android.platform.DefaultSessionManager</string>
+    
+    <!-- MimeType Manager -->
+    <bool name="manager_isEnable_MimeTypeManager">true</bool>
+    <string name="manager_MimeTypeManager">org.alfresco.mobile.android.platform.mimetype.DefaultMimeTypeManager</string>
 
 </resources>
