@@ -1,24 +1,23 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,27 +27,27 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.browser.ChildrenBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.node.update.UpdateDialogFragment;
-import org.alfresco.mobile.android.application.fragments.utils.ResolveNamingConflictFragment;
-import org.alfresco.mobile.android.application.intent.RequestCode;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.async.OperationRequest;
-import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.node.delete.DeleteNodeRequest;
-import org.alfresco.mobile.android.async.node.download.DownloadRequest;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
-import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.properties.DetailsFragment;
+import org.alfresco.mobile.android.application.fragments.properties.UpdateDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.node.delete.DeleteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.application.operations.batch.utils.NodePlaceHolder;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -64,7 +63,7 @@ import android.view.SubMenu;
 
 public class NodeActions extends AbstractActions<Node>
 {
-    public static final String TAG = NodeActions.class.getName();
+    public static final String TAG = "NodeActions";
 
     private List<Folder> selectedFolder = new ArrayList<Folder>();
 
@@ -74,16 +73,16 @@ public class NodeActions extends AbstractActions<Node>
 
     public NodeActions(Fragment f, List<Node> selectedNodes)
     {
-        this.fragmentRef = new WeakReference<Fragment>(f);
-        this.activityRef = new WeakReference<Activity>(f.getActivity());
+        this.fragment = f;
+        this.activity = f.getActivity();
         this.selectedItems = selectedNodes;
         for (Node node : selectedNodes)
         {
             addNode(node);
         }
-        if (f instanceof DocumentFolderBrowserFragment)
+        if (f instanceof ChildrenBrowserFragment)
         {
-            this.parentFolder = ((DocumentFolderBrowserFragment) getFragment()).getParent();
+            this.parentFolder = ((ChildrenBrowserFragment) fragment).getParent();
         }
     }
 
@@ -96,15 +95,15 @@ public class NodeActions extends AbstractActions<Node>
 
         if (selectedItems.size() == 1)
         {
-            title = getFragment().getString(R.string.multi_selection_enable);
+            title = selectedItems.get(0).getName();
         }
         else
         {
             int size = selectedDocument.size();
             if (size > 0)
             {
-                title += String.format(getFragment().getResources()
-                        .getQuantityString(R.plurals.selected_document, size), size);
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_document, size),
+                        size);
             }
             size = selectedFolder.size();
             if (size > 0)
@@ -113,8 +112,8 @@ public class NodeActions extends AbstractActions<Node>
                 {
                     title += " | ";
                 }
-                title += String.format(
-                        getFragment().getResources().getQuantityString(R.plurals.selected_folders, size), size);
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_folders, size),
+                        size);
             }
         }
 
@@ -162,7 +161,7 @@ public class NodeActions extends AbstractActions<Node>
 
     private void selectAll()
     {
-        ((DocumentFolderBrowserFragment) getFragment()).selectAll();
+        ((ChildrenBrowserFragment) fragment).selectAll();
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -215,14 +214,9 @@ public class NodeActions extends AbstractActions<Node>
                     + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
         }
 
-        if (parentFolder != null
-                && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder).canDelete())
-        {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                    R.string.delete);
-            mi.setIcon(R.drawable.ic_delete);
-            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        }
+        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE, R.string.delete);
+        mi.setIcon(R.drawable.ic_delete);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
                 R.string.select_all);
@@ -236,10 +230,11 @@ public class NodeActions extends AbstractActions<Node>
         switch (item.getItemId())
         {
             case MenuActionItem.MENU_DETAILS:
-                NodeDetailsFragment.with(getActivity()).node(selectedItems.get(0)).display();
+                ((MainActivity) activity).addPropertiesFragment(selectedItems.get(0));
+                DisplayUtils.switchSingleOrTwo(activity, false);
                 break;
             case MenuActionItem.MENU_UPDATE:
-                update(getActivity().getFragmentManager().findFragmentByTag(TabsNodeDetailsFragment.TAG));
+                update(activity.getFragmentManager().findFragmentByTag(DetailsFragment.TAG));
                 b = true;
                 break;
             case MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE:
@@ -264,12 +259,12 @@ public class NodeActions extends AbstractActions<Node>
                 b = true;
                 break;
             case MenuActionItem.MENU_EDIT:
-                edit(getActivity(), parentFolder, selectedItems.get(0));
+                edit(activity, parentFolder, selectedItems.get(0));
                 b = true;
                 break;
             case MenuActionItem.MENU_DELETE:
             case MenuActionItem.MENU_DELETE_FOLDER:
-                delete(getActivity(), getFragment(), new ArrayList<Node>(selectedItems));
+                delete(activity, fragment, new ArrayList<Node>(selectedItems));
                 b = true;
                 break;
             case MenuActionItem.MENU_SELECT_ALL:
@@ -298,22 +293,24 @@ public class NodeActions extends AbstractActions<Node>
     // ///////////////////////////////////////////////////////////////////////////
     private void startReview()
     {
-        Intent it = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(), PrivateDialogActivity.class);
-        it.putParcelableArrayListExtra(PrivateIntent.EXTRA_DOCUMENTS, (ArrayList<? extends Parcelable>) selectedItems);
-        getActivity().startActivity(it);
+        Intent it = new Intent(IntentIntegrator.ACTION_START_PROCESS, null, activity, PrivateDialogActivity.class);
+        it.putParcelableArrayListExtra(IntentIntegrator.EXTRA_DOCUMENTS,
+                (ArrayList<? extends Parcelable>) selectedItems);
+        activity.startActivity(it);
     }
 
     private void favorite(boolean doFavorite)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Node node : selectedItems)
         {
-            requestsBuilder.add(new FavoriteNodeRequest.Builder(parentFolder, node, doFavorite, true)
+            group.enqueue(new FavoriteNodeRequest(parentFolder, node, doFavorite, true)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
 
-        if (getFragment() instanceof DocumentFolderBrowserFragment)
+        BatchOperationManager.getInstance(activity).enqueue(group);
+
+        if (fragment instanceof ChildrenBrowserFragment)
         {
             int titleId = R.string.unfavorite;
             int iconId = R.drawable.ic_unfavorite_dark;
@@ -323,22 +320,22 @@ public class NodeActions extends AbstractActions<Node>
                 iconId = R.drawable.ic_favorite_dark;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    fragment.getString(titleId), null, parentFolder, selectedItems.size()).show(
+                    fragment.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }
 
     private void like(boolean doLike)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Node node : selectedItems)
         {
-            requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
+            group.enqueue(new LikeNodeRequest(parentFolder, node, doLike)
                     .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
         }
-        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
+        BatchOperationManager.getInstance(activity).enqueue(group);
 
-        if (getFragment() instanceof DocumentFolderBrowserFragment)
+        if (fragment instanceof ChildrenBrowserFragment)
         {
             int titleId = R.string.unlike;
             int iconId = R.drawable.ic_unlike;
@@ -347,16 +344,16 @@ public class NodeActions extends AbstractActions<Node>
                 titleId = R.string.like;
                 iconId = R.drawable.ic_like;
             }
-            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
-                    getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId, fragment.getString(titleId),
+                    null, parentFolder, selectedItems.size()).show(fragment.getActivity().getFragmentManager(),
+                    OperationWaitingDialogFragment.TAG);
         }
     }
 
     public static void download(Activity activity, Folder parentFolder, Document doc)
     {
         // Check if File exist
-        File folder = AlfrescoStorageManager.getInstance(activity).getDownloadFolder(SessionUtils.getAccount(activity));
+        File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
         if (folder != null && new File(folder, doc.getName()).exists())
         {
             ResolveNamingConflictFragment.newInstance(parentFolder, doc).show(activity.getFragmentManager(),
@@ -364,19 +361,20 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            Operator.with(activity).load(new DownloadRequest.Builder(parentFolder, doc, false));
+            OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
+            group.enqueue(new DownloadRequest(parentFolder, doc));
+            BatchOperationManager.getInstance(activity).enqueue(group);
         }
     }
 
     public void download()
     {
-
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
         for (Document doc : selectedDocument)
         {
-            requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false));
+            group.enqueue(new DownloadRequest(parentFolder, doc));
         }
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
+        BatchOperationManager.getInstance(activity).enqueue(group);
     }
 
     public static void edit(final Activity activity, final Folder folder, final Node node)
@@ -391,12 +389,13 @@ public class NodeActions extends AbstractActions<Node>
         ft.commit();
 
         // Create and show the dialog.
-        UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+        UpdateDialogFragment newFragment = UpdateDialogFragment.newInstance(folder, node);
+        newFragment.show(activity.getFragmentManager(), UpdateDialogFragment.TAG);
     }
 
     public static void update(Fragment f)
     {
-        ActionUtils.actionPickFile(f, RequestCode.FILEPICKER);
+        ActionManager.actionPickFile(f, PublicIntent.REQUESTCODE_FILEPICKER);
     }
 
     public static void delete(final Activity activity, final Fragment f, Node node)
@@ -409,13 +408,13 @@ public class NodeActions extends AbstractActions<Node>
     public static void delete(final Activity activity, final Fragment f, final List<Node> nodes)
     {
         Folder tmpParent = null;
-        if (f instanceof DocumentFolderBrowserFragment)
+        if (f instanceof ChildrenBrowserFragment)
         {
-            tmpParent = ((DocumentFolderBrowserFragment) f).getParent();
+            tmpParent = ((ChildrenBrowserFragment) f).getParent();
         }
-        else if (f instanceof TabsNodeDetailsFragment)
+        else if (f instanceof DetailsFragment)
         {
-            tmpParent = ((TabsNodeDetailsFragment) f).getParentNode();
+            tmpParent = ((DetailsFragment) f).getParentNode();
         }
         final Folder parent = tmpParent;
 
@@ -433,27 +432,31 @@ public class NodeActions extends AbstractActions<Node>
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                String operationId = null;
+                OperationsRequestGroup group = new OperationsRequestGroup(activity, SessionUtils.getAccount(activity));
+
                 if (nodes.size() == 1)
                 {
-                    operationId = Operator.with(activity).load(
-                            new DeleteNodeRequest.Builder(parent, nodes.get(0))
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
+                    group.enqueue(new DeleteNodeRequest(parent, nodes.get(0))
+                            .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
                 }
                 else
                 {
-                    List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(nodes.size());
                     for (Node node : nodes)
                     {
-                        requestsBuilder.add(new DeleteNodeRequest.Builder(parent, node)
+                        group.enqueue(new DeleteNodeRequest(parent, node)
                                 .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
                     }
-                    operationId = Operator.with(activity, SessionUtils.getAccount(activity)).load(requestsBuilder);
 
-                    OperationWaitingDialogFragment.newInstance(DeleteNodeRequest.TYPE_ID, R.drawable.ic_delete,
-                            f.getString(R.string.delete), null, parent, nodes.size(), operationId).show(
-                            f.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    if (f instanceof ChildrenBrowserFragment)
+                    {
+                        OperationWaitingDialogFragment.newInstance(DeleteNodeRequest.TYPE_ID, R.drawable.ic_delete,
+                                f.getString(R.string.delete), null, parent, nodes.size()).show(
+                                f.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+                    }
                 }
+
+                BatchOperationManager.getInstance(activity).enqueue(group);
+
                 dialog.dismiss();
             }
         });

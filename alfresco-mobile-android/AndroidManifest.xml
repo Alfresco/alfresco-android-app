@@ -1,8 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.alfresco.mobile.android.application"
-    android:versionCode="40"
-    android:versionName="1.5.0" >
+    android:versionCode="32"
+    android:versionName="1.4.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -12,17 +29,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-    <!-- Create AlfrescoAccount & retrieve AlfrescoAccount informations -->
-    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
-
-    <!-- Responsible for sync operations -->
-    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
-    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
-
     <application
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
         android:allowBackup="false"
@@ -30,19 +36,17 @@
         android:hardwareAccelerated="true"
         android:icon="@drawable/ic_alfresco_logo"
         android:label="@string/app_name"
-        android:largeHeap="true"
         android:logo="@drawable/ic_alfresco"
-        android:theme="@style/MainTheme" >
+        android:theme="@style/AlfrescoTheme"
+        android:largeHeap="true" >
 
         <!-- *************************************************************** -->
         <!-- ALFRESCO APP -->
         <!-- *************************************************************** -->
         <activity
             android:name="org.alfresco.mobile.android.application.activity.HomeScreenActivity"
-            android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize" >
+            android:launchMode="singleTop" >
 
             <!-- Internal : Sign up cloud -->
             <intent-filter>
@@ -64,19 +68,17 @@
                     android:scheme="alfresco" />
             </intent-filter>
         </activity>
+
+        <!-- Internal : Hockeyapp Integration -->
+        <activity
+            android:name="net.hockeyapp.android.UpdateActivity"
+            android:exported="false" />
         <activity
             android:name="org.alfresco.mobile.android.application.activity.MainActivity"
-            android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
             android:logo="@drawable/ic_alfresco"
             android:windowSoftInputMode="adjustResize" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" /> 
-                <data android:scheme="alfrescoFujitsuScanCallback" />
-            </intent-filter>
-            
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -126,7 +128,7 @@
 
         <!-- Private : Text Editor Activity -->
         <activity
-            android:name="org.alfresco.mobile.android.application.editors.text.TextEditorActivity"
+            android:name="org.alfresco.mobile.android.application.fragments.editor.TextEditorActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:label="@string/file_editor_name"
@@ -151,13 +153,11 @@
         <!-- Public : Official entry point for 3rd party application -->
         <activity
             android:name="org.alfresco.mobile.android.application.activity.PublicDispatcherActivity"
-            android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:icon="@drawable/ic_alfresco_logo"
             android:label="@string/app_name"
             android:logo="@drawable/ic_alfresco_logo"
-            android:theme="@style/MainTheme.Dialog"
-            android:windowSoftInputMode="adjustResize" >
+            android:theme="@style/AlfrescoTheme.Dialog" >
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
@@ -171,13 +171,11 @@
         <!-- Internal : Activity As a Dialog -->
         <activity
             android:name="org.alfresco.mobile.android.application.activity.PrivateDialogActivity"
-            android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:icon="@drawable/ic_alfresco_logo"
-            android:label="@string/app_name"
+        	android:label="@string/app_name"
             android:logo="@drawable/ic_alfresco_logo"
-            android:theme="@style/MainTheme.Dialog"
-            android:windowSoftInputMode="adjustResize" >
+            android:theme="@style/AlfrescoTheme.Dialog" >
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS" />
 
@@ -194,34 +192,39 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <!-- *************************************************************** -->
-        <!-- CONTENT PROVIDER -->
+        <!-- Internal : CONTENT PROVIDER -->
         <!-- *************************************************************** -->
         <provider
-            android:name="org.alfresco.mobile.android.application.providers.FavoritesSyncProviderImpl"
+            android:name="org.alfresco.mobile.android.application.operations.sync.SynchroProvider"
             android:authorities="org.alfresco.mobile.android.provider.sync"
-            android:exported="false"
-            android:label="@string/sync_favorites"
-            android:syncable="true" />
-         <provider
-            android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.mimetypes"
             android:exported="false" />
         <provider
-            android:name="org.alfresco.mobile.android.application.providers.OperationsProviderImpl"
+            android:name="org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider"
             android:authorities="org.alfresco.mobile.android.provider.operations"
             android:exported="false" />
         <provider
-            android:name="org.alfresco.mobile.android.application.providers.search.HistorySearchProvider"
+            android:name="org.alfresco.mobile.android.application.accounts.AccountProvider"
+            android:authorities="org.alfresco.mobile.android.provider.accounts"
+            android:exported="false"
+             />
+         <provider
+            android:name="org.alfresco.mobile.android.application.fragments.search.HistorySearchProvider"
             android:authorities="org.alfresco.mobile.android.provider.searches"
             android:exported="false" />
-        <provider
-            android:name="org.alfresco.mobile.android.application.providers.storage.StorageAccessDocumentsProvider"
+         <provider
+            android:name="org.alfresco.mobile.android.application.mimetype.MimeTypeProvider"
+            android:authorities="org.alfresco.mobile.android.provider.mimetypes"
+            android:exported="false" />
+         
+         <provider
+            android:name="org.alfresco.mobile.android.application.storage.provider.StorageAccessDocumentsProvider"
             android:authorities="org.alfresco.android.provider.documents"
-            android:enabled="@bool/atLeastKitKat"
             android:exported="true"
             android:grantUriPermissions="true"
-            android:permission="android.permission.MANAGE_DOCUMENTS" >
+            android:permission="android.permission.MANAGE_DOCUMENTS"
+            android:enabled="@bool/atLeastKitKat" >
             <intent-filter>
                 <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
             </intent-filter>
@@ -230,35 +233,20 @@
         <!-- *************************************************************** -->
         <!-- Internal : SERVICES -->
         <!-- *************************************************************** -->
+        <!-- Private Service for background operations. -->
         <service
-            android:name="org.alfresco.mobile.android.sync.FavoritesSyncService"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.content.SyncAdapter" />
-            </intent-filter>
+            android:name="org.alfresco.mobile.android.application.operations.batch.BatchOperationService"
+            android:exported="false" />
 
-            <meta-data
-                android:name="android.content.SyncAdapter"
-                android:resource="@xml/favorites_sync_adapter" />
-        </service>
+        <!-- Private Service for sync. -->
+        <service
+            android:name="org.alfresco.mobile.android.application.operations.sync.SynchroService"
+            android:exported="false" />
 
         <!-- Private Service for cleaning temporary data. -->
         <service
-            android:name="org.alfresco.mobile.android.persistence.io.DataCleanerService"
+            android:name="org.alfresco.mobile.android.application.security.DataCleanerService"
             android:exported="false" />
-
-        <!-- Used For AlfrescoAccount Authentication -->
-        <service
-            android:name="org.alfresco.mobile.android.application.accounts.AccountAuthenticationService"
-            android:exported="true" >
-            <intent-filter>
-                <action android:name="android.accounts.AccountAuthenticator" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
-        </service>
 
         <!-- *************************************************************** -->
         <!-- EXTENSION : SAMSUNG -->
@@ -285,15 +273,44 @@
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:resource="@dimen/app_minimumsize_h" />
 
-        <!-- *************************************************************** -->
-        <!-- DEPRECATED -->
-        <!-- *************************************************************** -->
-        <!-- Accounts are managed by Android AccountManager. -->
-        <!-- Still available for migration from older version. (version <1.5) -->
-        <provider
-            android:name="org.alfresco.mobile.android.application.providers.AccountProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.accounts"
-            android:exported="false" />
+        <!-- SAMSUNG Mobile SDK Pen. -->
+        <!-- IMPORTANT : Comment this Activity if you don't want to use the SNote Extension. -->
+        <!--@@SAMSUNG@@->
+        <activity
+            android:name="org.alfresco.mobile.android.application.extension.samsung.pen.SNoteEditorActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:icon="@drawable/ic_alfresco_logo"
+            android:label="@string/note_editor_name"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.extension.intent.ACTION_START_SAMSUNG_NOTE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:mimeType="application/samsung_note" />
+                
+                <data android:pathPattern=".*\\.spd" />
+                <data android:pathPattern=".*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:host="*" />
+            </intent-filter>
+        </activity>
+        <!-@@SAMSUNG@@-->
     </application>
 
 </manifest>

@@ -35,42 +35,42 @@
             android:orientation="vertical" >
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_name" />
 
             <EditText
                 android:id="@+id/metadata_prop_name"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_title" />
 
             <EditText
                 android:id="@+id/metadata_prop_title"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_description" />
 
             <EditText
                 android:id="@+id/metadata_prop_description"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
@@ -79,7 +79,7 @@
 
             <TextView
                 android:id="@+id/metadata_prop_mimetype_header"
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_type" />
@@ -93,7 +93,7 @@
                 android:textColor="@color/hint_foreground_holo_light" />
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_modification_date" />
@@ -108,7 +108,7 @@
                 android:padding="0dip" >
 
                 <TextView
-                    style="?MainTheme.TextView.SearchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="wrap_content"
                     android:gravity="left|bottom"
@@ -139,7 +139,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    style="?MainTheme.TextView.SearchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="fill_parent"
                     android:text="@string/metadata_modification_date_from" />
@@ -169,7 +169,7 @@
                 android:orientation="horizontal" >
 
                 <TextView
-                    style="?MainTheme.TextView.SearchHeader"
+                    style="?AlfrescoTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
                     android:layout_height="fill_parent"
                     android:text="@string/metadata_modification_date_to" />

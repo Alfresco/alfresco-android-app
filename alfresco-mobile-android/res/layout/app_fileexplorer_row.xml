@@ -32,15 +32,15 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?MainTheme.TextView.ListItem.Primary" />
+            style="?AlfrescoTheme.TextView.ListItem.Primary" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?MainTheme.TextView.ListItem.Secondary" />
+            style="?AlfrescoTheme.TextView.ListItem.Secondary" />
     </LinearLayout>
 
     <ImageView
         android:id="@+id/choose"
-        style="?MainTheme.ImageView.Thumbnail.QuickContact" />
+        style="?AlfrescoTheme.ImageView.Thumbnail.QuickContact" />
 
 </LinearLayout>

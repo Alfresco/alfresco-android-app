@@ -1,36 +1,36 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.async.OperationRequest;
-import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.file.delete.DeleteFileRequest;
-import org.alfresco.mobile.android.ui.ListingModeFragment;
-import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.operations.OperationWaitingDialogFragment;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.operations.OperationRequest;
+import org.alfresco.mobile.android.application.operations.OperationsRequestGroup;
+import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
+import org.alfresco.mobile.android.application.operations.batch.file.delete.DeleteFileRequest;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -61,11 +61,14 @@ public class FileActions implements ActionMode.Callback
 
     private ActionMode mode;
 
-    protected WeakReference<Fragment> fragmentRef;
+    private Activity activity;
+
+    private Fragment fragment;
 
     public FileActions(Fragment f, List<File> files)
     {
-        this.fragmentRef = new WeakReference<Fragment>(f);
+        this.fragment = f;
+        this.activity = f.getActivity();
         this.selectedFiles = files;
         for (File file : files)
         {
@@ -82,27 +85,27 @@ public class FileActions implements ActionMode.Callback
         switch (item.getItemId())
         {
             case MenuActionItem.MENU_UPLOAD:
-                upload(getFragment(), new ArrayList<File>(selectedFiles));
+                upload(fragment, new ArrayList<File>(selectedFiles));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
             case MenuActionItem.MENU_DELETE:
-                delete(getFragment(), new ArrayList<File>(selectedFiles));
+                delete(fragment, new ArrayList<File>(selectedFiles));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
             case MenuActionItem.MENU_EDIT:
-                edit(getFragment(), selectedFiles.get(0));
+                edit(fragment, selectedFiles.get(0));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
             case MenuActionItem.MENU_SHARE:
-                share(getFragment(), selectedFiles);
+                share(fragment, selectedFiles);
                 mode.finish();
                 selectedFiles.clear();
                 return true;
             case MenuActionItem.MENU_SEND:
-                send(getFragment(), selectedFiles);
+                send(fragment, selectedFiles);
                 mode.finish();
                 selectedFiles.clear();
                 return true;
@@ -117,7 +120,7 @@ public class FileActions implements ActionMode.Callback
 
     private void upload(Fragment fr, ArrayList<File> files)
     {
-        ActionUtils.actionSendDocumentsToAlfresco(fr, files);
+        ActionManager.actionSendDocumentsToAlfresco(fr, files);
     }
 
     private void send(Fragment fragment, List<File> selectedFiles)
@@ -154,9 +157,9 @@ public class FileActions implements ActionMode.Callback
 
         MenuItem mi;
 
-        if (getFragment() instanceof ListingModeFragment)
+        if (fragment instanceof ListingModeFragment)
         {
-            switch (((ListingModeFragment) getFragment()).getMode())
+            switch (((ListingModeFragment) fragment).getMode())
             {
                 case FileExplorerFragment.MODE_LISTING:
                     if (selectedFolder.isEmpty())
@@ -165,7 +168,7 @@ public class FileActions implements ActionMode.Callback
                                 R.string.upload);
                         mi.setIcon(R.drawable.ic_upload);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-
+                        
                         mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE,
                                 R.string.share);
                         mi.setIcon(R.drawable.ic_share);
@@ -240,8 +243,8 @@ public class FileActions implements ActionMode.Callback
             int size = selectedFile.size();
             if (size > 0)
             {
-                title += String.format(getFragment().getResources()
-                        .getQuantityString(R.plurals.selected_document, size), size);
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_document, size),
+                        size);
             }
             size = selectedFolder.size();
             if (size > 0)
@@ -250,8 +253,8 @@ public class FileActions implements ActionMode.Callback
                 {
                     title += " | ";
                 }
-                title += String.format(
-                        getFragment().getResources().getQuantityString(R.plurals.selected_folders, size), size);
+                title += String.format(activity.getResources().getQuantityString(R.plurals.selected_folders, size),
+                        size);
             }
         }
 
@@ -328,9 +331,9 @@ public class FileActions implements ActionMode.Callback
 
     private void selectAll()
     {
-        if (getFragment() instanceof FileExplorerFragment)
+        if (fragment instanceof FileExplorerFragment)
         {
-            ((FileExplorerFragment) getFragment()).selectAll();
+            ((FileExplorerFragment) fragment).selectAll();
         }
     }
 
@@ -347,7 +350,7 @@ public class FileActions implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public static void share(final Fragment fr, final List<File> files)
     {
-        ActionUtils.actionSendDocuments(fr, files);
+        ActionManager.actionSendDocuments(fr, files);
     }
 
     public static void edit(final Fragment f, final File file)
@@ -382,31 +385,32 @@ public class FileActions implements ActionMode.Callback
         {
             public void onClick(DialogInterface dialog, int item)
             {
-                String operationId;
+                OperationsRequestGroup group = new OperationsRequestGroup(f.getActivity(), SessionUtils.getAccount(f
+                        .getActivity()));
 
                 if (files.size() == 1)
                 {
-                    operationId = Operator.with(f.getActivity()).load(
-                            new DeleteFileRequest.Builder(files.get(0))
-                                    .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
+                    group.enqueue(new DeleteFileRequest(files.get(0))
+                            .setNotificationVisibility(OperationRequest.VISIBILITY_TOAST));
                 }
                 else
                 {
-                    List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(files.size());
                     for (File file : files)
                     {
-                        requestsBuilder.add(new DeleteFileRequest.Builder(file)
+                        group.enqueue(new DeleteFileRequest(file)
                                 .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
                     }
-                    operationId = Operator.with(f.getActivity()).load(requestsBuilder);
 
                     if (f instanceof FileExplorerFragment)
                     {
                         OperationWaitingDialogFragment.newInstance(DeleteFileRequest.TYPE_ID, R.drawable.ic_delete,
-                                f.getString(R.string.delete), null, null, files.size(), operationId).show(
+                                f.getString(R.string.delete), null, null, files.size()).show(
                                 f.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
                     }
                 }
+
+                BatchOperationManager.getInstance(f.getActivity()).enqueue(group);
+
                 dialog.dismiss();
             }
         });
@@ -421,11 +425,4 @@ public class FileActions implements ActionMode.Callback
         alert.show();
     }
 
-    // /////////////////////////////////////////////////////////////
-    // UTILITIES
-    // ////////////////////////////////////////////////////////////
-    protected Fragment getFragment()
-    {
-        return fragmentRef.get();
-    }
 }

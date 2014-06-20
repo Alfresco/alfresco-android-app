@@ -32,25 +32,25 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?MainTheme.TextView.ListItem.Primary"
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
              />
 
         <ProgressBar
             android:id="@+id/status_progress"
-            style="?MainTheme.Progress.Horizontal"
+            style="?AlfrescoTheme.Progress.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?MainTheme.TextView.ListItem.Secondary"
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
             />
     </LinearLayout>
 
     <ImageButton
         android:id="@+id/choose"
-        style="?MainTheme.ImageView"
+        style="?AlfrescoTheme.ImageView"
         android:background="@drawable/btn_default_holo_light"
         android:contentDescription="@null"
         android:src="@drawable/ic_validate"

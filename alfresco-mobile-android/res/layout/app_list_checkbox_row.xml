@@ -31,18 +31,18 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?MainTheme.TextView.ListItem.Primary"
+            style="?AlfrescoTheme.TextView.ListItem.Primary"
             />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?MainTheme.TextView.ListItem.Secondary"
+            style="?AlfrescoTheme.TextView.ListItem.Secondary"
              />
     </LinearLayout>
     
     <CheckBox
         android:id="@+id/checkbox"
-        style="?MainTheme.ImageView"
+        style="?AlfrescoTheme.ImageView"
         android:focusable="false"
         android:clickable="false"
         />

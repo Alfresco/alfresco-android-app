@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- Change parent to override with custom theme. -->
-    <style name="MainTheme" parent="AlfrescoHoloTheme"></style>
-
-    <style name="MainTheme.Dialog" parent="AlfrescoHoloTheme.Dialog"></style>
-</resources>

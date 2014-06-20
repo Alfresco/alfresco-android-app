@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
-
-    <!-- Samsung Extension -->
-    <bool name="manager_isEnable_SamsungManager">true</bool>
-    <string name="manager_SamsungManager">org.alfresco.mobile.android.application.extension.samsung.SamsungManagerImpl</string>
-
-</resources>

@@ -1,75 +1,57 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.search;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
-import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
-import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Site;
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
-import org.alfresco.mobile.android.application.intent.RequestCode;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.application.providers.search.HistorySearch;
-import org.alfresco.mobile.android.application.providers.search.HistorySearchCursorAdapter;
-import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
-import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
+import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.person.PersonSearchFragment;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
-import android.content.Intent;
 import android.content.Loader;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.speech.RecognizerIntent;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
-import android.widget.GridView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -77,13 +59,19 @@ import android.widget.TextView.OnEditorActionListener;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class SearchFragment extends BaseCursorGridFragment
+public class SearchFragment extends BaseCursorListFragment
 {
     public static final String TAG = SearchFragment.class.getName();
 
-    private static final String ARGUMENT_SITE = "site";
+    private static final String PARAM_SITE = "site";
 
-    private static final String ARGUMENT_FOLDER = "parentFolder";
+    private static final String PARAM_FOLDER = "parentFolder";
+
+    private View rootView;
+
+    private AlfrescoSession alfSession;
+
+    private CursorLoader loader;
 
     private int optionPosition = 0;
 
@@ -92,6 +80,8 @@ public class SearchFragment extends BaseCursorGridFragment
     private EditText searchForm;
 
     private int searchKey = HistorySearch.TYPE_DOCUMENT;
+
+    private BaseFragment frag;
 
     private SearchOptionAdapter optionAdapter;
 
@@ -106,60 +96,58 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     public SearchFragment()
     {
-        titleId = R.string.accounts_manage;
-        requiredSession = true;
-        checkSession = true;
-        setHasOptionsMenu(true);
+        emptyListMessageId = R.string.empty_accounts;
+        title = R.string.accounts_manage;
     }
 
-    protected static SearchFragment newInstanceByTemplate(Bundle b)
+    public static SearchFragment newInstance()
     {
-        SearchFragment bf = new SearchFragment();
-        bf.setArguments(b);
-        return bf;
-    };
+        return new SearchFragment();
+    }
+
+    public static SearchFragment newInstance(Folder parentFolder, Site site)
+    {
+        SearchFragment ssf = new SearchFragment();
+        Bundle b = new Bundle();
+        b.putSerializable(PARAM_FOLDER, parentFolder);
+        b.putSerializable(PARAM_SITE, site);
+        ssf.setArguments(b);
+        return ssf;
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected void onRetrieveParameters(Bundle bundle)
-    {
-        super.onRetrieveParameters(bundle);
-        site = (Site) getArguments().getSerializable(ARGUMENT_SITE);
-        tmpParentFolder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
-
-        if (tmpParentFolder == null)
-        {
-            hide(R.id.search_path_panel);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(true);
 
-        setRootView(inflater.inflate(R.layout.app_search_history, container, false));
-        init(getRootView(), emptyListMessageId);
+        rootView = inflater.inflate(R.layout.app_search_history, container, false);
+        init(rootView, emptyListMessageId);
+
+        alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
 
         // Folder path
-        if (getArguments() != null && getArguments().containsKey(ARGUMENT_FOLDER))
+        if (getArguments() != null && getArguments().containsKey(PARAM_FOLDER))
         {
-            pathView = (TextView) viewById(R.id.search_path);
-            show(R.id.search_path_panel);
+            pathView = (TextView) rootView.findViewById(R.id.search_path);
+            site = (Site) getArguments().getSerializable(PARAM_SITE);
+            tmpParentFolder = (Folder) getArguments().getSerializable(PARAM_FOLDER);
+            rootView.findViewById(R.id.search_path_panel).setVisibility(View.VISIBLE);
             displayPathOption();
         }
         else
         {
-            hide(R.id.search_path_panel);
+            rootView.findViewById(R.id.search_path_panel).setVisibility(View.GONE);
         }
 
         // Search Icon
-        searchIcon = (ImageView) viewById(R.id.search_icon);
+        searchIcon = (ImageView) rootView.findViewById(R.id.search_icon);
 
         // Search Input
-        searchForm = (EditText) viewById(R.id.search_query);
+        searchForm = (EditText) rootView.findViewById(R.id.search_query);
         searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         searchForm.setOnEditorActionListener(new OnEditorActionListener()
         {
@@ -173,11 +161,10 @@ public class SearchFragment extends BaseCursorGridFragment
                     if (searchForm.getText().length() > 0)
                     {
                         search(searchForm.getText().toString());
-                        UIUtils.hideKeyboard(getActivity());
                     }
                     else
                     {
-                        MessengerUtils.showLongToast(getActivity(), getString(R.string.search_form_hint));
+                        MessengerManager.showLongToast(getActivity(), getString(R.string.search_form_hint));
                     }
                     return true;
                 }
@@ -185,26 +172,26 @@ public class SearchFragment extends BaseCursorGridFragment
             }
         });
 
-        // Speech to Text
-        Boolean hasTextToSpeech = ActionUtils.hasSpeechToText(getActivity());
-        ImageButton speechToText = (ImageButton) viewById(R.id.search_microphone);
-        if (hasTextToSpeech)
+        // Advanced Button
+        LinearLayout bAdvanced = (LinearLayout) rootView.findViewById(R.id.advanced_search);
+        bAdvanced.setOnClickListener(new OnClickListener()
         {
-            speechToText.setOnClickListener(new OnClickListener()
+            @Override
+            public void onClick(View v)
             {
-                @Override
-                public void onClick(View v)
-                {
-                    speechToText();
-                }
-            });
-        }
-        else
-        {
-            hide(R.id.search_microphone);
-        }
+                displayAdvancedSearch();
+            }
+        });
 
-        return getRootView();
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+        setListShown(adapter != null);
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -218,7 +205,6 @@ public class SearchFragment extends BaseCursorGridFragment
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
             getActivity().getActionBar().setDisplayShowCustomEnabled(false);
             displaySearchOptionHeader();
-            refreshSilently();
         }
     }
 
@@ -236,68 +222,9 @@ public class SearchFragment extends BaseCursorGridFragment
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode)
-        {
-            case RequestCode.TEXT_TO_SPEECH:
-            {
-                if (resultCode == Activity.RESULT_OK && data != null)
-                {
-                    ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                    searchForm.setText(text.get(0));
-                    search(text.get(0));
-                }
-                break;
-            }
-            default:
-                break;
-        }
-    }
-
-    // //////////////////////////////////////////////////////////////////////
-    // MENU
-    // //////////////////////////////////////////////////////////////////////
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        getMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case MenuActionItem.MENU_SEARCH_OPTION:
-                displayAdvancedSearch();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // SEARCH OPTIONS
     // //////////////////////////////////////////////////////////////////////
-    private void speechToText()
-    {
-        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-
-        try
-        {
-            startActivityForResult(intent, RequestCode.TEXT_TO_SPEECH);
-        }
-        catch (ActivityNotFoundException a)
-        {
-            MessengerUtils.showToast(getActivity(), R.string.file_editor_error_speech);
-        }
-    }
-
     private void displaySearchOptionHeader()
     {
         // /QUICK PATH
@@ -306,7 +233,7 @@ public class SearchFragment extends BaseCursorGridFragment
             getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
             optionAdapter = new SearchOptionAdapter(getActivity(), android.R.layout.simple_spinner_dropdown_item,
-                    SearchOptionAdapter.getSearchOptions(getSession(), (tmpParentFolder != null)));
+                    SearchOptionAdapter.getSearchOptions(alfSession, (tmpParentFolder != null)));
 
             OnNavigationListener mOnNavigationListener = new OnNavigationListener()
             {
@@ -314,7 +241,6 @@ public class SearchFragment extends BaseCursorGridFragment
                 @Override
                 public boolean onNavigationItemSelected(int itemPosition, long itemId)
                 {
-                    if (itemPosition == optionPosition) { return true; }
                     optionPosition = itemPosition;
                     updateForm(optionAdapter.getItem(itemPosition));
                     return true;
@@ -334,7 +260,7 @@ public class SearchFragment extends BaseCursorGridFragment
             if (site != null)
             {
                 String[] path = pathValue.split("/");
-
+               
                 if (path.length == 4)
                 {
                     pathBuilder.append(site.getTitle());
@@ -371,12 +297,17 @@ public class SearchFragment extends BaseCursorGridFragment
             switch (searchKey)
             {
                 case HistorySearch.TYPE_PERSON:
-                    UsersFragment.with(getActivity()).keywords(search.getQuery()).title(search.getDescription())
-                            .display();
+                    frag = PersonSearchFragment.newInstance(search.getQuery(), search.getDescription());
+                    frag.setSession(alfSession);
+                    FragmentDisplayer.replaceFragment(getActivity(), frag,
+                            DisplayUtils.getLeftFragmentId(getActivity()), PersonSearchFragment.TAG, true, true);
                     break;
                 default:
-                    DocumentFolderSearchFragment.with(getActivity()).query(search.getQuery())
-                            .title(search.getDescription()).display();
+                    frag = DocumentFolderSearchFragment.newInstance(search.getQuery(), search.getDescription());
+                    frag.setSession(alfSession);
+                    FragmentDisplayer.replaceFragment(getActivity(), frag,
+                            DisplayUtils.getLeftFragmentId(getActivity()), DocumentFolderSearchFragment.TAG, true,
+                            true);
                     break;
             }
 
@@ -390,14 +321,22 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             case HistorySearch.TYPE_DOCUMENT:
                 // Display results
-                DocumentFolderSearchFragment.with(getActivity()).keywords(keywords).searchFolder(false)
-                        .parentFolder(tmpParentFolder).display();
+                frag = DocumentFolderSearchFragment.newInstance(keywords, false, tmpParentFolder, null);
+                frag.setSession(alfSession);
+                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                        DocumentFolderSearchFragment.TAG, true, false);
                 break;
             case HistorySearch.TYPE_PERSON:
-                UsersFragment.with(getActivity()).keywords(keywords).display();
+                frag = PersonSearchFragment.newInstance(keywords, null);
+                frag.setSession(alfSession);
+                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                        PersonSearchFragment.TAG, true, false);
                 break;
             default:
-                DocumentFolderSearchFragment.with(getActivity()).keywords(keywords).searchFolder(true).display();
+                frag = DocumentFolderSearchFragment.newInstance(keywords, true);
+                frag.setSession(alfSession);
+                FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                        DocumentFolderSearchFragment.TAG, true, false);
                 break;
         }
 
@@ -413,12 +352,11 @@ public class SearchFragment extends BaseCursorGridFragment
                     search.getAdvanced(), search.getDescription(), search.getQuery(), new Date().getTime());
         }
     }
-
+    
     // //////////////////////////////////////////////////////////////////////
     // QUERY DESCRIPTION
     // //////////////////////////////////////////////////////////////////////
-    private static String getQueryDescription(String keywords, Folder folder)
-    {
+    private static String getQueryDescription(String keywords, Folder folder){
         StringBuilder builder = new StringBuilder();
         if (folder != null)
         {
@@ -428,7 +366,7 @@ public class SearchFragment extends BaseCursorGridFragment
         builder.append(keywords);
         return builder.toString();
     }
-
+    
     private static void addParameter(StringBuilder builder, String key, String value)
     {
         if (TextUtils.isEmpty(value)) { return; }
@@ -448,20 +386,19 @@ public class SearchFragment extends BaseCursorGridFragment
     {
         int hintId = R.string.search_form_hint;
         int iconId = R.drawable.ic_search;
-
         switch (id)
         {
             case HistorySearch.TYPE_PERSON:
                 hintId = R.string.search_person_hint;
-                // iconId = R.drawable.ic_person;
+                iconId = R.drawable.ic_person;
                 break;
             case HistorySearch.TYPE_DOCUMENT:
                 hintId = R.string.search_form_hint;
-                // iconId = R.drawable.ic_office;
+                iconId = R.drawable.ic_office;
                 break;
             case HistorySearch.TYPE_FOLDER:
                 hintId = R.string.search_form_hint;
-                // iconId = R.drawable.ic_repository_dark;
+                iconId = R.drawable.ic_repository_dark;
                 break;
             default:
                 break;
@@ -474,41 +411,54 @@ public class SearchFragment extends BaseCursorGridFragment
         searchKey = id;
 
         // Refresh History
-        refreshSilently();
+        refreshHistory();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // CURSOR ADAPTER
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected BaseAdapter onAdapterCreation()
-    {
-        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.sdk_list_row);
-    }
-
-    @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        return new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
+        setListShown(false);
+        loader = new CursorLoader(getActivity(), HistorySearchManager.CONTENT_URI, HistorySearchManager.COLUMN_ALL,
                 HistorySearchSchema.COLUMN_TYPE + " = " + searchKey, null,
                 HistorySearchSchema.COLUMN_LAST_REQUEST_TIMESTAMP + " DESC " + " LIMIT 20");
+
+        return loader;
     }
 
     @Override
-    protected void performRequest(ListingContext lcorigin)
+    public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
     {
-        getLoaderManager().initLoader(0, null, this);
+        if (adapter == null)
+        {
+            adapter = new HistorySearchCursorAdapter(getActivity(), cursor, R.layout.sdk_list_row);
+        }
+        else
+        {
+            adapter.changeCursor(cursor);
+        }
+        lv.setAdapter(adapter);
+
+        setEmptyShown(false);
+        setListShown(true);
     }
 
     // /////////////////////////////////////////////////////////////
     // ACTIONS
     // ////////////////////////////////////////////////////////////
     @Override
-    public void onListItemClick(GridView l, View v, int position, long id)
+    public void onListItemClick(ListView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         String keywords = cursor.getString(HistorySearchSchema.COLUMN_DESCRIPTION_ID);
         search(keywords, HistorySearchManager.createHistorySearch(cursor));
+    }
+
+    private void refreshHistory()
+    {
+        getLoaderManager().restartLoader(0, null, this);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -516,7 +466,10 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void displayAdvancedSearch()
     {
-        AdvancedSearchFragment.with(getActivity()).searchkey(searchKey).site(site).folder(tmpParentFolder).display();
+        AdvancedSearchFragment frag = AdvancedSearchFragment.newInstance(searchKey, site, tmpParentFolder);
+        frag.setSession(alfSession);
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                AdvancedSearchFragment.TAG, true, true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -524,59 +477,7 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     public static void getMenu(Menu menu)
     {
-        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_OPTION, Menu.FIRST
-                + MenuActionItem.MENU_SEARCH_OPTION, R.string.search_advanced);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-    }
+        // TODO Auto-generated method stub
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // BUILDER
-    // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
-    {
-        return new Builder(activity);
-    }
-
-    public static class Builder extends AlfrescoFragmentBuilder
-    {
-        // ///////////////////////////////////////////////////////////////////////////
-        // CONSTRUCTORS
-        // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
-        {
-            super(activity);
-            this.extraConfiguration = new Bundle();
-        }
-
-        public Builder(Activity appActivity, Map<String, Object> configuration)
-        {
-            super(appActivity, configuration);
-            this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_search_off;
-            this.menuTitleId = R.string.menu_search;
-        }
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // SETTERS
-        // ///////////////////////////////////////////////////////////////////////////
-        public Builder folder(Folder folder)
-        {
-            extraConfiguration.putSerializable(ARGUMENT_FOLDER, folder);
-            return this;
-        }
-
-        public Builder site(Site site)
-        {
-            extraConfiguration.putSerializable(ARGUMENT_SITE, site);
-            return this;
-        }
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // CREATE FRAGMENT
-        // ///////////////////////////////////////////////////////////////////////////
-        protected Fragment createFragment(Bundle b)
-        {
-            return newInstanceByTemplate(b);
-        }
     }
 }

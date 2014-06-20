@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <!-- SSL -->
-    <string name="security_ssl_disable">SSL certificate validation has been disabled.</string>
-
-</resources>

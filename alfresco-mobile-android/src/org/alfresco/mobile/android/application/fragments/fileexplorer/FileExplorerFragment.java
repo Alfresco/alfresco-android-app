@@ -1,62 +1,67 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
-import java.util.Map;
 
+import org.alfresco.mobile.android.api.asynchronous.NodeChildrenLoader;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.fragments.actions.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
-import org.alfresco.mobile.android.application.intent.RequestCode;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.application.managers.DataProtectionManagerImpl;
-import org.alfresco.mobile.android.async.file.browse.FilesEvent;
-import org.alfresco.mobile.android.async.file.create.CreateDirectoryEvent;
-import org.alfresco.mobile.android.async.file.delete.DeleteFileEvent;
-import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
-import org.alfresco.mobile.android.async.file.update.RenameFileEvent;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.utils.AndroidVersion;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
+import org.alfresco.mobile.android.application.intent.IntentIntegrator;
+import org.alfresco.mobile.android.application.intent.PublicIntent;
+import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.security.DataProtectionManager;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
+import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
+import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.GridView;
-
-import com.squareup.otto.Subscribe;
+import android.view.ViewGroup;
+import android.widget.ListView;
 
 /**
  * LocalFileBrowserFragment is responsible to display the content of Download
@@ -64,94 +69,118 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
-public class FileExplorerFragment extends FileExplorerFoundationFragment implements FileExplorerFragmentTemplate
+public class FileExplorerFragment extends AbstractFileExplorerFragment
 {
     public static final String TAG = FileExplorerFragment.class.getName();
 
+    private FileExplorerReceiver receiver;
+
     private File privateFolder;
+
+    private File parent;
 
     private FileActions nActions;
 
     private File createFile;
 
-    private boolean isShortCut = false;
-
     private long lastModifiedDate;
 
-    private int menuId;
+    private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
 
-    private static final String ARGUMENT_MENU_ID = "menuId";
-
-    private static final String ARGUMENT_SHORTCUT = "shortcut";
+    private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
     public FileExplorerFragment()
     {
+        loaderId = NodeChildrenLoader.ID;
+        callback = this;
         emptyListMessageId = R.string.empty_download;
-        setHasOptionsMenu(true);
+        initLoader = false;
+        checkSession = false;
     }
 
-    public static FileExplorerFragment newInstanceByTemplate(Bundle b)
+    public static FileExplorerFragment newInstance(File folder)
     {
-        FileExplorerFragment cbf = new FileExplorerFragment();
-        cbf.setArguments(b);
-        return cbf;
+        return newInstance(folder, MODE_LISTING, false, 1);
+    }
+
+    public static FileExplorerFragment newInstance(File parentFolder, int displayMode, boolean shortCut, int menuId)
+    {
+        FileExplorerFragment bf = new FileExplorerFragment();
+        ListingContext lc = new ListingContext();
+        lc.setSortProperty(DocumentFolderService.SORT_PROPERTY_NAME);
+        lc.setIsSortAscending(true);
+        Bundle b = new Bundle(createBundleArgs(lc, LOAD_AUTO));
+        b.putAll(createBundleArgs(parentFolder));
+        b.putInt(PARAM_MODE, displayMode);
+        b.putInt(PARAM_MENUID, menuId);
+        b.putBoolean(PARAM_SHORTCUT, shortCut);
+        bf.setArguments(b);
+        return bf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    protected void onRetrieveParameters(Bundle bundle)
-    {
-        super.onRetrieveParameters(bundle);
-        path = bundle.getString(FileExplorerFragmentTemplate.ARGUMENT_PATH);
-        parent = (File) bundle.getSerializable(FileExplorerFragmentTemplate.ARGUMENT_FILE);
-        isShortCut = getArguments().getBoolean(ARGUMENT_SHORTCUT);
-        menuId = getArguments().getInt(ARGUMENT_MENU_ID);
-    }
-
-    @Override
-    @Subscribe
-    public void onResult(FilesEvent event)
-    {
-        super.onResult(event);
-    }
-
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
 
-        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
+        Account acc = ((BaseActivity) getActivity()).getCurrentAccount();
         Bundle b = getArguments();
         if (b == null)
         {
             if (acc != null)
             {
-                parent = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(acc);
+                parent = StorageManager.getDownloadFolder(getActivity(), acc);
                 if (parent == null)
                 {
-                    MessengerUtils.showLongToast(getActivity(), getString(R.string.sdinaccessible));
+                    MessengerManager.showLongToast(getActivity(), getString(R.string.sdinaccessible));
                     return;
                 }
             }
             else
             {
-                MessengerUtils.showLongToast(getActivity(), getString(R.string.loginfirst));
+                MessengerManager.showLongToast(getActivity(), getString(R.string.loginfirst));
                 return;
             }
         }
-        privateFolder = AlfrescoStorageManager.getInstance(getActivity()).getRootPrivateFolder().getParentFile();
-
-        getActivity().getActionBar().show();
-        if (isShortCut)
+        else
         {
-            enableTitle = false;
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            parent = (File) b.getSerializable(ARGUMENT_FOLDER);
+            if (parent == null && b.containsKey(ARGUMENT_FOLDERPATH) && b.getString(ARGUMENT_FOLDERPATH) != null)
+            {
+                parent = new File(b.getString(ARGUMENT_FOLDERPATH));
+            }
+
+            if (parent != null)
+            {
+                getLoaderManager().initLoader(FileExplorerLoader.ID, b, this);
+                getLoaderManager().getLoader(FileExplorerLoader.ID).forceLoad();
+            }
         }
+
+        privateFolder = StorageManager.getRootPrivateFolder(getActivity()).getParentFile();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View vroot = inflater.inflate(R.layout.app_filexplorer_list, container, false);
+        if (vroot == null) { return null; }
+
+        init(vroot, emptyListMessageId);
+
+        setRetainInstance(true);
+        if (initLoader)
+        {
+            continueLoading(loaderId, callback);
+        }
+
+        return vroot;
     }
 
     @Override
@@ -175,7 +204,26 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
             }
         }
 
+        if (getDialog() == null)
+        {
+            getActivity().getActionBar().show();
+            if (getArguments().getBoolean(PARAM_SHORTCUT))
+            {
+                FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false,
+                        getArguments().getInt(PARAM_MENUID));
+                getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+            }
+        }
         getActivity().invalidateOptionsMenu();
+
+        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_DELETE_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_UPDATE_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_DECRYPT_COMPLETED);
+        intentFilter.addAction(IntentIntegrator.ACTION_ENCRYPT_COMPLETED);
+        receiver = new FileExplorerReceiver();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
+
         refreshListView();
     }
 
@@ -184,7 +232,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     {
         switch (requestCode)
         {
-            case RequestCode.CREATE:
+            case PublicIntent.REQUESTCODE_CREATE:
                 if (createFile != null)
                 {
                     if (createFile.length() > 0 && lastModifiedDate < createFile.lastModified())
@@ -201,6 +249,16 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                 break;
         }
     }
+    
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        if (receiver != null)
+        {
+            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
+        }
+    }
 
     @Override
     public void onStop()
@@ -212,11 +270,26 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         super.onStop();
     }
 
+    private void displayNavigation(File file, boolean backstack)
+    {
+        BaseFragment frag;
+        if (getMode() == MODE_PICK)
+        {
+            frag = FileExplorerFragment.newInstance(file, getMode(), true, getArguments().getInt(PARAM_MENUID));
+        }
+        else
+        {
+            frag = FileExplorerFragment.newInstance(file);
+        }
+        FragmentDisplayer.replaceFragment(getActivity(), frag, DisplayUtils.getLeftFragmentId(getActivity()),
+                FileExplorerFragment.TAG, backstack);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public void onListItemClick(GridView l, View v, int position, long id)
+    public void onListItemClick(ListView l, View v, int position, long id)
     {
         final File file = (File) l.getItemAtPosition(position);
 
@@ -276,7 +349,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
             }
             else
             {
-                ActionUtils.actionView(this, file, new ActionManagerListener()
+                ActionManager.actionView(this, file, new ActionManagerListener()
                 {
                     @Override
                     public void onActivityNotFoundException(ActivityNotFoundException e)
@@ -290,8 +363,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         adapter.notifyDataSetChanged();
     }
 
-    @Override
-    public boolean onListItemLongClick(GridView l, View v, int position, long id)
+    public boolean onItemLongClick(ListView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
 
@@ -318,27 +390,12 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         return true;
     };
 
-    private void displayNavigation(File file, boolean backstack)
-    {
-        if (getMode() == MODE_PICK)
-        {
-            FileExplorerFragment.with(getActivity()).file(file).menuId(menuId).mode(getMode()).isShortCut(true)
-                    .display();
-        }
-        else
-        {
-            FileExplorerFragment.with(getActivity()).file(file).display();
-        }
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // MENU
     // //////////////////////////////////////////////////////////////////////
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    public void getMenu(Menu menu)
     {
-        super.onCreateOptionsMenu(menu, inflater);
-        if (mode == MODE_LISTING)
+        if (getMode() == MODE_LISTING)
         {
 
             if (parent != null && privateFolder != null && !parent.getPath().startsWith(privateFolder.getPath()))
@@ -370,18 +427,6 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
 
         }
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case MenuActionItem.MENU_CREATE_FOLDER:
-                createFolder();
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -440,121 +485,83 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     }
 
     // //////////////////////////////////////////////////////////////////////
-    // EVENTS RECEIVER
+    // BROADCAST RECEIVER
     // //////////////////////////////////////////////////////////////////////
-    @Subscribe
-    public void onCreateDirectoryEvent(CreateDirectoryEvent event)
+    public class FileExplorerReceiver extends BroadcastReceiver
     {
-        if (event.hasException) { return; }
-        if (event.parentFolder.equals(getParent().getPath()))
+        @Override
+        public void onReceive(Context context, Intent intent)
         {
-            ((FileExplorerAdapter) adapter).replaceFile(event.data);
-        }
-        refresh();
-        gv.setSelection(selectedPosition);
-    }
+            if (adapter == null) { return; }
 
-    @Subscribe
-    public void onDeleteFileEvent(DeleteFileEvent event)
-    {
-        if (event.hasException) { return; }
-        remove(event.data);
-        refresh();
-        gv.setSelection(selectedPosition);
-    }
+            Log.d(TAG, intent.getAction());
 
-    @Subscribe
-    public void onUpdateFileEvent(RenameFileEvent event)
-    {
-        if (event.hasException) { return; }
-        if (event.parentFolder.equals(getParent().getPath()))
-        {
-            remove(event.originalFile);
-            ((FileExplorerAdapter) adapter).replaceFile(event.data);
-        }
-        refresh();
-        gv.setSelection(selectedPosition);
-    }
+            if (intent.getExtras() != null)
+            {
+                File parentFolder = getParent();
+                Bundle b = intent.getExtras().getParcelable(IntentIntegrator.EXTRA_DATA);
+                if (b == null) { return; }
+                if (b.getSerializable(IntentIntegrator.EXTRA_FOLDER) instanceof Folder) { return; }
+                String pFolder = ((File) b.getSerializable(IntentIntegrator.EXTRA_FOLDER)).getPath();
 
-    @Subscribe
-    public void onFileProtectionEvent(FileProtectionEvent event)
-    {
-        if (event.hasException) { return; }
-        if (getFragment(WaitingDialogFragment.TAG) != null)
-        {
-            ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-        }
-        if (!event.encryptionAction)
-        {
-            DataProtectionManagerImpl.getInstance(getActivity()).executeAction(getActivity(), event.intentAction,
-                    event.protectedFile);
-        }
-        refresh();
-    }
+                if (DataProtectionManager.getInstance(getActivity()).isEncryptionEnable())
+                {
+                    if (IntentIntegrator.ACTION_DECRYPT_COMPLETED.equals(intent.getAction()))
+                    {
+                        DataProtectionManager.executeAction(getActivity(),
+                                b.getInt(IntentIntegrator.EXTRA_INTENT_ACTION),
+                                (File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
+                        if (getFragment(WaitingDialogFragment.TAG) != null)
+                        {
+                            ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                        }
+                        refreshList();
+                        return;
+                    }
+                    else if (IntentIntegrator.ACTION_ENCRYPT_COMPLETED.equals(intent.getAction()))
+                    {
+                        if (getFragment(WaitingDialogFragment.TAG) != null)
+                        {
+                            ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
+                        }
+                        refreshList();
+                        return;
+                    }
+                }
 
-    private Fragment getFragment(String tag)
-    {
-        return getActivity().getFragmentManager().findFragmentByTag(tag);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // BUILDER
-    // ///////////////////////////////////////////////////////////////////////////
-    public static Builder with(Activity activity)
-    {
-        return new Builder(activity);
-    }
-
-    public static class Builder extends AlfrescoFragmentBuilder
-    {
-        // ///////////////////////////////////////////////////////////////////////////
-        // CONSTRUCTORS
-        // ///////////////////////////////////////////////////////////////////////////
-        public Builder(Activity activity)
-        {
-            super(activity);
-            this.extraConfiguration = new Bundle();
+                if (pFolder.equals(parentFolder.getPath()))
+                {
+                    if (IntentIntegrator.ACTION_DELETE_COMPLETED.equals(intent.getAction()))
+                    {
+                        remove((File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
+                        return;
+                    }
+                    else if (IntentIntegrator.ACTION_CREATE_FOLDER_COMPLETED.equals(intent.getAction()))
+                    {
+                        File file = (File) b.getSerializable(IntentIntegrator.EXTRA_CREATED_FOLDER);
+                        ((FileExplorerAdapter) adapter).replaceFile(file);
+                    }
+                    else if (IntentIntegrator.ACTION_UPDATE_COMPLETED.equals(intent.getAction()))
+                    {
+                        remove((File) b.getSerializable(IntentIntegrator.EXTRA_FILE));
+                        File updatedFile = (File) b.getSerializable(IntentIntegrator.EXTRA_UPDATED_FILE);
+                        ((FileExplorerAdapter) adapter).replaceFile(updatedFile);
+                    }
+                    refreshList();
+                    lv.setSelection(selectedPosition);
+                }
+            }
         }
 
-        public Builder(Activity appActivity, Map<String, Object> configuration)
+        private void refreshList()
         {
-            super(appActivity, configuration);
-            menuIconId = R.drawable.ic_download_light;
-            menuTitleId = R.string.menu_local_files;
-            templateArguments = new String[] { ARGUMENT_FILE, ARGUMENT_PATH, ARGUMENT_SHORTCUT, ARGUMENT_MENU_ID };
+            if (adapter != null && ((FileExplorerAdapter) adapter).getCount() >= 1)
+            {
+                lv.setVisibility(View.VISIBLE);
+                ev.setVisibility(View.GONE);
+                lv.setEmptyView(null);
+                lv.setAdapter(adapter);
+            }
         }
-
-        // ///////////////////////////////////////////////////////////////////////////
-        // SETTERS
-        // ///////////////////////////////////////////////////////////////////////////
-        public Builder file(File parentFolder)
-        {
-            extraConfiguration.putSerializable(ARGUMENT_FILE, parentFolder);
-            return this;
-        }
-
-        public Builder mode(int displayMode)
-        {
-            extraConfiguration.putInt(ARGUMENT_MODE, displayMode);
-            return this;
-        }
-
-        public Builder isShortCut(boolean isShortCut)
-        {
-            extraConfiguration.putBoolean(ARGUMENT_SHORTCUT, isShortCut);
-            return this;
-        }
-
-        public Builder menuId(int menuId)
-        {
-            extraConfiguration.putInt(ARGUMENT_MENU_ID, menuId);
-            return this;
-        }
-
-        protected Fragment createFragment(Bundle b)
-        {
-            return newInstanceByTemplate(b);
-        };
-
     }
 }

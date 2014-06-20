@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <ScrollView
+        android:id="@+id/properties_details"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="0dip"
+                android:layout_gravity="center"
+                android:layout_margin="4dip"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingLeft="4dip" >
+
+                <TextView
+                    android:id="@+id/title"
+                    style="?AlfrescoTheme.TextView.ListItem.Primary"
+                    android:layout_gravity="left"
+                    android:layout_margin="0dp"
+                    android:paddingLeft="0dip"
+                    android:paddingRight="@dimen/properties_details_padding"
+                    android:text="Commotus post primos advocatos super decere primos consulens advocatos est sonu perferens vocis fidis securius.JPG" />
+
+                <TextView
+                    android:id="@+id/details"
+                    style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                    android:layout_marginLeft="0dip"
+                    android:paddingLeft="0dip"
+                    android:text="G419 days ago - 142Kb, version 1.0" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/preview_group"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/preview"
+                    android:layout_width="@dimen/properties_details_icon_size"
+                    android:layout_height="@dimen/properties_details_icon_size"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/preview"
+                    android:scaleType="centerInside" />
+
+                <TextView
+                    android:id="@+id/preview_message"
+                    style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                    android:gravity="center"
+                    android:text="@string/preview_unavailable"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tools_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/properties_actions_margin"
+                android:layout_marginLeft="@dimen/browse_margin"
+                android:layout_marginTop="@dimen/properties_actions_margin" >
+
+                <ImageView
+                    android:id="@+id/action_openin"
+                    android:contentDescription="@string/open_in"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    android:src="@drawable/ic_open_dark" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/action_favorite"
+                        style="?AlfrescoTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/favorites_document"
+                        android:src="@drawable/ic_unfavorite_dark" />
+
+                    <ProgressBar
+                        android:id="@+id/favorite_progress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/action_share"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/share"
+                    android:src="@drawable/ic_share" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/like"
+                        style="?AlfrescoTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/like"
+                        android:src="@drawable/ic_unlike" />
+
+                    <ProgressBar
+                        android:id="@+id/like_progress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/action_geolocation"
+                    style="?AlfrescoTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/geolocation"
+                    android:src="@drawable/ic_location"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <include
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                layout="@layout/app_properties" />
+        </LinearLayout>
+    </ScrollView>
+
+   <include
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        layout="@layout/app_progress_emtpy" />
+
+</FrameLayout>

@@ -20,7 +20,7 @@
 
     <item name="tab_comment" type="id"/>
 
-    <!-- FRAGMENT ID -->
+    <!-- LOADERS ID -->
     <item name="tab_history" type="id"/>
     <item name="tag_account" type="id"/>
     <item name="tag_action" type="id"/>
@@ -37,7 +37,7 @@
     <item name="create_folder" type="id"/>
     <item name="create_content" type="id"/>
 
-    <!-- AlfrescoAccount -->
+    <!-- Account -->
     <string name="account_service_document">/alfresco</string>
 
     <!-- Settings -->

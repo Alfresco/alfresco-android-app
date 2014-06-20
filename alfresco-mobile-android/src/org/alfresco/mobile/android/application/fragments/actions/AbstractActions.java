@@ -1,32 +1,29 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.application.manager.StorageManager;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -35,16 +32,15 @@ import android.view.Menu;
 
 public abstract class AbstractActions<T> implements ActionMode.Callback
 {
+
     protected onFinishModeListerner mListener;
 
     protected ActionMode mode;
 
-    protected WeakReference<Activity> activityRef = null;
+    protected Activity activity = null;
 
-    protected WeakReference<Fragment> fragmentRef;
+    protected Fragment fragment;
 
-    protected boolean multiSelectionEnable = true;
-    
     protected List<T> selectedItems = new ArrayList<T>();
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -87,10 +83,6 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public void selectNode(T n)
     {
-        if (!multiSelectionEnable){
-            selectedItems.clear();
-        }
-        
         if (selectedItems.contains(n))
         {
             removeNode(n);
@@ -142,7 +134,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     private void getMenu(Menu menu)
     {
         menu.clear();
-        getMenu(getActivity(), menu);
+        getMenu(activity, menu);
     }
 
     protected void getMenu(Activity activity2, Menu menu)
@@ -156,18 +148,18 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = AlfrescoStorageManager.getInstance(activity).getDownloadFolder(SessionUtils.getAccount(activity));
+            File folder = StorageManager.getDownloadFolder(activity, SessionUtils.getAccount(activity));
             if (folder != null) { return new File(folder, node.getName()); }
         }
 
         return null;
     }
-
+    
     public static File getTempFile(final Activity activity, final Node node)
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = AlfrescoStorageManager.getInstance(activity).getTempFolder(SessionUtils.getAccount(activity));
+            File folder = StorageManager.getTempFolder(activity, SessionUtils.getAccount(activity));
             if (folder != null) { return new File(folder, node.getName()); }
         }
 
@@ -186,41 +178,4 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     {
         this.mListener = mListener;
     }
-
-    // ///////////////////////////////////////////////////////////////////////////////////
-    // UTILS
-    // ///////////////////////////////////////////////////////////////////////////////////
-    protected Activity getActivity()
-    {
-        return activityRef.get();
-    }
-
-    protected Fragment getFragment()
-    {
-        return fragmentRef.get();
-    }
-    
-    protected AlfrescoSession getSession()
-    {
-        if (getActivity() == null) {return null;}
-        return SessionUtils.getSession(getActivity());
-    }
-
-    protected AlfrescoAccount getAccount()
-    {
-        if (getActivity() == null) {return null;}
-        return SessionUtils.getAccount(getActivity());
-    }
-    
-    protected T getCurrentItem()
-    {
-        if (selectedItems == null || selectedItems.isEmpty()) {return null;}
-        return selectedItems.get(0);
-    }
-    
-    public boolean hasMultiSelectionEnabled()
-    {
-        return multiSelectionEnable;
-    }
-    
 }

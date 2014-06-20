@@ -1,27 +1,27 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
+import org.alfresco.mobile.android.application.accounts.Account;
+import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -48,34 +48,33 @@ public class DocumentTypesDialogFragment extends DialogFragment
     public static final String TAG = "FileTypePropertiesDialogFragment";
 
     /**
-     * Used for retrieving default storage folder. Value must be an
-     * AlfrescoAccount object.
+     * Used for retrieving default storage folder. Value must be an Account object.
      */
-    public static final String ARGUMENT_ACCOUNT = "account";
-
+    public static final String PARAM_ACCOUNT = "account";
+    
     /**
      * Used for retrieving from which Fragment the wizard has been started.
      */
-    public static final String ARGUMENT_FRAGMENT_TAG = "FragmentTag";
+    public static final String PARAM_FRAGMENT_TAG = "FragmentTag";
 
     /**
-     * Used for retrieving document information during document creation. Value
-     * must be a DocumentTypeRecord object.
+     * Used for retrieving document information during document creation.
+     * Value must be a DocumentTypeRecord object.
      */
-    public static final String ARGUMENT_DOCUMENT_TYPE = "documentType";
+    public static final String PARAM_DOCUMENT_TYPE = "documentType";
 
     /**
      * Static constructor.
      * 
-     * @param currentAccount : Alfresco AlfrescoAccount.
+     * @param currentAccount : Alfresco Account.
      * @return a dialogfragment to dipslay file type creation list.
      */
-    public static DocumentTypesDialogFragment newInstance(AlfrescoAccount currentAccount, String fragmentTag)
+    public static DocumentTypesDialogFragment newInstance(Account currentAccount, String fragmentTag)
     {
         DocumentTypesDialogFragment fragment = new DocumentTypesDialogFragment();
         Bundle args = new Bundle();
-        args.putSerializable(ARGUMENT_ACCOUNT, currentAccount);
-        args.putSerializable(ARGUMENT_FRAGMENT_TAG, fragmentTag);
+        args.putSerializable(PARAM_ACCOUNT, currentAccount);
+        args.putSerializable(PARAM_FRAGMENT_TAG, fragmentTag);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,7 +92,7 @@ public class DocumentTypesDialogFragment extends DialogFragment
             public void onItemClick(AdapterView<?> l, View v, int position, long id)
             {
                 Bundle b = getArguments();
-                b.putSerializable(ARGUMENT_DOCUMENT_TYPE, (DocumentTypeRecord) l.getItemAtPosition(position));
+                b.putSerializable(PARAM_DOCUMENT_TYPE, (DocumentTypeRecord) l.getItemAtPosition(position));
                 EditorsDialogFragment dialogft = EditorsDialogFragment.newInstance(b);
                 dialogft.show(getFragmentManager(), EditorsDialogFragment.TAG);
 
@@ -124,7 +123,7 @@ public class DocumentTypesDialogFragment extends DialogFragment
         {
             if (item != null)
             {
-                vh.topText.setText(item.nameString);
+                vh.topText.setText(getString(item.nameId));
             }
         }
 

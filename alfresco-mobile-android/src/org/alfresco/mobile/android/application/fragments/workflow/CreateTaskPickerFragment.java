@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow;
 
 import java.util.List;
@@ -23,10 +23,10 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.node.browser.NodeAdapter;
-import org.alfresco.mobile.android.application.fragments.person.UserAdapter;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.application.fragments.browser.NodeAdapter;
+import org.alfresco.mobile.android.application.fragments.person.PersonAdapter;
+import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.BaseFragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,7 +36,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-public class CreateTaskPickerFragment extends AlfrescoFragment
+public class CreateTaskPickerFragment extends BaseFragment
 {
     public static final String TAG = CreateTaskPickerFragment.class.getName();
 
@@ -105,14 +105,14 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
         }
 
         setRetainInstance(true);
-        setSession(SessionUtils.getSession(getActivity()));
-        SessionUtils.checkSession(getActivity(), getSession());
+        alfSession = SessionUtils.getSession(getActivity());
+        SessionUtils.checkSession(getActivity(), alfSession);
         vRoot = inflater.inflate(R.layout.app_picker_list, container, false);
-        if (getSession() == null) { return vRoot; }
+        if (alfSession == null) { return vRoot; }
 
         if (mode == MODE_PERSON)
         {
-            ((ListView) vRoot.findViewById(R.id.listView)).setAdapter(new UserAdapter(this, R.layout.app_item_row,
+            ((ListView) vRoot.findViewById(R.id.listView)).setAdapter(new PersonAdapter(this, R.layout.app_item_row,
                     assignees, true));
         }
         else if (mode == MODE_DOCUMENT)

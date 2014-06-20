@@ -19,7 +19,7 @@
 <resources>
 
     <item name="app_main" type="layout">@layout/app_main_one_pane</item>
-    <item name="app_details" type="layout">@layout/app_details_extra</item>
+    <item name="app_details" type="layout">@layout/app_details_onepanel</item>
     <item name="app_import" type="layout">@layout/app_import_spinner</item>
     <item name="app_start_process" type="layout">@layout/app_start_process_onepanel</item>
     <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>

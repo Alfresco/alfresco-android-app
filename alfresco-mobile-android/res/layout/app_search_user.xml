@@ -36,56 +36,56 @@
             android:orientation="vertical" >
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/search_name" />
 
             <EditText
                 android:id="@+id/search_name"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/jobTitle" />
 
             <EditText
                 android:id="@+id/jobTitle"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/company" />
 
             <EditText
                 android:id="@+id/company"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >
             </EditText>
 
             <TextView
-                style="?MainTheme.TextView.SearchHeader"
+                style="?AlfrescoTheme.TextView.SearchHeader"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/location" />
 
             <EditText
                 android:id="@+id/location"
-                style="?MainTheme.TextView"
+                style="?AlfrescoTheme.TextView"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text" >

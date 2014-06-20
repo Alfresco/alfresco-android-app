@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?MainTheme.Background.White"
+    style="?AlfrescoTheme.Background.White"
     android:fillViewport="true" >
 
     <LinearLayout

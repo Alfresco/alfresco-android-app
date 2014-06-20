@@ -25,7 +25,7 @@
 
     <ProgressBar
         android:id="@+id/waiting_progressbar"
-        style="?MainTheme.Progress"
+        style="?AlfrescoTheme.Progress"
         />
 
     <TextView

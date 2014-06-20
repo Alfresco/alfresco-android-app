@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
-
-    <!-- Session Manager Extension -->
-    <bool name="manager_isEnable_SessionManager">true</bool>
-    <string name="manager_SessionManager">org.alfresco.mobile.android.application.extension.tools.DeveloperSessionManager</string>
-
-</resources>

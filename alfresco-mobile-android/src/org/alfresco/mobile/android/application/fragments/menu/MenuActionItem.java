@@ -1,20 +1,20 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2013 Alfresco Software Limited.
+ * 
  * This file is part of Alfresco Mobile for Android.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ ******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
 /**
@@ -36,7 +36,7 @@ public interface MenuActionItem
 
     int MENU_SEARCH_FOLDER = 11;
 
-    int MENU_SEARCH_OPTION = 12;
+    int MENU_SEARCH_OPTION = 11;
 
     int MENU_CREATE_DOCUMENT = 19;
 
@@ -49,9 +49,9 @@ public interface MenuActionItem
     int MENU_REFRESH = 40;
 
     int MENU_DETAILS = 50;
-
+    
     int MENU_DISPLAY_ITEMS = 12;
-
+    
     int MENU_DISPLAY_GALLERY = 13;
 
     // ///////////////////////////////////////////
@@ -140,8 +140,6 @@ public interface MenuActionItem
 
     int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
 
-    int MENU_DEVICE_SCAN_DOCUMENT = 330;
-    
     // ///////////////////////////////////////////
     // SITES
     // ///////////////////////////////////////////
@@ -163,22 +161,22 @@ public interface MenuActionItem
     // SYNC
     // ///////////////////////////////////////////
     int MENU_RESOLVE_CONFLICT = 500;
-
+    
     // ///////////////////////////////////////////
     // WORKFLOW
     // ///////////////////////////////////////////
     int MENU_PROCESS_DETAILS = 600;
 
     int MENU_WORKFLOW_ADD = 603;
-
+    
     int MENU_PROCESS_REVIEW_ATTACHMENTS = 601;
+    
+    int MENU_TASK_REASSIGN= 602;
 
-    int MENU_TASK_REASSIGN = 602;
-
-    int MENU_TASK_CLAIM = 604;
-
-    int MENU_TASK_UNCLAIM = 605;
-
+    int MENU_TASK_CLAIM= 604;
+    
+    int MENU_TASK_UNCLAIM= 605;
+    
     int MENU_PROCESS_HISTORY = 606;
 
     // ///////////////////////////////////////////
@@ -208,7 +206,7 @@ public interface MenuActionItem
     int MENU_TEL = 656;
 
     int MENU_MOBILE = 657;
-
+    
     // ///////////////////////////////////////////
     // SYNC
     // ///////////////////////////////////////////
@@ -219,7 +217,7 @@ public interface MenuActionItem
     // ///////////////////////////////////////////
 
     int ACCOUNT_ID = 1000;
-
+    
     int ACCOUNT_RELOAD = 1001;
 
     int PARAMETER_ID = 2000;
@@ -230,9 +228,7 @@ public interface MenuActionItem
     // OVERFLOW GENERAL MENU
     // ///////////////////////////////////////////
     int MENU_SETTINGS_ID = 4000;
-
     int MENU_HELP_ID = 4002;
-
     int MENU_ABOUT_ID = 4003;
 
 }

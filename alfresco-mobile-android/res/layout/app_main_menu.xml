@@ -17,12 +17,11 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    style="?MainTheme.Background.GreyGradient"
-    tools:context=".MainActivity" >
+    style="?AlfrescoTheme.Background.GreyGradient"
+    android:fillViewport="true" >
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/properties_padding"
         android:layout_marginRight="@dimen/properties_padding"
@@ -30,7 +29,7 @@
 
         <TextView
             android:id="@+id/accounts_label"
-            style="?MainTheme.TextView.SectionHeader.Grey"
+            style="?AlfrescoTheme.TextView.SectionHeader.Grey"
             android:text="@string/menu_accounts" />
 
         <Spinner
@@ -47,91 +46,74 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_below="@+id/accounts_spinner"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical" >
 
             <TextView
-                style="?MainTheme.TextView.SectionHeader.Grey"
+                style="?AlfrescoTheme.TextView.SectionHeader.Grey"
                 android:text="@string/menu_view" />
 
             <Button
                 android:id="@+id/menu_browse_activities"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_activities_light"
-                android:text="@string/menu_browse_activities"
-                />
+                android:text="@string/menu_browse_activities" />
 
             <Button
                 android:id="@+id/menu_browse_root"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_repository_light"
-                android:text="@string/menu_browse_root"
-                />
+                android:text="@string/menu_browse_root" />
 
             <Button
                 android:id="@+id/menu_browse_shared"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_shared_light"
                 android:text="@string/menu_browse_shared"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_browse_my_sites"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_all_sites_light"
-                android:text="@string/menu_browse_sites"
-                />
+                android:text="@string/menu_browse_sites" />
 
             <Button
                 android:id="@+id/menu_browse_userhome"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_myfiles_light"
                 android:text="@string/menu_browse_userhome"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_workflow"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_action_inbox_light"
-                android:text="@string/my_tasks"
-                />
+                android:text="@string/my_tasks" />
 
             <Button
                 android:id="@+id/menu_favorites"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_favorite"
-                android:text="@string/menu_favorites"
-                />
+                android:text="@string/menu_favorites" />
 
             <Button
                 android:id="@+id/menu_search"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_search_off"
-                android:text="@string/menu_search"
-                />
+                android:text="@string/menu_search" />
 
             <Button
                 android:id="@+id/menu_downloads"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_download_light"
-                android:text="@string/menu_local_files"
-                />
+                android:text="@string/menu_local_files" />
 
             <Button
                 android:id="@+id/menu_notifications"
-                style="?MainTheme.TextView.MenuItem"
+                style="?AlfrescoTheme.TextView.MenuItem"
                 android:drawableLeft="@drawable/ic_events"
                 android:text="@string/notifications"
-                /> 
-        </LinearLayout>
-        
-        <LinearLayout
-            android:id="@+id/custom_menu_group"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_below="@+id/accounts_spinner"
-            android:orientation="vertical" >
-        
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

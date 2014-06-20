@@ -17,7 +17,7 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.extension.samsung.pen;
 
-import org.alfresco.mobile.android.application.extension.samsung.R;
+import org.alfresco.mobile.android.application.extension.samsung.impl.R;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;

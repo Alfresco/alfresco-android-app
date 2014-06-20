@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?MainTheme.Background.White"
+    style="?AlfrescoTheme.Background.White"
     android:orientation="vertical" >
 
     <ScrollView
@@ -41,7 +41,7 @@
 
                 <TextView
                     android:id="@+id/title"
-                    style="?MainTheme.TextView.Primary.Task"
+                    style="?AlfrescoTheme.TextView.Primary.Task"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -62,7 +62,7 @@
                 android:orientation="vertical" >
 
                 <TextView
-                    style="?MainTheme.TextView.SectionHeader.Primary"
+                    style="?AlfrescoTheme.TextView.SectionHeader.Primary"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/wizard_main_margin"
@@ -77,7 +77,7 @@
 
                     <ProgressBar
                         android:id="@+id/attachments_waiting"
-                        style="?MainTheme.Progress"
+                        style="?AlfrescoTheme.Progress"
                         android:layout_margin="@dimen/margin_large" />
                 </LinearLayout>
             </LinearLayout>

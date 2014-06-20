@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>org.alfresco.mobile.android.apps</groupId>
 		<artifactId>alfresco-mobile-android-apps</artifactId>
-		<version>1.5.0-SNAPSHOT</version>
+		<version>1.4.0</version>
 	</parent>
 
 	<artifactId>alfresco-mobile-android</artifactId>
@@ -34,36 +34,42 @@
 	</build>
 
 	<dependencies>
-		<!-- ANDROID -->
 		<dependency>
-			<groupId>android</groupId>
-			<artifactId>android</artifactId>
-			<scope>provided</scope>
+			<groupId>org.alfresco.mobile.android.sdk</groupId>
+			<artifactId>alfresco-mobile-android-ui-library</artifactId>
+			<version>${alfresco.sdk.version}</version>
+			<type>apklib</type>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android.annotations</groupId>
-			<artifactId>annotations</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.android.support</groupId>
-			<artifactId>support-v4</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.android.support</groupId>
-			<artifactId>support-v13</artifactId>
-		</dependency>
-		<!-- ALFRESCO PLATFORM & SDK -->
-		<dependency>
-			<groupId>org.alfresco.mobile.android.platform</groupId>
-			<artifactId>alfresco-mobile-android-foundation</artifactId>
+			<groupId>org.alfresco.mobile.android.apps</groupId>
+			<artifactId>alfresco-mobile-android-commons</artifactId>
 			<version>${project.version}</version>
 			<type>apklib</type>
 		</dependency>
 		<dependency>
-			<groupId>org.alfresco.mobile.android.sdk</groupId>
-			<artifactId>alfresco-mobile-android-client-api</artifactId>
-			<version>${alfresco.sdk.version}</version>
+			<groupId>android</groupId>
+			<artifactId>android</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android.annotations</groupId>
+			<artifactId>annotations</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp</groupId>
+			<artifactId>okhttp</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.squareup.picasso</groupId>
+			<artifactId>picasso</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v13</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -71,9 +77,32 @@
 	<profiles>
 		<profile>
 			<id>extension-samsung</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<configuration>
+									<tasks>
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="!--@@SAMSUNG@@-" value="!--@@SAMSUNG BEGIN@@--" />
+										<replace file="${project.basedir}/AndroidManifest.xml"
+											token="!-@@SAMSUNG@@--" value="!--@@SAMSUNG END@@--" />
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
 			<dependencies>
 				<dependency>
-					<groupId>org.alfresco.mobile.android.extensions</groupId>
+					<groupId>org.alfresco.mobile.android.apps</groupId>
 					<artifactId>alfresco-mobile-android-extension-samsung</artifactId>
 					<version>${project.version}</version>
 					<type>apklib</type>
@@ -82,6 +111,7 @@
 		</profile>
 		<profile>
 			<id>android-release</id>
+
 			<build>
 				<resources>
 					<resource>
@@ -172,25 +202,15 @@
 						</executions>
 					</plugin>
 				</plugins>
+
 			</build>
 		</profile>
 		<profile>
 			<id>android-beta-release</id>
-			<dependencies>
-				<!-- HockeyApp -->
-				<dependency>
-					<groupId>org.alfresco.mobile.android.extensions</groupId>
-					<artifactId>alfresco-mobile-android-extension-hockeyapp</artifactId>
-					<version>${project.version}</version>
-					<type>apklib</type>
-				</dependency>
-				<dependency>
-					<groupId>org.alfresco.mobile.android.extensions</groupId>
-					<artifactId>alfresco-mobile-android-extension-tools</artifactId>
-					<version>${project.version}</version>
-					<type>apklib</type>
-				</dependency>
-			</dependencies>
+			<properties>
+				<!-- Common -->
+				<packageName.beta>org.alfresco.mobile.android.application.beta</packageName.beta>
+			</properties>
 			<build>
 				<resources>
 					<resource>
@@ -230,6 +250,9 @@
 								<phase>initialize</phase>
 								<configuration>
 									<tasks>
+										<replace
+											file="${project.basedir}/src/org/alfresco/mobile/android/application/AlfrescoContentProvider.java"
+											token="org.alfresco.mobile.android.provider" value="${packageName.beta}" />
 										<replace file="${project.basedir}/AndroidManifest.xml"
 											token="org.alfresco.mobile.android.provider." value="${packageName.beta}." />
 										<replace file="${project.basedir}/AndroidManifest.xml"
@@ -272,6 +295,13 @@
 					</plugin>
 				</plugins>
 			</build>
+			<dependencies>
+				<dependency>
+					<groupId>net.hockeyapp.android</groupId>
+					<artifactId>HockeySDK</artifactId>
+					<version>2.2.1</version>
+				</dependency>
+			</dependencies>
 		</profile>
 	</profiles>
 

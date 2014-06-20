@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?MainTheme.Background.White"
+    style="?AlfrescoTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center" >
 

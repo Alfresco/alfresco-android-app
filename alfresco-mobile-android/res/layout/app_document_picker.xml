@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?MainTheme.Background.White"
+    style="?AlfrescoTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center"
     android:minWidth="600dp" >
@@ -31,19 +31,19 @@
 
         <Button
             android:id="@+id/picker_root"
-            style="?MainTheme.Button.Large"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableTop="@drawable/ic_flatten_folder"
             android:text="@string/menu_browse_root" />
 
         <Button
             android:id="@+id/picker_sites"
-            style="?MainTheme.Button.Large"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableTop="@drawable/ic_site_flatten"
             android:text="@string/menu_browse_sites" />
 
         <Button
             android:id="@+id/picker_favorites"
-            style="?MainTheme.Button.Large"
+            style="?AlfrescoTheme.Button.Large"
             android:drawableTop="@drawable/ic_favorite_dark"
             android:text="@string/menu_favorites_folder" />
     </LinearLayout>

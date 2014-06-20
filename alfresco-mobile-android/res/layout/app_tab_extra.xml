@@ -49,7 +49,7 @@
         <include
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            layout="@layout/sdk_grid" />
+            layout="@layout/sdk_list" />
     </LinearLayout>
 
 </TabHost>

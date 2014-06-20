@@ -24,7 +24,7 @@
     
     <ImageView
         android:id="@+id/icon"
-        style="?MainTheme.ImageView.Thumbnail"
+        style="?AlfrescoTheme.ImageView.Thumbnail"
         android:contentDescription="@null"
         android:src="@drawable/ic_repository_dark"
         android:visibility="gone" />
@@ -38,13 +38,13 @@
 
         <TextView
             android:id="@+id/toptext"
-            style="?MainTheme.ActionBar.Primary"
+            style="?AlfrescoTheme.ActionBar.Primary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?MainTheme.ActionBar.Secondary"
+            style="?AlfrescoTheme.ActionBar.Secondary"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

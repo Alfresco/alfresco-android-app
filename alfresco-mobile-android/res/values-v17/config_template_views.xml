@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
-
-    <!-- SITES -->
-    <!-- Use view pager with getChildrenFragmentManager only available on API 17 -->
-    <string name="config_com_alfresco_type_sites">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
-</resources>
