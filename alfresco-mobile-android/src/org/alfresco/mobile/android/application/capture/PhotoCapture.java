@@ -91,7 +91,8 @@ public class PhotoCapture extends DeviceCapture
     }
 
     @Override
-    protected void payloadCaptured(int requestCode, int resultCode, Intent data)
+    protected boolean payloadCaptured(int requestCode, int resultCode, Intent data)
     {
+        return true;
     }
 }

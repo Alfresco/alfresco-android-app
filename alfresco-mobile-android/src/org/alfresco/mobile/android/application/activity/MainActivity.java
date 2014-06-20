@@ -111,6 +111,7 @@ import android.view.Window;
 
 import com.squareup.otto.Subscribe;
 
+
 /**
  * Main activity of the application.
  * 
@@ -137,8 +138,8 @@ public class MainActivity extends BaseActivity
 
     private Node currentNode;
 
-    // Device capture
-    private DeviceCapture capture;
+    // Device capture (made static as we don't seem to be getting instance state back through creation).
+    private static DeviceCapture capture = null;
 
     private int fragmentQueue = -1;
 
@@ -149,6 +150,8 @@ public class MainActivity extends BaseActivity
 
     private static ActionBarDrawerToggle mDrawerToggle;
 
+    private Intent callBackIntent = null;
+        
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -163,17 +166,24 @@ public class MainActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
+        //if (capture != null)
+        //    capture.setActivity(this);
+        
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
             currentAccount = helper.getCurrentAccount();
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
+
             if (helper.getDeviceCapture() != null)
             {
                 capture = helper.getDeviceCapture();
                 capture.setActivity(this);
             }
+
+            stackCentral = helper.getStackCentral();
+
         }
         else
         {
@@ -204,6 +214,7 @@ public class MainActivity extends BaseActivity
             AccountsFragment.with(this).display();
         }
 
+<<<<<<< HEAD
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -238,7 +249,15 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
+=======
+        // Display or not Left/central panel for middle tablet.
+        DisplayUtils.switchSingleOrTwo(this, false);
+        
+        //Check if there is a Fujistu scanner intent coming back to us.
+        checkScan();
+>>>>>>> 59bff042a54eb1ec16d924dd3652a5fadd367eaf
     }
+    
 
     @Override
     protected void onStart()
@@ -368,8 +387,26 @@ public class MainActivity extends BaseActivity
     {
         super.onSaveInstanceState(outState);
 
+<<<<<<< HEAD
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
+=======
+        outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, stackCentral,
+                currentAccount, null, fragmentQueue, importParent));
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // HockeyApp Integration
+    // ///////////////////////////////////////////////////////////////////////////
+    private void checkForCrashes()
+    {
+        ReportManager.checkForCrashes(this);
+    }
+
+    private void checkForUpdates()
+    {
+        ReportManager.checkForUpdates(this);
+>>>>>>> 59bff042a54eb1ec16d924dd3652a5fadd367eaf
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -675,11 +712,14 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_PROFILE:
                 UserProfileFragment.with(this).personId(getCurrentAccount().getUsername()).displayAsDialog();
                 return true;
+                
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
+                
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
@@ -1119,5 +1159,21 @@ public class MainActivity extends BaseActivity
         if (currentAccount == null) { return false; }
         if (event == null) { return false; }
         return (currentAccount.getId() == event.account.getId());
+    }
+    
+    private void checkScan()
+    {    
+        callBackIntent = getIntent();
+        
+        if (callBackIntent != null  &&  callBackIntent.getScheme() != null  &&
+            callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
+        {
+            if (capture != null)
+            {
+                capture.capturedCallback(capture.getRequestCode(), Activity.RESULT_OK, callBackIntent);
+            }
+            else
+                MessengerManager.showLongToast(this, "No capture object for scanner result!"); 
+        }
     }
 }

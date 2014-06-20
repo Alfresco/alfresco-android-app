@@ -61,6 +61,8 @@ public final class DeviceCaptureHelper
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
                 capture = new AudioCapture(c, parentRepositoryFolder, parentFolder);
                 break;
+            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
+                capture = new FujitsuCapture(c, parentRepositoryFolder, parentFolder);
             default:
                 break;
         }
