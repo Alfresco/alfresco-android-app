@@ -166,8 +166,8 @@ public class MainActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
-        //if (capture != null)
-        //    capture.setActivity(this);
+        if (capture != null)
+            capture.setActivity(this);
         
         if (savedInstanceState != null)
         {
@@ -214,7 +214,6 @@ public class MainActivity extends BaseActivity
             AccountsFragment.with(this).display();
         }
 
-<<<<<<< HEAD
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -249,13 +248,8 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
-=======
-        // Display or not Left/central panel for middle tablet.
-        DisplayUtils.switchSingleOrTwo(this, false);
-        
         //Check if there is a Fujistu scanner intent coming back to us.
         checkScan();
->>>>>>> 59bff042a54eb1ec16d924dd3652a5fadd367eaf
     }
     
 
@@ -386,27 +380,8 @@ public class MainActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-
-<<<<<<< HEAD
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
-=======
-        outState.putBundle(MainActivityHelper.TAG, MainActivityHelper.createBundle(outState, stackCentral,
-                currentAccount, null, fragmentQueue, importParent));
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // HockeyApp Integration
-    // ///////////////////////////////////////////////////////////////////////////
-    private void checkForCrashes()
-    {
-        ReportManager.checkForCrashes(this);
-    }
-
-    private void checkForUpdates()
-    {
-        ReportManager.checkForUpdates(this);
->>>>>>> 59bff042a54eb1ec16d924dd3652a5fadd367eaf
     }
 
     // ///////////////////////////////////////////////////////////////////////////
