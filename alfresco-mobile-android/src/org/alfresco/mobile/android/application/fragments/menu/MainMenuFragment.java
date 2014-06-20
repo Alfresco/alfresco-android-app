@@ -1,64 +1,67 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
+import java.util.List;
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
+import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.model.config.ConfigInfo;
+import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.application.ApplicationManager;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.accounts.Account;
-import org.alfresco.mobile.android.application.accounts.AccountManager;
-import org.alfresco.mobile.android.application.accounts.AccountSchema;
-import org.alfresco.mobile.android.application.accounts.fragment.AccountCursorAdapter;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.configuration.ConfigurationContext;
-import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
+import org.alfresco.mobile.android.application.config.ConfigManager;
+import org.alfresco.mobile.android.application.config.ConfigManager.ConfigurationMenuEvent;
+import org.alfresco.mobile.android.application.configuration.manager.MenuConfigurator;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.favorites.SyncScanInfo;
+import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
+import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
-import org.alfresco.mobile.android.application.intent.IntentIntegrator;
-import org.alfresco.mobile.android.application.operations.sync.SyncOperation;
-import org.alfresco.mobile.android.application.operations.sync.SynchroManager;
-import org.alfresco.mobile.android.application.operations.sync.SynchroProvider;
-import org.alfresco.mobile.android.application.operations.sync.SynchroSchema;
-import org.alfresco.mobile.android.application.preferences.AccountsPreferences;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
-import org.alfresco.mobile.android.application.utils.UIUtils;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.SessionManager;
+import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
+import org.alfresco.mobile.android.sync.FavoritesSyncScanEvent;
+import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncScanInfo;
+import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.app.LoaderManager.LoaderCallbacks;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.CursorLoader;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -70,29 +73,41 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.Spinner;
 
-public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor>, OnItemSelectedListener
-{
-    private AccountCursorAdapter cursorAdapter;
+import com.squareup.otto.Subscribe;
 
+public class MainMenuFragment extends AlfrescoFragment implements OnItemSelectedListener
+{
     private Spinner spinnerAccount;
 
-    private Cursor accountCursor;
-
     private int accountIndex;
-
-    private MainMenuReceiver receiver;
 
     private Button menuFavorites;
 
     private Button menuSlidingFavorites;
 
-    private ConfigurationManager configurationManager;
+    private ConfigManager configurationManager;
 
-    private View rootView;
+    private AccountsAdapter cursorAdapter;
 
-    public static final String TAG = "MainMenuFragment";
+    public static final String TAG = MainMenuFragment.class.getName();
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    public MainMenuFragment()
+    {
+        checkSession = false;
+        requiredSession = false;
+    }
+
+    protected static MainMenuFragment newInstanceByTemplate(Bundle b)
+    {
+        MainMenuFragment cbf = new MainMenuFragment();
+        cbf.setArguments(b);
+        return cbf;
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -100,30 +115,31 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        rootView = inflater.inflate(R.layout.app_main_menu, container, false);
+        setRootView(inflater.inflate(R.layout.app_main_menu, container, false));
 
-        spinnerAccount = (Spinner) rootView.findViewById(R.id.accounts_spinner);
+        spinnerAccount = (Spinner) getRootView().findViewById(R.id.accounts_spinner);
         spinnerAccount.setOnItemSelectedListener(this);
 
-        menuFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
+        menuFavorites = (Button) viewById(R.id.menu_favorites);
 
         if (SLIDING_TAG.equals(getTag()))
         {
-            menuSlidingFavorites = (Button) rootView.findViewById(R.id.menu_favorites);
+            menuSlidingFavorites = (Button) viewById(R.id.menu_favorites);
+            setRetainInstance(true);
         }
 
-        configurationManager = ApplicationManager.getInstance(getActivity()).getConfigurationManager();
-        if (configurationManager != null
-                && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
+        configurationManager = ConfigManager.getInstance(getActivity());
+        if (configurationManager != null && getAccount() != null
+                && configurationManager.hasConfig(getAccount().getId()))
         {
-            configure(configurationManager.getConfig(SessionUtils.getAccount(getActivity())));
+            configure(configurationManager.getConfig(getAccount().getId()));
         }
         else
         {
             display();
         }
 
-        return rootView;
+        return getRootView();
     }
 
     @Override
@@ -131,14 +147,14 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     {
         super.onActivityCreated(savedInstanceState);
 
-        if (accountCursor != null)
-        {
-            accountCursor.close();
-            accountCursor = null;
-        }
-        cursorAdapter = new AccountCursorAdapter(getActivity(), null, R.layout.app_account_list_row, null);
+        // retrieve accounts
+        List<AlfrescoAccount> list = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccounts(getActivity());
+        list.add(new AlfrescoAccount(AccountsAdapter.NETWORK_ITEM, getString(R.string.cloud_networks_switch), null,
+                null, null, null, "0", null, "false"));
+        list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null,
+                null, null, "0", null, "false"));
+        cursorAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
         spinnerAccount.setAdapter(cursorAdapter);
-        getLoaderManager().restartLoader(0, null, this);
     }
 
     @Override
@@ -150,38 +166,29 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                 && getActivity().getFragmentManager().findFragmentByTag(GeneralPreferences.TAG) == null
                 && getActivity().getFragmentManager().findFragmentByTag(AboutFragment.TAG) == null)
         {
-            ((MainActivity) getActivity()).clearScreen();
+            FragmentDisplayer.clearCentralPane(getActivity());
         }
 
         UIUtils.displayTitle(getActivity(), R.string.app_name);
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+        EventBusManager.getInstance().register(this);
     }
 
     @Override
     public void onResume()
     {
         super.onResume();
-        getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
         getActivity().getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
 
-        IntentFilter intentFilter = new IntentFilter(IntentIntegrator.ACTION_SYNCHRO_COMPLETED);
-        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED);
-        intentFilter.addAction(IntentIntegrator.ACTION_SYNC_SCAN_STARTED);
-        intentFilter.addAction(IntentIntegrator.ACTION_CONFIGURATION_MENU);
-        receiver = new MainMenuReceiver();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(receiver, intentFilter);
-
+        if (TAG.equals(getTag()))
+        {
+            getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
+            getActivity().getActionBar().setHomeButtonEnabled(false);
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).lockSlidingMenu();
+            }
+        }
         displayFavoriteStatut();
-
-        if (configurationManager != null
-                && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
-        {
-            configure(configurationManager.getConfig(SessionUtils.getAccount(getActivity())));
-        }
-        else
-        {
-            display();
-        }
     }
 
     @Override
@@ -191,12 +198,19 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         if (!isVisible() && TAG.equals(getTag()))
         {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActivity().getActionBar().setHomeButtonEnabled(true);
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).unlockSlidingMenu();
+            }
         }
+    }
 
-        if (receiver != null)
-        {
-            LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(receiver);
-        }
+    @Override
+    public void onStop()
+    {
+        EventBusManager.getInstance().unregister(this);
+        super.onStop();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -214,34 +228,31 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     @Override
     public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
     {
-        Cursor cursor = (Cursor) parentView.getItemAtPosition(position);
-        int accountId = cursor.getInt(AccountSchema.COLUMN_ID_ID);
+        AlfrescoAccount acc = (AlfrescoAccount) parentView.getItemAtPosition(position);
+        int accountId = (int) acc.getId();
 
         switch (accountId)
         {
-            case AccountCursorAdapter.NETWORK_ITEM:
+            case AccountsAdapter.NETWORK_ITEM:
                 ((MainActivity) getActivity()).displayNetworks();
                 hideSlidingMenu(false);
+                refresh();
                 break;
-            case AccountCursorAdapter.MANAGE_ITEM:
-                ((MainActivity) getActivity()).displayAccounts();
+            case AccountsAdapter.MANAGE_ITEM:
+                AccountsFragment.with(getActivity()).display();
                 hideSlidingMenu(false);
+                refresh();
                 break;
 
             default:
-                Account currentAccount = SessionUtils.getAccount(getActivity());
-                if (currentAccount != null && cursor.getCount() > 1
-                        && currentAccount.getId() != cursor.getLong(AccountSchema.COLUMN_ID_ID))
+                AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
+                if (currentAccount != null && currentAccount.getId() != accountId)
                 {
                     hideSlidingMenu(true);
 
-                    // Request session loading for the selected account.
-                    LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
-                            new Intent(IntentIntegrator.ACTION_LOAD_ACCOUNT).putExtra(
-                                    IntentIntegrator.EXTRA_ACCOUNT_ID, cursor.getLong(AccountSchema.COLUMN_ID_ID)));
-
-                    // Update dropdown menu (eventual new items to display)
-                    cursorAdapter.swapCursor(AccountCursorAdapter.createMergeCursor(getActivity(), accountCursor));
+                    // Request session loading for the selected AlfrescoAccount.
+                    SessionManager.getInstance(getActivity()).loadSession(
+                            AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId));
                 }
                 break;
         }
@@ -253,51 +264,42 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // CALLBACKS
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public Loader<Cursor> onCreateLoader(int id, Bundle args)
-    {
-        return new CursorLoader(getActivity(), AccountManager.CONTENT_URI, AccountManager.COLUMN_ALL, null, null, null);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Cursor> arg0, Cursor cursor)
-    {
-        accountCursor = cursor;
-        cursorAdapter.changeCursor(AccountCursorAdapter.createMergeCursor(getActivity(), accountCursor));
-        if (cursor.getCount() > 0)
-        {
-            refresh();
-        }
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> arg0)
-    {
-        cursorAdapter.changeCursor(null);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void configure(ConfigurationContext configurationContext)
+    private void configure(ConfigContext configurationContext)
     {
-        if (configurationContext != null && configurationContext.getJson() != null
-                && configurationContext.getJson().containsKey(ConfigurationManager.CATEGORY_ROOTMENU))
+        if (configurationContext != null && configurationContext.hasLayoutConfig())
         {
-            Map<String, Object> menuConfig = (Map<String, Object>) configurationContext.getJson().get(
-                    ConfigurationManager.CATEGORY_ROOTMENU);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_ACTIVITIES, R.id.menu_browse_activities);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_REPOSITORY, R.id.menu_browse_root);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SITES, R.id.menu_browse_my_sites);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_TASKS, R.id.menu_workflow);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_FAVORITES, R.id.menu_favorites);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SEARCH, R.id.menu_search);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_LOCAL_FILES, R.id.menu_downloads);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_NOTIFICATIONS, R.id.menu_notifications);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_SHARED, R.id.menu_browse_shared, true);
-            hideOrDisplay(menuConfig, ConfigurationManager.MENU_MYFILES, R.id.menu_browse_userhome, true);
+            if (ConfigInfo.SCHEMA_VERSION_BETA.equals(configurationContext.getConfigInfo().getSchemaVersion()))
+            {
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_ACTIVITIES),
+                        R.id.menu_browse_activities);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_REPOSITORY),
+                        R.id.menu_browse_root);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS),
+                        R.id.menu_notifications);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared,
+                        true);
+                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_MYFILES),
+                        R.id.menu_browse_userhome, true);
+            }
+            else if (configurationContext.getApplicationConfig().getViewConfig(
+                    ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
+            {
+                DisplayUtils.hide(viewById(R.id.main_menu_group));
+                MenuConfigurator config = new MenuConfigurator(getActivity(), configurationContext,
+                        (ViewGroup) getRootView());
+                config.createMenu();
+            }
+            else
+            {
+                display();
+            }
         }
         else
         {
@@ -307,76 +309,69 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
     private void display()
     {
-        Account acc = SessionUtils.getAccount(getActivity());
+        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
 
-        rootView.findViewById(R.id.menu_browse_activities).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_browse_root).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_browse_my_sites).setVisibility(View.VISIBLE);
-        if (acc != null && acc.getTypeId() == Account.TYPE_ALFRESCO_CLOUD)
+        DisplayUtils.show(viewById(R.id.main_menu_group));
+        show(R.id.menu_browse_activities);
+        show(R.id.menu_browse_root);
+        show(R.id.menu_browse_my_sites);
+        if (acc != null && acc.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
-            rootView.findViewById(R.id.menu_workflow).setVisibility(View.GONE);
+            hide(R.id.menu_workflow);
         }
         else
         {
-            rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
+            show(R.id.menu_workflow);
         }
-        rootView.findViewById(R.id.menu_favorites).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_search).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_downloads).setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
+        show(R.id.menu_favorites);
+        show(R.id.menu_search);
+        show(R.id.menu_downloads);
+        if (OperationsFragment.canDisplay(getActivity(), acc))
+        {
+            show(R.id.menu_notifications);
+        }
+        else
+        {
+            hide(R.id.menu_notifications);
+        }
         displayFolderShortcut(SessionUtils.getSession(getActivity()));
     }
 
-    private void hideOrDisplay(Map<String, Object> menuConfig, String configKey, int viewId)
+    private void hideOrDisplay(ViewConfig viewConfig, int viewId)
     {
-        hideOrDisplay(menuConfig, configKey, viewId, false);
+        hideOrDisplay(viewConfig, viewId, false);
     }
 
-    private void hideOrDisplay(Map<String, Object> menuConfig, String configKey, int viewId, boolean forceHide)
+    private void hideOrDisplay(ViewConfig viewConfig, int viewId, boolean forceHide)
     {
-        if (menuConfig.containsKey(configKey))
+        if (viewConfig != null && viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE) != null
+                && viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE) instanceof Boolean)
         {
-            Map<String, Object> itemVisibility = (Map<String, Object>) menuConfig.get(configKey);
-            if (itemVisibility.containsKey(ConfigurationManager.PROP_VISIBILE)
-                    && JSONConverter.getBoolean(itemVisibility, ConfigurationManager.PROP_VISIBILE))
+            if ((Boolean) viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE))
             {
-                rootView.findViewById(viewId).setVisibility(View.VISIBLE);
-            }
-            else if (!itemVisibility.containsKey(ConfigurationManager.PROP_VISIBILE))
-            {
-                if (forceHide)
-                {
-                    rootView.findViewById(viewId).setVisibility(View.GONE);
-                }
-                else
-                {
-                    rootView.findViewById(viewId).setVisibility(View.VISIBLE);
-                }
+                show(viewId);
             }
             else
             {
-                rootView.findViewById(viewId).setVisibility(View.GONE);
+                hide(viewId);
             }
         }
         else
         {
             if (forceHide)
             {
-                rootView.findViewById(viewId).setVisibility(View.GONE);
+                hide(viewId);
             }
             else
             {
-                rootView.findViewById(viewId).setVisibility(View.VISIBLE);
+                show(viewId);
             }
         }
     }
 
     private void refresh()
     {
-        if (accountCursor == null) { return; }
-        if (accountCursor.isClosed()) { return; }
-
-        Account currentAccount = SessionUtils.getAccount(getActivity());
+        AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
         if (currentAccount == null)
         {
             currentAccount = AccountsPreferences.getDefaultAccount(getActivity());
@@ -384,25 +379,15 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
         if (currentAccount == null) { return; }
 
-        for (int i = 0; i < accountCursor.getCount(); i++)
-        {
-            accountCursor.moveToPosition(i);
-            if (accountCursor.getLong(AccountSchema.COLUMN_ID_ID) == currentAccount.getId())
-            {
-                accountIndex = accountCursor.getPosition();
-                break;
-            }
-        }
-
         spinnerAccount.setSelection(accountIndex);
 
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
-            rootView.findViewById(R.id.menu_notifications).setVisibility(View.VISIBLE);
+            show(R.id.menu_notifications);
         }
         else
         {
-            rootView.findViewById(R.id.menu_notifications).setVisibility(View.GONE);
+            hide(R.id.menu_notifications);
         }
     }
 
@@ -410,7 +395,6 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     {
         if (SLIDING_TAG.equals(getTag()))
         {
-            ((MainActivity) getActivity()).toggleSlideMenu();
             if (goHome)
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -418,17 +402,17 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
         }
     }
 
-    public void hideWorkflowMenu(Account currentAccount)
+    public void hideWorkflowMenu(AlfrescoAccount currentAccount)
     {
-        if (rootView == null || rootView.findViewById(R.id.menu_workflow) == null) { return; }
-        if (currentAccount.getTypeId() == Account.TYPE_ALFRESCO_CLOUD
-                || currentAccount.getTypeId() == Account.TYPE_ALFRESCO_TEST_OAUTH)
+        if (getRootView() == null || viewById(R.id.menu_workflow) == null || currentAccount == null) { return; }
+        if (currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD
+                || currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH)
         {
-            rootView.findViewById(R.id.menu_workflow).setVisibility(View.GONE);
+            hide(R.id.menu_workflow);
         }
         else
         {
-            rootView.findViewById(R.id.menu_workflow).setVisibility(View.VISIBLE);
+            show(R.id.menu_workflow);
         }
         displayFolderShortcut(SessionUtils.getSession(getActivity(), currentAccount.getId()));
     }
@@ -447,13 +431,13 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                     && (repoInfo.getVersion().contains(".e") || repoInfo.getVersion().contains(".f"));
             if (globalCheck || global42Check || enterpriseCheck || communityCheck)
             {
-                rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.VISIBLE);
-                rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.VISIBLE);
+                show(R.id.menu_browse_shared);
+                show(R.id.menu_browse_userhome);
                 return;
             }
         }
-        rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
-        rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
+        hide(R.id.menu_browse_shared);
+        hide(R.id.menu_browse_userhome);
     }
 
     public void displayFavoriteStatut()
@@ -464,11 +448,11 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
 
         try
         {
-            Account acc = SessionUtils.getAccount(getActivity());
-            Boolean hasSynchroActive = GeneralPreferences.hasActivateSync(getActivity(), acc);
+            AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
+            Boolean hasSynchroActive = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
 
-            long startTimeStamp = SynchroManager.getStartSyncPrepareTimestamp(getActivity(), acc);
-            long finalTimeStamp = SynchroManager.getSyncPrepareTimestamp(getActivity(), acc);
+            long startTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(acc);
+            long finalTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getSyncPrepareTimestamp(acc);
 
             // Sync Prepare in Progress ?
             if (startTimeStamp > finalTimeStamp)
@@ -493,10 +477,10 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
             if (hasSynchroActive && acc != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
-                        SynchroProvider.CONTENT_URI,
-                        SynchroSchema.COLUMN_ALL,
-                        SynchroProvider.getAccountFilter(acc) + " AND " + SynchroSchema.COLUMN_STATUS + " == "
-                                + SyncOperation.STATUS_REQUEST_USER, null, null);
+                        FavoritesSyncProvider.CONTENT_URI,
+                        FavoritesSyncSchema.COLUMN_ALL,
+                        FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_STATUS
+                                + " == " + FavoriteSyncStatus.STATUS_REQUEST_USER, null, null);
                 if (statutCursor.getCount() > 0)
                 {
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
@@ -553,34 +537,62 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    private class MainMenuReceiver extends BroadcastReceiver
+    @Subscribe
+    public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            Log.d(TAG, intent.getAction());
-            if (intent.getAction() == null) { return; }
+        Log.d("EVENT", "Receive onConfigureMenuEvent");
 
-            if (IntentIntegrator.ACTION_SYNCHRO_COMPLETED.equals(intent.getAction())
-                    || IntentIntegrator.ACTION_SYNC_SCAN_COMPLETED.equals(intent.getAction())
-                    || IntentIntegrator.ACTION_SYNC_SCAN_STARTED.equals(intent.getAction()))
-            {
-                displayFavoriteStatut();
-            }
-            else if (IntentIntegrator.ACTION_CONFIGURATION_MENU.equals(intent.getAction()))
-            {
-                configurationManager = ApplicationManager.getInstance(getActivity()).getConfigurationManager();
-                if (configurationManager != null
-                        && configurationManager.getConfigurationState() == ConfigurationManager.STATE_HAS_CONFIGURATION)
-                {
-                    configure(configurationManager.getConfig(AccountManager.retrieveAccount(context, intent.getExtras()
-                            .getLong(IntentIntegrator.EXTRA_ACCOUNT_ID))));
-                }
-                else
-                {
-                    display();
-                }
-            }
+        configurationManager = ConfigManager.getInstance(getActivity());
+        if (configurationManager != null && configurationManager.hasConfig(event.accountId))
+        {
+            configure(configurationManager.getConfig(event.accountId));
+        }
+        else
+        {
+            display();
         }
     }
+
+    @Subscribe
+    public void onSyncCompleted(FavoritesSyncScanEvent event)
+    {
+        displayFavoriteStatut();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+            this.hasBackStack = false;
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+            templateArguments = new String[] {};
+            hasBackStack = false;
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CLICK
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
+    }
+
 }

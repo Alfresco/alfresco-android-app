@@ -1,38 +1,38 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.application.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.application.operations.Operation;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationContentProvider;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationManager;
-import org.alfresco.mobile.android.application.operations.batch.BatchOperationSchema;
-import org.alfresco.mobile.android.application.operations.batch.account.LoadSessionRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.create.CreateDocumentRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.create.CreateFolderRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.delete.DeleteNodeRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.download.DownloadRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.application.operations.batch.node.update.UpdateContentRequest;
-import org.alfresco.mobile.android.application.utils.ProgressViewHolder;
+import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
+import org.alfresco.mobile.android.async.Operation;
+import org.alfresco.mobile.android.async.OperationSchema;
+import org.alfresco.mobile.android.async.OperationsContentProvider;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
+import org.alfresco.mobile.android.async.node.create.CreateFolderRequest;
+import org.alfresco.mobile.android.async.node.delete.DeleteNodeRequest;
+import org.alfresco.mobile.android.async.node.download.DownloadRequest;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.async.session.LoadSessionRequest;
+import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
+import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -56,16 +56,17 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.icon.setImageResource(MimeTypeManager.getIcon(context, cursor.getString(BatchOperationSchema.COLUMN_TITLE_ID)));
+        vh.icon.setImageResource(MimeTypeManager.getInstance(context).getIcon(
+                cursor.getString(OperationSchema.COLUMN_TITLE_ID)));
     }
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
     {
-        int status = cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID);
-        String statusValue = displayType(vh, cursor.getInt(BatchOperationSchema.COLUMN_REQUEST_TYPE_ID)) + " : ";
+        int status = cursor.getInt(OperationSchema.COLUMN_STATUS_ID);
+        String statusValue = displayType(vh, cursor.getInt(OperationSchema.COLUMN_REQUEST_TYPE_ID)) + " : ";
         vh.progress.setVisibility(View.GONE);
-        vh.choose.setTag(R.id.operation_id, cursor.getInt(BatchOperationSchema.COLUMN_ID_ID));
-        vh.choose.setTag(R.id.operation_status, cursor.getInt(BatchOperationSchema.COLUMN_STATUS_ID));
+        vh.choose.setTag(R.id.operation_id, cursor.getInt(OperationSchema.COLUMN_ID_ID));
+        vh.choose.setTag(R.id.operation_status, cursor.getInt(OperationSchema.COLUMN_STATUS_ID));
         switch (status)
         {
             case Operation.STATUS_PENDING:
@@ -75,14 +76,14 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
             case Operation.STATUS_RUNNING:
                 vh.choose.setImageResource(R.drawable.ic_cancel);
                 vh.progress.setVisibility(View.VISIBLE);
-                long totalSize = cursor.getLong(BatchOperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                long totalSize = cursor.getLong(OperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                 if (totalSize == -1)
                 {
                     vh.progress.setIndeterminate(true);
                 }
                 else
                 {
-                    long progress = cursor.getLong(BatchOperationSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
+                    long progress = cursor.getLong(OperationSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
                     float value = (((float) progress / ((float) totalSize)) * 100);
                     int percentage = Math.round(value);
                     if (percentage == 100)
@@ -124,23 +125,22 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
             {
                 int status = (Integer) v.getTag(R.id.operation_status);
                 long id = (Integer) v.getTag(R.id.operation_id);
+                Uri uri = Uri.parse(OperationsContentProvider.CONTENT_URI + "/" + v.getTag(R.id.operation_id));
                 switch (status)
                 {
                     case Operation.STATUS_PENDING:
                     case Operation.STATUS_RUNNING:
                         // Cancel operation
-                        BatchOperationManager.getInstance(context).forceStop((int) id);
+                        Operator.with(context).cancel(uri.toString());
                         break;
                     case Operation.STATUS_PAUSED:
                     case Operation.STATUS_FAILED:
                     case Operation.STATUS_CANCEL:
                         // Retry
-                        BatchOperationManager.getInstance(context).retry(id);
+                        Operator.with(context).retry(uri);
                         break;
                     case Operation.STATUS_SUCCESSFUL:
                         // Remove operation
-                        Uri uri = Uri.parse(BatchOperationContentProvider.CONTENT_URI + "/"
-                                + v.getTag(R.id.operation_id));
                         v.getContext().getContentResolver().delete(uri, null, null);
                         break;
                     default:
@@ -154,7 +154,7 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
 
     protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.topText.setText(cursor.getString(BatchOperationSchema.COLUMN_TITLE_ID));
+        vh.topText.setText(cursor.getString(OperationSchema.COLUMN_TITLE_ID));
     }
 
     protected void displayStatut(ProgressViewHolder vh, int imageResource)

@@ -1,26 +1,27 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.security;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.WaitingDialogFragment;
-import org.alfresco.mobile.android.application.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.utils.SessionUtils;
+import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.platform.security.DataProtectionManager;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -38,7 +39,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
 {
     public static final String TAG = DataProtectionUserDialogFragment.class.getName();
 
-    private static final String PARAM_FIRST_TIME = "firstTime";
+    private static final String ARGUMENT_FIRST_TIME = "firstTime";
 
     private onDataProtectionListener onDataProtectionListener;
 
@@ -59,7 +60,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
     {
         DataProtectionUserDialogFragment frag = new DataProtectionUserDialogFragment();
         Bundle b = new Bundle();
-        b.putBoolean(PARAM_FIRST_TIME, firstTime);
+        b.putBoolean(ARGUMENT_FIRST_TIME, firstTime);
         frag.setArguments(b);
         return frag;
     }
@@ -70,14 +71,14 @@ public class DataProtectionUserDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        if (getArguments() != null && getArguments().containsKey(PARAM_FIRST_TIME))
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_FIRST_TIME))
         {
-            firstTime = getArguments().getBoolean(PARAM_FIRST_TIME);
+            firstTime = getArguments().getBoolean(ARGUMENT_FIRST_TIME);
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        checked = prefs.getBoolean(GeneralPreferences.PRIVATE_FOLDERS, false);
-
+        checked =  DataProtectionManager.getInstance(getActivity()).hasDataProtectionEnable();
+        
         // Messages informations
         int titleId = R.string.data_protection;
         int iconId = R.drawable.ic_alfresco_logo;
@@ -151,7 +152,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
             int localMessageId = R.string.decryption_title;
             if (firstTime)
             {
-                prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();
+                DataProtectionManager.getInstance(getActivity()).setDataProtectionUserRequested(true);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                 localMessageId = R.string.encryption_title;
             }
@@ -198,7 +199,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         {
             if (firstTime)
             {
-                prefs.edit().putBoolean(GeneralPreferences.ENCRYPTION_USER_INTERACTION, true).commit();
+                DataProtectionManager.getInstance(getActivity()).setDataProtectionUserRequested(true);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
         }

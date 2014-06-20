@@ -1,33 +1,34 @@
 /*******************************************************************************
- * Copyright (C) 2005-2013 Alfresco Software Limited.
- * 
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
  * This file is part of Alfresco Mobile for Android.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- ******************************************************************************/
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.create;
 
-import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.PARAM_DOCUMENT_TYPE;
+import static org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment.ARGUMENT_DOCUMENT_TYPE;
 
 import java.io.File;
 import java.io.Serializable;
+import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.commons.data.DocumentTypeRecord;
-import org.alfresco.mobile.android.application.manager.ActionManager;
+import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -51,7 +52,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * This Fragment is responsible to display the list of editors able to create the document type selected previously. <br/>
+ * This Fragment is responsible to display the list of editors able to create
+ * the document type selected previously. <br/>
  * This fragment works "like" the "createChooser" Android Intent method.
  * 
  * @author Jean Marie Pascal
@@ -62,13 +64,15 @@ public class EditorsDialogFragment extends DialogFragment
     public static final String TAG = "FileTypePropertiesDialogFragment";
 
     /**
-     * Used for retrieving default storage folder. Value must be a ResolveInfo object.
+     * Used for retrieving default storage folder. Value must be a ResolveInfo
+     * object.
      */
-    public static final String PARAM_EDITOR = "editor";
+    public static final String ARGUMENT_EDITOR = "editor";
 
     /**
-     * @param b : must contains PARAM_DOCUMENT_TYPE key/value
-     * @return Dialog fragment that lists application able to create the PARAM_DOCUMENT_TYPE value.
+     * @param b : must contains ARGUMENT_DOCUMENT_TYPE key/value
+     * @return Dialog fragment that lists application able to create the
+     *         ARGUMENT_DOCUMENT_TYPE value.
      */
     public static EditorsDialogFragment newInstance(Bundle b)
     {
@@ -85,14 +89,16 @@ public class EditorsDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.sdk_list, null);
         ListView lv = (ListView) v.findViewById(R.id.listView);
 
-        final DocumentTypeRecord documentType = (DocumentTypeRecord) getArguments().get(PARAM_DOCUMENT_TYPE);
+        final DocumentTypeRecord documentType = (DocumentTypeRecord) getArguments().get(ARGUMENT_DOCUMENT_TYPE);
 
         // ACTION_VIEW seems to be the only Public Intent to open and
         // 'eventually' edit a document.
         // ACTION_EDIT doesn't work
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File("/sdcard/test"+documentType.extension)), documentType.mimetype);
-        //intent.setDataAndType(Uri.fromFile(new File("/storage/sdcard0/Android/data/org.alfresco.mobile.android.application/files/ec2-176-34-173-67.eu-west-1.compute.amazonaws.com-admin/Download/yyy.spd")), documentType.mimetype)
+        intent.setDataAndType(Uri.fromFile(new File("/sdcard/test" + documentType.extension)), documentType.mimetype);
+        // intent.setDataAndType(Uri.fromFile(new
+        // File("/storage/sdcard0/Android/data/org.alfresco.mobile.android.application/files/ec2-176-34-173-67.eu-west-1.compute.amazonaws.com-admin/Download/yyy.spd")),
+        // documentType.mimetype)
         final PackageManager mgr = getActivity().getPackageManager();
         List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
         Collections.sort(list, new EditorComparator(getActivity(), true));
@@ -114,7 +120,7 @@ public class EditorsDialogFragment extends DialogFragment
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            ActionManager.actionDisplayPlayStore(getActivity());
+                            ActionUtils.actionDisplayPlayStore(getActivity());
                         }
                     }).create();
         }
@@ -128,7 +134,7 @@ public class EditorsDialogFragment extends DialogFragment
                 public void onItemClick(AdapterView<?> l, View v, int position, long id)
                 {
                     Bundle b = getArguments();
-                    b.putParcelable(PARAM_EDITOR, (ResolveInfo) l.getItemAtPosition(position));
+                    b.putParcelable(ARGUMENT_EDITOR, (ResolveInfo) l.getItemAtPosition(position));
                     DocumentPropertiesDialogFragment dialogft = DocumentPropertiesDialogFragment.newInstance(b);
                     dialogft.show(getFragmentManager(), DocumentPropertiesDialogFragment.TAG);
 
@@ -202,13 +208,13 @@ public class EditorsDialogFragment extends DialogFragment
 
         private boolean asc;
 
-        private Context context;
+        private WeakReference<Context> contextRef;
 
-        public EditorComparator(Context c, boolean asc)
+        public EditorComparator(Context context, boolean asc)
         {
             super();
             this.asc = asc;
-            this.context = c;
+            this.contextRef = new WeakReference<Context>(context.getApplicationContext());
         }
 
         public int compare(ResolveInfo infoA, ResolveInfo infoB)
@@ -216,7 +222,7 @@ public class EditorsDialogFragment extends DialogFragment
             if (infoA == null || infoB == null) { return 0; }
 
             int b = 0;
-            b = getLabelString(context, infoA).compareToIgnoreCase(getLabelString(context, infoB));
+            b = getLabelString(contextRef.get(), infoA).compareToIgnoreCase(getLabelString(contextRef.get(), infoB));
             if (asc)
             {
                 return b;

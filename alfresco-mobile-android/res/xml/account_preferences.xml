@@ -1,0 +1,11 @@
+<PreferenceScreen
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:title="General Settings" />
+ 
+    <PreferenceScreen
+        android:key="account_settings"
+        android:title="Account Settings"
+        android:summary="Sync frequency, notifications, etc.">
+    </PreferenceScreen>
+</PreferenceScreen>

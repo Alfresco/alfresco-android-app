@@ -17,7 +17,7 @@
   limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="?AlfrescoTheme.Background.White"
+    style="?MainTheme.Background.White"
     android:gravity="center"
     android:orientation="vertical"
     android:visibility="visible" >
@@ -54,7 +54,7 @@
 
                     <TextView
                         android:id="@+id/title"
-                        style="?AlfrescoTheme.TextView.ListItem.Primary"
+                        style="?MainTheme.TextView.ListItem.Primary"
                         android:layout_gravity="left"
                         android:layout_margin="0dp"
                         android:paddingLeft="0dip"
@@ -63,7 +63,7 @@
 
                     <TextView
                         android:id="@+id/details"
-                        style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                        style="?MainTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:paddingLeft="0dip"
                         android:text="G419 days ago - 142Kb, version 1.0" />

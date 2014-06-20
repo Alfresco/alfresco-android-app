@@ -25,7 +25,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        layout="@layout/sdk_list" />
+        layout="@layout/sdk_grid" />
 
     <View
         android:layout_width="fill_parent"

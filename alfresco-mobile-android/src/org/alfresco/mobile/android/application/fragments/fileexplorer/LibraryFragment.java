@@ -1,36 +1,40 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *  
- *  This file is part of Alfresco Mobile for Android.
- *  
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *  
- *  http://www.apache.org/licenses/LICENSE-2.0
- *  
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- ******************************************************************************/
+ *
+ * This file is part of Alfresco Mobile for Android.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
-import org.alfresco.mobile.android.application.fragments.BaseCursorListFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.ListingModeFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
-import org.alfresco.mobile.android.application.manager.ActionManager;
-import org.alfresco.mobile.android.ui.manager.ActionManager.ActionManagerListener;
+import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
+import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
+import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ActivityNotFoundException;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -39,13 +43,12 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
-import android.widget.ListView;
+import android.widget.BaseAdapter;
+import android.widget.GridView;
 
-public class LibraryFragment extends BaseCursorListFragment implements ListingModeFragment
+public class LibraryFragment extends BaseCursorGridFragment
 {
     public static final String TAG = LibraryFragment.class.getName();
 
@@ -53,43 +56,30 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
 
     private int mediaTypeId;
 
-    private static final String PARAM_MEDIATYPE_ID = "org.alfresco.mobile.android.application.param.mediatypeid";
+    private int menuId;
 
-    private static final String PARAM_SHORTCUT = "org.alfresco.mobile.android.application.param.shortcut";
+    private boolean isShortCut = false;
 
-    private static final String PARAM_MENUID = "org.alfresco.mobile.android.application.param.menu.id";
+    private static final String ARGUMENT_MEDIATYPE_ID = "mediatypeid";
 
+    private static final String ARGUMENT_MENU_ID = "menuId";
+
+    private static final String ARGUMENT_SHORTCUT = "shortcut";
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
     public LibraryFragment()
     {
         emptyListMessageId = R.string.empty_download;
-        title = R.string.accounts_manage;
+        mode = ListingModeFragment.MODE_LISTING;
     }
 
-    public static LibraryFragment newInstance(int mediaType)
+    public static LibraryFragment newInstanceByTemplate(Bundle b)
     {
-        return newInstance(mediaType, MODE_LISTING);
-    }
-
-    public static LibraryFragment newInstance(int mediaType, int displayMode)
-    {
-        LibraryFragment bf = new LibraryFragment();
-        Bundle settings = new Bundle();
-        settings.putInt(PARAM_MEDIATYPE_ID, mediaType);
-        settings.putInt(PARAM_MODE, displayMode);
-        bf.setArguments(settings);
-        return bf;
-    }
-
-    public static LibraryFragment newInstance(int mediaType, int displayMode, boolean displayShortcut, int menuId)
-    {
-        LibraryFragment bf = new LibraryFragment();
-        Bundle settings = new Bundle();
-        settings.putInt(PARAM_MEDIATYPE_ID, mediaType);
-        settings.putInt(PARAM_MODE, displayMode);
-        settings.putBoolean(PARAM_SHORTCUT, displayShortcut);
-        settings.putInt(PARAM_MENUID, menuId);
-        bf.setArguments(settings);
-        return bf;
+        LibraryFragment cbf = new LibraryFragment();
+        cbf.setArguments(b);
+        return cbf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -99,32 +89,17 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-
-        mediaTypeId = (Integer) getArguments().get(PARAM_MEDIATYPE_ID);
-
-        adapter = new LibraryCursorAdapter(this, null, R.layout.app_list_progress_row, selectedItems, mediaTypeId,
-                getMode());
-        lv.setAdapter(adapter);
-        setListShown(false);
-        getLoaderManager().initLoader(0, null, this);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-    {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        if (getDialog() == null && isShortCut)
+        {
+            getActivity().getActionBar().show();
+            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false, menuId);
+            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
+        }
     }
 
     @Override
     public void onStart()
     {
-        if (getDialog() == null && getArguments().getBoolean(PARAM_SHORTCUT))
-        {
-            getActivity().getActionBar().show();
-            FileExplorerHelper.displayNavigationMode(getActivity(), getMode(), false,
-                    getArguments().getInt(PARAM_MENUID));
-            getActivity().getActionBar().setDisplayShowTitleEnabled(false);
-        }
         getActivity().invalidateOptionsMenu();
         super.onStart();
     }
@@ -140,9 +115,33 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     }
 
     // ///////////////////////////////////////////////////////////////////////////
+    // Override
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    protected void onRetrieveParameters(Bundle bundle)
+    {
+        mediaTypeId = (Integer) bundle.get(ARGUMENT_MEDIATYPE_ID);
+        menuId = bundle.getInt(ARGUMENT_MENU_ID);
+        isShortCut = bundle.getBoolean(ARGUMENT_SHORTCUT);
+    }
+
+    @Override
+    protected BaseAdapter onAdapterCreation()
+    {
+        return new LibraryCursorAdapter(this, null, R.layout.sdk_grid_row, selectedItems, mediaTypeId, getMode());
+    }
+
+    @Override
+    protected void performRequest(ListingContext lcorigin)
+    {
+        getLoaderManager().initLoader(0, null, this);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTION
     // ///////////////////////////////////////////////////////////////////////////
-    public void onListItemClick(ListView l, View v, int position, long id)
+    @Override
+    public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         File selectedFile = new File(cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA)));
@@ -195,16 +194,16 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
         else if (nActions == null)
         {
             // Show properties
-            ActionManager.actionView(this, selectedFile, new ActionManagerListener()
+            ActionUtils.actionView(this, selectedFile, new ActionManagerListener()
             {
                 @Override
                 public void onActivityNotFoundException(ActivityNotFoundException e)
                 {
                     Bundle b = new Bundle();
-                    b.putInt(SimpleAlertDialogFragment.PARAM_TITLE, R.string.error_unable_open_file_title);
-                    b.putInt(SimpleAlertDialogFragment.PARAM_MESSAGE, R.string.error_unable_open_file);
-                    b.putInt(SimpleAlertDialogFragment.PARAM_POSITIVE_BUTTON, android.R.string.ok);
-                    ActionManager.actionDisplayDialog(getActivity(), b);
+                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_unable_open_file_title);
+                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_unable_open_file);
+                    b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
+                    ActionUtils.actionDisplayDialog(getActivity(), b);
                 }
             });
             selectedItems.clear();
@@ -218,7 +217,8 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     // //////////////////////////////////////////////////////////////////////
     private FileActions nActions;
 
-    public boolean onItemLongClick(ListView l, View v, int position, long id)
+    @Override
+    public boolean onListItemLongClick(GridView l, View v, int position, long id)
     {
         if (nActions != null) { return false; }
 
@@ -247,15 +247,6 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     };
 
     // ///////////////////////////////////////////////////////////////////////////
-    // LISTING MODE
-    // ///////////////////////////////////////////////////////////////////////////
-    public int getMode()
-    {
-        Bundle b = getArguments();
-        return b.getInt(PARAM_MODE);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // CURSOR ADAPTER
     // ///////////////////////////////////////////////////////////////////////////
     private static final List<String> OFFICE_EXTENSION = new ArrayList<String>()
@@ -276,9 +267,9 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        mediaTypeId = (Integer) getArguments().get(PARAM_MEDIATYPE_ID);
+        mediaTypeId = (Integer) getArguments().get(ARGUMENT_MEDIATYPE_ID);
 
-        //String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?";
+        // String selection = MediaStore.Files.FileColumns.MEDIA_TYPE + "=?";
         StringBuilder selection = new StringBuilder(MediaStore.Files.FileColumns.MEDIA_TYPE + "=?");
         String selectionFinal = selection.toString();
         List<String> argumentsList = new ArrayList<String>();
@@ -291,7 +282,7 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
             {
                 mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                 argumentsList.add(mimeType);
-                selection.append( " ? ,");
+                selection.append(" ? ,");
             }
             selectionFinal = selection.toString().substring(0, selection.lastIndexOf(",")) + ")";
         }
@@ -307,4 +298,63 @@ public class LibraryFragment extends BaseCursorListFragment implements ListingMo
                 MediaStore.Files.FileColumns.DATA + " ASC");
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends AlfrescoFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+            menuIconId = R.drawable.ic_download_light;
+            menuTitleId = R.string.menu_local_files;
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder mediaType(int mediaType)
+        {
+            extraConfiguration.putInt(ARGUMENT_MEDIATYPE_ID, mediaType);
+            return this;
+        }
+
+        public Builder mode(int displayMode)
+        {
+            extraConfiguration.putInt(ARGUMENT_MODE, displayMode);
+            return this;
+        }
+
+        public Builder menuId(int menuId)
+        {
+            extraConfiguration.putInt(ARGUMENT_MENU_ID, menuId);
+            return this;
+        }
+
+        public Builder isShortCut(boolean isShortCut)
+        {
+            extraConfiguration.putBoolean(ARGUMENT_SHORTCUT, isShortCut);
+            return this;
+        }
+
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
+
+    }
 }

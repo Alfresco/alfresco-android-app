@@ -64,13 +64,13 @@
 
                     <TextView
                         android:id="@+id/toptext"
-                        style="?AlfrescoTheme.TextView.GridItem.Primary"
+                        style="?MainTheme.TextView.GridItem.Primary"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content" />
 
                     <ProgressBar
                         android:id="@+id/status_progress"
-                        style="?AlfrescoTheme.Progress.Horizontal"
+                        style="?MainTheme.Progress.Horizontal"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
                         android:visibility="gone" />
@@ -104,7 +104,7 @@
 
                         <TextView
                             android:id="@+id/bottomtext"
-                            style="?AlfrescoTheme.TextView.ListItem.Secondary"
+                            style="?MainTheme.TextView.ListItem.Secondary"
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -112,7 +112,7 @@
 
                 <ImageView
                     android:id="@+id/choose"
-                    style="?AlfrescoTheme.ImageView.ActionIcon.Fixed"
+                    style="?MainTheme.ImageView.ActionIcon.Fixed"
                     android:layout_gravity="center"
                     android:background="@drawable/quickcontact_badge_overlay_light"
                     android:visibility="visible" />

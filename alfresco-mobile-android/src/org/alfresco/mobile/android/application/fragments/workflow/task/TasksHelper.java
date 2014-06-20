@@ -1,16 +1,34 @@
+/*******************************************************************************
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
+ *
+ * This file is part of Alfresco Mobile for Android.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
+import java.util.Collection;
+
+import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.api.services.impl.publicapi.PublicAPIWorkflowServiceImpl;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.SharedPreferences;
 
 public final class TasksHelper
@@ -19,6 +37,8 @@ public final class TasksHelper
     public static final String TASK_FILTER_PREFS = "org.alfresco.mobile.android.tasks.preferences";
 
     private static final String TASK_FILTER_DEFAULT = "org.alfresco.mobile.android.tasks.preferences.filter.default";
+
+    private static final String TAG = TasksHelper.class.getName();
 
     private TasksHelper()
     {
@@ -77,9 +97,7 @@ public final class TasksHelper
                         f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
                         break;
                     case TasksShortCutAdapter.FILTER_CUSTOM:
-                        Fragment taskFragment = TaskFilterFragment.newInstance();
-                        FragmentDisplayer.replaceFragment(activity, taskFragment,
-                                DisplayUtils.getLeftFragmentId(activity), TaskFilterFragment.TAG, true);
+                        TaskFilterFragment.with(activity).display();
                         return true;
                     default:
                         break;
@@ -94,16 +112,16 @@ public final class TasksHelper
                 {
                     prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
                     f.addFilter(PublicAPIWorkflowServiceImpl.INCLUDE_VARIABLES, "true");
-                    Fragment processesFragment = ProcessesFragment.newInstance(f, itemPosition);
-                    FragmentDisplayer.replaceFragment(activity, processesFragment,
-                            DisplayUtils.getLeftFragmentId(activity), TasksFragment.TAG, true);
+
+                    ListingContext lc = new ListingContext();
+                    lc.setFilter(f);
+                    ProcessesFragment.with(activity).itemPosition(itemPosition).setListingContext(lc).display();
                 }
                 else
                 {
-                    Fragment taskFragment = TasksFragment.newInstance(f, itemPosition);
-                    FragmentDisplayer.replaceFragment(activity, taskFragment, DisplayUtils.getLeftFragmentId(activity),
-                            TasksFragment.TAG, true);
-
+                    ListingContext lc = new ListingContext();
+                    lc.setFilter(f);
+                    TasksFragment.with(activity).menuId(itemPosition).setListingContext(lc).display();
                     prefs.edit().putInt(TASK_FILTER_DEFAULT, itemPosition).commit();
                 }
                 return true;
@@ -112,5 +130,55 @@ public final class TasksHelper
         activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
         int currentSelection = menuId;
         activity.getActionBar().setSelectedNavigationItem(currentSelection);
+    }
+
+    public static ListingFilter createFilter(Collection<Integer> selectedItems)
+    {
+        ListingFilter f = new ListingFilter();
+        for (Integer value : selectedItems)
+        {
+            switch (value)
+            {
+                case R.string.tasks_active:
+                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_ACTIVE);
+                    break;
+                case R.string.tasks_completed:
+                    f.addFilter(WorkflowService.FILTER_KEY_STATUS, WorkflowService.FILTER_STATUS_COMPLETE);
+                    break;
+                case R.string.tasks_due_today:
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TODAY);
+                    break;
+                case R.string.tasks_due_tomorrow:
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_TOMORROW);
+                    break;
+                case R.string.tasks_due_week:
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_7DAYS);
+                    break;
+                case R.string.tasks_due_over:
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_OVERDUE);
+                    break;
+                case R.string.tasks_due_no_date:
+                    f.addFilter(WorkflowService.FILTER_KEY_DUE, WorkflowService.FILTER_DUE_NODATE);
+                    break;
+                case R.string.tasks_priority_low:
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_LOW);
+                    break;
+                case R.string.tasks_priority_medium:
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_MEDIUM);
+                    break;
+                case R.string.tasks_priority_high:
+                    f.addFilter(WorkflowService.FILTER_KEY_PRIORITY, WorkflowService.FILTER_PRIORITY_HIGH);
+                    break;
+                case R.string.tasks_assignee_me:
+                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_ME);
+                    break;
+                case R.string.tasks_assignee_unassigned:
+                    f.addFilter(WorkflowService.FILTER_KEY_ASSIGNEE, WorkflowService.FILTER_ASSIGNEE_UNASSIGNED);
+                    break;
+                default:
+                    break;
+            }
+        }
+        return f;
     }
 }

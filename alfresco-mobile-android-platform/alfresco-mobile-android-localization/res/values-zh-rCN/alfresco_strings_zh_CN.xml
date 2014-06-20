@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  本文件是 Alfresco Mobile SDK 的一部分。
+  
+  经 2.0 版 Apache License（以下简称“许可”）许可，
+  只有在遵循许可的条件下才能使用此文件。
+  您可从
+   
+   http://www.apache.org/licenses/LICENSE-2.0 获取许可的副本
+  
+   除非适用法律要求或获得书面同意，
+   依据此许可分发的软件“按照原样”分发，
+   不提供任何明示或暗示的保证或条件。
+   请参见此许可，了解关于此许可特定语言版本的
+   约束性允许和限制。
+-->
+<resources>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK MANUAL -->
+    <!-- ************************** -->
+    <string name="name">界面库</string>
+
+    <!-- Relative Date -->
+    <string name="relative_date_just_now">刚才</string>
+    <string name="relative_date_less_than_a_minute_ago">不到一分钟之前</string>
+
+    <plurals name="relative_date_minutes_ago">
+        <item quantity="one">%1$s 分钟之前</item>
+        <item quantity="other">%1$s 分钟之前</item>
+    </plurals>
+    <plurals name="relative_date_hours_ago">
+        <item quantity="one">%1$s 小时之前</item>
+        <item quantity="other">%1$s 小时之前</item>
+    </plurals>
+    <plurals name="relative_date_days_ago">
+        <item quantity="one">%1$s 天之前</item>
+        <item quantity="other">%1$s 天之前</item>
+    </plurals>
+    <plurals name="relative_date_years_ago">
+        <item quantity="one">%1$s 年之前</item>
+        <item quantity="other">%1$s 年之前</item>
+    </plurals>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK AUTO -->
+    <!-- ************************** -->
+    <!-- Generic -->
+    <string name="actions">操作</string>
+    <string name="confirm">确认</string>
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <!-- Listing -->
+    <string name="load_more">加载更多...</string>
+    <string name="load_more_progress">正在加载&#8230;</string>
+    <string name="listing_nodata">无数据。</string>
+    <!-- Dialog -->
+    <string name="dialog_ok">确定</string>
+    <string name="dialog_cancel">取消</string>
+    <string name="dialog_wait">请稍候</string>
+    <!-- Activities -->
+    <string name="activities">活动</string>
+    <string name="org_alfresco_blog_post_created">{1} 创建了博文 {0}</string>
+    <string name="org_alfresco_blog_post_updated">{1} 更新了博文 {0}</string>
+    <string name="org_alfresco_blog_post_deleted">{1} 删除了博文 {0}</string>
+    <string name="org_alfresco_comments_comment_created">{1} 评论了 {0}</string>
+    <string name="org_alfresco_comments_comment_updated">{1} 更新了有关 {0} 的评论</string>
+    <string name="org_alfresco_comments_comment_deleted">{1} 从 {0} 删除了评论</string>
+    <string name="org_alfresco_discussions_post_created">{1} 发起了 {0} 讨论</string>
+    <string name="org_alfresco_discussions_post_updated">{1} 更新了 {0} 讨论</string>
+    <string name="org_alfresco_discussions_post_deleted">{1} 删除了 {0} 讨论</string>
+    <string name="org_alfresco_discussions_reply_created">{1} 回复了讨论 {0}</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} 更新了对 {0} 的回复</string>
+    <string name="org_alfresco_calendar_event_created">{1} 创建了日历事件 {0}</string>
+    <string name="org_alfresco_calendar_event_updated">{1} 更新了日历事件 {0}</string>
+    <string name="org_alfresco_calendar_event_deleted">{1} 删除了日历事件 {0}</string>
+    <string name="org_alfresco_documentlibrary_file_added">{1} 添加了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_files_added">{1} 添加了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_file_created">{1} 创建了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_file_deleted">{1} 删除了 {0}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{1} 删除了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_file_updated">{1} 更新了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{1} 更新了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_folder_added">{1} 添加了 {0} 个文件夹</string>
+    <string name="org_alfresco_documentlibrary_folders_added">{1} 添加了 {0} 个文件夹</string>
+    <string name="org_alfresco_documentlibrary_folder_deleted">{1} 删除了 {0}</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">{1} 删除了 {0} 个文件夹</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} 个文件被 {1} 签出至 Google Docs</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} 个文件被 {1} 从 Google Docs 签入</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">{1} 编辑了 {0} 个文件</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} 点赞了文件 {0}</string>
+    <string name="org_alfresco_documentlibrary_folder_liked">{1} 点赞了文件夹 {0}</string>
+    <string name="org_alfresco_wiki_page_created">{1} 创建了 {0} 维基页面</string>
+    <string name="org_alfresco_wiki_page_edited">{1} 更新了 {0} 维基页面</string>
+    <string name="org_alfresco_wiki_page_renamed">{1} 已将维基页面 {2} 重命名为 {0}</string>
+    <string name="org_alfresco_wiki_page_deleted">{1} 删除了 {0} 维基页面</string>
+    <string name="org_alfresco_site_group_added">{1} 组被添加到站点 {4}，且具有角色 {2}</string>
+    <string name="org_alfresco_site_group_removed">{1} 组从站点 {4} 移除</string>
+    <string name="org_alfresco_site_group_role_changed">{1} 组角色更改为 {2}</string>
+    <string name="org_alfresco_site_user_joined">{1} 加入了站点 {4}，角色为 {2}</string>
+    <string name="org_alfresco_site_user_left">{1} 离开了站点 {4}</string>
+    <string name="org_alfresco_site_user_role_changed">{1} 角色更改为 {2}</string>
+    <string name="org_alfresco_links_link_created">{1} 创建了 {0} 链接</string>
+    <string name="org_alfresco_links_link_updated">{1} 更新了 {0} 链接</string>
+    <string name="org_alfresco_links_link_deleted">{1} 删除了 {0} 链接</string>
+    <string name="org_alfresco_datalists_list_created">{1} 创建了 {0} 数据列表</string>
+    <string name="org_alfresco_datalists_list_updated">{1} 更新了 {0} 数据列表详细信息</string>
+    <string name="org_alfresco_datalists_list_deleted">{1} 删除了 {0} 数据列表</string>
+    <string name="org_alfresco_subscriptions_followed">{1} 正在关注 {5}</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} 已订阅 {2}</string>
+    <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <!-- Metadata -->
+    <string name="thumbnail">缩略图</string>
+    <string name="metadata_prop_name">名称</string>
+    <string name="metadata_prop_path">路径</string>
+    <string name="metadata_prop_type">类型</string>
+    <string name="metadata_prop_content_mimetype">MIME 类型</string>
+    <string name="metadata_prop_content_size">大小</string>
+    <!-- Metadata Titled -->
+    <string name="metadata_aspect_titled">带标题</string>
+    <string name="metadata_prop_title">标题</string>
+    <string name="metadata_prop_description">说明</string>
+    <!-- Metadata Auditable -->
+    <string name="metadata_aspect_auditable">可审核</string>
+    <string name="metadata_prop_creator">创建者</string>
+    <string name="metadata_prop_creationdate">创建日期</string>
+    <string name="metadata_prop_modifier">修改者</string>
+    <string name="metadata_prop_modificationdate">修改日期</string>
+    <!-- Metadata Author -->
+    <string name="metadata_aspect_author">作者</string>
+    <string name="metadata_prop_author">作者</string>
+    <!-- Metadata EXIF -->
+    <string name="metadata_aspect_exif">EXIF</string>
+    <string name="metadata_prop_datetime_original">日期和时间</string>
+    <string name="metadata_prop_pixelx_dimension">图像宽度</string>
+    <string name="metadata_prop_pixely_dimension">图像高度</string>
+    <string name="metadata_prop_exposure_time">曝光时间</string>
+    <string name="metadata_prop_fnumber">光圈值</string>
+    <string name="metadata_prop_flash_activated">激活闪光灯</string>
+    <string name="metadata_prop_focal_length">焦距</string>
+    <string name="metadata_prop_iso_speed">ISO 速度</string>
+    <string name="metadata_prop_manufacturer">相机制造商</string>
+    <string name="metadata_prop_model">相机型号</string>
+    <string name="metadata_prop_software">相机软件</string>
+    <string name="metadata_prop_orientation">方向</string>
+    <string name="metadata_prop_xresolution">水平分辨率</string>
+    <string name="metadata_prop_yresolution">垂直分辨率</string>
+    <string name="metadata_prop_resolution_unit">分辨率单位</string>
+    <!-- Metadata Geographic -->
+    <string name="metadata_aspect_geographic">地理</string>
+    <string name="metadata_prop_latitude">纬度</string>
+    <string name="metadata_prop_longitude">经度</string>
+    <!-- Metadata Audio -->
+    <string name="metadata_aspect_audio">音频</string>
+    <string name="metadata_prop_album">专辑</string>
+    <string name="metadata_prop_artist">艺术家</string>
+    <string name="metadata_prop_composer">作曲家</string>
+    <string name="metadata_prop_engineer">工程师</string>
+    <string name="metadata_prop_genre">流派</string>
+    <string name="metadata_prop_track_number">音轨号</string>
+    <string name="metadata_prop_release_date">发行日期</string>
+    <string name="metadata_prop_sample_rate">采样率</string>
+    <string name="metadata_prop_sample_type">采样类型</string>
+    <string name="metadata_prop_channel_type">声道类型</string>
+    <string name="metadata_prop_compressor">压缩格式</string>
+    <!-- Metadata Version -->
+    <string name="metadata_prop_version">版本</string>
+    <string name="metadata_prop_version_modification_date">修改日期</string>
+    <string name="metadata_prop_version_modified_by">上次修改者</string>
+    <string name="metadata_prop_version_comment">评论</string>
+    <string name="metadata_prop_version_current">当前版本</string>
+    <!-- Upload/Create Content -->
+    <string name="content_app_pick_file">选择一个应用程序来选取文件</string>
+    <string name="content_upload">上传文件</string>
+    <string name="content_name">名称</string>
+    <string name="content_name_hint">输入名称（必填）</string>
+    <string name="content_description">说明</string>
+    <string name="content_description_hint">输入说明（可选）</string>
+    <string name="content_tags">标签</string>
+    <string name="content_tags_hint">逗号分隔的标签值（可选）</string>
+    <string name="content_title">标题</string>
+    <!-- Create Folder -->
+    <string name="folder_create">创建一个新文件夹</string>
+    <string name="folder_name">名称</string>
+    <string name="folder_name_hint">在此处输入文件夹名称...</string>
+    <!-- Update Properties -->
+    <string name="edit">编辑</string>
+    <string name="update">更新</string>
+    <string name="edit_metadata">编辑属性</string>
+    <!-- Download -->
+    <string name="download">下载</string>
+    <string name="download_complete">下载完成</string>
+    <string name="download_error">下载操作期间出错。</string>
+    <string name="download_progress">正在下载...</string>
+    <!-- Empty -->
+    <string name="empty_child">未找到文件</string>
+    <string name="empty_site">无可用站点</string>
+    <string name="empty_version">无可用版本历史记录</string>
+    <string name="empty_session">无可用会话</string>
+    <string name="empty_actvity">未找到活动</string>
+    <string name="empty_tag">未找到标签</string>
+    <string name="empty_comment">未找到评论</string>
+    <string name="empty_search">未找到文件</string>
+    <!-- Size -->
+    <string name="file_size_empty">0 字节</string>
+    <string name="file_size_bytes">字节</string>
+    <string name="file_size_kilobytes">KB</string>
+    <string name="file_size_megabytes">MB</string>
+    <string name="file_size_gigabytes">GB</string>
+    <!-- Search -->
+    <string name="search_hint">输入搜索词</string>
+    <!-- Comments -->
+    <string name="comments">评论</string>
+    <!-- Actions -->
+    <string name="create">创建</string>
+    <string name="add">添加</string>
+    <string name="like">点赞</string>
+    <string name="open_in">打开方式</string>
+    <string name="take_photo">拍照</string>
+    <string name="make_video">录制视频</string>
+    <string name="record_audio">录制音频</string>
+    <string name="version_history">版本历史记录</string>
+    <string name="tags">标记</string>
+    <string name="share">共享</string>
+    <string name="refresh">刷新</string>
+    <string name="delete">删除</string>
+    <string name="save_back">存回</string>
+    <!-- Errors -->
+    <string name="error_unable_share_link">无法共享链接</string>
+    <string name="error_unable_share_content">无法共享内容</string>
+    <!-- Share -->
+    <string name="share_url">共享链接</string>
+    <string name="share_url_long">从 Alfresco Android Mobile 共享链接</string>
+
+</resources>
