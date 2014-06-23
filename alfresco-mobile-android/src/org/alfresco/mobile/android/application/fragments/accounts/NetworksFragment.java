@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.ui.network.CloudNetworksFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.GridView;
@@ -78,6 +79,7 @@ public class NetworksFragment extends CloudNetworksFragment
         {
             // TODO Replace By SessionManager or AccountManager
             EventBusManager.getInstance().post(new RequestSessionEvent(currentAccount, network.getIdentifier(), true));
+            getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     }
 

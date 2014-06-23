@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.async.account.signup.SignUpStatusEvent;
 import org.alfresco.mobile.android.async.account.signup.SignUpStatusRequest;
 import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
@@ -52,7 +53,6 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
@@ -244,7 +244,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
         }
         catch (MalformedURLException e)
         {
-            MessengerUtils.showToast(getActivity(), R.string.error_account_url);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_account_url);
             return;
         }
 
@@ -764,7 +764,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
         if (event.hasException)
         {
             Log.e(TAG, Log.getStackTraceString(event.exception));
-            MessengerUtils.showLongToast(getActivity(), getActivity().getString(R.string.error_general));
+            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_general));
         }
         else if (hasData)
         {
@@ -774,7 +774,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
         }
         else
         {
-            MessengerUtils.showLongToast(getActivity(), getString(R.string.account_not_activated_description));
+            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.account_not_activated_description));
         }
     }
 

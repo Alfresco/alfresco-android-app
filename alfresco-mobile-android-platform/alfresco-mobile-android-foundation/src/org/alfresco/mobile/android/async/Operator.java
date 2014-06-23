@@ -20,6 +20,8 @@ package org.alfresco.mobile.android.async;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
+import org.alfresco.mobile.android.async.node.download.DownloadRequest;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
@@ -126,6 +128,10 @@ public class Operator
 
     void submit(OperationAction action)
     {
+        if (action.request.notificationVisibility == OperationRequest.VISIBILITY_NOTIFICATIONS)
+        {
+            AlfrescoNotificationManager.getInstance(context).monitorChannel(action.request.requestTypeId);
+        }
         dispatcher.dispatchSubmit(action);
     }
 
@@ -176,11 +182,15 @@ public class Operator
                     for (Operation operation : batch)
                     {
                         operation.operator.complete(operation);
+                        if (operation.request.notificationVisibility == OperationRequest.VISIBILITY_NOTIFICATIONS)
+                        {
+                            AlfrescoNotificationManager.getInstance(operation.operator.context).unMonitorChannel(operation.request.requestTypeId);
+                        }
                         EventBusManager.getInstance().post(new BatchOperationEvent(operation.action.groupKey));
-                        if (!operation.isCancelled() || (!operation.request.isLongRunning() && operation.isCancelled()))
+                        /*if (!operation.isCancelled() || (!operation.request.isLongRunning() && operation.isCancelled()))
                         {
                             OperationsUtils.removeOperationUri(operation.operator.context, operation.action.request);
-                        }
+                        }*/
                     }
                     break;
                 }

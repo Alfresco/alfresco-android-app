@@ -29,10 +29,10 @@ import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.AlertDialog;
@@ -220,7 +220,7 @@ public class DocumentPropertiesDialogFragment extends DialogFragment
                 }
                 catch (ActivityNotFoundException e)
                 {
-                    MessengerUtils.showToast(getActivity(), R.string.error_unable_open_file);
+                    AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_unable_open_file);
                 }
                 dismiss();
             }

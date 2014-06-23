@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.operations;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.managers.NotificationUtils;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
@@ -27,6 +26,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
@@ -193,10 +193,10 @@ public class OperationsFragment extends BaseCursorGridFragment
         String request = ALL_REQUESTS;
         switch (filter)
         {
-            case NotificationUtils.DOWNLOAD_NOTIFICATION_ID:
+            case AlfrescoNotificationManager.CHANNEL_DOWNLOAD:
                 request = DOWNLOAD_REQUESTS;
                 break;
-            case NotificationUtils.UPLOAD_NOTIFICATION_ID:
+            case AlfrescoNotificationManager.CHANNEL_UPLOAD:
                 request = UPLOAD_REQUESTS;
                 break;
             default:

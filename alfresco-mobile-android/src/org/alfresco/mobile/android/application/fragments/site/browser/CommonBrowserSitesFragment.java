@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.application.fragments.site.JoinSiteRequestsFr
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.site.SitesFoundationFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -223,7 +223,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
 
-        MessengerUtils.showLongToast(getActivity(), String.format(getString(messageId), site.getTitle()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), site.getTitle()));
     }
 
     @Subscribe
@@ -258,6 +258,6 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             messageId = (event.isJoining) ? R.string.action_join_site_error : R.string.action_leave_site_error;
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
-        MessengerUtils.showLongToast(getActivity(), String.format(getString(messageId), site.getTitle()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), site.getTitle()));
     }
 }

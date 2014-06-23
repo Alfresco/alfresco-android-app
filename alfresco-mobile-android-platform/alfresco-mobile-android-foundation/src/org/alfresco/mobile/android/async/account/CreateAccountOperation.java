@@ -146,7 +146,7 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
             isPaidAccount = isPaid(type, session);
 
             // Create Account
-            acc = AlfrescoAccountManager.getInstance(context).create(accountLabel, baseUrl, username, password,
+            acc = AlfrescoAccountManager.getInstance(context).create(accountLabel, session.getBaseUrl(), username, password,
                     session.getRepositoryInfo().getIdentifier(), type, null, null, null,
                     Boolean.toString(isPaidAccount));
         }
@@ -166,7 +166,7 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
 
             // Create Account
             acc = AlfrescoAccountManager.getInstance(context).create(context.getString(R.string.account_default_cloud),
-                    baseUrl, userPerson.getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type, null,
+                    session.getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type, null,
                     ((CloudSession) session).getOAuthData().getAccessToken(),
                     ((CloudSession) session).getOAuthData().getRefreshToken(), Boolean.toString(isPaidAccount));
         }

@@ -15,17 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.config.manager;
+package org.alfresco.mobile.android.platform;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import android.content.Context;
 
-import android.app.Activity;
-import android.view.ViewGroup;
-
-public class NavigationMenuConfigManager extends BaseConfigManager
+public class DefaultNotificationManager extends AlfrescoNotificationManager
 {
-    public NavigationMenuConfigManager(Activity activity, ConfigContext configurationContext, ViewGroup vRoot)
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
+    public static DefaultNotificationManager getInstance(Context context)
     {
-        
+        synchronized (LOCK)
+        {
+            if (mInstance == null)
+            {
+                mInstance = new DefaultNotificationManager(context);
+            }
+
+            return (DefaultNotificationManager) mInstance;
+        }
+    }
+
+    protected DefaultNotificationManager(Context context)
+    {
+        super(context);
     }
 }

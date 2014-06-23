@@ -17,8 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform;
 
-import org.alfresco.mobile.android.platform.SessionManager;
-
 import android.content.Context;
 
 public class DefaultSessionManager extends SessionManager

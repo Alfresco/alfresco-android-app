@@ -18,24 +18,17 @@
 package org.alfresco.mobile.android.platform;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
-import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
-import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
@@ -51,7 +44,6 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.accounts.AccountManager;
@@ -292,11 +284,12 @@ public abstract class SessionManager extends Manager
     {
         return OAuthConstant.PUBLIC_API_HOSTNAME;
     }
-    
-    public Bundle getOAuthSettings(){
+
+    public Bundle getOAuthSettings()
+    {
         return null;
     }
-    
+
     public AlfrescoSessionSettings prepareSettings(AlfrescoAccount acc)
     {
         return new SettingsBuilder(appContext).prepare(acc).build();
@@ -316,6 +309,7 @@ public abstract class SessionManager extends Manager
     {
         return new SettingsBuilder(appContext).prepare(oauthData).build();
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
@@ -370,14 +364,14 @@ public abstract class SessionManager extends Manager
             return this;
         }
 
-        //TODO Implement it  !
+        // TODO Implement it !
         public SettingsBuilder prepare(OAuthData oauthData)
         {
             this.isCloud = true;
             this.oAuthData = oauthData;
             return this;
         }
-        
+
         public SettingsBuilder prepare(AlfrescoAccount acc, OAuthData oauthData)
         {
             this.isCloud = true;
@@ -433,11 +427,19 @@ public abstract class SessionManager extends Manager
                     baseUrl = acc.getUrl();
                     username = acc.getUsername();
                     password = acc.getPassword();
+                    prepareConfigurationSettings(acc);
                     prepareSSLSettings();
                     break;
                 default:
                     break;
             }
+        }
+
+        protected void prepareConfigurationSettings(AlfrescoAccount acc)
+        {
+            extraSettings.put(AlfrescoSession.CONFIGURATION_CONTEXT_ENABLE, true);
+            extraSettings.put(AlfrescoSession.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
+                    .getConfigurationFolder(acc).getPath());
         }
 
         protected void prepareCommonSettings()
@@ -473,7 +475,7 @@ public abstract class SessionManager extends Manager
                         url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
-                    MessengerUtils.showToast(getContext(), R.string.security_ssl_disable);
+                    AlfrescoNotificationManager.getInstance(getContext()).showToast( R.string.security_ssl_disable);
                     extraSettings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME, NetworkTrustManager.class.getName());
                 }
             }

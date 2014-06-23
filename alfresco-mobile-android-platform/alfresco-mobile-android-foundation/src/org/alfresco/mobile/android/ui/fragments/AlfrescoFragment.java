@@ -21,9 +21,9 @@ import java.lang.ref.WeakReference;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.app.DialogFragment;
@@ -140,7 +140,7 @@ public abstract class AlfrescoFragment extends DialogFragment
      */
     protected void onSessionMissing()
     {
-        MessengerUtils.showToast(getActivity(), R.string.empty_session);
+        AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.empty_session);
     }
 
     // /////////////////////////////////////////////////////////////

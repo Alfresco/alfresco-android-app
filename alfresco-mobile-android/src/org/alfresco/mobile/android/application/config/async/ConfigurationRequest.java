@@ -17,14 +17,15 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.async;
 
-import org.alfresco.mobile.android.api.model.config.ConfigSource;
+import java.util.Map;
+
 import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 
 import android.content.Context;
 import android.database.Cursor;
 
-public class ConfigContextRequest extends BaseOperationRequest
+public class ConfigurationRequest extends BaseOperationRequest
 {
     private static final long serialVersionUID = 1L;
 
@@ -32,22 +33,22 @@ public class ConfigContextRequest extends BaseOperationRequest
 
     public static final String MIMETYPE = "Configuration";
 
-    final ConfigSource configSource;
+    final Map<String, Object> parameters;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    protected ConfigContextRequest(Context context, long accountId, String networkId, int notificationVisibility,
-            String title, String mimeType, int requestTypeId, ConfigSource source)
+    protected ConfigurationRequest(Context context, long accountId, String networkId, int notificationVisibility,
+            String title, String mimeType, int requestTypeId, Map<String, Object> parameters)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
-        this.configSource = source;
+        this.parameters = parameters;
     }
 
-    public ConfigContextRequest(Cursor cursor)
+    public ConfigurationRequest(Cursor cursor)
     {
         super(cursor);
-        this.configSource = null;
+        this.parameters = null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -55,25 +56,25 @@ public class ConfigContextRequest extends BaseOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     public static class Builder extends BaseOperationRequest.Builder
     {
-        private ConfigSource source;
+        private Map<String, Object> parameters;
 
         public Builder()
         {
             super();
         }
 
-        public Builder(ConfigSource source)
+        public Builder( Map<String, Object> parameters)
         {
             super();
-            this.source = source;
+            this.parameters = parameters;
             requestTypeId = TYPE_ID;
             mimeType = MIMETYPE;
         }
 
-        public ConfigContextRequest build(Context context)
+        public ConfigurationRequest build(Context context)
         {
-            return new ConfigContextRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, source);
+            return new ConfigurationRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
+                    requestTypeId, parameters);
         }
     }
 }

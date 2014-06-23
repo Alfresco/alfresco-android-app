@@ -25,8 +25,8 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.extension.samsung.R;
 import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -146,7 +146,7 @@ public class SNoteEditorActivity extends Activity
             }
             else
             {
-                MessengerUtils.showLongToast(this, getString(R.string.editor_error_open));
+                AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.editor_error_open));
                 finish();
                 return;
             }
@@ -416,7 +416,7 @@ public class SNoteEditorActivity extends Activity
         try
         {
             spenNoteDoc.save(file.getAbsolutePath());
-            MessengerUtils.showToast(this, R.string.editor_save_confirmation);
+            AlfrescoNotificationManager.getInstance(this).showToast(R.string.editor_save_confirmation);
 
             if (stopActivity)
             {

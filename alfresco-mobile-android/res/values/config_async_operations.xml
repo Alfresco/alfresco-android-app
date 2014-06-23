@@ -2,6 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
 
     <!-- CONFIGURATION -->
-    <string name="operation_ConfigContextRequest">org.alfresco.mobile.android.application.config.async.ConfigContextOperation</string>
+    <string name="operation_ConfigurationRequest">org.alfresco.mobile.android.application.config.async.ConfigurationOperation</string>
     
 </resources>
