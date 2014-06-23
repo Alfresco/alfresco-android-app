@@ -27,7 +27,7 @@ import java.io.OutputStream;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -73,7 +73,8 @@ public class AudioCapture extends DeviceCapture
             }
             catch (Exception e)
             {
-                MessengerUtils.showLongToast(context, context.getString(R.string.no_voice_recorder));
+                AlfrescoNotificationManager.getInstance(context).showLongToast(
+                        context.getString(R.string.no_voice_recorder));
                 Log.d(TAG, Log.getStackTraceString(e));
                 return false;
             }
@@ -87,7 +88,7 @@ public class AudioCapture extends DeviceCapture
     }
 
     @Override
-    protected void payloadCaptured(int requestCode, int resultCode, Intent data)
+    protected boolean payloadCaptured(int requestCode, int resultCode, Intent data)
     {
         Uri savedUri = data.getData();
 
@@ -112,16 +113,21 @@ public class AudioCapture extends DeviceCapture
                 {
                     mimeType = fileType;
                 }
+
+                return true;
             }
             else
             {
-                MessengerUtils.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+                AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(
+                        parentActivity.getString(R.string.sdinaccessible));
+                return false;
             }
         }
         catch (IOException e)
         {
-            MessengerUtils.showLongToast(context, context.getString(R.string.cannot_capture));
+            AlfrescoNotificationManager.getInstance(context).showLongToast(context.getString(R.string.cannot_capture));
             Log.d(TAG, Log.getStackTraceString(e));
+            return false;
         }
     }
 

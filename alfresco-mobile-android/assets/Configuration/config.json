@@ -23,9 +23,6 @@
       "views": [
         "view-activities-default",
         "view-repository-default",
-        "view-repository-shared-default",
-        "view-sites-default",
-        "view-repository-userhome-default",
         "view-task-default",
         "view-favorite-default",
         "view-search-default"

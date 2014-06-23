@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.ListingTemplate;
@@ -536,7 +536,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
      */
     public void onResultError(Exception e)
     {
-        MessengerUtils.showToast(getActivity(), e.getMessage());
+        AlfrescoNotificationManager.getInstance(getActivity()).showToast(e.getMessage());
         setListShown(true);
     }
 

@@ -33,7 +33,7 @@ public class DownloadRequest extends NodeRequest
 {
     private static final long serialVersionUID = 1L;
 
-    public static final int TYPE_ID = OperationRequestIds.ID_NODE_READ;
+    public static final int TYPE_ID = OperationRequestIds.ID_NODE_DOWNLOAD;
 
     private static final String PROP_OVERWRITE = "overwrite";
 

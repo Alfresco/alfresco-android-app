@@ -37,14 +37,17 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.InputType;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.BaseInputConnection;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -68,15 +71,9 @@ public class PassCodeDialogFragment extends DialogFragment
     private static final int PASSCODE_LENGTH = 4;
 
     /** Public Fragment TAG. */
-    public static final String TAG = "PassCodeDialogFragment";
+    public static final String TAG = PassCodeDialogFragment.class.getName();
 
-    private EditText value1;
-
-    private EditText value2;
-
-    private EditText value3;
-
-    private EditText value4;
+    private EditText passwordEditText;
 
     private EditText focusValue;
 
@@ -94,6 +91,9 @@ public class PassCodeDialogFragment extends DialogFragment
 
     private boolean editionEnable;
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
     public static PassCodeDialogFragment disable()
     {
         PassCodeDialogFragment fragment = new PassCodeDialogFragment();
@@ -130,13 +130,17 @@ public class PassCodeDialogFragment extends DialogFragment
         return fragment;
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (getDialog() != null)
         {
             setStyle(DialogFragment.STYLE_NO_TITLE, android.R.style.Theme_Holo_Dialog_MinWidth);
-            getDialog().setTitle(R.string.passcode_preference);
+            getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            // getDialog().setTitle(R.string.passcode_preference);
         }
 
         final View v = inflater.inflate(R.layout.app_passcode, (ViewGroup) this.getView());
@@ -144,22 +148,20 @@ public class PassCodeDialogFragment extends DialogFragment
         title = (TextView) v.findViewById(R.id.passcode_hint);
         errorMessage = (TextView) v.findViewById(R.id.passcode_error);
 
-        value1 = (EditText) v.findViewById(R.id.passcode_1);
-        value2 = (EditText) v.findViewById(R.id.passcode_2);
-        value3 = (EditText) v.findViewById(R.id.passcode_3);
-        value4 = (EditText) v.findViewById(R.id.passcode_4);
+        passwordEditText = (EditText) v.findViewById(R.id.passcode);
+        passwordEditText.setInputType(InputType.TYPE_NULL);
 
-        value1.setInputType(InputType.TYPE_NULL);
-        value2.setInputType(InputType.TYPE_NULL);
-        value3.setInputType(InputType.TYPE_NULL);
-        value4.setInputType(InputType.TYPE_NULL);
+        focusValue = passwordEditText;
 
-        value1.setOnFocusChangeListener(listener);
-        value2.setOnFocusChangeListener(listener);
-        value3.setOnFocusChangeListener(listener);
-        value4.setOnFocusChangeListener(listener);
-
-        focusValue = value1;
+        ImageView backButton = (ImageView) v.findViewById(R.id.delete_passcode);
+        backButton.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                clearAll();
+            }
+        });
 
         int[] ids = new int[] { R.id.keyboard_0, R.id.keyboard_1, R.id.keyboard_2, R.id.keyboard_3, R.id.keyboard_4,
                 R.id.keyboard_5, R.id.keyboard_6, R.id.keyboard_7, R.id.keyboard_8, R.id.keyboard_9, R.id.keyboard_back };
@@ -173,7 +175,43 @@ public class PassCodeDialogFragment extends DialogFragment
 
         return v;
     }
+    
+    
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        if (getActivity() instanceof MainActivity)
+        {
+            UIUtils.displayTitle(getActivity(), R.string.menu_settings);
+        }
+        else
+        {
+            UIUtils.displayTitle(getActivity(), R.string.passcode_preference);
+        }
+        if (getDialog() != null)
+        {
+            getActivity().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+                            | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+            UIUtils.hideKeyboard(getActivity());
+        }
+    }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        // Avoid background stretching
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
+        {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // INTERNALS
+    // ///////////////////////////////////////////////////////////////////////////
     private OnClickListener keyboardClickListener = new OnClickListener()
     {
 
@@ -213,38 +251,17 @@ public class PassCodeDialogFragment extends DialogFragment
                 case R.id.keyboard_9:
                     i = 9;
                     break;
-                case R.id.keyboard_back:
-                    previous(focusValue);
-                    return;
                 default:
                     break;
             }
 
-            focusValue.setText("X");
+            initCode(focusValue.length(), i);
 
-            switch (focusValue.getId())
+            focusValue.setText(focusValue.getText().append("X"));
+
+            if (focusValue.getText().length() == 4)
             {
-                case R.id.passcode_1:
-                    value2.requestFocus();
-                    focusValue = value2;
-                    initCode(0, i);
-                    break;
-                case R.id.passcode_2:
-                    value3.requestFocus();
-                    focusValue = value3;
-                    initCode(1, i);
-                    break;
-                case R.id.passcode_3:
-                    value4.requestFocus();
-                    focusValue = value4;
-                    initCode(2, i);
-                    break;
-                case R.id.passcode_4:
-                    initCode(3, i);
-                    validate();
-                    break;
-                default:
-                    break;
+                validate();
             }
         }
     };
@@ -305,7 +322,7 @@ public class PassCodeDialogFragment extends DialogFragment
         {
             clearAll();
             title.setText(R.string.passcode_confirmation);
-            errorMessage.setVisibility(View.GONE);
+            errorMessage.setVisibility(View.INVISIBLE);
             needConfirmation = true;
         }
         else if (needConfirmation && getUserPassCode(true) != null)
@@ -316,7 +333,7 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.putString(KEY_PASSCODE_VALUE, getUserPassCode(true));
             editor.commit();
             dismiss();
-            errorMessage.setVisibility(View.GONE);
+            errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
                 ((PasscodePreferences) getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG))
@@ -325,6 +342,7 @@ public class PassCodeDialogFragment extends DialogFragment
         }
         else
         {
+            clearAll();
             needConfirmation = false;
             errorMessage.setVisibility(View.VISIBLE);
             errorMessage.setText(R.string.passcode_error_confirmation);
@@ -343,7 +361,7 @@ public class PassCodeDialogFragment extends DialogFragment
             editor.remove(KEY_PASSCODE_VALUE);
             editor.commit();
             dismiss();
-            errorMessage.setVisibility(View.GONE);
+            errorMessage.setVisibility(View.INVISIBLE);
             if (getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG) != null)
             {
                 ((PasscodePreferences) getActivity().getFragmentManager().findFragmentByTag(PasscodePreferences.TAG))
@@ -366,7 +384,7 @@ public class PassCodeDialogFragment extends DialogFragment
             editionEnable = true;
             clearAll();
             title.setText(R.string.passcode_edit);
-            errorMessage.setVisibility(View.GONE);
+            errorMessage.setVisibility(View.INVISIBLE);
         }
         else
         {
@@ -439,97 +457,8 @@ public class PassCodeDialogFragment extends DialogFragment
 
     private void clearAll()
     {
-        value1.setText("");
-        value2.setText("");
-        value3.setText("");
-        value4.setText("");
-        focusValue = value1;
-        value1.requestFocus();
-    }
-
-    private OnFocusChangeListener listener = new OnFocusChangeListener()
-    {
-        @Override
-        public void onFocusChange(View v, boolean hasFocus)
-        {
-            switch (v.getId())
-            {
-                case R.id.passcode_1:
-                    clear(value1);
-                    break;
-                case R.id.passcode_2:
-                    clear(value2);
-                    break;
-                case R.id.passcode_3:
-                    clear(value3);
-                    break;
-                case R.id.passcode_4:
-                    clear(value4);
-                    break;
-                default:
-                    break;
-            }
-        }
-    };
-
-    private void previous(View v)
-    {
-        switch (v.getId())
-        {
-            case R.id.passcode_1:
-                break;
-            case R.id.passcode_2:
-                value1.requestFocus();
-                break;
-            case R.id.passcode_3:
-                value2.requestFocus();
-                break;
-            case R.id.passcode_4:
-                value3.requestFocus();
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void clear(EditText v)
-    {
-        if (v.hasFocus() && v.getText().length() == 1)
-        {
-            v.getText().clear();
-        }
-        focusValue = v;
-    }
-
-    @Override
-    public void onResume()
-    {
-        super.onResume();
-        if (getActivity() instanceof MainActivity)
-        {
-            UIUtils.displayTitle(getActivity(), R.string.menu_settings);
-        }
-        else
-        {
-            UIUtils.displayTitle(getActivity(), R.string.passcode_preference);
-        }
-        if (getDialog() != null)
-        {
-            getActivity().getWindow().setSoftInputMode(
-                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-                            | WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-            UIUtils.hideKeyboard(getActivity());
-        }
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
-        super.onConfigurationChanged(newConfig);
-        // Avoid background stretching
-        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES)
-        {
-            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        }
+        passwordEditText.setText("");
+        focusValue = passwordEditText;
+        passwordEditText.requestFocus();
     }
 }

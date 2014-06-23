@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -30,7 +31,6 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.extensions.HockeyAppManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
@@ -327,7 +327,7 @@ public abstract class AlfrescoActivity extends Activity
                     errorMessage = e.getMessage();
                 }
 
-                MessengerUtils.showLongToast(activity, errorMessage);
+                AlfrescoNotificationManager.getInstance(activity).showLongToast(errorMessage);
 
                 CloudExceptionUtils.handleCloudException(activity, e, false);
 

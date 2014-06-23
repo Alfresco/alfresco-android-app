@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
-import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
@@ -160,10 +160,10 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         {
             configure(configurationManager.getConfig(acc.getId()));
         }
-        else
+        else if (configurationManager != null && acc != null)
         {
             // Configuration
-            ConfigManager.getInstance(getActivity()).init(acc);
+            configurationManager.init(acc);
             configure(configurationManager.getConfig(acc.getId()));
             // display();
         }
@@ -285,34 +285,34 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void configure(Configuration configuration)
+    private void configure(ConfigService configService)
     {
-        if (configuration != null && configuration.hasLayoutConfig())
+        if (configService != null && configService.hasViewConfig())
         {
-            if (configuration.getApplicationConfig() != null
-                    && configuration.getApplicationConfig().getViewConfig(ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
+            if (configService.getProfiles() != null
+                    && configService.getProfile().getViewConfig(ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
             {
                 // Configuration (Internal or from Server)
                 DisplayUtils.hide(viewById(R.id.main_menu_group));
-                MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configuration,
+                MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configService,
                         (ViewGroup) getRootView());
                 config.createMenu();
             }
-            else if (configuration.getConfigInfo() == null
-                    || (configuration.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configuration
+            else if (configService.getConfigInfo() == null
+                    || (configService.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService
                             .getConfigInfo().getSchemaVersion())))
             {
                 // BETA
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_ACTIVITIES), R.id.menu_browse_activities);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_REPOSITORY), R.id.menu_browse_root);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS), R.id.menu_notifications);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared, true);
-                hideOrDisplay(configuration.getViewConfig(ConfigConstants.MENU_MYFILES), R.id.menu_browse_userhome,
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_ACTIVITIES), R.id.menu_browse_activities);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_REPOSITORY), R.id.menu_browse_root);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS), R.id.menu_notifications);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared, true);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_MYFILES), R.id.menu_browse_userhome,
                         true);
             }
             else

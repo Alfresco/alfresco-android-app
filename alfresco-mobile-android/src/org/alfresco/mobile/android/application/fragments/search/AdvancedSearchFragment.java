@@ -42,8 +42,8 @@ import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFrag
 import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -372,7 +372,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         String description = createDescriptionQuery();
         if (statement == null)
         {
-            MessengerUtils.showLongToast(getActivity(), getActivity().getString(R.string.error_search_fields_empty));
+            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_search_fields_empty));
             return;
         }
         switch (searchKey)

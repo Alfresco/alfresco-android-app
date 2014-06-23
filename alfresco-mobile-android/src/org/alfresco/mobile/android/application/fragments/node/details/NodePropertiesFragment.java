@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
-import org.alfresco.mobile.android.application.config.manager.MainMenuConfigManager;
 import org.alfresco.mobile.android.application.configuration.manager.FormConfigurator;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 

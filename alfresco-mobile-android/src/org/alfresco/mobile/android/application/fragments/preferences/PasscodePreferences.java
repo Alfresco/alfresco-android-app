@@ -53,6 +53,7 @@ import android.view.ViewGroup;
  */
 public class PasscodePreferences extends PreferenceFragment
 {
+    public static final String TAG = PasscodePreferences.class.getName();
 
     public static final String KEY_PASSCODE_ENABLE = "PasscodeEnabled";
 
@@ -65,8 +66,6 @@ public class PasscodePreferences extends PreferenceFragment
     public static final String KEY_PASSCODE_ATTEMPT = "PasscodeAttempt";
 
     public static final String KEY_PASSCODE_MAX_ATTEMPT = "PasscodeMaxAttempt";
-
-    public static final String TAG = "PasscodePreferencesFragment";
 
     private static final String DEFAULT_TIMEOUT = "300000";
 

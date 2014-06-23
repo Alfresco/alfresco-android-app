@@ -21,20 +21,22 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.config.ConfigSource;
-import org.alfresco.mobile.android.api.model.config.Configuration;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.ConfigServiceFactory;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
 import org.alfresco.mobile.android.application.config.async.ConfigurationRequest;
 import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.squareup.otto.Subscribe;
@@ -47,7 +49,9 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private Map<Long, Configuration> configContextMap = new HashMap<Long, Configuration>();
+    private Map<Long, ConfigService> configContextMap = new HashMap<Long, ConfigService>();
+
+    private String currentProfileId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -79,7 +83,7 @@ public class ConfigManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // CONFIG MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
-    public Configuration getConfig(long accountId)
+    public ConfigService getConfig(long accountId)
     {
         if (configContextMap != null)
         {
@@ -116,9 +120,12 @@ public class ConfigManager extends Manager
         try
         {
             File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(acc);
-            Configuration configContext = Configuration.load(new ConfigSource(appContext.getPackageName(), null), configFolder);
+            Map<String, Object> parameters = new HashMap<String, Object>(1);
+            parameters.put(AlfrescoSession.CONFIGURATION_FOLDER, configFolder.getPath());
+            ConfigService configContext = ConfigServiceFactory.buildConfigService(appContext.getPackageName(),
+                    parameters);
             configContextMap.put(acc.getId(), configContext);
-            if (configContext.hasLayoutConfig())
+            if (configContext.hasViewConfig())
             {
                 eventBus.post(new ConfigurationMenuEvent(acc.getId()));
             }
@@ -137,24 +144,35 @@ public class ConfigManager extends Manager
     public boolean load(AlfrescoSession alfrescoSession)
     {
         if (alfrescoSession == null) { return false; }
-        if (alfrescoSession.getServiceRegistry().getConfigService().hasConfig())
+        if (alfrescoSession.getServiceRegistry().getConfigService() == null)
         {
-            MessengerUtils.showToast(appContext, "Loading Configuration");
+            // TODO Localization
+            AlfrescoNotificationManager.getInstance(appContext).showToast("Loading Configuration");
             Operator.with(appContext).load(new ConfigurationRequest.Builder());
             return true;
         }
         return false;
     }
 
-    public boolean load(AlfrescoAccount acc, String profileId)
+    public boolean swapProfile(AlfrescoAccount acc, String profileId)
     {
-        Configuration config = getConfig(acc.getId());
-        config.swapProfile(profileId);
-        if (config.hasLayoutConfig())
+        ConfigService config = getConfig(acc.getId());
+        currentProfileId = profileId;
+        if (config.hasViewConfig())
         {
             eventBus.post(new ConfigurationMenuEvent(acc.getId()));
         }
         return true;
+    }
+
+    public ConfigScope getCurrentScope()
+    {
+        return (TextUtils.isEmpty(currentProfileId)) ? null : new ConfigScope(currentProfileId);
+    }
+    
+    public String getCurrentProfileId()
+    {
+        return currentProfileId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -165,17 +183,18 @@ public class ConfigManager extends Manager
     {
         if (event.hasException || event.data == null)
         {
-            MessengerUtils.showToast(appContext, "No Configuration");
+            // TODO Localization
+            AlfrescoNotificationManager.getInstance(appContext).showToast("No Configuration");
             return;
         }
         else
         {
-            MessengerUtils.showToast(appContext, "Configuration Available");
+            AlfrescoNotificationManager.getInstance(appContext).showToast("Configuration Available");
         }
 
         configContextMap.put(event.accountId, event.data);
 
-        if (event.data.hasLayoutConfig())
+        if (event.data.hasViewConfig())
         {
             Log.d("EVENT", "Post onConfigurationEvent");
             eventBus.post(new ConfigurationMenuEvent(event.accountId));

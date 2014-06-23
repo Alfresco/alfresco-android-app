@@ -44,7 +44,6 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.apache.chemistry.opencmis.commons.SessionParameter;
 
 import android.accounts.AccountManager;
@@ -438,6 +437,7 @@ public abstract class SessionManager extends Manager
 
         protected void prepareConfigurationSettings(AlfrescoAccount acc)
         {
+            extraSettings.put(AlfrescoSession.CONFIGURATION_CONTEXT_ENABLE, true);
             extraSettings.put(AlfrescoSession.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getConfigurationFolder(acc).getPath());
         }
@@ -475,7 +475,7 @@ public abstract class SessionManager extends Manager
                         url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
-                    MessengerUtils.showToast(getContext(), R.string.security_ssl_disable);
+                    AlfrescoNotificationManager.getInstance(getContext()).showToast( R.string.security_ssl_disable);
                     extraSettings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME, NetworkTrustManager.class.getName());
                 }
             }

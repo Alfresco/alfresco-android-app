@@ -18,8 +18,8 @@
 package org.alfresco.mobile.android.application.config.manager;
 
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
@@ -42,11 +42,14 @@ public class MainMenuConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public MainMenuConfigManager(Activity activity, Configuration configurationContext, ViewGroup vRoot)
+    public MainMenuConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
     {
-        super(activity, configurationContext);
-        rootMenuViewConfig = configurationContext.getApplicationConfig().getViewConfig(
-                ConfigConstants.VIEW_ROOT_NAVIGATION_MENU);
+        super(activity, configService);
+        if (configService != null && configService.getProfile() != null)
+        {
+            rootMenuViewConfig = configService.getProfile(getCurrentProfile()).getViewConfig(
+                    ConfigConstants.VIEW_ROOT_NAVIGATION_MENU);
+        }
         this.vRoot = (ViewGroup) vRoot.findViewById(R.id.custom_menu_group);
     }
     
@@ -64,7 +67,7 @@ public class MainMenuConfigManager extends BaseConfigManager
         TextView header = null;
 
         // CREATION
-        if (viewConfig.getChildCount() > 0)
+        if (viewConfig.getItems().size() > 0)
         {
             // Header
             if (!TextUtils.isEmpty(viewConfig.getLabel()))
@@ -76,7 +79,7 @@ public class MainMenuConfigManager extends BaseConfigManager
             }
 
             // Add Children
-            for (ViewConfig config : viewConfig.getChildren())
+            for (ViewConfig config : viewConfig.getItems())
             {
                 createMenu(config, hookView, li);
             }

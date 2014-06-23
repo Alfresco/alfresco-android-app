@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
@@ -63,6 +64,8 @@ import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
@@ -73,6 +76,8 @@ import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiv
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -81,7 +86,6 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
@@ -111,6 +115,7 @@ import android.view.Window;
 
 import com.squareup.otto.Subscribe;
 
+
 /**
  * Main activity of the application.
  * 
@@ -137,8 +142,8 @@ public class MainActivity extends BaseActivity
 
     private Node currentNode;
 
-    // Device capture
-    private DeviceCapture capture;
+    // Device capture (made static as we don't seem to be getting instance state back through creation).
+    private static DeviceCapture capture = null;
 
     private int fragmentQueue = -1;
 
@@ -149,6 +154,8 @@ public class MainActivity extends BaseActivity
 
     private static ActionBarDrawerToggle mDrawerToggle;
 
+    private Intent callBackIntent = null;
+        
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -163,12 +170,16 @@ public class MainActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
+        if (capture != null)
+            capture.setActivity(this);
+        
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
             currentAccount = helper.getCurrentAccount();
             importParent = helper.getFolder();
             fragmentQueue = helper.getFragmentQueue();
+
             if (helper.getDeviceCapture() != null)
             {
                 capture = helper.getDeviceCapture();
@@ -238,7 +249,10 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
+        //Check if there is a Fujistu scanner intent coming back to us.
+        checkScan();
     }
+    
 
     @Override
     protected void onStart()
@@ -367,7 +381,6 @@ public class MainActivity extends BaseActivity
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
-
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
     }
@@ -461,7 +474,7 @@ public class MainActivity extends BaseActivity
             case R.id.menu_downloads:
                 if (currentAccount == null)
                 {
-                    MessengerUtils.showLongToast(this, getString(R.string.loginfirst));
+                    AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.loginfirst));
                 }
                 else
                 {
@@ -471,7 +484,7 @@ public class MainActivity extends BaseActivity
             case R.id.menu_notifications:
                 if (currentAccount == null)
                 {
-                    MessengerUtils.showLongToast(this, getString(R.string.loginfirst));
+                    AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.loginfirst));
                 }
                 else
                 {
@@ -558,7 +571,7 @@ public class MainActivity extends BaseActivity
                 }
                 else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
                 {
-                    MessengerUtils.showToast(this, R.string.account_not_activated);
+                    AlfrescoNotificationManager.getInstance(this).showToast(R.string.account_not_activated);
                     return false;
                 }
                 break;
@@ -667,11 +680,14 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_PROFILE:
                 UserProfileFragment.with(this).personId(getCurrentAccount().getUsername()).displayAsDialog();
                 return true;
+                
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
+                
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
@@ -883,7 +899,7 @@ public class MainActivity extends BaseActivity
         setProgressBarIndeterminateVisibility(true);
         if (event != null)
         {
-            MessengerUtils.showLongToast(this, event.account.getTitle());
+            AlfrescoNotificationManager.getInstance(this).showLongToast(event.account.getTitle());
         }
         return;
     }
@@ -896,6 +912,12 @@ public class MainActivity extends BaseActivity
             if (ConfigManager.getInstance(this).load(getCurrentSession()))
             {
                 displayWaitingDialog();
+            }
+            else
+            {
+                LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+                result.setData(getCurrentSession().getServiceRegistry().getConfigService());
+                EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
             }
 
             if (getFragment(MainMenuFragment.TAG) != null)
@@ -1016,7 +1038,7 @@ public class MainActivity extends BaseActivity
 
         setSessionState(SESSION_INACTIVE);
         setProgressBarIndeterminateVisibility(false);
-        MessengerUtils.showLongToast(this, getString(R.string.account_not_activated));
+        AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
         return;
     }
 
@@ -1121,5 +1143,19 @@ public class MainActivity extends BaseActivity
         if (currentAccount == null) { return false; }
         if (event == null) { return false; }
         return (currentAccount.getId() == event.account.getId());
+    }
+    
+    private void checkScan()
+    {    
+        callBackIntent = getIntent();
+        
+        if (callBackIntent != null  &&  callBackIntent.getScheme() != null  &&
+            callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
+        {
+            if (capture != null)
+            {
+                capture.capturedCallback(capture.getRequestCode(), Activity.RESULT_OK, callBackIntent);
+            }
+        }
     }
 }

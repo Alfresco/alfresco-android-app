@@ -23,15 +23,12 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
-import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;

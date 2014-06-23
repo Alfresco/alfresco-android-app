@@ -17,7 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.async;
 
-import org.alfresco.mobile.android.api.model.config.Configuration;
+import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.ConfigServiceFactory;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -27,7 +28,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 
 import android.util.Log;
 
-public class ConfigurationOperation extends BaseOperation<Configuration>
+public class ConfigurationOperation extends BaseOperation<ConfigService>
 {
     private static final String TAG = ConfigurationOperation.class.getName();
 
@@ -42,17 +43,16 @@ public class ConfigurationOperation extends BaseOperation<Configuration>
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    protected LoaderResult<Configuration> doInBackground()
+    protected LoaderResult<ConfigService> doInBackground()
     {
-        LoaderResult<Configuration> result = new LoaderResult<Configuration>();
-        Configuration config = null;
+        LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+        ConfigService config = null;
 
         try
         {
             super.doInBackground();
 
-            config = session.getServiceRegistry().getConfigService()
-                    .load(((ConfigurationRequest) request).configSource);
+            config = ConfigServiceFactory.buildConfigService(context.getPackageName(), ((ConfigurationRequest) request).parameters);
 
             result.setData(config);
         }
@@ -68,7 +68,7 @@ public class ConfigurationOperation extends BaseOperation<Configuration>
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected void onPostExecute(LoaderResult<Configuration> result)
+    protected void onPostExecute(LoaderResult<ConfigService> result)
     {
         super.onPostExecute(result);
         EventBusManager.getInstance().post(new ConfigurationEvent(getRequestId(), result, accountId));

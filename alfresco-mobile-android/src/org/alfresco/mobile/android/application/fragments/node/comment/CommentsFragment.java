@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.comment.CommentsEvent;
 import org.alfresco.mobile.android.async.node.comment.CreateCommentEvent;
 import org.alfresco.mobile.android.async.node.comment.CreateCommentRequest;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.node.comment.CommentsNodeFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -206,7 +206,7 @@ public class CommentsFragment extends CommentsNodeFragment
         }
         else
         {
-            MessengerUtils.showToast(getActivity(), R.string.empty_comment);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.empty_comment);
         }
     }
 

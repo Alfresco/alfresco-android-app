@@ -15,19 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.config.async;
+package org.alfresco.mobile.android.platform;
 
-import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.async.LoaderResult;
-import org.alfresco.mobile.android.async.OperationEvent;
+import android.content.Context;
 
-public class ConfigurationEvent extends OperationEvent<ConfigService>
+public class DefaultNotificationManager extends AlfrescoNotificationManager
 {
-    public final long accountId;
-
-    public ConfigurationEvent(String requestId, LoaderResult<ConfigService> result, long accountId)
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
+    public static DefaultNotificationManager getInstance(Context context)
     {
-        super(requestId, result);
-        this.accountId = accountId;
+        synchronized (LOCK)
+        {
+            if (mInstance == null)
+            {
+                mInstance = new DefaultNotificationManager(context);
+            }
+
+            return (DefaultNotificationManager) mInstance;
+        }
+    }
+
+    protected DefaultNotificationManager(Context context)
+    {
+        super(context);
     }
 }

@@ -434,10 +434,12 @@
     <!-- PASSCODE -->
     <!-- ======== -->
     <style name="AlfrescoHoloTheme.PasscodeButton">
-        <item name="android:paddingLeft">20dip</item>
-        <item name="android:paddingRight">20dip</item>
-        <item name="android:textSize">40sp</item>
-        <item name="android:layout_width">100dip</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@drawable/btn_circle</item>
+        <item name="android:textSize">26.0dip</item>
+        <item name="android:layout_width">64dip</item>
+        <item name="android:layout_height">64dip</item>
+        <item name="android:layout_weight">1.0</item>
     </style>
 
     <style name="AlfrescoBaseTheme.PasscodeInput">
@@ -447,7 +449,8 @@
     <style name="AlfrescoHoloTheme.PasscodeInput" parent="AlfrescoBaseTheme.PasscodeInput">
         <item name="android:textSize">@dimen/passcode_text_size</item>
         <item name="android:inputType">numberPassword</item>
-        <item name="android:maxLength">1</item>
+        <item name="android:maxLength">4</item>
+        <item name="android:background">@null</item>
     </style>
 
 </resources>

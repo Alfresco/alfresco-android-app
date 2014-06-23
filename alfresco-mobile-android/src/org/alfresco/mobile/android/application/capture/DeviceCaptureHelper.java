@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.capture.FujitsuCapture;
 
 public final class DeviceCaptureHelper
 {
@@ -61,6 +62,8 @@ public final class DeviceCaptureHelper
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
                 capture = new AudioCapture(c, parentRepositoryFolder, parentFolder);
                 break;
+            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
+                capture = new FujitsuCapture(c, parentRepositoryFolder, parentFolder);
             default:
                 break;
         }

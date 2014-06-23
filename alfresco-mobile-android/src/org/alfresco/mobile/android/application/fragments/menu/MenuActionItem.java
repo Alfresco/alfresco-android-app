@@ -140,6 +140,8 @@ public interface MenuActionItem
 
     int MENU_DEVICE_CAPTURE_MIC_AUDIO = 320;
 
+    int MENU_DEVICE_SCAN_DOCUMENT = 330;
+    
     // ///////////////////////////////////////////
     // SITES
     // ///////////////////////////////////////////

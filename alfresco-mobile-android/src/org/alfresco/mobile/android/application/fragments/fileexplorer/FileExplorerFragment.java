@@ -33,11 +33,11 @@ import org.alfresco.mobile.android.async.file.create.CreateDirectoryEvent;
 import org.alfresco.mobile.android.async.file.delete.DeleteFileEvent;
 import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.file.update.RenameFileEvent;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
@@ -133,13 +133,13 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                 parent = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(acc);
                 if (parent == null)
                 {
-                    MessengerUtils.showLongToast(getActivity(), getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.sdinaccessible));
                     return;
                 }
             }
             else
             {
-                MessengerUtils.showLongToast(getActivity(), getString(R.string.loginfirst));
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.loginfirst));
                 return;
             }
         }

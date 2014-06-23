@@ -6,11 +6,11 @@ import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
-import org.alfresco.mobile.android.api.model.config.Configuration;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
 import org.alfresco.mobile.android.api.model.config.FormFieldConfig;
 import org.alfresco.mobile.android.api.model.config.FormFieldsGroupConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 
 import android.app.Activity;
@@ -28,11 +28,14 @@ public class FormConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public FormConfigManager(Activity activity, Configuration configurationContext, ViewGroup vRoot)
+    public FormConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
     {
-        super(activity, configurationContext);
-        rootMenuViewConfig = configurationContext.getApplicationConfig().getViewConfig(
-                ConfigConstants.VIEW_NODE_PROPERTIES);
+        super(activity, configService);
+        if (configService != null && configService.getProfile() != null)
+        {
+            rootMenuViewConfig = configService.getProfile(getCurrentProfile()).getViewConfig(
+                    ConfigConstants.VIEW_NODE_PROPERTIES);
+        }
         this.vRoot = vRoot;
     }
 
@@ -54,7 +57,7 @@ public class FormConfigManager extends BaseConfigManager
         ViewGroup groupview = hookView;
 
         // Retrieve form config by Id
-        FormConfig config = configurationContext.getFormConfig(formId, node);
+        FormConfig config = configService.getFormConfig(formId, node);
 
         // CREATION
         if (config.getGroups() != null && config.getGroups().size() > 0)

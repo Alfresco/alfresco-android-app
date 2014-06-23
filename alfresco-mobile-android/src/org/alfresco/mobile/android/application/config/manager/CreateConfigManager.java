@@ -17,52 +17,26 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.manager;
 
-import java.lang.ref.WeakReference;
-
-import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
 
 import android.app.Activity;
 import android.view.ViewGroup;
 
-public class BaseConfigManager implements ConfigurationConstant
+public class CreateConfigManager  extends BaseConfigManager
 {
-    protected ViewGroup vRoot;
-
-    protected WeakReference<Activity> activity;
-
-    protected ConfigService configService;
-
-    protected ConfigManager configManager;
-
+    private CreationConfig creationConfig;
+    
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public BaseConfigManager(Activity activity, ConfigService configService)
+    public CreateConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
     {
-        this.configManager = ConfigManager.getInstance(activity);
-        this.configService = configService;
-        this.activity = new WeakReference<Activity>(activity);
+        super(activity, configService);
+        if (configService != null && configService.getCreationConfig(null) != null)
+        {
+            creationConfig = configService.getCreationConfig(null);
+        }
+        this.vRoot = vRoot;
     }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // UTILITY
-    // ///////////////////////////////////////////////////////////////////////////
-    public Activity getActivity()
-    {
-        return activity.get();
-    }
-
-    public ConfigScope getConfigScope()
-    {
-        return configManager.getCurrentScope();
-    }
-    
-    public String getCurrentProfile()
-    {
-        return configManager.getCurrentProfileId();
-    }
-
 }

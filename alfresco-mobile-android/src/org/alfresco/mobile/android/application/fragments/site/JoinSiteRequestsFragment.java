@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesPendingMembershipFoundationFragment;
 
@@ -137,7 +137,7 @@ public class JoinSiteRequestsFragment extends SitesPendingMembershipFoundationFr
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
 
-        MessengerUtils.showLongToast(getActivity(), String.format(getString(messageId), event.oldSite.getShortName()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), event.oldSite.getShortName()));
     }
 
     // ///////////////////////////////////////////////////////////////////////////

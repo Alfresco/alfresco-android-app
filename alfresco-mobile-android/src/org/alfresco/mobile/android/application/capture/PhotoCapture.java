@@ -21,7 +21,7 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -73,7 +73,7 @@ public class PhotoCapture extends DeviceCapture
                 }
                 else
                 {
-                    MessengerUtils.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(parentActivity.getString(R.string.sdinaccessible));
                 }
             }
             catch (Exception e)
@@ -91,7 +91,8 @@ public class PhotoCapture extends DeviceCapture
     }
 
     @Override
-    protected void payloadCaptured(int requestCode, int resultCode, Intent data)
+    protected boolean payloadCaptured(int requestCode, int resultCode, Intent data)
     {
+        return true;
     }
 }

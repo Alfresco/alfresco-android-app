@@ -25,11 +25,11 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.sync.DisableSyncDialogFragment;
 import org.alfresco.mobile.android.application.fragments.sync.DisableSyncDialogFragment.OnFavoriteChangeListener;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 
@@ -125,7 +125,7 @@ public class GeneralPreferences extends PreferenceFragment
                 }
                 else
                 {
-                    MessengerUtils.showLongToast(getActivity(), getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.sdinaccessible));
                 }
 
                 return false;

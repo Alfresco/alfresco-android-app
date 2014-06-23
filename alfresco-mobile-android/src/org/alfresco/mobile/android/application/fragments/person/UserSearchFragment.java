@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetai
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.person.PersonsEvent;
 import org.alfresco.mobile.android.async.person.PersonsRequest;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -162,7 +162,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
                         }
                         else
                         {
-                            MessengerUtils.showLongToast(getActivity(), getString(R.string.search_form_hint));
+                            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.search_form_hint));
                         }
                         return true;
                     }

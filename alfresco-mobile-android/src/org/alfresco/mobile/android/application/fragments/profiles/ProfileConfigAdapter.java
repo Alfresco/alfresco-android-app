@@ -43,7 +43,7 @@ public class ProfileConfigAdapter extends BaseListAdapter<ProfileConfig, Generic
     @Override
     protected void updateTopText(GenericViewHolder vh, ProfileConfig item)
     {
-        vh.topText.setText(item.getTitle());
+        vh.topText.setText(item.getLabel());
     }
 
     @Override
