@@ -181,9 +181,6 @@ public class MainActivity extends BaseActivity
                 capture = helper.getDeviceCapture();
                 capture.setActivity(this);
             }
-
-            stackCentral = helper.getStackCentral();
-
         }
         else
         {
@@ -1147,8 +1144,6 @@ public class MainActivity extends BaseActivity
             {
                 capture.capturedCallback(capture.getRequestCode(), Activity.RESULT_OK, callBackIntent);
             }
-            else
-                MessengerManager.showLongToast(this, "No capture object for scanner result!"); 
         }
     }
 }
