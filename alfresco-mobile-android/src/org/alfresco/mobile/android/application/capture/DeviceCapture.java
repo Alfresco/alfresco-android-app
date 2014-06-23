@@ -99,7 +99,9 @@ public abstract class DeviceCapture implements Serializable
             {
                 FileExplorerFragment frag = (FileExplorerFragment) parentActivity.getFragmentManager()
                         .findFragmentByTag(FileExplorerFragment.TAG);
-                frag.refresh();
+                
+                if (frag != null)
+                	frag.refresh();
             }
         }
     }
