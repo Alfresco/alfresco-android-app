@@ -190,7 +190,6 @@
     <string name="details">Details</string>
     <string name="metadata">Properties</string>
     <string name="preview">Preview</string>
-    <string name="details">Details</string>
 
     <!-- CLOUD SIGNUP -->
     <string name="cloud_signup_firstname">First Name</string>
@@ -423,8 +422,6 @@
     <string name="settings_links">Links</string>
     <string name="settings_links_website">Alfresco</string>
     <string name="settings_links_website_summary">Visit the official Alfresco website</string>
-    <string name="settings_links_website">Alfresco</string>
-    <string name="settings_links_website_summary">Visit official Alfresco website</string>
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">Write a review</string>
     <string name="settings_rating_summary">Rate Alfresco Mobile on Google Play</string>
@@ -618,7 +615,6 @@
     <string name="file_editor_save_confirmation">File has been saved.</string>
     <string name="file_editor_loading">Please wait a few moments&#8230;</string>
     <string name="file_editor_encoding">Encoding</string>
-    <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
 
@@ -682,7 +678,6 @@
     <string name="workflow_start">Create a task</string>
     <string name="task_actions">Response</string>
     <string name="tasks">Tasks</string>
-    <string name="task_items">Attachments</string>
     <string name="task_workflow">Process</string>
 
     <!-- Workflow FILTERS -->
@@ -775,7 +770,6 @@
     <string name="process_no_description">(No Message)</string>
     <string name="process_no_assignees">No assignee</string>
     <string name="process_initiator">Initiator</string>
-    <string name="process_diagram">Diagram</string>
     <string name="process_attachments">Attachments</string>
     <string name="process_no_attachments">No content attached</string>
     <string name="process_priority">Priority</string>
@@ -873,4 +867,6 @@
 
     <string name="multi_selection_enable">MultiSelection</string>
     <string name="create_content_type">Type</string>
+    
+    <string name="scan_document">Scan document</string>
 </resources>
