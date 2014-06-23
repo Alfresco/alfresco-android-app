@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -65,12 +65,12 @@ public class BaseConfigurator implements ConfigurationConstant
 
     protected WeakReference<Activity> activity;
 
-    protected ConfigContext configurationContext;
+    protected ConfigService configurationContext;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public BaseConfigurator(Activity activity, ConfigContext configurationContext)
+    public BaseConfigurator(Activity activity, ConfigService configurationContext)
     {
         this.configurationContext = configurationContext;
         this.activity = new WeakReference<Activity>(activity);

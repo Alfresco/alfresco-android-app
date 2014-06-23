@@ -364,7 +364,7 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            Operator.with(activity).load(new DownloadRequest.Builder(parentFolder, doc, false));
+            Operator.with(activity).load(new DownloadRequest.Builder(parentFolder, doc, false).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
     }
 
@@ -374,7 +374,7 @@ public class NodeActions extends AbstractActions<Node>
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
         for (Document doc : selectedDocument)
         {
-            requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false));
+            requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
         Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
     }

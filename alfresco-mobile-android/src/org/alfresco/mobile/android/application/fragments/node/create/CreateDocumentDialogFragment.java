@@ -28,20 +28,20 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.configuration.manager.CreationConfigurator;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameEvent;
 import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameRequest;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
@@ -138,12 +138,11 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         if (configurationManager != null
                 && configurationManager.hasConfig(getAccount().getId()))
         {
-            //TODO Configuration Creation
-            /*ConfigContext configContext = configurationManager.getConfig();
-            if (configContext.getJson().containsKey(CreationConfigurator.MIMETYPES))
+            ConfigService configService = configurationManager.getConfig(getAccount().getId());
+            if (configService.getCreationConfig(null) != null)
             {
-                config = new CreationConfigurator(getActivity(), configContext, null);
-            }*/
+                config = new CreationConfigurator(getActivity(), configService, null);
+            }
         }
 
         View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
@@ -338,7 +337,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
         Operator.with(getActivity(), getAccount())
                 .load(new CreateDocumentRequest.Builder(parentFolder, documentName, type, f, props, listTagValue,
-                        isCreation));
+                        isCreation).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)
         {

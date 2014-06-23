@@ -17,6 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform.utils;
 
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+
 import android.content.Context;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
@@ -92,7 +94,7 @@ public class AccessibilityUtils
     {
         if (isEnabled(context))
         {
-            MessengerUtils.showLongToast(context, actionMessage);
+            AlfrescoNotificationManager.getInstance(context).showLongToast(actionMessage);
         }
     }
 

@@ -24,13 +24,13 @@ import java.util.Locale;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
@@ -76,7 +76,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -118,7 +118,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -249,7 +249,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -270,7 +270,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(activity, R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
         }
     }
 
@@ -299,7 +299,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.decryption_failed);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.decryption_failed);
             Log.d(TAG, Log.getStackTraceString(e));
         }
 
@@ -333,7 +333,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -345,7 +345,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(activity, R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
         }
     }
 
@@ -374,7 +374,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            MessengerUtils.showToast(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -406,7 +406,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
         }
     }
 
@@ -434,7 +434,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
         }
     }
 
@@ -446,18 +446,18 @@ public class ActionUtils extends BaseActionUtils
      * 
      * @return Activity for Result.
      */
-    public static void actionPickFile(Fragment f, int requestCode)
+    public static void actionPickFile(Fragment fr, int requestCode)
     {
         try
         {
             Intent i = new Intent(Intent.ACTION_GET_CONTENT);
             i.setType("*/*");
             i.addCategory(Intent.CATEGORY_OPENABLE);
-            f.startActivityForResult(Intent.createChooser(i, f.getText(R.string.content_app_pick_file)), requestCode);
+            fr.startActivityForResult(Intent.createChooser(i, fr.getText(R.string.content_app_pick_file)), requestCode);
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(f.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
     }
 

@@ -25,6 +25,10 @@
     <bool name="manager_isEnable_DataProtectionManager">false</bool>
     <string name="manager_DataProtectionManager">org.alfresco.mobile.android.manager.security.DataProtectionManager</string>
 
+    <!-- Notification Manager -->
+    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
+    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.platform.DefaultNotificationManager</string>
+    
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!--  ENABLE BY DEFAULT -->
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -32,8 +36,12 @@
     <bool name="manager_isEnable_AlfrescoAccountManager">true</bool>
     <string name="manager_AlfrescoAccountManager">org.alfresco.mobile.android.platform.accounts.DefaultAccountManager</string>
     
-      <!-- Session Manager -->
+    <!-- Session Manager -->
     <bool name="manager_isEnable_SessionManager">true</bool>
     <string name="manager_SessionManager">org.alfresco.mobile.android.platform.DefaultSessionManager</string>
+    
+    <!-- MimeType Manager -->
+    <bool name="manager_isEnable_MimeTypeManager">true</bool>
+    <string name="manager_MimeTypeManager">org.alfresco.mobile.android.platform.mimetype.DefaultMimeTypeManager</string>
 
 </resources>

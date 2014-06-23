@@ -37,10 +37,13 @@ public class PassCodeActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.app_left_panel);
+        setContentView(R.layout.app_passcode_panel);
 
-        PassCodeDialogFragment f = PassCodeDialogFragment.requestPasscode();
-        FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+        if (getFragmentManager().findFragmentByTag(PassCodeDialogFragment.TAG) == null)
+        {
+            PassCodeDialogFragment f = PassCodeDialogFragment.requestPasscode();
+            FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+        }
     }
 
     public static void requestUserPasscode(Activity activity)

@@ -20,8 +20,8 @@ package org.alfresco.mobile.android.platform.intent;
 import java.io.File;
 
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.app.Fragment;
 import android.content.ActivityNotFoundException;
@@ -49,7 +49,7 @@ public class BaseActionUtils
             @Override
             public void onActivityNotFoundException(ActivityNotFoundException e)
             {
-                MessengerUtils.showToast(context, R.string.error_unable_open_file);
+                AlfrescoNotificationManager.getInstance(context).showToast(R.string.error_unable_open_file);
             }
         });
     }
@@ -99,7 +99,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -115,7 +115,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
     }
 
@@ -137,7 +137,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_share_link);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_link);
         }
     }
 
@@ -159,7 +159,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            MessengerUtils.showToast(fr.getActivity(), R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
         }
     }
 

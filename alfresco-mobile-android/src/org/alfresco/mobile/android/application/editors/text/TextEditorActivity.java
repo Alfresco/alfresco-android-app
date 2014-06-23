@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -128,18 +128,20 @@ public class TextEditorActivity extends BaseActivity
                 else if (file.exists()
                         && file.length() > getResources().getInteger(R.integer.text_editor_max_file_size))
                 {
-                    MessengerUtils.showLongToast(this, getString(R.string.file_editor_error_too_large));
+                    AlfrescoNotificationManager.getInstance(this).showLongToast(
+                            getString(R.string.file_editor_error_too_large));
                     finish();
                 }
                 else
                 {
-                    MessengerUtils.showLongToast(this, getString(R.string.file_editor_error_open));
+                    AlfrescoNotificationManager.getInstance(this).showLongToast(
+                            getString(R.string.file_editor_error_open));
                     finish();
                 }
             }
             else
             {
-                MessengerUtils.showLongToast(this, getString(R.string.file_editor_error_open));
+                AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.file_editor_error_open));
                 finish();
             }
             return;
@@ -360,7 +362,8 @@ public class TextEditorActivity extends BaseActivity
         }
         catch (ActivityNotFoundException a)
         {
-            MessengerUtils.showToast(getApplicationContext(), R.string.file_editor_error_speech);
+            AlfrescoNotificationManager.getInstance(getApplicationContext()).showToast(
+                    R.string.file_editor_error_speech);
         }
     }
 
@@ -379,7 +382,7 @@ public class TextEditorActivity extends BaseActivity
 
             changed = false;
 
-            MessengerUtils.showToast(this, R.string.file_editor_save_confirmation);
+            AlfrescoNotificationManager.getInstance(this).showToast(R.string.file_editor_save_confirmation);
 
             if (stopActivity)
             {
@@ -462,7 +465,7 @@ public class TextEditorActivity extends BaseActivity
     {
         if (event.hasException)
         {
-            MessengerUtils.showLongToast(this, getString(R.string.textfile_populate_failed));
+            AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.textfile_populate_failed));
         }
         else
         {

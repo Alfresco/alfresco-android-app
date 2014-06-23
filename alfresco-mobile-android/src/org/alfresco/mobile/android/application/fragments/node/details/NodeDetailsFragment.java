@@ -49,6 +49,7 @@ import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.DataProtectionManagerImpl;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
+import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.node.NodeRequest;
@@ -63,6 +64,7 @@ import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -72,7 +74,6 @@ import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
@@ -457,7 +458,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             final File syncFile = syncManager.getSyncFile(acc, node);
             if (syncFile == null || !syncFile.exists())
             {
-                MessengerUtils.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                        getString(R.string.sync_document_not_available));
                 return;
             }
             long datetime = syncFile.lastModified();
@@ -574,7 +576,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             final File syncFile = syncManager.getSyncFile(acc, node);
             if (syncFile == null || !syncFile.exists())
             {
-                MessengerUtils.showLongToast(getActivity(), getString(R.string.sync_document_not_available));
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                        getString(R.string.sync_document_not_available));
                 return;
             }
             long datetime = syncFile.lastModified();
@@ -635,7 +638,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void update(File f)
     {
         Operator.with(getActivity(), getAccount()).load(
-                new UpdateContentRequest.Builder(parentNode, (Document) node, new ContentFileProgressImpl(f)));
+                new UpdateContentRequest.Builder(parentNode, (Document) node, new ContentFileProgressImpl(f))
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
     }
 
     public void delete()
@@ -851,7 +855,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (event.data == null)
         {
             Log.e(TAG, Log.getStackTraceString(event.exception));
-            MessengerUtils.showToast(getActivity(), R.string.error_retrieve_likes);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_retrieve_likes);
         }
         else if (event.data)
         {
@@ -879,7 +883,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (event.data == null)
         {
             Log.e(TAG, Log.getStackTraceString(event.exception));
-            MessengerUtils.showToast(getActivity(), R.string.error_retrieve_favorite);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_retrieve_favorite);
         }
         else if (event.data)
         {
@@ -907,7 +911,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (event.data == null)
         {
             Log.e(TAG, Log.getStackTraceString(event.exception));
-            MessengerUtils.showToast(getActivity(), R.string.error_retrieve_favorite);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_retrieve_favorite);
         }
         else if (event.data)
         {
@@ -938,7 +942,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         TabsNodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
-        MessengerUtils.showToast(getActivity(),
+        AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                 String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
     }
 
@@ -955,12 +959,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             getFragmentManager().popBackStack(TabsNodeDetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         return;
-        //NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
-        //NodeRefUtils.getCleanIdentifier(_node.getIdentifier()))
+        // NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
+        // NodeRefUtils.getCleanIdentifier(_node.getIdentifier()))
     }
 
     @Subscribe
-    public void onFileProtectionEvent(FileProtectionEvent event){
+    public void onFileProtectionEvent(FileProtectionEvent event)
+    {
         if (event.hasException) { return; }
         if (getFragment(WaitingDialogFragment.TAG) != null)
         {
@@ -976,12 +981,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             DataProtectionManagerImpl.getInstance(getActivity()).executeAction(this, actionIntent, f);
         }
     }
-    
+
     protected Fragment getFragment(String tag)
     {
         return getActivity().getFragmentManager().findFragmentByTag(tag);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////

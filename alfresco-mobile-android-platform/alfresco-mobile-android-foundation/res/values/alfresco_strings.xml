@@ -333,6 +333,11 @@
     <string name="cloud_networks_empty">No networks available</string>
     <string name="manage_accounts">Manage accounts&#8230;</string>
     <string name="cloud_networks_switch">Switch networks&#8230;</string>
+    
+    <!-- PROFILES -->
+    <string name="profiles_empty">No profiles available</string>
+    <string name="manage_profiles">Manage profiles&#8230;</string>
+    <string name="profiles_switch">Switch profiles&#8230;</string>
 
     <!-- WORKFLOW -->
     <string name="empty_process_definition">No Process</string>
@@ -369,12 +374,54 @@
     <string name="download_await">Waiting to download&#8230;</string>
     <string name="sync_favorites">Favorites</string>
     
-     <string name="sync_warning">Sync Warning</string>
+     <plurals name="sync_complete_description">
+        <item quantity="zero">no content synced</item>
+        <item quantity="one">1 file synced</item>
+        <item quantity="other">%1$s files synced</item>
+    </plurals>
+    <plurals name="download_complete_description">
+        <item quantity="zero">no content downloaded</item>
+        <item quantity="one">1 file available offline</item>
+        <item quantity="other">%1$s files available offline</item>
+    </plurals>
+    <plurals name="upload_complete_description">
+        <item quantity="zero">no content uploaded.</item>
+        <item quantity="one">1 item uploaded.</item>
+        <item quantity="other">%1$s items uploaded.</item>
+    </plurals>
+    <plurals name="update_complete_description">
+        <item quantity="zero">no content updated.</item>
+        <item quantity="one">1 file updated.</item>
+        <item quantity="other">%1$s files updated.</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="zero">no transfers failed.</item>
+        <item quantity="one">1 transfer failed.</item>
+        <item quantity="other">%1$s transfers failed.</item>
+    </plurals>
+    <plurals name="batch_in_progress">
+        <item quantity="zero">no transfers in progress.</item>
+        <item quantity="one">1 transfer in progress.</item>
+        <item quantity="other">%1$s transfers in progress.</item>
+    </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">no downloads in progress.</item>
+        <item quantity="one">1 download in progress.</item>
+        <item quantity="other">%1$s downloads in progress.</item>
+    </plurals>
+    
+    <string name="sync_warning">Sync Warning</string>
     <string name="sync_error">Sync Error</string>
     <string name="sync_warning_mobile_data"><![CDATA[<p> You are about to sync <b>%s</b> over a carrier connection.</p> Would you like to proceed?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> You are trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space in your device or unfavorite some content.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> You are about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Would you like to proceed?]]></string>
     <string name="sync_document_not_available">This document is not available on your device.</string>
     
+      <!-- NOTIFICATION -->
+    <string name="upload">Upload </string>
+    <string name="upload_complete">Upload Complete.</string>
+    <string name="upload_in_progress">Upload in progress&#8230;</string>
+    <string name="update_complete">Update Complete.</string>
+    <string name="update_in_progress">Update in progress&#8230;</string>
     
 </resources>

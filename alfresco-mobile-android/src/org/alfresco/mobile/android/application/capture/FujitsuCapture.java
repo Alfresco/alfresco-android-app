@@ -28,7 +28,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
 import  org.alfresco.mobile.android.application.capture.CarryResult;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 
 import android.app.Activity;
@@ -157,12 +157,12 @@ public class FujitsuCapture extends DeviceCapture
                 //error occurred when parsing url, show dialog
                 if(bParseRet == CarryResult.CARRY_PARSE_ERROR)
                 {
-                    MessengerUtils.showLongToast(context, context.getString(R.string.cannot_capture));                                                  
+                    AlfrescoNotificationManager.getInstance(context).showLongToast(context.getString(R.string.cannot_capture));
                 }
                 //error occurred when scan files, show dialog
                 if(bParseRet == CarryResult.CARRY_SCAN_ERROR)
                 {
-                	MessengerUtils.showLongToast(context, context.getString(R.string.cannot_capture));                                                
+                    AlfrescoNotificationManager.getInstance(context).showLongToast(context.getString(R.string.cannot_capture));
                 }
                 
                 return false;
@@ -175,7 +175,7 @@ public class FujitsuCapture extends DeviceCapture
         }
         else
         {
-        	MessengerUtils.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
+            AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(parentActivity.getString(R.string.sdinaccessible));
             return false;
         }
     }

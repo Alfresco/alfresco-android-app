@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.application.fragments.create;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;

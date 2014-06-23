@@ -17,13 +17,10 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.rendition;
 
-import java.io.File;
-
 import org.alfresco.mobile.android.platform.Manager;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 
 /**
  * Utility class for downloading content and display it.

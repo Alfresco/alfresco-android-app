@@ -23,23 +23,25 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.ConfigManager.ConfigurationMenuEvent;
-import org.alfresco.mobile.android.application.configuration.manager.MenuConfigurator;
+import org.alfresco.mobile.android.application.config.manager.MainMenuConfigManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
+import org.alfresco.mobile.android.application.fragments.accounts.NetworksFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
+import org.alfresco.mobile.android.application.fragments.profiles.ProfilesConfigFragment;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
@@ -87,7 +89,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private ConfigManager configurationManager;
 
-    private AccountsAdapter cursorAdapter;
+    private AccountsAdapter accountsAdapter;
 
     public static final String TAG = MainMenuFragment.class.getName();
 
@@ -148,13 +150,25 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         super.onActivityCreated(savedInstanceState);
 
         // retrieve accounts
-        List<AlfrescoAccount> list = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccounts(getActivity());
-        list.add(new AlfrescoAccount(AccountsAdapter.NETWORK_ITEM, getString(R.string.cloud_networks_switch), null,
-                null, null, null, "0", null, "false"));
-        list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null,
-                null, null, "0", null, "false"));
-        cursorAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
-        spinnerAccount.setAdapter(cursorAdapter);
+        configurationManager = ConfigManager.getInstance(getActivity());
+        AlfrescoAccount acc = getAccount();
+        if (acc == null)
+        {
+            acc = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
+        }
+        if (configurationManager != null && acc != null && configurationManager.hasConfig(acc.getId()))
+        {
+            configure(configurationManager.getConfig(acc.getId()));
+        }
+        else if (configurationManager != null && acc != null)
+        {
+            // Configuration
+            configurationManager.init(acc);
+            configure(configurationManager.getConfig(acc.getId()));
+            // display();
+        }
+
+        refresh();
     }
 
     @Override
@@ -233,8 +247,13 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         switch (accountId)
         {
+            case AccountsAdapter.PROFILES_ITEM:
+                ProfilesConfigFragment.with(getActivity()).display();
+                hideSlidingMenu(false);
+                refresh();
+                break;
             case AccountsAdapter.NETWORK_ITEM:
-                ((MainActivity) getActivity()).displayNetworks();
+                NetworksFragment.with(getActivity()).display();
                 hideSlidingMenu(false);
                 refresh();
                 break;
@@ -266,35 +285,35 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void configure(ConfigContext configurationContext)
+    private void configure(ConfigService configService)
     {
-        if (configurationContext != null && configurationContext.hasLayoutConfig())
+        if (configService != null && configService.hasViewConfig())
         {
-            if (ConfigInfo.SCHEMA_VERSION_BETA.equals(configurationContext.getConfigInfo().getSchemaVersion()))
+            if (configService.getProfiles() != null
+                    && configService.getProfile().getViewConfig(ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
             {
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_ACTIVITIES),
-                        R.id.menu_browse_activities);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_REPOSITORY),
-                        R.id.menu_browse_root);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS),
-                        R.id.menu_notifications);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared,
-                        true);
-                hideOrDisplay(configurationContext.getViewConfig(ConfigConstants.MENU_MYFILES),
-                        R.id.menu_browse_userhome, true);
-            }
-            else if (configurationContext.getApplicationConfig().getViewConfig(
-                    ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
-            {
+                // Configuration (Internal or from Server)
                 DisplayUtils.hide(viewById(R.id.main_menu_group));
-                MenuConfigurator config = new MenuConfigurator(getActivity(), configurationContext,
+                MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configService,
                         (ViewGroup) getRootView());
                 config.createMenu();
+            }
+            else if (configService.getConfigInfo() == null
+                    || (configService.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService
+                            .getConfigInfo().getSchemaVersion())))
+            {
+                // BETA
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_ACTIVITIES), R.id.menu_browse_activities);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_REPOSITORY), R.id.menu_browse_root);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS), R.id.menu_notifications);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared, true);
+                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_MYFILES), R.id.menu_browse_userhome,
+                        true);
             }
             else
             {
@@ -379,6 +398,24 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         if (currentAccount == null) { return; }
 
+        List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
+        if (currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        {
+            list.add(new AlfrescoAccount(AccountsAdapter.NETWORK_ITEM, getString(R.string.cloud_networks_switch), null,
+                    null, null, null, "0", null, "false"));
+        }
+
+        if (configurationManager.getConfig(currentAccount.getId()) != null
+                && configurationManager.getConfig(currentAccount.getId()).getProfiles() != null)
+        {
+            list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,
+                    null, null, null, "0", null, "false"));
+        }
+
+        list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null,
+                null, null, "0", null, "false"));
+        accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
+        spinnerAccount.setAdapter(accountsAdapter);
         spinnerAccount.setSelection(accountIndex);
 
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
@@ -545,6 +582,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         configurationManager = ConfigManager.getInstance(getActivity());
         if (configurationManager != null && configurationManager.hasConfig(event.accountId))
         {
+            refresh();
             configure(configurationManager.getConfig(event.accountId));
         }
         else
