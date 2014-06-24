@@ -203,5 +203,10 @@ public abstract class OperationsContentProvider extends ContentProvider implemen
     {
         return OperationsSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
+    
+    public static String getAccountFilter(long accountId)
+    {
+        return OperationsSchema.COLUMN_ACCOUNT_ID + " == " + accountId;
+    }
 
 }

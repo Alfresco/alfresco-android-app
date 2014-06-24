@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.platform.mimetype;
 
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 
 import android.content.ContentValues;
@@ -29,15 +30,11 @@ import android.net.Uri;
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class MimeTypeManager
+public class MimeTypeManager extends Manager
 {
-    private static final String TAG = MimeTypeManager.class.getName();
+    protected static final Object LOCK = new Object();
 
-    private static MimeTypeManager mInstance;
-
-    private final Context appContext;
-
-    private static final Object LOCK = new Object();
+    protected static Manager mInstance;
 
     private Integer mimetypeSize;
 
@@ -48,24 +45,22 @@ public class MimeTypeManager
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
+    protected MimeTypeManager(Context applicationContext)
+    {
+        super(applicationContext);
+        getCount();
+    }
+
     public static MimeTypeManager getInstance(Context context)
     {
         synchronized (LOCK)
         {
             if (mInstance == null)
             {
-                mInstance = new MimeTypeManager(context.getApplicationContext());
+                mInstance = Manager.getInstance(context, MimeTypeManager.class.getSimpleName());
             }
-
-            return mInstance;
+            return (MimeTypeManager) mInstance;
         }
-    }
-
-    private MimeTypeManager(Context context)
-    {
-        // Init/retrieve manager
-        this.appContext = context;
-        getCount();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

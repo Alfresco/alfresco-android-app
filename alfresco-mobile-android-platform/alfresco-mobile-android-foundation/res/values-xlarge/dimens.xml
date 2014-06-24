@@ -27,6 +27,4 @@
     <dimen name="home_button_size">24sp</dimen>
     <dimen name="home_description_size">16sp</dimen>
 
-    <!-- PANELS -->
-
 </resources>

@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.node.download.DownloadTask;
 import org.alfresco.mobile.android.async.node.download.DownloadTask.DownloadTaskListener;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.app.AlertDialog;
@@ -181,7 +181,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             switch (action)
             {
                 case ACTION_OPEN:
-                    MessengerUtils.showToast(getActivity(), getActivity().getText(R.string.download_complete) + " "
+                    AlfrescoNotificationManager.getInstance(getActivity()).showToast(getActivity().getText(R.string.download_complete) + " "
                             + contentFile.getFileName());
 
                     NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
@@ -206,7 +206,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         else
         {
-            MessengerUtils.showToast(getActivity(), getActivity().getText(R.string.download_error).toString());
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(getActivity().getText(R.string.download_error).toString());
         }
         dismiss();
     }

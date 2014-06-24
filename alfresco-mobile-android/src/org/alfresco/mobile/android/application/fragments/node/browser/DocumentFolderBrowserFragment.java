@@ -681,7 +681,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 requestsBuilder.add(new CreateDocumentRequest.Builder(importFolder, file.getName(),
                         new ContentFileProgressImpl(file))
-                        .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
             }
             String operationId = Operator.with(getActivity(), getAccount()).load(requestsBuilder);
 

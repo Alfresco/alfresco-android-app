@@ -24,10 +24,10 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerHelper;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -117,7 +117,7 @@ public class DataCleaner extends AsyncTask<String, Integer, Boolean>
     {
         if (statut && activityRef.get() != null)
         {
-            MessengerUtils.showLongToast(activityRef.get(),
+            AlfrescoNotificationManager.getInstance(activityRef.get()).showLongToast(
                     activityRef.get().getString(R.string.passcode_erase_data_complete));
             activityRef.get().setResult(Activity.RESULT_CANCELED);
             activityRef.get().finish();

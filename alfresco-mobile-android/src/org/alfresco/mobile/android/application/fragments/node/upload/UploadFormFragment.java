@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapte
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -43,7 +44,6 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;
@@ -239,7 +239,7 @@ public class UploadFormFragment extends Fragment
                 }
                 else if (file == null || fileName == null)
                 {
-                    MessengerUtils.showLongToast(getActivity(), getString(R.string.import_unsupported_intent));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.import_unsupported_intent));
                     getActivity().finish();
                     return;
                 }

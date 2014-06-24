@@ -32,12 +32,12 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.api.session.authentication.impl.OAuth2DataImpl;
 import org.alfresco.mobile.android.api.utils.IOUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -296,7 +296,7 @@ public class DeveloperSessionManager extends SessionManager
                         url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
-                    MessengerUtils.showToast(getContext(), R.string.security_ssl_disable);
+                    AlfrescoNotificationManager.getInstance(getContext()).showToast(R.string.security_ssl_disable);
                     extraSettings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME, NetworkTrustManager.class.getName());
                 }
             }

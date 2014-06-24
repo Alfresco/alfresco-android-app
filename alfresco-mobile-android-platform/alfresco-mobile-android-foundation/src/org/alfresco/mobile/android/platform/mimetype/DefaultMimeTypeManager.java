@@ -15,19 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.config.async;
+package org.alfresco.mobile.android.platform.mimetype;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
-import org.alfresco.mobile.android.async.LoaderResult;
-import org.alfresco.mobile.android.async.OperationEvent;
+import android.content.Context;
 
-public class ConfigContextEvent extends OperationEvent<ConfigContext>
+public class DefaultMimeTypeManager extends MimeTypeManager
 {
-    public final long accountId;
-
-    public ConfigContextEvent(String requestId, LoaderResult<ConfigContext> result, long accountId)
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTOR
+    // ///////////////////////////////////////////////////////////////////////////
+    public static MimeTypeManager getInstance(Context context)
     {
-        super(requestId, result);
-        this.accountId = accountId;
+        synchronized (LOCK)
+        {
+            if (mInstance == null)
+            {
+                mInstance = new DefaultMimeTypeManager(context);
+            }
+
+            return (MimeTypeManager) mInstance;
+        }
+    }
+
+    protected DefaultMimeTypeManager(Context context)
+    {
+        super(context);
     }
 }

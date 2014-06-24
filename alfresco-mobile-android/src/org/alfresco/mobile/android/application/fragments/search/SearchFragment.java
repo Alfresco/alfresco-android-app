@@ -36,7 +36,7 @@ import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchCursorAdapter;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -177,7 +177,7 @@ public class SearchFragment extends BaseCursorGridFragment
                     }
                     else
                     {
-                        MessengerUtils.showLongToast(getActivity(), getString(R.string.search_form_hint));
+                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.search_form_hint));
                     }
                     return true;
                 }
@@ -294,7 +294,7 @@ public class SearchFragment extends BaseCursorGridFragment
         }
         catch (ActivityNotFoundException a)
         {
-            MessengerUtils.showToast(getActivity(), R.string.file_editor_error_speech);
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.file_editor_error_speech);
         }
     }
 

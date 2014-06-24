@@ -22,14 +22,10 @@ import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.FileOperation;
-import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
 
-import android.content.Intent;
-import android.os.Bundle;
 import android.util.Log;
 
 public class AccountProtectionOperation extends FileOperation<Void>

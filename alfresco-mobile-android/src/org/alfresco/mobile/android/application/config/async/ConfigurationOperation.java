@@ -17,7 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.async;
 
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.ConfigServiceFactory;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -27,14 +28,14 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 
 import android.util.Log;
 
-public class ConfigContextOperation extends BaseOperation<ConfigContext>
+public class ConfigurationOperation extends BaseOperation<ConfigService>
 {
-    private static final String TAG = ConfigContextOperation.class.getName();
+    private static final String TAG = ConfigurationOperation.class.getName();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public ConfigContextOperation(Operator operator, OperationsDispatcher dispatcher, OperationAction action)
+    public ConfigurationOperation(Operator operator, OperationsDispatcher dispatcher, OperationAction action)
     {
         super(operator, dispatcher, action);
     }
@@ -42,17 +43,16 @@ public class ConfigContextOperation extends BaseOperation<ConfigContext>
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    protected LoaderResult<ConfigContext> doInBackground()
+    protected LoaderResult<ConfigService> doInBackground()
     {
-        LoaderResult<ConfigContext> result = new LoaderResult<ConfigContext>();
-        ConfigContext config = null;
+        LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+        ConfigService config = null;
 
         try
         {
             super.doInBackground();
 
-            config = session.getServiceRegistry().getConfigService()
-                    .load(((ConfigContextRequest) request).configSource);
+            config = ConfigServiceFactory.buildConfigService(context.getPackageName(), ((ConfigurationRequest) request).parameters);
 
             result.setData(config);
         }
@@ -68,9 +68,9 @@ public class ConfigContextOperation extends BaseOperation<ConfigContext>
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected void onPostExecute(LoaderResult<ConfigContext> result)
+    protected void onPostExecute(LoaderResult<ConfigService> result)
     {
         super.onPostExecute(result);
-        EventBusManager.getInstance().post(new ConfigContextEvent(getRequestId(), result, accountId));
+        EventBusManager.getInstance().post(new ConfigurationEvent(getRequestId(), result, accountId));
     }
 }

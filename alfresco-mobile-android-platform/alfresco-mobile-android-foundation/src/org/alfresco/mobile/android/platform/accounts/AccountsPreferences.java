@@ -50,7 +50,10 @@ public final class AccountsPreferences
             if (acc == null)
             {
                 acc = AlfrescoAccountManager.getInstance(context).retrieveFirstAccount();
-                setDefaultAccount(context, acc.getId());
+                if (acc != null)
+                {
+                    setDefaultAccount(context, acc.getId());
+                }
             }
             return acc;
         }

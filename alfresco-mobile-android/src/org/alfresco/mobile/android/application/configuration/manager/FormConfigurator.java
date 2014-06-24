@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
-import org.alfresco.mobile.android.api.model.config.ConfigContext;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
@@ -62,7 +62,7 @@ public class FormConfigurator extends BaseConfigurator
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public FormConfigurator(Activity activity, ConfigContext configurationContext, ViewGroup vRoot,
+    public FormConfigurator(Activity activity, ConfigService configurationContext, ViewGroup vRoot,
             Node currentNode)
     {
         super(activity, configurationContext);

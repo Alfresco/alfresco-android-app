@@ -127,7 +127,7 @@ public class AlfrescoStorageManager extends Manager
     {
         return getPrivateFolder(DIRECTORY_ASSET, null);
     }
-
+    
     /**
      * Returns a specific file/folder inside the private area of the
      * application.

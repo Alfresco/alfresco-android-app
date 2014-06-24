@@ -24,6 +24,7 @@
     <item name="app_start_process" type="layout">@layout/app_start_process_tablet</item>
     <item name="app_task_complete" type="layout">@layout/app_task_complete_button</item>
     <item name="app_task_header" type="layout">@layout/app_task_header_column</item>
+    <item name="app_passcode" type="layout">@layout/app_passcode_tab</item>
     
     <bool name="tablet_middle">true</bool>
 

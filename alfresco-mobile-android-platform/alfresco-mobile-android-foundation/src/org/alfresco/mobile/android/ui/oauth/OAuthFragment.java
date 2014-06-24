@@ -26,8 +26,8 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 
 import android.app.Activity;
 import android.app.DialogFragment;
@@ -264,11 +264,11 @@ public abstract class OAuthFragment extends DialogFragment
         {
             if (event.hasException)
             {
-                MessengerUtils.showLongToast(getActivity(), event.exception.getMessage());
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(event.exception.getMessage());
             }
             else
             {
-                MessengerUtils.showLongToast(getActivity(), event.data.toString());
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(event.data.toString());
             }
         }
     }

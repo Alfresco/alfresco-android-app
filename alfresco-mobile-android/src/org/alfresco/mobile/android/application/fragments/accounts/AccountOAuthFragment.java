@@ -33,10 +33,10 @@ import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.CreateAccountRequest;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.utils.MessengerUtils;
 import org.alfresco.mobile.android.ui.oauth.OAuthFragment;
 import org.alfresco.mobile.android.ui.oauth.OnOAuthAccessTokenListener;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -174,7 +174,7 @@ public class AccountOAuthFragment extends OAuthFragment
                 }
 
                 Log.e(TAG, Log.getStackTraceString(e));
-                MessengerUtils.showLongToast(getActivity(), getActivity().getString(R.string.error_general));
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_general));
             }
 
             @Override

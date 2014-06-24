@@ -46,6 +46,10 @@
     <string name="favorite_sync">favoriteSync</string>
     <string name="favorite_sync_wifi">favoriteSyncWifi</string>
 
+    <!-- CONFIG -->
+    <string name="config_asset_path">Configuration/</string>
+    <string name="config_asset_file">config.json</string>
+    
     <!-- HELP -->
     <string name="help_path">Help/</string>
     <string name="help_user_guide">Alfresco_Mobile_Android_App_User_Guide.pdf</string>
