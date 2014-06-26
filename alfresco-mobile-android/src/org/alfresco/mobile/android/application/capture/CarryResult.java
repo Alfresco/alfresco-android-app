@@ -5,8 +5,14 @@
 //-------------------------------------------------------------------
 package org.alfresco.mobile.android.application.capture;
 
-public class CarryResult
+import java.io.Serializable;
+
+public class CarryResult implements Serializable
 {
+	public static final String TAG = "CarryResult";
+
+    private static final long serialVersionUID = 1L;
+
 	private static CarryResult mInstance = null;
 	/**
 	 * Keys for url

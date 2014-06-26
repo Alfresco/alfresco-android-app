@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -65,14 +66,19 @@ public class FujitsuCapture extends DeviceCapture
     @Override
     public boolean hasDevice()
     {
-        try 
+        return hasFujitsuScanner(parentActivity);
+    }
+    
+    public static boolean hasFujitsuScanner(Context context)
+    {
+    	try 
         {
             Uri uri = Uri.parse("scansnap:///Scan&OutMode=2&CallBack=alfrescoFujitsuScanCallback:");
             
             Intent in = new Intent();
             in.setData(uri);
             
-            final PackageManager mgr = parentActivity.getPackageManager();
+            final PackageManager mgr = context.getPackageManager();
             List<ResolveInfo> list = mgr.queryIntentActivities(in, PackageManager.MATCH_DEFAULT_ONLY);
                
             return list.size() > 0;
@@ -82,7 +88,8 @@ public class FujitsuCapture extends DeviceCapture
             return false;
         }
     }
-
+    
+    
     @Override
     public boolean captureData()
     {

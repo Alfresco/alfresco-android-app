@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.capture.FujitsuCapture;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
@@ -88,6 +89,7 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -755,7 +757,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         MenuFragmentHelper.getMenu(getActivity(), menu);
     }
 
-    public static void getMenu(AlfrescoSession session, Menu menu, Folder parentFolder)
+    public void getMenu(AlfrescoSession session, Menu menu, Folder parentFolder)
     {
         MenuItem mi;
 
@@ -805,8 +807,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
             
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, R.string.scan_document);
+            if (FujitsuCapture.hasFujitsuScanner(this.getActivity()))
+	            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, Menu.FIRST
+	                    + MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, R.string.scan_document);
         }
     }
 
