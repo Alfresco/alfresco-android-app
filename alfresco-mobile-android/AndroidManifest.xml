@@ -295,5 +295,5 @@
             android:authorities="org.alfresco.mobile.android.provider.accounts"
             android:exported="false" />
     </application>
-
+ 
 </manifest>
