@@ -555,9 +555,12 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
                 @Override
                 public void onClick(View v)
                 {
-                    ActionManager.actionShowMap(DetailsFragment.this, node.getName(),
-                            node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
-                            node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
+                    if (node == null) { return; }
+                    String latitude = (node.getProperty(ContentModel.PROP_LATITUDE).getValue() != null) ? node
+                            .getProperty(ContentModel.PROP_LATITUDE).getValue().toString() : "";
+                    String longitude = (node.getProperty(ContentModel.PROP_LONGITUDE).getValue() != null) ? node
+                            .getProperty(ContentModel.PROP_LONGITUDE).getValue().toString() : "";
+                    ActionManager.actionShowMap(DetailsFragment.this, node.getName(), latitude, longitude);
                 }
             });
         }
@@ -667,8 +670,8 @@ public class DetailsFragment extends MetadataFragment implements OnTabChangeList
             {
                 iv.setImageResource(iconId);
             }
-            AccessibilityHelper.addContentDescription(iv, mime != null ? mime.getDescription() : ((Document) node)
-                    .getContentStreamMimeType());
+            AccessibilityHelper.addContentDescription(iv,
+                    mime != null ? mime.getDescription() : ((Document) node).getContentStreamMimeType());
 
             if (!isRestrictable && !AccessibilityHelper.isEnabled(getActivity()))
             {

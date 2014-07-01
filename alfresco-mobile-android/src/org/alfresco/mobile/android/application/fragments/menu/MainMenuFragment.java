@@ -452,8 +452,12 @@ public class MainMenuFragment extends Fragment implements LoaderCallbacks<Cursor
                 return;
             }
         }
-        rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
-        rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
+
+        if (rootView != null)
+        {
+            rootView.findViewById(R.id.menu_browse_shared).setVisibility(View.GONE);
+            rootView.findViewById(R.id.menu_browse_userhome).setVisibility(View.GONE);
+        }
     }
 
     public void displayFavoriteStatut()
