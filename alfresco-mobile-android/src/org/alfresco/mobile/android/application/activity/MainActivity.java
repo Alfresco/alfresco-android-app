@@ -1059,8 +1059,11 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case MenuActionItem.MENU_REFRESH:
-                ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
-                        .refresh();
+                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                {
+                    ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
+                            .refresh();
+                }
                 return true;
 
             case MenuActionItem.MENU_SHARE:
@@ -1342,12 +1345,14 @@ public class MainActivity extends BaseActivity
                     ConfigurationManager.getInstance(activity).retrieveConfiguration(activity, currentAccount);
                     if (getFragment(MainMenuFragment.TAG) != null)
                     {
-                        ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFolderShortcut(getCurrentSession());
+                        ((MainMenuFragment) getFragment(MainMenuFragment.TAG))
+                                .displayFolderShortcut(getCurrentSession());
                     }
 
                     if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
                     {
-                        ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG)).displayFolderShortcut(getCurrentSession());
+                        ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG))
+                                .displayFolderShortcut(getCurrentSession());
                     }
                 }
 

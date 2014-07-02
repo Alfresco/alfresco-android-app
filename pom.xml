@@ -13,7 +13,7 @@
 
 	<groupId>org.alfresco.mobile.android.apps</groupId>
 	<artifactId>alfresco-mobile-android-apps</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>pom</packaging>
 
 	<name>Alfresco Mobile Android APPS (Parent)</name>
@@ -148,7 +148,7 @@
 		<picasso.version>2.2.0</picasso.version>
 		
 		<!-- Alfresco Configuration -->
-		<alfresco.sdk.version>1.3.1</alfresco.sdk.version>
+		<alfresco.sdk.version>1.3.2</alfresco.sdk.version>
 		<alfresco.apps.version>1.4.0</alfresco.apps.version>
 
 		<!-- Plugins -->

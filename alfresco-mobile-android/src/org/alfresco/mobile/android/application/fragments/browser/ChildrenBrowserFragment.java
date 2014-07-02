@@ -1157,6 +1157,8 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
 
     public boolean isShortcut()
     {
-        return (Boolean) getArguments().get(PARAM_IS_SHORTCUT);
+        if (getArguments() == null || !getArguments().containsKey(PARAM_IS_SHORTCUT)) { return false; }
+        return (getArguments().get(PARAM_IS_SHORTCUT) instanceof Boolean) ? (Boolean) getArguments().get(
+                PARAM_IS_SHORTCUT) : false;
     }
 }

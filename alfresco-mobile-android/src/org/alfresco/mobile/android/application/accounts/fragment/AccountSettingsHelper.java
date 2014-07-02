@@ -239,7 +239,7 @@ public class AccountSettingsHelper
         settings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
         settings.put(SessionParameter.CLIENT_COMPRESSION, "true");
         settings.put(AlfrescoSession.HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
-        settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobile"));
+        settings.put(AlfrescoSession.CACHE_FOLDER, StorageManager.getCacheDir(context, "AlfrescoMobile").getPath());
         return settings;
     }
 
