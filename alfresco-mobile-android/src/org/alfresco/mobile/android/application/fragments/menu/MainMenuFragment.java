@@ -473,8 +473,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 return;
             }
         }
-        hide(R.id.menu_browse_shared);
-        hide(R.id.menu_browse_userhome);
+        if (getRootView() != null)
+        {
+            hide(R.id.menu_browse_shared);
+            hide(R.id.menu_browse_userhome);
+        }
     }
 
     public void displayFavoriteStatut()
