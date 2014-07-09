@@ -22,7 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;

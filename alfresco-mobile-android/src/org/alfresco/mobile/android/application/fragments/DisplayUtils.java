@@ -103,7 +103,7 @@ public abstract class DisplayUtils
 
     public static void hide(View v, int id)
     {
-        v.findViewById(id).setVisibility(View.VISIBLE);
+        v.findViewById(id).setVisibility(View.GONE);
     }
 
     public static void show(View v)

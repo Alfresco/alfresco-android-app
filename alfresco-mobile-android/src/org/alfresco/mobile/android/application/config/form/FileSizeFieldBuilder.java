@@ -15,38 +15,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.platform.configuration;
+package org.alfresco.mobile.android.application.config.form;
+
+import java.math.BigInteger;
+
+import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.config.FieldConfig;
 
 import android.content.Context;
+import android.text.format.Formatter;
 
-/**
- * @author Jean Marie Pascal
- */
-public final class ConfigUtils
+public class FileSizeFieldBuilder extends FieldTypeBuilder
 {
-    // ///////////////////////////////////////////////////////////////////////////
-    // UTILS
-    // ///////////////////////////////////////////////////////////////////////////
-    private static final String STRING = "string";
-
-    private static final String SEPARATOR = "_";
-
-    public static final String FAMILY_CONFIG = "config";
-    
-    public static final String FAMILY_FORM = "form";
-
-    public static final String FAMILY_OPERATION = "operation";
-
-    public static final String FAMILY_MANAGER = "manager";
-
-    public static final String FAMILY_OPERATION_CALLBACK = "callback";
-
-    public static String getString(Context context, String family, String key)
+    /**
+     * Used by the configurationManager
+     * 
+     * @param activity
+     * @param configuration
+     */
+    public FileSizeFieldBuilder(Context context, Property property, FieldConfig configuration)
     {
-        int stringId = context.getResources().getIdentifier(
-                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING,
-                context.getApplicationContext().getPackageName());
-        return (stringId == 0) ? null : context.getString(stringId);
+        super(context, property, configuration);
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // FIELD CONFIGURATION
+    // Responsible to display the fragment after selection
+    // ///////////////////////////////////////////////////////////////////////////
+    public String getReadValue()
+    {
+        if (property.getValue() == null) { return Formatter.formatFileSize(getContext(), 0L); }
+        return Formatter.formatFileSize(getContext(), ((BigInteger) property.getValue()).longValue());
+    }
 }

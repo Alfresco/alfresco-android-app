@@ -49,7 +49,7 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private Map<Long, ConfigService> configContextMap = new HashMap<Long, ConfigService>();
+    private Map<Long, ConfigService> configServiceMap = new HashMap<Long, ConfigService>();
 
     private String currentProfileId;
 
@@ -85,9 +85,9 @@ public class ConfigManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     public ConfigService getConfig(long accountId)
     {
-        if (configContextMap != null)
+        if (configServiceMap != null)
         {
-            return configContextMap.get(accountId);
+            return configServiceMap.get(accountId);
         }
         else
         {
@@ -97,9 +97,9 @@ public class ConfigManager extends Manager
 
     public boolean hasConfig(long accountId)
     {
-        if (configContextMap != null)
+        if (configServiceMap != null)
         {
-            return configContextMap.containsKey(accountId);
+            return configServiceMap.containsKey(accountId);
         }
         else
         {
@@ -121,11 +121,11 @@ public class ConfigManager extends Manager
         {
             File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(acc);
             Map<String, Object> parameters = new HashMap<String, Object>(1);
-            parameters.put(AlfrescoSession.CONFIGURATION_FOLDER, configFolder.getPath());
-            ConfigService configContext = ConfigServiceFactory.buildConfigService(appContext.getPackageName(),
+            parameters.put(ConfigService.CONFIGURATION_FOLDER, configFolder.getPath());
+            ConfigService configService = ConfigServiceFactory.buildConfigService(appContext.getPackageName(),
                     parameters);
-            configContextMap.put(acc.getId(), configContext);
-            if (configContext.hasViewConfig())
+            configServiceMap.put(acc.getId(), configService);
+            if (configService.hasViewConfig())
             {
                 eventBus.post(new ConfigurationMenuEvent(acc.getId()));
             }
@@ -167,7 +167,7 @@ public class ConfigManager extends Manager
 
     public ConfigScope getCurrentScope()
     {
-        return (TextUtils.isEmpty(currentProfileId)) ? null : new ConfigScope(currentProfileId);
+        return (TextUtils.isEmpty(currentProfileId)) ? new ConfigScope(null) : new ConfigScope(currentProfileId);
     }
     
     public String getCurrentProfileId()
@@ -192,7 +192,7 @@ public class ConfigManager extends Manager
             AlfrescoNotificationManager.getInstance(appContext).showToast("Configuration Available");
         }
 
-        configContextMap.put(event.accountId, event.data);
+        configServiceMap.put(event.accountId, event.data);
 
         if (event.data.hasViewConfig())
         {

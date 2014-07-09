@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- Fields Congif Type -->
+    <!-- Pattern : <CONFIG-NAME>_<TYPE> : ClassName -->
+    <!-- Example : Replace All "."  by "_" -->
+
+ 	<!-- FILE SIZE -->
+    <string name="form_com_alfresco_client_field_text">org.alfresco.mobile.android.application.config.form.TextFieldBuilder</string>
+    <string name="form_com_alfresco_client_field_textMultiLine">org.alfresco.mobile.android.application.config.form.TextMultiLineFieldBuilder</string>
+    
+    <!-- FILE SIZE -->
+    <string name="form_com_alfresco_client_field_fileSize">org.alfresco.mobile.android.application.config.form.FileSizeFieldBuilder</string>
+
+    <!-- DATE TIME -->
+    <string name="form_com_alfresco_client_field_dateTime">org.alfresco.mobile.android.application.config.form.DateTimeFieldBuilder</string>
+</resources>

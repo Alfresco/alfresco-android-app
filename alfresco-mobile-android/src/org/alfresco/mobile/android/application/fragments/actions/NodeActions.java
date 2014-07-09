@@ -33,6 +33,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.update.UpdateDialogFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ResolveNamingConflictFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
@@ -382,7 +383,7 @@ public class NodeActions extends AbstractActions<Node>
     public static void edit(final Activity activity, final Folder folder, final Node node)
     {
         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
-        Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
+        Fragment prev = activity.getFragmentManager().findFragmentByTag(EditPropertiesDialogFragment.TAG);
         if (prev != null)
         {
             ft.remove(prev);
@@ -391,7 +392,7 @@ public class NodeActions extends AbstractActions<Node>
         ft.commit();
 
         // Create and show the dialog.
-        UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+        EditPropertiesDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
     }
 
     public static void update(Fragment f)

@@ -17,7 +17,11 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.model.config.ItemConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 
 import android.app.Activity;
@@ -38,5 +42,18 @@ public class CreateConfigManager  extends BaseConfigManager
             creationConfig = configService.getCreationConfig(null);
         }
         this.vRoot = vRoot;
+    }
+
+    public List<String> retrieveCreationDocumentTypeList()
+    {
+        List<String> fileTypes = new ArrayList<String>();
+        
+        if (creationConfig == null){return fileTypes;}
+        for (ItemConfig itemConfig : creationConfig.getCreatableDocumentTypes())
+        {
+            fileTypes.add(itemConfig.getLabel());
+        }
+        
+        return fileTypes;
     }
 }

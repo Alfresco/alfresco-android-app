@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -437,8 +438,8 @@ public abstract class SessionManager extends Manager
 
         protected void prepareConfigurationSettings(AlfrescoAccount acc)
         {
-            extraSettings.put(AlfrescoSession.CONFIGURATION_CONTEXT_ENABLE, true);
-            extraSettings.put(AlfrescoSession.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
+            extraSettings.put(ConfigService.CONFIGURATION_APPLICATION_ID, getContext().getString(R.string.configuration_application_key));
+            extraSettings.put(ConfigService.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getConfigurationFolder(acc).getPath());
         }
 

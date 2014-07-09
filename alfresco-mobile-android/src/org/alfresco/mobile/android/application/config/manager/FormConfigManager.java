@@ -1,21 +1,21 @@
 package org.alfresco.mobile.android.application.config.manager;
 
-import java.util.GregorianCalendar;
-
 import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
-import org.alfresco.mobile.android.api.model.PropertyType;
+import org.alfresco.mobile.android.api.model.TypeDefinition;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.FieldConfig;
+import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.FormFieldConfig;
-import org.alfresco.mobile.android.api.model.config.FormFieldsGroupConfig;
-import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.config.form.FieldTypeBuilder;
+import org.alfresco.mobile.android.application.config.form.FieldTypeFactory;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,41 +23,64 @@ import android.widget.TextView;
 
 public class FormConfigManager extends BaseConfigManager
 {
-    private ViewConfig rootMenuViewConfig;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
     public FormConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
     {
         super(activity, configService);
-        if (configService != null && configService.getProfile() != null)
-        {
-            rootMenuViewConfig = configService.getProfile(getCurrentProfile()).getViewConfig(
-                    ConfigConstants.VIEW_NODE_PROPERTIES);
-        }
         this.vRoot = vRoot;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
-    public void displayProperties(Node node)
+    public boolean displayProperties(Node node)
     {
-        vRoot.removeAllViews();
-        generateProperties(rootMenuViewConfig.getForms().get(0), vRoot, LayoutInflater.from(getActivity()), node);
+        try
+        {
+            vRoot.removeAllViews();
+            FormConfig formConfig = (FormConfig) configService
+                    .getFormConfig(ConfigConstants.VIEW_NODE_PROPERTIES);
+            generateProperties(formConfig, vRoot, LayoutInflater.from(getActivity()), false, node, null);
+        }
+        catch (Exception e)
+        {
+            Log.d("FormConfig", Log.getStackTraceString(e));
+            return false;
+        }
+        return true;
+    }
+
+    public boolean displayEditForm(TypeDefinition typeDefinition, Node node)
+    {
+        try
+        {
+            vRoot.removeAllViews();
+            FormConfig rootMenuViewConfig = (FormConfig) configService
+                    .getFormConfig(ConfigConstants.VIEW_EDIT_PROPERTIES);
+            generateProperties(rootMenuViewConfig, vRoot, LayoutInflater.from(getActivity()), true, node, typeDefinition);
+        }
+        catch (Exception e)
+        {
+            Log.d("FormConfig", Log.getStackTraceString(e));
+            return false;
+        }
+        return true;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // DRIVEN BY OBJECT
     // ///////////////////////////////////////////////////////////////////////////
-    private void generateProperties(String formId, ViewGroup hookView, LayoutInflater li, Node node)
+    private void generateProperties(FormConfig formConfig, ViewGroup hookView, LayoutInflater li, boolean isEdition,
+            Node node, TypeDefinition typeDefinition)
     {
-        TextView header = null;
         ViewGroup groupview = hookView;
 
         // Retrieve form config by Id
-        FormConfig config = configService.getFormConfig(formId, node);
+        ConfigScope scope = configManager.getCurrentScope();
+        scope.add(ConfigScope.NODE, node);
+        FormConfig config = configService.getFormConfig(formConfig.getIdentifier(), scope);
 
         // CREATION
         if (config.getGroups() != null && config.getGroups().size() > 0)
@@ -73,9 +96,9 @@ public class FormConfigManager extends BaseConfigManager
             }
 
             // Add Children
-            for (FormFieldsGroupConfig group : config.getGroups())
+            for (FieldGroupConfig group : config.getGroups())
             {
-                createPropertiesView(group, groupview, li, node);
+                createPropertiesView(group, groupview, li, isEdition, node, typeDefinition);
             }
         }
     }
@@ -83,8 +106,8 @@ public class FormConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     // UI GENERATOR
     // ///////////////////////////////////////////////////////////////////////////
-    private void createPropertiesView(FormFieldsGroupConfig group, ViewGroup hookView, LayoutInflater li,
-            Node currentNode)
+    private void createPropertiesView(FieldGroupConfig group, ViewGroup hookView, LayoutInflater li, boolean isEdition,
+            Node currentNode, TypeDefinition typeDefinition)
     {
         ViewGroup groupview = hookView;
 
@@ -99,47 +122,41 @@ public class FormConfigManager extends BaseConfigManager
         }
 
         // For each properties, display the line associated
-        for (FormFieldConfig fieldConfig : group.getFields())
+        for (FieldConfig fieldConfig : group.getItems())
         {
-            // Add Line
-            Property nodeProp = currentNode.getProperty(fieldConfig.getIdentifier());
-            if (nodeProp.getValue() != null)
+            Property nodeProp = currentNode.getProperty(fieldConfig.getModelIdentifier());
+            View fieldView = null;
+            FieldTypeBuilder fieldBuilder = getBuilder(nodeProp, fieldConfig);
+            if (fieldBuilder == null)
             {
-                View v = createPropertyView(li, fieldConfig.getLabel(), nodeProp, currentNode);
-                if (v != null)
-                {
-                    groupview.addView(v);
-                }
+                continue;
+            }
+            if (isEdition)
+            {
+                fieldView = fieldBuilder.getEditView(typeDefinition, groupview);
+            }
+            else if (nodeProp.getValue() != null)
+            {
+                fieldView = fieldBuilder.getReadOnlyView();
+            }
+            if (fieldView != null)
+            {
+                groupview.addView(fieldView);
             }
         }
     }
 
-    protected View createPropertyView(LayoutInflater inflater, String propertyLabel, Property property, Node currentNode)
+    protected FieldTypeBuilder getBuilder(Property property, FieldConfig fieldConfig)
     {
-        String value = null;
-        if (PropertyType.DATETIME.equals(property.getType()))
+        FieldTypeBuilder fieldTypeBuilder = null;
+        if (!TextUtils.isEmpty(fieldConfig.getType()))
         {
-            value = DateFormat.getMediumDateFormat(getActivity()).format(
-                    ((GregorianCalendar) property.getValue()).getTime())
-                    + " "
-                    + DateFormat.getTimeFormat(getActivity()).format(
-                            ((GregorianCalendar) property.getValue()).getTime());
+            fieldTypeBuilder = FieldTypeFactory.createFieldControlType(getActivity(), property, fieldConfig);
         }
-        else if (property.getValue().toString() != null && !property.getValue().toString().isEmpty())
+        else
         {
-            value = property.getValue().toString();
+            fieldTypeBuilder = FieldTypeFactory.createFieldControlType(getActivity(), FieldTypeFactory.DEFAULT_FIELD, property, fieldConfig);
         }
-
-        if (value == null) { return null; }
-
-        View vr = inflater.inflate(R.layout.sdk_property_row, null);
-        TextView tv = (TextView) vr.findViewWithTag("propertyName");
-        tv.setText(propertyLabel);
-        tv = (TextView) vr.findViewWithTag("propertyValue");
-        tv.setText(value);
-        tv.setClickable(true);
-        tv.setFocusable(true);
-        tv.setTag(currentNode);
-        return vr;
+        return fieldTypeBuilder;
     }
 }

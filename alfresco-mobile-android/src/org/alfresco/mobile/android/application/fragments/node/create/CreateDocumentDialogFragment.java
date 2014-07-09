@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.configuration.manager.CreationConfigurator;
+import org.alfresco.mobile.android.application.config.manager.CreateConfigManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.Operator;
@@ -97,7 +97,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private EditText tv;
 
-    private CreationConfigurator config;
+    private CreateConfigManager config;
 
     private String type;
 
@@ -135,24 +135,23 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
         // Configuration available ?
         configurationManager = ConfigManager.getInstance(getActivity());
-        if (configurationManager != null
-                && configurationManager.hasConfig(getAccount().getId()))
+        if (configurationManager != null && configurationManager.hasConfig(getAccount().getId()))
         {
             ConfigService configService = configurationManager.getConfig(getAccount().getId());
             if (configService.getCreationConfig(null) != null)
             {
-                config = new CreationConfigurator(getActivity(), configService, null);
+                config = new CreateConfigManager(getActivity(), configService, (ViewGroup) getRootView());
             }
         }
 
-        View v = inflater.inflate(R.layout.sdk_create_content_props, container, false);
-        tv = (EditText) v.findViewById(R.id.content_name);
-        final EditText desc = (EditText) v.findViewById(R.id.content_description);
-        TextView tsize = (TextView) v.findViewById(R.id.content_size);
+        View rootView = inflater.inflate(R.layout.config_edit_properties, container, false);
+        tv = (EditText) rootView.findViewById(R.id.content_name);
+        final EditText desc = (EditText) rootView.findViewById(R.id.content_description);
+        TextView tsize = (TextView) rootView.findViewById(R.id.content_size);
 
-        editTags = (EditText) v.findViewById(R.id.content_tags);
+        editTags = (EditText) rootView.findViewById(R.id.content_tags);
 
-        Button button = (Button) v.findViewById(R.id.cancel);
+        Button button = (Button) rootView.findViewById(R.id.cancel);
         button.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -170,7 +169,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             }
         });
 
-        final Button bcreate = UIUtils.initValidation(v, R.string.confirm);
+        final Button bcreate = UIUtils.initValidation(rootView, R.string.confirm);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -258,8 +257,8 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         // Custom type
         if (config != null)
         {
-            DisplayUtils.show(v, R.id.types_group);
-            Spinner spinner = (Spinner) v.findViewById(R.id.types_spinner);
+            DisplayUtils.show(rootView, R.id.types_group);
+            Spinner spinner = (Spinner) rootView.findViewById(R.id.types_spinner);
             TypeAdapter adapter = new TypeAdapter(getActivity(), R.layout.sdk_list_row,
                     config.retrieveCreationDocumentTypeList());
             spinner.setAdapter(adapter);
@@ -277,13 +276,17 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                     // DO Nothing
                 }
             });
+            if (adapter.isEmpty())
+            {
+                DisplayUtils.hide(rootView, R.id.types_group);
+            }
         }
         else
         {
-            DisplayUtils.hide(v, R.id.types_group);
+            DisplayUtils.hide(rootView, R.id.types_group);
         }
 
-        return v;
+        return rootView;
     }
 
     @Override
@@ -335,9 +338,9 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Folder parentFolder = (Folder) getArguments().get(ARGUMENT_FOLDER);
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
-        Operator.with(getActivity(), getAccount())
-                .load(new CreateDocumentRequest.Builder(parentFolder, documentName, type, f, props, listTagValue,
-                        isCreation).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+        Operator.with(getActivity(), getAccount()).load(
+                new CreateDocumentRequest.Builder(parentFolder, documentName, type, f, props, listTagValue, isCreation)
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)
         {

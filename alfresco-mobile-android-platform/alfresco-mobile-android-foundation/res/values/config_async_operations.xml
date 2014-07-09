@@ -110,7 +110,6 @@
     <string name="operation_CreateDirectoryRequest">org.alfresco.mobile.android.async.file.create.CreateDirectoryOperation</string>
     <string name="operation_DeleteFileRequest">org.alfresco.mobile.android.async.file.delete.DeleteFileOperation</string>
     <string name="operation_RenameFileRequest">org.alfresco.mobile.android.async.file.update.RenameFileOperation</string>
-    
 
     <!-- +++++++++++++++++++ -->
     <!-- CLEAN SYNC -->
@@ -122,6 +121,11 @@
     <!-- +++++++++++++++++++ -->
     <string name="operation_AccountProtectionRequest">org.alfresco.mobile.android.async.file.encryption.AccountProtectionOperation</string>
     <string name="operation_FileProtectionRequest">org.alfresco.mobile.android.async.file.encryption.FileProtectionOperation</string>
+    
+    <!-- ++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- CONFIGURATION & TYPE DEFINITION -->
+    <!-- ++++++++++++++++++++++++++++++++++++++++++ -->
+    <string name="operation_TypeDefinitionRequest">org.alfresco.mobile.android.async.definition.TypeDefinitionOperation</string>
     
     <!-- ++++++++++++++++++++++++++++++++++++++++++ -->
     <!-- RETRYABLE REQUEST REGISTRY -->
