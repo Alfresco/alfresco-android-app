@@ -32,14 +32,24 @@ import org.alfresco.mobile.android.async.node.download.DownloadTask;
 import org.alfresco.mobile.android.async.node.download.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class DownloadDialogFragment extends DialogFragment implements DownloadTaskListener
 {
@@ -184,14 +194,27 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     AlfrescoNotificationManager.getInstance(getActivity()).showToast(getActivity().getText(R.string.download_complete) + " "
                             + contentFile.getFileName());
 
-                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
-                            TabsNodeDetailsFragment.TAG);
-                    if (detailsFragment != null)
+                    //TODO: Move this to the correct location.
+                    if (contentFile.getMimeType().endsWith("pdf") || contentFile.getMimeType().endsWith("acrobat"))
                     {
-                        long datetime = contentFile.getFile().lastModified();
-                        detailsFragment.setDownloadDateTime(new Date(datetime));
-                        ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                RequestCode.SAVE_BACK);
+                       PDFJSFragment frag = (PDFJSFragment)getFragmentManager().findFragmentByTag(PDFJSFragment.TAG);
+	                   if (frag != null)
+	                   {
+	                	   frag.setFile (contentFile.getFile());
+	                	   frag.show(getActivity().getFragmentManager(), PDFJSFragment.TAG);
+	                   }
+                    }
+                    else
+                    {
+	                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
+	                            TabsNodeDetailsFragment.TAG);
+	                    if (detailsFragment != null)
+	                    {
+	                        long datetime = contentFile.getFile().lastModified();
+	                        detailsFragment.setDownloadDateTime(new Date(datetime));
+	                        ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+	                                RequestCode.SAVE_BACK);
+	                    }
                     }
                     break;
 
@@ -210,7 +233,8 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         dismiss();
     }
-
+    
+    
     @Override
     public void onDestroyView()
     {
@@ -230,4 +254,51 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             dlt.cancel(false);
         }
     }
+    
+    
+    public static class PDFJSFragment extends AlfrescoFragment 
+    {
+    	private static final String TAG = PDFJSFragment.class.getName();
+
+    	private File pdf;
+    	
+		public PDFJSFragment()
+		{
+		}
+		
+		void setFile(File file)
+		{
+			this.pdf = file;
+		}
+
+		@Override
+		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+		{
+			super.onCreateView(inflater, container, savedInstanceState);
+			
+			View rootView = inflater.inflate(R.layout.app_fragment_pdfjs, container, false);
+			
+			WebView wv = (WebView)rootView.findViewById(R.id.webView1);
+			
+			WebSettings settings = wv.getSettings();
+		    settings.setJavaScriptEnabled(true);
+		    //settings.setAllowFileAccessFromFileURLs(true);
+		    //settings.setAllowUniversalAccessFromFileURLs(true);
+		    settings.setBuiltInZoomControls(true);
+		    
+		    wv.setWebViewClient(new WebViewClient() 
+		    {
+		        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
+		        {
+		            Log.d("Debug","Error");
+		        }
+		    });	
+		    
+		    wv.setWebChromeClient(new WebChromeClient());
+		    
+		    wv.loadUrl("file:///android_asset/pdfjs-1.0.277-dist/web/viewer.html?file=" + pdf.getPath());
+			
+			return rootView;
+		}
+	}
 }
