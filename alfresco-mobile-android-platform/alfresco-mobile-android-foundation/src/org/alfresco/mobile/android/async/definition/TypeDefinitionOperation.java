@@ -17,7 +17,10 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.definition;
 
-import org.alfresco.mobile.android.api.model.TypeDefinition;
+import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -27,11 +30,13 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 
 import android.util.Log;
 
-public class TypeDefinitionOperation extends BaseOperation<TypeDefinition>
+public class TypeDefinitionOperation extends BaseOperation<ModelDefinition>
 {
     private static final String TAG = TypeDefinitionOperation.class.getName();
 
-    private TypeDefinition typeDefinition;
+    private ModelDefinition typeDefinition;
+
+    private Node node;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -39,38 +44,57 @@ public class TypeDefinitionOperation extends BaseOperation<TypeDefinition>
     public TypeDefinitionOperation(Operator operator, OperationsDispatcher dispatcher, OperationAction action)
     {
         super(operator, dispatcher, action);
+        this.node = ((TypeDefinitionRequest) request).node;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected LoaderResult<TypeDefinition> doInBackground()
+    protected LoaderResult<ModelDefinition> doInBackground()
     {
-        LoaderResult<TypeDefinition> result = new LoaderResult<TypeDefinition>();
+        LoaderResult<ModelDefinition> result = new LoaderResult<ModelDefinition>();
 
         try
         {
             checkCancel();
             result = super.doInBackground();
 
-            switch (((TypeDefinitionRequest) request).typeDefinitionId)
+            if (node != null)
             {
-                case TypeDefinitionRequest.DOCUMENT:
-                    typeDefinition = session.getServiceRegistry().getModelDefinitionService()
-                            .getDocumentTypeDefinition(((TypeDefinitionRequest) request).type);
-                    break;
-                case TypeDefinitionRequest.FOLDER:
-                    typeDefinition = session.getServiceRegistry().getModelDefinitionService()
-                            .getFolderTypeDefinition(((TypeDefinitionRequest) request).type);
-                /*case TypeDefinitionRequest.ASPECT:
-                    typeDefinition = session.getServiceRegistry().getModelDefinitionService()
-                            .getAspectDefinition(((TypeDefinitionRequest) request).type);*/
-                case TypeDefinitionRequest.TASK:
-                    typeDefinition = session.getServiceRegistry().getModelDefinitionService()
-                            .getTaskTypeDefinition(((TypeDefinitionRequest) request).type);
-                default:
-                    break;
+                switch (((TypeDefinitionRequest) request).typeDefinitionId)
+                {
+                    case TypeDefinitionRequest.DOCUMENT:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getDocumentTypeDefinition((Document) node);
+                        break;
+                    case TypeDefinitionRequest.FOLDER:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getFolderTypeDefinition((Folder) node);
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (((TypeDefinitionRequest) request).typeDefinitionId)
+                {
+                    case TypeDefinitionRequest.DOCUMENT:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getDocumentTypeDefinition(((TypeDefinitionRequest) request).type);
+                        break;
+                    case TypeDefinitionRequest.FOLDER:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getFolderTypeDefinition(((TypeDefinitionRequest) request).type);
+                    case TypeDefinitionRequest.ASPECT:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getAspectDefinition(((TypeDefinitionRequest) request).type);
+                    case TypeDefinitionRequest.TASK:
+                        typeDefinition = session.getServiceRegistry().getModelDefinitionService()
+                                .getTaskTypeDefinition(((TypeDefinitionRequest) request).type);
+                    default:
+                        break;
+                }
             }
         }
         catch (Exception e)
@@ -79,7 +103,7 @@ public class TypeDefinitionOperation extends BaseOperation<TypeDefinition>
             result.setException(e);
         }
 
-        result.setData((TypeDefinition) typeDefinition);
+        result.setData((ModelDefinition) typeDefinition);
 
         return result;
     }
@@ -88,7 +112,7 @@ public class TypeDefinitionOperation extends BaseOperation<TypeDefinition>
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected void onPostExecute(LoaderResult<TypeDefinition> result)
+    protected void onPostExecute(LoaderResult<ModelDefinition> result)
     {
         super.onPostExecute(result);
         EventBusManager.getInstance().post(new TypeDefinitionEvent(getRequestId(), result));

@@ -17,6 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.definition;
 
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 
@@ -44,14 +45,17 @@ public class TypeDefinitionRequest extends BaseOperationRequest
 
     final int typeDefinitionId;
 
+    final Node node;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
     protected TypeDefinitionRequest(Context context, long accountId, String networkId, int notificationVisibility,
-            String title, String mimeType, int requestTypeId, int definitionId, String type)
+            String title, String mimeType, int requestTypeId, int definitionId, String type, Node node)
     {
         super(context, accountId, networkId, notificationVisibility, title, mimeType, requestTypeId);
         this.type = type;
+        this.node = node;
         this.typeDefinitionId = definitionId;
         save();
     }
@@ -75,6 +79,8 @@ public class TypeDefinitionRequest extends BaseOperationRequest
     public static class Builder extends BaseOperationRequest.Builder
     {
         protected String type;
+        
+        protected Node node;
 
         protected int typeDefinitionId;
 
@@ -83,6 +89,14 @@ public class TypeDefinitionRequest extends BaseOperationRequest
             requestTypeId = TYPE_ID;
         }
 
+        public Builder(Node node)
+        {
+            super();
+            this.node = node;
+            this.typeDefinitionId = (node.isDocument()) ? DOCUMENT : FOLDER;
+            this.requestTypeId = TYPE_ID;
+        }
+        
         public Builder(int typeDefinitionId, String type)
         {
             super();
@@ -94,7 +108,7 @@ public class TypeDefinitionRequest extends BaseOperationRequest
         public TypeDefinitionRequest build(Context context)
         {
             return new TypeDefinitionRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, typeDefinitionId, type);
+                    requestTypeId, typeDefinitionId, type, node);
         }
     }
 }

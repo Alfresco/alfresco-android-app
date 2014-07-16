@@ -221,7 +221,6 @@ public final class FragmentDisplayer
         {
             try
             {
-
                 if (activity.get() instanceof MainActivity && DisplayUtils.hasCentralPane(activity.get())
                         && targetId == PANEL_LEFT)
                 {
@@ -244,6 +243,16 @@ public final class FragmentDisplayer
 
                 // Create Tag based on Fragment className
                 tag = frag.getClass().getName();
+
+                //Special case : Show as Dialog
+                if (PANEL_DIALOG == targetId)
+                {
+                    if (frag instanceof DialogFragment)
+                    {
+                        ((DialogFragment) frag).show(activity.get().getFragmentManager(), tag);
+                    }
+                    return;
+                }
 
                 // Create Transaction
                 FragmentTransaction transaction = activity.get().getFragmentManager().beginTransaction();
@@ -271,12 +280,6 @@ public final class FragmentDisplayer
                     case PANEL_CENTRAL:
                         targetId = DisplayUtils.getFragmentPlace(activity.get());
                         break;
-                    case PANEL_DIALOG:
-                        if (frag instanceof DialogFragment)
-                        {
-                            ((DialogFragment) frag).show(activity.get().getFragmentManager(), tag);
-                        }
-                        return;
                     default:
                         break;
                 }

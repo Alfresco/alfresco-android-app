@@ -80,7 +80,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     private BaseGridFragment gridFragment;
 
-    private Map<String, Document> selectedMapItems;
+    private Map<String, Node> selectedMapItems;
 
     protected WeakReference<Activity> activityRef;
 
@@ -131,7 +131,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     }
 
     public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems,
-            Map<String, Document> selectedItems)
+            Map<String, Node> selectedItems)
     {
         super(activity, textViewResourceId, listItems);
         originalNodes = listItems;

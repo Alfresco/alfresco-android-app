@@ -827,7 +827,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             super(appActivity, configuration);
             menuIconId = R.drawable.ic_person_light;
             menuTitleId = R.string.user_profile;
-            templateArguments = new String[] {};
+            templateArguments = new String[] {ARGUMENT_PERSONID};
             hasBackStack = false;
         }
 

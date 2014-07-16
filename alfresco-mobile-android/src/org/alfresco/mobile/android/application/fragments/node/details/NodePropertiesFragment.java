@@ -124,7 +124,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
                 && configurationManager.getConfig(getAccount().getId()).getFormConfig(
                         ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
-            FormConfigManager config = new FormConfigManager(getActivity(), configurationManager.getConfig(getAccount()
+            FormConfigManager config = new FormConfigManager(this, configurationManager.getConfig(getAccount()
                     .getId()), propertyViewGroup);
             hasDisplayed = config.displayProperties(node);
         }
@@ -157,7 +157,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         }
 
         // Add Headers
-        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.sdk_property_title, null);
+        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.form_header, null);
         TextView tv = (TextView) grouprootview.findViewById(R.id.title);
         tv.setText(MetadataUtils.getAspectLabel(groupId));
         groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
@@ -211,7 +211,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 
         if (value == null) { return null; }
 
-        View vr = inflater.inflate(R.layout.sdk_property_row, null);
+        View vr = inflater.inflate(R.layout.form_read_row, null);
         TextView tv = (TextView) vr.findViewWithTag("propertyName");
         tv.setText(propertyLabel);
         tv = (TextView) vr.findViewWithTag("propertyValue");

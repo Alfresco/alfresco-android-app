@@ -582,7 +582,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // REASSIGN
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onSelect(Map<String, Person> mapPerson)
+    public void onPersonSelected(Map<String, Person> mapPerson)
     {
         Person delegatePerson = null;
         for (Entry<String, Person> assignee : mapPerson.entrySet())

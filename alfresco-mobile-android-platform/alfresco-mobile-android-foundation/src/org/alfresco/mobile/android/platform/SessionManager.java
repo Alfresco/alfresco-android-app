@@ -438,6 +438,7 @@ public abstract class SessionManager extends Manager
 
         protected void prepareConfigurationSettings(AlfrescoAccount acc)
         {
+            extraSettings.put(ConfigService.CONFIGURATION_INIT, ConfigService.CONFIGURATION_INIT_DEFAULT);
             extraSettings.put(ConfigService.CONFIGURATION_APPLICATION_ID, getContext().getString(R.string.configuration_application_key));
             extraSettings.put(ConfigService.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getConfigurationFolder(acc).getPath());

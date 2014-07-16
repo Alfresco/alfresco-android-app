@@ -147,7 +147,8 @@
     <!-- AlfrescoAccount WIZARD SCREEN STEP -->
     <string name="optional">Optional</string>
     <string name="required">Required</string>
-
+    <string name="field_required">(Required)</string>
+    
     <!-- LOCAL FIlE -->
     <string name="action_rename">Rename</string>
     <string name="action_rename_desc">New name for %s</string>
@@ -869,4 +870,11 @@
     <string name="create_content_type">Type</string>
     
     <string name="scan_document">Scan document</string>
+    
+    
+    <!-- CUSTOM FORMS -->
+    <string name="picker_selected_value">Selected %s</string>
+    <string name="picker_select_value">Add %s&#8230;</string>
+    <string name="picker_multi_value_selected">{0,choice,0#No %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
+    
 </resources>

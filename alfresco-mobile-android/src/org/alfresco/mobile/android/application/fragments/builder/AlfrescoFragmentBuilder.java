@@ -219,9 +219,9 @@ public abstract class AlfrescoFragmentBuilder
     public void displayAsDialog()
     {
         // Display Fragment
-        FragmentDisplayer.load(this).into(FragmentDisplayer.PANEL_DIALOG);
+        FragmentDisplayer.load(this).asDialog();
     }
-
+    
     // ///////////////////////////////////////////////////////////////////////////
     // FRAGMENT CREATION
     // ///////////////////////////////////////////////////////////////////////////

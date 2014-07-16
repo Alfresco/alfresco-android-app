@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.api.model.Person;
 
 public interface UserPickerCallback
 {
-    void onSelect(Map<String, Person> p);
+    void onPersonSelected(Map<String, Person> p);
 
     Map<String, Person> retrieveSelection();
 }

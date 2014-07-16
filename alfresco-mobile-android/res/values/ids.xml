@@ -48,7 +48,10 @@
 
     <!-- CONFIG -->
     <string name="config_asset_path">Configuration/</string>
+    <string name="config_asset_prefix">embedded</string>
     <string name="config_asset_file">config.json</string>
+    <string name="config_asset_messages_path">Configuration/Messages/</string>
+    <string name="config_asset_messages_file">embedded_strings.properties</string>
     
     <!-- HELP -->
     <string name="help_path">Help/</string>

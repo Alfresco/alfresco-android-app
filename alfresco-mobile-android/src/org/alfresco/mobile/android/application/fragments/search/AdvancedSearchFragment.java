@@ -37,11 +37,11 @@ import org.alfresco.mobile.android.application.fragments.node.search.DocumentFol
 import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
 import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
+import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -73,9 +73,9 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 {
     public static final String TAG = AdvancedSearchFragment.class.getName();
 
-    private static final int DATE_FROM = 0;
+    private static final String DATE_FROM = "dateFrom";
 
-    private static final int DATE_TO = 1;
+    private static final String DATE_TO = "dateTo";
 
     private static final String SEARCH_TYPE = "SearchType";
 
@@ -372,7 +372,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         String description = createDescriptionQuery();
         if (statement == null)
         {
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_search_fields_empty));
+            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                    getActivity().getString(R.string.error_search_fields_empty));
             return;
         }
         switch (searchKey)
@@ -567,7 +568,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
     // PERSON PICKER
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onSelect(Map<String, Person> p)
+    public void onPersonSelected(Map<String, Person> p)
     {
         if (p == null) { return; }
         // Only one modifier
@@ -589,24 +590,36 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
     // DATE PICKER
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onDatePicked(int dateId, GregorianCalendar gregorianCalendar)
+    public void onDatePicked(String dateId, GregorianCalendar gregorianCalendar)
     {
-        switch (dateId)
+        if (DATE_FROM.equalsIgnoreCase(dateId))
         {
-            case DATE_FROM:
-                modificationDateFromValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-                modificationDateFromValue.setTime(gregorianCalendar.getTime());
-                modificationDateFrom.setText(DateFormat.getDateFormat(getActivity()).format(
-                        modificationDateFromValue.getTime()));
-                break;
-            case DATE_TO:
-                modificationDateToValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
-                modificationDateToValue.setTime(gregorianCalendar.getTime());
-                modificationDateTo.setText(DateFormat.getDateFormat(getActivity()).format(
-                        modificationDateToValue.getTime()));
-                break;
-            default:
-                break;
+            modificationDateFromValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            modificationDateFromValue.setTime(gregorianCalendar.getTime());
+            modificationDateFrom.setText(DateFormat.getDateFormat(getActivity()).format(
+                    modificationDateFromValue.getTime()));
+        }
+        else if (DATE_TO.equalsIgnoreCase(dateId))
+        {
+            modificationDateToValue = new GregorianCalendar(TimeZone.getTimeZone("GMT"));
+            modificationDateToValue.setTime(gregorianCalendar.getTime());
+            modificationDateTo.setText(DateFormat.getDateFormat(getActivity())
+                    .format(modificationDateToValue.getTime()));
+        }
+    }
+    
+    @Override
+    public void onDateClear(String dateId)
+    {
+        if (DATE_FROM.equalsIgnoreCase(dateId))
+        {
+            modificationDateFromValue = null;
+            modificationDateFrom.setText("");
+        }
+        else if (DATE_TO.equalsIgnoreCase(dateId))
+        {
+            modificationDateToValue = null;
+            modificationDateTo.setText("");
         }
     }
 

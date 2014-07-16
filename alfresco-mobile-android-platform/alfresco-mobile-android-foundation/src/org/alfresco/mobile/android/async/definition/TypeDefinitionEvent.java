@@ -17,13 +17,13 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.definition;
 
-import org.alfresco.mobile.android.api.model.TypeDefinition;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationEvent;
 
-public class TypeDefinitionEvent extends OperationEvent<TypeDefinition>
+public class TypeDefinitionEvent extends OperationEvent<ModelDefinition>
 {
-    public TypeDefinitionEvent(String requestId, LoaderResult<TypeDefinition> results)
+    public TypeDefinitionEvent(String requestId, LoaderResult<ModelDefinition> results)
     {
         super(requestId, results);
     }

@@ -89,7 +89,7 @@ public class ActivityStreamRequest extends ListingOperationRequest
         public ActivityStreamRequest build(Context context)
         {
             return new ActivityStreamRequest(context, accountId, networkId, notificationVisibility, title, mimeType,
-                    requestTypeId, listingContext, siteIdentifier, userName);
+                    requestTypeId, listingContext, userName, siteIdentifier);
         }
     }
 

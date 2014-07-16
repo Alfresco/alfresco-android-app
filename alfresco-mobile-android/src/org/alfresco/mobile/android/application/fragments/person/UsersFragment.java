@@ -148,7 +148,7 @@ public class UsersFragment extends PersonsFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new PersonAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
+        return new UserAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
     }
 
     @Subscribe

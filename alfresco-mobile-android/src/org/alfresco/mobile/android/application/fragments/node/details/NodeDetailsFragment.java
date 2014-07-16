@@ -932,15 +932,16 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
-            getFragmentManager().popBackStack(TabsNodeDetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (((DocumentFolderBrowserFragment) getFragmentManager().findFragmentByTag(
+        else if (((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
                 DocumentFolderBrowserFragment.TAG)) != null)
         {
-            ((DocumentFolderBrowserFragment) getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG))
-                    .select(updatedNode);
+            ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
+                    DocumentFolderBrowserFragment.TAG)).select(updatedNode);
         }
-        TabsNodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
+        NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
         AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                 String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
@@ -952,15 +953,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         ((MainActivity) getActivity()).setCurrentNode(null);
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
-            FragmentDisplayer.with(getActivity()).remove(TabsNodeDetailsFragment.TAG);
+            FragmentDisplayer.with(getActivity()).remove(getDetailsTag());
         }
         else
         {
-            getFragmentManager().popBackStack(TabsNodeDetailsFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getFragmentManager().popBackStack(getDetailsTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         return;
-        // NodeRefUtils.getCleanIdentifier(n.getIdentifier()).equals(
-        // NodeRefUtils.getCleanIdentifier(_node.getIdentifier()))
     }
 
     @Subscribe
@@ -990,6 +989,18 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
+    public static String getDetailsTag()
+    {
+        if (AndroidVersion.isJBMR1OrAbove())
+        {
+            return PagerNodeDetailsFragment.TAG;
+        }
+        else
+        {
+            return TabsNodeDetailsFragment.TAG;
+        }
+    }
+
     public static Builder with(Activity activity)
     {
         return new Builder(activity);

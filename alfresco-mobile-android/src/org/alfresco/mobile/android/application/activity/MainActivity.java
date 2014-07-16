@@ -628,12 +628,6 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(TasksFragment.TAG))
-        {
-            TasksFragment.getMenu(this, menu);
-            return true;
-        }
-
         if (isVisible(AccountDetailsFragment.TAG))
         {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
@@ -913,12 +907,17 @@ public class MainActivity extends BaseActivity
     {
         if (getCurrentSession() instanceof RepositorySession)
         {
-            if (ConfigManager.getInstance(this).load(getCurrentSession()))
+            // Check configuration
+            if (getCurrentSession().getServiceRegistry().getConfigService() == null)
             {
-                displayWaitingDialog();
+                // In this case there's no configuration defined on server side
+                // We load the embedded configuration
+                ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
             }
             else
             {
+                // We have a new configuration available
+                // Let's dispatch the event
                 LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
                 result.setData(getCurrentSession().getServiceRegistry().getConfigService());
                 EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));

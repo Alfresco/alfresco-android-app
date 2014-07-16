@@ -325,7 +325,7 @@
         <item name="android:paddingLeft">5dip</item>
         <item name="android:paddingTop">@dimen/properties_padding</item>
     </style>
-
+    
     <style name="AlfrescoHoloTheme.TextView.SectionHeader.Grey">
         <item name="android:drawableBottom">@drawable/grey_section_header</item>
         <item name="android:textColor">@color/grey_text</item>

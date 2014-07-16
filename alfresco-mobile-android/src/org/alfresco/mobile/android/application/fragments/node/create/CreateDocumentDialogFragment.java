@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
+import org.alfresco.mobile.android.api.model.config.ItemConfig;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
@@ -99,7 +100,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private CreateConfigManager config;
 
-    private String type;
+    private ItemConfig type;
 
     private ConfigManager configurationManager;
 
@@ -144,7 +145,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             }
         }
 
-        View rootView = inflater.inflate(R.layout.config_edit_properties, container, false);
+        View rootView = inflater.inflate(R.layout.sdk_create_content_props, container, false);
         tv = (EditText) rootView.findViewById(R.id.content_name);
         final EditText desc = (EditText) rootView.findViewById(R.id.content_description);
         TextView tsize = (TextView) rootView.findViewById(R.id.content_size);
@@ -267,7 +268,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id)
                 {
-                    type = (String) parent.getItemAtPosition(pos);
+                    type = (ItemConfig) parent.getItemAtPosition(pos);
                 }
 
                 @Override
@@ -339,7 +340,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
         Operator.with(getActivity(), getAccount()).load(
-                new CreateDocumentRequest.Builder(parentFolder, documentName, type, f, props, listTagValue, isCreation)
+                new CreateDocumentRequest.Builder(parentFolder, documentName, type.getIdentifier(), f, props, listTagValue, isCreation)
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)
@@ -387,27 +388,27 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     // ADAPTER
     // //////////////////////////////////////////////////////////////////////
-    public class TypeAdapter extends BaseListAdapter<String, GenericViewHolder>
+    public class TypeAdapter extends BaseListAdapter<ItemConfig, GenericViewHolder>
     {
-        public TypeAdapter(Activity context, int textViewResourceId, List<String> listItems)
+        public TypeAdapter(Activity context, int textViewResourceId, List<ItemConfig> listItems)
         {
             super(context, textViewResourceId, listItems);
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, String item)
+        protected void updateTopText(GenericViewHolder vh, ItemConfig item)
         {
-            vh.topText.setText(item);
+            vh.topText.setText(item.getLabel());
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, String item)
+        protected void updateBottomText(GenericViewHolder vh, ItemConfig item)
         {
             DisplayUtils.hide(vh.bottomText);
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, String item)
+        protected void updateIcon(GenericViewHolder vh, ItemConfig item)
         {
             DisplayUtils.hide(vh.icon);
             DisplayUtils.hide(vh.choose);
