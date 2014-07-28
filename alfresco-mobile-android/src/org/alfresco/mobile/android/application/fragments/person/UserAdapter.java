@@ -23,11 +23,13 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesPickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.person.PersonAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -56,6 +58,7 @@ public class UserAdapter extends PersonAdapter
     {
         super(fr, textViewResourceId, listItems, selectedItems);
         this.fragmentRef = new WeakReference<Fragment>(fr);
+        this.activityRef = new WeakReference<Activity>(fr.getActivity());
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         ((RenditionManagerImpl) this.renditionManager).setCurrentActivity(fr.getActivity());
     }
@@ -82,9 +85,15 @@ public class UserAdapter extends PersonAdapter
                     {
                         ((CreateTaskPickerFragment) fragmentRef.get()).removeAssignee(item);
                     }
+                    else if (fragmentRef.get() instanceof EditPropertiesPickerFragment)
+                    {
+                        ((EditPropertiesPickerFragment) fragmentRef.get()).removeValue(item);
+                    }
                 }
             });
-        } else {
+        }
+        else
+        {
             vh.choose.setVisibility(View.GONE);
         }
     }

@@ -22,27 +22,23 @@ import java.util.Collection;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderPickerCallback;
+import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment;
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskDocumentPickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
-import android.app.DialogFragment;
 import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.squareup.otto.Subscribe;
 
@@ -53,7 +49,13 @@ public class PrivateDialogActivity extends BaseActivity
 {
     private static final String TAG = PrivateDialogActivity.class.getName();
 
-    private boolean doubleBackToExitPressedOnce = false;
+    public static final String EXTRA_FIELD_ID = "org.alfresco.mobile.android.intent.ACTION_PICK_NODE";
+
+    public static final String ACTION_EDIT_NODE = "org.alfresco.mobile.android.intent.ACTION_EDIT_NODE";
+
+    private String action;
+
+    private String fieldId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -68,7 +70,7 @@ public class PrivateDialogActivity extends BaseActivity
         displayAsDialogActivity();
         setContentView(R.layout.app_left_panel);
 
-        String action = getIntent().getAction();
+        action = getIntent().getAction();
         if (PrivateIntent.ACTION_DISPLAY_SETTINGS.equals(action))
         {
             GeneralPreferences.with(this).back(false).display();
@@ -79,6 +81,16 @@ public class PrivateDialogActivity extends BaseActivity
         {
             FragmentDisplayer.with(this).load(new OperationsFragment()).back(false).animate(null)
                     .into(FragmentDisplayer.PANEL_LEFT);
+            return;
+        }
+
+        if (ACTION_EDIT_NODE.equals(action))
+        {
+            Folder folder = (Folder) getIntent().getExtras().get(PrivateIntent.EXTRA_FOLDER);
+            Node node = (Node) getIntent().getExtras().get(PrivateIntent.EXTRA_NODE);
+
+            Fragment f = EditPropertiesFragment.with(this).parentFolder(folder).node(node).createFragment();
+            FragmentDisplayer.with(this).back(false).load(f).animate(null).into(FragmentDisplayer.PANEL_LEFT);
             return;
         }
 
@@ -150,15 +162,26 @@ public class PrivateDialogActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC
     // ///////////////////////////////////////////////////////////////////////////
-    public DocumentFolderPickerCallback getOnPickDocumentFragment()
+    public onPickDocumentFragment getOnPickDocumentFragment()
     {
-        return (DocumentFolderPickerCallback) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+        if (action != null && ACTION_EDIT_NODE.equals(action))
+        {
+            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(EditPropertiesFragment.TAG);
+        }
+        else
+        {
+            return (onPickDocumentFragment) getFragmentManager().findFragmentByTag(CreateTaskFragment.TAG);
+        }
     }
 
-    public void doCancel(View v)
+    public String getFieldId()
     {
-        getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG,
-                FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        return fieldId;
+    }
+
+    public void setFieldId(String fieldId)
+    {
+        this.fieldId = fieldId;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -171,36 +194,6 @@ public class PrivateDialogActivity extends BaseActivity
         if (getFragment(GeneralPreferences.TAG) != null)
         {
             ((GeneralPreferences) getFragment(GeneralPreferences.TAG)).refreshDataProtection();
-        }
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // NAVIGATION
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onBackPressed()
-    {
-        if (getFragment(WaitingDialogFragment.TAG) != null)
-        {
-            if (doubleBackToExitPressedOnce)
-            {
-                ((DialogFragment) getFragment(WaitingDialogFragment.TAG)).dismiss();
-                return;
-            }
-            this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    doubleBackToExitPressedOnce = false;
-                }
-            }, 2000);
-        }
-        else
-        {
-            super.onBackPressed();
         }
     }
 }

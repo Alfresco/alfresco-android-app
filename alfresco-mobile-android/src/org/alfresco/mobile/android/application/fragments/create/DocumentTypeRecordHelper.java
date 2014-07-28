@@ -20,12 +20,16 @@ package org.alfresco.mobile.android.application.fragments.create;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
+import org.alfresco.mobile.android.application.config.manager.CreateConfigManager;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
+import android.app.Activity;
 import android.content.Context;
 
 /**
@@ -36,8 +40,7 @@ import android.content.Context;
  */
 public class DocumentTypeRecordHelper
 {
-
-    private static final String TEMPLATEFOLDER_PATH = "FilesTemplates/Template";
+    public static final String TEMPLATEFOLDER_PATH = "FilesTemplates/Template";
 
     /** Filename Extension part for Microsoft Word document (docx). */
     private static final String DOCX_EXTENSION = ".docx";
@@ -72,37 +75,29 @@ public class DocumentTypeRecordHelper
     /** Unique Identifier for text document (txt). */
     public static final int VIDEO_ID = 70;
 
-    private static final String CATEGORY_CREATION = "creation";
+    private static CreateConfigManager creationConfig;
 
-    private static final String MIMETYPES = "mimetypes";
-
-    private static final String NAME = "name";
-
-    private static final String MIMETYPE = "mimetype";
-
-    private static final String EXTENSION = "extension";
-
-    private static final String PLATFORM = "platform";
-
-    private static final String ANDROID = "android";
-
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS & HELPERS
+    // ///////////////////////////////////////////////////////////////////////////
     private DocumentTypeRecordHelper()
     {
     }
 
-    @SuppressWarnings("unchecked")
-    public static List<DocumentTypeRecord> getCreationDocumentTypeList(Context context)
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    public static List<DocumentTypeRecord> getCreationDocumentTypeList(Activity context)
     {
         ConfigManager configurationManager = ConfigManager.getInstance(context);
         if (configurationManager != null && configurationManager.hasConfig(SessionUtils.getAccount(context).getId()))
         {
-            // TODO Implement CONFIG MANAGER
-            /*
-             * CreationConfig contexrt =
-             * configurationManager.getCreationConfig(); CreationConfigurator
-             * config = new CreationConfigurator((Activity) context, contexrt);
-             * return config.retrieveCreationDocumentList();
-             */
+            ConfigService service = configurationManager.getConfig(SessionUtils.getAccount(context).getId());
+            if (service.getCreationConfig() != null)
+            {
+                creationConfig = new CreateConfigManager(context, service, null);
+                return creationConfig.retrieveCreationDocumentList();
+            }
         }
         return getInternalCreationDocumentTypeList(context);
     }

@@ -116,7 +116,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
-            Map<String, Document> selectedItems)
+            Map<String, Node> selectedItems)
     {
         super(context, textViewResourceId, listItems, selectedItems);
         vhClassName = ProgressViewHolder.class.getCanonicalName();

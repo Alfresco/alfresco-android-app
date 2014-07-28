@@ -6,8 +6,8 @@
     <!-- Example : Replace All "."  by "_" -->
     
     <!-- PERSONS -->
-    <string name="config_com_alfresco_type_persons">org.alfresco.mobile.android.application.fragments.person.PersonsFragment$Builder</string>
-    <string name="config_com_alfresco_type_person.profile">org.alfresco.mobile.android.application.fragments.person.PersonProfileFragment$Builder</string>
+    <string name="config_com_alfresco_type_persons">org.alfresco.mobile.android.application.fragments.person.UsersFragment$Builder</string>
+    <string name="config_com_alfresco_type_person_profile">org.alfresco.mobile.android.application.fragments.person.UserProfileFragment$Builder</string>
     
     <!-- LOCAL -->
     <string name="config_com_alfresco_type_local">org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment$Builder</string>

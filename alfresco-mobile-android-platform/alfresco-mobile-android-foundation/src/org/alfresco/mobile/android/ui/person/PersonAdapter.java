@@ -57,6 +57,7 @@ public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
     {
         super(fr.getActivity(), textViewResourceId, listItems);
         this.selectedItems = selectedItems;
+        this.activityRef = new WeakReference<Activity>(fr.getActivity());
     }
 
     @Override
@@ -90,7 +91,6 @@ public class PersonAdapter extends BaseListAdapter<Person, GenericViewHolder>
     protected void updateIcon(final GenericViewHolder vh, final Person item)
     {
         RenditionManager.with(activityRef.get()).loadAvatar(item.getIdentifier()).placeHolder(R.drawable.ic_avatar).into(vh.icon);
-
     }
 
     @Override

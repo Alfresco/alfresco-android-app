@@ -148,15 +148,18 @@ public class CommentsFragment extends CommentsNodeFragment
     public void onResume()
     {
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), getString(R.string.document_comments_header));
-        }
 
-        if (!getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+        try
         {
-            commentText.setVisibility(View.GONE);
-            bAdd.setVisibility(View.GONE);
+            if (!getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+            {
+                commentText.setVisibility(View.GONE);
+                bAdd.setVisibility(View.GONE);
+            }
+        }
+        catch (Exception e)
+        {
+            // TODO: handle exception
         }
 
         super.onResume();

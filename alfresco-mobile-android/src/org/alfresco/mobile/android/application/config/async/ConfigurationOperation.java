@@ -17,8 +17,11 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.async;
 
+import java.io.File;
+
 import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.api.services.ConfigServiceFactory;
+import org.alfresco.mobile.android.api.services.impl.ConfigServiceImpl;
+import org.alfresco.mobile.android.application.config.LocalConfigServiceImpl;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -52,8 +55,22 @@ public class ConfigurationOperation extends BaseOperation<ConfigService>
         {
             super.doInBackground();
 
-            config = ConfigServiceFactory.buildConfigService(context.getPackageName(), ((ConfigurationRequest) request).parameters);
+            // Load the cached version of the app first
+            File configFolder = null;
+            if (((ConfigurationRequest) request).parameters != null
+                    && ((ConfigurationRequest) request).parameters.containsKey(ConfigService.CONFIGURATION_FOLDER))
+            {
+                configFolder = new File(
+                        (String) ((ConfigurationRequest) request).parameters.get(ConfigService.CONFIGURATION_FOLDER));
+            }
+            config = new ConfigServiceImpl(context.getPackageName(), configFolder);
 
+            // Check if the configuration is present
+            if (!((ConfigServiceImpl) config).hasConfiguration())
+            {
+                // if not we load the embedded configuration file.
+                config = new LocalConfigServiceImpl(context, getAccount());
+            }
             result.setData(config);
         }
         catch (Exception e)

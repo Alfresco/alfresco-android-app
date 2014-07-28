@@ -15,16 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.node.browser;
+package org.alfresco.mobile.android.async.definition;
 
-import java.util.List;
-import java.util.Map;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationEvent;
 
-import org.alfresco.mobile.android.api.model.Document;
-
-public interface DocumentFolderPickerCallback
+public class TypeDefinitionEvent extends OperationEvent<ModelDefinition>
 {
-    void onSelectDocument(List<Document> p);
-
-    Map<String, Document> retrieveDocumentSelection();
+    public TypeDefinitionEvent(String requestId, LoaderResult<ModelDefinition> results)
+    {
+        super(requestId, results);
+    }
 }

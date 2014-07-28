@@ -23,7 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
@@ -148,7 +148,7 @@ public class UsersFragment extends PersonsFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new PersonAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
+        return new UserAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
     }
 
     @Subscribe

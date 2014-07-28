@@ -17,8 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.manager;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
+import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
@@ -45,14 +45,19 @@ public class MainMenuConfigManager extends BaseConfigManager
     public MainMenuConfigManager(Activity activity, ConfigService configService, ViewGroup vRoot)
     {
         super(activity, configService);
-        if (configService != null && configService.getProfile() != null)
+        if (configService != null)
         {
-            rootMenuViewConfig = configService.getProfile(getCurrentProfile()).getViewConfig(
-                    ConfigConstants.VIEW_ROOT_NAVIGATION_MENU);
+            String profileId = getCurrentProfile();
+            if (profileId == null)
+            {
+                profileId = configService.getDefaultProfile().getIdentifier();
+            }
+            rootMenuViewConfig = configService.getViewConfig(configService.getProfile(profileId).getRootViewId(),
+                    configManager.getCurrentScope());
         }
         this.vRoot = (ViewGroup) vRoot.findViewById(R.id.custom_menu_group);
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // GENERATION
     // ///////////////////////////////////////////////////////////////////////////
@@ -67,7 +72,7 @@ public class MainMenuConfigManager extends BaseConfigManager
         TextView header = null;
 
         // CREATION
-        if (viewConfig.getItems().size() > 0)
+        if (viewConfig instanceof ViewGroupConfig && ((ViewGroupConfig) viewConfig).getItems().size() > 0)
         {
             // Header
             if (!TextUtils.isEmpty(viewConfig.getLabel()))
@@ -79,7 +84,7 @@ public class MainMenuConfigManager extends BaseConfigManager
             }
 
             // Add Children
-            for (ViewConfig config : viewConfig.getItems())
+            for (ViewConfig config : ((ViewGroupConfig) viewConfig).getItems())
             {
                 createMenu(config, hookView, li);
             }

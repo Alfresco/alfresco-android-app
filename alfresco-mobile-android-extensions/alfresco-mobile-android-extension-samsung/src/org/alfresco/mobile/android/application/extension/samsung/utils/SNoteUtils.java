@@ -22,8 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 
-import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.extension.samsung.pen.SNoteSDKDialogFragment;
+import org.alfresco.mobile.android.platform.io.IOUtils;
 
 import android.app.Activity;
 import android.graphics.Bitmap;

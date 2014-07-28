@@ -32,6 +32,10 @@ public final class ConfigUtils
     private static final String SEPARATOR = "_";
 
     public static final String FAMILY_CONFIG = "config";
+    
+    public static final String FAMILY_FORM = "form";
+    
+    public static final String FAMILY_VALIDATION = "validation";
 
     public static final String FAMILY_OPERATION = "operation";
 

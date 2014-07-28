@@ -28,11 +28,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
+import org.alfresco.mobile.android.api.constants.ModelMappingUtils;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
-import org.alfresco.mobile.android.api.services.impl.AbstractDocumentFolderServiceImpl;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 import org.apache.chemistry.opencmis.commons.enums.BaseTypeId;
@@ -121,16 +121,16 @@ public class NodeSyncPlaceHolder implements Node
         if (getPropertyValue(PropertyIds.OBJECT_TYPE_ID) != null)
         {
             if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT))
+                    .startsWith(ModelMappingUtils.CMISPREFIX_DOCUMENT))
             {
                 return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_DOCUMENT, "");
+                        ModelMappingUtils.CMISPREFIX_DOCUMENT, "");
             }
             else if (((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID))
-                    .startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER))
+                    .startsWith(ModelMappingUtils.CMISPREFIX_FOLDER))
             {
                 return ((String) getPropertyValue(PropertyIds.OBJECT_TYPE_ID)).replaceFirst(
-                        AbstractDocumentFolderServiceImpl.CMISPREFIX_FOLDER, "");
+                        ModelMappingUtils.CMISPREFIX_FOLDER, "");
             }
             else if (BaseTypeId.CMIS_DOCUMENT.value().equals(getPropertyValue(PropertyIds.OBJECT_TYPE_ID)))
             {
@@ -178,7 +178,7 @@ public class NodeSyncPlaceHolder implements Node
     {
         // Match specific alfresco metadata name to its translated cmis version
         // if necessary.
-        return getProp(AbstractDocumentFolderServiceImpl.getPropertyName(name));
+        return getProp(ModelMappingUtils.getPropertyName(name));
     }
 
     /** {@inheritDoc} */
@@ -222,9 +222,9 @@ public class NodeSyncPlaceHolder implements Node
     public boolean hasAspect(String aspectName)
     {
         String tmpAspectName = aspectName;
-        if (!aspectName.startsWith(AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS))
+        if (!aspectName.startsWith(ModelMappingUtils.CMISPREFIX_ASPECTS))
         {
-            tmpAspectName = AbstractDocumentFolderServiceImpl.CMISPREFIX_ASPECTS + aspectName;
+            tmpAspectName = ModelMappingUtils.CMISPREFIX_ASPECTS + aspectName;
         }
         if (aspects != null)
         {

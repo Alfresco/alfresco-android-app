@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.ui.utils;
+package org.alfresco.mobile.android.ui.widget;
 
 import org.alfresco.mobile.android.foundation.R;
 

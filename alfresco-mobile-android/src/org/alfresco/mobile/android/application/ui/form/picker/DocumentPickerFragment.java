@@ -15,17 +15,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.workflow;
+package org.alfresco.mobile.android.application.ui.form.picker;
 
 import java.util.Map;
 
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
+import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment.Builder;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -39,22 +44,22 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class CreateTaskDocumentPickerFragment extends AlfrescoFragment
+public class DocumentPickerFragment extends AlfrescoFragment
 {
-    public static final String TAG = CreateTaskDocumentPickerFragment.class.getName();
+    public static final String TAG = DocumentPickerFragment.class.getName();
 
     private View vRoot;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
-    public CreateTaskDocumentPickerFragment()
+    public DocumentPickerFragment()
     {
     }
 
-    protected static CreateTaskDocumentPickerFragment newInstanceByTemplate(Bundle b)
+    protected static DocumentPickerFragment newInstanceByTemplate(Bundle b)
     {
-        CreateTaskDocumentPickerFragment bf = new CreateTaskDocumentPickerFragment();
+        DocumentPickerFragment bf = new DocumentPickerFragment();
         bf.setArguments(b);
         return bf;
     }
@@ -154,6 +159,12 @@ public class CreateTaskDocumentPickerFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
         }
+        
+        public Builder fieldId(String fieldId)
+        {
+            BundleUtils.addIfNotNull(extraConfiguration, PrivateDialogActivity.EXTRA_FIELD_ID, fieldId);
+            return this;
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
@@ -162,5 +173,15 @@ public class CreateTaskDocumentPickerFragment extends AlfrescoFragment
         {
             return newInstanceByTemplate(b);
         };
+    }
+    
+    
+    public interface onPickDocumentFragment
+    {
+        void onNodeSelected(String fieldId, Map<String, Node> p);
+
+        void onNodeClear(String fieldId);
+        
+        Map<String, Node> getNodeSelected(String fieldId);
     }
 }

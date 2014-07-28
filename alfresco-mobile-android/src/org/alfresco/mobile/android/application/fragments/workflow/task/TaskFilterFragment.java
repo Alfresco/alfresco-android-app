@@ -17,6 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.workflow.task;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -48,7 +49,7 @@ public class TaskFilterFragment extends AlfrescoFragment
 
     private Button validate;
 
-    private Map<Integer, Integer> selectedItems;
+    private Map<Integer, Integer> selectedItems = new HashMap<Integer, Integer>(0);
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS

@@ -17,16 +17,25 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.config.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+import org.alfresco.mobile.android.api.model.config.ItemConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypeRecordHelper;
+import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
+import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 
 import android.app.Activity;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.ViewGroup;
 
-public class CreateConfigManager  extends BaseConfigManager
+public class CreateConfigManager extends BaseConfigManager
 {
     private CreationConfig creationConfig;
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -38,5 +47,36 @@ public class CreateConfigManager  extends BaseConfigManager
             creationConfig = configService.getCreationConfig(null);
         }
         this.vRoot = vRoot;
+    }
+
+    public List<ItemConfig> retrieveCreationDocumentTypeList()
+    {
+        List<ItemConfig> fileTypes = new ArrayList<ItemConfig>();
+
+        if (creationConfig == null) { return fileTypes; }
+        for (ItemConfig itemConfig : creationConfig.getCreatableDocumentTypes())
+        {
+            fileTypes.add(itemConfig);
+        }
+
+        return fileTypes;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // PUBLCI METHODS
+    // ///////////////////////////////////////////////////////////////////////////
+    public List<DocumentTypeRecord> retrieveCreationDocumentList()
+    {
+        List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>();
+        String extension = null;
+        for (ItemConfig itemConfig : creationConfig.getCreatableMimeTypes())
+        {
+            extension = (String) itemConfig.getParameter("extension");
+            fileTypes.add(new DocumentTypeRecord(MimeTypeManager.getInstance(getActivity()).getIcon(
+                    itemConfig.getIconIdentifier()), itemConfig.getLabel(), extension, itemConfig.getIdentifier(),
+                    (TextUtils.isEmpty(extension)) ? null : DocumentTypeRecordHelper.TEMPLATEFOLDER_PATH
+                            .concat(extension)));
+        }
+        return fileTypes;
     }
 }

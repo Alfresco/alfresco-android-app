@@ -207,4 +207,11 @@ public interface OperationRequestIds
     int FAMILY_CONFIGURATION = 3000;
 
     int ID_CONFIGURATION_READ = FAMILY_CONFIGURATION + OPERATION_READ;
+    
+    // ///////////////////////////////////////////////////////////////////////////
+    // TYPE DEFINITION
+    // ///////////////////////////////////////////////////////////////////////////
+    int FAMILY_TYPE_DEFINITION = 3100;
+
+    int ID_TYPE_DEFINITION_READ = FAMILY_TYPE_DEFINITION + OPERATION_READ;
 }

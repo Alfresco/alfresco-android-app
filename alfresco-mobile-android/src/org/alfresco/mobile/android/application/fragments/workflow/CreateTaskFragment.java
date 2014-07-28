@@ -25,6 +25,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.constants.WorkflowModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -35,10 +36,12 @@ import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderPickerCallback;
 import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
 import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.DatePickerFragment.onPickDateFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEvent;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
@@ -73,7 +76,7 @@ import android.widget.ToggleButton;
 
 import com.squareup.otto.Subscribe;
 
-public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCallback, DocumentFolderPickerCallback,
+public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCallback, onPickDocumentFragment,
         onPickDateFragment
 {
     public static final String TAG = CreateTaskFragment.class.getName();
@@ -179,7 +182,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
             @Override
             public void onClick(View v)
             {
-                DatePickerFragment.newInstance(0, TAG).show(getFragmentManager(), DatePickerFragment.TAG);
+                DatePickerFragment.newInstance("0", TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
         dueOn = (Button) viewById(R.id.process_due_on);
@@ -194,7 +197,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
             @Override
             public void onClick(View v)
             {
-                new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
+                DatePickerFragment.newInstance("0", TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
         b.setText(getString(R.string.tasks_due_no_date));
@@ -345,7 +348,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onDatePicked(int dateId, GregorianCalendar gregorianCalendar)
+    public void onDatePicked(String dateId, GregorianCalendar gregorianCalendar)
     {
         gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
         gregorianCalendar.set(Calendar.MINUTE, 59);
@@ -354,6 +357,13 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         dueAt = gregorianCalendar;
         Button dueOn = (Button) viewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
+    }
+
+    @Override
+    public void onDateClear(String dateId)
+    {
+        dueAt = null;
+        dueOn.setText(getString(R.string.tasks_due_no_date));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -585,7 +595,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // PERSON PICKER
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onSelect(Map<String, Person> p)
+    public void onPersonSelected(Map<String, Person> p)
     {
         if (p == null) { return; }
         assignees.putAll(p);
@@ -604,25 +614,31 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     // DOCUMENT PICKER
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onSelectDocument(List<Document> p)
+    public void onNodeSelected(String fieldId, Map<String, Node> p)
     {
         if (p == null) { return; }
         items.clear();
-        for (Node node : p)
+        for (Entry<String, Node> entry : p.entrySet())
         {
-            items.put(node.getIdentifier(), (Document) node);
+            items.put(entry.getKey(), (Document) entry.getValue());
         }
 
         // Update documents
         updateDocuments();
-        getActivity().getFragmentManager().popBackStackImmediate(CreateTaskDocumentPickerFragment.TAG,
+        getActivity().getFragmentManager().popBackStackImmediate(DocumentPickerFragment.TAG,
                 FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override
-    public Map<String, Document> retrieveDocumentSelection()
+    public void onNodeClear(String fieldId)
     {
-        return new HashMap<String, Document>(items);
+        items.clear();
+    }
+
+    @Override
+    public Map<String, Node> getNodeSelected(String fieldId)
+    {
+        return new HashMap<String, Node>(items);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -662,7 +678,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
 
     public void startDocumentPicker()
     {
-        CreateTaskDocumentPickerFragment.with(getActivity()).display();
+        DocumentPickerFragment.with(getActivity()).display();
     }
 
     public List<Node> getAttachments()
@@ -712,5 +728,4 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
             return newInstanceByTemplate(b);
         }
     }
-
 }

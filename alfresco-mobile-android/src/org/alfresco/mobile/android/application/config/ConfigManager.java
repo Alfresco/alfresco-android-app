@@ -23,11 +23,13 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.api.services.ConfigServiceFactory;
+import org.alfresco.mobile.android.api.services.impl.ConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
 import org.alfresco.mobile.android.application.config.async.ConfigurationRequest;
+import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
@@ -49,7 +51,7 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private Map<Long, ConfigService> configContextMap = new HashMap<Long, ConfigService>();
+    private Map<Long, ConfigService> configServiceMap = new HashMap<Long, ConfigService>();
 
     private String currentProfileId;
 
@@ -62,7 +64,7 @@ public class ConfigManager extends Manager
         eventBus = EventBusManager.getInstance();
         eventBus.register(this);
     }
-
+ 
     public static ConfigManager getInstance(Context context)
     {
         synchronized (LOCK)
@@ -85,9 +87,9 @@ public class ConfigManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     public ConfigService getConfig(long accountId)
     {
-        if (configContextMap != null)
+        if (configServiceMap != null)
         {
-            return configContextMap.get(accountId);
+            return configServiceMap.get(accountId);
         }
         else
         {
@@ -97,9 +99,9 @@ public class ConfigManager extends Manager
 
     public boolean hasConfig(long accountId)
     {
-        if (configContextMap != null)
+        if (configServiceMap != null)
         {
-            return configContextMap.containsKey(accountId);
+            return configServiceMap.containsKey(accountId);
         }
         else
         {
@@ -116,16 +118,12 @@ public class ConfigManager extends Manager
         {
             acc = AlfrescoAccountManager.getInstance(appContext).getDefaultAccount();
         }
+        // With no account we cant identify the right configuration.
         if (acc == null) { return; }
         try
         {
-            File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(acc);
-            Map<String, Object> parameters = new HashMap<String, Object>(1);
-            parameters.put(AlfrescoSession.CONFIGURATION_FOLDER, configFolder.getPath());
-            ConfigService configContext = ConfigServiceFactory.buildConfigService(appContext.getPackageName(),
-                    parameters);
-            configContextMap.put(acc.getId(), configContext);
-            if (configContext.hasViewConfig())
+            ConfigService configService = preload(acc);
+            if (configService.hasViewConfig())
             {
                 eventBus.post(new ConfigurationMenuEvent(acc.getId()));
             }
@@ -137,21 +135,42 @@ public class ConfigManager extends Manager
     }
 
     /**
-     * Load the default configuration file from Repository
-     * 
      * @param alfrescoSession
      */
-    public boolean load(AlfrescoSession alfrescoSession)
+    public boolean load(AlfrescoSession alfrescoSession, AlfrescoAccount account)
     {
         if (alfrescoSession == null) { return false; }
+
+        // In this case we receive no configuration from the repo..
+        // We load the default embedded app configuration
         if (alfrescoSession.getServiceRegistry().getConfigService() == null)
         {
-            // TODO Localization
-            AlfrescoNotificationManager.getInstance(appContext).showToast("Loading Configuration");
+            AlfrescoNotificationManager.getInstance(appContext).showToast("Load internal Configuration");
+            File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(account);
+            Map<String, Object> parameters = new HashMap<String, Object>(1);
+            parameters.put(ConfigService.CONFIGURATION_FOLDER, configFolder.getPath());
+            parameters.put(ConfigService.CONFIGURATION_APPLICATION_ID,
+                    appContext.getString(R.string.configuration_application_key));
             Operator.with(appContext).load(new ConfigurationRequest.Builder());
             return true;
         }
         return false;
+    }
+
+    /**
+     * @param alfrescoSession
+     */
+    public void forceLoad(AlfrescoAccount account)
+    {
+        // In this case we receive no configuration from the repo..
+        // We load the default embedded app configuration
+        AlfrescoNotificationManager.getInstance(appContext).showToast("Load internal Configuration");
+        File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(account);
+        Map<String, Object> parameters = new HashMap<String, Object>(1);
+        parameters.put(ConfigService.CONFIGURATION_FOLDER, configFolder.getPath());
+        parameters.put(ConfigService.CONFIGURATION_APPLICATION_ID,
+                appContext.getString(R.string.configuration_application_key));
+        Operator.with(appContext).load(new ConfigurationRequest.Builder());
     }
 
     public boolean swapProfile(AlfrescoAccount acc, String profileId)
@@ -167,12 +186,48 @@ public class ConfigManager extends Manager
 
     public ConfigScope getCurrentScope()
     {
-        return (TextUtils.isEmpty(currentProfileId)) ? null : new ConfigScope(currentProfileId);
+        return (TextUtils.isEmpty(currentProfileId)) ? new ConfigScope(null) : new ConfigScope(currentProfileId);
     }
-    
+
     public String getCurrentProfileId()
     {
         return currentProfileId;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    public ConfigService loadEmbedded(AlfrescoAccount account)
+    {
+        // We load the latest cached version of application configuration.
+        ConfigService configService = new LocalConfigServiceImpl(appContext, account);
+        configServiceMap.put(account.getId(), configService);
+
+        LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+        result.setData(configService);
+        EventBusManager.getInstance().post(new ConfigurationEvent("", result, account.getId()));
+
+        return configService;
+    }
+
+    private ConfigService preload(AlfrescoAccount account)
+    {
+        ConfigService configService = null;
+
+        // We load the latest cached version of application configuration.
+        File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(account);
+        configService = new ConfigServiceImpl(appContext.getPackageName(), configFolder);
+
+        // Check if the configuration is present
+        if (!((ConfigServiceImpl) configService).hasConfiguration())
+        {
+            // if not we load the embedded configuration file.
+            configService = new LocalConfigServiceImpl(appContext, account);
+        }
+
+        configServiceMap.put(account.getId(), configService);
+
+        return configService;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -192,7 +247,7 @@ public class ConfigManager extends Manager
             AlfrescoNotificationManager.getInstance(appContext).showToast("Configuration Available");
         }
 
-        configContextMap.put(event.accountId, event.data);
+        configServiceMap.put(event.accountId, event.data);
 
         if (event.data.hasViewConfig())
         {

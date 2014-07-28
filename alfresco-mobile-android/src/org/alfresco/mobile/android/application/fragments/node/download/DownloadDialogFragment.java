@@ -26,11 +26,13 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.rendition.PDFPreviewFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.node.download.DownloadTask;
 import org.alfresco.mobile.android.async.node.download.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
@@ -191,36 +193,31 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             switch (action)
             {
                 case ACTION_OPEN:
-                    AlfrescoNotificationManager.getInstance(getActivity()).showToast(getActivity().getText(R.string.download_complete) + " "
-                            + contentFile.getFileName());
+                    AlfrescoNotificationManager.getInstance(getActivity()).showToast(
+                            getActivity().getText(R.string.download_complete) + " " + contentFile.getFileName());
 
-                    //TODO: Move this to the correct location.
-                    if (contentFile.getMimeType().endsWith("pdf") || contentFile.getMimeType().endsWith("acrobat"))
+                    if ("application/pdf".equals(contentFile.getMimeType()))
                     {
-                       PDFJSFragment frag = (PDFJSFragment)getFragmentManager().findFragmentByTag(PDFJSFragment.TAG);
-	                   if (frag != null)
-	                   {
-	                	   frag.setFile (contentFile.getFile());
-	                	   frag.show(getActivity().getFragmentManager(), PDFJSFragment.TAG);
-	                   }
+                        PDFPreviewFragment.with(getActivity()).pdf(contentFile.getFile()).display();
                     }
                     else
                     {
-	                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
-	                            TabsNodeDetailsFragment.TAG);
-	                    if (detailsFragment != null)
-	                    {
-	                        long datetime = contentFile.getFile().lastModified();
-	                        detailsFragment.setDownloadDateTime(new Date(datetime));
-	                        ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-	                                RequestCode.SAVE_BACK);
-	                    }
+                        NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager()
+                                .findFragmentByTag(TabsNodeDetailsFragment.TAG);
+                        if (detailsFragment != null)
+                        {
+                            long datetime = contentFile.getFile().lastModified();
+                            detailsFragment.setDownloadDateTime(new Date(datetime));
+                            ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                    RequestCode.SAVE_BACK);
+                        }
                     }
                     break;
 
                 case ACTION_EMAIL:
-                    ActionUtils.actionSendMailWithAttachment(this, contentFile.getFileName(), getString(R.string.email_content),
-                            Uri.fromFile(contentFile.getFile()), RequestCode.DECRYPTED);
+                    ActionUtils.actionSendMailWithAttachment(this, contentFile.getFileName(),
+                            getString(R.string.email_content), Uri.fromFile(contentFile.getFile()),
+                            RequestCode.DECRYPTED);
                     break;
 
                 case ACTION_UNDEFINED:
@@ -229,12 +226,12 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
         }
         else
         {
-            AlfrescoNotificationManager.getInstance(getActivity()).showToast(getActivity().getText(R.string.download_error).toString());
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(
+                    getActivity().getText(R.string.download_error).toString());
         }
         dismiss();
     }
-    
-    
+
     @Override
     public void onDestroyView()
     {
@@ -254,51 +251,4 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
             dlt.cancel(false);
         }
     }
-    
-    
-    public static class PDFJSFragment extends AlfrescoFragment 
-    {
-    	private static final String TAG = PDFJSFragment.class.getName();
-
-    	private File pdf;
-    	
-		public PDFJSFragment()
-		{
-		}
-		
-		void setFile(File file)
-		{
-			this.pdf = file;
-		}
-
-		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-		{
-			super.onCreateView(inflater, container, savedInstanceState);
-			
-			View rootView = inflater.inflate(R.layout.app_fragment_pdfjs, container, false);
-			
-			WebView wv = (WebView)rootView.findViewById(R.id.webView1);
-			
-			WebSettings settings = wv.getSettings();
-		    settings.setJavaScriptEnabled(true);
-		    //settings.setAllowFileAccessFromFileURLs(true);
-		    //settings.setAllowUniversalAccessFromFileURLs(true);
-		    settings.setBuiltInZoomControls(true);
-		    
-		    wv.setWebViewClient(new WebViewClient() 
-		    {
-		        public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) 
-		        {
-		            Log.d("Debug","Error");
-		        }
-		    });	
-		    
-		    wv.setWebChromeClient(new WebChromeClient());
-		    
-		    wv.loadUrl("file:///android_asset/pdfjs-1.0.277-dist/web/viewer.html?file=" + pdf.getPath());
-			
-			return rootView;
-		}
-	}
 }

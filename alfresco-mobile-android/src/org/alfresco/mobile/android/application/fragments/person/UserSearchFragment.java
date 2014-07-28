@@ -30,6 +30,8 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.search.AdvancedSearchFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.PersonPickerFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.PersonPickerFragment.onPickAuthorityFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.person.PersonsEvent;
 import org.alfresco.mobile.android.async.person.PersonsRequest;
@@ -68,6 +70,8 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
 
     public static final String TAG = UserSearchFragment.class.getName();
 
+    private static final String ARGUMENT_FIELD_ID = "fieldId";
+
     private static final String ARGUMENT_KEYWORD = "keyword";
 
     private static final String ARGUMENT_TITLE = "queryDescription";
@@ -78,13 +82,15 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
 
     private String pickFragmentTag;
 
-    private UserPickerCallback fragmentPick;
+    private Fragment fragmentPick;
 
     private Button validation;
 
     private boolean singleChoice = true;
 
     private String keywords;
+
+    private String fieldId;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -109,20 +115,30 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (getDialog() != null)
+        {
+            getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
+        }
+
         // Retrieve session object
         checkSession();
 
         if (getArguments() != null && getArguments().containsKey(ARGUMENT_MODE))
         {
+            fieldId = getArguments().getString(ARGUMENT_FIELD_ID);
             keywords = getArguments().getString(ARGUMENT_KEYWORD);
             mTitle = getArguments().getString(ARGUMENT_TITLE);
             mode = getArguments().getInt(ARGUMENT_MODE);
             singleChoice = getArguments().getBoolean(ARGUMENT_SINGLE_CHOICE);
             pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
-            fragmentPick = ((UserPickerCallback) getFragmentManager().findFragmentByTag(pickFragmentTag));
-            if (fragmentPick != null)
+            fragmentPick = getFragmentManager().findFragmentByTag(pickFragmentTag);
+            if (fragmentPick != null && fragmentPick instanceof UserPickerCallback)
             {
-                selectedItems = fragmentPick.retrieveSelection();
+                selectedItems = ((UserPickerCallback) fragmentPick).retrieveSelection();
+            }
+            else if (fragmentPick instanceof onPickAuthorityFragment && fieldId != null)
+            {
+                selectedItems = ((onPickAuthorityFragment) fragmentPick).getPersonSelected(fieldId);
             }
         }
 
@@ -162,7 +178,8 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
                         }
                         else
                         {
-                            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.search_form_hint));
+                            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                                    getString(R.string.search_form_hint));
                         }
                         return true;
                     }
@@ -232,6 +249,11 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             {
                 getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
                 getDialog().setTitle(R.string.metadata_modified_by);
+            }
+            else
+            {
+                getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
+                getDialog().setTitle(R.string.search_title);
             }
         }
         else
@@ -386,10 +408,16 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
 
     public void onSelect(Map<String, Person> selectedItems)
     {
-        if (fragmentPick != null)
+        if (fragmentPick == null) { return; }
+        if (fragmentPick instanceof UserPickerCallback)
         {
-            fragmentPick.onSelect(selectedItems);
+            ((UserPickerCallback) fragmentPick).onPersonSelected(selectedItems);
         }
+        else if (fieldId != null && fragmentPick instanceof onPickAuthorityFragment)
+        {
+            ((onPickAuthorityFragment) fragmentPick).onPersonSelected(fieldId, selectedItems);
+        }
+
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -427,6 +455,12 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
+        public Builder fieldId(String fieldId)
+        {
+            extraConfiguration.putString(ARGUMENT_FIELD_ID, fieldId);
+            return this;
+        }
+
         public Builder keywords(String keywords)
         {
             extraConfiguration.putString(ARGUMENT_KEYWORD, keywords);

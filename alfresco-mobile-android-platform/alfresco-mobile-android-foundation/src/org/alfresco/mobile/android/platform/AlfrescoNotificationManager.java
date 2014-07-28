@@ -442,6 +442,13 @@ public class AlfrescoNotificationManager extends Manager
         }
     }
 
+    public void cancelMonitorChannel(int channelId)
+    {
+        Log.d(TAG, "[Refresh] STOP");
+        channelStatus[getIndex(channelId)] = false;
+        channelTimers[getIndex(channelId)] = null;
+    }
+    
     public void unMonitorChannel(int requestTypeId)
     {
         Log.d(TAG, "[Refresh] STOP");
@@ -504,6 +511,11 @@ public class AlfrescoNotificationManager extends Manager
             switch (channelId)
             {
                 case CHANNEL_DOWNLOAD:
+                    if (total == 0)
+                    {
+                        cancelMonitorChannel(CHANNEL_DOWNLOAD);
+                        return;
+                    }
                     // COMPLETED
                     if (completed == total)
                     {
@@ -511,6 +523,7 @@ public class AlfrescoNotificationManager extends Manager
                                 appContext.getResources().getQuantityString(R.plurals.download_complete_description,
                                         completed), Integer.toString(completed));
                         description = appContext.getString(R.string.download_complete);
+                        cancelMonitorChannel(CHANNEL_DOWNLOAD);
                     }
                     else
                     {
@@ -522,6 +535,11 @@ public class AlfrescoNotificationManager extends Manager
                     contentInfo = completed + "/" + total;
                     break;
                 case CHANNEL_UPLOAD:
+                    if (total == 0)
+                    {
+                        cancelMonitorChannel(CHANNEL_UPLOAD);
+                        return;
+                    }
                     // COMPLETED
                     if (completed == total)
                     {
@@ -529,6 +547,7 @@ public class AlfrescoNotificationManager extends Manager
                                 appContext.getResources().getQuantityString(R.plurals.upload_complete_description,
                                         completed), Integer.toString(completed));
                         description = appContext.getString(R.string.upload_complete);
+                        cancelMonitorChannel(CHANNEL_UPLOAD);
                     }
                     else
                     {

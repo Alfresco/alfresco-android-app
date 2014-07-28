@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
@@ -45,6 +46,7 @@ import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -54,6 +56,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Parcelable;
@@ -364,7 +367,9 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            Operator.with(activity).load(new DownloadRequest.Builder(parentFolder, doc, false).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            Operator.with(activity).load(
+                    new DownloadRequest.Builder(parentFolder, doc, false)
+                            .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
     }
 
@@ -374,24 +379,41 @@ public class NodeActions extends AbstractActions<Node>
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
         for (Document doc : selectedDocument)
         {
-            requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false).setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
+            requestsBuilder.add(new DownloadRequest.Builder(parentFolder, doc, false)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
         }
         Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
     }
 
     public static void edit(final Activity activity, final Folder folder, final Node node)
     {
-        FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
-        Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
-        ft.commit();
+        ConfigManager configurationManager = ConfigManager.getInstance(activity);
+        if (configurationManager != null){
+            try
+            {
+                Intent i = new Intent(activity, PrivateDialogActivity.class);
+                i.setAction(PrivateDialogActivity.ACTION_EDIT_NODE);
+                i.putExtra(PrivateIntent.EXTRA_FOLDER, (Parcelable) folder);
+                i.putExtra(PrivateIntent.EXTRA_NODE, (Parcelable) node);
+                activity.startActivity(i);
+            }
+            catch (ActivityNotFoundException e)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
+            }
+        } else {
+            FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
+            Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
+            if (prev != null)
+            {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+            ft.commit();
 
-        // Create and show the dialog.
-        UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+            // Create and show the dialog.
+            UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();
+        }
     }
 
     public static void update(Fragment f)

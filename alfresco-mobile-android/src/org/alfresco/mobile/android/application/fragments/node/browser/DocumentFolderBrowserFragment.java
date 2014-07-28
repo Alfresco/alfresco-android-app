@@ -55,6 +55,7 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
@@ -131,13 +132,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     private File tmpFile;
 
-    private DocumentFolderPickerCallback fragmentPick;
+    private onPickDocumentFragment fragmentPick;
 
-    private Map<String, Document> selectedMapItems = new HashMap<String, Document>(0);
+    private Map<String, Node> selectedMapItems = new HashMap<String, Node>(0);
 
     private int displayMode = GridAdapterHelper.DISPLAY_GRID;
 
     private MenuItem displayMenuItem;
+
+    private String fieldId;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -173,6 +176,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         {
             mode = MODE_PICK;
             fragmentPick = ((PrivateDialogActivity) getActivity()).getOnPickDocumentFragment();
+            fieldId = ((PrivateDialogActivity) getActivity()).getFieldId();
         }
 
         super.onActivityCreated(savedInstanceState);
@@ -602,7 +606,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         if (mode == MODE_PICK && adapter == null)
         {
-            selectedMapItems = fragmentPick.retrieveDocumentSelection();
+            selectedMapItems = fragmentPick.getNodeSelected(fieldId);
             return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
                     displayMode), parentFolder, new ArrayList<Node>(0), selectedMapItems);
         }
@@ -806,10 +810,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
-            
+
             if (FujitsuCapture.hasFujitsuScanner(this.getActivity()))
-	            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, Menu.FIRST
-	                    + MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, R.string.scan_document);
+                createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, Menu.FIRST
+                        + MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, R.string.scan_document);
         }
     }
 
@@ -940,7 +944,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 @Override
                 public void onClick(View v)
                 {
-                    fragmentPick.onSelectDocument(new ArrayList<Document>(selectedMapItems.values()));
+                    fragmentPick.onNodeSelected(fieldId, selectedMapItems);
                 }
             });
         }
@@ -967,7 +971,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (event.hasException) { return; }
         Node updatedNode = event.data;
         remove(event.initialNode);
-        ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
+        if (adapter != null)
+        {
+            ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
+        }
         if (getActivity() instanceof BaseActivity)
         {
             ((BaseActivity) getActivity()).removeWaitingDialog();

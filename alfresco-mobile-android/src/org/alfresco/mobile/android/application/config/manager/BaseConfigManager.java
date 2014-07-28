@@ -22,7 +22,6 @@ import java.lang.ref.WeakReference;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
 
 import android.app.Activity;
 import android.view.ViewGroup;

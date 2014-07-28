@@ -24,16 +24,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.ui.utils.CheckBoxViewHolder;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
 {
@@ -264,24 +262,4 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
             put(R.string.tasks_assignee, FAMILY_ASSIGNEE);
         }
     };
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // INTERNAL CLASS
-    // ///////////////////////////////////////////////////////////////////////////
-    private static class CheckBoxViewHolder extends ViewHolder
-    {
-        public TextView topText;
-
-        public TextView bottomText;
-
-        public CheckBox checkBox;
-
-        public CheckBoxViewHolder(View v)
-        {
-            super(v);
-            topText = (TextView) v.findViewById(R.id.toptext);
-            bottomText = (TextView) v.findViewById(R.id.bottomtext);
-            checkBox = (CheckBox) v.findViewById(R.id.checkbox);
-        }
-    }
 }

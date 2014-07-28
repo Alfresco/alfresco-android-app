@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -31,17 +32,21 @@ import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEven
 import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
+import org.alfresco.mobile.android.ui.workflow.task.TasksTemplate;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -65,6 +70,7 @@ public class TasksFragment extends TasksFoundationFragment
         emptyListMessageId = R.string.empty_tasks;
         enableTitle = false;
         loadState = LOAD_VISIBLE;
+        setHasOptionsMenu(true);
     }
 
     public static TasksFragment newInstanceByTemplate(Bundle b)
@@ -126,6 +132,29 @@ public class TasksFragment extends TasksFoundationFragment
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         MenuFragmentHelper.getMenu(context, menu);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        getMenu(getActivity(), menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case MenuActionItem.MENU_WORKFLOW_ADD:
+                Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
+                        PrivateDialogActivity.class);
+                in.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
+                getActivity().startActivity(in);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -214,7 +243,8 @@ public class TasksFragment extends TasksFoundationFragment
             super(appActivity, configuration);
             menuIconId = R.drawable.ic_action_inbox_light;
             menuTitleId = R.string.my_tasks;
-            templateArguments = new String[] {};
+            templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksTemplate.FILTER_KEY_STATUS,
+                    TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY, TasksTemplate.FILTER_KEY_ASSIGNEE };
         }
 
         // ///////////////////////////////////////////////////////////////////////////

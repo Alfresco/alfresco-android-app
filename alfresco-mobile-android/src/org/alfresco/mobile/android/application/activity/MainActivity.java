@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
-import org.alfresco.mobile.android.application.configuration.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
@@ -117,7 +117,6 @@ import android.view.Window;
 
 import com.squareup.otto.Subscribe;
 
-
 /**
  * Main activity of the application.
  * 
@@ -144,7 +143,8 @@ public class MainActivity extends BaseActivity
 
     private Node currentNode;
 
-    // Device capture (made static as we don't seem to be getting instance state back through creation).
+    // Device capture (made static as we don't seem to be getting instance state
+    // back through creation).
     private static DeviceCapture capture = null;
 
     private int fragmentQueue = -1;
@@ -157,12 +157,12 @@ public class MainActivity extends BaseActivity
     private static ActionBarDrawerToggle mDrawerToggle;
 
     private Intent callBackIntent = null;
-        
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-	@Override
+    @Override
     public void onCreate(Bundle savedInstanceState)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -173,9 +173,8 @@ public class MainActivity extends BaseActivity
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
 
-        if (capture != null)
-            capture.setActivity(this);
-        
+        if (capture != null) capture.setActivity(this);
+
         if (savedInstanceState != null)
         {
             MainActivityHelper helper = new MainActivityHelper(savedInstanceState.getBundle(MainActivityHelper.TAG));
@@ -252,10 +251,9 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
-        //Check if there is a Fujistu scanner intent coming back to us.
+        // Check if there is a Fujistu scanner intent coming back to us.
         checkScan();
     }
-    
 
     @Override
     protected void onStart()
@@ -630,12 +628,6 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(TasksFragment.TAG))
-        {
-            TasksFragment.getMenu(this, menu);
-            return true;
-        }
-
         if (isVisible(AccountDetailsFragment.TAG))
         {
             ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
@@ -683,14 +675,14 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_PROFILE:
                 UserProfileFragment.with(this).personId(getCurrentAccount().getUsername()).displayAsDialog();
                 return true;
-                
+
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
             case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
-                
+
             case MenuActionItem.MENU_ACCOUNT_ADD:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
@@ -743,8 +735,11 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case MenuActionItem.MENU_REFRESH:
-                ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
-                        .refresh();
+                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                {
+                    ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
+                            .refresh();
+                }
                 return true;
             case MenuActionItem.MENU_DISPLAY_GALLERY:
                 GalleryPreviewFragment.with(this).display();
@@ -912,12 +907,17 @@ public class MainActivity extends BaseActivity
     {
         if (getCurrentSession() instanceof RepositorySession)
         {
-            if (ConfigManager.getInstance(this).load(getCurrentSession()))
+            // Check configuration
+            if (getCurrentSession().getServiceRegistry().getConfigService() == null)
             {
-                displayWaitingDialog();
+                // In this case there's no configuration defined on server side
+                // We load the embedded configuration
+                ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
             }
             else
             {
+                // We have a new configuration available
+                // Let's dispatch the event
                 LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
                 result.setData(getCurrentSession().getServiceRegistry().getConfigService());
                 EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
@@ -1147,13 +1147,13 @@ public class MainActivity extends BaseActivity
         if (event == null) { return false; }
         return (currentAccount.getId() == event.account.getId());
     }
-    
+
     private void checkScan()
-    {    
+    {
         callBackIntent = getIntent();
-        
-        if (callBackIntent != null  &&  callBackIntent.getScheme() != null  &&
-            callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
+
+        if (callBackIntent != null && callBackIntent.getScheme() != null
+                && callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
         {
             if (capture != null)
             {

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
@@ -30,7 +31,6 @@ import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
-import org.alfresco.mobile.android.application.configuration.manager.FormConfigurator;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 
 import android.app.Activity;
@@ -56,8 +56,6 @@ import android.widget.TextView;
 public class NodePropertiesFragment extends NodeDetailsFragment
 {
     public static final String TAG = NodePropertiesFragment.class.getName();
-
-    private FormConfigurator config;
 
     private ConfigManager configurationManager;
 
@@ -120,13 +118,18 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 
         // Configuration available ?
         configurationManager = ConfigManager.getInstance(getActivity());
-        if (configurationManager != null && configurationManager.hasConfig(getAccount().getId()))
+        boolean hasDisplayed = false;
+        if (configurationManager != null
+                && configurationManager.hasConfig(getAccount().getId())
+                && configurationManager.getConfig(getAccount().getId()).getFormConfig(
+                        ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
-            FormConfigManager config = new FormConfigManager(getActivity(), configurationManager.getConfig(getAccount().getId()),
-                    propertyViewGroup);
-            config.displayProperties(node);
+            FormConfigManager config = new FormConfigManager(this, configurationManager.getConfig(getAccount()
+                    .getId()), propertyViewGroup);
+            hasDisplayed = config.displayProperties(node);
         }
-        else
+
+        if (!hasDisplayed)
         {
             generateProperties(inflater, propertyViewGroup,
                     MetadataUtils.getPropertyLabel(ContentModel.ASPECT_GENERAL), node, ContentModel.ASPECT_GENERAL);
@@ -154,7 +157,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         }
 
         // Add Headers
-        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.sdk_property_title, null);
+        ViewGroup grouprootview = (ViewGroup) inflater.inflate(R.layout.form_header, null);
         TextView tv = (TextView) grouprootview.findViewById(R.id.title);
         tv.setText(MetadataUtils.getAspectLabel(groupId));
         groupview = (ViewGroup) grouprootview.findViewById(R.id.group_panel);
@@ -178,8 +181,8 @@ public class NodePropertiesFragment extends NodeDetailsFragment
             if (currentNode.getProperty(prop.getKey()) != null
                     && currentNode.getProperty(prop.getKey()).getValue() != null)
             {
-                v = createPropertyView(inflater, getString(prop.getValue()), currentNode.getProperty(prop.getKey()),
-                        currentNode);
+                v = createPropertyView(currentNode, getString(prop.getValue()), inflater,
+                        currentNode.getProperty(prop.getKey()));
                 if (v != null)
                 {
                     propertyViews.add(v);
@@ -190,7 +193,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         return propertyViews;
     }
 
-    protected View createPropertyView(LayoutInflater inflater, String propertyLabel, Property property, Node currentNode)
+    protected View createPropertyView(Node currentNode, String propertyLabel, LayoutInflater inflater, Property property)
     {
         String value = null;
         if (PropertyType.DATETIME.equals(property.getType()))
@@ -208,7 +211,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 
         if (value == null) { return null; }
 
-        View vr = inflater.inflate(R.layout.sdk_property_row, null);
+        View vr = inflater.inflate(R.layout.form_read_row, null);
         TextView tv = (TextView) vr.findViewWithTag("propertyName");
         tv.setText(propertyLabel);
         tv = (TextView) vr.findViewWithTag("propertyValue");

@@ -165,7 +165,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             // Configuration
             configurationManager.init(acc);
             configure(configurationManager.getConfig(acc.getId()));
-            // display();
         }
 
         refresh();
@@ -289,8 +288,14 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         if (configService != null && configService.hasViewConfig())
         {
-            if (configService.getProfiles() != null
-                    && configService.getProfile().getViewConfig(ConfigConstants.VIEW_ROOT_NAVIGATION_MENU) != null)
+            String profileId = configurationManager.getCurrentProfileId();
+            if (profileId == null)
+            {
+                profileId = configService.getDefaultProfile().getIdentifier();
+            }
+            if (configService.getDefaultProfile().getRootViewId() != null
+                    && configService.getViewConfig(configService.getProfile(profileId).getRootViewId(),
+                            configurationManager.getCurrentScope()) != null)
             {
                 // Configuration (Internal or from Server)
                 DisplayUtils.hide(viewById(R.id.main_menu_group));
@@ -363,10 +368,10 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private void hideOrDisplay(ViewConfig viewConfig, int viewId, boolean forceHide)
     {
-        if (viewConfig != null && viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE) != null
-                && viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE) instanceof Boolean)
+        if (viewConfig != null && viewConfig.getParameter(ConfigConstants.VISIBLE_VALUE) != null
+                && viewConfig.getParameter(ConfigConstants.VISIBLE_VALUE) instanceof Boolean)
         {
-            if ((Boolean) viewConfig.getConfig(ConfigConstants.VISIBLE_VALUE))
+            if ((Boolean) viewConfig.getParameter(ConfigConstants.VISIBLE_VALUE))
             {
                 show(viewId);
             }
@@ -473,8 +478,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 return;
             }
         }
-        hide(R.id.menu_browse_shared);
-        hide(R.id.menu_browse_userhome);
+        if (getRootView() != null)
+        {
+            hide(R.id.menu_browse_shared);
+            hide(R.id.menu_browse_userhome);
+        }
     }
 
     public void displayFavoriteStatut()
