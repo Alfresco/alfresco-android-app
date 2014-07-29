@@ -23,13 +23,11 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.model.config.ItemConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.application.fragments.create.DocumentTypeRecordHelper;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 
 import android.app.Activity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.ViewGroup;
 
 public class CreateConfigManager extends BaseConfigManager
@@ -68,14 +66,14 @@ public class CreateConfigManager extends BaseConfigManager
     public List<DocumentTypeRecord> retrieveCreationDocumentList()
     {
         List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>();
-        String extension = null;
+        String extension = null, templatePath = null;
         for (ItemConfig itemConfig : creationConfig.getCreatableMimeTypes())
         {
             extension = (String) itemConfig.getParameter("extension");
+            templatePath = (String) itemConfig.getParameter("templatePath");
             fileTypes.add(new DocumentTypeRecord(MimeTypeManager.getInstance(getActivity()).getIcon(
                     itemConfig.getIconIdentifier()), itemConfig.getLabel(), extension, itemConfig.getIdentifier(),
-                    (TextUtils.isEmpty(extension)) ? null : DocumentTypeRecordHelper.TEMPLATEFOLDER_PATH
-                            .concat(extension)));
+                    TextUtils.isEmpty(templatePath) ? null : templatePath));
         }
         return fileTypes;
     }

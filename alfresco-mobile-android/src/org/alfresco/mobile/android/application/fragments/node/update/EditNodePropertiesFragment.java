@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -230,6 +231,8 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         @Override
         protected View doInBackground(Void... params)
         {
+            //Solve issue during UI creation outside main thread
+            Looper.prepare();
 
             modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
                     .getDocumentTypeDefinition((Document) node);
@@ -253,3 +256,4 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         }
     }
 }
+

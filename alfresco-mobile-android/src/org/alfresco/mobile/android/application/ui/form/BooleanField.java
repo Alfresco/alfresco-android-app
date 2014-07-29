@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.ui.form;
 
 import java.io.Serializable;
-import java.lang.ref.WeakReference;
 
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Property;
@@ -48,7 +47,7 @@ public class BooleanField extends BaseField
     public String getHumanReadableValue()
     {
         if (property.getValue() == null) { return ""; }
-        return (property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
+        return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

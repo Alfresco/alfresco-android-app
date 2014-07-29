@@ -132,7 +132,7 @@ public class TextField extends BaseField
         if (originalValue == null) { return null; }
         if (PropertyType.BOOLEAN.equals(property.getType()))
         {
-            return (property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
+            return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
         }
         else if (PropertyType.DATETIME.equals(property.getType()))
         {

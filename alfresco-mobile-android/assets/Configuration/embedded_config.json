@@ -109,25 +109,45 @@
         "icon-id": "t.docx",
         "description-id": "Microsoft Office 2007 Word Document",
         "params": {
+          "templatePath": "FilesTemplates/Template.docx",
           "extension": ".docx"
         }
-      }
+      },
+      {
+        "id": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "label-id": "Powerpoint Presentation",
+        "icon-id": "t.pptx",
+        "description-id": "Microsoft Office 2007 Powerpoint Presentation",
+        "params": {
+          "templatePath": "FilesTemplates/Template.pptx",
+          "extension": ".pptx"
+        }
+      },
+      {
+        "id": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "label-id": "Excel Spreadsheet",
+        "icon-id": "t.xlsx",
+        "description-id": "Microsoft Office 2007 Excel Spreadsheet",
+        "params": {
+          "templatePath": "FilesTemplates/Template.xlsx",
+          "extension": ".xlsx"
+        }
+      },
+      {
+        "id": "text/plain",
+        "label-id": "Text Document",
+        "icon-id": "t.txt",
+        "description-id": "Text Document",
+        "params": {
+          "extension": ".txt"
+        }
+      },
     ],
     "document-types": [
       {
         "id": "cm:content",
         "label-id": "cm_contentmodel.type.cm_content.title",
         "icon-id": "t"
-      },
-      {
-        "id": "fdk:company",
-        "label-id": "fdk_contentmodel.type.fdk_company.title",
-        "icon-id": "t.docx"
-      },
-      {
-        "id": "fdk:everything",
-        "label-id": "fdk_contentmodel.type.fdk_everything.title",
-        "icon-id": "t.docx"
       }
     ],
     "folder-types": [
@@ -192,10 +212,6 @@
           "item-type": "field-id",
           "field-id": "cm:author",
           "evaluator": "hasAuthorAspect"
-        },
-        {
-          "item-type": "field-id",
-          "field-id": "cm:created"
         }
       ]
     },

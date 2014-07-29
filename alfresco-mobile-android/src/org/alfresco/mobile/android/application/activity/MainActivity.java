@@ -1015,7 +1015,7 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onAccountErrorEvent(LoadAccountErrorEvent event)
     {
-        if (currentAccount.getId() != event.data) { return; }
+        if (currentAccount == null || currentAccount.getId() != event.data) { return; }
 
         // Display error dialog message
         // TODO Display Errors!
