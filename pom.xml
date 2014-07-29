@@ -138,7 +138,7 @@
 		<android.version>4.4.2_r2</android.version>
 		<android.annotation.version>22.3</android.annotation.version>
 		<android.support.version>19.1.0</android.support.version>
-		<android.maven.plugin.version>3.9.0-rc.2</android.maven.plugin.version>
+		<android.maven.plugin.version>3.9.0-rc.3</android.maven.plugin.version>
 
 		<!-- Testing Dependencies -->
 		<junit.version>4.10</junit.version>
