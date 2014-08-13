@@ -31,19 +31,19 @@ public final class ManagerFactory
 
     private static final String SEPARATOR = "_";
 
-    private static final String ISENABLE =  ConfigUtils.FAMILY_MANAGER.concat("_isEnable");
-    
-    private ManagerFactory(){
+    private static final String ISENABLE = ConfigUtils.FAMILY_MANAGER.concat("_isEnable");
+
+    private ManagerFactory()
+    {
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
     protected static int getBooleanId(Context context, String key)
     {
         int boolId = context.getResources().getIdentifier(
-                ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), BOOLEAN,
-                context.getApplicationContext().getPackageName());
+                ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), BOOLEAN, Manager.PACKAGE_NAME);
         return boolId;
     }
 

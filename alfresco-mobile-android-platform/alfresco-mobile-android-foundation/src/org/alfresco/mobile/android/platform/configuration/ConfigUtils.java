@@ -17,6 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform.configuration;
 
+import org.alfresco.mobile.android.platform.Manager;
+
 import android.content.Context;
 
 /**
@@ -32,9 +34,9 @@ public final class ConfigUtils
     private static final String SEPARATOR = "_";
 
     public static final String FAMILY_CONFIG = "config";
-    
+
     public static final String FAMILY_FORM = "form";
-    
+
     public static final String FAMILY_VALIDATION = "validation";
 
     public static final String FAMILY_OPERATION = "operation";
@@ -46,8 +48,7 @@ public final class ConfigUtils
     public static String getString(Context context, String family, String key)
     {
         int stringId = context.getResources().getIdentifier(
-                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING,
-                context.getApplicationContext().getPackageName());
+                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING, Manager.PACKAGE_NAME);
         return (stringId == 0) ? null : context.getString(stringId);
     }
 
