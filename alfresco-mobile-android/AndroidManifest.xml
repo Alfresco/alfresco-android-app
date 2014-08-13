@@ -221,7 +221,7 @@
             android:exported="false" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.storage.StorageAccessDocumentsProvider"
-            android:authorities="org.alfresco.android.provider.documents"
+            android:authorities="org.alfresco.mobile.android.provider.documents"
             android:enabled="@bool/atLeastKitKat"
             android:exported="true"
             android:grantUriPermissions="true"
