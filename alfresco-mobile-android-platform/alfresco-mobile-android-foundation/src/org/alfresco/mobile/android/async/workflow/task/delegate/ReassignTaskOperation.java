@@ -73,7 +73,7 @@ public class ReassignTaskOperation extends TaskOperation<Task>
                 }
                 else
                 {
-                    updatedTask = session.getServiceRegistry().getWorkflowService().unClaimTask(task);
+                    updatedTask = session.getServiceRegistry().getWorkflowService().unclaimTask(task);
                 }
             }
         }
