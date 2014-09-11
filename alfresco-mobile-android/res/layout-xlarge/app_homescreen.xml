@@ -14,11 +14,12 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.-->
+  limitations under the License.
+-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?AlfrescoTheme.Background.White"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    style="?AlfrescoTheme.Background.White"
     android:gravity="center" >
 
     <LinearLayout
@@ -32,47 +33,15 @@
         <ImageView
             android:layout_width="500dip"
             android:layout_height="150dip"
+            android:contentDescription="@null"
             android:scaleType="fitCenter"
-            android:src="@drawable/alfresco_logo_large"
-            android:contentDescription="@null" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dip"
-            android:gravity="center"
-            android:text="@string/home_title"
-            android:textSize="@dimen/home_title_size"
-           />
-
-        <Button
-            android:id="@+id/home_sign_cloud"
-            style="?AlfrescoTheme.Button.Large"
-            android:drawableLeft="@drawable/ic_cloud"
-            android:onClick="cloud"
-            android:text="@string/home_sign_cloud" />
-
-        <TextView
-           android:id="@+id/home_sign_cloud_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/home_sign_cloud_description"
-            android:textSize="@dimen/home_description_size" />
+            android:src="@drawable/alfresco_logo_large" />
 
         <Button
             style="?AlfrescoTheme.Button.Large"
-            android:drawableLeft="@drawable/ic_login"
+            android:contentDescription="@string/home_account"
             android:onClick="launch"
-            android:text="@string/home_account" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/home_account_description"
-            android:textSize="@dimen/home_description_size" />
+            android:text="@string/home_login" />
 
         <TextView
             android:id="@+id/help_guide"

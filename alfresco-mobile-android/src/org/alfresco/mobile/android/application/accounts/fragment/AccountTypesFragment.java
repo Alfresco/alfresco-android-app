@@ -87,17 +87,6 @@ public class AccountTypesFragment extends DialogFragment
             }
         });
 
-        TextView t2 = (TextView) v.findViewById(R.id.cloud_signup_hint);
-        if (getActivity() instanceof MainActivity)
-        {
-            t2.setText(R.string.account_wizard_alfresco_help_inside_app);
-        }
-        else
-        {
-            t2.setText(R.string.account_wizard_alfresco_help);
-        }
-        t2.setMovementMethod(LinkMovementMethod.getInstance());
-
         return v;
     }
 

@@ -47,17 +47,6 @@
             android:name="org.alfresco.mobile.android.application.activity.HomeScreenActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop" >
-
-            <!-- Internal : Sign up cloud -->
-            <intent-filter>
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <action android:name="android.intent.action.VIEW" />
-
-                <data
-                    android:host="sign_up_cloud"
-                    android:scheme="alfresco" />
-            </intent-filter>
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
 

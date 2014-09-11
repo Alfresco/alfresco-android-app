@@ -69,14 +69,7 @@ public class AccountCursorAdapter extends BaseCursorLoader<GenericViewHolder>
 
     private void updateBottomTextList(GenericViewHolder v, Cursor cursor)
     {
-        if (cursor.getString(AccountSchema.COLUMN_ACTIVATION_ID) != null)
-        {
-            v.bottomText.setText(context.getText(R.string.sign_up_cloud_awaiting_email));
-        }
-        else
-        {
             v.bottomText.setText(cursor.getString(AccountSchema.COLUMN_USERNAME_ID));
-        }
 
         if (selectedItems != null && selectedItems.contains(cursor.getLong(AccountSchema.COLUMN_ID_ID)))
         {

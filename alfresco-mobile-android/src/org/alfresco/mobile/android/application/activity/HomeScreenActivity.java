@@ -19,14 +19,12 @@ package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.fragment.AccountTypesFragment;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.intent.IntentIntegrator;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -74,7 +72,6 @@ public class HomeScreenActivity extends BaseActivity
         super.onStart();
     }
 
-    // TODO Change signup process ==> use onCreate intent than on newIntent.
     @Override
     protected void onNewIntent(Intent intent)
     {
@@ -83,12 +80,6 @@ public class HomeScreenActivity extends BaseActivity
         if (intent.getAction() == null || intent.getData() == null || !Intent.ACTION_VIEW.equals(intent.getAction())) { return; }
 
         if (IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                && IntentIntegrator.CLOUD_SIGNUP.equals(intent.getData().getHost()))
-        {
-            getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            cloud(null);
-        }
-        else if (IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                 && IntentIntegrator.HELP_GUIDE.equals(intent.getData().getHost()))
         {
             UIUtils.displayHelp(this);
@@ -98,14 +89,6 @@ public class HomeScreenActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-
-    public void cloud(View v)
-    {
-        CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
-        FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getLeftFragmentId(this),
-                CloudSignupDialogFragment.TAG, true);
-    }
-
     public void launch(View v)
     {
         AccountTypesFragment newFragment = new AccountTypesFragment();
