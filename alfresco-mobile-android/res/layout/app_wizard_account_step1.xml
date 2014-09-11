@@ -94,16 +94,6 @@
                 android:text="@string/account_wizard_alfresco_cloud_description"
                 android:textSize="@dimen/home_description_size" />
 
-            <TextView
-                android:id="@+id/cloud_signup_hint"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="5dip"
-                android:gravity="center"
-                android:text="@string/account_wizard_alfresco_help"
-                android:textSize="@dimen/home_description_size" />
-
             <Button
                 android:id="@+id/alfresco_server"
                 style="?AlfrescoTheme.Button.Large"

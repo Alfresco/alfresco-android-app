@@ -23,6 +23,7 @@
     <string name="empty_accounts">Kein Account verfügbar.</string>
 
     <!-- HOME SCREEN -->
+    <string name="home_login">Anmelden</string>
     <string name="home_title">Erste Schritte... </string>
     <string name="home_sign_cloud">Anmelden bei Alfresco Cloud</string>
     <string name="home_sign_cloud_description">Neu bei Alfresco? Erstellen Sie einen kostenlosen Online-Account, um Ihre Dokumente zu speichern und überall auf Inhalte zuzugreifen.</string>
@@ -196,32 +197,6 @@
     <string name="manage_accounts">Accounts verwalten...</string>
     <string name="cloud_networks_switch">Netzwerke wechseln...</string>
 
-    <!-- CLOUD SIGNUP -->
-    <string name="cloud_signup_firstname">Vorname</string>
-    <string name="cloud_signup_firstname_hint">Vorname (erforderlich)</string>
-    <string name="cloud_signup_lastname">Nachname</string>
-    <string name="cloud_signup_lastname_hint">Nachname (erforderlich)</string>
-    <string name="cloud_signup_email">E-Mail</string>
-    <string name="cloud_signup_email_hint">E-Mail wie beispiel@amail.com (erforderlich)</string>
-    <string name="cloud_signup_password">Passwort</string>
-    <string name="cloud_signup_password_hint_long">Passwort mit mindestens 6 Zeichen (erforderlich).</string>
-    <string name="cloud_signup_password_hint">Mindestens 6 Zeichen</string>
-    <string name="cloud_signup_confirm">Passwort bestätigen</string>
-    <string name="cloud_signup_confirm_hint">Passwort bestätigen (erforderlich)</string>
-    <string name="cloud_signup_action">Anmelden</string>
-    <string name="cloud_signup_hint">Indem Sie auf "Anmelden" tippen, stimmen Sie den <a href="http://www.alfresco.com/legal/agreements/cloud">Servicebedingungen</a> und der <a href="http://www.alfresco.com/privacy">Datenschutzrichtlinie</a> von Alfresco zu.</string>
-    <string name="sign_up_cloud">Anmelden bei Alfresco Cloud</string>
-    <string name="sign_up_cloud_email_verification">Account wartet auf E-Mail-Überprüfung</string>
-    <string name="sign_up_cloud_email_verification_line1">Sie haben sich für Alfresco in der Cloud mit der folgenden E-Mail-Adresse registriert:</string>
-    <string name="sign_up_cloud_email_verification_line2">Überprüfen Sie Ihren E-Mail-Posteingang. Wir haben Ihnen einen Link gesendet, den Sie zum Abschluss der Registrierung benötigen.</string>
-    <string name="sign_up_cloud_email_having_trouble">Aktivierung nicht möglich?</string>
-    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Bitte informieren Sie uns</a>, falls Sie Ihren Account nicht aktivieren können.</string>
-    <string name="sign_up_cloud_awaiting_email">Auf E-Mail-Verifizierung wird gewartet</string>
-    <string name="cloud_signup_resend">E-Mail erneut senden</string>
-    <string name="cloud_signup_resend_successfull">Erneuter E-Mail-Versand erfolgreich</string>
-    <string name="cloud_signup_resend_body">Sie erhalten unsere E-Mail nicht? Überprüfen Sie, ob Sie die E-Mail-Adresse korrekt eingegeben haben, und denken Sie daran, auch Ihren Spam-Ordner zu überprüfen.</string>
-    <string name="cloud_signup_error_email">Für die Nutzung von Alfresco ist es erforderlich, die E-Mail-Adresse Ihres Unternehmens anzugeben, damit Sie dem Netzwerk für Zusammenarbeit Ihres Unternehmens hinzugefügt werden können.</string>
-    <string name="cloud_signup_error_email_title">Alfresco Cloud: Anmelden.</string>
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">Authentifizierung</string>

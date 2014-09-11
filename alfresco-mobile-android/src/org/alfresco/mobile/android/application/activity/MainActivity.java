@@ -42,7 +42,6 @@ import org.alfresco.mobile.android.application.accounts.fragment.AccountsFragmen
 import org.alfresco.mobile.android.application.accounts.networks.CloudNetworksFragment;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenCallback;
 import org.alfresco.mobile.android.application.accounts.oauth.OAuthRefreshTokenLoader;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.commons.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.application.configuration.ConfigurationManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -208,12 +207,6 @@ public class MainActivity extends BaseActivity
 
         checkForUpdates();
 
-        // REDIRECT To Accounts Fragment if signup process
-        if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
-        {
-            displayAccounts();
-        }
-
         // Display or not Left/central panel for middle tablet.
         DisplayUtils.switchSingleOrTwo(this, false);
     }
@@ -315,14 +308,6 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
-            // Intent for CLOUD SIGN UP
-            if (IntentIntegrator.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
-            {
-                FragmentDisplayer.removeFragment(this, CloudSignupDialogFragment.TAG);
-                displayAccounts();
-                return;
-            }
-
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
                     && intent.getData().getHost().equals("activate-cloud-account")
                     && getFragment(AccountDetailsFragment.TAG) != null)
@@ -343,17 +328,6 @@ public class MainActivity extends BaseActivity
                     FragmentDisplayer.replaceFragment(this, frag, getFragmentPlace(), DetailsFragment.TAG, false);
                 }
                 return;
-            }
-
-            // Intent for display Sign up Dialog
-            if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && IntentIntegrator.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                    && IntentIntegrator.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))
-            {
-                getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                CloudSignupDialogFragment newFragment = new CloudSignupDialogFragment();
-                FragmentDisplayer.replaceFragment(this, newFragment, DisplayUtils.getFragmentPlace(this),
-                        CloudSignupDialogFragment.TAG, true);
             }
         }
         catch (Exception e)

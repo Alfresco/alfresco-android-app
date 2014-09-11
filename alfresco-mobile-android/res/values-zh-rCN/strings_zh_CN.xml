@@ -23,6 +23,7 @@
     <string name="empty_accounts">无可用帐户</string>
 
     <!-- HOME SCREEN -->
+    <string name="home_login">登录</string>
     <string name="home_title">让我们首先了解&#8230; </string>
     <string name="home_sign_cloud">注册 Alfresco 云</string>
     <string name="home_sign_cloud_description">Alfresco 新用户？创建一个免费的在线帐户以从任意位置存储和访问您的内容。</string>
@@ -195,33 +196,6 @@
     <string name="cloud_networks_empty">无可用网络</string>
     <string name="manage_accounts">管理帐户&#8230;</string>
     <string name="cloud_networks_switch">切换网络&#8230;</string>
-
-    <!-- CLOUD SIGNUP -->
-    <string name="cloud_signup_firstname">名字</string>
-    <string name="cloud_signup_firstname_hint">名字（必填）</string>
-    <string name="cloud_signup_lastname">姓氏</string>
-    <string name="cloud_signup_lastname_hint">姓氏（必填）</string>
-    <string name="cloud_signup_email">电子邮件</string>
-    <string name="cloud_signup_email_hint">电子邮件（必填），例如 example@acme.com</string>
-    <string name="cloud_signup_password">密码</string>
-    <string name="cloud_signup_password_hint_long">密码（必填），至少 6 个字符。</string>
-    <string name="cloud_signup_password_hint">至少 6 个字符。</string>
-    <string name="cloud_signup_confirm">确认密码</string>
-    <string name="cloud_signup_confirm_hint">确认密码（必填）</string>
-    <string name="cloud_signup_action">注册</string>
-    <string name="cloud_signup_hint">点按注册就表明您同意 Alfresco <a href="http://www.alfresco.com/legal/agreements/cloud">服务条款</a>和<a href="http://www.alfresco.com/privacy">隐私政策</a>。</string>
-    <string name="sign_up_cloud">注册 Alfresco 云</string>
-    <string name="sign_up_cloud_email_verification">帐户正在等待电子邮件验证</string>
-    <string name="sign_up_cloud_email_verification_line1">您已使用此电子邮件地址注册 Alfresco 云：</string>
-    <string name="sign_up_cloud_email_verification_line2">请检查您的电子邮件。我们向您发送了一个链接，您需要使用此链接完成注册。</string>
-    <string name="sign_up_cloud_email_having_trouble">激活出了问题？</string>
-    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">如果您无法激活您的帐户，</a>请告诉我们。</string>
-    <string name="sign_up_cloud_awaiting_email">等待电子邮件验证</string>
-    <string name="cloud_signup_resend">重新发送电子邮件</string>
-    <string name="cloud_signup_resend_successfull">电子邮件重新发送成功</string>
-    <string name="cloud_signup_resend_body">未收到我们的电子邮件？请检查并确认您正确输入了电子邮件地址，请注意查看您的垃圾邮件文件夹</string>
-    <string name="cloud_signup_error_email">Alfresco 请您使用您的公司电子邮件地址，以便将您添加到您的公司协作网络中。</string>
-    <string name="cloud_signup_error_email_title">Alfresco 云：注册。</string>
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">身份验证</string>

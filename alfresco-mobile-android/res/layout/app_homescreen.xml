@@ -28,45 +28,18 @@
         android:orientation="vertical"
         android:visibility="visible" >
 
-        <TextView
-            android:focusable="true"
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dip"
-            android:gravity="center"
-            android:text="@string/home_title"
-            android:textSize="@dimen/home_title_size" />
-
-        <Button
-            style="?AlfrescoTheme.Button.Large"
-            android:drawableLeft="@drawable/ic_cloud"
-            android:onClick="cloud"
-            android:text="@string/home_sign_cloud"
-            android:contentDescription="@string/home_sign_cloud"
-            />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:gravity="center"
-            android:text="@string/home_sign_cloud_description"
-            android:textSize="@dimen/home_description_size" />
-
-        <Button
-            style="?AlfrescoTheme.Button.Large"
-            android:drawableLeft="@drawable/ic_login"
-            android:onClick="launch"
-            android:text="@string/home_account"
-            android:contentDescription="@string/home_account"
+            android:layout_height="100dip"
+            android:src="@drawable/alfresco_logo_simple"
              />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/home_account_description"
-            android:textSize="@dimen/home_description_size" />
+        <Button
+            style="?AlfrescoTheme.Button.Large"
+            android:onClick="launch"
+            android:text="@string/home_login"
+            android:contentDescription="@string/home_account"
+             />
 
         <TextView
             android:id="@+id/help_guide"

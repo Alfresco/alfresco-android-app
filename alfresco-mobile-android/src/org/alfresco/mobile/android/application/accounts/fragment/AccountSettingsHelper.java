@@ -118,17 +118,6 @@ public class AccountSettingsHelper
         this.data = data;
     }
 
-    public static String getSignUpHostname()
-    {
-        String url = OAuthConstant.PUBLIC_API_HOSTNAME;
-        Bundle b = getOAuthSettings();
-        if (b != null && b.getString(OAUTH_URL) != null)
-        {
-            url = b.getString(OAUTH_URL);
-        }
-        return url;
-    }
-
     public static Bundle getOAuthSettings()
     {
         Bundle b = null;

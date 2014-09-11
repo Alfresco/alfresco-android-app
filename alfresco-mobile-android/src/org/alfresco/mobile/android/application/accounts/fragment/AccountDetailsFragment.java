@@ -26,10 +26,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.Account;
 import org.alfresco.mobile.android.application.accounts.AccountManager;
 import org.alfresco.mobile.android.application.accounts.AccountSchema;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoader;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupLoaderCallback;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoadeCallback;
-import org.alfresco.mobile.android.application.accounts.signup.CloudSignupStatusLoader;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -54,7 +50,6 @@ import org.alfresco.mobile.android.ui.manager.MessengerManager;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
-import android.app.LoaderManager;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -65,7 +60,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -77,7 +71,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * It's responsible to display the details of a specific account.
@@ -137,11 +130,6 @@ public class AccountDetailsFragment extends BaseFragment
             vRoot = inflater.inflate(R.layout.app_account_details, container, false);
             initValues(vRoot);
         }
-        else
-        {
-            vRoot = inflater.inflate(R.layout.app_cloud_signup_check, container, false);
-            initAwaitingCloud(vRoot);
-        }
 
         if (isEditable)
         {
@@ -179,41 +167,6 @@ public class AccountDetailsFragment extends BaseFragment
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void initAwaitingCloud(final View v)
-    {
-        TextView tv = (TextView) v.findViewById(R.id.sign_up_cloud_email);
-        tv.setText(tv.getText() + " " + acc.getUsername());
-
-        tv = (TextView) v.findViewById(R.id.sign_up_cloud_email_having_trouble);
-        tv.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Button btn = (Button) v.findViewById(R.id.cloud_signup_refresh);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                CloudSignupStatusLoadeCallback call = new CloudSignupStatusLoadeCallback(getActivity(),
-                        AccountDetailsFragment.this, acc);
-                LoaderManager lm = getLoaderManager();
-                lm.restartLoader(CloudSignupStatusLoader.ID, null, call);
-            }
-        });
-
-        btn = (Button) v.findViewById(R.id.cloud_signup_resend);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                CloudSignupLoaderCallback call = new CloudSignupLoaderCallback(getActivity(),
-                        AccountDetailsFragment.this, null, null, acc.getUsername(), null, null);
-                LoaderManager lm = getLoaderManager();
-                lm.restartLoader(CloudSignupLoader.ID, null, call);
-            }
-        });
-    }
-
     private void initValues(final View v)
     {
         URL tmprUrl = null;
