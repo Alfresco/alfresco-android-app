@@ -313,6 +313,7 @@ public final class SynchroManager extends OperationManager
                 if (intent.getAction().equals(IntentIntegrator.ACTION_DELETE_COMPLETED))
                 {
                     Node node = (Node) b.getParcelable(IntentIntegrator.EXTRA_DOCUMENT);
+                    if (node == null) { return; }
                     Cursor favoriteCursor = mAppContext.getContentResolver().query(
                             SynchroProvider.CONTENT_URI,
                             SynchroSchema.COLUMN_ALL,
@@ -842,17 +843,19 @@ public final class SynchroManager extends OperationManager
             + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_PARENT_ID + " = '%s';";
 
     private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
-            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " IN ( "
-            + SyncOperation.STATUS_PENDING + "," + SyncOperation.STATUS_HIDDEN + ");";
+            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + SynchroSchema.COLUMN_STATUS + " IN ( " + SyncOperation.STATUS_PENDING + "," + SyncOperation.STATUS_HIDDEN
+            + ");";
 
     private static final String QUERY_SUM_TOTAL_IN_PENDING = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES
-            + ") FROM " + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " = "
-            + SyncOperation.STATUS_PENDING + " AND " + SynchroSchema.COLUMN_MIMETYPE + " NOT IN ('"
-            + ContentModel.TYPE_FOLDER + "');";
+            + ") FROM " + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + SynchroSchema.COLUMN_STATUS + " = " + SyncOperation.STATUS_PENDING + " AND "
+            + SynchroSchema.COLUMN_MIMETYPE + " NOT IN ('" + ContentModel.TYPE_FOLDER + "');";
 
     private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + SynchroSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
-            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND " + SynchroSchema.COLUMN_STATUS + " IN ("
-            + SyncOperation.STATUS_PENDING + ", " + SyncOperation.STATUS_SUCCESSFUL + ");";
+            + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + SynchroSchema.COLUMN_STATUS + " IN (" + SyncOperation.STATUS_PENDING + ", "
+            + SyncOperation.STATUS_SUCCESSFUL + ");";
 
     private static final String QUERY_SUM_TOTAL = "SELECT SUM(" + SynchroSchema.COLUMN_TOTAL_SIZE_BYTES + ") FROM "
             + SynchroSchema.TABLENAME + " WHERE " + SynchroSchema.COLUMN_PARENT_ID + " = '%s';";
@@ -969,7 +972,7 @@ public final class SynchroManager extends OperationManager
     // ////////////////////////////////////////////////////
     public SyncScanInfo getScanInfo(Account acc)
     {
-        //IF sync is disabled scanInfo is success by default.
+        // IF sync is disabled scanInfo is success by default.
         if (!hasActivateSync(acc)) { return new SyncScanInfo(0, 0, SyncScanInfo.RESULT_SUCCESS); }
 
         long dataFinalStored = getAmountDataStored(acc);
