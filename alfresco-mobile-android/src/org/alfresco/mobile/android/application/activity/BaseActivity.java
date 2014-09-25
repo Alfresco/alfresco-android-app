@@ -90,6 +90,7 @@ public abstract class BaseActivity extends Activity
         filters.addAction(IntentIntegrator.ACTION_DISPLAY_DIALOG);
         filters.addAction(IntentIntegrator.ACTION_DISPLAY_ERROR);
         utilsReceiver = new UtilsReceiver();
+        receivers.add(utilsReceiver);
         broadcastManager.registerReceiver(utilsReceiver, filters);
     }
 
