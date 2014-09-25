@@ -206,17 +206,19 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
         }
+        else
+        {
+            dueOn.setText(getString(R.string.tasks_due_no_date));
+        }
 
-        Button b = (Button) vRoot.findViewById(R.id.process_due_on);
-        b.setOnClickListener(new OnClickListener()
+        dueOn.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                new DatePickerFragment().show(getFragmentManager(), DatePickerFragment.TAG);
+                DatePickerFragment.newInstance(0, TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
-        b.setText(getString(R.string.tasks_due_no_date));
 
         // ASSIGNEES
         ib = (ImageButton) vRoot.findViewById(R.id.action_process_assignee);
