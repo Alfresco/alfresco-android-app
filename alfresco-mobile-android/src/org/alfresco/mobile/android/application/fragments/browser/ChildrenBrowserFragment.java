@@ -1099,6 +1099,12 @@ public class ChildrenBrowserFragment extends GridNavigationFragment implements R
     // //////////////////////////////////////////////////////////////////////
     public void search(int fragmentPlaceId)
     {
+        // Use case : DocumentLibrary Site
+        if (folderParameter == null && currentSiteParameter != null)
+        {
+            folderParameter = parentFolder;
+        }
+
         FragmentDisplayer.replaceFragment(getActivity(),
                 SearchFragment.newInstance(folderParameter, currentSiteParameter), fragmentPlaceId, SearchFragment.TAG,
                 true);
