@@ -73,12 +73,6 @@
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" /> 
-                <data android:scheme="alfrescoFujitsuScanCallback" />
-            </intent-filter>
-            
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -116,6 +110,14 @@
                     android:host="sign_up_cloud_i"
                     android:scheme="alfresco" />
             </intent-filter>
+            
+            <!-- Fujitsu scan result -->
+             <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            
         </activity>
 
         <!-- Private : Passcode Activity -->
@@ -166,6 +168,11 @@
 
                 <data android:mimeType="*/*" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
 
         <!-- Internal : Activity As a Dialog -->
@@ -192,7 +199,7 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-             <intent-filter>
+            <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_EDIT_NODE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -207,7 +214,7 @@
             android:exported="false"
             android:label="@string/sync_favorites"
             android:syncable="true" />
-         <provider
+        <provider
             android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
             android:authorities="org.alfresco.mobile.android.provider.mimetypes"
             android:exported="false" />
@@ -288,7 +295,7 @@
         <meta-data
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:resource="@dimen/app_minimumsize_h" />
-
+        
         <!-- *************************************************************** -->
         <!-- DEPRECATED -->
         <!-- *************************************************************** -->
@@ -299,5 +306,5 @@
             android:authorities="org.alfresco.mobile.android.provider.accounts"
             android:exported="false" />
     </application>
- 
+
 </manifest>

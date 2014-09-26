@@ -37,7 +37,6 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
-import org.alfresco.mobile.android.application.capture.FujitsuCapture;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
@@ -70,6 +69,7 @@ import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
@@ -90,7 +90,6 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.GetChars;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -811,9 +810,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
 
-            if (FujitsuCapture.hasFujitsuScanner(this.getActivity()))
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, Menu.FIRST
-                        + MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT, R.string.scan_document);
+            if (ScanSnapManager.getInstance(getActivity()) != null && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+            {
+                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST + MenuActionItem.MENU_SCAN_DOCUMENT,
+                        R.string.scan);
+            }
         }
     }
 
