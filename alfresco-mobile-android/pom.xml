@@ -188,7 +188,7 @@
 								<skip>false</skip>
 								<verbose>true</verbose>
 								<inputApk>${project.build.directory}/${project.artifactId}-${project.version}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk </outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-mobileIron.apk</outputApk>
 							</zipalign>
 						</configuration>
 						<executions>

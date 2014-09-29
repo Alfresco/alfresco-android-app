@@ -51,7 +51,8 @@
     <string name="help_user_guide">Alfresco_Mobile_Android_App_User_Guide.pdf</string>
 
     <!-- Bamboo Build Number -->
-    <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
+    <string name="bamboo_buildnumber">235.${bamboo.buildNumber}</string>
+    <string name="version_label">Alfresco Mobile for MobileIron AppConnect</string>
 
     <!-- Cloud Share URL -->
     <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>

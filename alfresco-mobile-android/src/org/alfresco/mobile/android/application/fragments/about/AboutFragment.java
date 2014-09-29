@@ -26,6 +26,7 @@ import android.app.DialogFragment;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,8 +59,16 @@ public class AboutFragment extends DialogFragment
         TextView foo = (TextView) v.findViewById(R.id.about_description);
         foo.setText(Html.fromHtml(getString(R.string.about_description)));
 
+        TextView tv = (TextView) v.findViewById(R.id.about_versionLabel);
+        String versionLabel = getString(R.string.version_label);
+        if (!TextUtils.isEmpty(versionLabel)){
+            tv.setText(versionLabel);
+        } else {
+            tv.setVisibility(View.GONE);
+        }
+        
         // Version Number
-        TextView tv = (TextView) v.findViewById(R.id.about_buildnumber);
+        tv = (TextView) v.findViewById(R.id.about_buildnumber);
         String versionNumber = "";
         try
         {
