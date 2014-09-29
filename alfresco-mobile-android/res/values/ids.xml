@@ -51,7 +51,7 @@
     <string name="help_user_guide">Alfresco_Mobile_Android_App_User_Guide.pdf</string>
 
     <!-- Bamboo Build Number -->
-    <string name="bamboo_buildnumber">234.${bamboo.buildNumber}</string>
+    <string name="bamboo_buildnumber">235.${bamboo.buildNumber}</string>
     <string name="version_label">Alfresco Mobile for Symantec Sealed</string>
 
     <!-- Cloud Share URL -->
