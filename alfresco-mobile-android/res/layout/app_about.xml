@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Copyright (C) 2005-2014 Alfresco Software Limited.
+  Copyright (C) 2005-2012 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
   
@@ -55,6 +55,12 @@
             android:layout_width="fill_parent"
             android:layout_height="0dip"
             android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/about_versionLabel"
+                style="@style/about_text_normal_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/about_buildnumber"
