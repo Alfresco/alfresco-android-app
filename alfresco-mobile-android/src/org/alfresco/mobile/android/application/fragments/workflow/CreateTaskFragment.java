@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.commons.utils.AndroidVersion;
@@ -377,10 +378,20 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
     @Override
     public void onDatePicked(int dateId, GregorianCalendar gregorianCalendar)
     {
-        gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        gregorianCalendar.set(Calendar.MINUTE, 59);
-        gregorianCalendar.set(Calendar.SECOND, 59);
-        gregorianCalendar.set(Calendar.MILLISECOND, 999);
+        if (alfSession instanceof RepositorySessionImpl && ((RepositorySessionImpl) alfSession).hasPublicAPI())
+        {
+            gregorianCalendar.set(Calendar.HOUR_OF_DAY, 00);
+            gregorianCalendar.set(Calendar.MINUTE, 00);
+            gregorianCalendar.set(Calendar.SECOND, 00);
+            gregorianCalendar.set(Calendar.MILLISECOND, 000);
+        }
+        else
+        {
+            gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            gregorianCalendar.set(Calendar.MINUTE, 59);
+            gregorianCalendar.set(Calendar.SECOND, 59);
+            gregorianCalendar.set(Calendar.MILLISECOND, 999);
+        }
         dueAt = gregorianCalendar;
         Button dueOn = (Button) vRoot.findViewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
