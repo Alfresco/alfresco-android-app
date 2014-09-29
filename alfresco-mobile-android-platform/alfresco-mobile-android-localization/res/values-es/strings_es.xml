@@ -23,6 +23,7 @@
     <string name="empty_accounts">Ninguna cuenta disponible</string>
 
     <!-- HOME SCREEN -->
+    <string name="home_login">Iniciar sesión</string>
     <string name="home_title">Vamos a empezar&#8230; </string>
     <string name="home_sign_cloud">Registrarse en Alfresco Cloud</string>
     <string name="home_sign_cloud_description">¿Es nuevo en Alfresco? Cree una cuenta en línea gratuita para almacenar su contenido y acceder a este</string>
@@ -196,32 +197,6 @@
     <string name="manage_accounts">Gestionar cuentas&#8230;</string>
     <string name="cloud_networks_switch">Cambiar redes&#8230;</string>
 
-    <!-- CLOUD SIGNUP -->
-    <string name="cloud_signup_firstname">Nombre</string>
-    <string name="cloud_signup_firstname_hint">Nombre (obligatorio)</string>
-    <string name="cloud_signup_lastname">Apellidos</string>
-    <string name="cloud_signup_lastname_hint">Apellidos (obligatorio)</string>
-    <string name="cloud_signup_email">Correo electrónico</string>
-    <string name="cloud_signup_email_hint">Correo electrónico (obligatorio) como ejemplo@acme.com</string>
-    <string name="cloud_signup_password">Contraseña</string>
-    <string name="cloud_signup_password_hint_long">Contraseña (obligatorio) de mínimo 6 caracteres.</string>
-    <string name="cloud_signup_password_hint">6 caracteres mínimo.</string>
-    <string name="cloud_signup_confirm">Confirmar contraseña</string>
-    <string name="cloud_signup_confirm_hint">Confirmar contraseña (obligatorio)</string>
-    <string name="cloud_signup_action">Registrarse</string>
-    <string name="cloud_signup_hint">Al tocar en Registrarse, acepta las <a href="http://www.alfresco.com/legal/agreements/cloud">Condiciones de servicio</a> y la <a href="http://www.alfresco.com/privacy">Política de privacidad</a> de Alfresco.</string>
-    <string name="sign_up_cloud">Registrarse en Alfresco Cloud</string>
-    <string name="sign_up_cloud_email_verification">Cuenta en espera de verificación de correo electrónico</string>
-    <string name="sign_up_cloud_email_verification_line1">Se ha registrado en Alfresco en la nube con la dirección de correo electrónico:</string>
-    <string name="sign_up_cloud_email_verification_line2">Compruebe su correo electrónico. Le hemos enviado un enlace que necesita usar para completar el registro.</string>
-    <string name="sign_up_cloud_email_having_trouble">¿Tiene problemas para activar?</string>
-    <string name="sign_up_cloud_email_having_trouble_line1"><a href="http://getsatisfaction.com/alfresco/products/alfresco_alfresco_mobile_app">Díganos</a> si no puede activar su cuenta.</string>
-    <string name="sign_up_cloud_awaiting_email">Esperando verificación de correo electrónico</string>
-    <string name="cloud_signup_resend">Reenviar correo electrónico</string>
-    <string name="cloud_signup_resend_successfull">Correo electrónico reenviado correctamente</string>
-    <string name="cloud_signup_resend_body">¿No recibe nuestro correo electrónico? Compruebe si ha introducido la dirección de correo electrónico correctamente y recuerde buscar el las carpetas de spam</string>
-    <string name="cloud_signup_error_email">Alfresco requiere que use su dirección de correo electrónico de empresa para poder añadirlo a la red de colaboración de su empresa.</string>
-    <string name="cloud_signup_error_email_title">Alfresco Cloud: registrarse.</string>
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">Autenticación</string>
@@ -682,11 +657,11 @@
     <string name="my_tasks">Mis tareas</string>
     <string name="empty_tasks">Sin tareas</string>
     <string name="empty_items">Sin adjuntos</string>
-    <string name="task_items">Adjunto(s)</string>
     <string name="empty_process_definition">Ningún proceso</string>
     <string name="workflow_start">Crear tarea</string>
     <string name="task_actions">Respuesta</string>
     <string name="tasks">Tareas</string>
+    <string name="task_items">Adjuntos</string>
     <string name="task_workflow">Proceso</string>
 
     <!-- Workflow FILTERS -->
@@ -766,6 +741,7 @@
     <string name="process_due_on">Vencimiento el</string>
     <string name="process_no_date">Sin fecha</string>
     <string name="process_assignees">Asignados</string>
+    <string name="process_diagram">Diagrama de proceso</string>
     <string name="task_review_document">Revise %s</string>
     <string name="task_review_documents">Revise este contenido</string>
     <string name="task_assignees_plurals">{0,choice,0#Ningún asignado|1#1 asignado|1&lt;{0} asignados}</string>
@@ -778,7 +754,6 @@
     <string name="process_no_description">(No hay mensajes)</string>
     <string name="process_no_assignees">Ningún asignado</string>
     <string name="process_initiator">Iniciador</string>
-    <string name="process_diagram">Diagrama</string>
     <string name="process_attachments">Adjuntos</string>
     <string name="process_no_attachments">Ningún contenido adjunto</string>
     <string name="process_priority">Prioridad</string>

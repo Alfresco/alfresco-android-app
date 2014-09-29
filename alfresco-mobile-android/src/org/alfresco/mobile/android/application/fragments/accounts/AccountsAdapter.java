@@ -87,14 +87,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
 
     private void updateBottomTextList(GenericViewHolder v, AlfrescoAccount acc)
     {
-        if (acc.getActivation() != null)
-        {
-            v.bottomText.setText(getContext().getText(R.string.sign_up_cloud_awaiting_email));
-        }
-        else
-        {
-            v.bottomText.setText(acc.getUsername());
-        }
+        v.bottomText.setText(acc.getUsername());
 
         if (selectedItems != null && selectedItems.contains(acc))
         {

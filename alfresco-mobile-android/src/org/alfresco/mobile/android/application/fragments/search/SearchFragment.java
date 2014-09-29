@@ -375,6 +375,7 @@ public class SearchFragment extends BaseCursorGridFragment
                             .display();
                     break;
                 default:
+                    //TODO check with 1.4.1
                     DocumentFolderSearchFragment.with(getActivity()).query(search.getQuery())
                             .title(search.getDescription()).display();
                     break;
@@ -405,7 +406,7 @@ public class SearchFragment extends BaseCursorGridFragment
         if (search == null)
         {
             HistorySearchManager.createHistorySearch(getActivity(), SessionUtils.getAccount(getActivity()).getId(),
-                    searchKey, 0, getQueryDescription(keywords, tmpParentFolder), null, new Date().getTime());
+                    searchKey, 0, getQueryDescription(keywords, tmpParentFolder, site), keywords, new Date().getTime());
         }
         else
         {
@@ -417,12 +418,24 @@ public class SearchFragment extends BaseCursorGridFragment
     // //////////////////////////////////////////////////////////////////////
     // QUERY DESCRIPTION
     // //////////////////////////////////////////////////////////////////////
-    private static String getQueryDescription(String keywords, Folder folder)
+    private static final String DOCUMENT_LIBRARY_PATTERN = "/Sites/%s/documentLibrary";
+
+    private static String getQueryDescription(String keywords, Folder folder, Site site)
     {
         StringBuilder builder = new StringBuilder();
         if (folder != null)
         {
-            addParameter(builder, "in", folder.getName());
+            //If Site Documentlibrary we display the site name instead of folder name
+            if (site != null
+                    && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier()).equalsIgnoreCase(
+                            (String) folder.getPropertyValue(PropertyIds.PATH)))
+            {
+                addParameter(builder, "in", site.getTitle());
+            }
+            else
+            {
+                addParameter(builder, "in", folder.getName());
+            }
             builder.append(" ");
         }
         builder.append(keywords);
@@ -507,7 +520,7 @@ public class SearchFragment extends BaseCursorGridFragment
     public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String keywords = cursor.getString(HistorySearchSchema.COLUMN_DESCRIPTION_ID);
+        String keywords = cursor.getString(HistorySearchSchema.COLUMN_QUERY_ID);
         search(keywords, HistorySearchManager.createHistorySearch(cursor));
     }
 

@@ -43,7 +43,6 @@ import org.alfresco.mobile.android.application.fragments.accounts.AccountEditFra
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
@@ -332,14 +331,6 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
-            // Intent for CLOUD SIGN UP
-            if (PrivateIntent.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
-            {
-                FragmentDisplayer.with(this).remove(CloudSignupDialogFragment.TAG);
-                AccountsFragment.with(this).display();
-                return;
-            }
-
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
                     && intent.getData().getHost().equals("activate-cloud-account")
                     && getFragment(AccountDetailsFragment.TAG) != null)
@@ -377,15 +368,6 @@ public class MainActivity extends BaseActivity
                             .display();
                 }
                 return;
-            }
-
-            // Intent for display Sign up Dialog
-            if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                    && PrivateIntent.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))
-            {
-                getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                CloudSignupDialogFragment.with(this).display();
             }
         }
         catch (Exception e)

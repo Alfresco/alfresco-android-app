@@ -190,9 +190,13 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         {
             dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
         }
+        else
+        {
+            dueOn.setText(getString(R.string.tasks_due_no_date));
+        }
 
-        Button b = (Button) viewById(R.id.process_due_on);
-        b.setOnClickListener(new OnClickListener()
+        Button dueOn = (Button) viewById(R.id.process_due_on);
+        dueOn.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -200,7 +204,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
                 DatePickerFragment.newInstance("0", TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
-        b.setText(getString(R.string.tasks_due_no_date));
+        dueOn.setText(getString(R.string.tasks_due_no_date));
 
         // ASSIGNEES
         ib = (ImageButton) viewById(R.id.action_process_assignee);

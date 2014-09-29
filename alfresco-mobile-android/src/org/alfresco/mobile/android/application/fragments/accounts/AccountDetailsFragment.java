@@ -154,11 +154,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
             setRootView(inflater.inflate(R.layout.app_account_details, container, false));
             initValues();
         }
-        else
-        {
-            setRootView(inflater.inflate(R.layout.app_cloud_signup_check, container, false));
-            initAwaitingCloud(getRootView());
-        }
 
         if (isEditable)
         {
@@ -196,45 +191,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void initAwaitingCloud(final View v)
-    {
-        TextView tv = (TextView) v.findViewById(R.id.sign_up_cloud_email);
-        tv.setText(tv.getText() + " " + acc.getUsername());
-
-        tv = (TextView) v.findViewById(R.id.sign_up_cloud_email_having_trouble);
-        tv.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Button btn = (Button) v.findViewById(R.id.cloud_signup_refresh);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Operator.with(getActivity()).load(
-                        new SignUpStatusRequest.Builder(getActivity().getString(R.string.signup_key),
-                                new CloudSignupRequest(acc)));
-                if (getActivity() instanceof BaseActivity)
-                {
-                    ((BaseActivity) getActivity()).displayWaitingDialog();
-                }
-            }
-        });
-
-        btn = (Button) v.findViewById(R.id.cloud_signup_resend);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Operator.with(getActivity()).load(new SignUpRequest.Builder(null, null, acc.getUsername(), null, null));
-                if (getActivity() instanceof BaseActivity)
-                {
-                    ((BaseActivity) getActivity()).displayWaitingDialog();
-                }
-            }
-        });
-    }
-
     private void initValues()
     {
         URL tmprUrl = null;
@@ -775,43 +731,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
         else
         {
             AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.account_not_activated_description));
-        }
-    }
-
-    @Subscribe
-    public void onCloudSignUpEvent(SignUpEvent event)
-    {
-        if (event.data != null)
-        {
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.cloud_signup_resend_successfull);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.cloud_signup_resend_body);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-            ActionUtils.actionDisplayDialog(getActivity(), b);
-        }
-        else if (event.hasException)
-        {
-            Exception e = event.exception;
-            int errorMessageId = R.string.error_general;
-
-            if (e instanceof AlfrescoServiceException
-                    && ((AlfrescoServiceException) e).getErrorCode() == CloudSignupRequest.SESSION_SIGNUP_ERROR
-                    && ((AlfrescoServiceException) e).getMessage().contains("Invalid Email Address"))
-            {
-                errorMessageId = R.string.cloud_signup_error_email;
-            }
-
-            Log.e(TAG, Log.getStackTraceString(event.exception));
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.cloud_signup_error_email_title);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, errorMessageId);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-            ActionUtils.actionDisplayDialog(getActivity(), b);
-        }
-
-        if (getActivity() instanceof BaseActivity)
-        {
-            ((BaseActivity) getActivity()).removeWaitingDialog();
         }
     }
 

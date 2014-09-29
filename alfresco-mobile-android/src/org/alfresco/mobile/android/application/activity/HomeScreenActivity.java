@@ -20,15 +20,12 @@ package org.alfresco.mobile.android.application.activity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.home.HomeScreenFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -69,12 +66,6 @@ public class HomeScreenActivity extends BaseActivity
         if (intent.getAction() == null || intent.getData() == null || !Intent.ACTION_VIEW.equals(intent.getAction())) { return; }
 
         if (PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                && PrivateIntent.CLOUD_SIGNUP.equals(intent.getData().getHost()))
-        {
-            getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            cloud(null);
-        }
-        else if (PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                 && PrivateIntent.HELP_GUIDE.equals(intent.getData().getHost()))
         {
             HelpDialogFragment.displayHelp(this);
@@ -84,12 +75,6 @@ public class HomeScreenActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // ACTIONS
     // ///////////////////////////////////////////////////////////////////////////
-
-    public void cloud(View v)
-    {
-        CloudSignupDialogFragment.with(this).display();
-    }
-
     public void launch(View v)
     {
         AccountTypesFragment.with(this).display();
@@ -98,12 +83,6 @@ public class HomeScreenActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    @Subscribe
-    public void onCloudSignUpEvent(SignUpEvent event)
-    {
-        finish();
-    }
-
     @Subscribe
     public void onRetrieveOAuthDataEvent(RetrieveOAuthDataEvent event)
     {
