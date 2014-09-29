@@ -405,7 +405,14 @@ public class CreateTaskFragment extends BaseFragment implements onPickPersonFrag
         Map<String, Serializable> variables = new HashMap<String, Serializable>();
         if (dueAt != null)
         {
-            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
+            if (alfSession instanceof RepositorySessionImpl && ((RepositorySessionImpl) alfSession).hasPublicAPI())
+            {
+                variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.formatISO(dueAt));
+            }
+            else
+            {
+                variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
+            }
         }
         variables.put(WorkflowModel.PROP_WORKFLOW_PRIORITY, priority);
         variables.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION, titleTask.getText().toString().trim());
