@@ -81,6 +81,17 @@
 			</dependencies>
 		</profile>
 		<profile>
+			<id>extension-scansnap</id>
+			<dependencies>
+				<dependency>
+					<groupId>org.alfresco.mobile.android.extensions</groupId>
+					<artifactId>alfresco-mobile-android-extension-scansnap</artifactId>
+					<version>${project.version}</version>
+					<type>apklib</type>
+				</dependency>
+			</dependencies>
+		</profile>
+		<profile>
 			<id>android-release</id>
 			<build>
 				<resources>
@@ -149,6 +160,7 @@
 						<artifactId>android-maven-plugin</artifactId>
 						<inherited>true</inherited>
 						<configuration>
+						    <mergeManifests>true</mergeManifests>
 							<release>true</release>
 							<resourceDirectory>${project.build.directory}/filtered-res</resourceDirectory>
 							<sign>
@@ -259,6 +271,7 @@
 								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-dev.apk</outputApk>
 							</zipalign>
 							<file>${project.build.directory}/${project.artifactId}-dev.apk</file>
+							<mergeManifests>true</mergeManifests>
 						</configuration>
 						<executions>
 							<execution>

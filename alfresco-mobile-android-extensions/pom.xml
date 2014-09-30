@@ -15,7 +15,8 @@
 	<name>Alfresco Android - Extension</name>
 
 	<modules>
-		 <module>alfresco-mobile-android-extension-samsung</module>
+		<module>alfresco-mobile-android-extension-samsung</module>
+		<module>alfresco-mobile-android-extension-scansnap</module>
 		<module>alfresco-mobile-android-extension-hockeyapp</module>
 		<module>alfresco-mobile-android-extension-tools</module>
 	</modules>
