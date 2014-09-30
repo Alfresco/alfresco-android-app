@@ -95,6 +95,8 @@
     <string name="org_alfresco_subscriptions_followed">{1} is now following {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} has subscribed to {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} previewed document {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} downloaded document {0}}</string>
     <string name="activity_role_None">No privileges</string>
     <string name="activity_role_SiteConsumer">Consumer</string>
     <string name="activity_role_SiteManager">Manager</string>

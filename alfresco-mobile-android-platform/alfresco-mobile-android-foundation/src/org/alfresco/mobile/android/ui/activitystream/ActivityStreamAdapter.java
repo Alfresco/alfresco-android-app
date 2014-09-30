@@ -371,6 +371,8 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             put("org.alfresco.subscriptions.followed", R.string.org_alfresco_subscriptions_followed);
             put("org.alfresco.subscriptions.subscribed", R.string.org_alfresco_subscriptions_subscribed);
             put("org.alfresco.profile.status-changed", R.string.org_alfresco_profile_status_changed);
+            put("org.alfresco.documentlibrary.file-previewed", R.string.org_alfresco_documentlibrary_file_previewed);
+            put("org.alfresco.documentlibrary.file-downloaded", R.string.org_alfresco_documentlibrary_file_downloaded);
         }
     };
 }
