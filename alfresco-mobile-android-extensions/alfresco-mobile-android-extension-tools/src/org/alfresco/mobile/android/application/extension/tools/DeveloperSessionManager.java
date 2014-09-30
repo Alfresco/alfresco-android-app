@@ -109,18 +109,6 @@ public class DeveloperSessionManager extends SessionManager
     }
 
     @Override
-    public String getSignUpHostname()
-    {
-        String url = OAuthConstant.PUBLIC_API_HOSTNAME;
-        Bundle b = getOAuthSettings();
-        if (b != null && b.getString(OAUTH_URL) != null)
-        {
-            url = b.getString(OAUTH_URL);
-        }
-        return url;
-    }
-
-    @Override
     public Bundle getOAuthSettings()
     {
         Bundle b = null;
