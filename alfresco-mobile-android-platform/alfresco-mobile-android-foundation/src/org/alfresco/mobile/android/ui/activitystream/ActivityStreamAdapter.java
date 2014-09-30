@@ -108,7 +108,8 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
 
         if (type.startsWith(PREFIX_FILE))
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_avatar)
+                    .into(vh.icon);
         }
         else if (type.startsWith(PREFIX_GROUP))
         {
@@ -160,28 +161,6 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
         }
         return drawable;
     }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    // ///////////////////////////////////////////////////////////////////////////
-    /*
-     * public void getMenu(Menu menu, ActivityEntry entry) { if
-     * (entry.getCreatedBy() != null) { menu.add(Menu.NONE,
-     * MenuActionItem.MENU_ACTIVITY_PROFILE, Menu.FIRST +
-     * MenuActionItem.MENU_ACTIVITY_PROFILE,
-     * String.format(getContext().getString(R.string.activity_profile),
-     * entry.getCreatedBy())); } }
-     * @Override public boolean onMenuItemClick(MenuItem item) { boolean
-     * onMenuItemClick = true; switch (item.getItemId()) { case
-     * MenuActionItem.MENU_ACTIVITY_SITE: ((MainActivity)
-     * fr.getActivity()).addNavigationFragment
-     * (selectedOptionItems.get(0).getSiteShortName()); onMenuItemClick = true;
-     * break; case MenuActionItem.MENU_ACTIVITY_PROFILE: ((MainActivity)
-     * fr.getActivity
-     * ()).addPersonProfileFragment(selectedOptionItems.get(0).getCreatedBy());
-     * onMenuItemClick = true; break; default: onMenuItemClick = false; break; }
-     * selectedOptionItems.clear(); return onMenuItemClick; }
-     */
 
     // ///////////////////////////////////////////////////////////////////////////
     // TYPE
@@ -247,11 +226,10 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
         String username = item.getCreatedBy();
         if (MAP_ACTIVITY_TYPE.get(s) != null)
         {
-            s = getContext().getResources().getString(MAP_ACTIVITY_TYPE.get(item.getType()));
+            s = getContext().getString(MAP_ACTIVITY_TYPE.get(item.getType()));
 
             if (s.contains(ARGUMENT_CUSTOM))
             {
-                s = s.replace(ARGUMENT_CUSTOM, getData(item, OnPremiseConstant.ROLE_VALUE));
                 username = getData(item, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE) + " "
                         + getData(item, OnPremiseConstant.MEMBERLASTNAME_VALUE);
             }
@@ -264,6 +242,24 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
         return username;
     }
 
+    private static final String MANAGER = "SiteManager";
+
+    private static final String COLLABORATOR = "SiteCollaborator";
+
+    private static final String CONSUMER = "SiteConsumer";
+
+    private static final String CONTRIBUTOR = "SiteContributor";
+
+    private String getRoleDisplayName(String role)
+    {
+        if (role == null) { return ""; }
+        if (MANAGER.equals(role)) { return getContext().getString(R.string.activity_role_SiteManager); }
+        if (COLLABORATOR.equals(role)) { return getContext().getString(R.string.activity_role_SiteCollaborator); }
+        if (CONSUMER.equals(role)) { return getContext().getString(R.string.activity_role_SiteConsumer); }
+        if (CONTRIBUTOR.equals(role)) { return getContext().getString(R.string.activity_role_SiteContributor); }
+        return getContext().getString(R.string.activity_role_None);
+    }
+
     private String getActivityTypeMessage(ActivityEntry item)
     {
         String s = item.getType();
@@ -273,7 +269,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
 
             if (s.contains(ARGUMENT_CUSTOM))
             {
-                s = s.replace(ARGUMENT_CUSTOM, getData(item, OnPremiseConstant.ROLE_VALUE));
+                s = s.replace(ARGUMENT_CUSTOM, getRoleDisplayName(getData(item, OnPremiseConstant.ROLE_VALUE)));
                 s = s.replace(ARGUMENT_USER_PROFILE, "<b>" + getData(item, OnPremiseConstant.MEMEBERFIRSTNAME_VALUE)
                         + " " + getData(item, OnPremiseConstant.MEMBERLASTNAME_VALUE) + "</b>");
             }
