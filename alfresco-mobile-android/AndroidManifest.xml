@@ -77,18 +77,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- Internal : Used for Cloud activation. Only for this part we have to use exported = true -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="activate-cloud-account"
-                    android:scheme="alfresco" />
-            </intent-filter>
-
             <!-- Fujitsu scan result -->
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT" />
