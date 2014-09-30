@@ -131,6 +131,14 @@ public class ActionUtils extends BaseActionUtils
         return intent;
     }
 
+    public static Intent openURL(Activity activity, String url)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse(url));
+        activity.startActivity(intent);
+        return intent;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // ERRORS & DIALOG
     // ///////////////////////////////////////////////////////////////////////////
