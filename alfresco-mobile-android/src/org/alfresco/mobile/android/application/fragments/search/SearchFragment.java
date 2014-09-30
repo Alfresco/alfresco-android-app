@@ -375,7 +375,6 @@ public class SearchFragment extends BaseCursorGridFragment
                             .display();
                     break;
                 default:
-                    //TODO check with 1.4.1
                     DocumentFolderSearchFragment.with(getActivity()).query(search.getQuery())
                             .title(search.getDescription()).display();
                     break;

@@ -810,10 +810,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
 
-            if (ScanSnapManager.getInstance(getActivity()) != null && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+            if (ScanSnapManager.getInstance(getActivity()) != null
+                    && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
             {
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST + MenuActionItem.MENU_SCAN_DOCUMENT,
-                        R.string.scan);
+                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST
+                        + MenuActionItem.MENU_SCAN_DOCUMENT, R.string.scan);
             }
         }
     }
@@ -897,6 +898,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     // //////////////////////////////////////////////////////////////////////
     public void search()
     {
+        // Use case : DocumentLibrary Site
+        if (folderParameter == null && site != null)
+        {
+            folderParameter = parentFolder;
+        }
         SearchFragment.with(getActivity()).folder(folderParameter).site(site).display();
     }
 

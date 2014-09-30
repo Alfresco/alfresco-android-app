@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
@@ -33,13 +32,8 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpRequest;
-import org.alfresco.mobile.android.async.account.signup.SignUpStatusEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpStatusRequest;
 import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -48,14 +42,12 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.data.CloudSignupRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.accounts.AccountManager;
@@ -72,7 +64,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,7 +76,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -713,26 +703,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    @Subscribe
-    public void onCloudSignUpStatusEvent(SignUpStatusEvent event)
-    {
-        Boolean hasData = event.data;
-        if (event.hasException)
-        {
-            Log.e(TAG, Log.getStackTraceString(event.exception));
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_general));
-        }
-        else if (hasData)
-        {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(PrivateIntent.ALFRESCO_SCHEME_SHORT
-                    + "://activate-cloud-account/" + event.signUpRequest.getIdentifier()));
-            getActivity().startActivity(i);
-        }
-        else
-        {
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.account_not_activated_description));
-        }
-    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER

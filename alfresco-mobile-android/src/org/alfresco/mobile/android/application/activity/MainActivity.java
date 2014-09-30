@@ -209,12 +209,6 @@ public class MainActivity extends BaseActivity
             }
         }
 
-        // REDIRECT To Accounts Fragment if signup process
-        if (PrivateIntent.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
-        {
-            AccountsFragment.with(this).display();
-        }
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);

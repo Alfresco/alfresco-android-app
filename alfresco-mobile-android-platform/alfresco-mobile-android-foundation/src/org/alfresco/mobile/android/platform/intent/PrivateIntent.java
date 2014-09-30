@@ -55,15 +55,6 @@ public interface PrivateIntent
     String HELP_GUIDE = "view_help_guide";
 
     // ///////////////////////////////////////////////////////////////////////////
-    // SIGNUP PROCESS
-    // ///////////////////////////////////////////////////////////////////////////
-    String CLOUD_SIGNUP = "sign_up_cloud";
-
-    String CLOUD_SIGNUP_I = "sign_up_cloud_i";
-
-    String ACTION_CHECK_SIGNUP = "org.alfresco.mobile.android.intent.ACTION_CHECK_SIGNUP";
-
-    // ///////////////////////////////////////////////////////////////////////////
     // OAUTH MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
     String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";

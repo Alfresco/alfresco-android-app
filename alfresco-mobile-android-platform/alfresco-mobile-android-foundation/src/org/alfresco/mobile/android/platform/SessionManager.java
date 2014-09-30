@@ -281,11 +281,6 @@ public abstract class SessionManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // SETTINGS
     // ///////////////////////////////////////////////////////////////////////////
-    public String getSignUpHostname()
-    {
-        return OAuthConstant.PUBLIC_API_HOSTNAME;
-    }
-
     public Bundle getOAuthSettings()
     {
         return null;

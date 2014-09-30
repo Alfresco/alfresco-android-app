@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
+import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
@@ -40,8 +41,8 @@ import org.alfresco.mobile.android.application.fragments.person.UserPickerCallba
 import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DatePickerFragment.onPickDateFragment;
-import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment;
+import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEvent;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessRequest;
@@ -205,7 +206,6 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
                 DatePickerFragment.newInstance("0", TAG).show(getFragmentManager(), DatePickerFragment.TAG);
             }
         });
-        dueOn.setText(getString(R.string.tasks_due_no_date));
 
         // ASSIGNEES
         ib = (ImageButton) viewById(R.id.action_process_assignee);
@@ -355,10 +355,20 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     @Override
     public void onDatePicked(String dateId, GregorianCalendar gregorianCalendar)
     {
-        gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
-        gregorianCalendar.set(Calendar.MINUTE, 59);
-        gregorianCalendar.set(Calendar.SECOND, 59);
-        gregorianCalendar.set(Calendar.MILLISECOND, 999);
+        if (getSession() instanceof RepositorySessionImpl && ((RepositorySessionImpl) getSession()).hasPublicAPI())
+        {
+            gregorianCalendar.set(Calendar.HOUR_OF_DAY, 00);
+            gregorianCalendar.set(Calendar.MINUTE, 00);
+            gregorianCalendar.set(Calendar.SECOND, 00);
+            gregorianCalendar.set(Calendar.MILLISECOND, 000);
+        }
+        else
+        {
+            gregorianCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            gregorianCalendar.set(Calendar.MINUTE, 59);
+            gregorianCalendar.set(Calendar.SECOND, 59);
+            gregorianCalendar.set(Calendar.MILLISECOND, 999);
+        }
         dueAt = gregorianCalendar;
         Button dueOn = (Button) viewById(R.id.process_due_on);
         dueOn.setText(DateFormat.getDateFormat(getActivity()).format(dueAt.getTime()));
@@ -377,6 +387,15 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     private void createProcess()
     {
         Map<String, Serializable> variables = new HashMap<String, Serializable>();
+        if (getSession() instanceof RepositorySessionImpl && ((RepositorySessionImpl) getSession()).hasPublicAPI())
+        {
+            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.formatISO(dueAt));
+        }
+        else
+        {
+            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
+        }
+
         if (dueAt != null)
         {
             variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
@@ -724,7 +743,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
             extraConfiguration.putSerializable(ARGUMENT_PROCESS_DEFINITION, processDefinition);
             return this;
         }
-        
+
         public Builder documents(ArrayList<? extends Parcelable> documents)
         {
             extraConfiguration.putParcelableArrayList(PrivateIntent.EXTRA_DOCUMENTS, documents);

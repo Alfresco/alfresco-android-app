@@ -169,33 +169,66 @@ public class UploadFormFragment extends Fragment
         {
             if (Intent.ACTION_SEND_MULTIPLE.equals(action))
             {
-                ClipData clipdata = intent.getClipData();
-                if (clipdata != null && clipdata.getItemCount() > 1)
+                if (AndroidVersion.isJBOrAbove())
                 {
-                    Item item = null;
-                    for (int i = 0; i < clipdata.getItemCount(); i++)
+                    ClipData clipdata = intent.getClipData();
+                    if (clipdata != null && clipdata.getItemCount() > 1)
                     {
-                        item = clipdata.getItemAt(i);
-                        Uri uri = item.getUri();
-                        if (uri != null)
+                        Item item = null;
+                        for (int i = 0; i < clipdata.getItemCount(); i++)
                         {
-                            retrieveIntentInfo(uri);
-                        }
-                        else
-                        {
-                            String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
-                            File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
-                                    "AlfrescoMobile/import");
-                            File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
-                            if (f.exists())
+                            item = clipdata.getItemAt(i);
+                            Uri uri = item.getUri();
+                            if (uri != null)
                             {
-                                retrieveIntentInfo(Uri.fromFile(f));
+                                retrieveIntentInfo(uri);
+                            }
+                            else
+                            {
+                                String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+                                File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
+                                        "AlfrescoMobile/import");
+                                File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
+                                if (f.exists())
+                                {
+                                    retrieveIntentInfo(Uri.fromFile(f));
+                                }
+                            }
+                            if (!files.contains(file))
+                            {
+                                files.add(file);
                             }
                         }
-                        if (!files.contains(file))
+                    }
+                }
+                else
+                {
+                    if (intent.getExtras() != null && intent.getExtras().get(Intent.EXTRA_STREAM) instanceof ArrayList)
+                    {
+                        @SuppressWarnings("unchecked")
+                        List<Object> attachments = (ArrayList<Object>) intent.getExtras().get(Intent.EXTRA_STREAM);
+                        for (Object object : attachments)
                         {
-                            files.add(file);
+                            if (object instanceof Uri)
+                            {
+                                Uri uri = (Uri) object;
+                                if (uri != null)
+                                {
+                                    retrieveIntentInfo(uri);
+                                }
+                                if (!files.contains(file))
+                                {
+                                    files.add(file);
+                                }
+                            }
                         }
+                    }
+                    else if (file == null || fileName == null)
+                    {
+                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                                getString(R.string.import_unsupported_intent));
+                        getActivity().finish();
+                        return;
                     }
                 }
             }
@@ -239,7 +272,8 @@ public class UploadFormFragment extends Fragment
                 }
                 else if (file == null || fileName == null)
                 {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.import_unsupported_intent));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                            getString(R.string.import_unsupported_intent));
                     getActivity().finish();
                     return;
                 }
@@ -421,7 +455,8 @@ public class UploadFormFragment extends Fragment
                 }
                 else
                 {
-                    File folderStorage = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(tmpAccount);
+                    File folderStorage = AlfrescoStorageManager.getInstance(getActivity())
+                            .getDownloadFolder(tmpAccount);
                     DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(tmpAccount, files, folderStorage);
                     getActivity().finish();
                 }

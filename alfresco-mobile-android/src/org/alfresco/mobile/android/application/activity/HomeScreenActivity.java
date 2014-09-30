@@ -57,7 +57,6 @@ public class HomeScreenActivity extends BaseActivity
         }
     }
 
-    // TODO Change signup process ==> use onCreate intent than on newIntent.
     @Override
     protected void onNewIntent(Intent intent)
     {
