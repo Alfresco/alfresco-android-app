@@ -20,9 +20,7 @@ package org.alfresco.mobile.android.application.extension.scansnap;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.application.extension.scansnap.presets.BusinessCardPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.DefaultPreset;
-import org.alfresco.mobile.android.application.extension.scansnap.presets.DocumentPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.PhotoPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.ScanSnapPreset;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
@@ -76,9 +74,7 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
 
         List<ScanSnapPreset> presets = new ArrayList<ScanSnapPreset>();
         presets.add(new DefaultPreset());
-        presets.add(new DocumentPreset());
         presets.add(new PhotoPreset());
-        presets.add(new BusinessCardPreset());
         ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), org.alfresco.mobile.android.foundation.R.layout.sdk_list_row, presets);
         lv.setAdapter(adapter);
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.scan_preset).setView(v).create();

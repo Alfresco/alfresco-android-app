@@ -16,7 +16,7 @@ public class DefaultPreset extends ScanSnapPreset
     {
         // UI parameters
         titleId = R.string.scan_preset_default;
-        iconId = R.drawable.mime_generic;
+        iconId = org.alfresco.mobile.android.foundation.R.drawable.mime_generic;
 
         // Scan parameters
         paperSize = PAPERSIZE_AUTO;

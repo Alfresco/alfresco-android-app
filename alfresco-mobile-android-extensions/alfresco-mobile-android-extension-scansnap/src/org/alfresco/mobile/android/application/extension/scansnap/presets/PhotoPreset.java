@@ -13,13 +13,13 @@ public class PhotoPreset extends DefaultPreset
 
     public PhotoPreset()
     {
+        super();
         // UI parameters
         titleId = R.string.scan_preset_photo;
-        iconId = R.drawable.mime_img;
+        iconId = org.alfresco.mobile.android.foundation.R.drawable.mime_img;
 
         // Scan parameters
         savetogether = SAVETOGETHER_DISABLE;
-        paperSize = PAPERSIZE_AUTO;
         format = FORMAT_JPEG;
         scanMode = SCANMODE_BETTER;
     }

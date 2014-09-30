@@ -15,7 +15,7 @@ public class DocumentPreset extends DefaultPreset
     {
         // UI parameters
         titleId = R.string.scan_preset_document;
-        iconId = R.drawable.mime_pdf;
+        iconId = org.alfresco.mobile.android.foundation.R.drawable.mime_pdf;
 
         // Scan parameters
         paperSize = PAPERSIZE_AUTO;
