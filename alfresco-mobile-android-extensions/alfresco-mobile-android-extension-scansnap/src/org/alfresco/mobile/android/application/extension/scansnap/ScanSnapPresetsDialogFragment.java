@@ -59,9 +59,9 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         LayoutInflater inflater = LayoutInflater.from(getActivity());
-        final View v = inflater.inflate(R.layout.sdk_list, null);
+        final View v = inflater.inflate(org.alfresco.mobile.android.foundation.R.layout.sdk_list, null);
 
-        ListView lv = (ListView) v.findViewById(R.id.listView);
+        ListView lv = (ListView) v.findViewById(org.alfresco.mobile.android.foundation.R.id.listView);
 
         lv.setOnItemClickListener(new OnItemClickListener()
         {
@@ -79,7 +79,7 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
         presets.add(new DocumentPreset());
         presets.add(new PhotoPreset());
         presets.add(new BusinessCardPreset());
-        ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), R.layout.sdk_list_row, presets);
+        ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), org.alfresco.mobile.android.foundation.R.layout.sdk_list_row, presets);
         lv.setAdapter(adapter);
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.scan_preset).setView(v).create();
     }

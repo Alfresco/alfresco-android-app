@@ -24,7 +24,6 @@
     <string name="err_msg_launch_failed">Failed to start up ScanSnap Connect Application.</string>
     <string name="err_msg_url_parse">Failed to parse the URL. Check whether the specified URL parameters are correct, and try again.</string>
     <string name="err_msg_ssca_scan">An error occurred while scanning with ScanSnap. Confirm the error message appearing in ScanSnap Connect Application, and try again.</string>
-    <string name="scan">Scan</string>
 
     <!-- PRESETS -->
     <string name="scan_preset">Scan Presets</string>

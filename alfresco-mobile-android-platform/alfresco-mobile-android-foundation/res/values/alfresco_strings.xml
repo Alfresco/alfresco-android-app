@@ -430,4 +430,7 @@
     <string name="update_complete">Update Complete.</string>
     <string name="update_in_progress">Update in progress&#8230;</string>
 
+    <!-- Fujitsu ScanSnap -->
+    <string name="scan">Scan</string>
+
 </resources>
