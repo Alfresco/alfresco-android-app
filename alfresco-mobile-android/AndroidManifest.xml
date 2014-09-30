@@ -90,12 +90,11 @@
             </intent-filter>
 
             <!-- Fujitsu scan result -->
-             <intent-filter>
+            <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
         </activity>
 
         <!-- Private : Passcode Activity -->
@@ -123,8 +122,18 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/*" />
+                <!-- used to filter rtf file -->
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="text/css" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="text/x-setext" />
+                <data android:mimeType="text/x-javascript" />
+                <data android:mimeType="text/x-markdown" />
+                <data android:mimeType="text/mediawiki" />
+                <data android:mimeType="text/sgml" />
+                <data android:mimeType="text/tab-separated-values" />
+                <data android:mimeType="text/x-vcard" />
             </intent-filter>
         </activity>
 
@@ -273,7 +282,7 @@
         <meta-data
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:resource="@dimen/app_minimumsize_h" />
-        
+
         <!-- *************************************************************** -->
         <!-- DEPRECATED -->
         <!-- *************************************************************** -->
