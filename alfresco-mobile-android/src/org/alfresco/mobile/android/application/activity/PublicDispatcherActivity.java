@@ -28,8 +28,10 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
+import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
@@ -107,6 +109,29 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         super.onStart();
+        PassCodeActivity.requestUserPasscode(this);
+        activateCheckPasscode = PasscodePreferences.hasPasscodeEnable(this);
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        if (!activateCheckPasscode)
+        {
+            PasscodePreferences.updateLastActivityDisplay(this);
+        }
+    }
+
+    @Override
+    protected void onStop()
+    {
+        if (receiver != null)
+        {
+            broadcastManager.unregisterReceiver(receiver);
+            receiver = null;
+        }
+        super.onStop();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

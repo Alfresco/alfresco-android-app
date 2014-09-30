@@ -248,7 +248,7 @@ public class AccountOAuthFragment extends OAuthFragment
             return;
         }
 
-        if (getArguments().containsKey(ARGUMENT_ACCOUNT))
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_ACCOUNT))
         {
             // TODO Replace by SessionMAnager
             EventBusManager.getInstance().post(

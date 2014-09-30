@@ -95,6 +95,13 @@
     <string name="org_alfresco_subscriptions_followed">{1} is now following {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} has subscribed to {2}</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} previewed document {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} downloaded document {0}}</string>
+    <string name="activity_role_None">No privileges</string>
+    <string name="activity_role_SiteConsumer">Consumer</string>
+    <string name="activity_role_SiteManager">Manager</string>
+    <string name="activity_role_SiteCollaborator">Collaborator</string>
+    <string name="activity_role_SiteContributor">Contributor</string>
     <!-- Metadata -->
     <string name="metadata">Properties</string>
     <string name="thumbnail">Thumbnail</string>
@@ -333,7 +340,7 @@
     <string name="cloud_networks_empty">No networks available</string>
     <string name="manage_accounts">Manage accounts&#8230;</string>
     <string name="cloud_networks_switch">Switch networks&#8230;</string>
-    
+
     <!-- PROFILES -->
     <string name="profiles_empty">No profiles available</string>
     <string name="manage_profiles">Manage profiles&#8230;</string>
@@ -343,12 +350,11 @@
     <string name="empty_process_definition">No Process</string>
     <string name="my_tasks">My Tasks</string>
 
-     <!-- BUG REPORT -->
+    <!-- BUG REPORT -->
     <string name="bug_report_title">[Bug Report] : </string>
-    
-        <string name="waiting_operations">Please wait&#8230;</string>
-    
-     <!-- Favorites -->
+    <string name="waiting_operations">Please wait&#8230;</string>
+
+    <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
     <string name="synced_documents">Synced Content</string>
@@ -373,8 +379,8 @@
     <string name="upload_await">Waiting to upload&#8230;</string>
     <string name="download_await">Waiting to download&#8230;</string>
     <string name="sync_favorites">Favorites</string>
-    
-     <plurals name="sync_complete_description">
+
+    <plurals name="sync_complete_description">
         <item quantity="zero">no content synced</item>
         <item quantity="one">1 file synced</item>
         <item quantity="other">%1$s files synced</item>
@@ -409,18 +415,19 @@
         <item quantity="one">1 download in progress.</item>
         <item quantity="other">%1$s downloads in progress.</item>
     </plurals>
-    
+
     <string name="sync_warning">Sync Warning</string>
     <string name="sync_error">Sync Error</string>
     <string name="sync_warning_mobile_data"><![CDATA[<p> You are about to sync <b>%s</b> over a carrier connection.</p> Would you like to proceed?]]></string>
     <string name="sync_error_storage"><![CDATA[<p> You are trying to sync  <b>%1$s</b>, only  %2$s are available.</p> You need to free some space in your device or unfavorite some content.]]></string>
     <string name="sync_warning_storage"><![CDATA[<p> You are about to sync  <b>%1$s</b>, only  %2$s remain on your device.</p> Would you like to proceed?]]></string>
     <string name="sync_document_not_available">This document is not available on your device.</string>
-    
-      <!-- NOTIFICATION -->
+
+    <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
     <string name="upload_complete">Upload Complete.</string>
     <string name="upload_in_progress">Upload in progress&#8230;</string>
     <string name="update_complete">Update Complete.</string>
     <string name="update_in_progress">Update in progress&#8230;</string>
+
 </resources>

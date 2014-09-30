@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.file.update.RenameFileEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
@@ -133,7 +134,8 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                 parent = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(acc);
                 if (parent == null)
                 {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                            getString(R.string.sdinaccessible));
                     return;
                 }
             }
@@ -366,9 +368,14 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
                         + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.make_video);
             }
 
+            if (ScanSnapManager.getInstance(getActivity()) != null && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+            {
+                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST + MenuActionItem.MENU_SCAN_DOCUMENT,
+                        R.string.scan);
+            }
+
             createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
                     + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
-
         }
     }
 

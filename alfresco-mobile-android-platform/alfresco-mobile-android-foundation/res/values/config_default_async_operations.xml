@@ -7,10 +7,6 @@
     <!-- ACCOUNT -->
     <string name="operation_CreateAccountRequest">org.alfresco.mobile.android.async.account.CreateAccountOperation</string>
 
-    <!-- SIGN UP -->
-    <string name="operation_SignUpRequest">org.alfresco.mobile.android.async.account.signup.SignUpOperation</string>
-    <string name="operation_SignUpStatusRequest">org.alfresco.mobile.android.async.account.signup.SignUpStatusOperation</string>
-
     <!-- SESSION -->
     <string name="operation_LoadSessionRequest">org.alfresco.mobile.android.async.session.LoadSessionOperation</string>
     <string name="callback_LoadSessionRequest">org.alfresco.mobile.android.async.session.LoadSessionCallBack</string>

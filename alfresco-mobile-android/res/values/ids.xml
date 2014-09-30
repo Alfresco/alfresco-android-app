@@ -54,13 +54,12 @@
     <string name="config_asset_messages_file">embedded_strings.properties</string>
     
     <!-- HELP -->
-    <string name="help_path">Help/</string>
-    <string name="help_user_guide">Alfresco_Mobile_Android_App_User_Guide.pdf</string>
-
+    <string name="help_user_guide_url" formatted="false">http://docs.alfresco.com/mobile_sdk/android/concepts/mobile-sdk-android-intro.html</string>
+    
     <!-- Bamboo Build Number -->
     <string name="bamboo_buildnumber">${bamboo.buildNumber}</string>
 
     <!-- Cloud Share URL -->
-    <string name="cloud_share_url" formatted="false">"https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
-
+    <string name="cloud_share_url" formatted="false">https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
+    
 </resources>

@@ -23,7 +23,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
@@ -33,13 +32,8 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpRequest;
-import org.alfresco.mobile.android.async.account.signup.SignUpStatusEvent;
-import org.alfresco.mobile.android.async.account.signup.SignUpStatusRequest;
 import org.alfresco.mobile.android.async.clean.CleanSyncFavoriteRequest;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -48,14 +42,12 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.data.CloudSignupRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.accounts.AccountManager;
@@ -72,7 +64,6 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -85,7 +76,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -154,11 +144,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
             setRootView(inflater.inflate(R.layout.app_account_details, container, false));
             initValues();
         }
-        else
-        {
-            setRootView(inflater.inflate(R.layout.app_cloud_signup_check, container, false));
-            initAwaitingCloud(getRootView());
-        }
 
         if (isEditable)
         {
@@ -196,45 +181,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    private void initAwaitingCloud(final View v)
-    {
-        TextView tv = (TextView) v.findViewById(R.id.sign_up_cloud_email);
-        tv.setText(tv.getText() + " " + acc.getUsername());
-
-        tv = (TextView) v.findViewById(R.id.sign_up_cloud_email_having_trouble);
-        tv.setMovementMethod(LinkMovementMethod.getInstance());
-
-        Button btn = (Button) v.findViewById(R.id.cloud_signup_refresh);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Operator.with(getActivity()).load(
-                        new SignUpStatusRequest.Builder(getActivity().getString(R.string.signup_key),
-                                new CloudSignupRequest(acc)));
-                if (getActivity() instanceof BaseActivity)
-                {
-                    ((BaseActivity) getActivity()).displayWaitingDialog();
-                }
-            }
-        });
-
-        btn = (Button) v.findViewById(R.id.cloud_signup_resend);
-        btn.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                Operator.with(getActivity()).load(new SignUpRequest.Builder(null, null, acc.getUsername(), null, null));
-                if (getActivity() instanceof BaseActivity)
-                {
-                    ((BaseActivity) getActivity()).displayWaitingDialog();
-                }
-            }
-        });
-    }
-
     private void initValues()
     {
         URL tmprUrl = null;
@@ -757,63 +703,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    @Subscribe
-    public void onCloudSignUpStatusEvent(SignUpStatusEvent event)
-    {
-        Boolean hasData = event.data;
-        if (event.hasException)
-        {
-            Log.e(TAG, Log.getStackTraceString(event.exception));
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_general));
-        }
-        else if (hasData)
-        {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(PrivateIntent.ALFRESCO_SCHEME_SHORT
-                    + "://activate-cloud-account/" + event.signUpRequest.getIdentifier()));
-            getActivity().startActivity(i);
-        }
-        else
-        {
-            AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.account_not_activated_description));
-        }
-    }
-
-    @Subscribe
-    public void onCloudSignUpEvent(SignUpEvent event)
-    {
-        if (event.data != null)
-        {
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.cloud_signup_resend_successfull);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.cloud_signup_resend_body);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-            ActionUtils.actionDisplayDialog(getActivity(), b);
-        }
-        else if (event.hasException)
-        {
-            Exception e = event.exception;
-            int errorMessageId = R.string.error_general;
-
-            if (e instanceof AlfrescoServiceException
-                    && ((AlfrescoServiceException) e).getErrorCode() == CloudSignupRequest.SESSION_SIGNUP_ERROR
-                    && ((AlfrescoServiceException) e).getMessage().contains("Invalid Email Address"))
-            {
-                errorMessageId = R.string.cloud_signup_error_email;
-            }
-
-            Log.e(TAG, Log.getStackTraceString(event.exception));
-            Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.cloud_signup_error_email_title);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, errorMessageId);
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
-            ActionUtils.actionDisplayDialog(getActivity(), b);
-        }
-
-        if (getActivity() instanceof BaseActivity)
-        {
-            ((BaseActivity) getActivity()).removeWaitingDialog();
-        }
-    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER

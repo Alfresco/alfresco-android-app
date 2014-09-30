@@ -26,7 +26,4 @@
     <!-- Hockey App Key -->
     <string name="hockeyapp_key">${hockeyapp_key}</string>
     
-    <!-- SignUp Key -->
-    <string name="signup_key">${signup_key}</string>
-    
 </resources>

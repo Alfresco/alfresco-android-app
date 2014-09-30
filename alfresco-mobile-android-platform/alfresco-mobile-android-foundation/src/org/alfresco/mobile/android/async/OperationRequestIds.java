@@ -54,10 +54,6 @@ public interface OperationRequestIds
 
     int ID_ACCOUNT_CREATE = FAMILY_ACCOUNT + OPERATION_CREATE;
 
-    int ID_ACCOUNT_SIGNUP = FAMILY_ACCOUNT + 5;
-
-    int ID_ACCOUNT_SIGNUP_STATUS = FAMILY_ACCOUNT + 6;
-
     // ///////////////////////////////////////////////////////////////////////////
     // SESSION
     // ///////////////////////////////////////////////////////////////////////////

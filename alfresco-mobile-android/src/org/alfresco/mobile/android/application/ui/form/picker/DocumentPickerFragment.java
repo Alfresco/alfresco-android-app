@@ -20,13 +20,11 @@ package org.alfresco.mobile.android.application.ui.form.picker;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
-import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment.Builder;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;

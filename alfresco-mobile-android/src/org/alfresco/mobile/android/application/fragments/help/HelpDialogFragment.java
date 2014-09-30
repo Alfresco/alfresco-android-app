@@ -83,31 +83,10 @@ public class HelpDialogFragment extends DialogFragment
      */
     public static void displayHelp(Activity activity)
     {
-        String pathHelpGuideFile = null;
         try
         {
-            long lastUpdate = activity.getPackageManager().getPackageInfo(
-                    activity.getApplicationContext().getPackageName(), 0).lastUpdateTime;
-            // Check last update time of the app and compare to an
-            // existing (or not) help guide.
-            File assetFolder = AlfrescoStorageManager.getInstance(activity).getAssetFolder();
-            String helpGuideName = activity.getString(R.string.asset_folder_prefix) + "_"
-                    + activity.getString(R.string.help_user_guide);
-            File helpGuideFile = new File(assetFolder, helpGuideName);
-
-            if (!helpGuideFile.exists() || helpGuideFile.lastModified() < lastUpdate)
-            {
-                String assetfilePath = activity.getString(R.string.help_path) + helpGuideName;
-                org.alfresco.mobile.android.api.utils.IOUtils.copyFile(activity.getAssets().open(assetfilePath),
-                        helpGuideFile);
-            }
-
-            pathHelpGuideFile = helpGuideFile.getPath();
-
-            if (!ActionUtils.launchPDF(activity, pathHelpGuideFile))
-            {
-                new HelpDialogFragment().show(activity.getFragmentManager(), HelpDialogFragment.TAG);
-            }
+            //TODO Replace with correct url
+            ActionUtils.openURL(activity, activity.getString(R.string.help_user_guide_url));
         }
         catch (Exception e)
         {

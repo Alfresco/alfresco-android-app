@@ -18,6 +18,8 @@
 package org.alfresco.mobile.android.application.activity;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
@@ -41,7 +43,6 @@ import org.alfresco.mobile.android.application.fragments.accounts.AccountEditFra
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.CloudSignupDialogFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
@@ -59,13 +60,11 @@ import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSit
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.async.LoaderResult;
-import org.alfresco.mobile.android.async.OperationRequestIds;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
@@ -82,6 +81,7 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -156,8 +156,6 @@ public class MainActivity extends BaseActivity
 
     private static ActionBarDrawerToggle mDrawerToggle;
 
-    private Intent callBackIntent = null;
-
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -211,12 +209,6 @@ public class MainActivity extends BaseActivity
             }
         }
 
-        // REDIRECT To Accounts Fragment if signup process
-        if (PrivateIntent.ACTION_CHECK_SIGNUP.equals(getIntent().getAction()))
-        {
-            AccountsFragment.with(this).display();
-        }
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
@@ -251,8 +243,6 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
-        // Check if there is a Fujistu scanner intent coming back to us.
-        checkScan();
     }
 
     @Override
@@ -335,20 +325,31 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
-            // Intent for CLOUD SIGN UP
-            if (PrivateIntent.ACTION_CHECK_SIGNUP.equals(intent.getAction()))
-            {
-                FragmentDisplayer.with(this).remove(CloudSignupDialogFragment.TAG);
-                AccountsFragment.with(this).display();
-                return;
-            }
-
             if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
                     && intent.getData().getHost().equals("activate-cloud-account")
                     && getFragment(AccountDetailsFragment.TAG) != null)
             {
 
                 ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
+                return;
+            }
+            
+            // Intent for Scan result
+            // Only associated with DocumentFolderBrowserFragment
+            if (PrivateIntent.ACTION_SCAN_RESULT.equals(intent.getAction()))
+            {
+                if (getFragment(DocumentFolderBrowserFragment.TAG) != null && intent.getExtras() != null)
+                {
+                    ArrayList<String> tempList = intent.getStringArrayListExtra(PrivateIntent.EXTRA_FILE_PATH);
+                    if (tempList == null){return;}
+                    List<File> files = new ArrayList<File>(tempList.size());
+                    int nCnt;
+                    for (nCnt = tempList.size(); nCnt > 0; nCnt--)
+                    {
+                        files.add(new File(tempList.get(nCnt - 1)));
+                    }
+                    ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).createFiles(files);
+                }
                 return;
             }
 
@@ -361,15 +362,6 @@ public class MainActivity extends BaseActivity
                             .display();
                 }
                 return;
-            }
-
-            // Intent for display Sign up Dialog
-            if (Intent.ACTION_VIEW.equals(intent.getAction())
-                    && PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
-                    && PrivateIntent.CLOUD_SIGNUP_I.equals(intent.getData().getHost()))
-            {
-                getFragmentManager().popBackStack(AccountTypesFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                CloudSignupDialogFragment.with(this).display();
             }
         }
         catch (Exception e)
@@ -679,8 +671,14 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
-            case MenuActionItem.MENU_DEVICE_SCAN_DOCUMENT:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
+                return true;
+                
+            case MenuActionItem.MENU_SCAN_DOCUMENT:
+                if (ScanSnapManager.getInstance(this) != null)
+                {
+                    ScanSnapManager.getInstance(this).startPresetChooser(this);
+                }
                 return true;
 
             case MenuActionItem.MENU_ACCOUNT_ADD:
@@ -1146,19 +1144,5 @@ public class MainActivity extends BaseActivity
         if (currentAccount == null) { return false; }
         if (event == null) { return false; }
         return (currentAccount.getId() == event.account.getId());
-    }
-
-    private void checkScan()
-    {
-        callBackIntent = getIntent();
-
-        if (callBackIntent != null && callBackIntent.getScheme() != null
-                && callBackIntent.getScheme().compareTo("alfrescoFujitsuScanCallback") == 0)
-        {
-            if (capture != null)
-            {
-                capture.capturedCallback(capture.getRequestCode(), Activity.RESULT_OK, callBackIntent);
-            }
-        }
     }
 }

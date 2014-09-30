@@ -87,6 +87,7 @@ public abstract class AlfrescoActivity extends Activity
         filters.addAction(PrivateIntent.ACTION_DISPLAY_DIALOG);
         filters.addAction(PrivateIntent.ACTION_DISPLAY_ERROR);
         utilsReceiver = new UtilsReceiver();
+        receivers.add(utilsReceiver);
         broadcastManager.registerReceiver(utilsReceiver, filters);
 
         // HockeyApp

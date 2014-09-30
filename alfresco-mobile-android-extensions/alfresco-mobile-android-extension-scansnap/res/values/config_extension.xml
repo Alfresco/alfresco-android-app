@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- Fujitsu ScanSnap Extension -->
+    <bool name="manager_isEnable_ScanSnapManager">true</bool>
+    <string name="manager_ScanSnapManager">org.alfresco.mobile.android.application.extension.scansnap.ScanSnapManagerImpl</string>
+
+</resources>
