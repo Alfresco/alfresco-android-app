@@ -160,7 +160,8 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
             filter(event.data);
             if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
             {
-                createTask(review);
+                CreateTaskFragment.with(getActivity()).processDefinition(review)
+                        .documents(getArguments().getParcelableArrayList(PrivateIntent.EXTRA_DOCUMENTS)).back(false).display();
             }
             else
             {
@@ -192,7 +193,6 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void createTask(ProcessDefinition item)
     {
-        // Todo add getArguments ?
         CreateTaskFragment.with(getActivity()).processDefinition(item).display();
     }
 
