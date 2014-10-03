@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.extension.scansnap;
 
-import java.util.ArrayList;
-
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
@@ -33,7 +31,7 @@ import android.os.Bundle;
  * 
  * @author Jean Marie Pascal
  */
-public class ScanSnapDispatcherActivity extends Activity
+public class ScanSnapResultActivity extends Activity
 {
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -64,6 +62,7 @@ public class ScanSnapDispatcherActivity extends Activity
             // end this activity. It's just a passthrough
             finish();
             startActivity(i);
+            return;
         }
     }
 }

@@ -37,6 +37,8 @@ import android.util.Log;
 
 public abstract class DeviceCapture implements Serializable
 {
+    public static final String TIMESTAMP_PATTERN = "yyyyddMM_HHmmss";
+    
     private static final long serialVersionUID = 1L;
 
     protected Folder repositoryFolder = null;
@@ -137,7 +139,7 @@ public abstract class DeviceCapture implements Serializable
     // ///////////////////////////////////////////////////////////////////////////
     protected String createFilename(String prefix, String extension)
     {
-        String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat(TIMESTAMP_PATTERN).format(new Date());
 
         return prefix + timeStamp + "." + extension;
     }

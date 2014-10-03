@@ -23,6 +23,7 @@ import org.alfresco.mobile.android.application.extension.scansnap.presets.Busine
 import org.alfresco.mobile.android.application.extension.scansnap.presets.DefaultPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.DocumentPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.PhotoPreset;
+import org.alfresco.mobile.android.application.extension.scansnap.presets.ScanSnapPreset;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 
@@ -81,7 +82,7 @@ public class ScanSnapManagerImpl extends ScanSnapManager
             AlfrescoNotificationManager notification = AlfrescoNotificationManager.getInstance(appContext);
             try
             {
-                DefaultPreset preset = null;
+                ScanSnapPreset preset = null;
                 switch (presetId)
                 {
                     case DefaultPreset.ID:

@@ -55,6 +55,9 @@ import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.ui.form.picker.DocumentPickerFragment.onPickDocumentFragment;
+import org.alfresco.mobile.android.application.widgets.ActionShortcutActivity;
+import org.alfresco.mobile.android.application.widgets.BaseShortcutActivity;
+import org.alfresco.mobile.android.application.widgets.FolderShortcutActivity;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
@@ -65,6 +68,7 @@ import org.alfresco.mobile.android.async.node.create.CreateFolderEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
 import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
+import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
@@ -177,6 +181,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             fragmentPick = ((PrivateDialogActivity) getActivity()).getOnPickDocumentFragment();
             fieldId = ((PrivateDialogActivity) getActivity()).getFieldId();
         }
+        else if (getActivity() instanceof BaseShortcutActivity)
+        {
+            mode = MODE_IMPORT;
+            setActivateThumbnail(false);
+        }
 
         super.onActivityCreated(savedInstanceState);
 
@@ -195,7 +204,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         View v = null;
         // In case of Import mode, we wrap the listing with buttons.
-        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity)
+        if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity
+                || getActivity() instanceof BaseShortcutActivity)
         {
             v = inflater.inflate(R.layout.app_browser_import, container, false);
             init(v, emptyListMessageId);
@@ -206,6 +216,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             {
                 validationButton.setText(R.string.done);
                 gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
+            }
+            else if (getActivity() instanceof BaseShortcutActivity)
+            {
+                validationButton.setText(R.string.select_folder);
+                gridView.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
             }
             else
             {
@@ -243,6 +258,18 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         {
             mode = MODE_PICK;
             titleId = R.string.picker_document_title;
+            checkValidationButton();
+        }
+        else if (getActivity() instanceof ActionShortcutActivity)
+        {
+            mode = MODE_IMPORT;
+            titleId = R.string.shortcut_action_create;
+            checkValidationButton();
+        }
+        else if (getActivity() instanceof FolderShortcutActivity)
+        {
+            mode = MODE_IMPORT;
+            titleId = R.string.shortcut_create;
             checkValidationButton();
         }
 
@@ -424,7 +451,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         // In case of import mode, we disable selection of document.
         // It's only possible to select a folder for navigation purpose.
-        if (mode == MODE_IMPORT && getActivity() instanceof PublicDispatcherActivity)
+        if (mode == MODE_IMPORT && getActivity() instanceof PublicDispatcherActivity
+                || getActivity() instanceof BaseShortcutActivity)
         {
             l.setChoiceMode(GridView.CHOICE_MODE_NONE);
             if (item.isFolder())
@@ -743,7 +771,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             }
         }
-        else if (getActivity() instanceof PublicDispatcherActivity)
+        else if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof BaseShortcutActivity)
         {
             Permissions permission = getSession().getServiceRegistry().getDocumentFolderService()
                     .getPermissions(parentFolder);
@@ -917,6 +945,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         return importFolder;
     }
 
+    public Folder getParentFolder()
+    {
+        return parentFolder;
+    }
+
     @Override
     public int getMode()
     {
@@ -978,6 +1011,22 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (event.hasException) { return; }
         Node updatedNode = event.data;
         remove(event.initialNode);
+        if (adapter != null)
+        {
+            ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
+        }
+        if (getActivity() instanceof BaseActivity)
+        {
+            ((BaseActivity) getActivity()).removeWaitingDialog();
+        }
+    }
+    
+    @Subscribe
+    public void onContentUpdated(UpdateContentEvent event)
+    {
+        if (event.hasException) { return; }
+        Node updatedNode = event.data;
+        remove(event.node);
         if (adapter != null)
         {
             ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);

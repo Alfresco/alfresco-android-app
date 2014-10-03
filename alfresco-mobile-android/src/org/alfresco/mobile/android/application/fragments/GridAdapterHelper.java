@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.widgets.BaseShortcutActivity;
 import org.alfresco.mobile.android.ui.GridFragment;
 
 import android.app.Activity;
@@ -49,7 +50,7 @@ public class GridAdapterHelper
     {
         int displayItemLayout = R.layout.app_grid_large_progress_row;
 
-        if (activity instanceof PublicDispatcherActivity || activity instanceof PrivateDialogActivity)
+        if (activity instanceof PublicDispatcherActivity || activity instanceof PrivateDialogActivity || activity instanceof BaseShortcutActivity)
         {
             gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 1000));
             return R.layout.app_grid_large_progress_row;

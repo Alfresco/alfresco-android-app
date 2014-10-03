@@ -21,11 +21,11 @@ import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -49,8 +49,7 @@ public class PhotoCapture extends DeviceCapture
     @Override
     public boolean hasDevice()
     {
-        return (parentActivity.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA) || parentActivity
-                .getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT));
+        return ActionUtils.hasCameraAvailable(parentActivity);
     }
 
     @Override

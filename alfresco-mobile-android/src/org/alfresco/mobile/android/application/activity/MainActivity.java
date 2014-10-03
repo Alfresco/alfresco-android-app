@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -60,6 +61,7 @@ import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSit
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
@@ -154,6 +156,9 @@ public class MainActivity extends BaseActivity
 
     private ViewGroup mDrawer;
 
+    /** Used to display the shortcut folder during app first init. */
+    private String shortcutFolderId;
+
     private static ActionBarDrawerToggle mDrawerToggle;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -243,6 +248,19 @@ public class MainActivity extends BaseActivity
         getActionBar().setHomeButtonEnabled(true);
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
+
+        // Is it from a shortcut ?
+        if (Intent.ACTION_VIEW.equals(getIntent().getAction()) && PrivateIntent.NODE_TYPE.equals(getIntent().getType())
+                && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_FOLDER_ID))
+        {
+            shortcutFolderId = getIntent().getStringExtra(PrivateIntent.EXTRA_FOLDER_ID);
+            getIntent().removeExtra(PrivateIntent.EXTRA_FOLDER_ID);
+            if (getCurrentSession() != null)
+            {
+                DocumentFolderBrowserFragment.with(this).folderIdentifier(shortcutFolderId).shortcut(true).display();
+                shortcutFolderId = null;
+            }
+        }
     }
 
     @Override
@@ -325,15 +343,6 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
-            if (Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null
-                    && intent.getData().getHost().equals("activate-cloud-account")
-                    && getFragment(AccountDetailsFragment.TAG) != null)
-            {
-
-                ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).displayOAuthFragment();
-                return;
-            }
-            
             // Intent for Scan result
             // Only associated with DocumentFolderBrowserFragment
             if (PrivateIntent.ACTION_SCAN_RESULT.equals(intent.getAction()))
@@ -341,7 +350,7 @@ public class MainActivity extends BaseActivity
                 if (getFragment(DocumentFolderBrowserFragment.TAG) != null && intent.getExtras() != null)
                 {
                     ArrayList<String> tempList = intent.getStringArrayListExtra(PrivateIntent.EXTRA_FILE_PATH);
-                    if (tempList == null){return;}
+                    if (tempList == null) { return; }
                     List<File> files = new ArrayList<File>(tempList.size());
                     int nCnt;
                     for (nCnt = tempList.size(); nCnt > 0; nCnt--)
@@ -354,12 +363,16 @@ public class MainActivity extends BaseActivity
             }
 
             //
-            if (Intent.ACTION_VIEW.equals(intent.getAction()) && PrivateIntent.NODE_TYPE.equals(intent.getType()))
+            if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
             {
-                if (intent.getExtras().containsKey(PrivateIntent.EXTRA_NODE))
+                if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(intent.getData().getAuthority()))
                 {
-                    NodeDetailsFragment.with(this).node((Document) intent.getExtras().get(PrivateIntent.EXTRA_NODE))
-                            .display();
+                    DocumentFolderBrowserFragment.with(this)
+                            .folderIdentifier(intent.getData().getPathSegments().get(0)).shortcut(true).display();
+                }
+                else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
+                {
+                    FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
                 }
                 return;
             }
@@ -539,6 +552,10 @@ public class MainActivity extends BaseActivity
             sessionManager.loadSession(getCurrentAccount());
         }
         invalidateOptionsMenu();
+        if (getCurrentSession() != null)
+        {
+            setProgressBarIndeterminateVisibility(true);
+        }
     }
 
     private boolean checkSession(int actionMainMenuId)
@@ -673,7 +690,7 @@ public class MainActivity extends BaseActivity
             case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
-                
+
             case MenuActionItem.MENU_SCAN_DOCUMENT:
                 if (ScanSnapManager.getInstance(this) != null)
                 {
@@ -921,6 +938,7 @@ public class MainActivity extends BaseActivity
                 EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
             }
 
+            // Display 4.2+ special folders (userhome/shared)
             if (getFragment(MainMenuFragment.TAG) != null)
             {
                 ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFolderShortcut(getCurrentSession());
@@ -950,7 +968,12 @@ public class MainActivity extends BaseActivity
         // removeWaitingDialog();
 
         // Used for launching last pressed action button from main menu
-        if (fragmentQueue != -1)
+        if (shortcutFolderId != null)
+        {
+            DocumentFolderBrowserFragment.with(this).folderIdentifier(shortcutFolderId).shortcut(true).display();
+            shortcutFolderId = null;
+        }
+        else if (fragmentQueue != -1)
         {
             doMainMenuAction(fragmentQueue);
         }

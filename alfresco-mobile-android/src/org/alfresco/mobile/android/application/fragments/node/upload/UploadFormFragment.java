@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
+import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -44,6 +45,8 @@ import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
+import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;
@@ -185,7 +188,7 @@ public class UploadFormFragment extends Fragment
                             }
                             else
                             {
-                                String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+                                String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
                                 File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
                                         "AlfrescoMobile/import");
                                 File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
@@ -249,7 +252,7 @@ public class UploadFormFragment extends Fragment
                         }
                         else
                         {
-                            String timeStamp = new SimpleDateFormat("yyyyddMM_HHmmss").format(new Date());
+                            String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
                             File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
                                     "AlfrescoMobile/import");
                             File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
@@ -445,6 +448,10 @@ public class UploadFormFragment extends Fragment
 
                 // Session is not used by the application so create one.
                 SessionManager.getInstance(getActivity()).loadSession(tmpAccount);
+                if (getActivity() instanceof AlfrescoActivity)
+                {
+                    ((AlfrescoActivity) getActivity()).displayWaitingDialog();
+                }
 
                 break;
             case R.string.menu_downloads:

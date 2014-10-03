@@ -185,7 +185,7 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                             getActivity().getText(R.string.download_complete) + " " + contentFile.getFileName());
 
                     NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
-                            TabsNodeDetailsFragment.TAG);
+                            NodeDetailsFragment.getDetailsTag());
                     if (detailsFragment != null)
                     {
                         long datetime = contentFile.getFile().lastModified();
