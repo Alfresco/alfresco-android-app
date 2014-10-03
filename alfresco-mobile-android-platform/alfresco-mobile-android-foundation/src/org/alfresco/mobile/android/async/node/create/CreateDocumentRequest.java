@@ -177,6 +177,15 @@ public class CreateDocumentRequest extends UpNodeRequest
         {
         }
 
+        public Builder(String parentFolderId, String documentName, ContentFile contentFile)
+        {
+            super(parentFolderId, null, contentFile);
+            this.documentName = documentName;
+            this.isCreation = false;
+            requestTypeId = TYPE_ID;
+            setNotificationTitle(documentName);
+        }
+        
         public Builder(Folder parentFolder, String documentName, ContentFile contentFile)
         {
             super(parentFolder, null, contentFile);

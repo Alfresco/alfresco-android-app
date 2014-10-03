@@ -340,7 +340,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
         Operator.with(getActivity(), getAccount()).load(
-                new CreateDocumentRequest.Builder(parentFolder, documentName, type.getIdentifier(), f, props, listTagValue, isCreation)
+                new CreateDocumentRequest.Builder(parentFolder, documentName, (type != null) ? type.getIdentifier() : null, f, props, listTagValue, isCreation)
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)

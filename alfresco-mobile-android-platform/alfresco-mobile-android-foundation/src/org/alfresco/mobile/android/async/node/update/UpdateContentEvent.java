@@ -25,9 +25,9 @@ import org.alfresco.mobile.android.async.OperationEvent;
 
 public class UpdateContentEvent extends OperationEvent<Document>
 {
-    final Node node;
+    public final Node node;
 
-    final Folder parentFolder;
+    public final Folder parentFolder;
 
     public UpdateContentEvent(String requestId, LoaderResult<Document> result, Node node, Folder parentFolder)
     {

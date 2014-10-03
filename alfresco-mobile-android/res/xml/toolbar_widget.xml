@@ -1,0 +1,12 @@
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+    android:minWidth="250dp"
+    android:minHeight="48dp"
+	android:minResizeWidth="250dp"
+	android:minResizeHeight="40dp"
+    android:updatePeriodMillis="0"
+    android:previewImage="@drawable/widget_preview"
+    android:initialLayout="@layout/widget_toolbar"
+    android:resizeMode="horizontal"
+    android:widgetCategory="home_screen|keyguard"
+    android:initialKeyguardLayout="@layout/widget_toolbar">
+</appwidget-provider>

@@ -391,15 +391,20 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     public static void actionSendDocumentsToAlfresco(Fragment fr, List<File> files)
     {
+        actionSendDocumentsToAlfresco(fr.getActivity(), files);
+    }
+    
+    public static void actionSendDocumentsToAlfresco(Activity activity, List<File> files)
+    {
         if (files.size() == 1)
         {
-            actionSendDocumentToAlfresco(fr.getActivity(), files.get(0));
+            actionSendDocumentToAlfresco(activity, files.get(0));
             return;
         }
 
         try
         {
-            Intent i = new Intent(fr.getActivity(), PublicDispatcherActivity.class);
+            Intent i = new Intent(activity, PublicDispatcherActivity.class);
             i.setAction(Intent.ACTION_SEND_MULTIPLE);
             ArrayList<Uri> uris = new ArrayList<Uri>();
             // convert from paths to Android friendly Parcelable Uri's
@@ -409,12 +414,12 @@ public class ActionUtils extends BaseActionUtils
                 uris.add(u);
             }
             i.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-            i.setType(MimeTypeManager.getInstance(fr.getActivity()).getMIMEType("text/plain"));
-            fr.getActivity().startActivity(i);
+            i.setType(MimeTypeManager.getInstance(activity).getMIMEType("text/plain"));
+            activity.startActivity(i);
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
         }
     }
 
@@ -511,4 +516,18 @@ public class ActionUtils extends BaseActionUtils
             return false;
         }
     }
+
+    public static boolean hasCameraAvailable(Context context)
+    {
+        try
+        {
+            return context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)
+                    || context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FRONT);
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+    }
+
 }

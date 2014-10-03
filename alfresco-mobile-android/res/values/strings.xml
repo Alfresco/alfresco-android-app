@@ -858,4 +858,17 @@
     <!-- SCANSNAP EXTENSIONS-->
     <string name="scan_document">Scan document</string>
     
+    <!-- SHORTCUT & ACTIONS -->
+    <string name="select_folder">Select</string>
+    <string name="shortcut_actions_title">Alfresco - Create</string>
+    <string name="shortcut_title">Alfresco - Shortcut</string>
+    <string name="shortcut_create">Create shortcut to...</string>
+    <string name="shortcut_action_create">Define your action...</string>
+    <string name="action_associated">Actions associated</string>
+    <string name="action_photo">Take photo</string>
+    <string name="action_video">Record video</string>
+    <string name="action_audio">Record audio</string>
+    <string name="action_text">Write text</string>
+    <string name="action_speech2text">Speech to text</string>
+    
 </resources>

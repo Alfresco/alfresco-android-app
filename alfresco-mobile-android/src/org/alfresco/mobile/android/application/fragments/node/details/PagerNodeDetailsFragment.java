@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
+import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -139,6 +140,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
         super.onDocumentUpdated(event);
+    }
+    
+    @Subscribe
+    public void onContentUpdated(UpdateContentEvent event)
+    {
+        super.onContentUpdated(event);
     }
 
     @Subscribe

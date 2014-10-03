@@ -31,6 +31,8 @@ public abstract class ScanSnapManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTANTS
     // ///////////////////////////////////////////////////////////////////////////
+    public static final String ACTION_START_SCANSNAP = "com.alfresco.intent.action.START_SCANSNAP";
+
     /**
      * Keys for url
      */

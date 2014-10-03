@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.node.upload;
+package org.alfresco.mobile.android.application.widgets;
 
 import java.util.List;
 
@@ -27,9 +27,9 @@ import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class UploadFolderAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class ActionShortcutAdapter extends BaseListAdapter<Integer, GenericViewHolder>
 {
-    public UploadFolderAdapter(Activity context, int textViewResourceId, List<Integer> listItems)
+    public ActionShortcutAdapter(Activity context, int textViewResourceId, List<Integer> listItems)
     {
         super(context, textViewResourceId, listItems);
     }
@@ -49,20 +49,17 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, GenericViewHol
     @Override
     protected void updateIcon(GenericViewHolder vh, Integer item)
     {
-        int iconId = R.drawable.ic_flatten_folder;
+        int iconId = R.drawable.ic_doc;
         switch (item)
         {
-            case R.string.menu_favorites_folder:
-                iconId = R.drawable.ic_favorite_dark;
+            case R.string.action_text:
+                iconId = R.drawable.ic_doc;
                 break;
-            case R.string.menu_browse_root:
-                iconId = R.drawable.ic_flatten_folder;
+            case R.string.action_speech2text:
+                iconId = R.drawable.ic_microphone;
                 break;
-            case R.string.menu_downloads:
-                iconId = R.drawable.ic_download_dark;
-                break;
-            case R.string.menu_browse_sites:
-                iconId = R.drawable.ic_site_flatten;
+            case R.string.action_photo:
+                iconId = R.drawable.ic_camera;
                 break;
             default:
                 break;

@@ -26,32 +26,20 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.node.rendition.PDFPreviewFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.node.download.DownloadTask;
 import org.alfresco.mobile.android.async.node.download.DownloadTask.DownloadTaskListener;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 
 public class DownloadDialogFragment extends DialogFragment implements DownloadTaskListener
 {
@@ -196,21 +184,14 @@ public class DownloadDialogFragment extends DialogFragment implements DownloadTa
                     AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                             getActivity().getText(R.string.download_complete) + " " + contentFile.getFileName());
 
-                    if ("application/pdf".equals(contentFile.getMimeType()))
+                    NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(
+                            NodeDetailsFragment.getDetailsTag());
+                    if (detailsFragment != null)
                     {
-                        PDFPreviewFragment.with(getActivity()).pdf(contentFile.getFile()).display();
-                    }
-                    else
-                    {
-                        NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager()
-                                .findFragmentByTag(TabsNodeDetailsFragment.TAG);
-                        if (detailsFragment != null)
-                        {
-                            long datetime = contentFile.getFile().lastModified();
-                            detailsFragment.setDownloadDateTime(new Date(datetime));
-                            ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
-                                    RequestCode.SAVE_BACK);
-                        }
+                        long datetime = contentFile.getFile().lastModified();
+                        detailsFragment.setDownloadDateTime(new Date(datetime));
+                        ActionUtils.openIn(detailsFragment, contentFile.getFile(), doc.getContentStreamMimeType(),
+                                RequestCode.SAVE_BACK);
                     }
                     break;
 

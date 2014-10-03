@@ -27,7 +27,7 @@
 
     <!-- PRESETS -->
     <string name="scan_preset">Scan Presets</string>
-    <string name="scan_preset_default">Automatic</string>
+    <string name="scan_preset_default">Document PDF</string>
     <string name="scan_preset_document">Document</string>
     <string name="scan_preset_photo">Images</string>
     <string name="scan_preset_business_card">Business Cards</string>

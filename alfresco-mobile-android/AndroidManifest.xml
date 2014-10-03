@@ -22,6 +22,7 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <application
         android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
@@ -77,25 +78,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <!-- Internal : Used for Cloud activation. Only for this part we have to use exported = true -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:host="activate-cloud-account"
-                    android:scheme="alfresco" />
-            </intent-filter>
-
             <!-- Fujitsu scan result -->
-             <intent-filter>
+            <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-            
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                
+                <data android:scheme="alfresco" android:host="document"/>
+                <data android:scheme="alfresco" android:host="folder"/>
+                <data android:scheme="alfresco" android:host="file"/>
+                
+                <data />
+            </intent-filter>
         </activity>
 
         <!-- Private : Passcode Activity -->
@@ -113,6 +112,13 @@
             android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_CREATE_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.EDIT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
@@ -123,8 +129,18 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:mimeType="text/*" />
+                <!-- used to filter rtf file -->
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="text/css" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="text/x-setext" />
+                <data android:mimeType="text/x-javascript" />
+                <data android:mimeType="text/x-markdown" />
+                <data android:mimeType="text/mediawiki" />
+                <data android:mimeType="text/sgml" />
+                <data android:mimeType="text/tab-separated-values" />
+                <data android:mimeType="text/x-vcard" />
             </intent-filter>
         </activity>
 
@@ -183,6 +199,63 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="org.alfresco.mobile.android.application.intent.IntentAPIDispatcherActivity"
+            android:exported="true"
+            android:theme="@style/MainTheme.Dialog" >
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.CREATE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/jpg" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.alfresco.mobile.android.application.widgets.ActionShortcutActivity"
+            android:theme="@style/MainTheme.Dialog"
+            android:label="@string/shortcut_actions_title" >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="org.alfresco.mobile.android.application.widgets.FolderShortcutActivity"
+            android:theme="@style/MainTheme.Dialog"
+            android:label="@string/shortcut_title" >
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- *************************************************************** -->
+        <!-- WIDGET -->
+        <!-- *************************************************************** -->
+        <receiver android:name="org.alfresco.mobile.android.application.widgets.ToolbarWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toolbar_widget" />
+        </receiver>
         <!-- *************************************************************** -->
         <!-- CONTENT PROVIDER -->
         <!-- *************************************************************** -->
@@ -273,7 +346,7 @@
         <meta-data
             android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
             android:resource="@dimen/app_minimumsize_h" />
-        
+
         <!-- *************************************************************** -->
         <!-- DEPRECATED -->
         <!-- *************************************************************** -->

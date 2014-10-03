@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
+import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
@@ -61,11 +62,14 @@ import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -76,6 +80,8 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
@@ -91,6 +97,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -126,6 +133,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected Date downloadDateTime;
 
     protected int layoutId;
+    
+    protected PreviewFragment replacementPreviewFragment = null;
+    
+    protected File tempFile = null;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -187,6 +198,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         // If node Identifier we need to retrieve the Node Object first.
         else if (nodeIdentifier != null)
         {
+            if (eventBusRequired)
+            {
+                EventBusManager.getInstance().register(this);
+            }
             Operator.with(getActivity()).load(new NodeRequest.Builder(null, nodeIdentifier));
             displayLoading();
         }
@@ -198,8 +213,172 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onStop()
     {
         getActivity().invalidateOptionsMenu();
-        ((MainActivity) getActivity()).setCurrentNode(null);
+        if (getActivity() instanceof MainActivity)
+        {
+            ((MainActivity) getActivity()).setCurrentNode(null);
+        }
         super.onStop();
+    }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        File tmpFile = null;
+        boolean isSynced = FavoritesSyncManager.getInstance(getActivity()).isSynced(
+                SessionUtils.getAccount(getActivity()), node);
+        boolean modified = false;
+        Date d = null;
+
+        switch (requestCode)
+        {
+        // Save Back : When a file has been opened by 3rd party app.
+            case RequestCode.SAVE_BACK:
+            case RequestCode.DECRYPTED:
+                // File opened when user tap the preview
+                // Retrieve the File
+                if (replacementPreviewFragment != null)
+                {
+                    tempFile = replacementPreviewFragment.getTempFile();
+                }
+
+                // Check if SYNC is ON
+                if (isSynced)
+                {
+                    // We use the sync file stored locally
+                    tmpFile = FavoritesSyncManager.getInstance(getActivity()).getSyncFile(
+                            SessionUtils.getAccount(getActivity()), node);
+                }
+                else
+                {
+                    // We retrieve the temporary file
+                    tmpFile = (tempFile != null ? tempFile : NodeActions.getTempFile(getActivity(), node));
+                }
+
+                // Keep the file reference final
+                final File dlFile = tmpFile;
+
+                // Check if the file has been modified (lastmodificationDate)
+                long datetime = dlFile.lastModified();
+                d = new Date(datetime);
+                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
+
+                if (node instanceof NodeSyncPlaceHolder && modified)
+                {
+                    // Offline mode
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+
+                        int operationStatut = FavoriteSyncStatus.STATUS_PENDING;
+                        if (requestCode == RequestCode.DECRYPTED)
+                        {
+                            operationStatut = FavoriteSyncStatus.STATUS_MODIFIED;
+                        }
+
+                        cValues.put(FavoritesSyncSchema.COLUMN_STATUS, operationStatut);
+                        getActivity().getContentResolver().update(
+                                FavoritesSyncManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+                    }
+
+                    // Encrypt sync file if necessary
+                    AlfrescoStorageManager.getInstance(getActivity()).manageFile(dlFile);
+                }
+                else if (modified && getSession() != null
+                        && getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node) != null
+                        && getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
+                {
+                    // File modified + Sync File
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+
+                        int operationStatut = FavoriteSyncStatus.STATUS_PENDING;
+                        if (requestCode == RequestCode.DECRYPTED)
+                        {
+                            operationStatut = FavoriteSyncStatus.STATUS_MODIFIED;
+                        }
+
+                        cValues.put(FavoritesSyncSchema.COLUMN_STATUS, operationStatut);
+                        getActivity().getContentResolver().update(
+                                FavoritesSyncManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+
+                        // Sync if it's possible.
+                        if (FavoritesSyncManager.getInstance(getActivity()).canSync(
+                                SessionUtils.getAccount(getActivity())))
+                        {
+                            FavoritesSyncManager.getInstance(getActivity()).sync(
+                                    SessionUtils.getAccount(getActivity()), node);
+                        }
+                    }
+                    else
+                    {
+                        // File is temporary (after dl from server)
+                        // We request the user if he wants to save back
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(R.string.save_back);
+                        builder.setMessage(String.format(getResources().getString(R.string.save_back_description),
+                                node.getName()));
+                        builder.setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int item)
+                            {
+                                update(dlFile);
+                                dialog.dismiss();
+                            }
+                        });
+                        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener()
+                        {
+                            public void onClick(DialogInterface dialog, int item)
+                            {
+                                DataProtectionManager.getInstance(getActivity()).checkEncrypt(
+                                        SessionUtils.getAccount(getActivity()), dlFile);
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                }
+                else
+                {
+                    // File with no modification
+                    // Encrypt sync file if necessary
+                    // Delete otherwise
+                    AlfrescoStorageManager.getInstance(getActivity()).manageFile(dlFile);
+                }
+                break;
+            case RequestCode.FILEPICKER:
+                if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
+                {
+                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(TAG), RequestCode.FILEPICKER);
+                }
+                else if (data != null && data.getData() != null)
+                {
+                    String tmpPath = ActionUtils.getPath(getActivity(), data.getData());
+                    if (tmpPath != null)
+                    {
+                        File f = new File(tmpPath);
+                        update(f);
+                    }
+                    else
+                    {
+                        // Error case : Unable to find the file path associated
+                        // to user pick.
+                        // Sample : Picasa image case
+                        ActionUtils.actionDisplayError(NodeDetailsFragment.this, new AlfrescoAppException(
+                                getString(R.string.error_unknown_filepath), true));
+                    }
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -945,6 +1124,28 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         AlfrescoNotificationManager.getInstance(getActivity()).showToast(
                 String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
+    }
+    
+    @Subscribe
+    public void onContentUpdated(UpdateContentEvent event)
+    {
+        Node updatedNode = event.data;
+
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
+            getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else if (((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
+                DocumentFolderBrowserFragment.TAG)) != null)
+        {
+            ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
+                    DocumentFolderBrowserFragment.TAG)).select(updatedNode);
+        }
+        NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
+
+        AlfrescoNotificationManager.getInstance(getActivity()).showToast(
+                String.format(getResources().getString(R.string.update_sucess), event.node.getName()));
     }
 
     @Subscribe

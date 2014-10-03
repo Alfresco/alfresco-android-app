@@ -21,18 +21,25 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
+import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -79,7 +86,15 @@ public class TextEditorActivity extends BaseActivity
 
     private boolean hasTextToSpeech = false;
 
+    private boolean isCreation = false, isSpeechToText = false;
+
     private int originalLength;
+
+    private long ouputAccountId;
+
+    private boolean hasOuput;
+
+    private String outputFolderId;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -104,6 +119,26 @@ public class TextEditorActivity extends BaseActivity
         hasTextToSpeech = ActionUtils.hasSpeechToText(this);
 
         String action = getIntent().getAction();
+
+        // CREATE Management
+        // Use this intent if you want to create a text note directly inside the
+        // text editor
+        if (PrivateIntent.ACTION_CREATE_TEXT.equals(action))
+        {
+            isCreation = true;
+            isSpeechToText = getIntent().getBooleanExtra(AlfrescoIntentAPI.EXTRA_SPEECH2TEXT, false);
+            file = (File) getIntent().getSerializableExtra(PrivateIntent.EXTRA_FILE);
+            ouputAccountId = getIntent().getLongExtra(AlfrescoIntentAPI.EXTRA_ACCOUNT_ID, -1);
+            outputFolderId = getIntent().getStringExtra(AlfrescoIntentAPI.EXTRA_FOLDER_ID);
+            hasOuput = (ouputAccountId != -1 && outputFolderId != null);
+
+            Operator.with(this).load(new OpenFileRequest.Builder(file, defaultCharset));
+            setTextShown(false);
+            retrieveTitle();
+
+            return;
+        }
+
         if (Intent.ACTION_VIEW.equals(action))
         {
             if (getIntent().getData() != null)
@@ -279,6 +314,10 @@ public class TextEditorActivity extends BaseActivity
             }
             else
             {
+                if (isCreation)
+                {
+                    file.delete();
+                }
                 super.onBackPressed();
             }
         }
@@ -289,6 +328,7 @@ public class TextEditorActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     private void retrieveTitle()
     {
+        if (file == null) { return; }
         title = file.getName();
     }
 
@@ -433,6 +473,20 @@ public class TextEditorActivity extends BaseActivity
             public void onClick(DialogInterface dialog, int item)
             {
                 save(true);
+
+                if (isCreation)
+                {
+                    if (hasOuput)
+                    {
+                        TextEditorActivity.this.startActivity(PublicIntentAPIUtils.uploadFileIntent(file,
+                                ouputAccountId, outputFolderId));
+                        TextEditorActivity.this.finish();
+                    }
+                    else
+                    {
+                        ActionUtils.actionSendDocumentToAlfresco(TextEditorActivity.this, file);
+                    }
+                }
                 dialog.dismiss();
             }
         });
@@ -440,6 +494,10 @@ public class TextEditorActivity extends BaseActivity
         {
             public void onClick(DialogInterface dialog, int item)
             {
+                if (isCreation)
+                {
+                    file.delete();
+                }
                 dialog.dismiss();
                 finish();
             }
@@ -448,6 +506,10 @@ public class TextEditorActivity extends BaseActivity
         {
             public void onClick(DialogInterface dialog, int item)
             {
+                if (isCreation)
+                {
+                    file.delete();
+                }
                 dialog.dismiss();
             }
         });
@@ -455,6 +517,13 @@ public class TextEditorActivity extends BaseActivity
         alert.show();
         TextView messageText = (TextView) alert.findViewById(android.R.id.message);
         messageText.setGravity(Gravity.CENTER);
+    }
+
+    protected String createFilename(String extension)
+    {
+        String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
+
+        return "note_" + timeStamp + "." + extension;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -477,6 +546,18 @@ public class TextEditorActivity extends BaseActivity
         }
         // Display progress
         setProgressBarIndeterminateVisibility(false);
+
+        if (isCreation)
+        {
+            if (isSpeechToText)
+            {
+                speechToText();
+            }
+            else
+            {
+                tview.requestFocus();
+            }
+        }
     }
 
 }
