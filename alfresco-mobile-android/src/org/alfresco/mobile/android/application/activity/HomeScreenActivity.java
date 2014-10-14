@@ -91,11 +91,11 @@ public class HomeScreenActivity extends BaseActivity
     @Subscribe
     public void onAccountCreated(CreateAccountEvent event)
     {
-        removeWaitingDialog();
         if (event.hasException) { return; }
         Intent i = new Intent(this, MainActivity.class);
         i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, event.data.getId());
         startActivity(i);
         finish();
+        //removeWaitingDialog();
     }
 }

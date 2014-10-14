@@ -142,50 +142,6 @@ public class RenditionManagerImpl extends RenditionManager
      * @param url
      * @param initDrawableId
      */
-   /* public void display(ImageView iv, Node n, int initDrawableId)
-    {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null);
-    }
-
-    public void display(ImageView iv, Node n, int initDrawableId, ScaleType scaleType)
-    {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, null, scaleType);
-    }
-
-    public void display(ImageView iv, int initDrawableId, String identifier)
-    {
-        display(iv, identifier, initDrawableId, TYPE_NODE, null);
-    }
-
-    public void display(ImageView iv, String username, int initDrawableId)
-    {
-        if (picasso != null)
-        {
-            picasso.cancelRequest(iv);
-        }
-        display(iv, username, initDrawableId, TYPE_PERSON, null);
-    }
-
-    public void displayDiagram(ImageView iv, int initDrawableId, String workflowId)
-    {
-        display(iv, workflowId, initDrawableId, TYPE_WORKFLOW, null, ScaleType.FIT_CENTER);
-    }
-
-    public void preview(ImageView iv, Node n, int initDrawableId, Integer size)
-    {
-        display(iv, n.getIdentifier(), initDrawableId, TYPE_NODE, size);
-    }
-
-    public void preview(ImageView iv, int initDrawableId, String identifier)
-    {
-        display(iv, identifier, initDrawableId, TYPE_NODE, null);
-    }
-
-    private void display(ImageView iv, String identifier, int initDrawableId, int type, Integer preview)
-    {
-        display(iv, identifier, initDrawableId, type, preview, ScaleType.FIT_CENTER);
-    }*/
-
     private void displayPlaceHolder(WeakReference<ImageView> ivRef, int placeHolderId)
     {
         if (ivRef != null && ivRef.isEnqueued())

@@ -28,7 +28,7 @@ public class CreateAccountRequest extends BaseOperationRequest
 {
     private static final long serialVersionUID = 1L;
 
-    private static final int TYPE_ID = OperationRequestIds.ID_ACCOUNT_CREATE;
+    public static final int TYPE_ID = OperationRequestIds.ID_ACCOUNT_CREATE;
 
     public static final String SESSION_MIME = "AlfrescoSession";
 

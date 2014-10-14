@@ -552,10 +552,7 @@ public class MainActivity extends BaseActivity
             sessionManager.loadSession(getCurrentAccount());
         }
         invalidateOptionsMenu();
-        if (getCurrentSession() != null)
-        {
-            setProgressBarIndeterminateVisibility(true);
-        }
+        setProgressBarIndeterminateVisibility(getCurrentSession() == null);
     }
 
     private boolean checkSession(int actionMainMenuId)

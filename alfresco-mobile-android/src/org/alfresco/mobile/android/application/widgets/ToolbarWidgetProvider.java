@@ -30,6 +30,20 @@ import android.content.Intent;
 import android.view.View;
 import android.widget.RemoteViews;
 
+/**
+ * Responsible to manage and display an Application Widget on Device Android
+ * Screen.
+ * <p>
+ * It contains 3/4 actions
+ * <ul>
+ * <li>Shortcut to HomeScreen</li>
+ * <li>Shortcut to create a text file</li>
+ * <li>Shortcut to speech to text</li>
+ * <li>Shortcut to take a photo</li>
+ * </ul>
+ * 
+ * @author Jean Marie Pascal
+ */
 public class ToolbarWidgetProvider extends AppWidgetProvider
 {
 
