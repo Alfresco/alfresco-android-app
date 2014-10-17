@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.manager.AccessibilityHelper;
 import org.alfresco.mobile.android.application.utils.UIUtils;
 
 import android.app.DialogFragment;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -81,9 +82,20 @@ public class AccountTypesFragment extends DialogFragment
             @Override
             public void onClick(View v)
             {
-                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
-                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
-                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+                new AsyncTask<Void, Void, AccountOAuthFragment>()
+                {
+                    protected AccountOAuthFragment doInBackground(Void... args)
+                    {
+                        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
+                        return newFragment;
+                    }
+
+                    protected void onPostExecute(AccountOAuthFragment newFragment)
+                    {
+                        FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                                DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+                    }
+                }.execute();
             }
         });
 
