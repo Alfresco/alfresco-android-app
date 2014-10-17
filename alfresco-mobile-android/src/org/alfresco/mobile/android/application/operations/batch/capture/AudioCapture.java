@@ -34,6 +34,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.util.Log;
 
@@ -91,37 +92,55 @@ public class AudioCapture extends DeviceCapture
     {
         Uri savedUri = data.getData();
 
-        try
+        File folder = parentFolder;
+        if (folder != null)
         {
-            File folder = parentFolder;
-            if (folder != null)
+            new AsyncTask<Object, Void, Boolean>()
             {
-                String filePath = getAudioFilePathFromUri(savedUri);
-                String fileType = getAudioFileTypeFromUri(savedUri);
-                String newFilePath = folder.getPath() + "/"
-                        + createFilename("AUDIO", filePath.substring(filePath.lastIndexOf(".") + 1));
-
-                copyFile(filePath, newFilePath);
-
-                parentActivity.getContentResolver().delete(savedUri, null, null);
-                (new File(filePath)).delete();
-
-                payload = new File(newFilePath);
-
-                if (!fileType.isEmpty())
+                protected Boolean doInBackground(java.lang.Object... args)
                 {
-                    mimeType = fileType;
+                    Uri savedUri = (Uri) args[0];
+                    File folder = (File) args[1];
+                    try
+                    {
+                        String filePath = getAudioFilePathFromUri(savedUri);
+                        String fileType = getAudioFileTypeFromUri(savedUri);
+                        String newFilePath = folder.getPath() + "/"
+                                + createFilename("AUDIO", filePath.substring(filePath.lastIndexOf(".") + 1));
+
+                        copyFile(filePath, newFilePath);
+
+                        parentActivity.getContentResolver().delete(savedUri, null, null);
+                        (new File(filePath)).delete();
+
+                        payload = new File(newFilePath);
+
+                        if (!fileType.isEmpty())
+                        {
+                            mimeType = fileType;
+                        }
+                        return true;
+                    } 
+                    catch (IOException e)
+                    {
+                        return false;
+                    }
                 }
-            }
-            else
-            {
-                MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
-            }
+                    
+                protected Void doInBackground(Boolean result)
+                {
+                    if(result == false)
+                    {
+                        MessengerManager.showLongToast(context,
+                                context.getString(R.string.cannot_capture));
+                        Log.d(TAG, Log.getStackTraceString(e));
+                    }
+                }
+            }.execute(savedUri, folder);
         }
-        catch (IOException e)
+        else
         {
-            MessengerManager.showLongToast(context, context.getString(R.string.cannot_capture));
-            Log.d(TAG, Log.getStackTraceString(e));
+            MessengerManager.showLongToast(parentActivity, parentActivity.getString(R.string.sdinaccessible));
         }
     }
 
