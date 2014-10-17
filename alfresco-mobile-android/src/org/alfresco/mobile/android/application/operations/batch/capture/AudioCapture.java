@@ -127,7 +127,7 @@ public class AudioCapture extends DeviceCapture
                     }
                 }
                     
-                protected Void doInBackground(Boolean result)
+                protected Void onPostExecute(Boolean result)
                 {
                     if(result == false)
                     {
