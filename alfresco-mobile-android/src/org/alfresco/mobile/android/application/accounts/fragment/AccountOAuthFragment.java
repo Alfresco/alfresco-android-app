@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -260,9 +261,20 @@ public class AccountOAuthFragment extends OAuthFragment
     }
 
     private void resetRequest(){
-        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
-        FragmentDisplayer.replaceFragment(getActivity(), newFragment,
-                DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+        new AsyncTask<Void, Void, AccountOAuthFragment>()
+        {
+            protected AccountOAuthFragment doInBackground(Void... args)
+            {
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance();
+                return newFragment;
+            }
+
+            protected void onPostExecute(AccountOAuthFragment newFragment)
+            {
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment,
+                        DisplayUtils.getMainPaneId(getActivity()), AccountOAuthFragment.TAG, true);
+            }
+        }.execute();
     }
     
     // ///////////////////////////////////////////////////////////////////////////
