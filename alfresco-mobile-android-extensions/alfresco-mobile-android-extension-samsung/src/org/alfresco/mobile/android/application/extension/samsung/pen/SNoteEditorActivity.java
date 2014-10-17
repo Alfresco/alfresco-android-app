@@ -41,6 +41,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -674,37 +675,45 @@ public class SNoteEditorActivity extends Activity
 
     private void addImgObject(String attachmentKey, float x, float y)
     {
-        SpenObjectImage imgObj = new SpenObjectImage();
-        Bitmap imageBitmap;
-        if (spenNoteDoc.hasAttachedFile(attachmentKey))
-        {
-            if (dm == null)
-            {
-                dm = new DisplayMetrics();
-                ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+        new AsyncTask<Void, Void, Bitmap>() {
+            protected Bitmap doInBackground(Void... args) {
+                Bitmap imageBitmap;
+                if (true)
+                {
+                    if (dm == null)
+                    {
+                        dm = new DisplayMetrics();
+                        ((Activity) context).getWindowManager().getDefaultDisplay().getMetrics(dm);
+                    }
+                    imageBitmap = RenditionManager.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
+                            spenSurfaceView.getCanvasWidth(), dm.densityDpi);
+                }
+                else
+                {
+                    imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.mime_img);
+                }
+                return imageBitmap;
             }
-            imageBitmap = RenditionManager.decodeFile(new File(spenNoteDoc.getAttachedFile(attachmentKey)),
-                    spenSurfaceView.getCanvasWidth(), dm.densityDpi);
-        }
-        else
-        {
-            imageBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.mime_img);
-        }
-        imgObj.setImage(imageBitmap);
 
-        float imgWidth = imageBitmap.getWidth();
-        float imgHeight = imageBitmap.getHeight();
+            protected void onPostExecute(Bitmap imageBitmap) {
+                SpenObjectImage imgObj = new SpenObjectImage();
+                imgObj.setImage(imageBitmap);
 
-        int scale = calculateInSampleSize(imgWidth, imgHeight, spenSurfaceView.getCanvasWidth(),
-                spenSurfaceView.getCanvasHeight());
+                float imgWidth = imageBitmap.getWidth();
+                float imgHeight = imageBitmap.getHeight();
 
-        RectF rect = getRealPoint(x, y, imgWidth / scale, imgHeight / scale);
-        imgObj.setRect(rect, true);
-        spenPageDoc.appendObject(imgObj);
-        spenPageDoc.selectObject(imgObj);
-        spenSurfaceView.update();
+                int scale = calculateInSampleSize(imgWidth, imgHeight, spenSurfaceView.getCanvasWidth(),
+                        spenSurfaceView.getCanvasHeight());
 
-        imageBitmap.recycle();
+                RectF rect = getRealPoint(x, y, imgWidth / scale, imgHeight / scale);
+                imgObj.setRect(rect, true);
+                spenPageDoc.appendObject(imgObj);
+                spenPageDoc.selectObject(imgObj);
+                spenSurfaceView.update();
+
+                imageBitmap.recycle();
+            }
+        }.execute();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

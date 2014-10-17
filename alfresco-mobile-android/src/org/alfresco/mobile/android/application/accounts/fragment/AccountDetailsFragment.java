@@ -55,6 +55,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
@@ -635,9 +636,20 @@ public class AccountDetailsFragment extends BaseFragment
 
     public void displayOAuthFragment()
     {
-        AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-        FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
-                AccountOAuthFragment.TAG, true);
+        new AsyncTask<Void, Void, AccountOAuthFragment>()
+        {
+            protected AccountOAuthFragment doInBackground(Void... args)
+            {
+                AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+                return newFragment;
+            }
+
+            protected void onPostExecute(AccountOAuthFragment newFragment)
+            {
+                FragmentDisplayer.replaceFragment(getActivity(), newFragment, DisplayUtils.getMainPaneId(getActivity()),
+                        AccountOAuthFragment.TAG, true);
+            }
+        }.execute();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
