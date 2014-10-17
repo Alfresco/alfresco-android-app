@@ -100,6 +100,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -1483,10 +1484,21 @@ public class MainActivity extends BaseActivity
                         || (getFragment(AccountOAuthFragment.TAG) != null && getFragment(AccountOAuthFragment.TAG)
                                 .isAdded()))
                 {
-                    AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
-                    FragmentDisplayer.replaceFragment(activity, newFragment, DisplayUtils.getMainPaneId(activity),
-                            AccountOAuthFragment.TAG, true);
-                    DisplayUtils.switchSingleOrTwo(activity, true);
+                    new AsyncTask<Void, Void, AccountOAuthFragment>()
+                    {
+                        protected AccountOAuthFragment doInBackground(Void... args)
+                        {
+                            AccountOAuthFragment newFragment = AccountOAuthFragment.newInstance(acc);
+                            return newFragment;
+                        }
+
+                        protected void onPostExecute(AccountOAuthFragment newFragment)
+                        {
+                            FragmentDisplayer.replaceFragment(activity, newFragment, DisplayUtils.getMainPaneId(activity),
+                                    AccountOAuthFragment.TAG, true);
+                            DisplayUtils.switchSingleOrTwo(activity, true);
+                        }
+                    }.execute();
                     return;
                 }
 
