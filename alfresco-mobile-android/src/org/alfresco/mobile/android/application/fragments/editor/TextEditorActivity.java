@@ -40,6 +40,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.content.pm.ResolveInfo;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
 import android.text.Editable;
@@ -381,40 +382,54 @@ public class TextEditorActivity extends BaseActivity implements LoaderCallbacks<
     public void save(boolean stopActivity)
     {
         TextView view = (TextView) findViewById(R.id.texteditor);
-        OutputStream sourceFile = null;
-        try
+        new AsyncTask<String, Void, Boolean>()
         {
-            sourceFile = new FileOutputStream(file);
-            sourceFile.write(view.getText().toString().getBytes("UTF-8"));
-            sourceFile.close();
-
-            changed = false;
-
-            MessengerManager.showToast(this, R.string.file_editor_save_confirmation);
-
-            if (stopActivity)
+            protected Boolean doInBackground(String... args)
             {
-                this.finish();
-            }
-        }
-        catch (Exception e)
-        {
-            Log.w(TAG, Log.getStackTraceString(e));
-        }
-        finally
-        {
-            if (sourceFile != null)
-            {
+                OutputStream sourceFile = null;
                 try
                 {
+                    sourceFile = new FileOutputStream(file);
+                    sourceFile.write(args[0].getBytes("UTF-8"));
                     sourceFile.close();
+                    return true;
                 }
-                catch (IOException e)
+                catch (Exception e)
                 {
                     Log.w(TAG, Log.getStackTraceString(e));
+                    return false;
+                }
+                finally
+                {
+                    if (sourceFile != null)
+                    {
+                        try
+                        {
+                            sourceFile.close();
+                        }
+                        catch (IOException e)
+                        {
+                            Log.w(TAG, Log.getStackTraceString(e));
+                        }
+                    }
                 }
             }
-        }
+            
+            protected void onPostExecute(Boolean result) {
+                if (result == false)
+                {
+                    return;
+                }
+                changed = false;
+
+                MessengerManager.showToast(this, R.string.file_editor_save_confirmation);
+
+                if (stopActivity)
+                {
+                    TextEditorActivity.this.finish();
+                }
+            }
+        }.execute(view.getText().toString());
     }
 
     public void reload(String charset)
