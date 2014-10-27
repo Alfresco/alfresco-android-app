@@ -287,11 +287,17 @@ public class AlfrescoAccountManager extends Manager
         BundleUtils.addIfNotEmpty(b, AlfrescoAccount.ACCOUNT_REFRESH_TOKEN, refreshToken);
 
         // Time to create.
-        AccountManager.get(appContext).addAccountExplicitly(newAccount, password, b);
-
-        // Create the Account data object
-        return new AlfrescoAccount(accountId, accountLabel, url, username, password, repositoryId, typeId, activation,
-                accessToken, refreshToken, isPaidAccount);
+        if (AccountManager.get(appContext).addAccountExplicitly(newAccount, password, b))
+        {
+            // Create the Account data object
+            return new AlfrescoAccount(accountId, accountLabel, url, username, password, repositoryId, typeId,
+                    activation, accessToken, refreshToken, isPaidAccount);
+        }
+        else
+        {
+            // TODO Error ?
+            return null;
+        }
     }
 
     public AlfrescoAccount update(long accountId, String name, String url, String username, String pass,
