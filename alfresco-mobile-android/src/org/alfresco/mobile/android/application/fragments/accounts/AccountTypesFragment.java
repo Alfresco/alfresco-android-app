@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.fragments.accounts;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
@@ -74,7 +74,7 @@ public class AccountTypesFragment extends AlfrescoFragment
         else
         {
             UIUtils.displayTitle(getActivity(), R.string.account_wizard_step1_description,
-                    !(getActivity() instanceof HomeScreenActivity));
+                    !(getActivity() instanceof WelcomeActivity));
         }
 
         setRootView(inflater.inflate(R.layout.app_wizard_account_step1, container, false));

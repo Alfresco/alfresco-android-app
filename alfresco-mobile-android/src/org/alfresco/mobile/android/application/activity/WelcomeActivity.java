@@ -21,7 +21,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
-import org.alfresco.mobile.android.application.fragments.home.HomeScreenFragment;
+import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -37,9 +37,9 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
-public class HomeScreenActivity extends BaseActivity
+public class WelcomeActivity extends BaseActivity
 {
-    private static final String TAG = HomeScreenActivity.class.getName();
+    private static final String TAG = WelcomeActivity.class.getName();
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -51,9 +51,9 @@ public class HomeScreenActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
 
-        if (getFragmentManager().findFragmentByTag(HomeScreenFragment.TAG) == null)
+        if (getFragmentManager().findFragmentByTag(WelcomeFragment.TAG) == null)
         {
-            FragmentDisplayer.with(this).load(new HomeScreenFragment()).back(false).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.with(this).load(new WelcomeFragment()).back(false).into(FragmentDisplayer.PANEL_LEFT);
         }
     }
 

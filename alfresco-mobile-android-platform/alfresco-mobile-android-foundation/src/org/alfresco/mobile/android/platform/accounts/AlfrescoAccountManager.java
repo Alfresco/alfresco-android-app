@@ -139,7 +139,10 @@ public class AlfrescoAccountManager extends Manager
             accounts = new ArrayList<AlfrescoAccount>(accountMs.length);
             for (android.accounts.Account account : accountMs)
             {
-                accounts.add(AlfrescoAccount.parse(mAccountManager, account));
+                if (mAccountManager.getUserData(account, AlfrescoAccount.ACCOUNT_ID) != null)
+                {
+                    accounts.add(AlfrescoAccount.parse(mAccountManager, account));
+                }
             }
             // Log.d(TAG, "accounts " + accounts.size());
         }
@@ -347,7 +350,5 @@ public class AlfrescoAccountManager extends Manager
     {
         getCount();
     }
-    
-    
-    
+
 }

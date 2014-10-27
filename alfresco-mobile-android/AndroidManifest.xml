@@ -39,7 +39,7 @@
         <!-- ALFRESCO APP -->
         <!-- *************************************************************** -->
         <activity
-            android:name="org.alfresco.mobile.android.application.activity.HomeScreenActivity"
+            android:name="org.alfresco.mobile.android.application.activity.WelcomeActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
             android:launchMode="singleTop"

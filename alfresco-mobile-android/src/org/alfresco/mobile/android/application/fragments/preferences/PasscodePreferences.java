@@ -22,7 +22,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
@@ -252,7 +252,7 @@ public class PasscodePreferences extends PreferenceFragment
      */
     public static void updateLastActivityDisplay(Context context)
     {
-        if (context instanceof HomeScreenActivity || context instanceof PassCodeActivity) { return; }
+        if (context instanceof WelcomeActivity || context instanceof PassCodeActivity) { return; }
         if (context instanceof MainActivity && !((MainActivity) context).hasActivateCheckPasscode()) { return; }
         updateLastActivity(context);
     }
