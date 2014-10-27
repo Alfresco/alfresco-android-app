@@ -70,6 +70,7 @@
 
     <!-- LIST ROW -->
     <dimen name="row_height">60dp</dimen>
+    <dimen name="avatar_thumbnail">38dip</dimen>
     <dimen name="thumbnail_height">42dip</dimen>
     <dimen name="thumbnail_margin">6dip</dimen>
     <dimen name="thumbnail_margin_min">6dip</dimen>

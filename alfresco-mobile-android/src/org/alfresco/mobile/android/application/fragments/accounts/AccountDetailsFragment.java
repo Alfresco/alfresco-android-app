@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
@@ -654,7 +654,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
             editor.commit();
 
             // Redirect to HomeScreenActivity
-            getActivity().startActivity(new Intent(getActivity(), HomeScreenActivity.class));
+            getActivity().startActivity(new Intent(getActivity(), WelcomeActivity.class));
             getActivity().finish();
         }
     }
@@ -688,13 +688,13 @@ public class AccountDetailsFragment extends AlfrescoFragment
 
         if (acc.getActivation() == null)
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_EDIT, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
+            mi = menu.add(Menu.NONE, R.id.menu_account_edit, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
                     String.format(getString(R.string.account_edit_hint), acc.getTitle()));
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_ACCOUNT_DELETE, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
+        mi = menu.add(Menu.NONE, R.id.menu_account_delete, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
                 String.format(getString(R.string.account_delete_hint), acc.getTitle()));
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);

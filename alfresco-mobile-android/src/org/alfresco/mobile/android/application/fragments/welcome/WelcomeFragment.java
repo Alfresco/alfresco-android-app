@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.application.fragments.home;
+package org.alfresco.mobile.android.application.fragments.welcome;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -35,13 +35,13 @@ import android.widget.TextView;
  * 
  * @author Jean Marie Pascal
  */
-public class HomeScreenFragment extends DialogFragment
+public class WelcomeFragment extends DialogFragment
 {
-    public static final String TAG = HomeScreenFragment.class.getName();
+    public static final String TAG = WelcomeFragment.class.getName();
 
     private View rootView;
 
-    public HomeScreenFragment()
+    public WelcomeFragment()
     {
         setStyle(android.R.style.Theme_Holo_Light_Dialog, android.R.style.Theme_Holo_Light_Dialog);
     }

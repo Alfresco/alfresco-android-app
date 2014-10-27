@@ -19,7 +19,11 @@
 <resources>
 
     <item name="tab_comment" type="id"/>
-
+    
+   <item name="menu_account_add" type="id"/>
+   <item name="menu_account_edit" type="id"/>
+   <item name="menu_account_delete" type="id"/>
+   
     <!-- FRAGMENT ID -->
     <item name="tab_history" type="id"/>
     <item name="tag_account" type="id"/>

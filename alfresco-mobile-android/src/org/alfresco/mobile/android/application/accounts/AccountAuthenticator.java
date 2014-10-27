@@ -17,7 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.accounts;
 
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
 import android.accounts.AbstractAccountAuthenticator;
@@ -46,7 +46,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType,
             String[] requiredFeatures, Bundle options) throws NetworkErrorException
     {
-        final Intent intent = new Intent(context, HomeScreenActivity.class);
+        final Intent intent = new Intent(context, WelcomeActivity.class);
         intent.putExtra(AlfrescoAccount.ACCOUNT_TYPE, accountType);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
         final Bundle bundle = new Bundle();

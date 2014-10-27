@@ -164,7 +164,6 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -196,7 +195,6 @@ public class MainActivity extends BaseActivity
             MainMenuFragment.with(this).display();
         }
 
-        // TODO move elsewhere ?
         if (SessionUtils.getAccount(this) != null)
         {
             currentAccount = SessionUtils.getAccount(this);
@@ -538,7 +536,7 @@ public class MainActivity extends BaseActivity
     {
         if (AlfrescoAccountManager.getInstance(this).isEmpty() && AlfrescoAccountManager.getInstance(this).hasData())
         {
-            startActivity(new Intent(this, HomeScreenActivity.class));
+            startActivity(new Intent(this, WelcomeActivity.class));
             finish();
             return;
         }
@@ -552,10 +550,7 @@ public class MainActivity extends BaseActivity
             sessionManager.loadSession(getCurrentAccount());
         }
         invalidateOptionsMenu();
-        if (getCurrentSession() != null)
-        {
-            setProgressBarIndeterminateVisibility(true);
-        }
+        setProgressBarIndeterminateVisibility(getCurrentSession() == null);
     }
 
     private boolean checkSession(int actionMainMenuId)
@@ -698,15 +693,15 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
 
-            case MenuActionItem.MENU_ACCOUNT_ADD:
+            case R.id.menu_account_add:
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
 
-            case MenuActionItem.MENU_ACCOUNT_EDIT:
+            case R.id.menu_account_edit:
                 ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).edit();
                 return true;
 
-            case MenuActionItem.MENU_ACCOUNT_DELETE:
+            case R.id.menu_account_delete:
                 ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).delete();
                 return true;
 
@@ -862,10 +857,6 @@ public class MainActivity extends BaseActivity
         AlfrescoAccount tmpAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data.getId());
         if (tmpAccount.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
         {
-            // Check if we've prompted the user for Data Protection yet.
-            // This is needed on new AlfrescoAccount creation, as the Activity
-            // gets
-            // re-created after the AlfrescoAccount is created.
             DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
                     DataProtectionUserDialogFragment.TAG);
             prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();

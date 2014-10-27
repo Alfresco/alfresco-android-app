@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.HomeScreenActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.async.Operator;
@@ -96,7 +96,7 @@ public class AccountEditFragment extends AlfrescoFragment
         else
         {
             UIUtils.displayTitle(getActivity(), R.string.account_authentication,
-                    !(getActivity() instanceof HomeScreenActivity));
+                    !(getActivity() instanceof WelcomeActivity));
         }
 
         View v = inflater.inflate(R.layout.app_wizard_account_step2, container, false);

@@ -35,6 +35,7 @@
              />
 
         <Button
+            android:id="@+id/homescreen_login"
             style="?MainTheme.Button.Large"
             android:onClick="launch"
             android:text="@string/home_login"
