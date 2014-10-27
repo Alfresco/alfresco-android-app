@@ -39,14 +39,20 @@ public class RefreshHelper implements OnRefreshListener
     // //////////////////////////////////////////////////////////////////////
     public RefreshHelper(Activity activity, final RefreshFragment fragment, View rootView)
     {
-        if (rootView == null || AccessibilityUtils.isEnabled(activity)) { return; }
-
+        if (rootView == null) { return; }
         fragmentRef = new WeakReference<RefreshFragment>(fragment);
-
         swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.ptr_layout);
-        swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorScheme(R.color.alfresco_lime, R.color.alfresco_lemon, R.color.alfresco_tangerine,
-                R.color.alfresco_sky);
+
+        if (AccessibilityUtils.isEnabled(activity))
+        {
+            swipeLayout.setEnabled(false);
+        }
+        else
+        {
+            swipeLayout.setOnRefreshListener(this);
+            swipeLayout.setColorScheme(R.color.alfresco_lime, R.color.alfresco_lemon, R.color.alfresco_tangerine,
+                    R.color.alfresco_sky);
+        }
     }
 
     // //////////////////////////////////////////////////////////////////////

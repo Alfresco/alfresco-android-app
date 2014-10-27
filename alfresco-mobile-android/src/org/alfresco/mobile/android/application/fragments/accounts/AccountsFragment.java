@@ -133,7 +133,8 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     {
         // Event refresh
         onPrepareRefresh();
-        gv.setAdapter(onAdapterCreation());
+        adapter = onAdapterCreation();
+        gv.setAdapter(adapter);
         adapter.notifyDataSetChanged();
         refreshHelper.setRefreshComplete();
     }
@@ -190,9 +191,15 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     public void onAccountCreated(CreateAccountEvent event)
     {
         retrieveAccountList();
-        if (!accountListing.contains(event.data))
-        {
-            accountListing.add(event.data);
+        if (!DisplayUtils.hasCentralPane(getActivity())){
+            for (AlfrescoAccount acc : accountListing)
+            {
+                if (event.data.getId() == acc.getId())
+                {
+                    selectedItems.add(acc);
+                    break;
+                }
+            }
         }
         refresh();
     }
@@ -209,9 +216,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
                 break;
             }
         }
-        
         refresh();
-        adapter.notifyDataSetChanged();
     }
 
     private void retrieveAccountList()
