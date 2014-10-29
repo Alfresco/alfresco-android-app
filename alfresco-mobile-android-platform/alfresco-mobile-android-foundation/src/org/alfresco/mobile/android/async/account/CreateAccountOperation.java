@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.async.account;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
@@ -104,7 +105,14 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
         }
         catch (Exception e)
         {
-            result.setException(e);
+            if (e instanceof AlfrescoSessionException)
+            {
+                result.setException((Exception) e.getCause());
+            }
+            else
+            {
+                result.setException(e);
+            }
         }
 
         result.setData(account);
@@ -146,8 +154,8 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
             isPaidAccount = isPaid(type, session);
 
             // Create Account
-            acc = AlfrescoAccountManager.getInstance(context).create(accountLabel, session.getBaseUrl(), username, password,
-                    session.getRepositoryInfo().getIdentifier(), type, null, null, null,
+            acc = AlfrescoAccountManager.getInstance(context).create(accountLabel, session.getBaseUrl(), username,
+                    password, session.getRepositoryInfo().getIdentifier(), type, null, null, null,
                     Boolean.toString(isPaidAccount));
         }
         else
@@ -166,7 +174,8 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
 
             // Create Account
             acc = AlfrescoAccountManager.getInstance(context).create(context.getString(R.string.account_default_cloud),
-                    session.getBaseUrl(), userPerson.getIdentifier(), null, session.getRepositoryInfo().getIdentifier(), type, null,
+                    session.getBaseUrl(), userPerson.getIdentifier(), null,
+                    session.getRepositoryInfo().getIdentifier(), type, null,
                     ((CloudSession) session).getOAuthData().getAccessToken(),
                     ((CloudSession) session).getOAuthData().getRefreshToken(), Boolean.toString(isPaidAccount));
         }
@@ -228,8 +237,11 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
     protected void onPostExecute(LoaderResult<AlfrescoAccount> result)
     {
         super.onPostExecute(result);
-        SessionManager.getInstance(context).saveSession(result.getData(), session);
-        SessionManager.getInstance(context).saveAccount(result.getData());
+        if (result.getData() != null)
+        {
+            SessionManager.getInstance(context).saveSession(result.getData(), session);
+            SessionManager.getInstance(context).saveAccount(result.getData());
+        }
         EventBusManager.getInstance().post(new CreateAccountEvent(getRequestId(), result, session));
     }
 }
