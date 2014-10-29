@@ -62,16 +62,16 @@
     <string name="account_servicedocument">Service URL</string>
     <string name="account_servicedocument_hint">Service URL (Optional). </string>
     <string name="account_wizard_step2_title">Account Authentication Information</string>
-    <string name="account_verify">Verifying AlfrescoAccount Information&#8230;</string>
+    <string name="account_verify">Verifying Alfresco Account Information&#8230;</string>
     <string name="email_hint">example@acme.com</string>
     <string name="account_validate">Save</string>
     <string name="account_validate_hint">Save your AlfrescoAccount information</string>
     <string name="account_validate_disable_hint">Please fill Username, Password and Hostname fields.</string>
-    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your AlfrescoAccount settings.</string>
+    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your Alfresco Account settings.</string>
 
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">Your AlfrescoAccount is ready for you to use.</string>
+    <string name="account_wizard_alldone_description">Your Alfresco Account is ready for you to use.</string>
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP -->
     <string name="account_wizard_step1">Step 1 of 2</string>
@@ -80,8 +80,8 @@
     <string name="account_wizard_step2_description">Account Information</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">Your AlfrescoAccount is not activated. Please check the Manage AlfrescoAccount screen.</string>
-    <string name="account_not_activated_description">Your AlfrescoAccount is still waiting for verification</string>
+    <string name="account_not_activated">Your Alfresco Account is not activated. Please check the Manage Alfresco Account screen.</string>
+    <string name="account_not_activated_description">Your Alfresco Account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
     <string name="account_edit_hint">Edit "%s" AlfrescoAccount information</string>
