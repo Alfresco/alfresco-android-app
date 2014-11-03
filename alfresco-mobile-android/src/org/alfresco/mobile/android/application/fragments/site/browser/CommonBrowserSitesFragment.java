@@ -51,7 +51,8 @@ import com.squareup.otto.Subscribe;
 public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
 {
     protected boolean isFavoriteListing = false;
-    
+    protected boolean isMemberSite = false;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -149,9 +150,20 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             if (adapter != null)
             {
                 int position = ((ArrayAdapter<Site>) adapter).getPosition(oldSite);
-                ((ArrayAdapter<Site>) adapter).remove(oldSite);
-                ((ArrayAdapter<Site>) adapter).insert(newSite, position);
-                adapter.notifyDataSetChanged();
+                if (position == -1)
+                {
+                    refresh();
+                }
+                else
+                {
+                    ((ArrayAdapter<Site>) adapter).remove(oldSite);
+                    if (newSite != null)
+                    {
+                        ((ArrayAdapter<Site>) adapter).insert(newSite, position);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+
             }
         }
         catch (Exception e)
@@ -191,7 +203,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     }
 
     @Subscribe
-    public void onCancelPendingMembershipEvent(SiteFavoriteEvent event)
+    public void onSiteFavoriteEvent(SiteFavoriteEvent event)
     {
         int messageId = R.string.error_general;
         Site site = event.oldSite;
@@ -223,7 +235,8 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
 
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), site.getTitle()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                String.format(getString(messageId), site.getTitle()));
     }
 
     @Subscribe
@@ -249,7 +262,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
                 }
                 else
                 {
-                    update(site, updatedSite);
+                    update(site, isMemberSite ? null : updatedSite);
                 }
             }
         }
@@ -258,6 +271,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             messageId = (event.isJoining) ? R.string.action_join_site_error : R.string.action_leave_site_error;
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), site.getTitle()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                String.format(getString(messageId), site.getTitle()));
     }
 }

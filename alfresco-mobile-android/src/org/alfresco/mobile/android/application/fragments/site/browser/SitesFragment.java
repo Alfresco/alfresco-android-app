@@ -70,6 +70,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         if (favorite != null)
         {
             isFavoriteListing = favorite;
+            isMemberSite = !favorite;
         }
     }
 
@@ -103,9 +104,9 @@ public class SitesFragment extends CommonBrowserSitesFragment
     }
 
     @Subscribe
-    public void onCancelPendingMembershipEvent(SiteFavoriteEvent event)
+    public void onSiteFavoriteEvent(SiteFavoriteEvent event)
     {
-        super.onCancelPendingMembershipEvent(event);
+        super.onSiteFavoriteEvent(event);
     }
 
     @Subscribe
