@@ -146,16 +146,19 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
         {
             builder = new SitesRequest.Builder(false);
             isFavoriteListing = false;
+            isMemberSite = true;
         }
         else if (TAB_FAV_SITES.equals(currentTabId))
         {
             builder = new SitesRequest.Builder(true);
             isFavoriteListing = true;
+            isMemberSite = false;
         }
         else
         {
             builder = new SitesRequest.Builder(null);
             isFavoriteListing = false;
+            isMemberSite = false;
         }
         performRequest(builder.setListingContext(getListing()));
     }
@@ -190,7 +193,7 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
     {
         super.onResult(event);
     }
-    
+
     @Subscribe
     public void onCancelPendingMembershipEvent(SitesPendingMembershipEvent event)
     {
@@ -198,9 +201,9 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
     }
 
     @Subscribe
-    public void onCancelPendingMembershipEvent(SiteFavoriteEvent event)
+    public void onSiteFavoriteEvent(SiteFavoriteEvent event)
     {
-        super.onCancelPendingMembershipEvent(event);
+        super.onSiteFavoriteEvent(event);
     }
 
     @Subscribe

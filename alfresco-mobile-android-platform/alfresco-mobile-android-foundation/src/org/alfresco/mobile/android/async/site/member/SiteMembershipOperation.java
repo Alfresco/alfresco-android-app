@@ -68,7 +68,7 @@ public class SiteMembershipOperation extends BaseOperation<Site>
                 }
                 else if (site != null && !isJoining)
                 {
-                    session.getServiceRegistry().getSiteService().leaveSite(site);
+                    result.setData(session.getServiceRegistry().getSiteService().leaveSite(site));
                 }
             }
             catch (Exception e)
