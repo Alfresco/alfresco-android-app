@@ -58,6 +58,8 @@ import org.alfresco.mobile.android.application.fragments.person.UserProfileFragm
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
+import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
@@ -645,7 +647,8 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(BrowserSitesFragment.TAG))
+        // TODO Replace by fragment optionMenu
+        if (isVisible(BrowserSitesFragment.TAG) || isVisible(BrowserSitesPagerFragment.TAG))
         {
             BrowserSitesFragment.getMenu(this, menu);
             return true;
@@ -755,7 +758,7 @@ public class MainActivity extends BaseActivity
                 GalleryPreviewFragment.with(this).display();
                 return true;
             case MenuActionItem.MENU_SITE_LIST_REQUEST:
-                ((BrowserSitesFragment) getFragment(BrowserSitesFragment.TAG)).displayJoinSiteRequests();
+                    CommonBrowserSitesFragment.displayJoinSiteRequests(this);
                 return true;
             case MenuActionItem.MENU_TASK_REASSIGN:
                 ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).reassign();

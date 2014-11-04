@@ -35,6 +35,7 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.site.SitesFoundationFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -125,15 +126,15 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
 
         MenuFragmentHelper.getMenu(context, menu);
     }
+    
+    public static void displayJoinSiteRequests(Activity activity)
+    {
+        JoinSiteRequestsFragment.with(activity).displayAsDialog();
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // SITES MEMBERSHIP
     // ///////////////////////////////////////////////////////////////////////////
-    public void displayJoinSiteRequests()
-    {
-        JoinSiteRequestsFragment.with(getActivity()).displayAsDialog();
-    }
-
     /**
      * Update and replace a site object inside the listing without requesting an
      * HTTP call.
