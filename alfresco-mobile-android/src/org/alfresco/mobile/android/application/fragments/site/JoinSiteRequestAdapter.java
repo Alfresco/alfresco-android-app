@@ -24,6 +24,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipRequest;
+import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
@@ -56,6 +57,8 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<Site, JoinSiteViewHo
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_flatten));
 
         vh.cancel_request.setTag(item);
+        AccessibilityUtils.addContentDescription(vh.cancel_request,
+                String.format(getContext().getString(R.string.joinsiterequest_cancel_description), item.getTitle()));
         vh.cancel_request.setOnClickListener(new OnClickListener()
         {
             @Override

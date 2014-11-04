@@ -330,6 +330,7 @@
     <string name="action_unfavorite_site_validation">\"%s\" has been unfavorited.</string>
     <string name="action_join_request_site_validation">You have requested to join \"%s\"</string>
     <string name="joinsiterequest_list_title">List of pending requests</string>
+    <string name="joinsiterequest_cancel_description">Cancel your request for Site %s</string>
     <string name="action_cancel_join_site_request">Your request to join \"%s\" has been cancelled.</string>
     <string name="action_join_site_error">A problem prevented you from joining the site \"%s\".</string>
     <string name="action_leave_site_error">A problem prevented you from leaving the site \"%s\".</string>
