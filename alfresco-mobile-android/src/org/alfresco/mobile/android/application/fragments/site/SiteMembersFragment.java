@@ -54,7 +54,7 @@ public class SiteMembersFragment extends SiteMembersFoundationFragment
     public SiteMembersFragment()
     {
         emptyListMessageId = R.string.empty_site;
-        retrieveDataOnCreation = false;
+        retrieveDataOnCreation = true;
     }
 
     protected static SiteMembersFragment newInstanceByTemplate(Bundle b)

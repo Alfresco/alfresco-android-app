@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.site.JoinSiteRequestsFragment;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
+import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -195,7 +196,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     // EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Subscribe
-    public void onCancelPendingMembershipEvent(SitesPendingMembershipEvent event)
+    public void onCancelPendingMembershipEvent(CancelPendingMembershipEvent event)
     {
         if (!event.hasException)
         {

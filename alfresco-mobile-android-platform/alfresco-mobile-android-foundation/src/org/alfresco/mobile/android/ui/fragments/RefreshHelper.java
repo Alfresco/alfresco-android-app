@@ -46,6 +46,7 @@ public class RefreshHelper implements OnRefreshListener
         if (AccessibilityUtils.isEnabled(activity))
         {
             swipeLayout.setEnabled(false);
+            swipeLayout.setRefreshing(false);
         }
         else
         {
