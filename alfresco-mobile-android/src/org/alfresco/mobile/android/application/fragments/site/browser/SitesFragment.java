@@ -23,8 +23,8 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
+import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
-import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
 
 import android.app.Activity;
@@ -98,7 +98,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
     }
     
     @Subscribe
-    public void onCancelPendingMembershipEvent(SitesPendingMembershipEvent event)
+    public void onCancelPendingMembershipEvent(CancelPendingMembershipEvent event)
     {
         super.onCancelPendingMembershipEvent(event);
     }
