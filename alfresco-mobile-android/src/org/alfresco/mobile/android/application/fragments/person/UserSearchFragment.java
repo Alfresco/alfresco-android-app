@@ -450,7 +450,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
@@ -484,6 +484,5 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             extraConfiguration.putString(ARGUMENT_TITLE, title);
             return this;
         }
-
     }
 }

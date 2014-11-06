@@ -126,7 +126,7 @@ public class TasksFragment extends TasksFoundationFragment
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
+        mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
                 R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -147,7 +147,7 @@ public class TasksFragment extends TasksFoundationFragment
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_WORKFLOW_ADD:
+            case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
                         PrivateDialogActivity.class);
                 in.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());

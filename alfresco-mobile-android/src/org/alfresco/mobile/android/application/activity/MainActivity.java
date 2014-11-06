@@ -622,12 +622,6 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(TaskDetailsFragment.TAG))
-        {
-            ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
         if (isVisible(ProcessesFragment.TAG))
         {
             ((ProcessesFragment) getFragment(ProcessesFragment.TAG)).getMenu(menu);
@@ -700,14 +694,6 @@ public class MainActivity extends BaseActivity
                 ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
                 return true;
 
-            case R.id.menu_account_edit:
-                ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).edit();
-                return true;
-
-            case R.id.menu_account_delete:
-                ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).delete();
-                return true;
-
             case MenuActionItem.MENU_SEARCH_FOLDER:
                 ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).search();
                 return true;
@@ -759,21 +745,6 @@ public class MainActivity extends BaseActivity
                 return true;
             case MenuActionItem.MENU_SITE_LIST_REQUEST:
                     CommonBrowserSitesFragment.displayJoinSiteRequests(this);
-                return true;
-            case MenuActionItem.MENU_TASK_REASSIGN:
-                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).reassign();
-                return true;
-            case MenuActionItem.MENU_TASK_CLAIM:
-                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).claim();
-                return true;
-            case MenuActionItem.MENU_PROCESS_HISTORY:
-                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).displayHistory();
-                return true;
-            case MenuActionItem.MENU_TASK_UNCLAIM:
-                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).unclaim();
-                return true;
-            case MenuActionItem.MENU_PROCESS_DETAILS:
-                ((TaskDetailsFragment) getFragment(TaskDetailsFragment.TAG)).showProcessDiagram();
                 return true;
             case MenuActionItem.MENU_SYNC_WARNING:
                 ((SyncFragment) getFragment(SyncFragment.TAG)).displayWarning();
