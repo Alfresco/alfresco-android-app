@@ -917,7 +917,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
             if (!(session instanceof CloudSession))
             {
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST
+                mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST
                         + MenuActionItem.MENU_WORKFLOW_ADD, R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -979,7 +979,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case MenuActionItem.MENU_DELETE:
                 delete();
                 return true;
-            case MenuActionItem.MENU_WORKFLOW_ADD:
+            case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
                         PrivateDialogActivity.class);
                 Document doc = (Document) getCurrentNode();

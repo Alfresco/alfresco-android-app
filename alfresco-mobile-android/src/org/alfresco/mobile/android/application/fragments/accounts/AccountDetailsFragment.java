@@ -25,6 +25,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
@@ -67,6 +68,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -110,6 +112,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     public AccountDetailsFragment()
     {
+        setHasOptionsMenu(true);
     }
 
     protected static AccountDetailsFragment newInstanceByTemplate(Bundle b)
@@ -682,6 +685,14 @@ public class AccountDetailsFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        getMenu(menu);
+    }
+
     public void getMenu(Menu menu)
     {
         MenuItem mi;
@@ -698,6 +709,21 @@ public class AccountDetailsFragment extends AlfrescoFragment
                 String.format(getString(R.string.account_delete_hint), acc.getTitle()));
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_account_edit:
+                edit();
+                return true;
+            case R.id.menu_account_delete:
+                delete();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

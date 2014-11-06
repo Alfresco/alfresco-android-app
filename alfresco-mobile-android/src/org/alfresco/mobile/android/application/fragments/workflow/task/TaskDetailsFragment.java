@@ -56,10 +56,10 @@ import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEven
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskRequest;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskRequest;
-import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
@@ -77,6 +77,7 @@ import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -126,6 +127,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // ///////////////////////////////////////////////////////////////////////////
     public TaskDetailsFragment()
     {
+        setHasOptionsMenu(true);
     }
 
     protected static TaskDetailsFragment newInstanceByTemplate(Bundle b)
@@ -183,13 +185,6 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     }
 
     @Override
-    public void onStart()
-    {
-        EventBusManager.getInstance().register(this);
-        super.onStart();
-    }
-
-    @Override
     public void onResume()
     {
         super.onResume();
@@ -198,14 +193,6 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         {
             UIUtils.displayTitle(getActivity(), R.string.details);
         }
-    }
-
-    @Override
-    public void onStop()
-    {
-        EventBusManager.getInstance().unregister(this);
-        getActivity().invalidateOptionsMenu();
-        super.onStop();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -487,6 +474,14 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
+        getMenu(menu);
+    }
+
     public void getMenu(Menu menu)
     {
         MenuItem mi;
@@ -495,12 +490,12 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
 
         if (endedAt == null && processDefinitionKey.startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_DETAILS, Menu.FIRST
-                    + MenuActionItem.MENU_PROCESS_DETAILS, R.string.process_diagram);
+            mi = menu.add(Menu.NONE, R.id.menu_process_details, Menu.FIRST + MenuActionItem.MENU_PROCESS_DETAILS,
+                    R.string.process_diagram);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_HISTORY, Menu.FIRST + MenuActionItem.MENU_PROCESS_HISTORY,
+        mi = menu.add(Menu.NONE, R.id.menu_process_history, Menu.FIRST + MenuActionItem.MENU_PROCESS_HISTORY,
                 R.string.tasks_history);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
@@ -510,7 +505,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         if (currentTask.getAssigneeIdentifier() != null
                 && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_UNCLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_UNCLAIM,
+            mi = menu.add(Menu.NONE, R.id.menu_task_unclaim, Menu.FIRST + MenuActionItem.MENU_TASK_UNCLAIM,
                     R.string.task_unclaim);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
@@ -518,7 +513,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         // anymore of this task so I reassign to a specific person
         else if (currentTask.getAssigneeIdentifier() != null)
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_REASSIGN, Menu.FIRST + MenuActionItem.MENU_TASK_REASSIGN,
+            mi = menu.add(Menu.NONE, R.id.menu_task_reassign, Menu.FIRST + MenuActionItem.MENU_TASK_REASSIGN,
                     R.string.task_reassign);
             mi.setIcon(R.drawable.ic_reassign);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -528,10 +523,34 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         else if (currentTask.getAssigneeIdentifier() == null
                 && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_TASK_CLAIM, Menu.FIRST + MenuActionItem.MENU_TASK_CLAIM,
+            mi = menu.add(Menu.NONE, R.id.menu_task_claim, Menu.FIRST + MenuActionItem.MENU_TASK_CLAIM,
                     R.string.task_claim);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_task_reassign:
+                reassign();
+                return true;
+            case R.id.menu_task_claim:
+                claim();
+                return true;
+            case R.id.menu_process_history:
+                displayHistory();
+                return true;
+            case R.id.menu_task_unclaim:
+                unclaim();
+                return true;
+            case R.id.menu_process_details:
+                showProcessDiagram();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -539,7 +558,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // ///////////////////////////////////////////////////////////////////////////
     public void reassign()
     {
-        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(true).displayAsDialog();
+        UserSearchFragment.with(getActivity()).fragmentTag(TAG).singleChoice(true).mode(ListingModeFragment.MODE_PICK)
+                .displayAsDialog();
     }
 
     public void claim()
@@ -573,9 +593,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
 
     public void displayHistory()
     {
-        AlfrescoFragment frag = ProcessTasksFragment.newInstance(processId);
-        frag.setSession(getSession());
-        frag.show(getActivity().getFragmentManager(), ProcessTasksFragment.TAG);
+        ProcessTasksFragment.with(getActivity()).processId(processId).displayAsDialog();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -648,6 +666,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         else
         {
             getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            ((TasksFragment) getFragmentManager().findFragmentByTag(TasksFragment.TAG)).refresh();
         }
     }
 

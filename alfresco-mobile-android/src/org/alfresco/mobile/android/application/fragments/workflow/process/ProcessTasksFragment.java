@@ -19,36 +19,31 @@ package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.workflow.process.ProcessDefinitionsEvent;
+import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
 import org.alfresco.mobile.android.async.workflow.task.TasksRequest;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
-import android.graphics.Color;
+import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.GridView;
 
 import com.squareup.otto.Subscribe;
 
 public class ProcessTasksFragment extends BaseGridFragment
 {
-    private static final String ARGUMENT_PROCESS = "TaskProcess";
+    private static final String ARGUMENT_PROCESS_ID = "TaskProcess";
 
     public static final String TAG = ProcessTasksFragment.class.getName();
 
@@ -62,28 +57,28 @@ public class ProcessTasksFragment extends BaseGridFragment
     public ProcessTasksFragment()
     {
         emptyListMessageId = R.string.empty_tasks;
-        retrieveDataOnCreation = false;
-        checkSession = false;
+        retrieveDataOnCreation = true;
+        checkSession = true;
     }
 
-    public static ProcessTasksFragment newInstance()
+    protected static ProcessTasksFragment newInstanceByTemplate(Bundle b)
     {
-        ProcessTasksFragment bf = new ProcessTasksFragment();
-        return bf;
+        ProcessTasksFragment cbf = new ProcessTasksFragment();
+        cbf.setArguments(b);
+        return cbf;
     }
-
-    public static ProcessTasksFragment newInstance(String processIdentifier)
-    {
-        ProcessTasksFragment bf = new ProcessTasksFragment();
-        Bundle b = new Bundle();
-        b.putSerializable(ARGUMENT_PROCESS, processIdentifier);
-        bf.setArguments(b);
-        return bf;
-    };
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    protected void onRetrieveParameters(Bundle bundle)
+    {
+        if (bundle.containsKey(ARGUMENT_PROCESS_ID))
+        {
+            processId = getArguments().getString(ARGUMENT_PROCESS_ID);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -92,33 +87,8 @@ public class ProcessTasksFragment extends BaseGridFragment
             getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
             getDialog().setTitle(R.string.tasks_history);
         }
-        setRetainInstance(false);
-        if (container != null)
-        {
-            container.setVisibility(View.VISIBLE);
-        }
-        setSession(SessionUtils.getSession(getActivity()));
-        SessionUtils.checkSession(getActivity(), getSession());
 
-        View v = super.onCreateView(inflater, container, savedInstanceState);
-        if (v == null && getDialog() != null)
-        {
-            v = inflater.inflate(R.layout.sdk_list, container, false);
-            init(v, emptyListMessageId);
-        }
-        v.setBackgroundColor(Color.WHITE);
-        return v;
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        SessionUtils.checkSession(getActivity(), getSession());
-        super.onActivityCreated(savedInstanceState);
-
-        processId = getArguments().getString(ARGUMENT_PROCESS);
-
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(new TasksRequest.Builder(processId));
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
@@ -148,53 +118,51 @@ public class ProcessTasksFragment extends BaseGridFragment
     }
 
     @Subscribe
-    public void onResult(ProcessDefinitionsEvent event)
+    public void onResult(TasksEvent event)
     {
         displayData(event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // MENU
+    // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(Menu menu)
+    public static Builder with(Activity activity)
     {
-        MenuItem mi;
-
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
-                R.string.workflow_start);
-        mi.setIcon(android.R.drawable.ic_menu_add);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return new Builder(activity);
     }
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // LIST ACTIONS
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public void onListItemClick(GridView l, View v, int position, long id)
+    public static class Builder extends ListingFragmentBuilder
     {
-        Task item = (Task) l.getItemAtPosition(position);
-
-        Boolean hideDetails = false;
-        if (!selectedItems.isEmpty())
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
         {
-            hideDetails = selectedItems.get(0).equals(item);
+            super(activity);
+            this.extraConfiguration = new Bundle();
         }
 
-        l.setItemChecked(position, true);
-        selectedItems.clear();
-        if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
+        public Builder(Activity appActivity, Map<String, Object> configuration)
         {
-            selectedItems.add(item);
+            super(appActivity, configuration);
         }
 
-        if (hideDetails)
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
         {
-            selectedItems.clear();
+            return newInstanceByTemplate(b);
         }
-        else
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder processId(String processId)
         {
-            TaskDetailsFragment.with(getActivity()).task(item).display();
+            extraConfiguration.putString(ARGUMENT_PROCESS_ID, processId);
+            return this;
         }
-        adapter.notifyDataSetChanged();
+
     }
 }

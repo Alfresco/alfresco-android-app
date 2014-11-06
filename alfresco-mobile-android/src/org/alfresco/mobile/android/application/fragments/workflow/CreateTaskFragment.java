@@ -387,18 +387,17 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
     private void createProcess()
     {
         Map<String, Serializable> variables = new HashMap<String, Serializable>();
-        if (getSession() instanceof RepositorySessionImpl && ((RepositorySessionImpl) getSession()).hasPublicAPI())
-        {
-            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.formatISO(dueAt));
-        }
-        else
-        {
-            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
-        }
 
         if (dueAt != null)
         {
-            variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
+            if (getSession() instanceof RepositorySessionImpl && ((RepositorySessionImpl) getSession()).hasPublicAPI())
+            {
+                variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.formatISO(dueAt));
+            }
+            else
+            {
+                variables.put(WorkflowModel.PROP_WORKFLOW_DUE_DATE, DateUtils.format(dueAt));
+            }
         }
         variables.put(WorkflowModel.PROP_WORKFLOW_PRIORITY, priority);
         variables.put(WorkflowModel.PROP_WORKFLOW_DESCRIPTION, titleTask.getText().toString().trim());

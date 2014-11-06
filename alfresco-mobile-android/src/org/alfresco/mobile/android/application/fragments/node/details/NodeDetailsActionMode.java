@@ -106,7 +106,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
 
             if (!(SessionUtils.getSession(activity) instanceof CloudSession))
             {
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_WORKFLOW_ADD, Menu.FIRST
+                mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST
                         + MenuActionItem.MENU_WORKFLOW_ADD, R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -158,7 +158,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
             case MenuActionItem.MENU_DELETE:
                 ((NodeDetailsFragment) getFragment()).delete();
                 return true;
-            case MenuActionItem.MENU_WORKFLOW_ADD:
+            case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
                         PrivateDialogActivity.class);
                 in.putExtra(PrivateIntent.EXTRA_DOCUMENT, (Serializable) getCurrentItem());
