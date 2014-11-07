@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.profiles.ProfilesConfigFragment;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
@@ -54,6 +55,7 @@ import org.alfresco.mobile.android.sync.FavoritesSyncScanEvent;
 import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
 import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -268,6 +270,13 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 {
                     hideSlidingMenu(true);
 
+                    // Switch to current account
+                    if (getActivity() instanceof AlfrescoActivity)
+                    {
+                        ((AlfrescoActivity) getActivity()).setCurrentAccount(accountId);
+                        UIUtils.displayTitle(getActivity(), getString(R.string.app_name), false);
+                    }
+
                     // Request session loading for the selected AlfrescoAccount.
                     SessionManager.getInstance(getActivity()).loadSession(
                             AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId));
@@ -403,7 +412,18 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         if (currentAccount == null) { return; }
 
+        // We retrieve index of the current account to select it
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
+        for (int i = 0; i < list.size(); i++)
+        {
+            if (currentAccount.getId() == list.get(i).getId())
+            {
+                accountIndex = i;
+                break;
+            }
+        }
+
+        // We add all extra parameters at the end of the list.
         if (currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
             list.add(new AlfrescoAccount(AccountsAdapter.NETWORK_ITEM, getString(R.string.cloud_networks_switch), null,
@@ -419,6 +439,8 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         list.add(new AlfrescoAccount(AccountsAdapter.MANAGE_ITEM, getString(R.string.manage_accounts), null, null,
                 null, null, "0", null, "false"));
+
+        // Init the adapter and create the menu
         accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
         spinnerAccount.setAdapter(accountsAdapter);
         spinnerAccount.setSelection(accountIndex);
@@ -582,6 +604,12 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onAccountLoaded(LoadAccountCompletedEvent event)
+    {
+        refresh();
+    }
+
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
