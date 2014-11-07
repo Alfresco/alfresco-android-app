@@ -21,9 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.ConfigService;
@@ -52,7 +50,6 @@ import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.GalleryPreviewFragment;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
@@ -62,7 +59,6 @@ import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSit
 import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -97,7 +93,6 @@ import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -107,7 +102,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -875,6 +869,7 @@ public class MainActivity extends BaseActivity
     {
         setSessionState(SESSION_LOADING);
         setProgressBarIndeterminateVisibility(true);
+        setCurrentAccount(event.account);
         if (event != null)
         {
             AlfrescoNotificationManager.getInstance(this).showLongToast(event.account.getTitle());
@@ -920,6 +915,7 @@ public class MainActivity extends BaseActivity
 
         setSessionState(SESSION_ACTIVE);
         setProgressBarIndeterminateVisibility(false);
+        UIUtils.displayTitle(this, getString(R.string.app_name), false);
 
         // Retrieve Rendition Manager associated to this account
         RenditionManagerImpl.getInstance(this).setSession(getCurrentSession());
