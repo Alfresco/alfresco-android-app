@@ -455,7 +455,15 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                 outcome = (task.getProcessDefinitionIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI)) ? outcome
                         : outcome.toLowerCase();
             }
-            variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
+
+            if ((getSession().getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4))
+            {
+                variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE, outcome);
+            }
+            else
+            {
+                variables.put(WorkflowModel.PROP_REVIEW_OUTCOME, outcome);
+            }
         }
 
         if (comment.getText().length() > 0)

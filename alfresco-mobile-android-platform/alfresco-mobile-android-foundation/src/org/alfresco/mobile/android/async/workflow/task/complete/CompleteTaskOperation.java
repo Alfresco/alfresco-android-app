@@ -56,15 +56,18 @@ public class CompleteTaskOperation extends TaskOperation<Task>
 
             if (((CompleteTaskRequest) request).variables != null)
             {
-                String transitionIdentifier = "";
-                if (task.getIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+                if (!((CompleteTaskRequest) request).variables.containsKey(WorkflowModel.PROP_TRANSITIONS_VALUE))
                 {
-                    transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
-                }
-                if (!(session.getServiceRegistry().getWorkflowService() instanceof PublicAPIWorkflowServiceImpl))
-                {
-                    ((CompleteTaskRequest) request).variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE,
-                            transitionIdentifier);
+                    String transitionIdentifier = "";
+                    if (task.getIdentifier().startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
+                    {
+                        transitionIdentifier = WorkflowModel.TRANSITION_NEXT;
+                    }
+                    if (!(session.getServiceRegistry().getWorkflowService() instanceof PublicAPIWorkflowServiceImpl))
+                    {
+                        ((CompleteTaskRequest) request).variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE,
+                                transitionIdentifier);
+                    }
                 }
                 updatedTask = session.getServiceRegistry().getWorkflowService()
                         .completeTask(task, ((CompleteTaskRequest) request).variables);
