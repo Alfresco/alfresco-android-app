@@ -55,7 +55,8 @@ public class ReassignTaskOperation extends TaskOperation<Task>
         {
             result = super.doInBackground();
 
-            if (((ReassignTaskRequest) request).assignee == null)
+            assignee = ((ReassignTaskRequest) request).assignee;
+            if (assignee == null)
             {
                 assignee = session.getServiceRegistry().getPersonService()
                         .getPerson(((ReassignTaskRequest) request).assigneeId);
