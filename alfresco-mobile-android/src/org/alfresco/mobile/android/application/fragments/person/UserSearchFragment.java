@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.person;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.ListingContext;
@@ -30,6 +31,8 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.search.AdvancedSearchFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
+import org.alfresco.mobile.android.application.intent.RequestCode;
+import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.ui.form.picker.PersonPickerFragment;
 import org.alfresco.mobile.android.application.ui.form.picker.PersonPickerFragment.onPickAuthorityFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
@@ -42,8 +45,11 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.speech.RecognizerIntent;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,6 +62,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -91,6 +98,8 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
     private String keywords;
 
     private String fieldId;
+
+    private EditText searchForm;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -159,7 +168,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         else
         {
             // Init form search
-            final EditText searchForm = (EditText) viewById(R.id.search_query);
+           searchForm = (EditText) viewById(R.id.search_query);
             searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
             searchForm.setOnEditorActionListener(new OnEditorActionListener()
@@ -186,6 +195,25 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
                     return false;
                 }
             });
+            
+            // Speech to Text
+            Boolean hasTextToSpeech = ActionUtils.hasSpeechToText(getActivity());
+            ImageButton speechToText = (ImageButton) viewById(R.id.search_microphone);
+            if (hasTextToSpeech)
+            {
+                speechToText.setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        speechToText();
+                    }
+                });
+            }
+            else
+            {
+                hide(R.id.search_microphone);
+            }
         }
 
         if (getMode() == MODE_PICK)
@@ -292,6 +320,28 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
     }
+    
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode)
+        {
+            case RequestCode.TEXT_TO_SPEECH:
+            {
+                if (resultCode == Activity.RESULT_OK && data != null)
+                {
+                    ArrayList<String> text = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    searchForm.setText(text.get(0));
+                    search(text.get(0));
+                }
+                break;
+            }
+            default:
+                break;
+        }
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LOADERS
@@ -322,6 +372,21 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         performRequest(onCreateOperationRequest(originListing));
     }
 
+    private void speechToText()
+    {
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
+
+        try
+        {
+            startActivityForResult(intent, RequestCode.TEXT_TO_SPEECH);
+        }
+        catch (ActivityNotFoundException a)
+        {
+            AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.file_editor_error_speech);
+        }
+    }
+    
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////

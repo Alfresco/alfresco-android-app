@@ -96,7 +96,7 @@ public class SearchNodesFragment extends BaseGridFragment
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.activities));
+        UIUtils.displayTitle(getActivity(), getString(R.string.search));
         super.onResume();
     }
 
