@@ -55,7 +55,7 @@ public class UsersFragment extends PersonsFragment
     // ///////////////////////////////////////////////////////////////////////////
     public UsersFragment()
     {
-        emptyListMessageId = R.string.empty_site;
+        emptyListMessageId = R.string.person_not_found;
     }
 
     public static UsersFragment newInstanceByTemplate(Bundle b)

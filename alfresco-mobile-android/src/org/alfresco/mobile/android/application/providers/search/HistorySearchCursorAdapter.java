@@ -17,13 +17,18 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.providers.search;
 
+import java.util.List;
+
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
+import android.widget.LinearLayout;
 
 /**
  * @since 1.4
@@ -31,15 +36,27 @@ import android.view.View;
  */
 public class HistorySearchCursorAdapter extends BaseCursorLoader<GenericViewHolder>
 {
-    public HistorySearchCursorAdapter(Context context, Cursor c, int layoutId)
+    protected List<Long> selectedItems;
+    
+    public HistorySearchCursorAdapter(Context context, Cursor c, int layoutId, List<Long> selectedItems)
     {
         super(context, c, layoutId);
+        this.selectedItems = selectedItems;
     }
 
     @Override
     protected void updateTopText(GenericViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(HistorySearchSchema.COLUMN_DESCRIPTION_ID));
+        if (selectedItems != null && selectedItems.contains(cursor.getLong(HistorySearchSchema.COLUMN_ID_ID)))
+        {
+            UIUtils.setBackground(getSelectionLayout(vh),
+                    vh.topText.getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
+        }
+        else
+        {
+            UIUtils.setBackground(getSelectionLayout(vh), null);
+        }
     }
 
     @Override
@@ -52,5 +69,10 @@ public class HistorySearchCursorAdapter extends BaseCursorLoader<GenericViewHold
     protected void updateIcon(GenericViewHolder vh, Cursor cursor)
     {
         vh.icon.setImageResource(R.drawable.ic_clock);
+    }
+    
+    private LinearLayout getSelectionLayout(GenericViewHolder vh)
+    {
+        return (LinearLayout) vh.topText.getParent().getParent();
     }
 }

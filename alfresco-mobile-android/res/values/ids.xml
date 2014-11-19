@@ -28,6 +28,7 @@
     <item name="menu_task_unclaim" type="id"/>
     <item name="menu_task_reassign" type="id"/>
     <item name="menu_task_claim" type="id"/>
+    <item name="menu_historysearch_delete" type="id"/>
 
     <!-- FRAGMENT ID -->
     <item name="tab_history" type="id"/>

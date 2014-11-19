@@ -19,15 +19,25 @@ package org.alfresco.mobile.android.application.fragments.search;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
+import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
+import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
@@ -35,8 +45,11 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchCursorAdapter;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
+import org.alfresco.mobile.android.application.providers.search.HistorySearchProvider;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
+import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -100,6 +113,10 @@ public class SearchFragment extends BaseCursorGridFragment
     private Site site;
 
     private Folder tmpParentFolder;
+
+    private AbstractActions<Long> nActions;
+
+    protected List<Long> selectedItems = new ArrayList<Long>(1);
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -177,7 +194,8 @@ public class SearchFragment extends BaseCursorGridFragment
                     }
                     else
                     {
-                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.search_form_hint));
+                        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                                getString(R.string.search_form_hint));
                     }
                     return true;
                 }
@@ -424,7 +442,8 @@ public class SearchFragment extends BaseCursorGridFragment
         StringBuilder builder = new StringBuilder();
         if (folder != null)
         {
-            //If Site Documentlibrary we display the site name instead of folder name
+            // If Site Documentlibrary we display the site name instead of
+            // folder name
             if (site != null
                     && String.format(DOCUMENT_LIBRARY_PATTERN, site.getIdentifier()).equalsIgnoreCase(
                             (String) folder.getPropertyValue(PropertyIds.PATH)))
@@ -495,7 +514,7 @@ public class SearchFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.sdk_list_row);
+        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.sdk_list_row, selectedItems);
     }
 
     @Override
@@ -519,8 +538,91 @@ public class SearchFragment extends BaseCursorGridFragment
     public void onListItemClick(GridView l, View v, int position, long id)
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
-        String keywords = cursor.getString(HistorySearchSchema.COLUMN_QUERY_ID);
-        search(keywords, HistorySearchManager.createHistorySearch(cursor));
+        long searchId = cursor.getLong(HistorySearchSchema.COLUMN_ID_ID);
+        
+        // In other case, listing mode
+        Boolean hideDetails = false;
+        if (!selectedItems.isEmpty())
+        {
+            hideDetails = selectedItems.contains(searchId);
+        }
+        l.setItemChecked(position, true);
+
+        if (nActions != null && nActions.hasMultiSelectionEnabled())
+        {
+            nActions.selectNode(searchId);
+            if (selectedItems.size() == 0)
+            {
+                hideDetails = true;
+            }
+        }
+        else
+        {
+            selectedItems.clear();
+            if (!hideDetails && DisplayUtils.hasCentralPane(getActivity()))
+            {
+                selectedItems.add(searchId);
+            }
+        }
+
+        if (hideDetails)
+        {
+            if (nActions != null && !nActions.hasMultiSelectionEnabled())
+            {
+                nActions.finish();
+            }
+        }
+        else if (nActions == null || (nActions != null && !nActions.hasMultiSelectionEnabled()))
+        {
+            String keywords = cursor.getString(HistorySearchSchema.COLUMN_QUERY_ID);
+            search(keywords, HistorySearchManager.createHistorySearch(cursor));
+        }
+        refreshListView();
+    }
+
+    @Override
+    public boolean onListItemLongClick(GridView l, View v, int position, long id)
+    {
+        if (nActions != null && nActions instanceof HistorySearchActions)
+        {
+            nActions.finish();
+        }
+
+        Cursor c = (Cursor) l.getItemAtPosition(position);
+        long searchId = c.getLong(HistorySearchSchema.COLUMN_ID_ID);
+        boolean b = true;
+        l.setItemChecked(position, true);
+        b = startSelection(searchId);
+        refreshListView();
+        return b;
+    }
+
+    private boolean startSelection(long item)
+    {
+        if (nActions != null) { return false; }
+
+        selectedItems.clear();
+        selectedItems.add(item);
+
+        // Start the CAB using the ActionMode.Callback defined above
+        nActions = new HistorySearchActions(SearchFragment.this, selectedItems);
+        nActions.setOnFinishModeListerner(new onFinishModeListerner()
+        {
+            @Override
+            public void onFinish()
+            {
+                nActions = null;
+                unselect();
+                refreshListView();
+            }
+        });
+        getActivity().startActionMode(nActions);
+        return true;
+    }
+
+    public void unselect()
+    {
+        selectedItems.clear();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
