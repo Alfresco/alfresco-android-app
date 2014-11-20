@@ -20,9 +20,9 @@ package org.alfresco.mobile.android.application.capture;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 
 public final class DeviceCaptureHelper
@@ -52,13 +52,14 @@ public final class DeviceCaptureHelper
 
         switch (id)
         {
-            case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
+            
+            case R.id.menu_device_capture_camera_photo:
                 capture = new PhotoCapture(c, parentRepositoryFolder, parentFolder);
                 break;
-            case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
+            case  R.id.menu_device_capture_camera_video:
                 capture = new VideoCapture(c, parentRepositoryFolder, parentFolder);
                 break;
-            case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+            case R.id.menu_device_capture_mic_audio:
                 capture = new AudioCapture(c, parentRepositoryFolder, parentFolder);
                 break;
             default:

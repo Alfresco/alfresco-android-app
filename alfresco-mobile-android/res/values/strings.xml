@@ -428,6 +428,11 @@
         <item quantity="one">1 folder</item>
         <item quantity="other">%1$s folders</item>
     </plurals>
+    <plurals name="selected_search">
+        <item quantity="zero">no query</item>
+        <item quantity="one">1 query</item>
+        <item quantity="other">%1$s queries</item>
+    </plurals>
 
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>

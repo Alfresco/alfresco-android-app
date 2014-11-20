@@ -22,8 +22,8 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -345,37 +345,32 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
 
             if (parent != null && privateFolder != null && !parent.getPath().startsWith(privateFolder.getPath()))
             {
-                MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST
-                        + MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
+                MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
                 mi.setIcon(R.drawable.ic_add_folder);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.add_menu);
+            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_device_capture, Menu.FIRST + 30,
+                    R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
-                    + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
+            createMenu.add(Menu.NONE, R.id.menu_create_document, Menu.FIRST + 1, R.string.create_document);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.take_photo);
+            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_photo, Menu.FIRST + 1, R.string.take_photo);
 
             if (AndroidVersion.isICSOrAbove())
             {
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
-                        + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.make_video);
+                createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_video, Menu.FIRST + 2, R.string.make_video);
             }
 
-            if (ScanSnapManager.getInstance(getActivity()) != null && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
+            if (ScanSnapManager.getInstance(getActivity()) != null
+                    && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
             {
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST + MenuActionItem.MENU_SCAN_DOCUMENT,
-                        R.string.scan);
+                createMenu.add(Menu.NONE, R.id.menu_scan_document, Menu.FIRST + 4, R.string.scan);
             }
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
+            createMenu.add(Menu.NONE, R.id.menu_device_capture_mic_audio, Menu.FIRST + 3, R.string.record_audio);
         }
     }
 
@@ -384,8 +379,13 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_CREATE_FOLDER:
+            case R.id.menu_create_folder:
                 createFolder();
+                return true;
+            case R.id.menu_create_document:
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(
+                        SessionUtils.getAccount(getActivity()), TAG);
+                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
         }
         return super.onOptionsItemSelected(item);

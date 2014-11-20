@@ -25,18 +25,15 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.site.JoinSiteRequestsFragment;
 import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
-import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.site.SitesFoundationFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,6 +50,7 @@ import com.squareup.otto.Subscribe;
 public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
 {
     protected boolean isFavoriteListing = false;
+
     protected boolean isMemberSite = false;
 
     // //////////////////////////////////////////////////////////////////////
@@ -63,6 +61,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
         super();
         enableTitle = false;
         mode = MODE_LISTING;
+        setHasOptionsMenu(true);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -121,16 +120,24 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SITE_LIST_REQUEST, Menu.FIRST
-                + MenuActionItem.MENU_SITE_LIST_REQUEST, R.string.joinsiterequest_list_title);
+        mi = menu.add(Menu.NONE, R.id.menu_site_list_request, Menu.FIRST, R.string.joinsiterequest_list_title);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         MenuFragmentHelper.getMenu(context, menu);
     }
-    
-    public static void displayJoinSiteRequests(Activity activity)
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
     {
-        JoinSiteRequestsFragment.with(activity).displayAsDialog();
+        switch (item.getItemId())
+        {
+            case R.id.menu_site_list_request:
+                JoinSiteRequestsFragment.with(getActivity()).displayAsDialog();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

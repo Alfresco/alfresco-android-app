@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.api.model.Company;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.person.PersonEvent;
@@ -173,14 +172,6 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
     // //////////////////////////////////////////////////////////////////////
     // Public Method
     // //////////////////////////////////////////////////////////////////////
-    public static void getMenu(Menu menu)
-    {
-        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROFILE, Menu.FIRST + MenuActionItem.MENU_PROFILE,
-                R.string.my_profile);
-        mi.setIcon(R.drawable.ic_avatar);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-    }
-
     private static final int MODE_SKYPE = 0;
 
     private static final int MODE_EMAIL = 1;
@@ -197,7 +188,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             case MODE_CALL:
                 if (person.getTelephoneNumber() != null && !person.getTelephoneNumber().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_TEL, Menu.FIRST + MenuActionItem.MENU_TEL,
+                    mi = menu.add(Menu.NONE, R.id.menu_user_phone, Menu.FIRST + 6,
                             person.getTelephoneNumber());
                     mi.setIcon(R.drawable.ic_call);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -205,7 +196,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
                 if (person.getMobileNumber() != null && !person.getMobileNumber().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_MOBILE, Menu.FIRST + MenuActionItem.MENU_MOBILE,
+                    mi = menu.add(Menu.NONE, R.id.menu_user_mobile, Menu.FIRST + 7,
                             person.getMobileNumber());
                     mi.setIcon(R.drawable.ic_call);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -214,33 +205,29 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 if (person.getCompany() != null && person.getCompany().getTelephoneNumber() != null
                         && !person.getCompany().getTelephoneNumber().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMPANY_TEL, Menu.FIRST
-                            + MenuActionItem.MENU_COMPANY_TEL, person.getCompany().getTelephoneNumber());
+                    mi = menu.add(Menu.NONE, R.id.menu_user_company_phone, Menu.FIRST + 5, person.getCompany()
+                            .getTelephoneNumber());
                     mi.setIcon(R.drawable.ic_call);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
                 break;
             case MODE_SKYPE:
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_CHAT, Menu.FIRST + MenuActionItem.MENU_CHAT,
-                        R.string.start_chat);
+                mi = menu.add(Menu.NONE, R.id.menu_user_chat, Menu.FIRST, R.string.start_chat);
                 mi.setIcon(R.drawable.ic_im);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_CALL, Menu.FIRST + MenuActionItem.MENU_CALL,
-                        R.string.start_call);
+                mi = menu.add(Menu.NONE, R.id.menu_user_call, Menu.FIRST + 1, R.string.start_call);
                 mi.setIcon(R.drawable.ic_call);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_VIDEOCALL, Menu.FIRST + MenuActionItem.MENU_VIDEOCALL,
-                        R.string.start_video_call);
+                mi = menu.add(Menu.NONE, R.id.menu_user_videocall, Menu.FIRST + 2, R.string.start_video_call);
                 mi.setIcon(R.drawable.ic_videocall);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
             case MODE_EMAIL:
                 if (person.getEmail() != null && !person.getEmail().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_EMAIL, Menu.FIRST + MenuActionItem.MENU_EMAIL,
-                            person.getEmail());
+                    mi = menu.add(Menu.NONE, R.id.menu_user_email, Menu.FIRST + 3, person.getEmail());
                     mi.setIcon(R.drawable.ic_send_mail);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
@@ -248,8 +235,8 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 if (person.getCompany() != null && person.getCompany().getEmail() != null
                         && !person.getCompany().getEmail().isEmpty())
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_COMPANY_EMAIL, Menu.FIRST
-                            + MenuActionItem.MENU_COMPANY_EMAIL, person.getCompany().getEmail());
+                    mi = menu.add(Menu.NONE, R.id.menu_user_company_email, Menu.FIRST + 4, person.getCompany()
+                            .getEmail());
                     mi.setIcon(R.drawable.ic_send_mail);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 }
@@ -267,35 +254,35 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_CHAT:
+            case R.id.menu_user_chat:
                 onMenuItemClick = true;
                 actionSkype(getActivity(), ACTION_CHAT, person.getSkypeId());
                 break;
-            case MenuActionItem.MENU_CALL:
+            case R.id.menu_user_call:
                 actionSkype(getActivity(), ACTION_CALL, person.getSkypeId());
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_VIDEOCALL:
+            case R.id.menu_user_videocall:
                 actionSkype(getActivity(), ACTION_VIDEO_CALL, person.getSkypeId());
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_EMAIL:
+            case R.id.menu_user_email:
                 actionEmail(getActivity(), person.getEmail(), null, null);
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_COMPANY_EMAIL:
+            case R.id.menu_user_company_email:
                 actionEmail(getActivity(), person.getCompany().getEmail(), null, null);
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_COMPANY_TEL:
+            case R.id.menu_user_company_phone:
                 actionCall(getActivity(), person.getCompany().getTelephoneNumber());
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_TEL:
+            case R.id.menu_user_phone:
                 actionCall(getActivity(), person.getTelephoneNumber());
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_MOBILE:
+            case R.id.menu_user_mobile:
                 actionCall(getActivity(), person.getMobileNumber());
                 onMenuItemClick = true;
                 break;
@@ -827,7 +814,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             super(appActivity, configuration);
             menuIconId = R.drawable.ic_person_light;
             menuTitleId = R.string.user_profile;
-            templateArguments = new String[] {ARGUMENT_PERSONID};
+            templateArguments = new String[] { ARGUMENT_PERSONID };
             hasBackStack = false;
         }
 

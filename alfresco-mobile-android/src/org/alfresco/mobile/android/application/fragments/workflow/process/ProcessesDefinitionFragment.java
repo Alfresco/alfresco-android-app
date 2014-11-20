@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.async.workflow.process.ProcessDefinitionsEvent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -78,8 +77,7 @@ public class ProcessesDefinitionFragment extends ProcessesDefinitionFoundationFr
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
-                R.string.workflow_start);
+        mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
     }

@@ -18,29 +18,14 @@
 package org.alfresco.mobile.android.application.fragments.search;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchProvider;
-import org.alfresco.mobile.android.async.OperationRequest;
-import org.alfresco.mobile.android.async.OperationSchema;
-import org.alfresco.mobile.android.async.OperationsContentProvider;
-import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.database.Cursor;
 import android.net.Uri;
 import android.view.ActionMode;
 import android.view.Menu;
@@ -72,7 +57,7 @@ public class HistorySearchActions extends AbstractActions<Long>
         int size = selectedItems.size();
         if (size > 0)
         {
-            title += String.format(getFragment().getResources().getQuantityString(R.plurals.selected_document, size),
+            title += String.format(getFragment().getResources().getQuantityString(R.plurals.selected_search, size),
                     size);
         }
 

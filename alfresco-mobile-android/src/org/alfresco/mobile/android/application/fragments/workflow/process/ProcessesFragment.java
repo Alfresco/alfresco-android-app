@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TaskDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.task.TasksHelper;
 import org.alfresco.mobile.android.async.workflow.process.ProcessesEvent;
@@ -120,8 +119,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + MenuActionItem.MENU_WORKFLOW_ADD,
-                R.string.workflow_start);
+        mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 

@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
@@ -81,32 +80,32 @@ public class FileActions implements ActionMode.Callback
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_UPLOAD:
+            case R.id.menu_upload:
                 upload(getFragment(), new ArrayList<File>(selectedFiles));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
-            case MenuActionItem.MENU_DELETE:
+            case R.id.menu_action_delete:
                 delete(getFragment(), new ArrayList<File>(selectedFiles));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
-            case MenuActionItem.MENU_EDIT:
+            case R.id.menu_action_edit:
                 edit(getFragment(), selectedFiles.get(0));
                 mode.finish();
                 selectedFiles.clear();
                 return true;
-            case MenuActionItem.MENU_SHARE:
+            case R.id.menu_action_share:
                 share(getFragment(), selectedFiles);
                 mode.finish();
                 selectedFiles.clear();
                 return true;
-            case MenuActionItem.MENU_SEND:
+            case R.id.menu_file_send:
                 send(getFragment(), selectedFiles);
                 mode.finish();
                 selectedFiles.clear();
                 return true;
-            case MenuActionItem.MENU_SELECT_ALL:
+            case R.id.menu_select_all:
                 selectAll();
                 return false;
             default:
@@ -161,18 +160,17 @@ public class FileActions implements ActionMode.Callback
                 case FileExplorerFragment.MODE_LISTING:
                     if (selectedFolder.isEmpty())
                     {
-                        mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                                R.string.upload);
+                        mi = menu.add(Menu.NONE, R.id.menu_upload, Menu.FIRST + 30, R.string.upload);
                         mi.setIcon(R.drawable.ic_upload);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-                        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE,
+                        mi = menu.add(Menu.NONE, R.id.menu_action_share, Menu.FIRST + 100,
                                 R.string.share);
                         mi.setIcon(R.drawable.ic_share);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                     }
 
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
+                    mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000,
                             R.string.delete);
                     mi.setIcon(R.drawable.ic_delete);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -182,8 +180,7 @@ public class FileActions implements ActionMode.Callback
 
                     if (selectedFolder.isEmpty())
                     {
-                        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEND, Menu.FIRST + MenuActionItem.MENU_SEND,
-                                R.string.action_upload);
+                        mi = menu.add(Menu.NONE, R.id.menu_file_send, Menu.FIRST, R.string.action_upload);
                         mi.setIcon(R.drawable.ic_upload);
                         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
                     }
@@ -193,8 +190,7 @@ public class FileActions implements ActionMode.Callback
                 default:
                     break;
             }
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
-                    R.string.select_all);
+            mi = menu.add(Menu.NONE, R.id.menu_select_all, Menu.FIRST + 200, R.string.select_all);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
     }

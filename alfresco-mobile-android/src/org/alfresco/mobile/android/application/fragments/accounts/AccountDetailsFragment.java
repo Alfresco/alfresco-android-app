@@ -25,12 +25,10 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.async.Operator;
@@ -43,7 +41,6 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
@@ -60,12 +57,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -78,8 +73,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.EditText;
-
-import com.squareup.otto.Subscribe;
 
 /**
  * It's responsible to display the details of a specific AlfrescoAccount.
@@ -699,13 +692,13 @@ public class AccountDetailsFragment extends AlfrescoFragment
 
         if (acc.getActivation() == null)
         {
-            mi = menu.add(Menu.NONE, R.id.menu_account_edit, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_EDIT,
+            mi = menu.add(Menu.NONE, R.id.menu_account_edit, Menu.FIRST + 1,
                     String.format(getString(R.string.account_edit_hint), acc.getTitle()));
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        mi = menu.add(Menu.NONE, R.id.menu_account_delete, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_DELETE,
+        mi = menu.add(Menu.NONE, R.id.menu_account_delete, Menu.FIRST + 2,
                 String.format(getString(R.string.account_delete_hint), acc.getTitle()));
         mi.setIcon(R.drawable.ic_delete);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);

@@ -29,7 +29,6 @@ import java.util.Locale;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.intent.RequestCode;
@@ -39,7 +38,6 @@ import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -239,25 +237,21 @@ public class TextEditorActivity extends BaseActivity
         super.onCreateOptionsMenu(menu);
 
         getActionBar().setDisplayShowTitleEnabled(true);
-        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_SAVE, Menu.FIRST + MenuActionItem.MENU_SAVE,
-                R.string.save);
+        MenuItem mi = menu.add(Menu.NONE, R.id.menu_editor_save, Menu.FIRST, R.string.save);
         mi.setIcon(R.drawable.ic_save);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         if (hasTextToSpeech)
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SPEECH, Menu.FIRST + MenuActionItem.MENU_SPEECH,
-                    R.string.file_editor_speech_to_text);
+            mi = menu.add(Menu.NONE, R.id.menu_editor_speech, Menu.FIRST + 1, R.string.file_editor_speech_to_text);
             mi.setIcon(R.drawable.ic_microphone);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_ENCODING, Menu.FIRST + MenuActionItem.MENU_ENCODING,
-                R.string.file_editor_encoding);
+        mi = menu.add(Menu.NONE, R.id.menu_editor_encoding, Menu.FIRST + 2, R.string.file_editor_encoding);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_FONT_SIZE, Menu.FIRST + MenuActionItem.MENU_FONT_SIZE,
-                R.string.file_editor_text_size);
+        mi = menu.add(Menu.NONE, R.id.menu_editor_font, Menu.FIRST + 3, R.string.file_editor_text_size);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return true;
@@ -268,16 +262,16 @@ public class TextEditorActivity extends BaseActivity
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_SAVE:
+            case R.id.menu_editor_save:
                 save(false);
                 return true;
-            case MenuActionItem.MENU_ENCODING:
+            case R.id.menu_editor_encoding:
                 displayEncoding();
                 return true;
-            case MenuActionItem.MENU_FONT_SIZE:
+            case R.id.menu_editor_font:
                 displayFontSize();
                 return true;
-            case MenuActionItem.MENU_SPEECH:
+            case R.id.menu_editor_speech:
                 speechToText();
                 return true;
             case android.R.id.home:

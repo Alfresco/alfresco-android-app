@@ -44,19 +44,13 @@ import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFr
 import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
-import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.rendition.GalleryPreviewFragment;
-import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.CommonBrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
@@ -83,7 +77,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -605,8 +598,7 @@ public class MainActivity extends BaseActivity
     {
         if (sessionState == SESSION_ERROR && getCurrentSession() == null)
         {
-            MenuItem mi = menu
-                    .add(Menu.NONE, MenuActionItem.ACCOUNT_RELOAD, Menu.FIRST, R.string.retry_account_loading);
+            MenuItem mi = menu.add(Menu.NONE, R.id.menu_account_reload, Menu.FIRST, R.string.retry_account_loading);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
         }
 
@@ -664,94 +656,37 @@ public class MainActivity extends BaseActivity
 
         switch (item.getItemId())
         {
-            case MenuActionItem.ACCOUNT_RELOAD:
+            case R.id.menu_account_reload:
                 sessionManager.loadSession(getCurrentAccount());
                 return true;
-            case MenuActionItem.MENU_PROFILE:
-                UserProfileFragment.with(this).personId(getCurrentAccount().getUsername()).displayAsDialog();
-                return true;
-
-            case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO:
-            case MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO:
-            case MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO:
+            case R.id.menu_device_capture_camera_photo:
+            case R.id.menu_device_capture_camera_video:
+            case R.id.menu_device_capture_mic_audio:
                 capture = DeviceCaptureHelper.createDeviceCapture(this, item.getItemId());
                 return true;
 
-            case MenuActionItem.MENU_SCAN_DOCUMENT:
+            case R.id.menu_scan_document:
                 if (ScanSnapManager.getInstance(this) != null)
                 {
                     ScanSnapManager.getInstance(this).startPresetChooser(this);
                 }
                 return true;
-
-            case R.id.menu_account_add:
-                ((AccountsFragment) getFragment(AccountsFragment.TAG)).add();
-                return true;
-
-            case MenuActionItem.MENU_SEARCH_FOLDER:
-                ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).search();
-                return true;
-
-            case MenuActionItem.MENU_SEARCH:
-                SearchFragment.with(this).display();
-                return true;
-
-            case MenuActionItem.MENU_CREATE_FOLDER:
-                if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
-                {
-                    ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).createFolder();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case MenuActionItem.MENU_CREATE_DOCUMENT:
-                String fragmentTag = FileExplorerFragment.TAG;
-                if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
-                {
-                    fragmentTag = DocumentFolderBrowserFragment.TAG;
-                }
-                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(currentAccount,
-                        fragmentTag);
-                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
-                return true;
-
-            case MenuActionItem.MENU_UPLOAD:
-                if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
-                {
-                    Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, this, PublicDispatcherActivity.class);
-                    i.putExtra(PrivateIntent.EXTRA_FOLDER,
-                            AlfrescoStorageManager.getInstance(this).getDownloadFolder(getCurrentAccount()));
-                    i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getCurrentAccount().getId());
-                    getFragment(DocumentFolderBrowserFragment.TAG).startActivityForResult(i, RequestCode.FILEPICKER);
-                }
-                return true;
-            case MenuActionItem.MENU_REFRESH:
+            case R.id.menu_refresh:
                 if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
                     ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
                             .refresh();
                 }
                 return true;
-            case MenuActionItem.MENU_DISPLAY_GALLERY:
-                GalleryPreviewFragment.with(this).display();
-                return true;
-            case MenuActionItem.MENU_SITE_LIST_REQUEST:
-                    CommonBrowserSitesFragment.displayJoinSiteRequests(this);
-                return true;
-            case MenuActionItem.MENU_SYNC_WARNING:
-                ((SyncFragment) getFragment(SyncFragment.TAG)).displayWarning();
-                return true;
-            case MenuActionItem.MENU_SETTINGS_ID:
+            case R.id.menu_settings:
                 displayPreferences();
                 hideSlideMenu();
                 return true;
-            case MenuActionItem.MENU_HELP_ID:
+            case R.id.menu_help:
                 HelpDialogFragment.displayHelp(this);
                 hideSlideMenu();
                 return true;
-            case MenuActionItem.MENU_ABOUT_ID:
+            case R.id.menu_about:
                 AboutFragment.with(this).display();
                 hideSlideMenu();
                 return true;

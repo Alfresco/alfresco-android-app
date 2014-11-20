@@ -23,14 +23,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.Operation;
@@ -487,20 +485,19 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         Permissions permission = SessionUtils.getSession(getActivity()).getServiceRegistry().getDocumentFolderService()
                 .getPermissions(node);
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_DETAILS, Menu.FIRST + MenuActionItem.MENU_DETAILS,
-                R.string.action_view_properties);
+        mi = menu.add(Menu.NONE, R.id.menu_node_details, Menu.FIRST, R.string.action_view_properties);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         if (permission.canEdit())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT,
+            mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50,
                     R.string.action_edit_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         if (permission.canDelete())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE_FOLDER, Menu.FIRST + MenuActionItem.MENU_DELETE_FOLDER,
+            mi = menu.add(Menu.NONE, R.id.menu_action_delete_folder, Menu.FIRST + 1000,
                     R.string.delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
@@ -513,17 +510,17 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_DETAILS:
+            case R.id.menu_node_details:
                 onMenuItemClick = true;
                 NodeDetailsFragment.with(getActivity()).node(selectedOptionItems.get(0)).display();
                 selectedItems.add(selectedOptionItems.get(0));
                 notifyDataSetChanged();
                 break;
-            case MenuActionItem.MENU_EDIT:
+            case R.id.menu_action_edit:
                 onMenuItemClick = true;
                 NodeActions.edit(getActivity(), (Folder) parentNode, selectedOptionItems.get(0));
                 break;
-            case MenuActionItem.MENU_DELETE_FOLDER:
+            case R.id.menu_action_delete_folder:
                 onMenuItemClick = true;
                 Fragment fr = getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG);
                 NodeActions.delete(getActivity(), fr, selectedOptionItems.get(0));

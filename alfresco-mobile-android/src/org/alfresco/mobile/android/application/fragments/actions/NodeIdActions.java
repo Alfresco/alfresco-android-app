@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.async.OperationRequest;
@@ -79,25 +78,19 @@ public class NodeIdActions extends AbstractActions<String>
     {
         SubMenu createMenu;
 
-        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_dark);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+        createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
+        createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
 
-        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
-                + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 3, R.string.like);
         createMenu.setIcon(R.drawable.ic_like);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_LIKE,
-                Menu.FIRST + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
-                + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
+        createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
+        createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
     }
 
     @Override
@@ -106,19 +99,19 @@ public class NodeIdActions extends AbstractActions<String>
         Boolean b = false;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE:
+            case R.id.menu_action_favorite_group_favorite:
                 favorite(true);
                 b = true;
                 break;
-            case MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE:
+            case R.id.menu_action_favorite_group_unfavorite:
                 favorite(false);
                 b = true;
                 break;
-            case MenuActionItem.MENU_LIKE_GROUP_LIKE:
+            case R.id.menu_action_like_group_like:
                 like(true);
                 b = true;
                 break;
-            case MenuActionItem.MENU_LIKE_GROUP_UNLIKE:
+            case R.id.menu_action_like_group_unlike:
                 like(false);
                 b = true;
                 break;
