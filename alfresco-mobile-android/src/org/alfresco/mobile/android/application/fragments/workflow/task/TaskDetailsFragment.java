@@ -39,7 +39,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
@@ -498,13 +497,11 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
 
         if (endedAt == null && processDefinitionKey.startsWith(WorkflowModel.KEY_PREFIX_ACTIVITI))
         {
-            mi = menu.add(Menu.NONE, R.id.menu_process_details, Menu.FIRST + MenuActionItem.MENU_PROCESS_DETAILS,
-                    R.string.process_diagram);
+            mi = menu.add(Menu.NONE, R.id.menu_process_details, Menu.FIRST, R.string.process_diagram);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
-        mi = menu.add(Menu.NONE, R.id.menu_process_history, Menu.FIRST + MenuActionItem.MENU_PROCESS_HISTORY,
-                R.string.tasks_history);
+        mi = menu.add(Menu.NONE, R.id.menu_process_history, Menu.FIRST + 1, R.string.tasks_history);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         if (currentTask == null || endedAt != null) { return; }
@@ -513,16 +510,14 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         if (currentTask.getAssigneeIdentifier() != null
                 && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
         {
-            mi = menu.add(Menu.NONE, R.id.menu_task_unclaim, Menu.FIRST + MenuActionItem.MENU_TASK_UNCLAIM,
-                    R.string.task_unclaim);
+            mi = menu.add(Menu.NONE, R.id.menu_task_unclaim, Menu.FIRST + 2, R.string.task_unclaim);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
         // reassign : I have a task and I decide I dont want to be responsible
         // anymore of this task so I reassign to a specific person
         else if (currentTask.getAssigneeIdentifier() != null)
         {
-            mi = menu.add(Menu.NONE, R.id.menu_task_reassign, Menu.FIRST + MenuActionItem.MENU_TASK_REASSIGN,
-                    R.string.task_reassign);
+            mi = menu.add(Menu.NONE, R.id.menu_task_reassign, Menu.FIRST + 3, R.string.task_reassign);
             mi.setIcon(R.drawable.ic_reassign);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -531,8 +526,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         else if (currentTask.getAssigneeIdentifier() == null
                 && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
         {
-            mi = menu.add(Menu.NONE, R.id.menu_task_claim, Menu.FIRST + MenuActionItem.MENU_TASK_CLAIM,
-                    R.string.task_claim);
+            mi = menu.add(Menu.NONE, R.id.menu_task_claim, Menu.FIRST + 4, R.string.task_claim);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
         }
     }

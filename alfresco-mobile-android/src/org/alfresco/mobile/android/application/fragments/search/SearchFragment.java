@@ -25,19 +25,12 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ListingContext;
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
-import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
-import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
@@ -45,11 +38,8 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchCursorAdapter;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
-import org.alfresco.mobile.android.application.providers.search.HistorySearchProvider;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
-import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -291,7 +281,7 @@ public class SearchFragment extends BaseCursorGridFragment
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_SEARCH_OPTION:
+            case R.id.menu_search_option:
                 displayAdvancedSearch();
                 return true;
         }
@@ -539,7 +529,7 @@ public class SearchFragment extends BaseCursorGridFragment
     {
         Cursor cursor = (Cursor) l.getItemAtPosition(position);
         long searchId = cursor.getLong(HistorySearchSchema.COLUMN_ID_ID);
-        
+
         // In other case, listing mode
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
@@ -638,8 +628,7 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     public static void getMenu(Menu menu)
     {
-        MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_OPTION, Menu.FIRST
-                + MenuActionItem.MENU_SEARCH_OPTION, R.string.search_advanced);
+        MenuItem mi = menu.add(Menu.NONE, R.id.menu_search_option, Menu.FIRST, R.string.search_advanced);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 

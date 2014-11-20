@@ -35,7 +35,6 @@ import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
@@ -125,6 +124,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         super();
         emptyListMessageId = R.string.empty_favorites;
         checkSession = false;
+        setHasOptionsMenu(true);
     }
 
     public static SyncFragment newInstance(int mode)
@@ -575,13 +575,26 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
         if (info != null && (info.hasWarning() && !info.hasResponse()))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SYNC_WARNING, Menu.FIRST + MenuActionItem.MENU_SYNC_WARNING,
-                    R.string.sync_warning);
+            mi = menu.add(Menu.NONE, R.id.menu_sync_warning, Menu.FIRST, R.string.sync_warning);
             mi.setIcon(R.drawable.ic_warning);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         MenuFragmentHelper.getMenu(getActivity(), menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_sync_warning:
+                displayWarning();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

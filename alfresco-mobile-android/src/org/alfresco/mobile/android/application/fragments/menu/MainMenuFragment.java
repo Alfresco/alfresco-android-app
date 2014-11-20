@@ -585,18 +585,15 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SETTINGS_ID, Menu.FIRST + MenuActionItem.MENU_SETTINGS_ID,
-                R.string.menu_prefs);
+        mi = menu.add(Menu.NONE, R.id.menu_settings, Menu.FIRST, R.string.menu_prefs);
         mi.setIcon(R.drawable.ic_settings_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_HELP_ID, Menu.FIRST + MenuActionItem.MENU_HELP_ID,
-                R.string.menu_help);
+        mi = menu.add(Menu.NONE, R.id.menu_help, Menu.FIRST + 1, R.string.menu_help);
         mi.setIcon(R.drawable.ic_help);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_ABOUT_ID, Menu.FIRST + MenuActionItem.MENU_ABOUT_ID,
-                R.string.menu_about);
+        mi = menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 2, R.string.menu_about);
         mi.setIcon(R.drawable.ic_about_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }

@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
@@ -169,9 +168,6 @@ public class PublicDispatcherActivity extends BaseActivity
     {
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_CREATE_FOLDER:
-                ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).createFolder();
-                return true;
             case android.R.id.home:
                 if (getIntent() != null && PrivateIntent.ACTION_PICK_FILE.equals(getIntent().getAction()))
                 {

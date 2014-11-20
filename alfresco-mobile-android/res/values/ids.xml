@@ -14,21 +14,108 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.-->
+  limitations under the License.
+-->
 <resources>
 
     <item name="tab_comment" type="id"/>
+
+    <!-- MAIN MENU -->
+    <item name="menu_settings" type="id"/>
+    <item name="menu_help" type="id"/>
+    <item name="menu_about" type="id"/>
+
+    <!-- MENU ACCOUNT -->
     <item name="menu_account_add" type="id"/>
     <item name="menu_account_edit" type="id"/>
     <item name="menu_account_delete" type="id"/>
+    <item name="menu_account_reload" type="id"/>
+
+    <!-- MENU DOC/FOLDER -->
+    <item name="menu_node_details" type="id"/>
+    <item name="menu_refresh" type="id"/>
+    <item name="menu_gallery" type="id"/>
+    <item name="menu_action_share" type="id"/>
+    <item name="menu_action_open" type="id"/>
+        <item name="menu_action_delete" type="id"/>
+                <item name="menu_action_delete_folder" type="id"/>
+                <item name="menu_action_edit" type="id"/>
+                
+    <item name="menu_action_download" type="id"/>
+    <item name="menu_action_download_all" type="id"/>
+    <item name="menu_action_update" type="id"/>
+    <item name="menu_action_favorite_group" type="id"/>
+    <item name="menu_action_favorite_group_favorite" type="id"/>
+    <item name="menu_action_favorite_group_unfavorite" type="id"/>
+    <item name="menu_action_like_group" type="id"/>
+    <item name="menu_action_like_group_like" type="id"/>
+    <item name="menu_action_like_group_unlike" type="id"/>
+
+    <!-- MENU CAPTURE -->
+    <item name="menu_upload" type="id"/>
+    <item name="menu_device_capture" type="id"/>
+    <item name="menu_device_capture_camera_photo" type="id"/>
+    <item name="menu_device_capture_camera_video" type="id"/>
+    <item name="menu_device_capture_mic_audio" type="id"/>
+    <item name="menu_scan_document" type="id"/>
+
+    <!-- MENU ACTIVITIES -->
+    <item name="menu_activity_profile" type="id"/>
+
+    <!-- MENU SITES -->
+    <item name="menu_site_join" type="id"/>
+    <item name="menu_site_leave" type="id"/>
+    <item name="menu_site_cancel" type="id"/>
+    <item name="menu_site_favorite" type="id"/>
+    <item name="menu_site_unfavorite" type="id"/>
+    <item name="menu_site_list_request" type="id"/>
+    <item name="menu_site_members" type="id"/>
+
+    <!-- MENU CREATE -->
+    <item name="menu_create_document" type="id"/>
+    <item name="menu_create_folder" type="id"/>
+
+    <!-- MENU SEARCH -->
+    <item name="menu_search_from_folder" type="id"/>
+    <item name="menu_search_option" type="id"/>
+
+    <!-- MENU WORKFLOW -->
     <item name="menu_workflow_add" type="id"/>
-    <item name="menu_workflow_add" type="id"/>
+    <item name="menu_workflow_review_attachments" type="id"/>
     <item name="menu_process_details" type="id"/>
     <item name="menu_process_history" type="id"/>
     <item name="menu_task_unclaim" type="id"/>
     <item name="menu_task_reassign" type="id"/>
     <item name="menu_task_claim" type="id"/>
     <item name="menu_historysearch_delete" type="id"/>
+
+    <!-- MENU USER PROFILE -->
+    <item name="menu_user_chat" type="id"/>
+    <item name="menu_user_call" type="id"/>
+    <item name="menu_user_videocall" type="id"/>
+    <item name="menu_user_email" type="id"/>
+    <item name="menu_user_company_email" type="id"/>
+    <item name="menu_user_company_phone" type="id"/>
+    <item name="menu_user_phone" type="id"/>
+    <item name="menu_user_mobile" type="id"/>
+
+    <!-- MENU FILE EXPLORER -->
+    <item name="menu_file_send" type="id"/>
+    <item name="menu_file_decrypt" type="id"/>
+    <item name="menu_file_encrypt" type="id"/>
+
+    <!-- MENU TEXT EDITOR -->
+    <item name="menu_editor_save" type="id"/>
+    <item name="menu_editor_speech" type="id"/>
+    <item name="menu_editor_encoding" type="id"/>
+    <item name="menu_editor_font" type="id"/>
+
+    <!-- MENU SYNC -->
+    <item name="menu_sync_warning" type="id"/>
+    <item name="menu_sync_resolution" type="id"/>
+
+    <!-- MENU OTHERS -->
+    <item name="menu_select_all" type="id"/>
 
     <!-- FRAGMENT ID -->
     <item name="tab_history" type="id"/>

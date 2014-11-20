@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.fragments;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 
 import android.content.Context;
@@ -37,8 +36,7 @@ public class MenuFragmentHelper
         if (menu == null) { return null; }
         if (AccessibilityUtils.isEnabled(context))
         {
-            MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_REFRESH, Menu.FIRST + MenuActionItem.MENU_REFRESH,
-                    R.string.refresh);
+            MenuItem mi = menu.add(Menu.NONE, R.id.menu_refresh, Menu.FIRST + 40, R.string.refresh);
             mi.setIcon(R.drawable.ic_refresh);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             return mi;

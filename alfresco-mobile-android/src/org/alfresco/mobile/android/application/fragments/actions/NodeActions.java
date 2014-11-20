@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
@@ -178,57 +177,48 @@ public class NodeActions extends AbstractActions<Node>
 
         if (selectedFolder.isEmpty())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD_ALL, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD_ALL,
-                    R.string.download);
+            mi = menu.add(Menu.NONE, R.id.menu_action_download_all, Menu.FIRST, R.string.download);
             mi.setIcon(R.drawable.ic_download_dark);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             if (!(SessionUtils.getSession(activity) instanceof CloudSession))
             {
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, Menu.FIRST
-                        + MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS, R.string.process_start_review);
+                mi = menu.add(Menu.NONE, R.id.menu_workflow_review_attachments, Menu.FIRST + 500,
+                        R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
 
-        createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP, R.string.favorite);
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_dark);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
-        createMenu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
-                + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+        createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
+        createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
 
         AlfrescoSession alfSession = SessionUtils.getSession(activity);
         if (alfSession != null && alfSession.getRepositoryInfo() != null
                 && alfSession.getRepositoryInfo().getCapabilities() != null
                 && alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
         {
-            createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP, Menu.FIRST
-                    + MenuActionItem.MENU_LIKE_GROUP, R.string.like);
+            createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 150, R.string.like);
             createMenu.setIcon(R.drawable.ic_like);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_LIKE, Menu.FIRST
-                    + MenuActionItem.MENU_LIKE_GROUP_LIKE, R.string.like);
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_LIKE_GROUP_UNLIKE, Menu.FIRST
-                    + MenuActionItem.MENU_LIKE_GROUP_UNLIKE, R.string.unlike);
+            createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
+            createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
         }
 
         if (parentFolder != null
                 && alfSession.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder).canDelete())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                    R.string.delete);
+            mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SELECT_ALL, Menu.FIRST + MenuActionItem.MENU_SELECT_ALL,
-                R.string.select_all);
+        mi = menu.add(Menu.NONE, R.id.menu_select_all, Menu.FIRST + 200, R.string.select_all);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 
@@ -238,48 +228,48 @@ public class NodeActions extends AbstractActions<Node>
         Boolean b = false;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_DETAILS:
+            case R.id.menu_node_details:
                 NodeDetailsFragment.with(getActivity()).node(selectedItems.get(0)).display();
                 break;
-            case MenuActionItem.MENU_UPDATE:
+            case R.id.menu_action_update:
                 update(getActivity().getFragmentManager().findFragmentByTag(TabsNodeDetailsFragment.TAG));
                 b = true;
                 break;
-            case MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE:
+            case R.id.menu_action_favorite_group_favorite:
                 favorite(true);
                 b = true;
                 break;
-            case MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE:
+            case R.id.menu_action_favorite_group_unfavorite:
                 favorite(false);
                 b = true;
                 break;
-            case MenuActionItem.MENU_LIKE_GROUP_LIKE:
+            case R.id.menu_action_like_group_like:
                 like(true);
                 b = true;
                 break;
-            case MenuActionItem.MENU_LIKE_GROUP_UNLIKE:
+            case R.id.menu_action_like_group_unlike:
                 like(false);
                 b = true;
                 break;
-            case MenuActionItem.MENU_DOWNLOAD_ALL:
-            case MenuActionItem.MENU_DOWNLOAD:
+            case R.id.menu_action_download_all:
+            case R.id.menu_action_download:
                 download();
                 b = true;
                 break;
-            case MenuActionItem.MENU_EDIT:
+            case R.id.menu_action_edit:
                 edit(getActivity(), parentFolder, selectedItems.get(0));
                 b = true;
                 break;
-            case MenuActionItem.MENU_DELETE:
-            case MenuActionItem.MENU_DELETE_FOLDER:
+            case R.id.menu_action_delete:
+            case R.id.menu_action_delete_folder:
                 delete(getActivity(), getFragment(), new ArrayList<Node>(selectedItems));
                 b = true;
                 break;
-            case MenuActionItem.MENU_SELECT_ALL:
+            case R.id.menu_select_all:
                 selectAll();
                 b = false;
                 break;
-            case MenuActionItem.MENU_PROCESS_REVIEW_ATTACHMENTS:
+            case R.id.menu_workflow_review_attachments:
                 startReview();
                 b = true;
                 break;
@@ -388,7 +378,8 @@ public class NodeActions extends AbstractActions<Node>
     public static void edit(final Activity activity, final Folder folder, final Node node)
     {
         ConfigManager configurationManager = ConfigManager.getInstance(activity);
-        if (configurationManager != null){
+        if (configurationManager != null)
+        {
             try
             {
                 Intent i = new Intent(activity, PrivateDialogActivity.class);
@@ -401,7 +392,9 @@ public class NodeActions extends AbstractActions<Node>
             {
                 AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
             }
-        } else {
+        }
+        else
+        {
             FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
             Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
             if (prev != null)

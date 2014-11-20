@@ -30,7 +30,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -89,8 +88,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
         {
             if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
             {
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_DOWNLOAD, Menu.FIRST + MenuActionItem.MENU_DOWNLOAD,
-                        R.string.download);
+                mi = menu.add(Menu.NONE, R.id.menu_action_download, Menu.FIRST, R.string.download);
                 mi.setIcon(R.drawable.ic_download_dark);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
@@ -98,16 +96,14 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
             if (((Document) node).isLatestVersion()
                     && ((DocumentImpl) node).hasAllowableAction(Action.CAN_SET_CONTENT_STREAM.value()))
             {
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPDATE, Menu.FIRST + MenuActionItem.MENU_UPDATE,
-                        R.string.update);
+                mi = menu.add(Menu.NONE, R.id.menu_action_update, Menu.FIRST + 130, R.string.update);
                 mi.setIcon(R.drawable.ic_upload);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
             if (!(SessionUtils.getSession(activity) instanceof CloudSession))
             {
-                mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST
-                        + MenuActionItem.MENU_WORKFLOW_ADD, R.string.process_start_review);
+                mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST + 500, R.string.process_start_review);
                 mi.setIcon(R.drawable.ic_start_review);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
@@ -116,7 +112,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
         if (SessionUtils.getSession(activity).getServiceRegistry().getDocumentFolderService().getPermissions(node)
                 .canEdit())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_EDIT, Menu.FIRST + MenuActionItem.MENU_EDIT, R.string.edit);
+            mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
@@ -124,38 +120,38 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
         if (SessionUtils.getSession(activity).getServiceRegistry().getDocumentFolderService().getPermissions(node)
                 .canDelete())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, 1000 + MenuActionItem.MENU_DELETE, R.string.delete);
+            mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setIcon(R.drawable.ic_delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
     }
-    
+
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item)
     {
         Boolean b = false;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_DOWNLOAD:
+            case R.id.menu_action_download:
                 ((NodeDetailsFragment) getFragment()).download();
                 return true;
-            case MenuActionItem.MENU_SHARE:
+            case R.id.menu_action_share:
                 ((NodeDetailsFragment) getFragment()).share();
                 return true;
-            case MenuActionItem.MENU_OPEN_IN:
+            case R.id.menu_action_open:
                 ((NodeDetailsFragment) getFragment()).openin();
                 return true;
-            case MenuActionItem.MENU_UPDATE:
+            case R.id.menu_action_update:
                 Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, getActivity(),
                         PublicDispatcherActivity.class);
-                i.putExtra(PrivateIntent.EXTRA_FOLDER,
-                        AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(getAccount()));
+                i.putExtra(PrivateIntent.EXTRA_FOLDER, AlfrescoStorageManager.getInstance(getActivity())
+                        .getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 getFragment().startActivityForResult(i, RequestCode.FILEPICKER);
-            case MenuActionItem.MENU_EDIT:
+            case R.id.menu_action_edit:
                 ((NodeDetailsFragment) getFragment()).edit();
                 return true;
-            case MenuActionItem.MENU_DELETE:
+            case R.id.menu_action_delete:
                 ((NodeDetailsFragment) getFragment()).delete();
                 return true;
             case R.id.menu_workflow_add:
@@ -173,6 +169,5 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
         }
         return b;
     }
-
 
 }

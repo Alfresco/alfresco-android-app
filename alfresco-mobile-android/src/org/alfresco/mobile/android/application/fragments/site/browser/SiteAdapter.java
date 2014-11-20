@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.site.SiteMembersFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.SiteFavoriteRequest;
@@ -50,7 +49,6 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemClickListener
 {
-
     private static final String TAG = SitesFoundationAdapter.class.getSimpleName();
 
     private List<Site> selectedOptionItems = new ArrayList<Site>();
@@ -131,29 +129,24 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
     {
         if (site.isMember())
         {
-            menu.add(Menu.NONE, MenuActionItem.MENU_SITE_LEAVE, Menu.FIRST + MenuActionItem.MENU_SITE_LEAVE,
-                    R.string.action_leave_site);
+            menu.add(Menu.NONE, R.id.menu_site_leave, Menu.FIRST + 2, R.string.action_leave_site);
         }
         else if (!SiteVisibility.PRIVATE.equals(site.getVisibility()) && !site.isPendingMember())
         {
-            menu.add(Menu.NONE, MenuActionItem.MENU_SITE_JOIN, Menu.FIRST + MenuActionItem.MENU_SITE_JOIN,
-                    (SiteVisibility.MODERATED.equals(site.getVisibility())) ? R.string.action_join_request_site
-                            : R.string.action_join_site);
+            menu.add(Menu.NONE,  R.id.menu_site_join, Menu.FIRST + 1, (SiteVisibility.MODERATED.equals(site
+                    .getVisibility())) ? R.string.action_join_request_site : R.string.action_join_site);
         }
 
         if (site.isFavorite())
         {
-            menu.add(Menu.NONE, MenuActionItem.MENU_SITE_UNFAVORITE, Menu.FIRST + MenuActionItem.MENU_SITE_UNFAVORITE,
-                    R.string.action_unfavorite_site);
+            menu.add(Menu.NONE, R.id.menu_site_unfavorite, Menu.FIRST + 5, R.string.action_unfavorite_site);
         }
         else
         {
-            menu.add(Menu.NONE, MenuActionItem.MENU_SITE_FAVORITE, Menu.FIRST + MenuActionItem.MENU_SITE_FAVORITE,
-                    R.string.action_favorite_site);
+            menu.add(Menu.NONE,R.id.menu_site_favorite, Menu.FIRST + 4, R.string.action_favorite_site);
         }
 
-        menu.add(Menu.NONE, MenuActionItem.MENU_SITE_MEMBERS, Menu.FIRST + MenuActionItem.MENU_SITE_MEMBERS,
-                R.string.members);
+        menu.add(Menu.NONE,R.id.menu_site_members, Menu.FIRST, R.string.members);
     }
 
     @Override
@@ -162,7 +155,7 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_SITE_MEMBERS:
+            case R.id.menu_site_members:
                 if (fragmentRef.get().getActivity() instanceof MainActivity)
                 {
                     SiteMembersFragment.with(fragmentRef.get().getActivity()).site(selectedOptionItems.get(0))
@@ -170,18 +163,18 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
                 }
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_SITE_LEAVE:
+            case R.id.menu_site_leave:
                 Operator.with(fragmentRef.get().getActivity()).load(
                         new SiteMembershipRequest.Builder(selectedOptionItems.get(0), false));
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_SITE_JOIN:
+            case R.id.menu_site_join:
                 Operator.with(fragmentRef.get().getActivity()).load(
                         new SiteMembershipRequest.Builder(selectedOptionItems.get(0), true));
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_SITE_FAVORITE:
-            case MenuActionItem.MENU_SITE_UNFAVORITE:
+            case R.id.menu_site_favorite:
+            case R.id.menu_site_unfavorite:
                 Operator.with(fragmentRef.get().getActivity()).load(
                         new SiteFavoriteRequest.Builder(selectedOptionItems.get(0)));
                 onMenuItemClick = true;

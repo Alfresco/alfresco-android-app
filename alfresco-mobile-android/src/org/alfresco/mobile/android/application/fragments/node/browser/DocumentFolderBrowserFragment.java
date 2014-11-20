@@ -45,12 +45,13 @@ import org.alfresco.mobile.android.application.fragments.actions.AbstractActions
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
+import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.create.AddContentDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.create.AddFolderDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.create.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.rendition.GalleryPreviewFragment;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -75,6 +76,7 @@ import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
@@ -153,6 +155,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         displayAsList = false;
         /** By default, the fragment is in Listing mode. */
         mode = MODE_LISTING;
+        setHasOptionsMenu(true);
     }
 
     public static DocumentFolderBrowserFragment newInstanceByTemplate(Bundle b)
@@ -766,8 +769,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             if (hasDocument())
             {
-                displayMenuItem = menu.add(Menu.NONE, MenuActionItem.MENU_DISPLAY_GALLERY, Menu.FIRST
-                        + MenuActionItem.MENU_DISPLAY_GALLERY, R.string.display_gallery);
+                displayMenuItem = menu.add(Menu.NONE, R.id.menu_gallery, Menu.FIRST, R.string.display_gallery);
                 displayMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
             }
         }
@@ -778,8 +780,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             if (permission.canAddChildren())
             {
-                MenuItem mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST
-                        + MenuActionItem.MENU_CREATE_FOLDER, R.string.folder_create);
+                MenuItem mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
                 mi.setIcon(R.drawable.ic_add_folder);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
@@ -803,48 +804,73 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             return;
         }
 
-        mi = menu.add(Menu.NONE, MenuActionItem.MENU_SEARCH_FOLDER, Menu.FIRST + MenuActionItem.MENU_SEARCH_FOLDER,
-                R.string.search);
+        mi = menu.add(Menu.NONE, R.id.menu_search_from_folder, Menu.FIRST + 10, R.string.search);
         mi.setIcon(R.drawable.ic_search);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (permission.canAddChildren())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_CREATE_FOLDER, Menu.FIRST + MenuActionItem.MENU_CREATE_FOLDER,
-                    R.string.folder_create);
+            mi = menu.add(Menu.NONE, R.id.menu_create_folder, Menu.FIRST, R.string.folder_create);
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE, R.string.add_menu);
+            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_device_capture, Menu.FIRST + 30,
+                    R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                    R.string.upload_title);
+            createMenu.add(Menu.NONE, R.id.menu_upload, Menu.FIRST + 30, R.string.upload_title);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_CREATE_DOCUMENT, Menu.FIRST
-                    + MenuActionItem.MENU_CREATE_DOCUMENT, R.string.create_document);
+            createMenu.add(Menu.NONE, R.id.menu_create_document, Menu.FIRST + 1, R.string.create_document);
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_PHOTO, R.string.take_photo);
+            createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_photo, Menu.FIRST + 1, R.string.take_photo);
 
             if (AndroidVersion.isICSOrAbove())
             {
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, Menu.FIRST
-                        + MenuActionItem.MENU_DEVICE_CAPTURE_CAMERA_VIDEO, R.string.make_video);
+                createMenu.add(Menu.NONE, R.id.menu_device_capture_camera_video, Menu.FIRST + 2, R.string.make_video);
             }
 
-            createMenu.add(Menu.NONE, MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, Menu.FIRST
-                    + MenuActionItem.MENU_DEVICE_CAPTURE_MIC_AUDIO, R.string.record_audio);
+            createMenu.add(Menu.NONE, R.id.menu_device_capture_mic_audio, Menu.FIRST + 3, R.string.record_audio);
 
             if (ScanSnapManager.getInstance(getActivity()) != null
                     && ScanSnapManager.getInstance(getActivity()).hasScanSnapApplication())
             {
-                createMenu.add(Menu.NONE, MenuActionItem.MENU_SCAN_DOCUMENT, Menu.FIRST
-                        + MenuActionItem.MENU_SCAN_DOCUMENT, R.string.scan);
+                createMenu.add(Menu.NONE, R.id.menu_scan_document, Menu.FIRST + 4, R.string.scan);
             }
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_search_from_folder:
+                search();
+                return true;
+            case R.id.menu_create_folder:
+                createFolder();
+                return true;
+            case R.id.menu_upload:
+                Intent i = new Intent(PrivateIntent.ACTION_PICK_FILE, null, getActivity(),
+                        PublicDispatcherActivity.class);
+                i.putExtra(PrivateIntent.EXTRA_FOLDER, AlfrescoStorageManager.getInstance(getActivity())
+                        .getDownloadFolder(SessionUtils.getAccount(getActivity())));
+                i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, SessionUtils.getAccount(getActivity()).getId());
+                startActivityForResult(i, RequestCode.FILEPICKER);
+                return true;
+            case R.id.menu_create_document:
+                DocumentTypesDialogFragment dialogft = DocumentTypesDialogFragment.newInstance(
+                        SessionUtils.getAccount(getActivity()), TAG);
+                dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
+                return true;
+            case R.id.menu_gallery:
+                GalleryPreviewFragment.with(getActivity()).display();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1020,7 +1046,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             ((BaseActivity) getActivity()).removeWaitingDialog();
         }
     }
-    
+
     @Subscribe
     public void onContentUpdated(UpdateContentEvent event)
     {

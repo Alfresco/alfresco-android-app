@@ -25,7 +25,6 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
@@ -345,27 +344,24 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         switch (statut)
         {
             case FavoriteSyncStatus.STATUS_HIDDEN:
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
-                        + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
+                mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST, R.string.favorite);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             case FavoriteSyncStatus.STATUS_FAILED:
             case FavoriteSyncStatus.STATUS_REQUEST_USER:
-                mi = menu.add(Menu.NONE, MenuActionItem.MENU_RESOLVE_CONFLICT, Menu.FIRST
-                        + MenuActionItem.MENU_RESOLVE_CONFLICT, R.string.sync_resolve_conflict);
+                mi = menu.add(Menu.NONE, R.id.menu_sync_resolution, Menu.FIRST, R.string.sync_resolve_conflict);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
                 if (favorited)
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, Menu.FIRST
-                            + MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE, R.string.unfavorite);
+                    mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST,
+                            R.string.unfavorite);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
                 else
                 {
-                    mi = menu.add(Menu.NONE, MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, Menu.FIRST
-                            + MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE, R.string.favorite);
+                    mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST, R.string.favorite);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
                 break;
@@ -380,7 +376,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_FAVORITE_GROUP_FAVORITE:
+            case R.id.menu_action_favorite_group_favorite:
                 for (String nodeId : selectedOptionItems)
                 {
                     requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, true, true));
@@ -388,7 +384,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                 Operator.with(context, SessionUtils.getAccount(context)).load(requestsBuilder);
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_FAVORITE_GROUP_UNFAVORITE:
+            case R.id.menu_action_favorite_group_unfavorite:
                 for (String nodeId : selectedOptionItems)
                 {
                     requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, false, true));
@@ -396,13 +392,13 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                 Operator.with(context, SessionUtils.getAccount(context)).load(requestsBuilder);
                 onMenuItemClick = true;
                 break;
-            case MenuActionItem.MENU_RESOLVE_CONFLICT:
+            case R.id.menu_sync_resolution:
                 onMenuItemClick = true;
                 ResolveConflictSyncDialogFragment.newInstance(selectedOptionItemId.get(0)).show(
                         fragmentRef.get().getActivity().getFragmentManager(), ResolveConflictSyncDialogFragment.TAG);
                 selectedOptionItemId.clear();
                 break;
-            case MenuActionItem.MENU_DETAILS:
+            case R.id.menu_node_details:
                 onMenuItemClick = true;
                 NodeDetailsFragment.with((Activity) context).nodeId(selectedOptionItems.get(0)).display();
                 selectedItems.clear();

@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
@@ -64,6 +63,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
         checkSession = false;
         retrieveDataOnCreation = false;
         displayAsList = true;
+        setHasOptionsMenu(true);
     }
 
     protected static AccountsFragment newInstanceByTemplate(Bundle b)
@@ -178,10 +178,23 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, R.id.menu_account_add, Menu.FIRST + MenuActionItem.MENU_ACCOUNT_ADD,
-                R.string.action_add_account);
+        mi = menu.add(Menu.NONE, R.id.menu_account_add, Menu.FIRST, R.string.action_add_account);
         mi.setIcon(R.drawable.ic_account_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_account_add:
+                add();
+                return true;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -191,7 +204,8 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     public void onAccountCreated(CreateAccountEvent event)
     {
         retrieveAccountList();
-        if (!DisplayUtils.hasCentralPane(getActivity())){
+        if (!DisplayUtils.hasCentralPane(getActivity()))
+        {
             for (AlfrescoAccount acc : accountListing)
             {
                 if (event.data.getId() == acc.getId())

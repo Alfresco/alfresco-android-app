@@ -22,8 +22,6 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.activitystream.ActivityEventViewHolder;
@@ -80,8 +78,7 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
     {
         if (entry.getCreatedBy() != null)
         {
-            menu.add(Menu.NONE, MenuActionItem.MENU_ACTIVITY_PROFILE,
-                    Menu.FIRST + MenuActionItem.MENU_ACTIVITY_PROFILE,
+            menu.add(Menu.NONE, R.id.menu_activity_profile, Menu.FIRST,
                     String.format(getContext().getString(R.string.activity_profile), entry.getCreatedBy()));
         }
     }
@@ -92,12 +89,7 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_ACTIVITY_SITE:
-                DocumentFolderBrowserFragment.with(fr.getActivity())
-                        .siteShortName(selectedOptionItems.get(0).getSiteShortName()).display();
-                onMenuItemClick = true;
-                break;
-            case MenuActionItem.MENU_ACTIVITY_PROFILE:
+            case R.id.menu_activity_profile:
                 UserProfileFragment.with(fr.getActivity()).personId(selectedOptionItems.get(0).getCreatedBy())
                         .displayAsDialog();
                 onMenuItemClick = true;

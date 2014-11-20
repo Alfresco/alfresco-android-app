@@ -25,7 +25,6 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.menu.MenuActionItem;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -218,18 +217,16 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (f.isFile())
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_SHARE, Menu.FIRST + MenuActionItem.MENU_SHARE, R.string.share);
+            mi = menu.add(Menu.NONE, R.id.menu_action_share, Menu.FIRST, R.string.share);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_UPLOAD, Menu.FIRST + MenuActionItem.MENU_UPLOAD,
-                    R.string.upload);
+            mi = menu.add(Menu.NONE, R.id.menu_upload, Menu.FIRST + 30, R.string.upload);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         if (f.canWrite() && downloadPath != null && f.getPath().startsWith(downloadPath))
         {
-            mi = menu.add(Menu.NONE, MenuActionItem.MENU_DELETE, Menu.FIRST + MenuActionItem.MENU_DELETE,
-                    R.string.delete);
+            mi = menu.add(Menu.NONE, R.id.menu_action_delete, Menu.FIRST + 1000, R.string.delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
@@ -241,15 +238,15 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         boolean onMenuItemClick = true;
         switch (item.getItemId())
         {
-            case MenuActionItem.MENU_UPLOAD:
+            case R.id.menu_upload:
                 onMenuItemClick = true;
                 ActionUtils.actionSendDocumentToAlfresco((Activity) context, selectedOptionItems.get(0));
                 break;
-            case MenuActionItem.MENU_SHARE:
+            case R.id.menu_action_share:
                 onMenuItemClick = true;
                 ActionUtils.actionShareContent((Activity) context, selectedOptionItems.get(0));
                 break;
-            case MenuActionItem.MENU_DELETE:
+            case R.id.menu_action_delete:
                 onMenuItemClick = true;
                 FileActions.delete(fragmentRef.get(), new ArrayList<File>(selectedOptionItems));
                 break;
