@@ -212,9 +212,14 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         }
 
         // Perform the request on creation to populate gridView
-        if (retrieveDataOnCreation)
+        if (retrieveDataOnCreation && adapter == null)
         {
             performRequest(currentListing);
+        }
+        else if (retrieveDataOnCreation && adapter != null)
+        {
+            setListShown(true);
+            gv.setAdapter(adapter);
         }
         else
         {

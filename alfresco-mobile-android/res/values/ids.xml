@@ -14,7 +14,7 @@
   distributed under the License is distributed on an "AS IS" BASIS,
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
-  limitations under the License.
+  limitations under the License.
 -->
 <resources>
 
@@ -37,10 +37,9 @@
     <item name="menu_gallery" type="id"/>
     <item name="menu_action_share" type="id"/>
     <item name="menu_action_open" type="id"/>
-        <item name="menu_action_delete" type="id"/>
-                <item name="menu_action_delete_folder" type="id"/>
-                <item name="menu_action_edit" type="id"/>
-                
+    <item name="menu_action_delete" type="id"/>
+    <item name="menu_action_delete_folder" type="id"/>
+    <item name="menu_action_edit" type="id"/>
     <item name="menu_action_download" type="id"/>
     <item name="menu_action_download_all" type="id"/>
     <item name="menu_action_update" type="id"/>

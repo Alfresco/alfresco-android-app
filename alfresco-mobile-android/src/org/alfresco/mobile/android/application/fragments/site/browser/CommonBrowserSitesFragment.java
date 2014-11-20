@@ -110,7 +110,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     public void onListItemClick(GridView l, View v, int position, long id)
     {
         Site s = (Site) l.getItemAtPosition(position);
-        DocumentFolderBrowserFragment.with(getActivity()).site(s).display();
+        DocumentFolderBrowserFragment.with(getActivity()).site(s).shortcut(false).display();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

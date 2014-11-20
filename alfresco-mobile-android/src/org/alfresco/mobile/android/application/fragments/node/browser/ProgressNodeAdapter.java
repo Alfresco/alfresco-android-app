@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
@@ -513,7 +514,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             case R.id.menu_node_details:
                 onMenuItemClick = true;
                 NodeDetailsFragment.with(getActivity()).node(selectedOptionItems.get(0)).display();
-                selectedItems.add(selectedOptionItems.get(0));
+                if (DisplayUtils.hasCentralPane(getActivity())){
+                    selectedItems.add(selectedOptionItems.get(0));
+                }
                 notifyDataSetChanged();
                 break;
             case R.id.menu_action_edit:
