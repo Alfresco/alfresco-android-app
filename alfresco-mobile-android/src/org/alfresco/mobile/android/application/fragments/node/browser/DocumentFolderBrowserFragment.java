@@ -382,7 +382,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                             path += string + "/";
                         }
 
-                        DocumentFolderBrowserFragment.with(getActivity()).path(path).display();
+                        DocumentFolderBrowserFragment.with(getActivity()).path(path).shortcut(true).display();
                     }
                     else
                     {
@@ -391,7 +391,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                             getFragmentManager().popBackStack();
                         }
                     }
-
                     return true;
                 }
 
@@ -460,7 +459,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             l.setChoiceMode(GridView.CHOICE_MODE_NONE);
             if (item.isFolder())
             {
-                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).display();
+                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(isShortcut()).display();
             }
             return;
         }
@@ -1024,7 +1023,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
         else
         {
-            return true;
+            return false;
         }
     }
 
@@ -1174,13 +1173,19 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                     this.menuIconId = R.drawable.ic_shared_light;
                     this.menuTitleId = R.string.menu_browse_shared;
                     folderIdentifier(FOLDER_TYPE_SHARED);
+                    shortcut(true);
                 }
                 else if (NodeBrowserTemplate.FOLDER_TYPE_USERHOME.equalsIgnoreCase(folderTypeValue))
                 {
                     this.menuIconId = R.drawable.ic_myfiles_light;
                     this.menuTitleId = R.string.menu_browse_userhome;
                     folderIdentifier(FOLDER_TYPE_USERHOME);
+                    shortcut(true);
                 }
+            }
+            else
+            {
+                shortcut(false);
             }
 
             this.templateArguments = new String[] { ARGUMENT_FOLDER_NODEREF, ARGUMENT_SITE_SHORTNAME, ARGUMENT_PATH,

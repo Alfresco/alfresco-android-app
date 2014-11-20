@@ -1155,6 +1155,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         else
         {
             getFragmentManager().popBackStack(getDetailsTag(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
+            {
+                ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onNodeDeleted(event);
+            }
         }
         return;
     }
