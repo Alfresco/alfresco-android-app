@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.node.update;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.ConfigService;
@@ -136,8 +137,10 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
                 configurationManager.init(acc);
                 configService = configurationManager.getConfig(acc.getId());
                 configure(inflater);
-            } else {
-                
+            }
+            else
+            {
+
             }
         }
 
@@ -231,11 +234,19 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         @Override
         protected View doInBackground(Void... params)
         {
-            //Solve issue during UI creation outside main thread
+            // Solve issue during UI creation outside main thread
             Looper.prepare();
 
-            modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
-                    .getDocumentTypeDefinition((Document) node);
+            if (node.isDocument())
+            {
+                modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
+                        .getDocumentTypeDefinition((Document) node);
+            }
+            else
+            {
+                modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
+                        .getFolderTypeDefinition((Folder) node);
+            }
 
             // Generating the form can be long depending on complexity of the
             // configuration & evaluator
@@ -256,4 +267,3 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         }
     }
 }
-

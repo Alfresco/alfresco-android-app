@@ -65,13 +65,13 @@ public class ConfigManager extends Manager
         eventBus.register(this);
     }
  
-    public static ConfigManager getInstance(Context context)
+    public static ConfigManager getInstance(Context appContext)
     {
         synchronized (LOCK)
         {
             if (mInstance == null)
             {
-                mInstance = new ConfigManager(context);
+                mInstance = Manager.getInstance(appContext, ConfigManager.class.getSimpleName());
             }
             return (ConfigManager) mInstance;
         }

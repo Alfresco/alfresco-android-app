@@ -822,7 +822,8 @@ public class MainActivity extends BaseActivity
             {
                 // In this case there's no configuration defined on server side
                 // We load the embedded configuration
-                ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
+                //TODO uncomment to activate embed configuration
+                //ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
             }
             else
             {

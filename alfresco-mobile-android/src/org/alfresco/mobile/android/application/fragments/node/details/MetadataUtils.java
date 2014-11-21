@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.fragments.node.details;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
@@ -27,20 +28,21 @@ public class MetadataUtils
 {
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECT_GENERAL = new HashMap<String, Integer>(2)
+    private static final Map<String, Integer> ASPECT_GENERAL = new LinkedHashMap<String, Integer>(2)
     {
         {
+            put(ContentModel.PROP_NAME, R.string.metadata_prop_name);
+            put(ContentModel.PROP_DESCRIPTION, R.string.metadata_prop_description);
+            put(ContentModel.PROP_VERSION_LABEL, R.string.metadata_prop_version);
             put(ContentModel.PROP_CREATOR, R.string.metadata_prop_creator);
             put(ContentModel.PROP_CREATED, R.string.metadata_prop_creationdate);
             put(ContentModel.PROP_MODIFIED, R.string.metadata_prop_modificationdate);
             put(ContentModel.PROP_MODIFIER, R.string.metadata_prop_modifier);
-            put(ContentModel.PROP_NAME, R.string.metadata_prop_name);
-            put(ContentModel.PROP_VERSION_LABEL, R.string.metadata_prop_version);
         }
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECT_GEOGRAPHIC = new HashMap<String, Integer>(2)
+    private static final Map<String, Integer> ASPECT_GEOGRAPHIC = new LinkedHashMap<String, Integer>(2)
     {
         {
             put(ContentModel.PROP_LATITUDE, R.string.metadata_prop_latitude);
@@ -49,7 +51,7 @@ public class MetadataUtils
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECT_AUDIO = new HashMap<String, Integer>(9)
+    private static final Map<String, Integer> ASPECT_AUDIO = new LinkedHashMap<String, Integer>(9)
     {
         {
             put(ContentModel.PROP_ALBUM, R.string.metadata_prop_album);
@@ -68,7 +70,7 @@ public class MetadataUtils
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECT_EXIF = new HashMap<String, Integer>(15)
+    private static final Map<String, Integer> ASPECT_EXIF = new LinkedHashMap<String, Integer>(15)
     {
         {
             put(ContentModel.PROP_DATETIME_ORIGINAL, R.string.metadata_prop_datetime_original);
@@ -90,7 +92,7 @@ public class MetadataUtils
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECT_RESTRICTABLE = new HashMap<String, Integer>(1)
+    private static final Map<String, Integer> ASPECT_RESTRICTABLE = new LinkedHashMap<String, Integer>(1)
     {
         {
             put(ContentModel.PROP_OFFLINE_EXPIRES_AFTER, R.string.metadata_prop_offline_expires_after);
@@ -98,7 +100,7 @@ public class MetadataUtils
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Map<String, Integer>> ASPECT_PROPS_LIST = new HashMap<String, Map<String, Integer>>(
+    private static final Map<String, Map<String, Integer>> ASPECT_PROPS_LIST = new LinkedHashMap<String, Map<String, Integer>>(
             3)
     {
         {
@@ -111,7 +113,7 @@ public class MetadataUtils
     };
 
     @SuppressWarnings("serial")
-    private static final Map<String, Integer> ASPECTS = new HashMap<String, Integer>(3)
+    private static final Map<String, Integer> ASPECTS = new LinkedHashMap<String, Integer>(3)
     {
         {
             put(ContentModel.ASPECT_GENERAL, R.string.metadata);

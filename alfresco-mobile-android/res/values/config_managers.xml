@@ -13,8 +13,12 @@
     <bool name="manager_isEnable_AlfrescoStorageManager">true</bool>
     <string name="manager_AlfrescoStorageManager">org.alfresco.mobile.android.application.managers.StorageManagerImpl</string>
 
-     <!-- Data Protection Manager -->
+    <!-- Data Protection Manager -->
     <bool name="manager_isEnable_DataProtectionManager">true</bool>
     <string name="manager_DataProtectionManager">org.alfresco.mobile.android.application.managers.DataProtectionManagerImpl</string>
-    
+
+    <!-- Configuration Manager -->
+    <bool name="manager_isEnable_ConfigManager">true</bool>
+    <string name="manager_ConfigManager">org.alfresco.mobile.android.application.config.ConfigManager</string>
+
 </resources>

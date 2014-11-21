@@ -1107,6 +1107,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
         {
+            if (getFragment(DocumentFolderBrowserFragment.TAG) != null)
+            {
+                ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
+                        .onDocumentUpdated(event);
+            }
             getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
