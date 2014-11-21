@@ -430,7 +430,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                     null, null, null, "0", null, "false"));
         }
 
-        if (configurationManager.getConfig(currentAccount.getId()) != null
+        if (configurationManager != null && configurationManager.getConfig(currentAccount.getId()) != null
                 && configurationManager.getConfig(currentAccount.getId()).getProfiles() != null)
         {
             list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,

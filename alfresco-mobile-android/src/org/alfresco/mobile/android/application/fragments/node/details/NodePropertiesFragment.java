@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
+import org.alfresco.mobile.android.api.model.impl.PropertyImpl;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
@@ -58,6 +59,8 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     public static final String TAG = NodePropertiesFragment.class.getName();
 
     private ConfigManager configurationManager;
+    
+    private String descriptionLabel;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -80,6 +83,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        descriptionLabel = getResources().getString(R.string.metadata_prop_description);
         setRootView(super.onCreateView(inflater, container, savedInstanceState));
         return getRootView();
     }
@@ -124,8 +128,8 @@ public class NodePropertiesFragment extends NodeDetailsFragment
                 && configurationManager.getConfig(getAccount().getId()).getFormConfig(
                         ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
-            FormConfigManager config = new FormConfigManager(this, configurationManager.getConfig(getAccount()
-                    .getId()), propertyViewGroup);
+            FormConfigManager config = new FormConfigManager(this,
+                    configurationManager.getConfig(getAccount().getId()), propertyViewGroup);
             hasDisplayed = config.displayProperties(node);
         }
 
@@ -211,7 +215,16 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 
         if (value == null) { return null; }
 
-        View vr = inflater.inflate(R.layout.form_read_row, null);
+        View vr = null;
+        if (descriptionLabel.equals(property.getDisplayName()))
+        {
+            vr = inflater.inflate(R.layout.form_read_textmultiline, null);
+        }
+        else
+        {
+            vr = inflater.inflate(R.layout.form_read_row, null);
+        }
+        
         TextView tv = (TextView) vr.findViewWithTag("propertyName");
         tv.setText(propertyLabel);
         tv = (TextView) vr.findViewWithTag("propertyValue");

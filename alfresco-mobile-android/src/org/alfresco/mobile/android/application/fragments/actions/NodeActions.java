@@ -378,7 +378,7 @@ public class NodeActions extends AbstractActions<Node>
     public static void edit(final Activity activity, final Folder folder, final Node node)
     {
         ConfigManager configurationManager = ConfigManager.getInstance(activity);
-        if (configurationManager != null)
+        if (configurationManager != null && configurationManager.hasConfig(SessionUtils.getAccount(activity).getId()))
         {
             try
             {
