@@ -1123,7 +1123,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
-        AlfrescoNotificationManager.getInstance(getActivity()).showToast(
+        AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
                 String.format(getResources().getString(R.string.update_sucess), event.initialNode.getName()));
     }
 

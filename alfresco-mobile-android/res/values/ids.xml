@@ -70,6 +70,7 @@
     <item name="menu_site_members" type="id"/>
 
     <!-- MENU CREATE -->
+    <item name="menu_create" type="id"/>
     <item name="menu_create_document" type="id"/>
     <item name="menu_create_folder" type="id"/>
 

@@ -17,7 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.details;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
