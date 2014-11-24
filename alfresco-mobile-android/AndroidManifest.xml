@@ -109,7 +109,6 @@
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="false"
             android:label="@string/file_editor_name"
-            android:uiOptions="splitActionBarWhenNarrow"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.intent.ACTION_CREATE_TEXT" />

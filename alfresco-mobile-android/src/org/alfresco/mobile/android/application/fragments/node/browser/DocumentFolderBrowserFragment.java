@@ -813,7 +813,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_device_capture, Menu.FIRST + 30,
+            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_create, Menu.FIRST + 30,
                     R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
