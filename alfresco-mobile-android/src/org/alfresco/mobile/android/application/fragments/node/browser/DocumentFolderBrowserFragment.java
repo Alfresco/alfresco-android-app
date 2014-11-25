@@ -1101,7 +1101,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     }
 
     @Subscribe
-    public void onDocumentFavorited(FavoriteNodeEvent event)
+    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
         if (event.hasException) { return; }
         ((ProgressNodeAdapter) adapter).refreshOperations();

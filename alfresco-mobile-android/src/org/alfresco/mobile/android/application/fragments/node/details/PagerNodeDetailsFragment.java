@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.application.fragments.node.versions.VersionFr
 import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.node.RetrieveNodeEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
+import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
@@ -127,13 +128,13 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     @Subscribe
     public void onFavoriteEvent(FavoritedNodeEvent event)
     {
-        super.onFavoriteEvent(event);
+        super.onIsFavoriteEvent(event);
     }
 
     @Subscribe
     public void onFavoriteEvent(FavoriteNodeEvent event)
     {
-        super.onFavoriteEvent(event);
+        super.onFavoriteNodeEvent(event);
     }
 
     @Subscribe
@@ -152,6 +153,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     public void onNodeDeleted(DeleteNodeEvent event)
     {
         super.onNodeDeleted(event);
+    }
+    
+    @Subscribe
+    public void onDocumentDownloaded(DownloadEvent event)
+    {
+        super.onDocumentDownloaded(event);
     }
     
     @Subscribe
