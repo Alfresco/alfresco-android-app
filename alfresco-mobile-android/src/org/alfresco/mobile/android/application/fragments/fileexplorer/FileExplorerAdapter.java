@@ -176,6 +176,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
+            AccessibilityUtils.addContentDescription(vh.choose,
+                    String.format(getContext().getString(R.string.more_options_file), item.getName()));
             vh.choose.setTag(R.id.node_action, item);
             vh.choose.setOnClickListener(new OnClickListener()
             {

@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNodeAdapter;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment;
@@ -55,6 +56,7 @@ import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
 import org.alfresco.mobile.android.async.node.NodeRequest;
 import org.alfresco.mobile.android.async.node.RetrieveNodeEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
+import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
@@ -1045,7 +1047,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     }
 
     @Subscribe
-    public void onFavoriteEvent(FavoritedNodeEvent event)
+    public void onIsFavoriteEvent(FavoritedNodeEvent event)
     {
         View progressView = viewById(R.id.favorite_progress);
         ImageView favoriteButton = (ImageView) viewById(R.id.action_favorite);
@@ -1073,7 +1075,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     }
 
     @Subscribe
-    public void onFavoriteEvent(FavoriteNodeEvent event)
+    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
         View progressView = viewById(R.id.favorite_progress);
         ImageView favoriteButton = (ImageView) viewById(R.id.action_favorite);
@@ -1097,6 +1099,20 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_unfavorite_dark));
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.favorite);
+        }
+        
+        if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
+        {
+            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onFavoriteNodeEvent(event);
+        }
+    }
+    
+    @Subscribe
+    public void onDocumentDownloaded(DownloadEvent event)
+    {
+        if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
+        {
+            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onDocumentDownloaded(event);
         }
     }
 
@@ -1145,7 +1161,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         NodeDetailsFragment.with(getActivity()).node(updatedNode).parentFolder(event.parentFolder).display();
 
-        AlfrescoNotificationManager.getInstance(getActivity()).showToast(
+        AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
                 String.format(getResources().getString(R.string.update_sucess), event.node.getName()));
     }
 
@@ -1165,6 +1181,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onNodeDeleted(event);
             }
         }
+        
+        AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                String.format(getResources().getString(R.string.delete_sucess), event.data.getName()));
         return;
     }
 

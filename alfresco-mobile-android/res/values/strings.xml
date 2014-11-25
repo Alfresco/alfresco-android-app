@@ -257,7 +257,8 @@
     <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your content will return to an unprotected state.\n\nAre you sure you want to delete \"%s\"?</string>
     <string name="delete_in_progress">Delete in progress&#8230;</string>
     <string name="delete_complete">Delete complete</string>
-
+    <string name="delete_sucess">\"%s\" has been deleted successfully.</string>
+    
     <!-- Save Back -->
     <string name="save_back_description">\"%s\" has been modified. Do you want to upload this new version?</string>
     <string name="update_sucess">\"%s\" has been updated successfully.</string>
@@ -841,6 +842,7 @@
     <string name="mime_folder">Folder</string>
     <string name="mime_document">Document</string>
     <string name="more_options_folder">More options for Folder %s</string>
+    <string name="more_options_file">More options for file %s</string>
     <string name="more_options_favorite">More options for %s</string>
     <string name="mime_site">Site</string>
     <string name="more_options_site">More options for Site %s</string>

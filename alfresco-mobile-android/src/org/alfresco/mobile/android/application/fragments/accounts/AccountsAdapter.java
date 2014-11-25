@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -29,6 +30,7 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -69,6 +71,9 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     protected void updateTopText(GenericViewHolder vh, AlfrescoAccount acc)
     {
         vh.topText.setText(acc.getTitle());
+        if (activityRef.get() instanceof PublicDispatcherActivity){
+            vh.topText.setTextColor(Color.BLACK);
+        }
     }
 
     @Override
@@ -88,6 +93,9 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     private void updateBottomTextList(GenericViewHolder v, AlfrescoAccount acc)
     {
         v.bottomText.setText(acc.getUsername());
+        if (activityRef.get() instanceof PublicDispatcherActivity){
+            v.bottomText.setTextColor(android.R.color.black);
+        }
 
         if (selectedItems != null && selectedItems.contains(acc))
         {

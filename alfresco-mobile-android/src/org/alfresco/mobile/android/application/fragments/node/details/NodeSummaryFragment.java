@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.async.node.RetrieveNodeEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
+import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
@@ -99,19 +100,25 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     @Subscribe
     public void onFavoriteEvent(FavoritedNodeEvent event)
     {
-        super.onFavoriteEvent(event);
+        super.onIsFavoriteEvent(event);
     }
     
     @Subscribe
     public void onFavoriteEvent(FavoriteNodeEvent event)
     {
-        super.onFavoriteEvent(event);
+        super.onFavoriteNodeEvent(event);
     }
     
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
         super.onDocumentUpdated(event);
+    }
+    
+    @Subscribe
+    public void onDocumentDownloaded(DownloadEvent event)
+    {
+        super.onDocumentDownloaded(event);
     }
     
     @Subscribe
