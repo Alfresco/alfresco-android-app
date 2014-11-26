@@ -118,8 +118,6 @@ public abstract class DeviceCapture implements Serializable
             ft.remove(prev);
         }
 
-        ft.addToBackStack(null);
-
         AddContentDialogFragment newFragment;
 
         if (mimeType != null)
