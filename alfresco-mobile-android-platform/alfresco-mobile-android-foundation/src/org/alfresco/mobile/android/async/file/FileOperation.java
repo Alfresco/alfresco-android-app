@@ -62,6 +62,10 @@ public abstract class FileOperation<T> extends BaseOperation<T>
             {
                 file = new File(filePath);
             }
+            else if (file != null && filePath == null)
+            {
+                filePath = file.getPath();
+            }
 
             parentFile = file.getParentFile();
 

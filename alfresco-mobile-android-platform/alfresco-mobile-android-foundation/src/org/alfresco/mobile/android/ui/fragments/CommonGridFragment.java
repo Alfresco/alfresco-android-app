@@ -395,6 +395,15 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         }
     }
 
+    protected void displayDataView()
+    {
+        if (adapter != null && !adapter.isEmpty())
+        {
+            setListShown(true);
+            gv.setAdapter(adapter);
+        }
+    }
+
     protected final void savePosition()
     {
         if (gv != null)

@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.config.ConfigManager;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
@@ -395,14 +396,7 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
-            Fragment prev = activity.getFragmentManager().findFragmentByTag(UpdateDialogFragment.TAG);
-            if (prev != null)
-            {
-                ft.remove(prev);
-            }
-            ft.addToBackStack(null);
-            ft.commit();
+            FragmentDisplayer.with(activity).remove(UpdateDialogFragment.TAG);
 
             // Create and show the dialog.
             UpdateDialogFragment.with(activity).parentFolder(folder).node(node).displayAsDialog();

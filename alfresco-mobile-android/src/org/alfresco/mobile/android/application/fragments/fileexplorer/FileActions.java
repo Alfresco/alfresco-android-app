@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
@@ -144,6 +145,7 @@ public class FileActions implements ActionMode.Callback
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu)
     {
+        mode.setTitle(createTitle());
         return true;
     }
 
@@ -227,9 +229,9 @@ public class FileActions implements ActionMode.Callback
     {
         String title = "";
 
-        if (selectedFiles.size() == 1)
+        if (selectedFile.size() == 1)
         {
-            title = selectedFiles.get(0).getName();
+            title = getFragment().getString(R.string.multi_selection_enable);
         }
         else
         {
@@ -348,16 +350,10 @@ public class FileActions implements ActionMode.Callback
 
     public static void edit(final Fragment f, final File file)
     {
-        FragmentTransaction ft = f.getActivity().getFragmentManager().beginTransaction();
-        Fragment prev = f.getActivity().getFragmentManager().findFragmentByTag(FileNameDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        FragmentDisplayer.with(f.getActivity()).remove(FileNameDialogFragment.TAG);
 
         // Create and show the dialog.
-        FileNameDialogFragment.newInstance(file.getParentFile(), file).show(ft, FileNameDialogFragment.TAG);
+        FileNameDialogFragment.newInstance(file.getParentFile(), file).show(f.getActivity().getFragmentManager().beginTransaction(), FileNameDialogFragment.TAG);
     }
 
     public static void delete(final Fragment f, final List<File> files)

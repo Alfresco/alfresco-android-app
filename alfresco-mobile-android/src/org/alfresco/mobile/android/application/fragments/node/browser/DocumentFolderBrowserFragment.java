@@ -92,7 +92,6 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -729,16 +728,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public void createFolder()
     {
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
-        Fragment prev = getFragmentManager().findFragmentByTag(CreateFolderDialogFragment.TAG);
-        if (prev != null)
-        {
-            ft.remove(prev);
-        }
-        ft.addToBackStack(null);
+        FragmentDisplayer.with(getActivity()).remove(CreateFolderDialogFragment.TAG);
 
         // Create and show the dialog.
-        AddFolderDialogFragment.newInstance(parentFolder).show(ft, CreateFolderDialogFragment.TAG);
+        AddFolderDialogFragment.newInstance(parentFolder).show(getActivity().getFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
     }
 
     public void refresh()
@@ -1039,6 +1032,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (adapter != null)
         {
             ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
+            displayDataView();
         }
         if (getActivity() instanceof BaseActivity)
         {
@@ -1055,6 +1049,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (adapter != null)
         {
             ((ProgressNodeAdapter) adapter).replaceNode(updatedNode);
+            displayDataView();
         }
         if (getActivity() instanceof BaseActivity)
         {

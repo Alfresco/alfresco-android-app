@@ -37,8 +37,6 @@ public class RenameFileOperation extends FileOperation<File>
 
     private File resultFile;
 
-    private File originalFile;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -61,8 +59,6 @@ public class RenameFileOperation extends FileOperation<File>
 
         try
         {
-            originalFile = new File(filePath);
-
             super.doInBackground();
 
             resultFile = new File(parentFile, renamedFileName);

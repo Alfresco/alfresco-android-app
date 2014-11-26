@@ -439,7 +439,6 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         {
             ft.remove(prev);
         }
-        ft.addToBackStack(null);
 
         // Create and show the dialog.
         FileNameDialogFragment.newInstance(getParent()).show(ft, FileNameDialogFragment.TAG);
