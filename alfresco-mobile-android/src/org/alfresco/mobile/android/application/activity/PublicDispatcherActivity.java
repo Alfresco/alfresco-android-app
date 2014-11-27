@@ -21,8 +21,11 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
@@ -223,19 +226,33 @@ public class PublicDispatcherActivity extends BaseActivity
 
         // Upload process : Display the view where the user wants to upload
         // files.
-        AlfrescoFragment frag = null;
-        if (getCurrentSession() != null && uploadFolder == R.string.menu_browse_sites)
+        if (getCurrentSession() == null) { return; }
+        String type = null;
+        Bundle b = null;
+        switch (uploadFolder)
         {
-            BrowserSitesFragment.with(this).display();
+            case R.string.menu_browse_sites:
+                type = ConfigurationConstant.KEY_SITES;
+                //BrowserSitesFragment.with(this).display();
+                break;
+            case R.string.menu_browse_root:
+                type = ConfigurationConstant.KEY_REPOSITORY;
+                //DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
+                break;
+            case R.string.menu_favorites_folder:
+                FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
+                return;
+            default:
+                break;
         }
-        else if (getCurrentSession() != null && uploadFolder == R.string.menu_browse_root)
+        
+        if (type != null)
         {
-            DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
+            AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, null);
+            if (viewConfig == null) { return; }
+            viewConfig.display();
         }
-        else if (getCurrentSession() != null && uploadFolder == R.string.menu_favorites_folder)
-        {
-            FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
-        }
+        
         return;
     }
 

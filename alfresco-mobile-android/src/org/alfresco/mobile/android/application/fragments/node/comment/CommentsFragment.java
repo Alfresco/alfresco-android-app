@@ -153,8 +153,7 @@ public class CommentsFragment extends CommentsNodeFragment
         {
             if (!getSession().getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
             {
-                commentText.setVisibility(View.GONE);
-                bAdd.setVisibility(View.GONE);
+                ((View) commentText.getParent().getParent()).setVisibility(View.GONE);
             }
         }
         catch (Exception e)

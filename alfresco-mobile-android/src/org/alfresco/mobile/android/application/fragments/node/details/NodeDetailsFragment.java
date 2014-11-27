@@ -481,7 +481,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.setVisibility(View.GONE);
         }
 
-        b = (ImageView) viewById(R.id.like);
+        b = (ImageView) viewById(R.id.action_like);
         if (getSession() != null && getSession().getRepositoryInfo() != null
                 && getSession().getRepositoryInfo().getCapabilities() != null
                 && getSession().getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
@@ -1022,7 +1022,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onLikeEvent(LikeNodeEvent event)
     {
         View progressView = viewById(R.id.like_progress);
-        ImageView likeButton = (ImageView) viewById(R.id.like);
+        ImageView likeButton = (ImageView) viewById(R.id.action_like);
         if (likeButton == null) { return; }
 
         if (progressView != null)
