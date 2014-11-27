@@ -124,7 +124,7 @@
                         android:gravity="center" >
 
                         <ImageView
-                            android:id="@+id/like"
+                            android:id="@+id/action_like"
                             style="?MainTheme.ImageView.ActionIcon"
                             android:contentDescription="@string/like"
                             android:src="@drawable/ic_unlike" />

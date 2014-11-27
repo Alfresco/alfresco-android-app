@@ -36,10 +36,12 @@ import org.alfresco.mobile.android.application.fragments.actions.AbstractActions
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNodeAdapter;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.async.Operation;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
@@ -651,6 +653,13 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             }
         }
     }
+
+    @Subscribe
+    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
+    {
+        getLoaderManager().initLoader(0, null, this);
+    }
+    
 
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)

@@ -458,7 +458,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             l.setChoiceMode(GridView.CHOICE_MODE_NONE);
             if (item.isFolder())
             {
-                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(isShortcut()).display();
+                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(isShortcut())
+                        .display();
             }
             return;
         }
@@ -731,7 +732,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         FragmentDisplayer.with(getActivity()).remove(CreateFolderDialogFragment.TAG);
 
         // Create and show the dialog.
-        AddFolderDialogFragment.newInstance(parentFolder).show(getActivity().getFragmentManager().beginTransaction(), CreateFolderDialogFragment.TAG);
+        AddFolderDialogFragment.newInstance(parentFolder).show(getActivity().getFragmentManager().beginTransaction(),
+                CreateFolderDialogFragment.TAG);
     }
 
     public void refresh()
@@ -806,8 +808,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             mi.setIcon(R.drawable.ic_add_folder);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_create, Menu.FIRST + 30,
-                    R.string.add_menu);
+            SubMenu createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_create, Menu.FIRST + 30, R.string.add_menu);
             createMenu.setIcon(android.R.drawable.ic_menu_add);
             createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
@@ -1088,6 +1089,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onFolderCreated(CreateFolderEvent event)
     {
         Node node = event.data;
+        if (node == null) { return; }
         ((ProgressNodeAdapter) adapter).replaceNode(node);
         if (getActivity() instanceof BaseActivity)
         {
@@ -1100,6 +1102,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         if (event.hasException) { return; }
         ((ProgressNodeAdapter) adapter).refreshOperations();
+        refreshListView();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

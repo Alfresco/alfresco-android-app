@@ -110,68 +110,23 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
             {
                 session.getServiceRegistry().getDocumentFolderService().removeFavorite(node);
                 isFavorite = false;
-
-                // Update Sync Info
-                if (cursorId.getCount() == 1 && cursorId.moveToFirst())
-                {
-                    if (FavoritesSyncManager.getInstance(context).hasActivateSync(acc))
-                    {
-                        ContentValues cValues = new ContentValues();
-                        cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
-                        if (cursorId.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0)
-                        {
-                            // Unfavorite
-                            cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
-                        }
-
-                        if (!hasSyncParent)
-                        {
-                            cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
-                        }
-                        context.getContentResolver().update(
-                                FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
-                                cValues, null, null);
-                    }
-                    else
-                    {
-                        if (node.isFolder())
-                        {
-                            prepareChildrenFolderDelete((Folder) node);
-                        }
-                        context.getContentResolver().delete(
-                                FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null,
-                                null);
-                    }
-                }
+                manageReferentialByRemoving(cursorId);
             }
             // CASE : FAVORITE
             else if ((value == null && !isFavorite) || (value != null && value && !isFavorite))
             {
                 session.getServiceRegistry().getDocumentFolderService().addFavorite(node);
                 isFavorite = true;
-
-                // Add to favorite
-                if (cursorId.getCount() == 0)
-                {
-                    // First time creation
-                    // Update local sync referential.
-                    context.getContentResolver().insert(
-                            FavoritesSyncProvider.CONTENT_URI,
-                            FavoritesSyncManager.createFavoriteContentValues(context, AlfrescoAccountManager
-                                    .getInstance(context).retrieveAccount(accountId), 456, parentFolderIdentifier,
-                                    node, new GregorianCalendar().getTimeInMillis(), -1));
-                }
-                else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
-                {
-                    // Already present in sync which means it's inside a
-                    // synced folder
-                    // We simply update the favorite
-                    ContentValues cValues = new ContentValues();
-                    cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
-                    context.getContentResolver().update(
-                            FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues,
-                            null, null);
-                }
+                manageReferentialByAdding(cursorId);
+            }
+            // CASE : UNFAVORITE ALREADY UNFAVORITED
+            else if (value != null && !value && !isFavorite)
+            {
+                manageReferentialByRemoving(cursorId);
+            }
+            else if (value != null && value && isFavorite)
+            {
+                manageReferentialByAdding(cursorId);
             }
         }
         catch (Exception e)
@@ -195,6 +150,80 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    private void manageReferentialByRemoving(Cursor cursorId)
+    {
+        // Special case where an error occured during sync
+        // We remove all duplicate except the first one.
+        if (cursorId.getCount() > 1)
+        {
+            cursorId.moveToNext();
+            for (int i = 1; i < cursorId.getCount(); i++)
+            {
+                context.getContentResolver().delete(
+                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
+                cursorId.moveToNext();
+            }
+            cursorId = FavoritesSyncManager.getCursorForId(context, acc, node.getIdentifier());
+        }
+
+        if (cursorId.getCount() == 1 && cursorId.moveToFirst())
+        {
+            if (FavoritesSyncManager.getInstance(context).hasActivateSync(acc))
+            {
+                ContentValues cValues = new ContentValues();
+                cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
+                if (cursorId.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0)
+                {
+                    // Unfavorite
+                    cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
+                }
+
+                if (!hasSyncParent)
+                {
+                    cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
+                }
+                context.getContentResolver().update(
+                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
+                        null);
+            }
+            else
+            {
+                if (node.isFolder())
+                {
+                    prepareChildrenFolderDelete((Folder) node);
+                }
+                context.getContentResolver().delete(
+                        FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
+            }
+        }
+    }
+
+    private void manageReferentialByAdding(Cursor cursorId)
+    {
+        // Add to favorite
+        if (cursorId.getCount() == 0)
+        {
+            // First time creation
+            // Update local sync referential.
+            context.getContentResolver().insert(
+                    FavoritesSyncProvider.CONTENT_URI,
+                    FavoritesSyncManager.createFavoriteContentValues(context,
+                            AlfrescoAccountManager.getInstance(context).retrieveAccount(accountId), 456,
+                            parentFolderIdentifier, node, new GregorianCalendar().getTimeInMillis(), -1));
+        }
+        else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
+        {
+            // Already present in sync which means it's inside a
+            // synced folder
+            // We simply update the favorite
+            ContentValues cValues = new ContentValues();
+            cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
+            context.getContentResolver().update(
+                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
+                    null);
+        }
+    }
+
     private void prepareChildrenFolderDelete(Folder folder)
     {
         Cursor childrenCursor = null;
