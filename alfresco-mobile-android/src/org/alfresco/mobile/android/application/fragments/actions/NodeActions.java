@@ -299,28 +299,13 @@ public class NodeActions extends AbstractActions<Node>
 
     private void favorite(boolean doFavorite)
     {
-        String operationId = null;
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
-        for (Node node : selectedItems)
-        {
-            requestsBuilder.add(new FavoriteNodeRequest.Builder(parentFolder, node, doFavorite, true)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-            operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-        }
-        //String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-
         if (getFragment() instanceof DocumentFolderBrowserFragment)
         {
-            int titleId = R.string.unfavorite;
-            int iconId = R.drawable.ic_unfavorite_dark;
-            if (doFavorite)
-            {
-                titleId = R.string.favorite;
-                iconId = R.drawable.ic_favorite_dark;
-            }
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            ((DocumentFolderBrowserFragment) getFragment()).favorite(selectedItems, doFavorite, false);
+        }
+        else
+        {
+            //TODO ?
         }
     }
 

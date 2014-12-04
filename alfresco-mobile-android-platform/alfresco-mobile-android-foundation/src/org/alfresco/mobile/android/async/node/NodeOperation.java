@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.async.node;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -77,7 +78,18 @@ public abstract class NodeOperation<T> extends BaseOperation<T>
             }
             catch (AlfrescoServiceException e)
             {
-                // Do Nothing
+                try
+                {
+                    if (node == null)
+                    {
+                        node = session.getServiceRegistry().getDocumentFolderService()
+                                .getNodeByIdentifier(NodeRefUtils.getCleanIdentifier(nodeIdentifier));
+                    }
+                }
+                catch (AlfrescoServiceException er)
+                {
+                    // DO NOTHING
+                }
             }
 
             if (!ignoreParentFolder)

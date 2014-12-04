@@ -47,7 +47,7 @@ public class OperationsPoolExecutor extends ThreadPoolExecutor
             case ConnectivityManager.TYPE_WIFI:
             case ConnectivityManager.TYPE_WIMAX:
             case ConnectivityManager.TYPE_ETHERNET:
-                setThreadCount(2);
+                setThreadCount(DEFAULT_THREAD_COUNT);
                 break;
             case ConnectivityManager.TYPE_MOBILE:
                 switch (info.getSubtype())

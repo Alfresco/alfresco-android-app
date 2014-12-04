@@ -69,6 +69,7 @@ import org.alfresco.mobile.android.async.node.create.CreateFolderEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
 import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
@@ -82,9 +83,11 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
+import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -138,13 +141,17 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     private onPickDocumentFragment fragmentPick;
 
-    private Map<String, Node> selectedMapItems = new HashMap<String, Node>(0);
+    private Map<String, Node> pickedNodes = new HashMap<String, Node>(0);
+
+    private List<Node> nodesToFavorite;
 
     private int displayMode = GridAdapterHelper.DISPLAY_GRID;
 
     private MenuItem displayMenuItem;
 
     private String fieldId;
+
+    private boolean doFavorite;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -314,6 +321,14 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
 
         refreshListView();
+
+        //For tablet : Display Item if node has been selected previously and after a resume
+        if (selectedItems != null && selectedItems.size() == 1 && DisplayUtils.hasCentralPane(getActivity())
+                && getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(getActivity())) == null)
+        {
+            NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder)
+                    .node(selectedItems.get(0)).display();
+        }
     }
 
     @Override
@@ -468,13 +483,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (mode == MODE_PICK && getActivity() instanceof PrivateDialogActivity && item.isDocument())
         {
             l.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE);
-            if (selectedMapItems.containsKey(item.getIdentifier()))
+            if (pickedNodes.containsKey(item.getIdentifier()))
             {
-                selectedMapItems.remove(item.getIdentifier());
+                pickedNodes.remove(item.getIdentifier());
             }
             else
             {
-                selectedMapItems.put(item.getIdentifier(), (Document) item);
+                pickedNodes.put(item.getIdentifier(), (Document) item);
             }
             l.setItemChecked(position, true);
             checkValidationButton();
@@ -635,9 +650,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     {
         if (mode == MODE_PICK && adapter == null)
         {
-            selectedMapItems = fragmentPick.getNodeSelected(fieldId);
+            pickedNodes = fragmentPick.getNodeSelected(fieldId);
             return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
-                    displayMode), parentFolder, new ArrayList<Node>(0), selectedMapItems);
+                    displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
         }
         else if (adapter == null) { return new ProgressNodeAdapter(getActivity(),
                 GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
@@ -995,15 +1010,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         else if (mode == MODE_PICK && selectedItems != null)
         {
             validationButton.setText(String.format(
-                    MessageFormat.format(getString(R.string.picker_attach_document), selectedMapItems.size()),
-                    selectedMapItems.size()));
-            validationButton.setEnabled(!selectedMapItems.isEmpty());
+                    MessageFormat.format(getString(R.string.picker_attach_document), pickedNodes.size()),
+                    pickedNodes.size()));
+            validationButton.setEnabled(!pickedNodes.isEmpty());
             validationButton.setOnClickListener(new OnClickListener()
             {
                 @Override
                 public void onClick(View v)
                 {
-                    fragmentPick.onNodeSelected(fieldId, selectedMapItems);
+                    fragmentPick.onNodeSelected(fieldId, pickedNodes);
                 }
             });
         }
@@ -1103,6 +1118,42 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         if (event.hasException) { return; }
         ((ProgressNodeAdapter) adapter).refreshOperations();
         refreshListView();
+        favorite(nodesToFavorite, doFavorite, true);
+    }
+
+    /**
+     * This method is specific to favorite and is bind with NodeActions.
+     * Multiple favorite action must be done sequentially and not in parallel.
+     * It's not supported by the server for older version.
+     */
+    public void favorite(List<Node> selectedItems, boolean dofavorite, boolean update)
+    {
+        if (selectedItems == null || selectedItems.isEmpty())
+        {
+            ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+            return;
+        }
+        nodesToFavorite = new ArrayList<Node>(selectedItems);
+        doFavorite = dofavorite;
+        Node node = nodesToFavorite.get(0);
+        OperationBuilder requestBuilder = new FavoriteNodeRequest.Builder(parentFolder, node, doFavorite, true)
+                .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG);
+        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestBuilder);
+        nodesToFavorite.remove(0);
+
+        if (!update)
+        {
+            int titleId = R.string.unfavorite;
+            int iconId = R.drawable.ic_unfavorite_dark;
+            if (doFavorite)
+            {
+                titleId = R.string.favorite;
+                iconId = R.drawable.ic_favorite_dark;
+            }
+            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
+                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
+                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
