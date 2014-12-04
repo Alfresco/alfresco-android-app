@@ -59,6 +59,7 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
         super(operator, dispatcher, action);
         if (request instanceof FavoriteNodeRequest)
         {
+            nodeIdentifier = ((FavoriteNodeRequest) request).getNodeIdentifier();
             this.value = ((FavoriteNodeRequest) request).markFavorite;
             this.batch = ((FavoriteNodeRequest) request).batchFavorite;
         }
@@ -76,57 +77,67 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
         {
             result = super.doInBackground();
 
-            isFavorite = session.getServiceRegistry().getDocumentFolderService().isFavorite(node);
-            hasSyncParent = false;
-
-            // Retrieve local sync info.
-            cursorId = FavoritesSyncManager.getCursorForId(context, acc, node.getIdentifier());
-
-            // Check if parent is in sync or not
-            Cursor parentCursorId = null;
-            try
+            if (node == null)
             {
-                if (parentFolder == null)
+                // Special error happen when the node identifier is wrong
+                cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
+                manageReferentialByRemoving(cursorId);
+            }
+            else
+            {
+                nodeIdentifier = node.getIdentifier();
+                isFavorite = session.getServiceRegistry().getDocumentFolderService().isFavorite(node);
+                hasSyncParent = false;
+
+                // Retrieve local sync info.
+                cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
+
+                // Check if parent is in sync or not
+                Cursor parentCursorId = null;
+                try
                 {
-                    parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                    if (parentFolder == null)
+                    {
+                        parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                    }
+                    parentCursorId = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
+                    if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
+                    {
+                        hasSyncParent = true;
+                    }
                 }
-                parentCursorId = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
-                if (parentCursorId.getCount() == 1 && parentCursorId.moveToFirst())
+                catch (Exception e)
                 {
                     hasSyncParent = true;
                 }
-            }
-            catch (Exception e)
-            {
-                hasSyncParent = true;
-            }
-            finally
-            {
-                CursorUtils.closeCursor(parentCursorId);
-            }
+                finally
+                {
+                    CursorUtils.closeCursor(parentCursorId);
+                }
 
-            // CASE : UNFAVORITE
-            if ((value == null && isFavorite) || (value != null && !value && isFavorite))
-            {
-                session.getServiceRegistry().getDocumentFolderService().removeFavorite(node);
-                isFavorite = false;
-                manageReferentialByRemoving(cursorId);
-            }
-            // CASE : FAVORITE
-            else if ((value == null && !isFavorite) || (value != null && value && !isFavorite))
-            {
-                session.getServiceRegistry().getDocumentFolderService().addFavorite(node);
-                isFavorite = true;
-                manageReferentialByAdding(cursorId);
-            }
-            // CASE : UNFAVORITE ALREADY UNFAVORITED
-            else if (value != null && !value && !isFavorite)
-            {
-                manageReferentialByRemoving(cursorId);
-            }
-            else if (value != null && value && isFavorite)
-            {
-                manageReferentialByAdding(cursorId);
+                // CASE : UNFAVORITE
+                if ((value == null && isFavorite) || (value != null && !value && isFavorite))
+                {
+                    session.getServiceRegistry().getDocumentFolderService().removeFavorite(node);
+                    isFavorite = false;
+                    manageReferentialByRemoving(cursorId);
+                }
+                // CASE : FAVORITE
+                else if ((value == null && !isFavorite) || (value != null && value && !isFavorite))
+                {
+                    session.getServiceRegistry().getDocumentFolderService().addFavorite(node);
+                    isFavorite = true;
+                    manageReferentialByAdding(cursorId);
+                }
+                // CASE : UNFAVORITE ALREADY UNFAVORITED
+                else if (value != null && !value && !isFavorite)
+                {
+                    manageReferentialByRemoving(cursorId);
+                }
+                else if (value != null && value && isFavorite)
+                {
+                    manageReferentialByAdding(cursorId);
+                }
             }
         }
         catch (Exception e)
@@ -163,7 +174,7 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
                         FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
                 cursorId.moveToNext();
             }
-            cursorId = FavoritesSyncManager.getCursorForId(context, acc, node.getIdentifier());
+            cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeIdentifier);
         }
 
         if (cursorId.getCount() == 1 && cursorId.moveToFirst())

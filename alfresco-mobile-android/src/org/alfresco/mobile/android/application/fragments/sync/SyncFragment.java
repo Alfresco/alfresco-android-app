@@ -77,6 +77,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 
 import com.squareup.otto.Subscribe;
@@ -159,8 +160,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
         acc = SessionUtils.getAccount(getActivity());
 
-        int[] layouts = GridAdapterHelper.getGridLayoutId(getActivity(), this);
-        adapter = new SyncCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+        adapter = onAdapterCreation();
         gv.setAdapter(adapter);
         setListShown(false);
         getLoaderManager().initLoader(0, null, this);
@@ -282,6 +282,18 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             default:
                 break;
         }
+    }
+
+    @Override
+    protected BaseAdapter onAdapterCreation()
+    {
+        super.onAdapterCreation();
+        if (adapter == null)
+        {
+            int[] layouts = GridAdapterHelper.getGridLayoutId(getActivity(), this);
+            adapter = new SyncCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+        }
+        return adapter;
     }
 
     // /////////////////////////////////////////////////////////////
@@ -657,9 +669,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     @Subscribe
     public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
-        getLoaderManager().initLoader(0, null, this);
+        // getLoaderManager().initLoader(0, null, this);
+        refreshSilently();
+        // refresh();
     }
-    
 
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
