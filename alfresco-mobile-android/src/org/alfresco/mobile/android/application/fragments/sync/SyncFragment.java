@@ -36,7 +36,6 @@ import org.alfresco.mobile.android.application.fragments.actions.AbstractActions
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNodeAdapter;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.intent.RequestCode;
@@ -75,6 +74,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
@@ -130,24 +130,11 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         setHasOptionsMenu(true);
     }
 
-    public static SyncFragment newInstance(int mode)
+    protected static SyncFragment newInstanceByTemplate(Bundle b)
     {
-        SyncFragment bf = new SyncFragment();
-        Bundle settings = new Bundle();
-        settings.putInt(ARGUMENT_MODE, mode);
-        bf.setArguments(settings);
-        return bf;
-    }
-
-    public static SyncFragment newInstance(int mode, String folderId, String folderName)
-    {
-        SyncFragment bf = new SyncFragment();
-        Bundle settings = new Bundle();
-        settings.putInt(ARGUMENT_MODE, mode);
-        settings.putString(ARGUMENT_FOLDER_ID, folderId);
-        settings.putString(ARGUMENT_FOLDER_NAME, folderName);
-        bf.setArguments(settings);
-        return bf;
+        SyncFragment cbf = new SyncFragment();
+        cbf.setArguments(b);
+        return cbf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -583,8 +570,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-
-    public void getMenu(Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         info = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
         if (info != null && (info.hasWarning() && !info.hasResponse()))
@@ -753,7 +740,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            return newInstance(mode);
+            return newInstanceByTemplate(b);
         };
 
         // ///////////////////////////////////////////////////////////////////////////

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.ConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -64,7 +65,7 @@ public class ConfigManager extends Manager
         eventBus = EventBusManager.getInstance();
         eventBus.register(this);
     }
- 
+
     public static ConfigManager getInstance(Context appContext)
     {
         synchronized (LOCK)
@@ -143,7 +144,8 @@ public class ConfigManager extends Manager
 
         // In this case we receive no configuration from the repo..
         // We load the default embedded app configuration
-        if (alfrescoSession.getServiceRegistry().getConfigService() == null)
+        if (alfrescoSession.getServiceRegistry() instanceof AlfrescoServiceRegistry
+                && ((AlfrescoServiceRegistry) alfrescoSession.getServiceRegistry()).getConfigService() == null)
         {
             AlfrescoNotificationManager.getInstance(appContext).showToast("Load internal Configuration");
             File configFolder = AlfrescoStorageManager.getInstance(appContext).getConfigurationFolder(account);

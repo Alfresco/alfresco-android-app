@@ -34,11 +34,11 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.site.SitesFoundationFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,16 +116,18 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(Context context, Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         MenuItem mi;
-
         mi = menu.add(Menu.NONE, R.id.menu_site_list_request, Menu.FIRST, R.string.joinsiterequest_list_title);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        MenuFragmentHelper.getMenu(context, menu);
+        MenuFragmentHelper.getMenu(getActivity(), menu);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

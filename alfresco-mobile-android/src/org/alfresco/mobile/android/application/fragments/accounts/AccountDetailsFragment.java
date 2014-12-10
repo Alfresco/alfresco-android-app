@@ -173,6 +173,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
         super.onDetach();
         getActivity().invalidateOptionsMenu();
     }
+    
 
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS

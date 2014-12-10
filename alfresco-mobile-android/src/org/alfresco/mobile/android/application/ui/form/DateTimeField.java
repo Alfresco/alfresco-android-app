@@ -17,13 +17,12 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.ui.form;
 
-import java.lang.ref.WeakReference;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Property;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.api.utils.DateUtils;
 import org.alfresco.mobile.android.application.R;

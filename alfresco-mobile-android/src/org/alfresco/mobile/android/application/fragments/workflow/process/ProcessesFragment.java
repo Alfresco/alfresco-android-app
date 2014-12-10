@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Process;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
@@ -33,13 +34,16 @@ import org.alfresco.mobile.android.async.workflow.process.ProcessesEvent;
 import org.alfresco.mobile.android.async.workflow.process.start.StartProcessEvent;
 import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEvent;
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.process.ProcessesFoundationFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -65,6 +69,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         emptyListMessageId = R.string.empty_tasks;
         enableTitle = false;
         loadState = LOAD_VISIBLE;
+        setHasOptionsMenu(true);
     }
 
     public static ProcessesFragment newInstanceByTemplate(Bundle b)
@@ -114,9 +119,11 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-
-    public void getMenu(Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
@@ -124,6 +131,23 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         MenuFragmentHelper.getMenu(getActivity(), menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_workflow_add:
+                Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
+                        PrivateDialogActivity.class);
+                in.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
+                getActivity().startActivity(in);
+                return true;
+            default:
+                break;
+        }
+        return false;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
