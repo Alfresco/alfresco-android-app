@@ -21,8 +21,14 @@ public class BatchOperationEvent
 {
     public final String groupKey;
 
-    public BatchOperationEvent(String groupKey)
+    @SuppressWarnings("rawtypes")
+    public final Operation operation;
+
+    @SuppressWarnings("rawtypes")
+    public BatchOperationEvent(Operation operation)
     {
-        this.groupKey = groupKey;
+        this.groupKey = operation.action.key;
+        this.operation = operation;
     }
+
 }

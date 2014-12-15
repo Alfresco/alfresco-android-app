@@ -186,7 +186,7 @@ public class Operator
                         {
                             AlfrescoNotificationManager.getInstance(operation.operator.context).unMonitorChannel(operation.request.requestTypeId);
                         }
-                        EventBusManager.getInstance().post(new BatchOperationEvent(operation.action.groupKey));
+                        EventBusManager.getInstance().post(new BatchOperationEvent(operation));
                         /*if (!operation.isCancelled() || (!operation.request.isLongRunning() && operation.isCancelled()))
                         {
                             OperationsUtils.removeOperationUri(operation.operator.context, operation.action.request);

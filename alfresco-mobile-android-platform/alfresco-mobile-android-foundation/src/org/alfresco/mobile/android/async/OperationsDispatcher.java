@@ -246,8 +246,11 @@ public class OperationsDispatcher
         operationMap.remove(operation.getKey());
         if (TextUtils.isEmpty(operation.action.groupKey))
         {
-            EventBusManager.getInstance().post(new BatchOperationEvent(operation.action.key));
-            OperationsUtils.removeOperationUri(context, operation.action.request);
+            EventBusManager.getInstance().post(new BatchOperationEvent(operation));
+            if (operation.request.notificationVisibility != OperationRequest.VISIBILITY_NOTIFICATIONS)
+            {
+                OperationsUtils.removeOperationUri(context, operation.action.request);
+            }
         }
         else
         {
