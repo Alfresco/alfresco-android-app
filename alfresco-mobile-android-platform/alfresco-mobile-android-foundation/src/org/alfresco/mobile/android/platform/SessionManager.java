@@ -25,7 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.OAuthConstant;
+import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.onpremise.AlfrescoOnPremiseServiceRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
@@ -442,6 +445,7 @@ public abstract class SessionManager extends Manager
         protected void prepareCommonSettings()
         {
             // Default settings for Alfresco Application
+            extraSettings.put(AlfrescoSession.ONPREMISE_SERVICES_CLASSNAME, AlfrescoOnPremiseServiceRegistry.class.getCanonicalName());
             extraSettings.put(SessionParameter.CONNECT_TIMEOUT, "10000");
             extraSettings.put(SessionParameter.READ_TIMEOUT, "60000");
             extraSettings.put(AlfrescoSession.EXTRACT_METADATA, true);
@@ -454,6 +458,7 @@ public abstract class SessionManager extends Manager
 
         protected void prepareCloudSettings(String repositoryId)
         {
+            extraSettings.put(AlfrescoSession.CLOUD_SERVICES_CLASSNAME, CloudServiceRegistry.class.getCanonicalName());
             if (repositoryId != null && !repositoryId.isEmpty())
             {
                 extraSettings.put(CloudSession.CLOUD_NETWORK_ID, repositoryId);

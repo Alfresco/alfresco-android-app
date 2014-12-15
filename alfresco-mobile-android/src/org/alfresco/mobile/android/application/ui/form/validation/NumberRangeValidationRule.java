@@ -19,11 +19,10 @@ package org.alfresco.mobile.android.application.ui.form.validation;
 
 import java.math.BigInteger;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 public class NumberRangeValidationRule extends ValidationRule
 {

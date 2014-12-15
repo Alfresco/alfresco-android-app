@@ -20,7 +20,7 @@ package org.alfresco.mobile.android.application.ui.form.validation;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.alfresco.mobile.android.api.constants.ConfigConstants;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ValidationConfig;
 
 import android.content.Context;

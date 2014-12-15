@@ -19,12 +19,17 @@ package org.alfresco.mobile.android.application.fragments.workflow.process;
 
 import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.async.workflow.process.ProcessDefinitionsEvent;
+import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.process.ProcessesDefinitionFoundationFragment;
 
+import android.content.Intent;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;
@@ -42,6 +47,7 @@ public class ProcessesDefinitionFragment extends ProcessesDefinitionFoundationFr
     // ///////////////////////////////////////////////////////////////////////////
     public ProcessesDefinitionFragment()
     {
+        setHasOptionsMenu(true);
     }
 
     public static ProcessesDefinitionFragment newInstanceByTemplate()
@@ -73,15 +79,36 @@ public class ProcessesDefinitionFragment extends ProcessesDefinitionFoundationFr
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        super.onCreateOptionsMenu(menu, inflater);
+        menu.clear();
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_workflow_add, Menu.FIRST, R.string.workflow_start);
         mi.setIcon(android.R.drawable.ic_menu_add);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        MenuFragmentHelper.getMenu(getActivity(), menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_workflow_add:
+                Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
+                        PrivateDialogActivity.class);
+                in.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
+                getActivity().startActivity(in);
+                return true;
+            default:
+                break;
+        }
+        return false;
+    }
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////

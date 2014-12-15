@@ -173,9 +173,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         return getRootView();
     }
 
-    // /////////////////////////////////////////////////////////////
-    // LIFECYCLE
-    // ////////////////////////////////////////////////////////////
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {

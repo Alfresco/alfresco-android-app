@@ -24,20 +24,20 @@ import java.util.List;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
-import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
 import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountEditFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
@@ -49,10 +49,7 @@ import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -608,41 +605,10 @@ public class MainActivity extends BaseActivity
             return true;
         }
 
-        if (isVisible(ProcessesFragment.TAG))
-        {
-            ((ProcessesFragment) getFragment(ProcessesFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
-        if (isVisible(AccountDetailsFragment.TAG))
-        {
-            ((AccountDetailsFragment) getFragment(AccountDetailsFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
         if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
             AccountsFragment.getMenu(this, menu);
-            return true;
-        }
-
-        // TODO Replace by fragment optionMenu
-        if (isVisible(BrowserSitesFragment.TAG) || isVisible(BrowserSitesPagerFragment.TAG))
-        {
-            BrowserSitesFragment.getMenu(this, menu);
-            return true;
-        }
-
-        if (isVisible(DocumentFolderBrowserFragment.TAG))
-        {
-            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
-        if (isVisible(SyncFragment.TAG))
-        {
-            ((SyncFragment) getFragment(SyncFragment.TAG)).getMenu(menu);
             return true;
         }
 
@@ -817,21 +783,26 @@ public class MainActivity extends BaseActivity
     {
         if (getCurrentSession() instanceof RepositorySession)
         {
-            // Check configuration
-            if (getCurrentSession().getServiceRegistry().getConfigService() == null)
+            ServiceRegistry registry = getCurrentSession().getServiceRegistry();
+            if (registry instanceof AlfrescoServiceRegistry)
             {
-                // In this case there's no configuration defined on server side
-                // We load the embedded configuration
-                //TODO uncomment to activate embed configuration
-                //ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
-            }
-            else
-            {
-                // We have a new configuration available
-                // Let's dispatch the event
-                LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
-                result.setData(getCurrentSession().getServiceRegistry().getConfigService());
-                EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
+                // Check configuration
+                if (((AlfrescoServiceRegistry) registry).getConfigService() == null)
+                {
+                    // In this case there's no configuration defined on server
+                    // side
+                    // We load the embedded configuration
+                    // TODO uncomment to activate embed configuration
+                    // ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
+                }
+                else
+                {
+                    // We have a new configuration available
+                    // Let's dispatch the event
+                    LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+                    result.setData(((AlfrescoServiceRegistry) registry).getConfigService());
+                    EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
+                }
             }
 
             // Display 4.2+ special folders (userhome/shared)

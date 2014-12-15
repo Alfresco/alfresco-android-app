@@ -17,7 +17,10 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async;
 
+import org.alfresco.mobile.android.platform.provider.CursorUtils;
+
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 
 public final class OperationsUtils
@@ -30,5 +33,37 @@ public final class OperationsUtils
     {
         Uri operationUri = request.notificationUri;
         context.getContentResolver().delete(operationUri, null, null);
+    }
+
+    public static final String[] COLUMN_ALL = { OperationsSchema.COLUMN_ID };
+
+    public static void clean(Context context)
+    {
+        Cursor cursor = null;
+        try
+        {
+            cursor = context.getContentResolver().query(OperationsContentProvider.CONTENT_URI, COLUMN_ALL,
+                    OperationsSchema.COLUMN_STATUS + " IN (" + OperationStatus.STATUS_SUCCESSFUL +"," + OperationStatus.STATUS_CANCEL + ")", null, null);
+            if (cursor == null) { return; }
+            if (!cursor.isFirst())
+            {
+                cursor.moveToPosition(-1);
+            }
+            Uri uri = null;
+            for (int i = 0; i < cursor.getCount(); i++)
+            {
+                cursor.moveToPosition(i);
+                uri = Uri.parse(OperationsContentProvider.CONTENT_URI + "/" + cursor.getInt(OperationSchema.COLUMN_ID_ID));
+                context.getContentResolver().delete(uri, null, null);
+            }
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+        finally
+        {
+            CursorUtils.closeCursor(cursor);
+        }
     }
 }
