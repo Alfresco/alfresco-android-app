@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  本文件是 Alfresco Mobile for Android 的一部分。
+  
+  经 2.0 版 Apache License（以下简称“许可”）许可，
+  只有在遵循许可的条件下才能使用此文件。
+  您可从
+  
+    http://www.apache.org/licenses/LICENSE-2.0 获取许可的副本
+  
+  除非适用法律要求或获得书面同意，
+  依据此许可分发的软件“按照原样”分发，
+  不提供任何明示或暗示的保证或条件。
+  请参见此许可，了解关于此许可特定语言版本的
+  约束性允许和限制。
+-->
+<resources>
+
+    <!-- Override -->
+    <string name="ok">确定</string>
+    <string name="cancel">取消</string>
+    <string name="search">搜索</string>
+    <string name="search_hint">输入搜索词</string>
+    <string name="comment_add_hint">在此处输入您的评论...</string>
+    <string name="add">添加</string>
+    
+    
+    <!-- Samsung -->
+    <string name="extension_name">Samsung 扩展</string>
+    <string name="thumbnail">缩略图</string>
+    <string name="note_editor_name">Alfresco S Note Editor</string>
+
+    <!-- Editor -->
+    <string name="editor_select">Samsung 扩展</string>
+
+    <!-- Editor MENU -->
+    <!-- Tools -->
+    <string name="editor_tools">工具</string>
+    <string name="editor_pen">笔</string>
+    <string name="editor_selection">选择</string>
+    <string name="editor_eraser">橡皮擦</string>
+    <string name="editor_text">文本</string>
+
+    <!-- Settings -->
+    <string name="editor_tools_settings">工具设置</string>
+
+    <!-- Action Mode -->
+    <string name="editor_group_menu">组合</string>
+    <string name="editor_group">组合</string>
+    <string name="editor_ungroup">取消组合</string>
+    <string name="editor_front_menu">移至顶层</string>
+    <string name="editor_forward">上移一层</string>
+    <string name="editor_front">移至顶层</string>
+    <string name="editor_back_menu">移至底层</string>
+    <string name="editor_backward">下移一层</string>
+    <string name="editor_back">移至底层</string>
+
+    <!-- Add -->
+    <string name="editor_add_menu">添加...</string>
+    <string name="editor_add_page">添加页面</string>
+    <string name="editor_add_image">添加图像</string>
+
+    <!-- Pages -->
+    <string name="editor_pages">页面...</string>
+    <string name="editor_pages_add">添加页面</string>
+    <string name="editor_pages_remove">移除页面</string>
+    <string name="editor_pages_move">移动到页面</string>
+
+    <!-- Extra -->
+    <string name="editor_error_open">无法打开此 S Note。</string>
+    <string name="editor_save_request">S Note 已修改。</string>
+    <string name="editor_save_description"><![CDATA[你是否要不保存就退出？<br/> 未保存的全部更改将丢失。]]></string>
+    <string name="editor_save">保存</string>
+    <string name="editor_discard">放弃</string>
+    <string name="editor_save_confirmation">S Note 已保存。</string>
+    <string name="editor_paging">页面 %1$s / %2$s</string>
+
+    <!-- CREATION -->
+    <string name="create_samsung_note">Samsung S Note</string>
+
+    <!-- ERROR PEN SDK -->
+    <string name="error_sdk_dialog">S Note 要求</string>
+    <string name="error_sdk_unsupported">此设备不支持 S Pen</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>您需要安装其他 S Pen 软件才能使用此功能。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>您需要更新 S Pen 软件才能使用此功能。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>我们建议您在使用此功能之前更新 S Pen 软件。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+    
+</resources>

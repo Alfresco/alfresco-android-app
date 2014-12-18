@@ -1,0 +1,58 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId "org.alfresco.mobile.android.application"
+        minSdkVersion 11
+        targetSdkVersion 21
+        versionCode 40
+        versionName "1.5.0"
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    productFlavors {
+        light {
+
+        }
+
+        production {
+
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+    }
+}
+
+dependencies {
+    compile project(':platform:foundation')
+
+    //DEBUG BUILD TYPE
+    debugCompile project(':extensions:hockeyapp')
+    //debugCompile project(':extensions:tools')
+
+    //PRODUCTION BUILD VARIANT
+    productionCompile project(':platform:theme')
+    productionCompile project(':platform:localization')
+    productionCompile project(':extensions:samsung')
+    productionCompile project(':extensions:scansnap')
+}

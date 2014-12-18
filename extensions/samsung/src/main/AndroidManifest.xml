@@ -1,0 +1,44 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.alfresco.mobile.android.application.extension.samsung">
+
+    <application>
+
+        <activity
+            android:name="org.alfresco.mobile.android.application.extension.samsung.pen.SNoteEditorActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:icon="@drawable/ic_alfresco_logo"
+            android:label="@string/note_editor_name"
+            android:uiOptions="splitActionBarWhenNarrow" >
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.extension.intent.ACTION_START_SAMSUNG_NOTE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:mimeType="application/samsung_note" />
+
+                <data android:pathPattern=".*\\.spd" />
+                <data android:pathPattern=".*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.spd" />
+                <data android:host="*" />
+            </intent-filter>
+        </activity>
+
+    </application>
+
+</manifest>
