@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- Fields Congif Type -->
+    <!-- Pattern : <CONFIG-NAME>_<TYPE> : ClassName -->
+    <!-- Example : Replace All "."  by "_" -->
+
+    <!-- TEXT -->
+    <string name="form_com_alfresco_client_form_field_text">org.alfresco.mobile.android.application.ui.form.TextField</string>
+
+    <!-- FILE SIZE -->
+    <string name="form_com_alfresco_client_form_field_fileSize">org.alfresco.mobile.android.application.ui.form.FileSizeField</string>
+
+    <!-- NUMERIC -->
+    <string name="form_com_alfresco_client_form_field_numeric">org.alfresco.mobile.android.application.ui.form.NumberField</string>
+    <string name="form_com_alfresco_client_form_field_decimal">org.alfresco.mobile.android.application.ui.form.DecimalField</string>
+
+    <!-- DATE TIME -->
+    <string name="form_com_alfresco_client_form_field_dateTime">org.alfresco.mobile.android.application.ui.form.DateTimeField</string>
+
+    <!-- BOOLEAN -->
+    <string name="form_com_alfresco_client_form_field_boolean">org.alfresco.mobile.android.application.ui.form.BooleanField</string>
+    
+    <!-- AUTHORITY -->
+    <string name="form_com_alfresco_client_form_field_authority">org.alfresco.mobile.android.application.ui.form.AuthorityField</string>
+    
+    <!-- NODE : Document/Folder -->
+    <string name="form_com_alfresco_client_form_field_node">org.alfresco.mobile.android.application.ui.form.NodeField</string>
+    
+
+    <!-- +++++++++++++++++++++++++++ -->
+    <!-- VALIDATION -->
+    <!-- +++++++++++++++++++++++++++ -->
+
+    <!-- Mandatory -->
+    <string name="validation_com_alfresco_client_validation_mandatory">org.alfresco.mobile.android.application.ui.form.validation.MandatoryValidationRule</string>
+
+    <!-- String Length -->
+    <string name="validation_com_alfresco_client_validation_stringLength">org.alfresco.mobile.android.application.ui.form.validation.StringLengthValidationRule</string>
+
+    <!-- Number Range -->
+    <string name="validation_com_alfresco_client_validation_numberRange">org.alfresco.mobile.android.application.ui.form.validation.NumberRangeValidationRule</string>
+
+    <!-- Filename -->
+    <string name="validation_com_alfresco_client_validation_nodeName">org.alfresco.mobile.android.application.ui.form.validation.FileNameValidationRule</string>
+
+    <!-- Pattern Regex -->
+    <string name="validation_com_alfresco_client_validation_regex">org.alfresco.mobile.android.application.ui.form.validation.RegexValidationRule</string>
+
+</resources>

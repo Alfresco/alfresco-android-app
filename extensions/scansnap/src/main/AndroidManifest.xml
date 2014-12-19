@@ -1,0 +1,12 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.alfresco.mobile.android.application.extension.scansnap">
+
+    <application>
+        <activity
+            android:name="org.alfresco.mobile.android.application.extension.scansnap.ScanSnapResultActivity"
+            android:exported="true"
+            android:noHistory="true" >
+        </activity>
+    </application>
+
+</manifest>
