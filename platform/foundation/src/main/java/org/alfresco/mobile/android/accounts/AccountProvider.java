@@ -200,12 +200,14 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
 
     public static final String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
 
-    public static List<Account> retrieveAccounts(Context context)
+    public static List<Account> retrieveAccounts(Context context, SQLiteDatabase db)
     {
         List<Account> accounts = new ArrayList<Account>();
         try
         {
-            Cursor cursor = context.getContentResolver().query(CONTENT_URI, COLUMN_ALL, null, null, null);
+            SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
+            queryBuilder.setTables(AccountSchema.TABLENAME);
+            Cursor cursor = queryBuilder.query(db, COLUMN_ALL, null, null, null, null, null);
             accounts = new ArrayList<Account>(cursor.getCount());
             while (cursor.moveToNext())
             {
