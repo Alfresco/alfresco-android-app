@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible" >
+
+    <LinearLayout
+        android:id="@+id/properties_details"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="5dip"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:id="@+id/group_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="4dip"
+                android:baselineAligned="false"
+                android:orientation="horizontal" >
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@color/grey_lighter"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="2dip" >
+
+                    <ImageView
+                        android:id="@+id/icon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/mime_file"
+                        android:visibility="visible" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="4dip" >
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="?MainTheme.TextView.ListItem.Primary"
+                        android:layout_gravity="left"
+                        android:layout_margin="0dp"
+                        android:paddingLeft="0dip"
+                        android:paddingRight="@dimen/properties_details_padding"
+                        android:text="Green Grasssd fgsdf gdsf gds fgds fg fdgsdf gsdf gsdf gsd fgdsfg sdf.JPG" />
+
+                    <TextView
+                        android:id="@+id/details"
+                        style="?MainTheme.TextView.ListItem.Secondary"
+                        android:layout_marginLeft="0dip"
+                        android:paddingLeft="0dip"
+                        android:text="G419 days ago - 142Kb, version 1.0" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tools_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/properties_actions_margin"
+                android:layout_marginLeft="@dimen/browse_margin"
+                android:layout_marginTop="@dimen/properties_actions_margin" >
+
+                <ImageView
+                    android:id="@+id/action_openin"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/open_in"
+                    android:src="@drawable/ic_open_dark" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/action_favorite"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/favorites_document"
+                        android:src="@drawable/ic_unfavorite_dark" />
+
+                    <ProgressBar
+                        android:id="@+id/favorite_progress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/action_share"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/share"
+                    android:src="@drawable/ic_share" />
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center" >
+
+                    <ImageView
+                        android:id="@+id/action_like"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/like"
+                        android:src="@drawable/ic_unlike" />
+
+                    <ProgressBar
+                        android:id="@+id/like_progress"
+                        style="?android:attr/progressBarStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/action_geolocation"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/geolocation"
+                    android:src="@drawable/ic_location"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.astuetz.PagerSlidingTabStrip
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="48dip"
+            app:pstsIndicatorColor="#FF33B5E6"
+            app:pstsShouldExpand="true"
+            app:pstsTabPaddingLeftRight="14dip"
+            app:pstsUnderlineColor="#FF33B5E6" />
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/view_pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/tabs" >
+        </android.support.v4.view.ViewPager>
+    </LinearLayout>
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        layout="@layout/app_progress_emtpy" />
+
+</FrameLayout>

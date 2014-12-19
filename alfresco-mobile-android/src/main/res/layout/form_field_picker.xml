@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="72dp"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/floating_label_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        android:textSize="12sp"
+        android:visibility="invisible" />
+
+    <LinearLayout
+        android:id="@+id/floating_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:clickable="true" >
+
+        <TextView
+            android:id="@+id/floating_label_edit_text"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="0dp"
+            android:background="@null"
+            android:layout_weight="1"
+            android:hint="tmp"
+            android:lines="1"
+            android:maxLines="1"
+            android:paddingBottom="8dp"
+            android:scrollHorizontally="true"
+            android:singleLine="true"
+            android:textSize="16sp" />
+
+        <ImageView
+            android:id="@+id/floating_label_expand"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:src="@drawable/ic_menu_expand" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/floating_label_underline"
+        android:layout_width="match_parent"
+        android:layout_height="2px"
+        android:background="@drawable/dotted_line"
+        android:layerType="software"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="invisible" >
+
+        <TextView
+            android:id="@+id/floating_label_error"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textSize="12sp" />
+
+        <ImageView
+            android:id="@+id/floating_label_error_icon"
+            android:layout_width="12dip"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_field_warning" />
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?MainTheme.Background.White"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:layout_width="fill_parent"
+        android:layout_height="0dip"
+        android:layout_marginLeft="@dimen/wizard_main_margin"
+        android:layout_marginRight="@dimen/wizard_main_margin"
+        android:layout_weight="1"
+        android:fillViewport="true" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/account_authentication"
+                style="?MainTheme.TextView.SectionHeader.Primary"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/account_authentication"
+                android:visibility="gone" />
+
+            <TableLayout
+                android:id="@+id/default_server"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:shrinkColumns="1"
+                android:stretchColumns="1" >
+
+                <TableRow
+                    android:id="@+id/process_title_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/process_title" />
+
+                    <EditText
+                        android:id="@+id/process_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/process_title_hint"
+                        android:inputType="text" >
+                    </EditText>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/process_due_on_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_due_on" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/process_due_on"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_due_on"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:contentDescription="@string/picker_due_date"
+                            android:src="@drawable/ic_calendar_pick" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/thumbnail_height"
+                    android:minHeight="@dimen/thumbnail_height" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_assignees" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/process_assignee"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_assignee"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/picker_assignees"
+                            android:src="@drawable/ic_person" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_attachments" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <Button
+                            android:id="@+id/process_attachments"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/spinner_holo_light"
+                            android:gravity="left|bottom"
+                            android:paddingLeft="10dip"
+                            android:textColor="@color/hint_foreground_holo_light" />
+
+                        <ImageButton
+                            android:id="@+id/action_process_attachments"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_repository_dark"
+                            android:contentDescription="@string/picker_attachments" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/process_approvers_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_approvers" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:baselineAligned="true"
+                        android:orientation="horizontal" >
+
+                        <EditText
+                            android:id="@+id/process_approvers"
+                            android:layout_width="0dip"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:editable="false"
+                            android:hint="@string/process_no_approvers" />
+
+                        <ImageButton
+                            android:id="@+id/action_remove_approvers"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_remove"
+                            android:contentDescription="@string/action_remove_approvers" />
+
+                        <ImageButton
+                            android:id="@+id/action_add_approvers"
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_add"
+                            android:contentDescription="@string/action_add_approvers" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:id="@+id/repository_https_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_priority" />
+
+                    <LinearLayout
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right|center_vertical"
+                        android:orientation="horizontal" >
+
+                        <ToggleButton
+                            android:id="@+id/action_priority_low"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_low"
+                            android:textOn="@string/tasks_priority_low" />
+
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="36dip"
+                            android:layout_marginLeft="4dip"
+                            android:layout_marginRight="4dip"
+                            android:background="?android:attr/dividerVertical" />
+
+                        <ToggleButton
+                            android:id="@+id/action_priority_medium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_medium"
+                            android:textOn="@string/tasks_priority_medium" />
+
+                        <View
+                            android:layout_width="1dip"
+                            android:layout_height="36dip"
+                            android:layout_marginLeft="4dip"
+                            android:layout_marginRight="4dip"
+                            android:background="?android:attr/dividerVertical" />
+
+                        <ToggleButton
+                            android:id="@+id/action_priority_high"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/btn_default_holo_light_blue"
+                            android:textOff="@string/tasks_priority_high"
+                            android:textOn="@string/tasks_priority_high" />
+                    </LinearLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/task_complete_margin" >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/process_notification" />
+
+                    <include
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        layout="@layout/app_task_switch" />
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:layout_marginTop="@dimen/margin_top"
+        android:background="?android:attr/dividerVertical" />
+
+    <include
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/app_validation_button" />
+
+</LinearLayout>

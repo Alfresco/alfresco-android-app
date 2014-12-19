@@ -35,15 +35,13 @@ Optional
 
 License
 -------
-
-Alfresco Mobile for Android 1.4 
-
+```
+Alfresco Mobile for Android 1.5 
 Copyright © 2014 Alfresco Software, Ltd. and others. 
-
 This product distribution is made available under the [Apache 2.0 license] (http://www.apache.org/licenses/LICENSE-2.0.html). 
+```
 
 Portions of this product distribution require certain copyright or other notices to be included with the product distribution. These notices may also appear in individual source files. 
-
 Below is the list of licenses and modules used under the corresponding licenses: 
 
 __Apache 2.0 License__
