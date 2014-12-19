@@ -38,15 +38,11 @@ android {
         }
     }
 
-
-
     productFlavors {
         light {
-
         }
 
         production {
-
         }
     }
 

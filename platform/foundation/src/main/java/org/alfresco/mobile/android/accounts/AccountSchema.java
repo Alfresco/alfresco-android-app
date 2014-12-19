@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 /**
  * Represents the implementation & management side of Account object inside the
@@ -157,7 +158,7 @@ public final class AccountSchema
         if (oldVersion < DatabaseVersionNumber.VERSION_1_5_0)
         {
             //
-            List<Account> accounts = AccountProvider.retrieveAccounts(context);
+            List<Account> accounts = AccountProvider.retrieveAccounts(context, db);
             android.accounts.Account newAccount = null;
             String accountName = null;
             AccountManager mAccountManager = AccountManager.get(context);
@@ -193,6 +194,9 @@ public final class AccountSchema
                     syncManager.setActivateSync(sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false));
                     sharedPref.edit().remove(SYNCHRO_PREFIX + account.getId());
                 }
+
+                Log.i("Migration", "Account " + account.getDescription() + "[" + account.getId() + "] has been migrated");
+
             }
             // Delete old table
             db.execSQL(QUERY_DROP_TABLE);
