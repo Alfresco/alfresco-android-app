@@ -21,8 +21,6 @@ import android.content.Context;
 
 public abstract class Manager
 {
-    public static final String PACKAGE_NAME = "org.alfresco.mobile.android.application";
-    
     protected final Context appContext;
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR

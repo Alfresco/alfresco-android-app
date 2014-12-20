@@ -17,7 +17,9 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform.provider;
 
+import org.alfresco.mobile.android.foundation.BuildConfig;
+
 public interface AlfrescoContentProvider
 {
-    String AUTHORITY_ALFRESCO_BASE = "org.alfresco.mobile.android.provider";
+    String AUTHORITY_ALFRESCO_BASE = BuildConfig.PROVIDER_AUTHORITY;
 }

@@ -17,8 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform.configuration;
 
-import org.alfresco.mobile.android.platform.Manager;
-
 import android.content.Context;
 
 /**
@@ -48,7 +46,7 @@ public final class ConfigUtils
     public static String getString(Context context, String family, String key)
     {
         int stringId = context.getResources().getIdentifier(
-                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING, Manager.PACKAGE_NAME);
+                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING, context.getApplicationContext().getPackageName());
         return (stringId == 0) ? null : context.getString(stringId);
     }
 

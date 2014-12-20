@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.platform.accounts;
 
 import java.io.Serializable;
 
+import org.alfresco.mobile.android.foundation.BuildConfig;
+
 import android.accounts.AccountManager;
 import android.text.TextUtils;
 
@@ -51,7 +53,7 @@ public class AlfrescoAccount implements Serializable
     /**
      * Account Manager : Account type
      */
-    public static final String ACCOUNT_TYPE = "com.alfresco.account";
+    public static final String ACCOUNT_TYPE = BuildConfig.ACCOUNT_ID;
 
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS

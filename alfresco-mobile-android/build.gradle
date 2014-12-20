@@ -4,12 +4,21 @@ android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
+
     defaultConfig {
-        applicationId "org.alfresco.mobile.android.application"
+        applicationId APPLICATION_ID
         minSdkVersion 11
         targetSdkVersion 21
         versionCode 40
-        versionName "1.5.0"
+        versionName VERSION_NAME
+
+        manifestPlaceholders = [ PROVIDER_AUTHORITY:PROVIDER_AUTHORITY ]
+
+        defaultPublishConfig DEFAULT_PUBLISH
+        resValue "string", "oauth_api_key", OAUTH_API_KEY
+        resValue "string", "oauth_api_secret", OAUTH_API_SECRET
+        resValue "string", "oauth_callback", OAUTH_CALLBACK
+        resValue "string", "oauth_scope", OAUTH_SCOPE
     }
 
     lintOptions {
@@ -28,18 +37,27 @@ android {
 
     buildTypes {
         debug {
-
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [ PROVIDER_AUTHORITY:PROVIDER_AUTHORITY_DEBUG ]
+            resValue "string", "account_name", ACCOUNT_ID_DEBUG
+            resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
         }
 
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
+                }
+            }
+            resValue "string", "account_name", ACCOUNT_ID
         }
     }
 
     productFlavors {
-        light {
+        beta {
         }
 
         production {
