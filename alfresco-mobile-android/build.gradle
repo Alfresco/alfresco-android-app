@@ -19,6 +19,7 @@ android {
         resValue "string", "oauth_api_secret", OAUTH_API_SECRET
         resValue "string", "oauth_callback", OAUTH_CALLBACK
         resValue "string", "oauth_scope", OAUTH_SCOPE
+        resValue "string", "bamboo_buildnumber", System.getenv("bamboo.buildNumber")
     }
 
     lintOptions {
