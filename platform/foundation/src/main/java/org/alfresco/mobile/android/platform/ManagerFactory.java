@@ -43,7 +43,7 @@ public final class ManagerFactory
     protected static int getBooleanId(Context context, String key)
     {
         int boolId = context.getResources().getIdentifier(
-                ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), BOOLEAN, Manager.PACKAGE_NAME);
+                ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), BOOLEAN, context.getApplicationContext().getPackageName());
         return boolId;
     }
 

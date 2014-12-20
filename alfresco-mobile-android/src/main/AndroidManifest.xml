@@ -255,25 +255,25 @@
         <!-- *************************************************************** -->
         <provider
             android:name="org.alfresco.mobile.android.application.providers.FavoritesSyncProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.sync"
+            android:authorities="${PROVIDER_AUTHORITY}.sync"
             android:exported="false"
             android:label="@string/sync_favorites"
             android:syncable="true" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.mimetypes"
+            android:authorities="${PROVIDER_AUTHORITY}.mimetypes"
             android:exported="false" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.OperationsProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.operations"
+            android:authorities="${PROVIDER_AUTHORITY}.operations"
             android:exported="false" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.search.HistorySearchProvider"
-            android:authorities="org.alfresco.mobile.android.provider.searches"
+            android:authorities="${PROVIDER_AUTHORITY}.searches"
             android:exported="false" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.storage.StorageAccessDocumentsProvider"
-            android:authorities="org.alfresco.mobile.android.provider.documents"
+            android:authorities="${PROVIDER_AUTHORITY}.documents"
             android:enabled="@bool/atLeastKitKat"
             android:exported="true"
             android:grantUriPermissions="true"
@@ -343,7 +343,7 @@
         <!-- Still available for migration from older version. (version <1.5) -->
         <provider
             android:name="org.alfresco.mobile.android.application.providers.AccountProviderImpl"
-            android:authorities="org.alfresco.mobile.android.provider.accounts"
+            android:authorities="${PROVIDER_AUTHORITY}.accounts"
             android:exported="false" />
     </application>
 
