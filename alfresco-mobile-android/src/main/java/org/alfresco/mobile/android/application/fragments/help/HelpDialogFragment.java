@@ -17,76 +17,36 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.help;
 
-import java.io.File;
-
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
-import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.DialogInterface;
-import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.TextView;
 
 public class HelpDialogFragment extends DialogFragment
 {
     public static final String TAG = HelpDialogFragment.class.getName();
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
-        Builder builder = new Builder(getActivity()).setIcon(R.drawable.ic_alfresco)
-                .setTitle(R.string.app_name).setMessage(R.string.get_pdf_viewer)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        dialog.dismiss();
-                    }
-                }).setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener()
-                {
-                    public void onClick(DialogInterface dialog, int id)
-                    {
-                        ActionUtils.getAdobeReader(getActivity());
-                        dialog.dismiss();
-                    }
-                });
-
-        return builder.create();
-    }
-
-    @Override
-    public void onResume()
-    {
-        if (getDialog() != null)
-        {
-            TextView messageText = (TextView) getDialog().findViewById(android.R.id.message);
-            messageText.setGravity(Gravity.CENTER);
-            getDialog().show();
-        }
-        super.onResume();
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    /**
-     * Display PDF User Guide.
-     * 
-     * @param activity
-     */
     public static void displayHelp(Activity activity)
     {
         try
         {
-            //TODO Replace with correct url
-            ActionUtils.openURL(activity, activity.getString(R.string.help_user_guide_url));
+            String prefix = activity.getString(R.string.docs_prefix);
+            String urlValue = null;
+            if (TextUtils.isEmpty(prefix))
+            {
+                urlValue = activity.getString(R.string.help_user_guide_default_url);
+            }
+            else
+            {
+                urlValue = String.format(activity.getString(R.string.help_user_guide_url), prefix, prefix);
+            }
+            ActionUtils.openURL(activity, urlValue);
         }
         catch (Exception e)
         {

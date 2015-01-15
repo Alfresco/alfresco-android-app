@@ -224,6 +224,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">zh</string>
+    <string name="docs_prefix">zh</string>
 
     <!-- About Message -->
     <string name="about_description_title">说明</string>

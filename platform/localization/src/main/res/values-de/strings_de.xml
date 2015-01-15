@@ -225,6 +225,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">de</string>
+    <string name="docs_prefix">de</string>
 
     <!-- About Message -->
     <string name="about_description_title">Beschreibung</string>

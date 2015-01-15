@@ -224,6 +224,7 @@
 
     <!-- HELP -->
     <string name="asset_folder_prefix">fr</string>
+    <string name="docs_prefix">fr</string>
 
     <!-- About Message -->
     <string name="about_description_title">Description</string>

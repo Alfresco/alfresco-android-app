@@ -149,7 +149,8 @@
     <string name="config_asset_messages_file">embedded_strings.properties</string>
 
     <!-- HELP -->
-    <string name="help_user_guide_url" formatted="false">http://docs.alfresco.com/mobile_sdk/android/concepts/mobile-sdk-android-intro.html</string>
+    <string name="help_user_guide_url" formatted="false">http://docs.alfresco.com/android-%1$s/topics/mobile-overview-%2$s.html</string>
+    <string name="help_user_guide_default_url">http://docs.alfresco.com/android/topics/mobile-overview.html</string>
 
     <!-- Cloud Share URL -->
     <string name="cloud_share_url" formatted="false">https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
