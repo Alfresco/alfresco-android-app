@@ -73,7 +73,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/metadata_prop_type" />
 
                 <Spinner
                     android:id="@+id/types_spinner"

@@ -48,7 +48,7 @@ public interface ConfigService extends Service
      * Value must be String value that represents a valid application Identifier<br/>
      * Default : empty string.
      */
-    String CONFIGURATION_APPLICATION_ID = "org.alfresco.mobile.api.configuration.application.id";
+    //String CONFIGURATION_APPLICATION_ID = "org.alfresco.mobile.api.configuration.application.id";
 
     /**
      * Define the profileId to preload inside the configuration object.<br/>
@@ -79,8 +79,6 @@ public interface ConfigService extends Service
     String CONFIGURATION_INIT_DEFAULT = "org.alfresco.mobile.api.configuration.init.default";
     String CONFIGURATION_INIT_NONE = "org.alfresco.mobile.api.configuration.init.none";
 
-    String CONFIGURATION_VERSION_ID = "org.alfresco.mobile.api.configuration.version.id";
-     
     // ///////////////////////////////////////////////////////////////////////////
     // METHODS
     // ///////////////////////////////////////////////////////////////////////////
@@ -145,6 +143,8 @@ public interface ConfigService extends Service
 
     // ///////////////////////////////////////////////////////////////////////////
     // FORMS
+    boolean hasFormConfig();
+
     /** Returns the configuration for the form with the given identifier.*/
     FormConfig getFormConfig(String formId);
     
@@ -164,6 +164,8 @@ public interface ConfigService extends Service
 
     // ///////////////////////////////////////////////////////////////////////////
     // CREATION
+    boolean hasCreationConfig();
+
     /** Returns the configuration for creation related features. */
     CreationConfig getCreationConfig();
 

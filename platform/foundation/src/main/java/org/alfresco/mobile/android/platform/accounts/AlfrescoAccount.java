@@ -106,7 +106,7 @@ public class AlfrescoAccount implements Serializable
     /**
      * Floag to indicate if it's a paid account or not.
      */
-    public static final String ACCOUNT_IS_PAID_ACCOUNT = ACCOUNT_TYPE.concat(".accessToken");
+    public static final String ACCOUNT_IS_PAID_ACCOUNT = ACCOUNT_TYPE.concat(".isPaidAccount");
 
     // ///////////////////////////////////////////////////////////////////////////
     // MEMBERS

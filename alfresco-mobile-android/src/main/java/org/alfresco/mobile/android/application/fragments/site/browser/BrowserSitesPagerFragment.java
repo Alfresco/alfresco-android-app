@@ -88,6 +88,8 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_site_dark;
+        public static final int LABEL_ID = R.string.menu_browse_sites;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
@@ -102,8 +104,8 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            menuIconId = R.drawable.ic_all_sites_light;
-            menuTitleId = R.string.menu_browse_sites;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
         }
 

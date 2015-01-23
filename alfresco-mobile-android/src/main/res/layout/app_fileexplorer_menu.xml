@@ -40,7 +40,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/btn_default_holo_light_underline"
-            android:drawableLeft="@drawable/ic_download_dark"
+            android:drawableLeft="@drawable/ic_download_light"
             android:drawablePadding="5dip"
             android:gravity="left|center_vertical"
             android:text="@string/shortcut_alfresco_downloads" />
@@ -72,7 +72,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="3dip"
             android:background="@drawable/btn_default_holo_light_underline"
-            android:drawableLeft="@drawable/ic_download_dark"
+            android:drawableLeft="@drawable/ic_download_light"
             android:drawablePadding="5dip"
             android:gravity="left|center_vertical"
             android:text="@string/shortcut_local_downloads" />

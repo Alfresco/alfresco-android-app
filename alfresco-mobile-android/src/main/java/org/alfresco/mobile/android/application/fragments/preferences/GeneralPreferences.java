@@ -22,8 +22,10 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.config.MenuConfigFragment;
 import org.alfresco.mobile.android.application.fragments.sync.DisableSyncDialogFragment;
 import org.alfresco.mobile.android.application.fragments.sync.DisableSyncDialogFragment.OnFavoriteChangeListener;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -32,6 +34,7 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -91,8 +94,11 @@ public class GeneralPreferences extends PreferenceFragment
     {
         super.onResume();
 
-        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        // Title
+        UIUtils.displayTitle(getActivity(), R.string.settings);
 
+        // Preferences
+        final SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         Preference privateFoldersPref = findPreference(PRIVATE_FOLDERS_BUTTON);
 
         // DATA PROTECTION
@@ -125,7 +131,8 @@ public class GeneralPreferences extends PreferenceFragment
                 }
                 else
                 {
-                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                            getString(R.string.sdinaccessible));
                 }
 
                 return false;
@@ -171,7 +178,8 @@ public class GeneralPreferences extends PreferenceFragment
 
         Boolean syncEnable = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(account);
         cpref.setChecked(syncEnable);
-        cpref.setTitle(String.format(getString(R.string.settings_favorite_sync), account.getTitle()));
+        cpref.setTitle(getString(R.string.settings_favorite_sync));
+        cpref.setSummary(String.format(getString(R.string.settings_favorite_sync_summary), account.getTitle()));
 
         Boolean syncWifiEnable = FavoritesSyncManager.getInstance(getActivity()).hasWifiOnlySync(account);
 
@@ -253,8 +261,29 @@ public class GeneralPreferences extends PreferenceFragment
             });
         }
 
-        getActivity().invalidateOptionsMenu();
+        // Profiles & custom menu Configuration
+        Preference manageCustomMenuPref = findPreference(getString(R.string.custom_menu_manage));
 
+        if (ConfigManager.getInstance(getActivity()).hasRemoteConfig(account.getId())
+                && ConfigManager.getInstance(getActivity()).getRemoteConfig(account.getId()).hasViewConfig())
+        {
+            manageCustomMenuPref.setEnabled(false);
+            manageCustomMenuPref.setSummary(R.string.settings_custom_menu_disable);
+        }
+        else
+        {
+            manageCustomMenuPref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
+                {
+                    MenuConfigFragment.with(getActivity()).display();
+                    return false;
+                }
+            });
+        }
+
+        getActivity().invalidateOptionsMenu();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

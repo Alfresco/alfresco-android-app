@@ -57,70 +57,70 @@
             <Button
                 android:id="@+id/menu_browse_activities"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_activities_light"
+                android:drawableLeft="@drawable/ic_activities_dark"
                 android:text="@string/menu_browse_activities"
                 />
 
             <Button
                 android:id="@+id/menu_browse_root"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_repository_light"
+                android:drawableLeft="@drawable/ic_repository_dark"
                 android:text="@string/menu_browse_root"
                 />
 
             <Button
                 android:id="@+id/menu_browse_shared"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_shared_light"
+                android:drawableLeft="@drawable/ic_shared_dark"
                 android:text="@string/menu_browse_shared"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_browse_my_sites"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_all_sites_light"
+                android:drawableLeft="@drawable/ic_site_dark"
                 android:text="@string/menu_browse_sites"
                 />
 
             <Button
                 android:id="@+id/menu_browse_userhome"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_myfiles_light"
+                android:drawableLeft="@drawable/ic_myfiles_dark"
                 android:text="@string/menu_browse_userhome"
                 android:visibility="gone" />
 
             <Button
                 android:id="@+id/menu_workflow"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_action_inbox_light"
+                android:drawableLeft="@drawable/ic_task_dark"
                 android:text="@string/my_tasks"
                 />
 
             <Button
                 android:id="@+id/menu_favorites"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_favorite"
+                android:drawableLeft="@drawable/ic_favorite_dark"
                 android:text="@string/menu_favorites"
                 />
 
             <Button
                 android:id="@+id/menu_search"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_search_off"
+                android:drawableLeft="@drawable/ic_search_dark"
                 android:text="@string/menu_search"
                 />
 
             <Button
                 android:id="@+id/menu_downloads"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_download_light"
+                android:drawableLeft="@drawable/ic_download_dark"
                 android:text="@string/menu_local_files"
                 />
 
             <Button
                 android:id="@+id/menu_notifications"
                 style="?MainTheme.TextView.MenuItem"
-                android:drawableLeft="@drawable/ic_events"
+                android:drawableLeft="@drawable/ic_events_dark"
                 android:text="@string/notifications"
                 /> 
         </LinearLayout>

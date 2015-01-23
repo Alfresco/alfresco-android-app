@@ -3,8 +3,6 @@ package org.alfresco.mobile.android.api.model.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.config.EvaluatorType;
-
 public interface ConfigConstants
 {
     // ///////////////////////////////////////////////////////////////////////////
@@ -16,9 +14,9 @@ public interface ConfigConstants
     // ///////////////////////////////////////////////////////////////////////////
     String DATA_DICTIONARY = "Data Dictionary";
 
-    String CONFIG_APPLICATION_FOLDER_PATH = "Mobile/%s";
+    String CONFIG_APPLICATION_FOLDER_PATH = "Mobile";
 
-    String CONFIG_FILENAME = "config.json";
+    String CONFIG_FILENAME = "configuration.json";
 
     String CONFIG_LOCALIZATION_FOLDER_PATH = "Messages/";
 
@@ -173,6 +171,8 @@ public interface ConfigConstants
     String FOLDER_TYPES_VALUE = "folder-types";
 
     String ROOTVIEW_ID_VALUE = "root-view-id";
+
+    String FOLDER_TYPE_ID = "folderTypeId";
 
     // VALIDATION
     String VALIDATION_VALUE = "validation";

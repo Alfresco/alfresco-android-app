@@ -225,7 +225,8 @@ public class TasksFragment extends TasksFoundationFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
-        protected int menuId;
+        public static final int ICON_ID = R.drawable.ic_task_dark;
+        public static final int LABEL_ID = R.string.my_tasks;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
@@ -239,7 +240,7 @@ public class TasksFragment extends TasksFoundationFragment
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_action_inbox_light;
+            menuIconId = R.drawable.ic_task_dark;
             menuTitleId = R.string.my_tasks;
             templateArguments = new String[] { ListingTemplate.ARGUMENT_HAS_FILTER, TasksTemplate.FILTER_KEY_STATUS,
                     TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY, TasksTemplate.FILTER_KEY_ASSIGNEE };

@@ -54,7 +54,7 @@ public class JoinSiteRequestAdapter extends BaseListAdapter<Site, JoinSiteViewHo
     @Override
     protected void updateIcon(JoinSiteViewHolder vh, Site item)
     {
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_flatten));
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
 
         vh.cancel_request.setTag(item);
         AccessibilityUtils.addContentDescription(vh.cancel_request,

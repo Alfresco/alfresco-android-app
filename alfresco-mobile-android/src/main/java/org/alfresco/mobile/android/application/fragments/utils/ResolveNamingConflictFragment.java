@@ -24,7 +24,6 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;

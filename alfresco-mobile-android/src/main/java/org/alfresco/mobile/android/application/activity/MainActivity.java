@@ -24,17 +24,15 @@ import java.util.List;
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
-import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.capture.DeviceCaptureHelper;
-import org.alfresco.mobile.android.application.config.async.ConfigurationEvent;
-import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
@@ -53,11 +51,12 @@ import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
-import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
+import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
@@ -67,7 +66,6 @@ import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -75,6 +73,7 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
@@ -83,6 +82,7 @@ import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
@@ -92,6 +92,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -110,6 +111,7 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class MainActivity extends BaseActivity
 {
     private static final String TAG = MainActivity.class.getName();
@@ -229,7 +231,10 @@ public class MainActivity extends BaseActivity
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setHomeButtonEnabled(true);
+        if (AndroidVersion.isICSOrAbove())
+        {
+            getActionBar().setHomeButtonEnabled(true);
+        }
 
         setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
 
@@ -775,7 +780,6 @@ public class MainActivity extends BaseActivity
         {
             AlfrescoNotificationManager.getInstance(this).showLongToast(event.account.getTitle());
         }
-        return;
     }
 
     @Subscribe
@@ -786,23 +790,33 @@ public class MainActivity extends BaseActivity
             ServiceRegistry registry = getCurrentSession().getServiceRegistry();
             if (registry instanceof AlfrescoServiceRegistry)
             {
+                ConfigManager config = ConfigManager.getInstance(this);
+                if (!config.hasConfig(getCurrentAccount().getId())){
+                    config.init(getCurrentAccount());
+                }
+
                 // Check configuration
                 if (((AlfrescoServiceRegistry) registry).getConfigService() == null)
                 {
                     // In this case there's no configuration defined on server
-                    // side
-                    // We load the embedded configuration
-                    // TODO uncomment to activate embed configuration
-                    // ConfigManager.getInstance(this).loadEmbedded(getCurrentAccount());
+                    // We remove any cached configuration
+                    ConfigManager.getInstance(this).cleanCache(getCurrentAccount());
+                    // We load the default embedded
+                    // ConfigManager.getInstance(this).load(getCurrentAccount().getId());
                 }
                 else
                 {
+                    config.loadRemote(getCurrentAccount().getId(),
+                            ((AlfrescoServiceRegistry) registry).getConfigService());
+
                     // We have a new configuration available
                     // Let's dispatch the event
-                    LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
-                    result.setData(((AlfrescoServiceRegistry) registry).getConfigService());
-                    EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
+                    //LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
+                    //result.setData(((AlfrescoServiceRegistry) registry).getConfigService());
+                    //EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
                 }
+
+                config.setSession(getCurrentAccount().getId(), getCurrentSession());
             }
 
             // Display 4.2+ special folders (userhome/shared)

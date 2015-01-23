@@ -17,7 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.widgets;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,6 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -346,7 +344,7 @@ public class DocumentFolderPickerFragment extends Fragment
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
 
-            this.menuIconId = R.drawable.ic_repository_light;
+            this.menuIconId = R.drawable.ic_repository_dark;
             this.menuTitleId = R.string.menu_browse_root;
         }
 

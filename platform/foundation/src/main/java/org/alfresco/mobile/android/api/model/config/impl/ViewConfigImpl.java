@@ -36,6 +36,11 @@ public class ViewConfigImpl extends ItemConfigImpl implements ViewConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
+    public ViewConfigImpl(String identifier, String label, String type, Map<String, Object> properties)
+    {
+        super(identifier, null, label, null, type, null, properties);
+    }
+
     ViewConfigImpl(String identifier, String label, String type, String evaluatorId)
     {
         super(identifier, null, label, null, type, evaluatorId, null);

@@ -116,6 +116,10 @@
     <!-- MENU OTHERS -->
     <item name="menu_select_all" type="id"/>
 
+    <!-- MENU CONFIGURATION -->
+    <item name="config_menu_add" type="id"/>
+
+
     <!-- FRAGMENT ID -->
     <item name="tab_history" type="id"/>
     <item name="tag_account" type="id"/>
@@ -140,6 +144,9 @@
     <string name="favorite_sync_group">favoriteSyncGroup</string>
     <string name="favorite_sync">favoriteSync</string>
     <string name="favorite_sync_wifi">favoriteSyncWifi</string>
+    <string name="custom_menu_group">customMenuGroup</string>
+    <string name="custom_menu_enable">enableCustomMenu</string>
+    <string name="custom_menu_manage">manageCustomMenu</string>
 
     <!-- CONFIG -->
     <string name="config_asset_path">Configuration/</string>
@@ -154,5 +161,6 @@
 
     <!-- Cloud Share URL -->
     <string name="cloud_share_url" formatted="false">https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
+    <string name="onpremise_share_url" formatted="false">/page/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
 </resources>

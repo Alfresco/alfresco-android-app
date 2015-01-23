@@ -79,7 +79,7 @@ public class NodeIdActions extends AbstractActions<String>
         SubMenu createMenu;
 
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
-        createMenu.setIcon(R.drawable.ic_favorite_dark);
+        createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
@@ -146,7 +146,7 @@ public class NodeIdActions extends AbstractActions<String>
             if (doFavorite)
             {
                 titleId = R.string.favorite;
-                iconId = R.drawable.ic_favorite_dark;
+                iconId = R.drawable.ic_favorite_light;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
                     getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(

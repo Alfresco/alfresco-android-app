@@ -17,17 +17,19 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.update;
 
+import java.io.Serializable;
+import java.util.HashMap;
+
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
+import org.alfresco.mobile.android.application.configuration.FormConfigManager;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
@@ -61,6 +63,8 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
 
     protected View resultView;
 
+    protected HashMap<String, Serializable> props;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -82,6 +86,10 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
+        if (savedInstanceState != null){
+            props = (HashMap<String, Serializable>) savedInstanceState.get("props");
+        }
+
         node = (Node) getArguments().getSerializable(ARGUMENT_NODE);
 
         if (getDialog() != null)
@@ -121,27 +129,11 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         if (configurationManager == null)
         {
             configurationManager = ConfigManager.getInstance(getActivity());
-            AlfrescoAccount acc = getAccount();
-            if (acc == null)
-            {
-                acc = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
-            }
-            if (configurationManager != null && acc != null && configurationManager.hasConfig(acc.getId()))
-            {
-                configService = configurationManager.getConfig(acc.getId());
-                configure(inflater);
-            }
-            else if (configurationManager != null && acc != null)
-            {
-                // Configuration
-                configurationManager.init(acc);
-                configService = configurationManager.getConfig(acc.getId());
-                configure(inflater);
-            }
-            else
-            {
-
-            }
+        }
+        if (configurationManager != null && getAccount() != null)
+        {
+            configService = configurationManager.getConfig(getAccount().getId(), ConfigTypeIds.FORMS);
+            configure(inflater);
         }
 
         return getRootView();
@@ -235,7 +227,9 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         protected View doInBackground(Void... params)
         {
             // Solve issue during UI creation outside main thread
-            Looper.prepare();
+            if (Looper.myLooper() == null) {
+                Looper.prepare();
+            }
 
             if (node.isDocument())
             {
@@ -251,7 +245,7 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
             // Generating the form can be long depending on complexity of the
             // configuration & evaluator
             formManager = new FormConfigManager(EditNodePropertiesFragment.this, configService, rootPropertiesView);
-            return formManager.displayEditForm(modelDefinition, node);
+            return formManager.displayEditForm(modelDefinition, node, props);
         }
 
         @Override

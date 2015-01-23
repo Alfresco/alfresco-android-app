@@ -415,9 +415,15 @@
     <string name="settings_links_facebook_summary">Like on Facebook</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">Favorites</string>
-    <string name="settings_favorite_sync">Enable Sync for \"%s\"</string>
+    <string name="settings_favorite_sync">Enable Sync</string>
+    <string name="settings_favorite_sync_summary">Enable Sync for \"%s\"</string>
     <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_all">Use Cellular Data for Sync.</string>
+    <string name="settings_custom_menu">Customization</string>
+    <string name="settings_custom_menu_summary">Define your home menu</string>
+    <string name="settings_custom_menu_manage">Home Menu</string>
+    <string name="settings_custom_menu_disable">Admin has disable this feature</string>
+
 
     <!-- Multi Selection -->
     <plurals name="selected_document">

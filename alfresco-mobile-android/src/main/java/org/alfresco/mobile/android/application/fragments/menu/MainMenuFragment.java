@@ -24,14 +24,13 @@ import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.RepositoryInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.ConfigManager.ConfigurationMenuEvent;
-import org.alfresco.mobile.android.application.config.manager.MainMenuConfigManager;
+import org.alfresco.mobile.android.application.configuration.MainMenuConfigManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
@@ -42,12 +41,15 @@ import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmen
 import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.profiles.ProfilesConfigFragment;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
+import org.alfresco.mobile.android.application.managers.ConfigManager.ConfigurationMenuEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
@@ -59,14 +61,15 @@ import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -132,17 +135,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             setRetainInstance(true);
         }
 
-        configurationManager = ConfigManager.getInstance(getActivity());
-        if (configurationManager != null && getAccount() != null
-                && configurationManager.hasConfig(getAccount().getId()))
-        {
-            configure(configurationManager.getConfig(getAccount().getId()));
-        }
-        else
-        {
-            display();
-        }
-
         return getRootView();
     }
 
@@ -158,15 +150,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         {
             acc = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
         }
-        if (configurationManager != null && acc != null && configurationManager.hasConfig(acc.getId()))
-        {
-            configure(configurationManager.getConfig(acc.getId()));
-        }
-        else if (configurationManager != null && acc != null)
+        if (configurationManager != null && acc != null)
         {
             // Configuration
             configurationManager.init(acc);
-            configure(configurationManager.getConfig(acc.getId()));
+            configure(configurationManager.getConfig(acc.getId(), ConfigTypeIds.VIEWS));
         }
 
         refresh();
@@ -189,6 +177,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void onResume()
     {
         super.onResume();
@@ -197,7 +186,10 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         if (TAG.equals(getTag()))
         {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(false);
-            getActivity().getActionBar().setHomeButtonEnabled(false);
+            if (AndroidVersion.isICSOrAbove())
+            {
+                getActivity().getActionBar().setHomeButtonEnabled(false);
+            }
             if (getActivity() instanceof MainActivity)
             {
                 ((MainActivity) getActivity()).lockSlidingMenu();
@@ -207,13 +199,17 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     }
 
     @Override
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void onPause()
     {
         super.onPause();
         if (!isVisible() && TAG.equals(getTag()))
         {
             getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
-            getActivity().getActionBar().setHomeButtonEnabled(true);
+            if (AndroidVersion.isICSOrAbove())
+            {
+                getActivity().getActionBar().setHomeButtonEnabled(true);
+            }
             if (getActivity() instanceof MainActivity)
             {
                 ((MainActivity) getActivity()).unlockSlidingMenu();
@@ -295,48 +291,39 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     private void configure(ConfigService configService)
     {
-        if (configService != null && configService.hasViewConfig())
+        if (configService == null || !configService.hasViewConfig())
         {
-            String profileId = configurationManager.getCurrentProfileId();
-            if (profileId == null)
-            {
-                profileId = configService.getDefaultProfile().getIdentifier();
-            }
-            if (configService.getDefaultProfile().getRootViewId() != null
-                    && configService.getViewConfig(configService.getProfile(profileId).getRootViewId(),
-                            configurationManager.getCurrentScope()) != null)
-            {
-                // Configuration (Internal or from Server)
-                DisplayUtils.hide(viewById(R.id.main_menu_group));
-                MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configService,
-                        (ViewGroup) getRootView());
-                config.createMenu();
-            }
-            else if (configService.getConfigInfo() == null
-                    || (configService.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService
-                            .getConfigInfo().getSchemaVersion())))
-            {
-                // BETA
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_ACTIVITIES), R.id.menu_browse_activities);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_REPOSITORY), R.id.menu_browse_root);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS), R.id.menu_notifications);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared, true);
-                hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_MYFILES), R.id.menu_browse_userhome,
-                        true);
-            }
-            else
-            {
-                display();
-            }
+            display();
+            return;
+        }
+
+        // Default only available since configuration 0.1
+        if (configService.getConfigInfo() == null
+                || (configService.getConfigInfo() != null && ConfigInfo.SCHEMA_VERSION_BETA.equals(configService
+                        .getConfigInfo().getSchemaVersion())))
+        {
+            // BETA
+            DisplayUtils.hide(viewById(R.id.custom_menu_group));
+            DisplayUtils.show(viewById(R.id.main_menu_group));
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_ACTIVITIES), R.id.menu_browse_activities);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_REPOSITORY), R.id.menu_browse_root);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SITES), R.id.menu_browse_my_sites);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_TASKS), R.id.menu_workflow);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_FAVORITES), R.id.menu_favorites);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SEARCH), R.id.menu_search);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_LOCAL_FILES), R.id.menu_downloads);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_NOTIFICATIONS), R.id.menu_notifications);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_SHARED), R.id.menu_browse_shared, true);
+            hideOrDisplay(configService.getViewConfig(ConfigConstants.MENU_MYFILES), R.id.menu_browse_userhome, true);
         }
         else
         {
-            display();
+            // Configuration (Internal or from Server)
+            DisplayUtils.show(viewById(R.id.custom_menu_group));
+            DisplayUtils.hide(viewById(R.id.main_menu_group));
+            MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configService,
+                    (ViewGroup) getRootView());
+            config.createMenu();
         }
     }
 
@@ -430,8 +417,10 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                     null, null, null, "0", null, "false"));
         }
 
+        // We add profiles management option if at least there's 2 profiles
+        // available
         if (configurationManager != null && configurationManager.getConfig(currentAccount.getId()) != null
-                && configurationManager.getConfig(currentAccount.getId()).getProfiles() != null)
+                && configurationManager.getConfig(currentAccount.getId()).getProfiles().size() > 1)
         {
             list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,
                     null, null, null, "0", null, "false"));
@@ -510,7 +499,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     public void displayFavoriteStatut()
     {
         Cursor statutCursor = null;
-        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite);
+        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite_dark);
         Drawable statut = null;
 
         try
@@ -610,8 +599,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
-        Log.d("EVENT", "Receive onConfigureMenuEvent");
-
         configurationManager = ConfigManager.getInstance(getActivity());
         if (configurationManager != null && configurationManager.hasConfig(event.accountId))
         {

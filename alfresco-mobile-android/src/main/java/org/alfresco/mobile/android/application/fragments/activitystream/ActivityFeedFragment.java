@@ -144,14 +144,17 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     // ///////////////////////////////////////////////////////////////////////////
     public static class Builder extends AlfrescoFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_activities_dark;
+        public static final int LABEL_ID = R.string.menu_browse_activities;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_activities_light;
-            menuTitleId = R.string.menu_browse_activities;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] { ARGUMENT_SITE_SHORTNAME, ARGUMENT_USERNAME };
         }
 

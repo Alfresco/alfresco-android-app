@@ -51,7 +51,9 @@ public class AlfrescoStorageManager extends Manager
 
     private static final String DIRECTORY_SHARE = "Share";
 
-    private static final String DIRECTORY_CONFIGURATION = "Configuration";
+    private static final String DIRECTORY_CONFIGURATION = "Config";
+
+    private static final String DIRECTORY_CUSTOMIZATION = "Custom";
 
     private static final String DIRECTORY_ASSET = "Assets";
 
@@ -103,6 +105,16 @@ public class AlfrescoStorageManager extends Manager
         return getPrivateFolder(DIRECTORY_CONFIGURATION, acc);
     }
 
+    public File getCustomFolder(AlfrescoAccount acc)
+    {
+        return getPrivateFolder(DIRECTORY_CUSTOMIZATION, acc);
+    }
+
+    public File getConfigurationFolder()
+    {
+        return getPrivateFolder(DIRECTORY_CONFIGURATION, null);
+    }
+
     public File getShareFolder(AlfrescoAccount acc)
     {
         return getPrivateFolder(DIRECTORY_SHARE, acc);
@@ -132,7 +144,6 @@ public class AlfrescoStorageManager extends Manager
      * Returns a specific file/folder inside the private area of the
      * application.
      * 
-     * @param appContext : Android appContext.
      * @param filePath : extended Path relative to the private folder.
      * @return the file object. This file might be exist.
      */
@@ -324,7 +335,6 @@ public class AlfrescoStorageManager extends Manager
     /**
      * Return the cache dir and check if exists
      * 
-     * @param appContext
      * @param extendedPath
      * @return
      * @throws java.io.IOException
@@ -397,8 +407,6 @@ public class AlfrescoStorageManager extends Manager
     /**
      * Get specific access to DownloadFolder
      * 
-     * @param appContext
-     * @param extendedPath
      * @return
      * @throws java.io.IOException
      */
@@ -436,8 +444,6 @@ public class AlfrescoStorageManager extends Manager
     /**
      * Return null if already exists
      * 
-     * @param appContext
-     * @param session
      * @param fileName
      * @return
      * @throws java.io.IOException

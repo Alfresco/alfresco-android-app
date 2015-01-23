@@ -48,6 +48,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.TextView;
+
 import de.keyboardsurfer.android.widget.crouton.Crouton;
 import de.keyboardsurfer.android.widget.crouton.Style;
 
@@ -384,6 +385,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
 
     protected void displayEmptyView()
     {
+        if (!isVisible()) {return;}
         gv.setEmptyView(ev);
         isFullLoad = Boolean.TRUE;
         if (adapter != null)

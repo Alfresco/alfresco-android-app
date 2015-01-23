@@ -22,13 +22,12 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.person.PersonsEvent;
-import org.alfresco.mobile.android.ui.person.PersonAdapter;
 import org.alfresco.mobile.android.ui.person.PersonsFragment;
 
 import android.app.Activity;

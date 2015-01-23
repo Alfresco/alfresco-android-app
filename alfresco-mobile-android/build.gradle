@@ -71,6 +71,7 @@ android {
 }
 
 dependencies {
+    //COMMON TO ALL VARIANTS
     compile project(':platform:foundation')
 
     //DEBUG BUILD TYPE

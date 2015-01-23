@@ -28,14 +28,15 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Tag;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.ItemConfig;
 import org.alfresco.mobile.android.api.model.impl.TagImpl;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.manager.CreateConfigManager;
+import org.alfresco.mobile.android.application.configuration.CreateConfigManager;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
@@ -78,7 +79,7 @@ import android.widget.TextView.OnEditorActionListener;
  */
 public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 {
-    public static final String TAG = "CreateContentDialogFragment";
+    public static final String TAG = CreateDocumentDialogFragment.class.getSimpleName();
 
     private static final String ARGUMENT_FOLDER = "folder";
 
@@ -98,11 +99,9 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private EditText tv;
 
-    private CreateConfigManager config;
+    private CreateConfigManager createConfigManager;
 
     private ItemConfig type;
-
-    private ConfigManager configurationManager;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -135,14 +134,11 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         getDialog().requestWindowFeature(Window.FEATURE_LEFT_ICON);
 
         // Configuration available ?
-        configurationManager = ConfigManager.getInstance(getActivity());
-        if (configurationManager != null && configurationManager.hasConfig(getAccount().getId()))
+        ConfigService configService = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
+                ConfigTypeIds.CREATION);
+        if (configService != null)
         {
-            ConfigService configService = configurationManager.getConfig(getAccount().getId());
-            if (configService.getCreationConfig(null) != null)
-            {
-                config = new CreateConfigManager(getActivity(), configService, (ViewGroup) getRootView());
-            }
+            createConfigManager = new CreateConfigManager(getActivity(), configService, (ViewGroup) getRootView());
         }
 
         View rootView = inflater.inflate(R.layout.sdk_create_content_props, container, false);
@@ -256,12 +252,12 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                 new RetrieveDocumentNameRequest.Builder(parentFolder, contentFile.getFileName()));
 
         // Custom type
-        if (config != null)
+        if (createConfigManager != null)
         {
             DisplayUtils.show(rootView, R.id.types_group);
             Spinner spinner = (Spinner) rootView.findViewById(R.id.types_spinner);
             TypeAdapter adapter = new TypeAdapter(getActivity(), R.layout.sdk_list_row,
-                    config.retrieveCreationDocumentTypeList());
+                    createConfigManager.retrieveCreationDocumentTypeList());
             spinner.setAdapter(adapter);
             spinner.setOnItemSelectedListener(new OnItemSelectedListener()
             {
@@ -340,7 +336,8 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
         Operator.with(getActivity(), getAccount()).load(
-                new CreateDocumentRequest.Builder(parentFolder, documentName, (type != null) ? type.getIdentifier() : null, f, props, listTagValue, isCreation)
+                new CreateDocumentRequest.Builder(parentFolder, documentName, (type != null) ? type.getIdentifier()
+                        : null, f, props, listTagValue, isCreation)
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
 
         if (getActivity() instanceof PublicDispatcherActivity)

@@ -161,7 +161,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
         {
             super(appActivity, configuration);
 
-            menuIconId = R.drawable.ic_favorite;
+            menuIconId = R.drawable.ic_favorite_dark;
             menuTitleId = R.string.menu_favorites;
             templateArguments = new String[] {};
         }

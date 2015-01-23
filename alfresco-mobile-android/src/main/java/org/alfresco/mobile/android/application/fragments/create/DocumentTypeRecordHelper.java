@@ -20,11 +20,10 @@ package org.alfresco.mobile.android.application.fragments.create;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.config.CreationConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.manager.CreateConfigManager;
+import org.alfresco.mobile.android.application.configuration.CreateConfigManager;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;

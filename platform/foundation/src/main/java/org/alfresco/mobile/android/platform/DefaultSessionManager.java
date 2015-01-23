@@ -17,7 +17,11 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform;
 
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+
 import android.content.Context;
+
+import com.squareup.otto.Subscribe;
 
 public class DefaultSessionManager extends SessionManager
 {
@@ -40,5 +44,21 @@ public class DefaultSessionManager extends SessionManager
     protected DefaultSessionManager(Context context)
     {
         super(context);
+    }
+
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onSessionRequested(RequestSessionEvent event)
+    {
+        super.onSessionRequested(event);
+    }
+
+    @Subscribe
+    public void onReloadSessionRequested(RequestSessionEvent event)
+    {
+       super.onReloadSessionRequested(event);
     }
 }

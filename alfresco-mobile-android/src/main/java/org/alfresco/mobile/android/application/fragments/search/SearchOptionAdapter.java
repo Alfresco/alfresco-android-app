@@ -146,7 +146,7 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
     {
         {
             put(HistorySearch.TYPE_DOCUMENT, R.drawable.ic_office);
-            put(HistorySearch.TYPE_FOLDER, R.drawable.ic_repository_dark);
+            put(HistorySearch.TYPE_FOLDER, R.drawable.ic_repository_light);
             put(HistorySearch.TYPE_PERSON, R.drawable.ic_person);
         }
     };
