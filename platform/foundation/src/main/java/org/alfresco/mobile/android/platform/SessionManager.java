@@ -24,8 +24,6 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.constants.OAuthConstant;
-import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.impl.cloud.CloudServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.onpremise.AlfrescoOnPremiseServiceRegistry;
@@ -37,7 +35,6 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiveAccountEvent;
-import org.alfresco.mobile.android.async.session.LoadSessionRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionRequest.Builder;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.foundation.R;
@@ -437,7 +434,6 @@ public abstract class SessionManager extends Manager
         protected void prepareConfigurationSettings(AlfrescoAccount acc)
         {
             extraSettings.put(ConfigService.CONFIGURATION_INIT, ConfigService.CONFIGURATION_INIT_DEFAULT);
-            extraSettings.put(ConfigService.CONFIGURATION_APPLICATION_ID, getContext().getString(R.string.configuration_application_key));
             extraSettings.put(ConfigService.CONFIGURATION_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getConfigurationFolder(acc).getPath());
         }

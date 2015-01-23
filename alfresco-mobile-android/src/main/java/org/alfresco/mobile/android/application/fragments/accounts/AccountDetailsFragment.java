@@ -212,12 +212,10 @@ public class AccountDetailsFragment extends AlfrescoFragment
             show(R.id.advanced_settings);
         }
 
-        Button advanced = (Button) viewById(R.id.browse_document);
-        advanced.setOnClickListener(new OnClickListener()
-        {
+        Button button = (Button) viewById(R.id.browse_document);
+        button.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 // Affect new AlfrescoAccount to activity
                 ((BaseActivity) getActivity()).setCurrentAccount(acc);
 
@@ -227,12 +225,10 @@ public class AccountDetailsFragment extends AlfrescoFragment
             }
         });
 
-        advanced = (Button) viewById(R.id.my_profile);
-        advanced.setOnClickListener(new OnClickListener()
-        {
+        button = (Button) viewById(R.id.my_profile);
+        button.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 UserProfileFragment.with(getActivity()).personId(acc.getUsername()).displayAsDialog();
             }
         });
@@ -255,7 +251,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
         formValue.setText(acc.getPassword());
         formValue.setEnabled(isEditable);
 
-        // TODO Switch widget ?
         final CheckBox sw = (CheckBox) viewById(R.id.repository_https);
         sw.setChecked(tmprUrl.getProtocol().equals("https"));
         sw.setEnabled(isEditable);

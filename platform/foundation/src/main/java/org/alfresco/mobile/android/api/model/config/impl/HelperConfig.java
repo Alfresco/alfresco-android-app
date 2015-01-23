@@ -24,16 +24,16 @@ import java.lang.ref.WeakReference;
  */
 public class HelperConfig
 {
-    protected WeakReference<ConfigurationImpl> contextRef;
+    protected WeakReference<ConfigurationImpl> configurationRef;
 
     protected WeakReference<HelperStringConfig> HelperStringRef;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    HelperConfig(ConfigurationImpl configuration, HelperStringConfig localHelper)
     {
-        contextRef = new WeakReference<ConfigurationImpl>(context);
+        configurationRef = new WeakReference<ConfigurationImpl>(configuration);
         HelperStringRef = new WeakReference<HelperStringConfig>(localHelper);
     }
 
@@ -42,26 +42,26 @@ public class HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     protected ConfigurationImpl getConfiguration()
     {
-        if (contextRef == null) { return null; }
-        return contextRef.get();
+        if (configurationRef == null) { return null; }
+        return configurationRef.get();
     }
 
     protected boolean hasConfiguration()
     {
-        if (contextRef == null) { return false; }
-        return contextRef.get() != null;
+        if (configurationRef == null) { return false; }
+        return configurationRef.get() != null;
     }
 
     protected boolean hasEvaluatorHelper()
     {
-        if (contextRef == null) { return false; }
-        return contextRef.get().getEvaluatorHelper() != null;
+        if (configurationRef == null) { return false; }
+        return configurationRef.get().getEvaluatorHelper() != null;
     }
 
     protected HelperEvaluatorConfig getEvaluatorHelper()
     {
-        if (contextRef == null) { return null; }
-        return contextRef.get().getEvaluatorHelper();
+        if (configurationRef == null) { return null; }
+        return configurationRef.get().getEvaluatorHelper();
     }
 
     protected HelperStringConfig getLocaleHelper()

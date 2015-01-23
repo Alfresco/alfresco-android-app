@@ -16,10 +16,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     style="?MainTheme.Background.White"
     android:gravity="center_horizontal"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="fill_parent"
@@ -178,7 +177,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:src="@drawable/ic_repository_dark"
+                            android:src="@drawable/ic_repository_light"
                             android:contentDescription="@string/picker_attachments" />
                     </LinearLayout>
                 </TableRow>

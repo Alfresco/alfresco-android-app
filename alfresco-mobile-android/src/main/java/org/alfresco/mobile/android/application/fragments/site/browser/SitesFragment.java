@@ -138,7 +138,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         public Builder(Activity activity, Map<String, Object> configuration)
         {
             super(activity, configuration);
-            menuIconId = R.drawable.ic_all_sites_light;
+            menuIconId = R.drawable.ic_site_dark;
             menuTitleId = R.string.menu_browse_sites;
             templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
         }

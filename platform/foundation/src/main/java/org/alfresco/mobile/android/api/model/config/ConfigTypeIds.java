@@ -43,6 +43,7 @@ public enum ConfigTypeIds
     VALIDATION_RULES("validation-rules"),
     PROFILES("profiles");
 
+
     /** The value associated to an enum. */
     private final String value;
 

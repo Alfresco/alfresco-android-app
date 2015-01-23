@@ -468,7 +468,7 @@ public class SearchFragment extends BaseCursorGridFragment
     private void updateForm(int id)
     {
         int hintId = R.string.search_form_hint;
-        int iconId = R.drawable.ic_search;
+        int iconId = R.drawable.ic_search_light;
 
         switch (id)
         {
@@ -482,7 +482,7 @@ public class SearchFragment extends BaseCursorGridFragment
                 break;
             case HistorySearch.TYPE_FOLDER:
                 hintId = R.string.search_form_hint;
-                // iconId = R.drawable.ic_repository_dark;
+                // iconId = R.drawable.ic_repository_light;
                 break;
             default:
                 break;
@@ -642,6 +642,9 @@ public class SearchFragment extends BaseCursorGridFragment
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_search_dark;
+        public static final int LABEL_ID = R.string.menu_search;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -655,8 +658,8 @@ public class SearchFragment extends BaseCursorGridFragment
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_search_off;
-            this.menuTitleId = R.string.menu_search;
+            this.menuIconId = ICON_ID;
+            this.menuTitleId = LABEL_ID;
         }
 
         // ///////////////////////////////////////////////////////////////////////////

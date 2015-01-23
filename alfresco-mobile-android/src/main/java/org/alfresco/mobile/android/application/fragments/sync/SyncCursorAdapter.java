@@ -151,7 +151,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         if (favorited)
         {
             vh.favoriteIcon.setVisibility(View.VISIBLE);
-            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_dark);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
         }
         else
         {

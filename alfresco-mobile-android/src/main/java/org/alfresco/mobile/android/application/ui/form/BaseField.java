@@ -36,6 +36,7 @@ import org.alfresco.mobile.android.application.ui.form.validation.ValidationRule
 import org.alfresco.mobile.android.application.ui.form.views.AlfrescoFieldView;
 import org.alfresco.mobile.android.application.ui.form.views.EditTextFieldView;
 import org.alfresco.mobile.android.application.ui.form.views.PickerFieldView;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;
 import android.content.Context;
@@ -331,6 +332,8 @@ public abstract class BaseField
         {
             fieldView = tmpFieldView;
         }
+
+        tmpFieldView.setId(UIUtils.generateViewId());
 
         return tmpFieldView;
     }

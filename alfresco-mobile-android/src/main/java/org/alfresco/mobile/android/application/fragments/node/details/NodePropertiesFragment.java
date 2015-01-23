@@ -28,9 +28,11 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyType;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.config.ConfigManager;
-import org.alfresco.mobile.android.application.config.manager.FormConfigManager;
+import org.alfresco.mobile.android.application.configuration.FormConfigManager;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 
 import android.app.Activity;
@@ -57,8 +59,6 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 {
     public static final String TAG = NodePropertiesFragment.class.getName();
 
-    private ConfigManager configurationManager;
-    
     private String descriptionLabel;
 
     // //////////////////////////////////////////////////////////////////////
@@ -120,15 +120,11 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         // Configuration available ?
-        configurationManager = ConfigManager.getInstance(getActivity());
         boolean hasDisplayed = false;
-        if (configurationManager != null
-                && configurationManager.hasConfig(getAccount().getId())
-                && configurationManager.getConfig(getAccount().getId()).getFormConfig(
-                        ConfigConstants.VIEW_NODE_PROPERTIES) != null)
+        ConfigService service = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(), ConfigTypeIds.FORMS);
+        if (service != null && service.getFormConfig(ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
-            FormConfigManager config = new FormConfigManager(this,
-                    configurationManager.getConfig(getAccount().getId()), propertyViewGroup);
+            FormConfigManager config = new FormConfigManager(this, service, propertyViewGroup);
             hasDisplayed = config.displayProperties(node);
         }
 
@@ -223,7 +219,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         {
             vr = inflater.inflate(R.layout.form_read_row, null);
         }
-        
+
         TextView tv = (TextView) vr.findViewWithTag("propertyName");
         tv.setText(propertyLabel);
         tv = (TextView) vr.findViewWithTag("propertyValue");

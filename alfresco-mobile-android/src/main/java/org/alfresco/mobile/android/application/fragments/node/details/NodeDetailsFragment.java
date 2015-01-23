@@ -26,7 +26,9 @@ import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.impl.DocumentImpl;
+import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.RepositorySession;
@@ -40,7 +42,6 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNodeAdapter;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment;
@@ -48,6 +49,7 @@ import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFr
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.DataProtectionManagerImpl;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.async.OperationRequest;
@@ -102,6 +104,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -138,6 +141,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected PreviewFragment replacementPreviewFragment = null;
 
     protected File tempFile = null;
+
+    protected String shareUrl = null;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -664,7 +669,18 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             return;
         }
 
-        if (getSession() instanceof RepositorySession)
+        ConfigService configService = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
+                ConfigTypeIds.REPOSITORY);
+        if (configService.getRepositoryConfig() != null)
+        {
+            shareUrl = configService.getRepositoryConfig().getShareURL();
+            if (!TextUtils.isEmpty(shareUrl) && !shareUrl.endsWith("/"))
+            {
+                shareUrl.concat("/");
+            }
+        }
+
+        if (getSession() instanceof RepositorySession && shareUrl == null)
         {
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
@@ -702,7 +718,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         String path = parentNode.getPropertyValue(PropertyIds.PATH);
                         if (path.length() > 0)
                         {
-                            if (path.startsWith("/Sites/"))
+                            String fullPath = null;
+                            if (getSession() instanceof RepositorySession)
+                            {
+                                fullPath = shareUrl.concat(String.format(getString(R.string.onpremise_share_url),
+                                        NodeRefUtils.getCleanIdentifier(NodeRefUtils.getNodeIdentifier(node
+                                                .getIdentifier()))));
+                                ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
+                            }
+                            else if (path.startsWith("/Sites/"))
                             {
                                 // Get past the '/Sites/'
                                 String sub1 = path.substring(7);
@@ -714,8 +738,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                 }
                                 String siteName = sub1.substring(0, idx);
                                 String nodeID = NodeRefUtils.getCleanIdentifier(node.getIdentifier());
-                                String fullPath = String.format(getString(R.string.cloud_share_url),
+                                fullPath = String.format(getString(R.string.cloud_share_url),
                                         ((CloudSession) getSession()).getNetwork().getIdentifier(), siteName, nodeID);
+
                                 ActionUtils.actionShareLink(NodeDetailsFragment.this, fullPath);
                             }
                             else
@@ -902,7 +927,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_download, Menu.FIRST, R.string.download);
-                mi.setIcon(R.drawable.ic_download_dark);
+                mi.setIcon(R.drawable.ic_download_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
@@ -1064,7 +1089,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_dark));
+            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_light));
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.unfavorite);
         }
         else
@@ -1092,7 +1117,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_dark));
+            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_light));
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.unfavorite);
         }
         else
@@ -1100,19 +1125,20 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_unfavorite_dark));
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.favorite);
         }
-        
+
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
         {
             ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onFavoriteNodeEvent(event);
         }
     }
-    
+
     @Subscribe
     public void onDocumentDownloaded(DownloadEvent event)
     {
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
         {
-            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onDocumentDownloaded(event);
+            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
+                    .onDocumentDownloaded(event);
         }
     }
 
@@ -1181,7 +1207,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onNodeDeleted(event);
             }
         }
-        
+
         AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
                 String.format(getResources().getString(R.string.delete_sucess), event.data.getName()));
         return;
@@ -1246,7 +1272,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_repository_light;
+            this.menuIconId = R.drawable.ic_repository_dark;
             this.menuTitleId = R.string.menu_browse_root;
         }
 

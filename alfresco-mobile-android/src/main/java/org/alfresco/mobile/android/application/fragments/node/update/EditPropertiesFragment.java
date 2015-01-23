@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.fragments.node.update;
 
 import java.io.Serializable;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.Folder;
@@ -69,7 +70,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     {
         EditPropertiesFragment adf = new EditPropertiesFragment();
         adf.setArguments(b);
-        adf.setRetainInstance(true);
+        //adf.setRetainInstance(true);
         return adf;
     }
 
@@ -103,6 +104,13 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     {
         super.onResume();
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        HashMap<String, Serializable> props = formManager.prepareProperties();
+        outState.putSerializable("props", props);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

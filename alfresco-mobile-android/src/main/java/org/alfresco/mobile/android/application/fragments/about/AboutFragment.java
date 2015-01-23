@@ -134,7 +134,7 @@ public class AboutFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_repository_light;
+            this.menuIconId = R.drawable.ic_repository_dark;
             this.menuTitleId = R.string.menu_browse_root;
         }
 

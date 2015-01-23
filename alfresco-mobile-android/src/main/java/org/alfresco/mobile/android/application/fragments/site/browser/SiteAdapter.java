@@ -121,7 +121,7 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
     @Override
     protected void updateIcon(org.alfresco.mobile.android.ui.utils.GenericViewHolder vh, Site item)
     {
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_flatten));
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
         AccessibilityUtils.addContentDescription(vh.icon, R.string.mime_site);
     }
 

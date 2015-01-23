@@ -418,7 +418,7 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
                 new StartProcessRequest.Builder(processDefinition, persons, variables, attachments));
 
         // Display waiting dialog
-        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_action_inbox,
+        OperationWaitingDialogFragment.newInstance(StartProcessRequest.TYPE_ID, R.drawable.ic_task_light,
                 getString(R.string.process_starting), null, null, 0, operationId).show(
                 getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
     }

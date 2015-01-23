@@ -140,7 +140,11 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
-        super.onDocumentUpdated(event);
+        try {
+            super.onDocumentUpdated(event);
+        } catch (Exception e){
+
+        }
     }
     
     @Subscribe

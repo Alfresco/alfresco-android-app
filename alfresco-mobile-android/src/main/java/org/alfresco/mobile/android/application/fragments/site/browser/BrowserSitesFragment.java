@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.async.site.SitesEvent;
 import org.alfresco.mobile.android.async.site.SitesRequest;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
-import org.alfresco.mobile.android.async.site.member.SitesPendingMembershipEvent;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
 
@@ -223,6 +222,8 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
 
     public static class Builder extends ListingFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_site_dark;
+        public static final int LABEL_ID = R.string.menu_browse_sites;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
@@ -235,8 +236,8 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
         public Builder(Activity activity, Map<String, Object> configuration)
         {
             super(activity, configuration);
-            menuIconId = R.drawable.ic_all_sites_light;
-            menuTitleId = R.string.menu_browse_sites;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
         }
 

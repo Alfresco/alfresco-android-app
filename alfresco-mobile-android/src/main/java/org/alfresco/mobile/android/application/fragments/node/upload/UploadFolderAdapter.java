@@ -53,7 +53,7 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, GenericViewHol
         switch (item)
         {
             case R.string.menu_favorites_folder:
-                iconId = R.drawable.ic_favorite_dark;
+                iconId = R.drawable.ic_favorite_light;
                 break;
             case R.string.menu_browse_root:
                 iconId = R.drawable.ic_flatten_folder;
@@ -62,7 +62,7 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, GenericViewHol
                 iconId = R.drawable.ic_download_dark;
                 break;
             case R.string.menu_browse_sites:
-                iconId = R.drawable.ic_site_flatten;
+                iconId = R.drawable.ic_site_light;
                 break;
             default:
                 break;

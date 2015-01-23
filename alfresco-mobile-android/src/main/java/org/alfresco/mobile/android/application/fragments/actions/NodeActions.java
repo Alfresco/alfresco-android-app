@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
-import org.alfresco.mobile.android.application.config.ConfigManager;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
@@ -38,12 +37,12 @@ import org.alfresco.mobile.android.application.fragments.node.update.UpdateDialo
 import org.alfresco.mobile.android.application.fragments.utils.ResolveNamingConflictFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeRequest;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -55,7 +54,6 @@ import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -192,7 +190,7 @@ public class NodeActions extends AbstractActions<Node>
         }
 
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
-        createMenu.setIcon(R.drawable.ic_favorite_dark);
+        createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);

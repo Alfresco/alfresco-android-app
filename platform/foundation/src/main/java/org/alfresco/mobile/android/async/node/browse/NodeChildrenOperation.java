@@ -117,6 +117,8 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                     if (nodes != null && nodes.size() == 1)
                     {
                         parentFolder = (Folder) nodes.get(0);
+                        pagingResult = session.getServiceRegistry().getDocumentFolderService()
+                                .getChildren(parentFolder, listingContext);
                     }
                 }
                 else if (folderPath != null)

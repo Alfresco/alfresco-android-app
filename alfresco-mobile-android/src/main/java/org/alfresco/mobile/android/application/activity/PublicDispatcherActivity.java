@@ -21,7 +21,7 @@ import java.io.File;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.config.manager.ConfigurationConstant;
+import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFormFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.PasscodePreferences;
-import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
@@ -39,7 +38,6 @@ import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccount
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
-import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.FragmentManager;
 import android.content.Intent;

@@ -58,7 +58,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
         switch (item)
         {
             case R.string.shortcut_alfresco_downloads:
-                iconId = R.drawable.ic_download_dark;
+                iconId = R.drawable.ic_download_light;
                 break;
             case R.string.shortcut_local_sdcard:
                 iconId = R.drawable.ic_sdcard;
@@ -79,7 +79,7 @@ public class ShortCutFolderMenuAdapter extends BaseListAdapter<Integer, GenericV
                 iconId = R.drawable.ic_share;
                 break;
             case R.string.shortcut_local_downloads:
-                iconId = R.drawable.ic_download_dark;
+                iconId = R.drawable.ic_download_light;
                 break;
             default:
                 vh.topText.setVisibility(View.GONE);

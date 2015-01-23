@@ -38,13 +38,13 @@
         <Button
             android:id="@+id/picker_sites"
             style="?MainTheme.Button.Large"
-            android:drawableTop="@drawable/ic_site_flatten"
+            android:drawableTop="@drawable/ic_site_light"
             android:text="@string/menu_browse_sites" />
 
         <Button
             android:id="@+id/picker_favorites"
             style="?MainTheme.Button.Large"
-            android:drawableTop="@drawable/ic_favorite_dark"
+            android:drawableTop="@drawable/ic_favorite_light"
             android:text="@string/menu_favorites_folder" />
     </LinearLayout>
 

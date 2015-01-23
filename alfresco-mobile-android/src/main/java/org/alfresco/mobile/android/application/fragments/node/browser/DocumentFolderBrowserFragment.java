@@ -63,6 +63,7 @@ import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.browse.NodeChildrenEvent;
+import org.alfresco.mobile.android.async.node.browse.NodeChildrenRequest;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentEvent;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.node.create.CreateFolderEvent;
@@ -815,7 +816,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
 
         mi = menu.add(Menu.NONE, R.id.menu_search_from_folder, Menu.FIRST + 10, R.string.search);
-        mi.setIcon(R.drawable.ic_search);
+        mi.setIcon(R.drawable.ic_search_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         if (permission.canAddChildren())
@@ -900,8 +901,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     /**
      * Remove a site object inside the listing without requesting an HTTP call.
-     * 
-     * @param site : site to remove
      */
     public void remove(Node node)
     {
@@ -1157,7 +1156,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             if (doFavorite)
             {
                 titleId = R.string.favorite;
-                iconId = R.drawable.ic_favorite_dark;
+                iconId = R.drawable.ic_favorite_light;
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
                     getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
@@ -1175,6 +1174,14 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
+        public static final int ICON_ID_REPOSITORY = R.drawable.ic_repository_dark;
+        public static final int LABEL_ID_REPOSITORY = R.string.menu_browse_root;
+
+        public static final int ICON_ID_SHARED = R.drawable.ic_shared_dark;
+        public static final int LABEL_ID_SHARED = R.string.menu_browse_shared;
+
+        public static final int ICON_ID_USERHOME = R.drawable.ic_myfiles_dark;
+        public static final int LABEL_ID_USERHOME = R.string.menu_browse_userhome;
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -1220,24 +1227,26 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
 
-            this.menuIconId = R.drawable.ic_repository_light;
-            this.menuTitleId = R.string.menu_browse_root;
+            this.menuIconId = ICON_ID_REPOSITORY;
+            this.menuTitleId = LABEL_ID_REPOSITORY;
             if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID))
             {
                 String folderTypeValue = JSONConverter.getString(configuration,
                         NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID);
                 if (NodeBrowserTemplate.FOLDER_TYPE_SHARED.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = R.drawable.ic_shared_light;
-                    this.menuTitleId = R.string.menu_browse_shared;
-                    folderIdentifier(FOLDER_TYPE_SHARED);
+                    this.menuIconId = ICON_ID_SHARED;
+                    this.menuTitleId = LABEL_ID_SHARED;
+                    //folderIdentifier(FOLDER_TYPE_SHARED);
+                    extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_SHARED);
                     shortcut(true);
                 }
                 else if (NodeBrowserTemplate.FOLDER_TYPE_USERHOME.equalsIgnoreCase(folderTypeValue))
                 {
-                    this.menuIconId = R.drawable.ic_myfiles_light;
-                    this.menuTitleId = R.string.menu_browse_userhome;
-                    folderIdentifier(FOLDER_TYPE_USERHOME);
+                    this.menuIconId = ICON_ID_USERHOME;
+                    this.menuTitleId = LABEL_ID_USERHOME;
+                    //folderIdentifier(FOLDER_TYPE_USERHOME);
+                    extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_USER_HOMES);
                     shortcut(true);
                 }
             }

@@ -715,7 +715,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        protected int mode = ListingModeFragment.MODE_LISTING;
+        public static final int ICON_ID = R.drawable.ic_favorite_dark;
+        public static final int LABEL_ID = R.string.menu_favorites;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
@@ -730,8 +731,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         {
             super(appActivity, configuration);
 
-            menuIconId = R.drawable.ic_favorite;
-            menuTitleId = R.string.menu_favorites;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] {};
         }
 

@@ -19,13 +19,13 @@ package org.alfresco.mobile.android.application.editors.text;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
@@ -429,17 +429,7 @@ public class TextEditorActivity extends BaseActivity
         }
         finally
         {
-            if (sourceFile != null)
-            {
-                try
-                {
-                    sourceFile.close();
-                }
-                catch (IOException e)
-                {
-                    Log.w(TAG, Log.getStackTraceString(e));
-                }
-            }
+            IOUtils.closeStream(sourceFile);
         }
     }
 

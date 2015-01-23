@@ -695,7 +695,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_repository_light;
+            this.menuIconId = R.drawable.ic_repository_dark;
             this.menuTitleId = R.string.menu_browse_root;
         }
 

@@ -26,10 +26,9 @@ import java.util.Properties;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 
 import android.util.Log;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class HelperStringConfig
 {
@@ -42,6 +41,8 @@ public class HelperStringConfig
     // ///////////////////////////////////////////////////////////////////////////
     public static HelperStringConfig load(File file)
     {
+        if (!file.exists()) { return null; }
+
         HelperStringConfig config = null;
         try
         {
@@ -88,7 +89,7 @@ public class HelperStringConfig
         }
         return filename;
     }
-    
+
     public static String getDefaultLocalizedFileName()
     {
         return ConfigConstants.CONFIG_LOCALIZATION_FILENAME;
@@ -101,8 +102,7 @@ public class HelperStringConfig
 
     public static String getDefaultRepositoryLocalizedFilePath()
     {
-        return ConfigConstants.CONFIG_LOCALIZATION_FOLDER_PATH
-                .concat(ConfigConstants.CONFIG_LOCALIZATION_FILENAME);
+        return ConfigConstants.CONFIG_LOCALIZATION_FOLDER_PATH.concat(ConfigConstants.CONFIG_LOCALIZATION_FILENAME);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

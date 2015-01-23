@@ -21,12 +21,11 @@ import java.io.File;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
-import org.alfresco.mobile.android.api.services.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.services.ConfigService;
-import org.alfresco.mobile.android.api.services.impl.ConfigServiceImpl;
+import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
+import org.alfresco.mobile.android.api.services.impl.LocalConfigServiceImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -42,7 +41,7 @@ public class AlfrescoOnPremiseServiceRegistry extends OnPremiseServiceRegistry i
     {
         super(session);
     }
-    
+
     @Override
     public void init()
     {
@@ -68,13 +67,7 @@ public class AlfrescoOnPremiseServiceRegistry extends OnPremiseServiceRegistry i
         {
             if (configService == null && RepositoryVersionHelper.isAlfrescoProduct(session))
             {
-                if (session.getParameter(ConfigService.CONFIGURATION_APPLICATION_ID) != null
-                        && !TextUtils
-                                .isEmpty((String) session.getParameter(ConfigService.CONFIGURATION_APPLICATION_ID)))
-                {
-                    this.configService = new OnPremiseConfigServiceImpl(session).load((String) session
-                            .getParameter(ConfigService.CONFIGURATION_APPLICATION_ID));
-                }
+                this.configService = new OnPremiseConfigServiceImpl(session).load();
             }
         }
         catch (Exception e)
@@ -94,19 +87,10 @@ public class AlfrescoOnPremiseServiceRegistry extends OnPremiseServiceRegistry i
     {
         File configFolder = null;
         if (parameters == null) { return null; }
-        String applicationId;
-        if (parameters.containsKey(ConfigService.CONFIGURATION_APPLICATION_ID))
-        {
-            applicationId = (String) parameters.get(ConfigService.CONFIGURATION_APPLICATION_ID);
-        }
-        else
-        {
-            return null;
-        }
         if (parameters.containsKey(ConfigService.CONFIGURATION_FOLDER))
         {
             configFolder = new File((String) parameters.get(ConfigService.CONFIGURATION_FOLDER));
         }
-        return new ConfigServiceImpl(applicationId, configFolder);
+        return new LocalConfigServiceImpl(configFolder);
     }
 }

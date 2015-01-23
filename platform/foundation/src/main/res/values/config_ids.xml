@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- CONFIG -->
+    <string name="config_asset_path">Configuration/</string>
+    <string name="config_asset_prefix">embedded</string>
+    <string name="config_asset_file">config.json</string>
+    <string name="config_asset_messages_path">Configuration/Messages/</string>
+    <string name="config_asset_messages_file">embedded_strings.properties</string>
+
+    <!-- Locale -->
+    <string name="asset_folder_prefix">en</string>
+</resources>

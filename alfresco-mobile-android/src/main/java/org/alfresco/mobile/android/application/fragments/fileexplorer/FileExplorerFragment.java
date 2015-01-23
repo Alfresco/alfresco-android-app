@@ -416,8 +416,6 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
 
     /**
      * Remove a site object inside the listing without requesting an HTTP call.
-     * 
-     * @param site : site to remove
      */
     public void remove(File file)
     {
@@ -513,6 +511,9 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_download_dark;
+        public static final int LABEL_ID = R.string.menu_local_files;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -525,8 +526,8 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
-            menuIconId = R.drawable.ic_download_light;
-            menuTitleId = R.string.menu_local_files;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] { ARGUMENT_FILE, ARGUMENT_PATH, ARGUMENT_SHORTCUT, ARGUMENT_MENU_ID };
         }
 

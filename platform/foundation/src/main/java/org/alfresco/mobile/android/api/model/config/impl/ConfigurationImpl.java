@@ -52,9 +52,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class ConfigurationImpl
 {
@@ -69,7 +67,7 @@ public class ConfigurationImpl
     private HelperFormConfig formHelper;
 
     private HelperEvaluatorConfig evaluatorHelper;
-    
+
     private HelperValidationConfig validationHelper;
 
     private HelperStringConfig stringHelper;
@@ -85,19 +83,19 @@ public class ConfigurationImpl
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static ConfigurationImpl load(String applicationId, File sourceFile, String sourceAsString, File configFolder)
+    public static ConfigurationImpl load(File sourceFile, String sourceAsString, File configFolder)
     {
         ConfigurationImpl config = null;
         File configFile = null;
         try
         {
-            if (!TextUtils.isEmpty(applicationId))
-            {
-                configFile = new File(configFolder, applicationId.concat(ConfigConstants.CONFIG_FILENAME));
-            }
-            else if (sourceFile != null && sourceFile.exists())
+            if (sourceFile != null && sourceFile.exists())
             {
                 configFile = sourceFile;
+            }
+            else
+            {
+                configFile = new File(configFolder, ConfigConstants.CONFIG_FILENAME);
             }
 
             if (!configFile.exists()) { return null; }
@@ -154,7 +152,7 @@ public class ConfigurationImpl
         configuration.info = info;
 
         // Check if it's a beta
-        if (json.containsKey(ConfigConstants.CATEGORY_ROOTMENU))
+        if (json.containsKey(ConfigConstants.CATEGORY_ROOTMENU) && !json.containsKey(ConfigTypeIds.VIEWS.value()))
         {
             // It's the beta version of configuration file
             configuration.info = info;
@@ -174,8 +172,7 @@ public class ConfigurationImpl
             configuration.evaluatorHelper
                     .addEvaluators(JSONConverter.getMap(json.get(ConfigTypeIds.EVALUATORS.value())));
         }
-        
-        
+
         // VALIDATION
         if (json.containsKey(ConfigTypeIds.VALIDATION_RULES.value()))
         {
@@ -183,11 +180,10 @@ public class ConfigurationImpl
             {
                 configuration.validationHelper = new HelperValidationConfig(configuration, stringHelper);
             }
-            configuration.validationHelper
-                    .addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES.value())));
+            configuration.validationHelper.addValidation(JSONConverter.getMap(json.get(ConfigTypeIds.VALIDATION_RULES
+                    .value())));
         }
-        
-        
+
         // FIELDS
         if (json.containsKey(ConfigTypeIds.FIELDS.value()))
         {
@@ -382,7 +378,7 @@ public class ConfigurationImpl
     {
         return formHelper != null && formHelper.hasFormConfig();
     }
-    
+
     public FormConfig getFormConfig(String formId, ConfigScope scope)
     {
         if (formHelper == null) { return null; }
@@ -410,6 +406,11 @@ public class ConfigurationImpl
     // ///////////////////////////////////////////////////////////////////////////
     // CREATION
     // ///////////////////////////////////////////////////////////////////////////
+    public boolean hasCreationConfig()
+    {
+        return creationHelper != null && creationHelper.hasCreationConfig();
+    }
+
     public CreationConfig getCreationConfig()
     {
         if (creationHelper == null) { return null; }
@@ -465,8 +466,7 @@ public class ConfigurationImpl
         if (evaluatorHelper == null) { return null; }
         return evaluatorHelper;
     }
-    
-    
+
     HelperValidationConfig getValidationHelper()
     {
         if (validationHelper == null) { return null; }
@@ -493,7 +493,5 @@ public class ConfigurationImpl
         if (stringHelper == null) { return id; }
         return stringHelper.getString(id);
     }
-
-  
 
 }

@@ -18,6 +18,9 @@
 package org.alfresco.mobile.android.api.model.config.impl;
 
 import org.alfresco.mobile.android.api.model.config.BaseConfig;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Jean Marie Pascal
@@ -64,5 +67,21 @@ public class BaseConfigImpl implements BaseConfig
     public String getDescription()
     {
         return description;
+    }
+
+    public JSONObject toJson()
+    {
+        JSONObject object = new JSONObject();
+        try
+        {
+            object.putOpt(ConfigConstants.ID_VALUE, identifier);
+            object.putOpt(ConfigConstants.LABEL_ID_VALUE, label);
+            object.putOpt(ConfigConstants.DESCRIPTION_ID_VALUE, description);
+        }
+        catch (JSONException e)
+        {
+            e.printStackTrace();
+        }
+        return object;
     }
 }

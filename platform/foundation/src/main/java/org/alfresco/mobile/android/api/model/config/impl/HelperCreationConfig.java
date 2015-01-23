@@ -21,10 +21,9 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class HelperCreationConfig extends HelperConfig
 {
@@ -58,5 +57,10 @@ public class HelperCreationConfig extends HelperConfig
     {
         if (creationConfig == null) { return null; }
         return creationConfig;
+    }
+
+    public boolean hasCreationConfig()
+    {
+        return creationConfig != null;
     }
 }
