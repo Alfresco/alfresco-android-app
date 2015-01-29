@@ -32,25 +32,18 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
-import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
-import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.MenuConfig;
-import org.alfresco.mobile.android.api.model.config.ProcessConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
-import org.alfresco.mobile.android.api.model.config.SearchConfig;
-import org.alfresco.mobile.android.api.model.config.TaskConfig;
-import org.alfresco.mobile.android.api.model.config.ThemeConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ConfigInfoImpl;
 import org.alfresco.mobile.android.api.model.config.impl.ConfigurationImpl;
-import org.alfresco.mobile.android.api.model.config.impl.HelperStringConfig;
+import org.alfresco.mobile.android.api.model.config.impl.StringHelper;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.services.SearchService;
@@ -100,7 +93,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         Folder applicationConfigurationFolder = null;
         long lastModificationTime = -1;
         ConfigurationImpl configuration = null;
-        HelperStringConfig localHelper = null;
+        StringHelper localHelper = null;
         try
         {
             // Retrieve the application configuration Folder
@@ -185,9 +178,9 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
         return configuration;
     }
 
-    protected HelperStringConfig createLocalizationHelper(DocumentFolderService docService, Folder applicationFolder)
+    protected StringHelper createLocalizationHelper(DocumentFolderService docService, Folder applicationFolder)
     {
-        HelperStringConfig config = null;
+        StringHelper config = null;
         InputStream inputStream = null;
         String filename = null;
         try
@@ -197,15 +190,15 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
             if (!Locale.ENGLISH.getLanguage().equals(Locale.getDefault().getLanguage()))
             {
                 messagesDocument = docService.getChildByPath(applicationFolder,
-                        HelperStringConfig.getRepositoryLocalizedFilePath());
-                filename = HelperStringConfig.getLocalizedFileName();
+                        StringHelper.getRepositoryLocalizedFilePath());
+                filename = StringHelper.getLocalizedFileName();
             }
 
             if (messagesDocument == null)
             {
                 messagesDocument = docService.getChildByPath(applicationFolder,
-                        HelperStringConfig.getDefaultRepositoryLocalizedFilePath());
-                filename = HelperStringConfig.getDefaultLocalizedFileName();
+                        StringHelper.getDefaultRepositoryLocalizedFilePath());
+                filename = StringHelper.getDefaultLocalizedFileName();
             }
 
             if (messagesDocument != null && messagesDocument.isDocument())
@@ -221,7 +214,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                     org.alfresco.mobile.android.api.utils.IOUtils.copyFile(stream.getInputStream(), configFile);
                     inputStream = new FileInputStream(configFile);
                 }
-                config = HelperStringConfig.load(inputStream);
+                config = StringHelper.load(inputStream);
             }
         }
         catch (IOException e)
@@ -328,32 +321,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // FEATURE
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<FeatureConfig> getFeatureConfig()
-    {
-        return (configuration == null) ? null : configuration.getFeatureConfig();
-    }
-
-    @Override
-    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getFeatureConfig(scope);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<MenuConfig> getMenuConfig(String menuId)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getMenuConfig(menuId);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // VIEWS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
@@ -402,23 +369,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // WORKFLOW
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<ProcessConfig> getProcessConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getProcessConfig();
-    }
-
-    @Override
-    public List<TaskConfig> getTaskConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getTaskConfig();
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // CREATION
     // ///////////////////////////////////////////////////////////////////////////
     @Override
@@ -440,35 +390,5 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     {
         if (configuration == null) { return null; }
         return configuration.getCreationConfig();
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // ACTION
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<ActionConfig> getActionConfig(String groupId, Node node)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getActionConfig(groupId, node);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // SEARCH
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public SearchConfig getSearchConfig(Node node)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getSearchConfig(node);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // THEME
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public ThemeConfig getThemeConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getThemeConfig();
     }
 }

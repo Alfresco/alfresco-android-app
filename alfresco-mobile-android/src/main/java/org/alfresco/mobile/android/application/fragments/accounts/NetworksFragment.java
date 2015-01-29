@@ -17,15 +17,18 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.accounts;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.session.CloudNetwork;
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.network.NetworksEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.network.CloudNetworkAdapter;
 import org.alfresco.mobile.android.ui.network.CloudNetworksFragment;
 
 import android.app.Activity;
@@ -33,6 +36,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 
 import com.squareup.otto.Subscribe;
@@ -60,15 +64,18 @@ public class NetworksFragment extends CloudNetworksFragment
     // RESULT
     // //////////////////////////////////////////////////////////////////////
     @Override
+    protected ArrayAdapter<?> onAdapterCreation()
+    {
+        return new CloudNetworkAdapter(getActivity(), R.layout.app_item_row, new ArrayList<CloudNetwork>(0));
+    }
+
+    @Override
     @Subscribe
     public void onResult(NetworksEvent event)
     {
         super.onResult(event);
     }
 
-    // //////////////////////////////////////////////////////////////////////
-    // LIFE CYCLE
-    // //////////////////////////////////////////////////////////////////////
     @Override
     public void onListItemClick(GridView l, View v, int position, long id)
     {
@@ -77,7 +84,6 @@ public class NetworksFragment extends CloudNetworksFragment
         AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
         if (currentAccount != null && !currentAccount.getRepositoryId().equals(network.getIdentifier()))
         {
-            // TODO Replace By SessionManager or AccountManager
             EventBusManager.getInstance().post(new RequestSessionEvent(currentAccount, network.getIdentifier(), true));
             getActivity().getFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }

@@ -56,5 +56,6 @@ public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, GenericVi
     protected void updateIcon(GenericViewHolder vh, CloudNetwork item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_network));
+        vh.choose.setVisibility(View.GONE);
     }
 }

@@ -17,50 +17,50 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.api.model.config.impl;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.model.config.ValidationConfig;
-import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+import org.alfresco.mobile.android.api.model.config.ConfigScope;
+import org.alfresco.mobile.android.api.model.config.CreationConfig;
 
 /**
  * @author Jean Marie Pascal
  */
-public class HelperValidationConfig extends HelperConfig
+public class CreationHelper extends HelperConfig
 {
-    private LinkedHashMap<String, ValidationConfig> validationConfigIndex;
+    private CreationConfig creationConfig;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperValidationConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    CreationHelper(ConfigurationImpl context, StringHelper localHelper)
     {
         super(context, localHelper);
     }
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // INIT
-    // ///////////////////////////////////////////////////////////////////////////
-    void addValidation(Map<String, Object> validations)
+    boolean addCreationConfig(Map<String, Object> creationMap)
     {
-        validationConfigIndex = new LinkedHashMap<String, ValidationConfig>(validations.size());
-        ValidationConfigData data = null;
-        for (Entry<String, Object> entry : validations.entrySet())
-        {
-            data = new ValidationConfigData(entry.getKey(), JSONConverter.getMap(entry.getValue()), getConfiguration());
-            validationConfigIndex.put(data.identifier, new ValidationConfigImpl(data.identifier, data.iconIdentifier,
-                    data.label, data.description, data.type, data.properties, data.errorId));
-        }
+        if (creationMap == null || creationMap.isEmpty()) { return false; }
+        creationConfig = CreationConfigImpl.parse(creationMap, getConfiguration());
+        return true;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public ValidationConfig getValidationRuleById(String id)
+    public CreationConfig getCreationConfig(ConfigScope scope)
     {
-        if (validationConfigIndex == null || validationConfigIndex.isEmpty()) { return null; }
-        return validationConfigIndex.get(id);
+        if (creationConfig == null) { return null; }
+        return creationConfig;
     }
 
+    public CreationConfig getCreationConfig()
+    {
+        if (creationConfig == null) { return null; }
+        return creationConfig;
+    }
+
+    public boolean hasCreationConfig()
+    {
+        return creationConfig != null;
+    }
 }

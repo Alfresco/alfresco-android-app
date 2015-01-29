@@ -26,15 +26,15 @@ public class HelperConfig
 {
     protected WeakReference<ConfigurationImpl> configurationRef;
 
-    protected WeakReference<HelperStringConfig> HelperStringRef;
+    protected WeakReference<StringHelper> HelperStringRef;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperConfig(ConfigurationImpl configuration, HelperStringConfig localHelper)
+    HelperConfig(ConfigurationImpl configuration, StringHelper localHelper)
     {
         configurationRef = new WeakReference<ConfigurationImpl>(configuration);
-        HelperStringRef = new WeakReference<HelperStringConfig>(localHelper);
+        HelperStringRef = new WeakReference<StringHelper>(localHelper);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -58,13 +58,13 @@ public class HelperConfig
         return configurationRef.get().getEvaluatorHelper() != null;
     }
 
-    protected HelperEvaluatorConfig getEvaluatorHelper()
+    protected EvaluatorHelper getEvaluatorHelper()
     {
         if (configurationRef == null) { return null; }
         return configurationRef.get().getEvaluatorHelper();
     }
 
-    protected HelperStringConfig getLocaleHelper()
+    protected StringHelper getLocaleHelper()
     {
         if (HelperStringRef == null) { return null; }
         return HelperStringRef.get();

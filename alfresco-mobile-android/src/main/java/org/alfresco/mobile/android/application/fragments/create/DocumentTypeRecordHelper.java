@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.create;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.CreateConfigManager;
@@ -88,40 +89,19 @@ public class DocumentTypeRecordHelper
     // ///////////////////////////////////////////////////////////////////////////
     public static List<DocumentTypeRecord> getCreationDocumentTypeList(Activity context)
     {
-        ConfigManager configurationManager = ConfigManager.getInstance(context);
-        if (configurationManager != null && configurationManager.hasConfig(SessionUtils.getAccount(context).getId()))
+        List<DocumentTypeRecord> documentTypes = new ArrayList<DocumentTypeRecord>(0);
+        ConfigService service = ConfigManager.getInstance(context).getConfig(SessionUtils.getAccount(context).getId(),
+                ConfigTypeIds.CREATION);
+        if (service != null)
         {
-            ConfigService service = configurationManager.getConfig(SessionUtils.getAccount(context).getId());
-            if (service.getCreationConfig() != null)
-            {
-                creationConfig = new CreateConfigManager(context, service, null);
-                return creationConfig.retrieveCreationDocumentList();
-            }
+            documentTypes = new CreateConfigManager(context, service, null).retrieveCreationDocumentList();
         }
-        return getInternalCreationDocumentTypeList(context);
-    }
-
-    private static List<DocumentTypeRecord> getInternalCreationDocumentTypeList(Context context)
-    {
-        List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>();
-        fileTypes.add(new DocumentTypeRecord(R.drawable.mime_doc, context.getString(R.string.create_document_word),
-                DOCX_EXTENSION, "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-                TEMPLATEFOLDER_PATH.concat(DOCX_EXTENSION)));
-        fileTypes.add(new DocumentTypeRecord(R.drawable.mime_ppt, context
-                .getString(R.string.create_document_powerpoint), PPTX_EXTENSION,
-                "application/vnd.openxmlformats-officedocument.presentationml.presentation", TEMPLATEFOLDER_PATH
-                        .concat(PPTX_EXTENSION)));
-        fileTypes.add(new DocumentTypeRecord(R.drawable.mime_xls, context.getString(R.string.create_document_excel),
-                XLSX_EXTENSION, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                TEMPLATEFOLDER_PATH.concat(XLSX_EXTENSION)));
-        fileTypes.add(new DocumentTypeRecord(R.drawable.mime_txt, context.getString(R.string.create_document_text),
-                TXT_EXTENSION, "text/plain", null));
 
         if (SamsungManager.getInstance(context) != null && SamsungManager.getInstance(context).hasPenEnable())
         {
-            fileTypes.add(SamsungManager.getInstance(context).addDocumentTypeRecord());
+            documentTypes.add(SamsungManager.getInstance(context).addDocumentTypeRecord());
         }
-        return fileTypes;
+        return documentTypes;
     }
 
     public static List<DocumentTypeRecord> getOpenAsDocumentTypeList(Context context)

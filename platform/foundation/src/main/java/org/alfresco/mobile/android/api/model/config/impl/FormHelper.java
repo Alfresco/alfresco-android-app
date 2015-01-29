@@ -26,8 +26,8 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
-import org.alfresco.mobile.android.api.model.config.ConfigConstants.ValidationConfigType;
 import org.alfresco.mobile.android.api.model.config.ConfigConstants.FieldConfigType;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants.ValidationConfigType;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.api.model.config.FieldGroupConfig;
@@ -40,7 +40,7 @@ import android.text.TextUtils;
 /**
  * @author Jean Marie Pascal
  */
-public class HelperFormConfig extends HelperConfig
+public class FormHelper extends HelperConfig
 {
     private static final String ASPECTS = "${aspects}";
 
@@ -65,13 +65,13 @@ public class HelperFormConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperFormConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    FormHelper(ConfigurationImpl context, StringHelper localHelper)
     {
         super(context, localHelper);
     }
 
-    HelperFormConfig(ConfigurationImpl context, HelperStringConfig localHelper,
-            LinkedHashMap<String, Object> viewConfigIndex)
+    FormHelper(ConfigurationImpl context, StringHelper localHelper,
+               LinkedHashMap<String, Object> viewConfigIndex)
     {
         super(context, localHelper);
         this.jsonFieldConfigGroups = viewConfigIndex;

@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
-import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -30,14 +29,12 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
-import android.widget.TextView;
 
 public class AccountTypesFragment extends AlfrescoFragment
 {
@@ -95,7 +92,7 @@ public class AccountTypesFragment extends AlfrescoFragment
             @Override
             public void onClick(View v)
             {
-                AccountOAuthFragment.with(getActivity()).display();
+                AccountOAuthFragment.with(getActivity()).isCreation(true).display();
             }
         });
 

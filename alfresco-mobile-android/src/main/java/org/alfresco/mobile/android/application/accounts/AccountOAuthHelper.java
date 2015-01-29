@@ -22,8 +22,9 @@ import java.util.Date;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
+import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
@@ -158,7 +159,7 @@ public class AccountOAuthHelper
     {
         if (alfrescoSession instanceof CloudSession && doesRequireRefreshToken(activity))
         {
-            ActionUtils.actionRequestAuthentication(activity, SessionUtils.getAccount(activity));
+            Operator.with(activity).load(new RetrieveOAuthDataRequest.Builder((CloudSession) alfrescoSession));
         }
     }
 

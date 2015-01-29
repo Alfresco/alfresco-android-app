@@ -35,7 +35,7 @@ public class FragmentBuilderFactory
     public static AlfrescoFragmentBuilder createViewConfig(Activity activity, String viewTemplate,
             Map<String, Object> configuration)
     {
-        String s = ConfigUtils.getString(activity, ConfigUtils.FAMILY_CONFIG, viewTemplate);
+        String s = ConfigUtils.getString(activity, ConfigUtils.FAMILY_VIEW, viewTemplate);
         if (s == null) { return null; }
         return createBaseViewConfig(s, activity, configuration);
     }

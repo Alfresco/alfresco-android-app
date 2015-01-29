@@ -26,12 +26,14 @@ import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
+import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.CreateAccountRequest;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
@@ -194,7 +196,7 @@ public class AccountEditFragment extends AlfrescoFragment
             // Create AlfrescoAccount + Session
             Operator.with(getActivity()).load(new CreateAccountRequest.Builder(url, username, password, description));
 
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, R.drawable.ic_onpremise,
+            OperationWaitingDialogFragment.newInstance(CreateAccountRequest.TYPE_ID, R.drawable.ic_onpremise,
                     getString(R.string.account), getString(R.string.account_verify), null, -1, null).show(
                     getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
@@ -333,6 +335,7 @@ public class AccountEditFragment extends AlfrescoFragment
     {
         if (event.hasException)
         {
+            ((AlfrescoActivity) getActivity()).removeWaitingDialog();
             Bundle b = new Bundle();
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_title);
@@ -361,6 +364,12 @@ public class AccountEditFragment extends AlfrescoFragment
                 }
                 ((BaseActivity) getActivity()).setCurrentAccount(accountId);
             }
+        }
+
+        if (getActivity() instanceof WelcomeActivity)
+        {
+            ConfigManager.getInstance(getActivity()).setSession(event.data.getId(),
+                    SessionUtils.getSession(getActivity()));
         }
     }
 

@@ -80,7 +80,8 @@
       "evaluator": "isAlfrescoV42"
     },
     "view-task-default": {
-      "type": "com.alfresco.type.tasks"
+      "type": "com.alfresco.type.tasks",
+      "evaluator": "isOnPremise"
     },
     "view-favorite-default": {
       "type": "com.alfresco.type.favorites"
@@ -105,9 +106,9 @@
     "mime-types": [
       {
         "id": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "label-id": "Word Document",
-        "icon-id": "t.docx",
-        "description-id": "Microsoft Office 2007 Word Document",
+        "label-id": "creation.mime_types.word.title",
+        "icon-id": "i.docx",
+        "description-id": "creation.mime_types.word.description",
         "params": {
           "templatePath": "FilesTemplates/Template.docx",
           "extension": ".docx"
@@ -115,9 +116,9 @@
       },
       {
         "id": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "label-id": "Powerpoint Presentation",
-        "icon-id": "t.pptx",
-        "description-id": "Microsoft Office 2007 Powerpoint Presentation",
+        "label-id": "creation.mime_types.powerpoint.title",
+        "icon-id": "i.pptx",
+        "description-id": "creation.mime_types.powerpoint.description",
         "params": {
           "templatePath": "FilesTemplates/Template.pptx",
           "extension": ".pptx"
@@ -125,9 +126,9 @@
       },
       {
         "id": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "label-id": "Excel Spreadsheet",
-        "icon-id": "t.xlsx",
-        "description-id": "Microsoft Office 2007 Excel Spreadsheet",
+        "label-id": "creation.mime_types.excel.title",
+        "icon-id": "i.xlsx",
+        "description-id": "creation.mime_types.excel.description",
         "params": {
           "templatePath": "FilesTemplates/Template.xlsx",
           "extension": ".xlsx"
@@ -135,14 +136,39 @@
       },
       {
         "id": "text/plain",
-        "label-id": "Text Document",
-        "icon-id": "t.txt",
-        "description-id": "Text Document",
+        "label-id": "creation.mime_types.text.title",
+        "icon-id": "i.txt",
+        "description-id": "creation.mime_types.text.description",
         "params": {
           "extension": ".txt"
         }
-      },
-    ]
+      }
+    ],
+    "document-types": [
+          {
+            "id": "cm:content",
+            "label-id": "cm_contentmodel.type.cm_content.title",
+            "icon-id": "t"
+          },
+          {
+            "id": "fdk:company",
+            "label-id": "fdk_contentmodel.type.fdk_company.title",
+            "icon-id": "t.docx"
+          },
+          {
+            "id": "fdk:everything",
+            "label-id": "fdk_contentmodel.type.fdk_everything.title",
+            "icon-id": "t.docx"
+          }
+        ],
+        "folder-types": [
+          {
+            "id": "cm:folder",
+            "label-id": "Default Folder",
+            "icon-id": "Default Folder Icon",
+            "description-id": "Default Description Folder"
+          }
+        ]
   },
   "forms": [
     {
@@ -623,8 +649,14 @@
         "isAlfrescoV42-CE"
       ]
     },
+    "isOnPremise": {
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
+      "params": {
+        "session": "onpremise"
+      }
+    },
     "isAlfrescoV42-EE": {
-      "type": "com.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Enterprise",
@@ -633,7 +665,7 @@
       }
     },
     "isAlfrescoV42-CE": {
-      "type": "com.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Community",

@@ -36,7 +36,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * @author Jean Marie Pascal
  *
  */
-public class HelperViewConfig extends HelperConfig
+public class ViewHelper extends HelperConfig
 {
     private LinkedHashMap<String, Object> jsonViewConfigGroups;
 
@@ -45,13 +45,13 @@ public class HelperViewConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperViewConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    ViewHelper(ConfigurationImpl context, StringHelper localHelper)
     {
         super(context, localHelper);
     }
 
-    HelperViewConfig(ConfigurationImpl context, HelperStringConfig localHelper,
-            LinkedHashMap<String, ViewConfig> viewConfigIndex)
+    ViewHelper(ConfigurationImpl context, StringHelper localHelper,
+               LinkedHashMap<String, ViewConfig> viewConfigIndex)
     {
         super(context, localHelper);
         this.viewConfigIndex = viewConfigIndex;

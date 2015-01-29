@@ -25,7 +25,6 @@ import java.util.Locale;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -472,31 +471,6 @@ public class ActionUtils extends BaseActionUtils
         {
             AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
         }
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // AUTHENTICATION
-    // ///////////////////////////////////////////////////////////////////////////
-    public static void actionRequestUserAuthentication(Context context, AlfrescoAccount account)
-    {
-        Intent i = new Intent(PrivateIntent.ACTION_USER_AUTHENTICATION);
-        i.addCategory(PrivateIntent.CATEGORY_OAUTH);
-        if (account != null)
-        {
-            i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, account.getId());
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-    }
-
-    public static void actionRequestAuthentication(Context context, AlfrescoAccount account)
-    {
-        Intent i = new Intent(PrivateIntent.ACTION_USER_AUTHENTICATION);
-        i.addCategory(PrivateIntent.CATEGORY_OAUTH_REFRESH);
-        if (account != null)
-        {
-            i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, account.getId());
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

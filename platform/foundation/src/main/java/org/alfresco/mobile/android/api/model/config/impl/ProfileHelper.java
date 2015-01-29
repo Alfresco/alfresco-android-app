@@ -30,7 +30,7 @@ import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
  * @author Jean Marie Pascal
  *
  */
-public class HelperProfileConfig extends HelperConfig
+public class ProfileHelper extends HelperConfig
 {
     private LinkedHashMap<String, ProfileConfig> profilesIndex;
 
@@ -39,13 +39,13 @@ public class HelperProfileConfig extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperProfileConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    ProfileHelper(ConfigurationImpl context, StringHelper localHelper)
     {
         super(context, localHelper);
     }
 
-    HelperProfileConfig(ConfigurationImpl context, HelperStringConfig localHelper,
-            LinkedHashMap<String, ProfileConfig> profilesIndex)
+    ProfileHelper(ConfigurationImpl context, StringHelper localHelper,
+                  LinkedHashMap<String, ProfileConfig> profilesIndex)
     {
         super(context, localHelper);
         this.profilesIndex = profilesIndex;

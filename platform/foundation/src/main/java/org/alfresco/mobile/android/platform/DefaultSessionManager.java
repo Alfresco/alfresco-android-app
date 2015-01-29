@@ -53,12 +53,6 @@ public class DefaultSessionManager extends SessionManager
     @Subscribe
     public void onSessionRequested(RequestSessionEvent event)
     {
-        super.onSessionRequested(event);
-    }
-
-    @Subscribe
-    public void onReloadSessionRequested(RequestSessionEvent event)
-    {
-       super.onReloadSessionRequested(event);
+       super.onSessionRequested(event);
     }
 }

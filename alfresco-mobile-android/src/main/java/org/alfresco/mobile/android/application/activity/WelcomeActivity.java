@@ -96,6 +96,5 @@ public class WelcomeActivity extends BaseActivity
         i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, event.data.getId());
         startActivity(i);
         finish();
-        //removeWaitingDialog();
     }
 }

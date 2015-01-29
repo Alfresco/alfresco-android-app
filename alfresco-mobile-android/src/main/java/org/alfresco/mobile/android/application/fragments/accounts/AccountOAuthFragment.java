@@ -22,8 +22,8 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.authentication.OAuthData;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
@@ -61,13 +61,12 @@ public class AccountOAuthFragment extends OAuthFragment
     public static final String TAG = "AccountOAuthFragment";
 
     private static final String ARGUMENT_ACCOUNT = "account";
-    
+
     public static final String OAUTH_URL = "oauth_url";
 
     public static final String OAUTH_API_KEY = "apikey";
 
     public static final String OAUTH_API_SECRET = "apisecret";
-
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -96,13 +95,6 @@ public class AccountOAuthFragment extends OAuthFragment
     public AccountOAuthFragment(String oauthUrl, String apikey, String apiSecret)
     {
         super(oauthUrl, apikey, apiSecret);
-    }
-
-    protected static AccountOAuthFragment newInstanceByTemplate(Bundle b)
-    {
-        AccountOAuthFragment cbf = new AccountOAuthFragment();
-        cbf.setArguments(b);
-        return cbf;
     }
 
     public static AccountOAuthFragment getOAuthFragment(Context context, AlfrescoAccount account)
@@ -174,7 +166,8 @@ public class AccountOAuthFragment extends OAuthFragment
                 }
 
                 Log.e(TAG, Log.getStackTraceString(e));
-                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(getActivity().getString(R.string.error_general));
+                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                        getActivity().getString(R.string.error_general));
             }
 
             @Override
@@ -267,10 +260,9 @@ public class AccountOAuthFragment extends OAuthFragment
 
     }
 
-    private void resetRequest()
+    private void retryOAuthAuthentication()
     {
-        FragmentDisplayer.with(getActivity()).load(AccountOAuthFragment.newInstance(getActivity())).back(true)
-                .into(DisplayUtils.getMainPaneId(getActivity()));
+        AccountOAuthFragment.with(getActivity()).back(true).display();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -287,7 +279,7 @@ public class AccountOAuthFragment extends OAuthFragment
         if (event.hasException)
         {
             getActivity().getFragmentManager().popBackStack();
-            resetRequest();
+            retryOAuthAuthentication();
             return;
         }
 
@@ -321,6 +313,8 @@ public class AccountOAuthFragment extends OAuthFragment
     {
         private AlfrescoAccount account;
 
+        private boolean isCreation = false;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -334,8 +328,7 @@ public class AccountOAuthFragment extends OAuthFragment
         {
             super(appActivity, configuration);
         }
-        
-        
+
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -345,12 +338,25 @@ public class AccountOAuthFragment extends OAuthFragment
             return this;
         }
 
+        public Builder isCreation(boolean isCreation)
+        {
+            this.isCreation = isCreation;
+            return this;
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            return getOAuthFragment(getActivity(), account);
+            if (isCreation)
+            {
+                return getOAuthFragment(getActivity(), account);
+            }
+            else
+            {
+                return newInstance(getActivity(), account);
+            }
         };
     }
 }

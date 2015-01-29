@@ -31,6 +31,8 @@ import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.EvaluatorType;
 import org.alfresco.mobile.android.api.model.impl.RepositoryVersionHelper;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.text.TextUtils;
@@ -39,16 +41,16 @@ import android.util.Log;
 /**
  * @author Jean Marie Pascal
  */
-public class HelperEvaluatorConfig extends HelperConfig
+public class EvaluatorHelper extends HelperConfig
 {
-    private static final String TAG = HelperEvaluatorConfig.class.getSimpleName();
+    private static final String TAG = EvaluatorHelper.class.getSimpleName();
 
     private LinkedHashMap<String, EvaluatorConfigData> evaluatorIndex;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    HelperEvaluatorConfig(ConfigurationImpl context, HelperStringConfig localHelper)
+    EvaluatorHelper(ConfigurationImpl context, StringHelper localHelper)
     {
         super(context, localHelper);
     }
@@ -142,8 +144,8 @@ public class HelperEvaluatorConfig extends HelperConfig
 
         switch (configtype)
         {
-            case IS_REPOSITORY_VERSION:
-                result = evaluateRepositoryVersion(evalConfig);
+            case HAS_REPOSITORY_CAPABILITY:
+                result = evaluateRepositoryCapability(evalConfig);
                 break;
             case NODE_TYPE:
                 result = evaluateNodeType(evalConfig, extraParameters);
@@ -182,7 +184,7 @@ public class HelperEvaluatorConfig extends HelperConfig
 
         return node.hasAspect(aspectName);
     }
-    
+
     private Boolean evaluateNodeType(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
     {
         if (extraParameters == null || extraParameters.getContextValue(ConfigScope.NODE) == null)
@@ -203,7 +205,7 @@ public class HelperEvaluatorConfig extends HelperConfig
         return typeName.equalsIgnoreCase(node.getType());
     }
 
-    private boolean evaluateRepositoryVersion(EvaluatorConfigData evalConfig)
+    private boolean evaluateRepositoryCapability(EvaluatorConfigData evalConfig)
     {
         boolean result = true;
 
@@ -212,6 +214,23 @@ public class HelperEvaluatorConfig extends HelperConfig
             Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a session.");
             return false;
         }
+
+        // SESSION
+        if (evalConfig.configMap.containsKey(ConfigConstants.SESSION_VALUE))
+        {
+            result = false;
+            String sessionType = JSONConverter.getString(evalConfig.configMap, ConfigConstants.SESSION_VALUE);
+            if (ConfigConstants.CLOUD_VALUE.equals(sessionType) && ((ConfigurationImpl) getConfiguration()).getSession() instanceof CloudSession)
+            {
+                result = true;
+            }
+            else if (ConfigConstants.ONPREMISE_VALUE.equals(sessionType) && ((ConfigurationImpl) getConfiguration()).getSession() instanceof RepositorySession)
+            {
+                result = true;
+            }
+        }
+
+        if (!result) { return false; }
 
         RepositoryInfo repoInfo = ((ConfigurationImpl) getConfiguration()).getSession().getRepositoryInfo();
 

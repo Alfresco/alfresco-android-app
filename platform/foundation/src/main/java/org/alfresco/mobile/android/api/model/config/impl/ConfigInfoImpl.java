@@ -32,8 +32,6 @@ public class ConfigInfoImpl implements ConfigInfo
 {
     private String schemaVersion;
 
-    private String configVersion;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -53,7 +51,6 @@ public class ConfigInfoImpl implements ConfigInfo
             long lastModificationTime)
     {
         ConfigInfoImpl config = new ConfigInfoImpl();
-        config.configVersion = SCHEMA_VERSION_BETA;
         config.schemaVersion = SCHEMA_VERSION_BETA;
         return config;
     }
@@ -64,7 +61,6 @@ public class ConfigInfoImpl implements ConfigInfo
     {
         if (json == null) { return null; }
         ConfigInfoImpl config = new ConfigInfoImpl();
-        config.configVersion = JSONConverter.getString(json, ConfigConstants.CONFIG_VERSION_VALUE);
         config.schemaVersion = JSONConverter.getString(json, ConfigConstants.SCHEMA_VERSION_VALUE);
 
         return config;
@@ -77,11 +73,5 @@ public class ConfigInfoImpl implements ConfigInfo
     public String getSchemaVersion()
     {
         return schemaVersion;
-    }
-    
-    @Override
-    public String getConfigVersion()
-    {
-        return configVersion;
     }
 }

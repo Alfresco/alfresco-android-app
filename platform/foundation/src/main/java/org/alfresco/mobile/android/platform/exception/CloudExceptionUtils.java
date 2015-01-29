@@ -20,9 +20,15 @@ package org.alfresco.mobile.android.platform.exception;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
+import org.alfresco.mobile.android.api.session.CloudSession;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
+import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
 import org.apache.http.HttpStatus;
@@ -41,7 +47,8 @@ public final class CloudExceptionUtils
     {
     };
 
-    public static void handleCloudException(Context context, Long accountId, Exception exception, boolean forceRefresh)
+    public static void handleCloudException(Context context, Long accountId, Exception exception, boolean forceRefresh,
+            String taskId)
     {
         Log.w(TAG, Log.getStackTraceString(exception));
         if (exception instanceof AlfrescoSessionException)
@@ -51,12 +58,12 @@ public final class CloudExceptionUtils
             {
                 case ErrorCodeRegistry.SESSION_API_KEYS_INVALID:
                 case ErrorCodeRegistry.SESSION_REFRESH_TOKEN_EXPIRED:
-                    manageException(context, forceRefresh);
+                    requestOAuthAuthentication(context, accountId, taskId, forceRefresh);
                     return;
                 default:
                     if (ex.getMessage().contains("No authentication challenges found") || ex.getErrorCode() == 100)
                     {
-                        manageException(context, forceRefresh);
+                        requestOAuthAuthentication(context, accountId, taskId, forceRefresh);
                         return;
                     }
                     break;
@@ -69,7 +76,7 @@ public final class CloudExceptionUtils
             if ((ex.getErrorCode() == 104 || (ex.getMessage() != null && ex.getMessage().contains(
                     "No authentication challenges found"))))
             {
-                manageException(context, forceRefresh);
+                requestOAuthAuthentication(context, accountId, taskId, forceRefresh);
                 return;
             }
             else
@@ -90,7 +97,7 @@ public final class CloudExceptionUtils
             CmisConnectionException ex = ((CmisConnectionException) exception);
             if (ex.getMessage().contains("No authentication challenges found"))
             {
-                manageException(context, forceRefresh);
+                requestOAuthAuthentication(context, accountId, taskId, forceRefresh);
                 return;
             }
         }
@@ -113,21 +120,21 @@ public final class CloudExceptionUtils
     public static void handleCloudException(Activity activity, Exception exception, boolean forceRefresh)
     {
         Long accountId = null;
-        handleCloudException(activity, accountId, exception, forceRefresh);
+        handleCloudException(activity, accountId, exception, forceRefresh, "");
     }
 
-    private static void manageException(Context context, boolean forceRefresh)
+    private static void requestOAuthAuthentication(Context context, long accountId, String taskId, boolean forceRefresh)
     {
         if (forceRefresh)
         {
-            // ActionManager.actionRequestUserAuthentication(context,
-            // SessionUtils.getAccount(context));
+            EventBusManager.getInstance().post(
+                    new LoadSessionCallBack.CloudAccountErrorEvent(taskId, AlfrescoAccountManager.getInstance(context)
+                            .retrieveAccount(accountId), null, 0));
         }
         else
         {
-            // ActionManager.actionRequestAuthentication(context,
-            // SessionUtils.getAccount(context));
+            Operator.with(context).load(
+                    new RetrieveOAuthDataRequest.Builder((CloudSession) SessionUtils.getSession(context)));
         }
     }
-
 }

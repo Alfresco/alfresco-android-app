@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- Fields Congif Type -->
+    <!-- Pattern : <CONFIG-NAME>_<TYPE> : ClassName -->
+    <!-- Example : Replace All "."  by "_" -->
+
+    <!-- TEXT -->
+    <string name="evaluator_org_alfresco_client_evaluator_samsung_sdk">org.alfresco.mobile.android.application.ui.form.TextField</string>
+
+
+</resources>

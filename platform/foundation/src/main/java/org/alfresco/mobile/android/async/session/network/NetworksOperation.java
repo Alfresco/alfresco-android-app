@@ -58,6 +58,8 @@ public class NetworksOperation extends ListingOperation<PagingResult<CloudNetwor
 
             try
             {
+                super.doInBackground();
+
                 List<CloudNetwork> tmpNetworks = ((CloudSession) session).getNetworks();
                 List<CloudNetwork> networks = new ArrayList<CloudNetwork>(tmpNetworks.size());
                 for (CloudNetwork cloudNetwork : tmpNetworks)

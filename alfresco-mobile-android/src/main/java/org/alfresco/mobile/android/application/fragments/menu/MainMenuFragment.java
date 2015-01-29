@@ -452,6 +452,12 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             }
+
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).hideSlideMenu();
+                FragmentDisplayer.clearCentralPane(getActivity());
+            }
         }
     }
 

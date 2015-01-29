@@ -30,20 +30,20 @@ import android.util.Log;
 /**
  * @author Jean Marie Pascal
  */
-public class HelperStringConfig
+public class StringHelper
 {
-    private static final String TAG = HelperStringConfig.class.getSimpleName();
+    private static final String TAG = StringHelper.class.getSimpleName();
 
     private Properties properties;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static HelperStringConfig load(File file)
+    public static StringHelper load(File file)
     {
         if (!file.exists()) { return null; }
 
-        HelperStringConfig config = null;
+        StringHelper config = null;
         try
         {
             config = load(new FileInputStream(file));
@@ -55,14 +55,14 @@ public class HelperStringConfig
         return config;
     }
 
-    public static HelperStringConfig load(InputStream inputStream)
+    public static StringHelper load(InputStream inputStream)
     {
-        HelperStringConfig config = null;
+        StringHelper config = null;
         try
         {
             Properties properties = new Properties();
             properties.load(inputStream);
-            config = new HelperStringConfig(properties);
+            config = new StringHelper(properties);
         }
         catch (Exception e)
         {
@@ -71,7 +71,7 @@ public class HelperStringConfig
         return config;
     }
 
-    private HelperStringConfig(Properties properties)
+    private StringHelper(Properties properties)
     {
         this.properties = properties;
     }

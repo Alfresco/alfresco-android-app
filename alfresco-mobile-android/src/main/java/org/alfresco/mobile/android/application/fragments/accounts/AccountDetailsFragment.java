@@ -650,12 +650,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
             getActivity().finish();
         }
     }
-
-    public void displayOAuthFragment()
-    {
-        AccountOAuthFragment.with(getActivity()).display();
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
