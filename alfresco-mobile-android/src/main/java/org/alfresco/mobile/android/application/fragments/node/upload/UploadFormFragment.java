@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
+import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerAdapter;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
@@ -46,7 +46,6 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
-import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;

@@ -38,10 +38,12 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.search.SearchEvent;
 import org.alfresco.mobile.android.async.node.search.SearchRequest;
 import org.alfresco.mobile.android.ui.node.search.SearchNodesFragment;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
@@ -73,6 +75,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         super();
         loadState = LOAD_VISIBLE;
         displayAsList = false;
+        enableTitle = true;
     }
 
     protected static DocumentFolderSearchFragment newInstanceByTemplate(Bundle b)
@@ -89,13 +92,20 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     protected void onRetrieveParameters(Bundle bundle)
     {
         super.onRetrieveParameters(bundle);
-        mTitle = (String) bundle.get(ARGUMENT_TITLE);
+        if (TextUtils.isEmpty(mTitle) && bundle.containsKey(ARGUMENT_TITLE))
+        {
+            mTitle = (String) bundle.get(ARGUMENT_TITLE);
+        }
     }
 
     @Override
     protected String onCreateTitle(String title)
     {
-        if (keywords != null)
+        if (!TextUtils.isEmpty(mTitle))
+        {
+            return mTitle;
+        }
+        else if (keywords != null)
         {
             return String.format(getString(R.string.search_title), keywords);
         }
@@ -118,7 +128,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     public void onResult(SearchEvent event)
     {
         super.onResult(event);
-        if (adapter == null){return;}
+        if (adapter == null) { return; }
         if (getSession() instanceof CloudSession)
         {
             ((NodeAdapter) adapter).setActivateThumbnail(false);
@@ -224,6 +234,26 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            this.menuIconId = R.drawable.ic_search_dark;
+            this.menuTitleId = R.string.search;
+            this.templateArguments = new String[] { ARGUMENT_KEYWORDS, ARGUMENT_STATEMENT };
+        }
+
+        @Override
+        protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
+        {
+            if (properties.containsKey(ARGUMENT_SEARCH_FOLDER))
+            {
+                b.putBoolean(ARGUMENT_SEARCH_FOLDER, JSONConverter.getBoolean(properties, ARGUMENT_SEARCH_FOLDER));
+            }
+            if (properties.containsKey(ARGUMENT_FULLTEXT))
+            {
+                b.putBoolean(ARGUMENT_FULLTEXT, JSONConverter.getBoolean(properties, ARGUMENT_FULLTEXT));
+            }
+            if (properties.containsKey(ARGUMENT_EXACTMATCH))
+            {
+                b.putBoolean(ARGUMENT_EXACTMATCH, JSONConverter.getBoolean(properties, ARGUMENT_EXACTMATCH));
+            }
         }
 
         // ///////////////////////////////////////////////////////////////////////////

@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.widgets;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;

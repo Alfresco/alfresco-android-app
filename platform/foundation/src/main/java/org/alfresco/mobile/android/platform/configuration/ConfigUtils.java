@@ -48,7 +48,7 @@ public final class ConfigUtils
     public static String getString(Context context, String family, String key)
     {
         int stringId = context.getResources().getIdentifier(
-                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), STRING, context.getApplicationContext().getPackageName());
+                family.concat(SEPARATOR).concat(key).replace(".", SEPARATOR).replace("-", SEPARATOR), STRING, context.getApplicationContext().getPackageName());
         return (stringId == 0) ? null : context.getString(stringId);
     }
 

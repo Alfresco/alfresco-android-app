@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Person;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.browser.NodeAdapter;
-import org.alfresco.mobile.android.application.fragments.person.UserAdapter;
+import org.alfresco.mobile.android.application.fragments.user.UserAdapter;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 

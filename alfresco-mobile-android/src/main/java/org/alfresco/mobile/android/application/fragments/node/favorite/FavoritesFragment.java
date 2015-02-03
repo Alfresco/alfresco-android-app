@@ -33,8 +33,8 @@ import org.alfresco.mobile.android.application.fragments.node.browser.NodeAdapte
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesEvent;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
-import org.alfresco.mobile.android.ui.ListingTemplate;
 import org.alfresco.mobile.android.ui.node.favorite.FavoritesNodeFragment;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -163,7 +163,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
 
             menuIconId = R.drawable.ic_favorite_dark;
             menuTitleId = R.string.menu_favorites;
-            templateArguments = new String[] {};
+            templateArguments = new String[] {FILTER_KEY_MODE};
         }
 
         // ///////////////////////////////////////////////////////////////////////////

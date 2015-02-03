@@ -17,7 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.node.favorite;
 
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface FavoritesNodeTemplate extends ListingTemplate
 {
@@ -33,6 +33,6 @@ public interface FavoritesNodeTemplate extends ListingTemplate
     String FILTER_MODE_FOLDERS = "folders";
 
     /** Only completed tasks are returned. */
-    String FILTER_MODE_DOCUMENTS = "documents";
+    String FILTER_MODE_FILES = "files";
 
 }

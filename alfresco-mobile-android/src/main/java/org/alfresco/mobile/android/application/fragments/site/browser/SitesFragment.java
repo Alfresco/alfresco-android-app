@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.async.site.SiteFavoriteEvent;
 import org.alfresco.mobile.android.async.site.SitesEvent;
 import org.alfresco.mobile.android.async.site.member.CancelPendingMembershipEvent;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipEvent;
-import org.alfresco.mobile.android.ui.site.SitesTemplate;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -96,7 +96,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
     {
         super.onResult(event);
     }
-    
+
     @Subscribe
     public void onCancelPendingMembershipEvent(CancelPendingMembershipEvent event)
     {
@@ -140,7 +140,15 @@ public class SitesFragment extends CommonBrowserSitesFragment
             super(activity, configuration);
             menuIconId = R.drawable.ic_site_dark;
             menuTitleId = R.string.menu_browse_sites;
-            templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
+        }
+
+        @Override
+        protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
+        {
+            if (properties.containsKey(ARGUMENT_FAVORITE_SITES))
+            {
+                b.putBoolean(ARGUMENT_FAVORITE_SITES, JSONConverter.getBoolean(properties, ARGUMENT_FAVORITE_SITES));
+            }
         }
 
         // ///////////////////////////////////////////////////////////////////////////

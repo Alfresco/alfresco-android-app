@@ -3,5 +3,10 @@
 
     <!-- SITES -->
     <!-- Use view pager with getChildrenFragmentManager only available on API 17 -->
-    <string name="config_com_alfresco_type_sites">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_site_browser">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
+
+    <!-- NODE DETAILS -->
+    <!-- Use view pager with getChildrenFragmentManager only available on API 17 -->
+    <string name="config_org_alfresco_client_view_node_details">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
+
 </resources>

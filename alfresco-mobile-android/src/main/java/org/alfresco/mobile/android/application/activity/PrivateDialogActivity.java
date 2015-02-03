@@ -27,7 +27,7 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesFragment;
-import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
+import org.alfresco.mobile.android.application.fragments.operation.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskTypePickerFragment;

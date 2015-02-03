@@ -17,12 +17,16 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.configuration;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
+import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -102,16 +106,27 @@ public class MainMenuConfigManager extends BaseConfigManager
     {
         try
         {
-            AlfrescoFragmentBuilder fragmentBuilder = FragmentBuilderFactory.createViewConfig(getActivity(),
-                    config.getType(), config.getParameters());
-            fragmentBuilder.createMenuItem(buttonView);
-            if (!TextUtils.isEmpty(config.getLabel()))
+            Map<String, Object> parameters = config.getParameters();
+            String label = config.getLabel();
+            if (!TextUtils.isEmpty(label))
             {
-                buttonView.setText(config.getLabel());
+                if (parameters == null)
+                {
+                    parameters = new HashMap<String, Object>(1);
+                }
+                parameters.put(ViewTemplate.ARGUMENT_LABEL, label);
+            }
+            AlfrescoFragmentBuilder fragmentBuilder = FragmentBuilderFactory.createViewConfig(getActivity(),
+                    config.getType(), parameters);
+            fragmentBuilder.createMenuItem(buttonView);
+            if (!TextUtils.isEmpty(label))
+            {
+                buttonView.setText(label);
             }
         }
         catch (Exception e)
         {
+            Log.e(TAG, Log.getStackTraceString(e));
             Log.e(TAG, "Error during menu creation : " + config.getIdentifier());
         }
     }

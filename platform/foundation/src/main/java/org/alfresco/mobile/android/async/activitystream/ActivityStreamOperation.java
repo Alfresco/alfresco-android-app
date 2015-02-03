@@ -63,12 +63,12 @@ public class ActivityStreamOperation extends ListingOperation<PagingResult<Activ
 
             try
             {
-                if (username != null)
+                if (username != null && siteName == null)
                 {
                     pagingResult = session.getServiceRegistry().getActivityStreamService()
                             .getActivityStream(username, listingContext);
                 }
-                if (siteName != null)
+                else if (siteName != null)
                 {
                     pagingResult = session.getServiceRegistry().getActivityStreamService()
                             .getSiteActivityStream(siteName, listingContext);

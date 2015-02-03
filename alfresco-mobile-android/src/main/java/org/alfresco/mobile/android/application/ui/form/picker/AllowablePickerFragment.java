@@ -17,16 +17,14 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.ui.form.picker;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.PropertyDefinition;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
+import org.alfresco.mobile.android.application.fragments.user.UserPickerCallback;
 import org.alfresco.mobile.android.application.ui.form.adapter.AllowableAdapter;
 
 import android.app.AlertDialog;

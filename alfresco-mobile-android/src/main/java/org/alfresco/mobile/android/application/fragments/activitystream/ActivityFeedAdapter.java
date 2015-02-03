@@ -22,7 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.ActivityEntry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
+import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.activitystream.ActivityEventViewHolder;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamAdapter;

@@ -190,6 +190,7 @@
     <string name="download_error">An error occurred during download operation.</string>
     <string name="download_progress">Downloading in progress &#8230;</string>
     <!-- Empty -->
+    <string name="empty_users">No users found</string>
     <string name="empty_child">No files found</string>
     <string name="empty_site">No sites available</string>
     <string name="empty_version">No version history available</string>

@@ -26,7 +26,7 @@ import org.alfresco.mobile.android.application.fragments.node.update.EditPropert
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.ui.form.AuthorityField;
-import org.alfresco.mobile.android.ui.person.PersonAdapter;
+import org.alfresco.mobile.android.ui.person.PeopleAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Fragment;
@@ -38,7 +38,7 @@ import android.widget.ImageView.ScaleType;
  * @since 1.5.0
  * @author jpascal
  */
-public class AuthorityAdapter extends PersonAdapter
+public class AuthorityAdapter extends PeopleAdapter
 {
     private WeakReference<Fragment> fragmentRef;
 

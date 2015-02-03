@@ -36,10 +36,10 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationConsta
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountEditFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;

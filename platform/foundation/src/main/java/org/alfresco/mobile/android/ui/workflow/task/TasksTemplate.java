@@ -17,7 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.workflow.task;
 
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface TasksTemplate extends ListingTemplate
 {

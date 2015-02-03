@@ -33,7 +33,7 @@ import org.alfresco.mobile.android.async.workflow.task.complete.CompleteTaskEven
 import org.alfresco.mobile.android.async.workflow.task.delegate.ReassignTaskEvent;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationAdapter;
 import org.alfresco.mobile.android.ui.workflow.task.TasksFoundationFragment;
@@ -246,6 +246,12 @@ public class TasksFragment extends TasksFoundationFragment
                     TasksTemplate.FILTER_KEY_DUE, TasksTemplate.FILTER_KEY_PRIORITY, TasksTemplate.FILTER_KEY_ASSIGNEE };
         }
 
+        protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
+        {
+            // Add Listing Filter as arguments for the view.
+            TasksFoundationFragment.addFilter(properties, b);
+        }
+
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -258,12 +264,6 @@ public class TasksFragment extends TasksFoundationFragment
         // ///////////////////////////////////////////////////////////////////////////
         // CLICK
         // ///////////////////////////////////////////////////////////////////////////
-        protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
-        {
-            // Add Listing Filter as arguments for the view.
-            TasksFoundationFragment.addFilter(properties, b);
-        }
-
         protected Fragment createFragment(Bundle b)
         {
             if (b.containsKey(ListingTemplate.ARGUMENT_HAS_FILTER)

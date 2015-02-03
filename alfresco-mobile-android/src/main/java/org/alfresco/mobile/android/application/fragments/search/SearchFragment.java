@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.application.fragments.actions.AbstractActions
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
+import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
@@ -113,7 +113,7 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     public SearchFragment()
     {
-        titleId = R.string.accounts_manage;
+        titleId = R.string.search;
         requiredSession = true;
         checkSession = true;
         setHasOptionsMenu(true);
@@ -620,7 +620,7 @@ public class SearchFragment extends BaseCursorGridFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void displayAdvancedSearch()
     {
-        AdvancedSearchFragment.with(getActivity()).searchkey(searchKey).site(site).folder(tmpParentFolder).display();
+        AdvancedSearchFragment.with(getActivity()).searchType(searchKey).site(site).folder(tmpParentFolder).display();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

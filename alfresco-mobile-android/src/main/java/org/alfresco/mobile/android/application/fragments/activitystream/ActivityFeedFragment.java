@@ -29,7 +29,7 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
+import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
 
 import android.app.Activity;
@@ -54,7 +54,6 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     {
         super();
         displayAsList = true;
-        titleId = R.string.menu_browse_activities;
         setHasOptionsMenu(true);
     }
 

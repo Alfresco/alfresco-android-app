@@ -36,7 +36,9 @@ public class FragmentBuilderFactory
             Map<String, Object> configuration)
     {
         String s = ConfigUtils.getString(activity, ConfigUtils.FAMILY_VIEW, viewTemplate);
-        if (s == null) { return null; }
+        if (s == null) {
+            return null;
+        }
         return createBaseViewConfig(s, activity, configuration);
     }
 

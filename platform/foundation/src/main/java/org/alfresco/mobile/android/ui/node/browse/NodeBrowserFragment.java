@@ -92,6 +92,7 @@ public class NodeBrowserFragment extends BaseGridFragment implements RefreshFrag
         folderIdentifier = (String) bundle.getSerializable(ARGUMENT_FOLDER_NODEREF);
         pathParameter = bundle.getString(ARGUMENT_PATH);
         siteId = bundle.getString(ARGUMENT_SITE_SHORTNAME);
+
     }
 
     // //////////////////////////////////////////////////////////////////////

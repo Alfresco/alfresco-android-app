@@ -213,7 +213,7 @@ public interface ConfigConstants
     String OUTPUT_VALUE = "outputValue";
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // VIEW ENUM
     // /////////////////////////////////////////////////
     enum ViewConfigType
     {
@@ -259,7 +259,7 @@ public interface ConfigConstants
     }
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // FIELDTYPE ENUM
     // /////////////////////////////////////////////////
     enum FieldConfigType
     {
@@ -289,7 +289,7 @@ public interface ConfigConstants
     }
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // VALIDATION ENUM
     // /////////////////////////////////////////////////
     enum ValidationConfigType
     {

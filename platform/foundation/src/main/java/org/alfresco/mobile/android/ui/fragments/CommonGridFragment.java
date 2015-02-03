@@ -28,8 +28,8 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
-import org.alfresco.mobile.android.ui.ListingTemplate;
 import org.alfresco.mobile.android.ui.RefreshFragment;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.os.Bundle;
