@@ -34,10 +34,6 @@
     <bool name="manager_isEnable_DataProtectionManager">false</bool>
     <string name="manager_DataProtectionManager">org.alfresco.mobile.android.manager.security.DataProtectionManager</string>
 
-    <!-- Notification Manager -->
-    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
-    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.platform.DefaultNotificationManager</string>
-    
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
     <!--  ENABLE BY DEFAULT -->
     <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
@@ -52,5 +48,9 @@
     <!-- MimeType Manager -->
     <bool name="manager_isEnable_MimeTypeManager">true</bool>
     <string name="manager_MimeTypeManager">org.alfresco.mobile.android.platform.mimetype.DefaultMimeTypeManager</string>
+
+    <!-- Notification Manager -->
+    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
+    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.platform.DefaultNotificationManager</string>
 
 </resources>

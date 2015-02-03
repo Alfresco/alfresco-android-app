@@ -18,7 +18,7 @@
 package org.alfresco.mobile.android.ui.node.browse;
 
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface NodeBrowserTemplate extends ListingTemplate
 {

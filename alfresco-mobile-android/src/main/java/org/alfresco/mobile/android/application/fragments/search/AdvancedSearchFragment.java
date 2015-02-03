@@ -34,9 +34,9 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.UserPickerCallback;
-import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
-import org.alfresco.mobile.android.application.fragments.person.UsersFragment;
+import org.alfresco.mobile.android.application.fragments.user.UserPickerCallback;
+import org.alfresco.mobile.android.application.fragments.user.UserSearchFragment;
+import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.SimpleViewHolder;
 import org.alfresco.mobile.android.application.providers.search.HistorySearch;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchManager;
@@ -47,7 +47,9 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
+import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -77,12 +79,21 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 
     private static final String DATE_TO = "dateTo";
 
-    private static final String SEARCH_TYPE = "SearchType";
+    private static final String ARGUMENT_SEARCH_TYPE = "type";
 
     private static final String ARGUMENT_SITE = "site";
 
     private static final String ARGUMENT_FOLDER = "parentFolder";
 
+    private static final String TYPE_FOLDER = "folder";
+
+    private static final String TYPE_DOCUMENT = "document";
+
+    private static final String TYPE_PEOPLE = "people";
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // VARIABLES
+    // ///////////////////////////////////////////////////////////////////////////
     private Map<String, Person> assignees = new HashMap<String, Person>(1);
 
     private Button modifiedByButton;
@@ -113,6 +124,8 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 
     private Folder tmpParentFolder;
 
+    private String mTitle;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -132,9 +145,9 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         setRetainInstance(true);
 
         int layoutId = R.layout.app_search_document;
-        if (getArguments() != null && getArguments().containsKey(SEARCH_TYPE))
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_SEARCH_TYPE))
         {
-            searchKey = getArguments().getInt(SEARCH_TYPE);
+            searchKey = getArguments().getInt(ARGUMENT_SEARCH_TYPE);
             switch (searchKey)
             {
                 case HistorySearch.TYPE_PERSON:
@@ -150,6 +163,10 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
 
             // Search inside a folder
             tmpParentFolder = (Folder) getArguments().getSerializable(ARGUMENT_FOLDER);
+            if (getArguments().containsKey(ViewTemplate.ARGUMENT_LABEL))
+            {
+                mTitle = getArguments().getString(ViewTemplate.ARGUMENT_LABEL);
+            }
         }
 
         rootView = inflater.inflate(layoutId, container, false);
@@ -176,7 +193,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
     @Override
     public void onResume()
     {
-        UIUtils.displayTitle(getActivity(), getString(R.string.search_advanced));
+        UIUtils.displayTitle(getActivity(), (mTitle != null) ? mTitle : getString(R.string.search_advanced));
         super.onResume();
     }
 
@@ -607,7 +624,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
                     .format(modificationDateToValue.getTime()));
         }
     }
-    
+
     @Override
     public void onDateClear(String dateId)
     {
@@ -701,19 +718,39 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            menuIconId = R.drawable.ic_search_dark;
+            menuTitleId = R.string.search_advanced;
+        }
+
+        @Override
+        protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
+        {
+            String type = JSONConverter.getString(properties, ARGUMENT_SEARCH_TYPE);
+            int searchType = HistorySearch.TYPE_DOCUMENT;
+            if (!TextUtils.isEmpty(type))
+            {
+                if (TYPE_FOLDER.equalsIgnoreCase(type))
+                {
+                    searchType = HistorySearch.TYPE_FOLDER;
+                }
+                else if (TYPE_DOCUMENT.equalsIgnoreCase(type))
+                {
+                    searchType = HistorySearch.TYPE_DOCUMENT;
+                }
+                else if (TYPE_PEOPLE.equalsIgnoreCase(type))
+                {
+                    searchType = HistorySearch.TYPE_PERSON;
+                }
+                b.putInt(ARGUMENT_SEARCH_TYPE, searchType);
+            }
         }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS
         // ///////////////////////////////////////////////////////////////////////////
-        protected Fragment createFragment(Bundle b)
+        public Builder searchType(int searchType)
         {
-            return newInstanceByTemplate(b);
-        };
-
-        public Builder searchkey(int searchkey)
-        {
-            extraConfiguration.putInt(SEARCH_TYPE, searchkey);
+            extraConfiguration.putInt(ARGUMENT_SEARCH_TYPE, searchType);
             return this;
         }
 
@@ -728,5 +765,14 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
             extraConfiguration.putSerializable(ARGUMENT_FOLDER, folder);
             return this;
         }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CLICK
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
+
     }
 }

@@ -26,8 +26,9 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationConsta
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.ui.ListingTemplate;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
 import android.app.Activity;
@@ -221,7 +222,7 @@ public abstract class AlfrescoFragmentBuilder
         // Display Fragment
         FragmentDisplayer.load(this).asDialog();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // FRAGMENT CREATION
     // ///////////////////////////////////////////////////////////////////////////
@@ -234,6 +235,9 @@ public abstract class AlfrescoFragmentBuilder
     {
         // Create the properties bundle
         Bundle b = new Bundle();
+
+        // Retrieve title & description
+        retrieveTitle(properties, b);
 
         // Configuration from the SERVER
         if (properties != null)
@@ -295,8 +299,26 @@ public abstract class AlfrescoFragmentBuilder
         }
     }
 
+    protected static void retrieveTitle(Map<String, Object> json, Bundle b)
+    {
+        if (json == null) { return; }
+
+        if (json.containsKey(ViewTemplate.ARGUMENT_LABEL))
+        {
+            b.putString(ViewTemplate.ARGUMENT_LABEL, JSONConverter.getString(json, ViewTemplate.ARGUMENT_LABEL));
+        }
+
+        if (json.containsKey(ViewTemplate.ARGUMENT_DESCRIPTION))
+        {
+            b.putString(ViewTemplate.ARGUMENT_DESCRIPTION,
+                    JSONConverter.getString(json, ViewTemplate.ARGUMENT_DESCRIPTION));
+        }
+    }
+
     private void retrieveOnItemSelected(Map<String, Object> json, Bundle b)
     {
+        if (json == null) { return; }
+
         if (json.containsKey(ConfigurationConstant.ON_ITEM_SELECTED))
         {
             Map<String, Object> onItemSelected = JSONConverter.getMap(json.get(ConfigurationConstant.ON_ITEM_SELECTED));

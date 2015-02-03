@@ -24,25 +24,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
-import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.MenuConfig;
-import org.alfresco.mobile.android.api.model.config.ProcessConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
-import org.alfresco.mobile.android.api.model.config.SearchConfig;
-import org.alfresco.mobile.android.api.model.config.TaskConfig;
-import org.alfresco.mobile.android.api.model.config.ThemeConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.model.config.impl.ConfigInfoImpl;
 import org.alfresco.mobile.android.api.model.config.impl.ConfigurationImpl;
-import org.alfresco.mobile.android.api.model.config.impl.HelperStringConfig;
+import org.alfresco.mobile.android.api.model.config.impl.StringHelper;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
@@ -132,7 +124,7 @@ public class LocalConfigServiceImpl implements ConfigService
                     // No messages file. we ignore translation
                 }
             }
-            HelperStringConfig stringConfig = HelperStringConfig.load(localizedFile);
+            StringHelper stringConfig = StringHelper.load(localizedFile);
 
             // Try to retrieve configuration data
             FileInputStream inputStream = new FileInputStream(configFile);
@@ -204,32 +196,6 @@ public class LocalConfigServiceImpl implements ConfigService
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // FEATURE
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<FeatureConfig> getFeatureConfig()
-    {
-        return (configuration == null) ? null : configuration.getFeatureConfig();
-    }
-
-    @Override
-    public List<FeatureConfig> getFeatureConfig(ConfigScope scope)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getFeatureConfig(scope);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<MenuConfig> getMenuConfig(String menuId)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getMenuConfig(menuId);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // VIEWS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
@@ -278,23 +244,6 @@ public class LocalConfigServiceImpl implements ConfigService
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // WORKFLOW
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<ProcessConfig> getProcessConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getProcessConfig();
-    }
-
-    @Override
-    public List<TaskConfig> getTaskConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getTaskConfig();
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
     // CREATION
     // ///////////////////////////////////////////////////////////////////////////
     @Override
@@ -319,35 +268,8 @@ public class LocalConfigServiceImpl implements ConfigService
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // ACTION
+    // SESSION
     // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public List<ActionConfig> getActionConfig(String groupId, Node node)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getActionConfig(groupId, node);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // SEARCH
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public SearchConfig getSearchConfig(Node node)
-    {
-        if (configuration == null) { return null; }
-        return configuration.getSearchConfig(node);
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // THEME
-    // ///////////////////////////////////////////////////////////////////////////
-    @Override
-    public ThemeConfig getThemeConfig()
-    {
-        if (configuration == null) { return null; }
-        return configuration.getThemeConfig();
-    }
-
     public void setSession(AlfrescoSession session){
         configuration.setSession(session);
     }

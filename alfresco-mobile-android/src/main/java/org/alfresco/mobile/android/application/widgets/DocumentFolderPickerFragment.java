@@ -24,7 +24,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
+import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.upload.UploadFolderAdapter;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack;

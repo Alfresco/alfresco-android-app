@@ -34,13 +34,13 @@ import org.alfresco.mobile.android.application.configuration.MainMenuConfigManag
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsAdapter;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.NetworksFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountsAdapter;
+import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
+import org.alfresco.mobile.android.application.fragments.account.NetworksFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.application.fragments.operations.OperationsFragment;
+import org.alfresco.mobile.android.application.fragments.operation.OperationsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
-import org.alfresco.mobile.android.application.fragments.profiles.ProfilesConfigFragment;
+import org.alfresco.mobile.android.application.fragments.profile.ProfilesConfigFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.ConfigManager.ConfigurationMenuEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
@@ -451,6 +451,12 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             if (goHome)
             {
                 getFragmentManager().popBackStack(TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            }
+
+            if (getActivity() instanceof MainActivity)
+            {
+                ((MainActivity) getActivity()).hideSlideMenu();
+                FragmentDisplayer.clearCentralPane(getActivity());
             }
         }
     }

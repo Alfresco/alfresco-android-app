@@ -37,7 +37,7 @@
             android:name="org.alfresco.mobile.android.application.activity.WelcomeActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:label="@string/app_name"
-            android:launchMode="singleTop"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />

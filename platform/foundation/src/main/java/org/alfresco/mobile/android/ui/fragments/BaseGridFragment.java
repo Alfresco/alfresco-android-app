@@ -44,14 +44,13 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 
 import android.annotation.TargetApi;
+import android.os.Bundle;
 import android.widget.ArrayAdapter;
 
 @TargetApi(11)
 public abstract class BaseGridFragment extends CommonGridFragment
 {
     public static final String TAG = BaseGridFragment.class.getName();
-
-    protected static final String ARGUMENT_BASED_ON_TEMPLATE = "basedOnTemplate";
 
     protected String requestId;
 
@@ -167,6 +166,15 @@ public abstract class BaseGridFragment extends CommonGridFragment
         {
             return !(data.getList() != null && !data.getList().contains(
                     arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
+        }
+    }
+
+    protected void onRetrieveParameters(Bundle bundle)
+    {
+        super.onRetrieveParameters(bundle);
+        if (bundle.containsKey(ARGUMENT_LABEL))
+        {
+            mTitle = bundle.getString(ARGUMENT_LABEL);
         }
     }
 

@@ -107,8 +107,6 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     protected void onRetrieveParameters(Bundle bundle)
     {
         super.onRetrieveParameters(bundle);
-        path = bundle.getString(FileExplorerFragmentTemplate.ARGUMENT_PATH);
-        parent = (File) bundle.getSerializable(FileExplorerFragmentTemplate.ARGUMENT_FILE);
         isShortCut = getArguments().getBoolean(ARGUMENT_SHORTCUT);
         menuId = getArguments().getInt(ARGUMENT_MENU_ID);
     }

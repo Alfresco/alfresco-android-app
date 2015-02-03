@@ -39,6 +39,8 @@ import android.view.ViewGroup;
  */
 public abstract class AlfrescoFragment extends DialogFragment
 {
+    protected static final String ARGUMENT_BASED_ON_TEMPLATE = "basedOnTemplate";
+
     /** RepositorySession */
     private WeakReference<AlfrescoSession> alfSession;
 

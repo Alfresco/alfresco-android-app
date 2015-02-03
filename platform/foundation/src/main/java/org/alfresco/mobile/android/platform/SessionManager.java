@@ -111,19 +111,6 @@ public abstract class SessionManager extends Manager
     @Subscribe
     public void onSessionRequested(RequestSessionEvent event)
     {
-        if (event.data != null)
-        {
-            loadSession(event.accountToLoad, event.data);
-        }
-        else
-        {
-            loadSession(event.accountToLoad);
-        }
-    }
-
-    @Subscribe
-    public void onReloadSessionRequested(RequestSessionEvent event)
-    {
         if (event.requestReload)
         {
             if (event.networkId != null)

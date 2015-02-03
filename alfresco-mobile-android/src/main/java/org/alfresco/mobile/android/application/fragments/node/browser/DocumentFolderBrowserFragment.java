@@ -324,12 +324,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         refreshListView();
 
-        //For tablet : Display Item if node has been selected previously and after a resume
+        // For tablet : Display Item if node has been selected previously and
+        // after a resume
         if (selectedItems != null && selectedItems.size() == 1 && DisplayUtils.hasCentralPane(getActivity())
                 && getFragmentManager().findFragmentById(DisplayUtils.getCentralFragmentId(getActivity())) == null)
         {
-            NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder)
-                    .node(selectedItems.get(0)).display();
+            NodeDetailsFragment.with(getActivity()).parentFolder(parentFolder).node(selectedItems.get(0)).display();
         }
     }
 
@@ -849,7 +849,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
         }
     }
-    
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
@@ -1175,13 +1175,17 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public static class Builder extends ListingFragmentBuilder
     {
         public static final int ICON_ID_REPOSITORY = R.drawable.ic_repository_dark;
+
         public static final int LABEL_ID_REPOSITORY = R.string.menu_browse_root;
 
         public static final int ICON_ID_SHARED = R.drawable.ic_shared_dark;
+
         public static final int LABEL_ID_SHARED = R.string.menu_browse_shared;
 
         public static final int ICON_ID_USERHOME = R.drawable.ic_myfiles_dark;
+
         public static final int LABEL_ID_USERHOME = R.string.menu_browse_userhome;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////////////////////////////////////////////////
@@ -1237,7 +1241,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 {
                     this.menuIconId = ICON_ID_SHARED;
                     this.menuTitleId = LABEL_ID_SHARED;
-                    //folderIdentifier(FOLDER_TYPE_SHARED);
+                    // folderIdentifier(FOLDER_TYPE_SHARED);
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_SHARED);
                     shortcut(true);
                 }
@@ -1245,10 +1249,14 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 {
                     this.menuIconId = ICON_ID_USERHOME;
                     this.menuTitleId = LABEL_ID_USERHOME;
-                    //folderIdentifier(FOLDER_TYPE_USERHOME);
+                    // folderIdentifier(FOLDER_TYPE_USERHOME);
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_USER_HOMES);
                     shortcut(true);
                 }
+            }
+            else if (configuration != null)
+            {
+                shortcut(true);
             }
             else
             {

@@ -21,7 +21,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.application.fragments.person.UserProfileFragment;
+import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.node.comment.CommentViewHolder;
 import org.alfresco.mobile.android.ui.node.comment.CommentsNodeAdapter;

@@ -4,31 +4,41 @@
     <!-- View Congif Template -->
     <!-- Pattern : <CONFIG-NAME>_<TYPE> : ClassName -->
     <!-- Example : Replace All "."  by "_" -->
-    
+
+    <!-- ACTIVITIES -->
+    <string name="config_org_alfresco_client_view_activities">org.alfresco.mobile.android.application.fragments.activitystream.ActivityFeedFragment$Builder</string>
+
     <!-- PERSONS -->
-    <string name="config_com_alfresco_type_persons">org.alfresco.mobile.android.application.fragments.person.UsersFragment$Builder</string>
-    <string name="config_com_alfresco_type_person_profile">org.alfresco.mobile.android.application.fragments.person.UserProfileFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_people">org.alfresco.mobile.android.application.fragments.user.UsersFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_person_profile">org.alfresco.mobile.android.application.fragments.user.UserProfileFragment$Builder</string>
     
     <!-- LOCAL -->
-    <string name="config_com_alfresco_type_local">org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment$Builder</string>
-    
-    <!-- ACTIVITIES -->
-    <string name="config_com_alfresco_type_activities">org.alfresco.mobile.android.application.fragments.activitystream.ActivityFeedFragment$Builder</string>
-    
-    <!-- REPOSITORY -->
-    <string name="config_com_alfresco_type_repository">org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment$Builder</string>
-    
+    <string name="config_org_alfresco_client_view_local_files">org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_local">org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerMenuFragment$Builder</string>
+
+    <!-- SEARCH -->
+    <string name="config_org_alfresco_client_view_search">org.alfresco.mobile.android.application.fragments.search.SearchFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_search_advanced">org.alfresco.mobile.android.application.fragments.search.AdvancedSearchFragment$Builder</string>
+
     <!-- SITES -->
-    <string name="config_com_alfresco_type_sites">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment$Builder</string>
-    
+    <string name="config_org_alfresco_client_view_site_browser">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_sites">org.alfresco.mobile.android.application.fragments.site.browser.SitesFragment$Builder</string>
+
+    <!-- NODE DETAILS -->
+    <string name="config_org_alfresco_client_view_node_details">org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment$Builder</string>
+
+    <!-- REPOSITORY -->
+    <string name="config_org_alfresco_client_view_repository">org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_repository_search">org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment$Builder</string>
+
     <!-- TASKS -->
-    <string name="config_com_alfresco_type_tasks">org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_tasks">org.alfresco.mobile.android.application.fragments.workflow.task.TasksFragment$Builder</string>
     
     <!-- FAVORITES -->
-    <string name="config_com_alfresco_type_favorites">org.alfresco.mobile.android.application.fragments.sync.SyncFragment$Builder</string>
-    
-    <!-- SEARCH -->
-    <string name="config_com_alfresco_type_search">org.alfresco.mobile.android.application.fragments.search.SearchFragment$Builder</string>
-    
-    
+    <string name="config_org_alfresco_client_view_sync">org.alfresco.mobile.android.application.fragments.sync.SyncFragment$Builder</string>
+    <string name="config_org_alfresco_client_view_favorites">org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment$Builder</string>
+
+
+
+
 </resources>

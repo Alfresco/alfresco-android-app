@@ -36,10 +36,10 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationConsta
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountEditFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountsFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -54,17 +54,16 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
-import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
+import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountStartedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiveAccountEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
-import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
@@ -83,7 +82,6 @@ import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -255,12 +253,6 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onStart()
     {
-        IntentFilter filters = new IntentFilter();
-        filters.addAction(PrivateIntent.ACTION_USER_AUTHENTICATION);
-        filters.addCategory(PrivateIntent.CATEGORY_OAUTH);
-        filters.addCategory(PrivateIntent.CATEGORY_OAUTH_REFRESH);
-
-        registerPrivateReceiver(new MainActivityReceiver(), filters);
         registerPublicReceiver(new NetworkReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
         super.onStart();
@@ -791,7 +783,8 @@ public class MainActivity extends BaseActivity
             if (registry instanceof AlfrescoServiceRegistry)
             {
                 ConfigManager config = ConfigManager.getInstance(this);
-                if (!config.hasConfig(getCurrentAccount().getId())){
+                if (!config.hasConfig(getCurrentAccount().getId()))
+                {
                     config.init(getCurrentAccount());
                 }
 
@@ -801,19 +794,11 @@ public class MainActivity extends BaseActivity
                     // In this case there's no configuration defined on server
                     // We remove any cached configuration
                     ConfigManager.getInstance(this).cleanCache(getCurrentAccount());
-                    // We load the default embedded
-                    // ConfigManager.getInstance(this).load(getCurrentAccount().getId());
                 }
                 else
                 {
                     config.loadRemote(getCurrentAccount().getId(),
                             ((AlfrescoServiceRegistry) registry).getConfigService());
-
-                    // We have a new configuration available
-                    // Let's dispatch the event
-                    //LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
-                    //result.setData(((AlfrescoServiceRegistry) registry).getConfigService());
-                    //EventBusManager.getInstance().post(new ConfigurationEvent("", result, getCurrentAccount().getId()));
                 }
 
                 config.setSession(getCurrentAccount().getId(), getCurrentSession());
@@ -847,7 +832,7 @@ public class MainActivity extends BaseActivity
             getFragmentManager().popBackStack(AccountOAuthFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
 
-        // removeWaitingDialog();
+        removeWaitingDialog();
 
         // Used for launching last pressed action button from main menu
         if (shortcutFolderId != null)
@@ -916,6 +901,20 @@ public class MainActivity extends BaseActivity
     }
 
     @Subscribe
+    public void onCloudAccountErrorEvent(LoadSessionCallBack.CloudAccountErrorEvent event)
+    {
+        if (currentAccount == null || currentAccount.getId() != event.data) { return; }
+
+        //Display OAuth Authentication
+        AccountOAuthFragment.with(MainActivity.this).account(event.account).isCreation(false).display();
+
+        // Stop progress indication
+        setProgressBarIndeterminateVisibility(false);
+
+        invalidateOptionsMenu();
+    }
+
+    @Subscribe
     public void onAccountErrorEvent(LoadAccountErrorEvent event)
     {
         if (currentAccount == null || currentAccount.getId() != event.data) { return; }
@@ -967,47 +966,6 @@ public class MainActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
-    private class MainActivityReceiver extends BroadcastReceiver
-    {
-
-        @Override
-        public void onReceive(Context context, Intent intent)
-        {
-            Log.d(TAG, intent.getAction());
-
-            Activity activity = MainActivity.this;
-
-            if (PrivateIntent.ACTION_USER_AUTHENTICATION.equals(intent.getAction()))
-            {
-                if (!isCurrentAccountToLoad(intent)) { return; }
-
-                if (!intent.hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID)) { return; }
-                Long accountId = intent.getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID);
-                AlfrescoAccount acc = AlfrescoAccountManager.getInstance(activity).retrieveAccount(accountId);
-
-                if (intent.getCategories().contains(PrivateIntent.CATEGORY_OAUTH)
-                        && getFragment(AccountOAuthFragment.TAG) == null
-                        || (getFragment(AccountOAuthFragment.TAG) != null && getFragment(AccountOAuthFragment.TAG)
-                                .isAdded()))
-                {
-                    FragmentDisplayer.with(activity).load(AccountOAuthFragment.newInstance(context, acc))
-                            .into(FragmentDisplayer.PANEL_CENTRAL);
-                    return;
-                }
-
-                if (intent.getCategories().contains(PrivateIntent.CATEGORY_OAUTH_REFRESH))
-                {
-                    Operator.with(activity).load(
-                            new RetrieveOAuthDataRequest.Builder((CloudSession) getCurrentSession()));
-                    return;
-                }
-                return;
-            }
-
-            return;
-        }
-    }
-
     public class NetworkReceiver extends BroadcastReceiver
     {
         @Override

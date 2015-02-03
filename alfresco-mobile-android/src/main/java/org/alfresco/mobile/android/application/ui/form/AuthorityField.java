@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesPickerFragment;
-import org.alfresco.mobile.android.application.fragments.person.UserSearchFragment;
+import org.alfresco.mobile.android.application.fragments.user.UserSearchFragment;
 import org.alfresco.mobile.android.application.ui.form.adapter.AuthorityAdapter;
 import org.alfresco.mobile.android.application.ui.form.views.PickerFieldView;
 import org.alfresco.mobile.android.ui.ListingModeFragment;

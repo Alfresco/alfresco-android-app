@@ -55,15 +55,6 @@ public interface PrivateIntent
     String HELP_GUIDE = "view_help_guide";
 
     // ///////////////////////////////////////////////////////////////////////////
-    // OAUTH MANAGEMENT
-    // ///////////////////////////////////////////////////////////////////////////
-    String ACTION_USER_AUTHENTICATION = "org.alfresco.mobile.android.intent.ACTION_USER_AUTHENTICATION";
-
-    String CATEGORY_OAUTH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH";
-
-    String CATEGORY_OAUTH_REFRESH = "org.alfresco.mobile.android.intent.CATEGORY_OAUTH_REFRESH";
-
-    // ///////////////////////////////////////////////////////////////////////////
     // OPERATIONS MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
 

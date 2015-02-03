@@ -126,8 +126,14 @@ public interface ConfigConstants
 
     String NEGATE_SYMBOL = "!";
 
+    String CLOUD_VALUE = "cloud";
+
+    String ONPREMISE_VALUE = "onpremise";
+
     // EVALUATOR REPOSITORY VERSION
     String OPERATOR_VALUE = "operator";
+
+    String SESSION_VALUE = "session";
 
     String EDITION_VALUE = "edition";
 
@@ -136,9 +142,9 @@ public interface ConfigConstants
     String MINORVERSION_VALUE = "minorVersion";
 
     String MAINTENANCEVERSION_VALUE = "maintenanceVersion";
-    
+
     String TYPE_NAME_VALUE = "typeName";
-    
+
     String ASPECT_NAME_VALUE = "aspectName";
 
     // FORMS
@@ -184,30 +190,30 @@ public interface ConfigConstants
     String MIN_VALUE = "min";
 
     String MAX_VALUE = "max";
-    
+
     String PATTERN_VALUE = "pattern";
-    
-    //FIELDS
+
+    // FIELDS
     String MIN_DATE_VALUE = "minDate";
 
     String MAX_DATE_VALUE = "maxDate";
-    
+
     String SHOW_TIME_VALUE = "showTime";
-    
+
     String SHOW_MULTIPLE_LINES_VALUE = "showMultipleLines";
-    
+
     String READ_ONLY_VALUE = "readOnly";
-    
+
     String SECRET_VALUE = "secret";
 
     String AUTHORITY_VALUE = "authority";
 
     String ALLOW_MULTIPLE_SELECTION_VALUE = "allowMultipleSelection";
-    
+
     String OUTPUT_VALUE = "outputValue";
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // VIEW ENUM
     // /////////////////////////////////////////////////
     enum ViewConfigType
     {
@@ -253,7 +259,7 @@ public interface ConfigConstants
     }
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // FIELDTYPE ENUM
     // /////////////////////////////////////////////////
     enum FieldConfigType
     {
@@ -283,7 +289,7 @@ public interface ConfigConstants
     }
 
     // /////////////////////////////////////////////////
-    // PARSING ENUM
+    // VALIDATION ENUM
     // /////////////////////////////////////////////////
     enum ValidationConfigType
     {

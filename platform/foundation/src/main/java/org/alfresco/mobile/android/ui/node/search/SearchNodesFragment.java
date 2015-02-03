@@ -102,6 +102,7 @@ public class SearchNodesFragment extends BaseGridFragment
 
     protected void onRetrieveParameters(Bundle bundle)
     {
+        super.onRetrieveParameters(bundle);
         keywords = getArguments().getString(ARGUMENT_KEYWORDS);
         statement = getArguments().getString(ARGUMENT_STATEMENT);
 

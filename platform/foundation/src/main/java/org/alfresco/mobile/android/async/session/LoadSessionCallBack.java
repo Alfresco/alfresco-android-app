@@ -76,10 +76,12 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
                 AlfrescoAccount acc = loadingTask.getAccount();
                 if (acc.getActivation() == null)
                 {
-                    CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true);
+                    //OAuth Error
+                    CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true, task.getRequestId());
                 }
                 else
                 {
+                    //Cloud Account is not active
                     EventBusManager.getInstance().post(
                             new LoadInactiveAccountEvent(task.getRequestId(), ((LoadSessionOperation) task)
                                     .getAccount()));
@@ -188,6 +190,27 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
         }
 
         public LoadAccountErrorEvent(String requestId, Long accountId, Exception e, int messageId)
+        {
+            super(requestId, accountId, e);
+            this.account = null;
+            this.messageId = messageId;
+        }
+    }
+
+    public static class CloudAccountErrorEvent extends OperationEvent<Long>
+    {
+        public final AlfrescoAccount account;
+
+        public final int messageId;
+
+        public CloudAccountErrorEvent(String requestId, AlfrescoAccount account, Exception e, int messageId)
+        {
+            super(requestId, account.getId(), e);
+            this.account = account;
+            this.messageId = messageId;
+        }
+
+        public CloudAccountErrorEvent(String requestId, Long accountId, Exception e, int messageId)
         {
             super(requestId, accountId, e);
             this.account = null;

@@ -29,7 +29,4 @@ public interface ConfigInfo
 
     /** Returns the schema version of the configuration file.*/
     String getSchemaVersion();
-
-    /** Returns the version of the configuration file. This is reserved for future use i.e. once a back-end service is available. */
-    String getConfigVersion();
 }

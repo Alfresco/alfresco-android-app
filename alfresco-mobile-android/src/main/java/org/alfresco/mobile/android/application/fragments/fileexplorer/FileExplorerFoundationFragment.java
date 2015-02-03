@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.file.browse.FilesEvent;
 import org.alfresco.mobile.android.async.file.browse.FilesRequest;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 
 import android.os.Bundle;
@@ -36,6 +37,8 @@ import com.squareup.otto.Subscribe;
 public abstract class FileExplorerFoundationFragment extends BaseGridFragment
 {
     public static final String TAG = FileExplorerFoundationFragment.class.getName();
+
+    protected static final String ARGUMENT_FILE = "file";
 
     protected List<File> selectedItems = new ArrayList<File>(1);
 
@@ -50,6 +53,7 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
     {
         emptyListMessageId = R.string.empty_child;
         requiredSession = false;
+        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -58,7 +62,23 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
     protected void onRetrieveParameters(Bundle bundle)
     {
         path = bundle.getString(FileExplorerFragmentTemplate.ARGUMENT_PATH);
-        parent = (File) bundle.getSerializable(FileExplorerFragmentTemplate.ARGUMENT_FILE);
+        File tmpParent = (File) bundle.getSerializable(ARGUMENT_FILE);
+
+        //By default if nothing provided we open the app download folder.
+        if (path == null && tmpParent == null)
+        {
+            parent = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(getAccount());
+        }
+
+        if (path != null && tmpParent == null)
+        {
+            parent = new File(path);
+        }
+
+        if (tmpParent != null && parent == null)
+        {
+            parent = tmpParent;
+        }
 
         if (path != null)
         {
@@ -67,11 +87,6 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
         else if (parent != null)
         {
             mTitle = parent.getName();
-        }
-
-        if (path != null && parent == null)
-        {
-            parent = new File(path);
         }
     }
 

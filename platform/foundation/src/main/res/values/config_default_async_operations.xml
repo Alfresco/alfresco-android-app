@@ -45,6 +45,7 @@
     <!-- +++++++++++++++++++ -->
     <string name="operation_NodeChildrenRequest">org.alfresco.mobile.android.async.node.browse.NodeChildrenOperation</string>
   	<string name="operation_NodeRequest">org.alfresco.mobile.android.async.node.RetrieveNodeOperation</string>
+    <string name="operation_NodeByPathRequest">org.alfresco.mobile.android.async.node.NodeByPathOperation</string>
     <string name="operation_DownloadRequest">org.alfresco.mobile.android.async.node.download.DownloadOperation</string>
     
     <!-- CREATE FOLDER -->
@@ -82,7 +83,7 @@
     <!-- FAVORITES -->
     <string name="operation_FavoritedNodeRequest">org.alfresco.mobile.android.async.node.favorite.FavoritedNodeOperation</string>
     <string name="callback_FavoritedNodeRequest">org.alfresco.mobile.android.async.node.favorite.FavoritedNodeCallback</string>
-    <string name="operation_FavoritesNodesRequest">org.alfresco.mobile.android.async.node.favorite.FavoriteNodesOperation</string>
+    <string name="operation_FavoriteNodesRequest">org.alfresco.mobile.android.async.node.favorite.FavoriteNodesOperation</string>
     <string name="operation_FavoriteNodeRequest">org.alfresco.mobile.android.async.node.favorite.FavoriteNodeOperation</string>
 
     <!-- LIKE -->

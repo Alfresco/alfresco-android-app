@@ -46,18 +46,6 @@ public class SitesFoundationFragment extends BaseGridFragment implements SitesTe
         emptyListMessageId = R.string.empty_site;
     }
 
-    public static Bundle createBundleArgs(String username)
-    {
-        return createBundleArgs(username, false);
-    }
-
-    public static Bundle createBundleArgs(String username, boolean favorite)
-    {
-        Bundle args = new Bundle();
-        args.putBoolean(ARGUMENT_FAVORITE_SITES, favorite);
-        return args;
-    }
-
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////

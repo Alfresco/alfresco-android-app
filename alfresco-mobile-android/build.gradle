@@ -42,6 +42,7 @@ android {
             manifestPlaceholders = [ PROVIDER_AUTHORITY:PROVIDER_AUTHORITY_DEBUG ]
             resValue "string", "account_name", ACCOUNT_ID_DEBUG
             resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
+            resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
         }
 
         release {
@@ -54,6 +55,7 @@ android {
                 }
             }
             resValue "string", "account_name", ACCOUNT_ID
+            resValue "string", "sync_adapter", SYNC_ADAPTER
         }
     }
 

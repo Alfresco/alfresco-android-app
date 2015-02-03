@@ -55,6 +55,7 @@ import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.encryption.FileProtectionEvent;
+import org.alfresco.mobile.android.async.node.NodeByPathRequest;
 import org.alfresco.mobile.android.async.node.NodeRequest;
 import org.alfresco.mobile.android.async.node.RetrieveNodeEvent;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeEvent;
@@ -90,7 +91,9 @@ import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
+import org.alfresco.mobile.android.ui.template.ViewTemplate;
 import org.alfresco.mobile.android.ui.utils.Formatter;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
@@ -126,6 +129,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected Node node;
 
+    protected String nodePath;
+
     protected String nodeIdentifier;
 
     protected boolean isRestrictable = false;
@@ -143,6 +148,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected File tempFile = null;
 
     protected String shareUrl = null;
+
+    protected String mTitle = null;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -165,9 +172,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (getArguments() != null)
         {
             node = (Node) getArguments().get(ARGUMENT_NODE);
+            nodePath = (String) getArguments().get(ARGUMENT_PATH);
             nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
             parentNode = (Folder) getArguments().get(ARGUMENT_FOLDER_PARENT);
             favoriteOffline = getArguments().containsKey(ARGUMENT_FAVORITE);
+            mTitle = (String) getArguments().get(ViewTemplate.ARGUMENT_LABEL);
             if (favoriteOffline)
             {
                 checkSession = false;
@@ -176,7 +185,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         }
         // If no Node we display nothing.
-        if (node == null && nodeIdentifier == null) { return; }
+        if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath)) { return; }
+
+        if (!TextUtils.isEmpty(mTitle))
+        {
+            UIUtils.displayTitle(getActivity(), mTitle);
+        }
     }
 
     @Override
@@ -190,7 +204,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
 
         // If node not present we display nothing.
-        if (node == null && nodeIdentifier == null)
+        if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath))
         {
             displayEmptyView();
         }
@@ -209,6 +223,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 EventBusManager.getInstance().register(this);
             }
             Operator.with(getActivity()).load(new NodeRequest.Builder(null, nodeIdentifier));
+            displayLoading();
+        }else if (nodePath != null){
+            if (eventBusRequired)
+            {
+                EventBusManager.getInstance().register(this);
+            }
+            Operator.with(getActivity()).load(new NodeByPathRequest.Builder(nodePath));
             displayLoading();
         }
 
@@ -1273,7 +1294,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
             this.menuIconId = R.drawable.ic_repository_dark;
-            this.menuTitleId = R.string.menu_browse_root;
+            this.menuTitleId = R.string.details;
+            templateArguments = new String[] { ARGUMENT_NODE_ID, ARGUMENT_PATH };
         }
 
         // ///////////////////////////////////////////////////////////////////////////

@@ -48,14 +48,23 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public static AlfrescoFragment newInstance()
+    public static FileExplorerMenuFragment newInstanceByTemplate(Bundle b)
     {
-        return new FileExplorerMenuFragment();
+        FileExplorerMenuFragment cbf = new FileExplorerMenuFragment();
+        cbf.setArguments(b);
+        b.putBoolean(ARGUMENT_BASED_ON_TEMPLATE, true);
+        return cbf;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState)
+    {
+        super.onActivityCreated(savedInstanceState);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -192,8 +201,7 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
-            return newInstance();
+            return newInstanceByTemplate(b);
         };
-
     }
 }

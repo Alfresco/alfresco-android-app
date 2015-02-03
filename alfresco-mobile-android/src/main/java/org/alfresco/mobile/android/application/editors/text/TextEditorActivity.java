@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -199,7 +200,7 @@ public class TextEditorActivity extends BaseActivity
 
         retrieveTitle();
         getActionBar().show();
-        setTitle(title);
+        UIUtils.displayTitle(this, title);
 
         super.onStart();
     }

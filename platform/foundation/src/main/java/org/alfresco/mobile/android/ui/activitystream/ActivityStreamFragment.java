@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamEvent;
 import org.alfresco.mobile.android.async.activitystream.ActivityStreamRequest;
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.fragments.SelectableGridFragment;
 
 import android.os.Bundle;
@@ -50,18 +49,7 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     public ActivityStreamFragment()
     {
         emptyListMessageId = R.string.empty_actvity;
-        titleId = R.string.activities;
-    }
-
-    public static ActivityStreamFragment newInstance()
-    {
-        ActivityStreamFragment bf = new ActivityStreamFragment();
-        ListingContext lc = new ListingContext();
-        lc.setMaxItems(50);
-        Bundle b = createBundleArgs(lc, LOAD_VISIBLE);
-        b.putInt(BaseListAdapter.DISPLAY_ICON, BaseListAdapter.DISPLAY_ICON_CREATOR);
-        bf.setArguments(b);
-        return bf;
+        enableTitle = true;
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -69,6 +57,7 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     // //////////////////////////////////////////////////////////////////////
     protected void onRetrieveParameters(Bundle bundle)
     {
+        super.onRetrieveParameters(bundle);
         siteShortName = (String) bundle.getSerializable(ARGUMENT_SITE_SHORTNAME);
         userName = (String) bundle.getSerializable(ARGUMENT_USERNAME);
     }

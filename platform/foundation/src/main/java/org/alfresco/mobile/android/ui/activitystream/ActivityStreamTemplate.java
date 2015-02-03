@@ -17,7 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.activitystream;
 
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface ActivityStreamTemplate extends ListingTemplate
 {

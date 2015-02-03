@@ -17,13 +17,9 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.fileexplorer;
 
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface FileExplorerFragmentTemplate extends ListingTemplate
 {
-    String ARGUMENT_PATH = "filePath";
-
-    String ARGUMENT_FILE = "file";
-
-    String ARGUMENT_FOLDER_TYPE_ID = "folderTypeId";
+    String ARGUMENT_PATH = "path";
 }

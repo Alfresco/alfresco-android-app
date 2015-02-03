@@ -70,7 +70,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     {
         EditPropertiesFragment adf = new EditPropertiesFragment();
         adf.setArguments(b);
-        //adf.setRetainInstance(true);
+        // adf.setRetainInstance(true);
         return adf;
     }
 
@@ -88,13 +88,16 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = super.onCreateView(inflater, container, savedInstanceState);
-        bcreate.setOnClickListener(new OnClickListener()
+        if (bcreate != null)
         {
-            public void onClick(View v)
+            bcreate.setOnClickListener(new OnClickListener()
             {
-                updateNode();
-            }
-        });
+                public void onClick(View v)
+                {
+                    updateNode();
+                }
+            });
+        }
 
         return v;
     }
@@ -107,7 +110,8 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(Bundle outState)
+    {
         HashMap<String, Serializable> props = formManager.prepareProperties();
         outState.putSerializable("props", props);
         super.onSaveInstanceState(outState);

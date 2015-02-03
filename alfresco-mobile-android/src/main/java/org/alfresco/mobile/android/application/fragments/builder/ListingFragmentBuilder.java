@@ -22,7 +22,8 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
-import org.alfresco.mobile.android.ui.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ListingTemplate;
+import org.alfresco.mobile.android.ui.template.ViewTemplate;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -79,6 +80,18 @@ public abstract class ListingFragmentBuilder extends AlfrescoFragmentBuilder
         }
         // extraConfiguration.putSerializable(LOAD_STATE, loadState);
         extraConfiguration.putSerializable(ListingModeFragment.ARGUMENT_MODE, mode);
+        return this;
+    }
+
+    public AlfrescoFragmentBuilder title(String title)
+    {
+        extraConfiguration.putString(ViewTemplate.ARGUMENT_LABEL, title);
+        return this;
+    }
+
+    public AlfrescoFragmentBuilder description(String description)
+    {
+        extraConfiguration.putString(ViewTemplate.ARGUMENT_DESCRIPTION, description);
         return this;
     }
 

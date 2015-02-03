@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.accounts.AccountTypesFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
@@ -96,6 +96,5 @@ public class WelcomeActivity extends BaseActivity
         i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, event.data.getId());
         startActivity(i);
         finish();
-        //removeWaitingDialog();
     }
 }

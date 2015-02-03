@@ -25,7 +25,7 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.api.model.SiteVisibility;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.site.SiteMembersFragment;
+import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.site.SiteFavoriteRequest;
 import org.alfresco.mobile.android.async.site.member.SiteMembershipRequest;
@@ -162,8 +162,8 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
             case R.id.menu_site_members:
                 if (fragmentRef.get().getActivity() instanceof MainActivity)
                 {
-                    SiteMembersFragment.with(fragmentRef.get().getActivity()).site(selectedOptionItems.get(0))
-                            .display();
+                    UsersFragment.with(fragmentRef.get().getActivity())
+                            .siteShortName(selectedOptionItems.get(0).getShortName()).display();
                 }
                 onMenuItemClick = true;
                 break;

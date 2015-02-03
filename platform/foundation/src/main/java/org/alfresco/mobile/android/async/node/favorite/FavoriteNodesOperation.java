@@ -49,11 +49,11 @@ public class FavoriteNodesOperation extends ListingOperation<PagingResult>
     @SuppressWarnings("rawtypes")
     protected LoaderResult<PagingResult> doInBackground()
     {
+        LoaderResult<PagingResult> result = new LoaderResult<PagingResult>();
+
         try
         {
             super.doInBackground();
-
-            LoaderResult<PagingResult> result = new LoaderResult<PagingResult>();
             PagingResult pagingResult = null;
 
             try
@@ -93,14 +93,13 @@ public class FavoriteNodesOperation extends ListingOperation<PagingResult>
             }
 
             result.setData(pagingResult);
-
-            return result;
         }
         catch (Exception e)
         {
             Log.w(TAG, Log.getStackTraceString(e));
+            result.setException(e);
         }
-        return new LoaderResult<PagingResult>();
+        return result;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

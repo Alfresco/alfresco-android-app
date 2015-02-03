@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.services.ConfigService;
+import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.FormConfigManager;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -86,7 +87,8 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        if (savedInstanceState != null){
+        if (savedInstanceState != null)
+        {
             props = (HashMap<String, Serializable>) savedInstanceState.get("props");
         }
 
@@ -227,19 +229,23 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
         protected View doInBackground(Void... params)
         {
             // Solve issue during UI creation outside main thread
-            if (Looper.myLooper() == null) {
+            if (Looper.myLooper() == null)
+            {
                 Looper.prepare();
             }
 
-            if (node.isDocument())
+            if (getSession() instanceof RepositorySession)
             {
-                modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
-                        .getDocumentTypeDefinition((Document) node);
-            }
-            else
-            {
-                modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
-                        .getFolderTypeDefinition((Folder) node);
+                if (node.isDocument())
+                {
+                    modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
+                            .getDocumentTypeDefinition((Document) node);
+                }
+                else
+                {
+                    modelDefinition = getSession().getServiceRegistry().getModelDefinitionService()
+                            .getFolderTypeDefinition((Folder) node);
+                }
             }
 
             // Generating the form can be long depending on complexity of the

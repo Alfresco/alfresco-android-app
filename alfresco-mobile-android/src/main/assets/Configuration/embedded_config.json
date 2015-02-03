@@ -1,7 +1,6 @@
 {
   "info": {
-    "schema-version": 0.1,
-    "config-version": 0.1
+    "schema-version": 0.1
   },
   "profiles": {
     "default": {
@@ -14,7 +13,7 @@
   "view-groups": [
     {
       "id": "views-menu-default",
-      "label-id": "home.menu.header",
+      "label-id": "Default Menu",
       "items": [
         {
           "item-type": "view-id",
@@ -57,57 +56,49 @@
   ],
   "views": {
     "view-activities-default": {
-      "type": "com.alfresco.type.activities"
+      "type": "org.alfresco.client.view.activities"
     },
     "view-repository-default": {
-      "type": "com.alfresco.type.repository"
+      "type": "org.alfresco.client.view.repository"
     },
     "view-repository-shared-default": {
-      "type": "com.alfresco.type.repository",
+      "type": "org.alfresco.client.view.repository",
       "params": {
         "folderTypeId": "shared"
       },
       "evaluator": "isAlfrescoV42"
     },
     "view-sites-default": {
-      "type": "com.alfresco.type.sites"
+      "type": "org.alfresco.client.view.site-browser"
     },
     "view-repository-userhome-default": {
-      "type": "com.alfresco.type.repository",
+      "type": "org.alfresco.client.view.repository",
       "params": {
         "folderTypeId": "userhome"
       },
       "evaluator": "isAlfrescoV42"
     },
     "view-task-default": {
-      "type": "com.alfresco.type.tasks"
+      "type": "org.alfresco.client.view.tasks",
+      "evaluator": "isOnPremise"
     },
     "view-favorite-default": {
-      "type": "com.alfresco.type.favorites"
+      "type": "org.alfresco.client.view.sync"
     },
     "view-search-default": {
-      "type": "com.alfresco.type.search"
+      "type": "org.alfresco.client.view.search"
     },
     "view-local-default": {
-      "type": "com.alfresco.type.local"
-    },
-    "view-settings-default": {
-      "type": "com.alfresco.type.settings"
-    },
-    "view-help-default": {
-      "type": "com.alfresco.type.help"
-    },
-    "view-about-default": {
-      "type": "com.alfresco.type.about"
+      "type": "org.alfresco.client.view.local"
     }
   },
   "creation": {
     "mime-types": [
       {
         "id": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-        "label-id": "Word Document",
+        "label-id": "creation.mime_types.word.title",
         "icon-id": "t.docx",
-        "description-id": "Microsoft Office 2007 Word Document",
+        "description-id": "creation.mime_types.word.description",
         "params": {
           "templatePath": "FilesTemplates/Template.docx",
           "extension": ".docx"
@@ -115,9 +106,9 @@
       },
       {
         "id": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        "label-id": "Powerpoint Presentation",
+        "label-id": "creation.mime_types.powerpoint.title",
         "icon-id": "t.pptx",
-        "description-id": "Microsoft Office 2007 Powerpoint Presentation",
+        "description-id": "creation.mime_types.powerpoint.description",
         "params": {
           "templatePath": "FilesTemplates/Template.pptx",
           "extension": ".pptx"
@@ -125,9 +116,9 @@
       },
       {
         "id": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        "label-id": "Excel Spreadsheet",
+        "label-id": "creation.mime_types.excel.title",
         "icon-id": "t.xlsx",
-        "description-id": "Microsoft Office 2007 Excel Spreadsheet",
+        "description-id": "creation.mime_types.excel.descriptiont",
         "params": {
           "templatePath": "FilesTemplates/Template.xlsx",
           "extension": ".xlsx"
@@ -135,13 +126,13 @@
       },
       {
         "id": "text/plain",
-        "label-id": "Text Document",
+        "label-id": "creation.mime_types.text.title",
         "icon-id": "t.txt",
-        "description-id": "Text Document",
+        "description-id": "creation.mime_types.text.description",
         "params": {
           "extension": ".txt"
         }
-      },
+      }
     ]
   },
   "forms": [
@@ -623,8 +614,14 @@
         "isAlfrescoV42-CE"
       ]
     },
+    "isOnPremise": {
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
+      "params": {
+        "session": "onpremise"
+      }
+    },
     "isAlfrescoV42-EE": {
-      "type": "com.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Enterprise",
@@ -633,7 +630,7 @@
       }
     },
     "isAlfrescoV42-CE": {
-      "type": "com.alfresco.client.evaluator.isRepositoryVersion",
+      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Community",

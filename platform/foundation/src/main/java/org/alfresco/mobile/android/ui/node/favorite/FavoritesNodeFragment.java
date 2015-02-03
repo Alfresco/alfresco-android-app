@@ -122,14 +122,18 @@ public class FavoritesNodeFragment extends BaseGridFragment implements Favorites
     // //////////////////////////////////////////////////////////////////////
     public static ListingFilter createFilterFromBundle(Bundle b)
     {
-        ListingFilter f = new ListingFilter();
+        ListingFilter f = null;
         boolean hasValue = false;
-        for (String key : FILTERS_KEYS)
+        if (b.containsKey(ARGUMENT_HAS_FILTER))
         {
-            if (b.containsKey(key))
+            f = new ListingFilter();
+            for (String key : FILTERS_KEYS)
             {
-                f.addFilter(key, b.getInt(key));
-                hasValue = true;
+                if (b.containsKey(key))
+                {
+                    f.addFilter(key, b.getInt(key));
+                    hasValue = true;
+                }
             }
         }
         return (hasValue) ? f : null;
@@ -173,9 +177,9 @@ public class FavoritesNodeFragment extends BaseGridFragment implements Favorites
     private static final Map<String, Integer> FILTERS_VALUE_REGISTRY = new HashMap<String, Integer>()
     {
         {
-            put(FavoritesNodeTemplate.FILTER_MODE_ALL, FavoriteNodesRequest.MODE_BOTH);
-            put(FavoritesNodeTemplate.FILTER_MODE_DOCUMENTS, FavoriteNodesRequest.MODE_DOCUMENTS);
-            put(FavoritesNodeTemplate.FILTER_MODE_FOLDERS, FavoriteNodesRequest.MODE_FOLDERS);
+            put(FILTER_MODE_ALL, FavoriteNodesRequest.MODE_BOTH);
+            put(FILTER_MODE_FILES, FavoriteNodesRequest.MODE_DOCUMENTS);
+            put(FILTER_MODE_FOLDERS, FavoriteNodesRequest.MODE_FOLDERS);
         }
     };
 
@@ -183,12 +187,10 @@ public class FavoritesNodeFragment extends BaseGridFragment implements Favorites
     private static final Map<String, String> FILTERS_KEY_REGISTRY = new HashMap<String, String>()
     {
         {
-            put(FavoritesNodeTemplate.FILTER_KEY_MODE, FavoritesNodeTemplate.FILTER_KEY_MODE);
+            put(FILTER_KEY_MODE, FILTER_KEY_MODE);
         }
     };
 
-    private static final String[] FILTERS_KEYS = new String[] {
-
-    };
+    private static final String[] FILTERS_KEYS = new String[] { FILTER_KEY_MODE };
 
 }

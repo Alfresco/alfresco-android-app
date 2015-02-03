@@ -21,6 +21,8 @@ import java.util.List;
 
 import org.alfresco.mobile.android.api.session.CloudNetwork;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
@@ -56,5 +58,15 @@ public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, GenericVi
     protected void updateIcon(GenericViewHolder vh, CloudNetwork item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_network));
+        AlfrescoAccount currentAccount = AlfrescoAccountManager.getInstance(getContext()).getDefaultAccount();
+        if (currentAccount != null && currentAccount.getRepositoryId().equals(item.getIdentifier()))
+        {
+            vh.choose.setVisibility(View.VISIBLE);
+            vh.choose.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_validate));
+        }
+        else
+        {
+            vh.choose.setVisibility(View.GONE);
+        }
     }
 }

@@ -19,20 +19,12 @@ package org.alfresco.mobile.android.api.services;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.Node;
-import org.alfresco.mobile.android.api.model.config.ActionConfig;
 import org.alfresco.mobile.android.api.model.config.ConfigInfo;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
 import org.alfresco.mobile.android.api.model.config.CreationConfig;
-import org.alfresco.mobile.android.api.model.config.FeatureConfig;
 import org.alfresco.mobile.android.api.model.config.FormConfig;
-import org.alfresco.mobile.android.api.model.config.MenuConfig;
-import org.alfresco.mobile.android.api.model.config.ProcessConfig;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.api.model.config.RepositoryConfig;
-import org.alfresco.mobile.android.api.model.config.SearchConfig;
-import org.alfresco.mobile.android.api.model.config.TaskConfig;
-import org.alfresco.mobile.android.api.model.config.ThemeConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 
 /**
@@ -117,19 +109,6 @@ public interface ConfigService extends Service
     RepositoryConfig getRepositoryConfig();
 
     // ///////////////////////////////////////////////////////////////////////////
-    // FEATURE
-    /** Returns the feature configuration for the current application. */
-    List<FeatureConfig> getFeatureConfig();
-
-    /** Returns the feature configuration for the current application. */
-    List<FeatureConfig> getFeatureConfig(ConfigScope scope);
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // MENU
-    /** Returns the configuration for the menu with the given identifier. */
-    List<MenuConfig> getMenuConfig(String menuId);
-
-    // ///////////////////////////////////////////////////////////////////////////
     // VIEWS
     /**
      * Returns the configuration for the view with the given identifier and
@@ -155,14 +134,6 @@ public interface ConfigService extends Service
     FormConfig getFormConfig(String formId, ConfigScope scope);
 
     // ///////////////////////////////////////////////////////////////////////////
-    // WORKFLOW
-    /** Returns the configuration for workflow processes. */
-    List<ProcessConfig> getProcessConfig();
-
-    /** Returns the configuration for workflow tasks. */
-    List<TaskConfig> getTaskConfig();
-
-    // ///////////////////////////////////////////////////////////////////////////
     // CREATION
     boolean hasCreationConfig();
 
@@ -171,23 +142,4 @@ public interface ConfigService extends Service
 
     /** Returns the configuration for creation related features. */
     CreationConfig getCreationConfig(ConfigScope scope);
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // ACTION
-    /**
-     * Returns the list of ActionConfig object representing the actions
-     * available in the given group id and optionally for the given node.
-     */
-    List<ActionConfig> getActionConfig(String groupId, Node node);
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // SEARCH
-    /** Returns the configuration for search related features. */
-    SearchConfig getSearchConfig(Node node);
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // THEME
-    /** Returns branding configuration. */
-    ThemeConfig getThemeConfig();
-
 }
