@@ -59,7 +59,7 @@ public abstract class OAuthFragment extends DialogFragment
 
     private String code;
 
-    private int layout_id = R.layout.sdk_oauth;
+    private int layout_id = R.layout.sdk_webview;
 
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 

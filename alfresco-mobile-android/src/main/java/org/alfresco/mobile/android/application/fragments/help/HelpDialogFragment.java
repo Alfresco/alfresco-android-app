@@ -17,40 +17,179 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.help;
 
+import java.util.Map;
+
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.managers.ActionUtils;
+import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 
 import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.Fragment;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class HelpDialogFragment extends DialogFragment
 {
     public static final String TAG = HelpDialogFragment.class.getName();
 
+    private boolean isDefault = false;
+
+    private WebView webView;
+
+    private String defaultUrl = null;
+
+    private String rootUrl = null;
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////////////////////////////////////////////////
+    public static HelpDialogFragment newInstanceByTemplate(Bundle b)
+    {
+        HelpDialogFragment cbf = new HelpDialogFragment();
+        cbf.setArguments(b);
+        return cbf;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // LIFECYCLE
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View v = inflater.inflate(R.layout.sdk_webview, container, false);
+
+        webView = (WebView) v.findViewById(org.alfresco.mobile.android.foundation.R.id.webview);
+        webView.getSettings().setJavaScriptEnabled(true);
+
+        final Activity activity = getActivity();
+
+        defaultUrl = activity.getString(R.string.help_user_guide_default_url);
+
+        webView.setWebViewClient(new WebViewClient() {
+            boolean hasError = false;
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                hasError = false;
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+
+                // We redirect to default EN documentation if locale docs are
+                // not available.
+                if ((errorCode == ERROR_FILE_NOT_FOUND || errorCode == ERROR_HOST_LOOKUP) && !isDefault
+                        && failingUrl.equals(rootUrl)) {
+                    hasError = true;
+                    view.loadUrl(defaultUrl);
+                    view.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (hasError) {
+                    view.setVisibility(View.GONE);
+                } else {
+                    view.setVisibility(View.VISIBLE);
+                }
+            }
+
+            public void onFormResubmission(WebView view, Message dontResend, Message resend) {
+                resend.sendToTarget();
+            }
+
+        });
+
+        webView.setOnKeyListener(new View.OnKeyListener()
+        {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event)
+            {
+                if (event.getAction() == KeyEvent.ACTION_DOWN)
+                {
+                    switch (keyCode)
+                    {
+                        case KeyEvent.KEYCODE_BACK:
+                            if (webView.canGoBack())
+                            {
+                                webView.goBack();
+                                return true;
+                            }
+                            break;
+                    }
+                }
+                return false;
+            }
+        });
+
+        rootUrl = getUrl(activity);
+        webView.loadUrl(rootUrl);
+
+        return v;
+    }
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    public static void displayHelp(Activity activity)
+    private String getUrl(Activity activity)
     {
-        try
+        String prefix = activity.getString(R.string.docs_prefix);
+        String urlValue = null;
+        if (TextUtils.isEmpty(prefix))
         {
-            String prefix = activity.getString(R.string.docs_prefix);
-            String urlValue = null;
-            if (TextUtils.isEmpty(prefix))
-            {
-                urlValue = activity.getString(R.string.help_user_guide_default_url);
-            }
-            else
-            {
-                urlValue = String.format(activity.getString(R.string.help_user_guide_url), prefix, prefix);
-            }
-            ActionUtils.openURL(activity, urlValue);
+            isDefault = true;
+            urlValue = activity.getString(R.string.help_user_guide_default_url);
         }
-        catch (Exception e)
+        else
         {
-            Log.e("HelpGuide", "Unable to open help guide.");
+            isDefault = false;
+            urlValue = String.format(activity.getString(R.string.help_user_guide_url), prefix);
         }
+        return urlValue;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // BUILDER
+    // ///////////////////////////////////////////////////////////////////////////
+    public static Builder with(Activity activity)
+    {
+        return new Builder(activity);
+    }
+
+    public static class Builder extends LeafFragmentBuilder
+    {
+        // ///////////////////////////////////////////////////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder(Activity activity)
+        {
+            super(activity);
+            this.extraConfiguration = new Bundle();
+        }
+
+        public Builder(Activity appActivity, Map<String, Object> configuration)
+        {
+            super(appActivity, configuration);
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // CREATE
+        // ///////////////////////////////////////////////////////////////////////////
+        protected Fragment createFragment(Bundle b)
+        {
+            return newInstanceByTemplate(b);
+        };
     }
 }

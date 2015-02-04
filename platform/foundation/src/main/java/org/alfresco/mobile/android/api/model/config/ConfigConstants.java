@@ -92,6 +92,8 @@ public interface ConfigConstants
 
     String ICON_ID_VALUE = "icon-id";
 
+    String FILTERS_VALUE = "filters";
+
     // PROFILES
     String PROFILES_VALUE = "profiles";
 
@@ -130,6 +132,12 @@ public interface ConfigConstants
 
     String ONPREMISE_VALUE = "onpremise";
 
+    String SITE_SHORTNAME_VALUE = "siteShortName";
+
+    String USERNAME_VALUE = "userName";
+
+    String KEYWORDS_VALUE = "keywords";
+
     // EVALUATOR REPOSITORY VERSION
     String OPERATOR_VALUE = "operator";
 
@@ -146,6 +154,10 @@ public interface ConfigConstants
     String TYPE_NAME_VALUE = "typeName";
 
     String ASPECT_NAME_VALUE = "aspectName";
+
+    String PROPERTY_NAME_VALUE = "propertyName";
+
+    String PROPERTYVALUE_VALUE = "propertyValue";
 
     // FORMS
     String PARAMS_FORMS = "forms";

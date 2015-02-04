@@ -17,11 +17,12 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.activitystream;
 
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface ActivityStreamTemplate extends ListingTemplate
 {
-    String ARGUMENT_USERNAME = "userName";
+    String ARGUMENT_USERNAME = ConfigConstants.USERNAME_VALUE;
 
-    String ARGUMENT_SITE_SHORTNAME = "siteShortName";
+    String ARGUMENT_SITE_SHORTNAME = ConfigConstants.SITE_SHORTNAME_VALUE;
 }

@@ -427,15 +427,17 @@
   "fields": {
     "cm:name": {
       "model-id": "cm:name",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_name.title"
     },
     "cm:title": {
       "model-id": "cm:title",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_title.title"
     },
     "cm:description": {
       "model-id": "cm:description",
-      "type": "com.alfresco.client.form.field.text",
+      "type": "org.alfresco.client.form.field.text",
       "params": {
         "showMultipleLines": true
       },
@@ -443,167 +445,207 @@
     },
     "mimetype": {
       "model-id": "mimetype",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_mimetype.title"
     },
     "cm:author": {
       "model-id": "cm:author",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_author.title"
     },
     "size": {
       "model-id": "size",
-      "type": "com.alfresco.client.form.field.fileSize",
+      "type": "org.alfresco.client.form.field.fileSize",
       "label-id": "cm_contentmodel.property.cm_size.title"
     },
     "cm:creator": {
       "model-id": "cm:creator",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_creator.title"
     },
     "cm:created": {
       "model-id": "cm:created",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.cm_created.title"
     },
     "cm:modifier": {
       "model-id": "cm:modifier",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_modifier.title"
     },
     "cm:modified": {
       "model-id": "cm:modified",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.cm_modified.title"
     },
     "cm:publisher": {
       "model-id": "cm:publisher",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_publisher.title"
     },
     "cm:contributor": {
       "model-id": "cm:contributor",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_contributor.title"
     },
     "cm:type": {
       "model-id": "cm:type",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_type.title"
     },
     "cm:identifier": {
       "model-id": "cm:identifier",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_identifier.title"
     },
     "cm:dcsource": {
       "model-id": "cm:dcsource",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_dcsource.title"
     },
     "cm:coverage": {
       "model-id": "cm:coverage",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_coverage.title"
     },
     "cm:rights": {
       "model-id": "cm:rights",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_rights.title"
     },
     "cm:subject": {
       "model-id": "cm:subject",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_subject.title"
     },
     "audio:album": {
       "model-id": "audio:album",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_album.title"
     },
     "audio:artist": {
       "model-id": "audio:artist",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_artist.title"
     },
     "audio:composer": {
       "model-id": "audio:composer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_composer.title"
     },
     "audio:engineer": {
       "model-id": "audio:engineer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_engineer.title"
     },
     "audio:genre": {
       "model-id": "audio:genre",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_genre.title"
     },
     "audio:trackNumber": {
       "model-id": "audio:trackNumber",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.audio_trackNumber.title"
     },
     "audio:releaseDate": {
       "model-id": "audio:releaseDate",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.audio_releaseDate.title"
     },
     "audio:sampleRate": {
       "model-id": "audio:sampleRate",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_sampleRate.title"
     },
     "audio:sampleType": {
       "model-id": "audio:sampleType",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_sampleType.title"
     },
     "audio:channelType": {
       "model-id": "audio:channelType",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_channelType.title"
     },
     "audio:compressor": {
       "model-id": "audio:compressor",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.audio_compressor.title"
     },
     "exif:dateTimeOriginal": {
       "model-id": "exif:dateTimeOriginal",
+      "type": "org.alfresco.client.form.field.dateTime",
       "label-id": "cm_contentmodel.property.exif_dateTimeOriginal.title"
     },
     "exif:pixelXDimension": {
       "model-id": "exif:pixelXDimension",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_pixelXDimension.title"
     },
     "exif:pixelYDimension": {
       "model-id": "exif:pixelYDimension",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_pixelYDimension.title"
     },
     "exif:exposureTime": {
       "model-id": "exif:exposureTime",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_exposureTime.title"
     },
     "exif:fNumber": {
       "model-id": "exif:fNumber",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_fNumber.title"
     },
     "exif:flash": {
       "model-id": "exif:flash",
+      "type": "org.alfresco.client.form.field.boolean",
       "label-id": "cm_contentmodel.property.exif_flash.title"
     },
     "exif:focalLength": {
       "model-id": "exif:focalLength",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_focalLength.title"
     },
     "exif:isoSpeedRatings": {
       "model-id": "exif:isoSpeedRatings",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_isoSpeedRatings.title"
     },
     "exif:manufacturer": {
       "model-id": "exif:manufacturer",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_manufacturer.title"
     },
     "exif:model": {
       "model-id": "exif:model",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_model.title"
     },
     "exif:software": {
       "model-id": "exif:software",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_software.title"
     },
     "exif:orientation": {
       "model-id": "exif:orientation",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_orientation.title"
     },
     "exif:xResolution": {
       "model-id": "exif:xResolution",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_xResolution.title"
     },
     "exif:yResolution": {
       "model-id": "exif:yResolution",
+      "type": "org.alfresco.client.form.field.decimal",
       "label-id": "cm_contentmodel.property.exif_yResolution.title"
     },
     "exif:resolutionUnit": {
       "model-id": "exif:resolutionUnit",
+      "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_resolutionUnit.title"
     }
   },
@@ -615,13 +657,13 @@
       ]
     },
     "isOnPremise": {
-      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "session": "onpremise"
       }
     },
     "isAlfrescoV42-EE": {
-      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Enterprise",
@@ -630,7 +672,7 @@
       }
     },
     "isAlfrescoV42-CE": {
-      "type": "com.alfresco.client.evaluator.hasRepositoryCapability",
+      "type": "org.alfresco.client.evaluator.hasRepositoryCapability",
       "params": {
         "operator": ">=",
         "edition": "Community",
@@ -640,13 +682,13 @@
       }
     },
     "hasAuthorAspect": {
-      "type": "com.alfresco.client.evaluator.hasAspect",
+      "type": "org.alfresco.client.evaluator.hasAspect",
       "params": {
         "aspectName": "cm:author"
       }
     },
     "hasTitledAspect": {
-      "type": "com.alfresco.client.evaluator.hasAspect",
+      "type": "org.alfresco.client.evaluator.hasAspect",
       "params": {
         "aspectName": "cm:titled"
       }

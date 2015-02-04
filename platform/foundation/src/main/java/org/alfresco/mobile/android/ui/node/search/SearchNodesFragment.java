@@ -21,6 +21,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.KeywordSearchOptions;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.search.SearchEvent;
 import org.alfresco.mobile.android.async.node.search.SearchRequest;
@@ -43,7 +44,7 @@ public class SearchNodesFragment extends BaseGridFragment
 
     protected static final int MAX_RESULT_ITEMS = 30;
 
-    protected static final String ARGUMENT_KEYWORDS = "keywords";
+    protected static final String ARGUMENT_KEYWORDS = ConfigConstants.KEYWORDS_VALUE;
 
     protected static final String ARGUMENT_FULLTEXT = "fulltext";
 

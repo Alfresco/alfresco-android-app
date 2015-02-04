@@ -17,6 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.node.browse;
 
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
@@ -28,7 +29,7 @@ public interface NodeBrowserTemplate extends ListingTemplate
 
     String ARGUMENT_SITE = "site";
 
-    String ARGUMENT_SITE_SHORTNAME = "siteShortName";
+    String ARGUMENT_SITE_SHORTNAME = ConfigConstants.SITE_SHORTNAME_VALUE;
 
     String ARGUMENT_PATH = "path";
 

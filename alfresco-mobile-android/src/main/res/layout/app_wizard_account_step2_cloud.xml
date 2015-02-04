@@ -37,7 +37,7 @@
 
         <include
             android:layout_height="wrap_content"
-            layout="@layout/sdk_oauth" />
+            layout="@layout/sdk_webview" />
     </LinearLayout>
 
 </LinearLayout>
