@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.ListingFilter;
 import org.alfresco.mobile.android.api.model.Task;
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.services.WorkflowService;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.workflow.task.TasksEvent;
@@ -139,9 +140,9 @@ public class TasksFoundationFragment extends BaseGridFragment implements TasksTe
     @SuppressWarnings("unchecked")
     public static void addFilter(Map<String, Object> json, Bundle b)
     {
-        if (json.containsKey("filters"))
+        if (json.containsKey(ConfigConstants.FILTERS_VALUE))
         {
-            Map<String, Object> filter = (Map<String, Object>) json.get("filters");
+            Map<String, Object> filter = (Map<String, Object>) json.get(ConfigConstants.FILTERS_VALUE);
             b.putAll(createFilterBundle(filter));
         }
     }

@@ -646,7 +646,7 @@ public class MainActivity extends BaseActivity
                 hideSlideMenu();
                 return true;
             case R.id.menu_help:
-                HelpDialogFragment.displayHelp(this);
+                HelpDialogFragment.with(this).display();
                 hideSlideMenu();
                 return true;
             case R.id.menu_about:

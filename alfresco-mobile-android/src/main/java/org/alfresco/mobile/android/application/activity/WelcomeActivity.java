@@ -67,7 +67,7 @@ public class WelcomeActivity extends BaseActivity
         if (PrivateIntent.ALFRESCO_SCHEME_SHORT.equals(intent.getData().getScheme())
                 && PrivateIntent.HELP_GUIDE.equals(intent.getData().getHost()))
         {
-            HelpDialogFragment.displayHelp(this);
+            HelpDialogFragment.with(this).display();
         }
     }
 

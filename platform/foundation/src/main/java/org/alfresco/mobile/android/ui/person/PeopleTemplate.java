@@ -17,11 +17,12 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.ui.person;
 
+import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface PeopleTemplate extends ListingTemplate
 {
-    String ARGUMENT_SITE_SHORTNAME = "siteShortName";
+    String ARGUMENT_SITE_SHORTNAME = ConfigConstants.SITE_SHORTNAME_VALUE;
 
-    String ARGUMENT_KEYWORDS = "keywords";
+    String ARGUMENT_KEYWORDS = ConfigConstants.KEYWORDS_VALUE;
 }

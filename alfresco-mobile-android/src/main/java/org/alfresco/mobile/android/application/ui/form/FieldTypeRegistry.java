@@ -24,17 +24,17 @@ import android.text.TextUtils;
 
 public class FieldTypeRegistry
 {
-    public static final String FIELD_TEXT = "com.alfresco.client.form.field.text";
+    public static final String FIELD_TEXT = "org.alfresco.client.form.field.text";
 
-    public static final String FIELD_FILESIZE = "com.alfresco.client.form.field.fileSize";
+    public static final String FIELD_FILESIZE = "org.alfresco.client.form.field.fileSize";
 
-    public static final String FIELD_DATETIME = "com.alfresco.client.form.field.dateTime";
+    public static final String FIELD_DATETIME = "org.alfresco.client.form.field.dateTime";
 
-    public static final String FIELD_NUMBER = "com.alfresco.client.form.field.number";
+    public static final String FIELD_NUMBER = "org.alfresco.client.form.field.number";
 
-    public static final String FIELD_DECIMAL = "com.alfresco.client.form.field.decimal";
+    public static final String FIELD_DECIMAL = "org.alfresco.client.form.field.decimal";
 
-    public static final String FIELD_BOOLEAN = "com.alfresco.client.form.field.boolean";
+    public static final String FIELD_BOOLEAN = "org.alfresco.client.form.field.boolean";
 
     public static final String DEFAULT_FIELD = FIELD_TEXT;
 

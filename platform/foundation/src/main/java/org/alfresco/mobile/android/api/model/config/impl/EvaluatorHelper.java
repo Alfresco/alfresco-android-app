@@ -137,6 +137,7 @@ public class EvaluatorHelper extends HelperConfig
         EvaluatorType configtype = EvaluatorType.fromValue(evalConfig.type);
         if (configtype == null)
         {
+            //TODO Implement mechanism to retrieve custom evaluators via config file
             Log.w(TAG, "Evaluator Type  [" + evalConfig.type + "]  for [" + evalConfig.identifier
                     + "] doesn't exist. Check your configuration.");
             return false;
@@ -146,6 +147,9 @@ public class EvaluatorHelper extends HelperConfig
         {
             case HAS_REPOSITORY_CAPABILITY:
                 result = evaluateRepositoryCapability(evalConfig);
+                break;
+            case HAS_PROPERTY_VALUE:
+                result = evaluateHasPropertyValue(evalConfig, extraParameters);
                 break;
             case NODE_TYPE:
                 result = evaluateNodeType(evalConfig, extraParameters);
@@ -183,6 +187,36 @@ public class EvaluatorHelper extends HelperConfig
         Node node = (Node) extraParameters.getContextValue(ConfigScope.NODE);
 
         return node.hasAspect(aspectName);
+    }
+
+    private Boolean evaluateHasPropertyValue(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
+    {
+        if (extraParameters == null || extraParameters.getContextValue(ConfigScope.NODE) == null)
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a node object.");
+            return false;
+        }
+
+        String propertyName = (String) evalConfig.getParameter(ConfigConstants.PROPERTY_NAME_VALUE);
+        String propertyValue = (String) evalConfig.getParameter(ConfigConstants.PROPERTYVALUE_VALUE);
+
+        if (TextUtils.isEmpty(propertyName))
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a propertyName value.");
+            return false;
+        }
+
+        if (TextUtils.isEmpty(propertyValue))
+        {
+            Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a propertyValue value.");
+            return false;
+        }
+
+        Node node = (Node) extraParameters.getContextValue(ConfigScope.NODE);
+        Object value = node.getPropertyValue(propertyName);
+        if (value == null) {return false;}
+
+        return propertyValue.equals(value.toString());
     }
 
     private Boolean evaluateNodeType(EvaluatorConfigData evalConfig, ConfigScope extraParameters)

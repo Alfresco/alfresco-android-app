@@ -24,9 +24,10 @@ package org.alfresco.mobile.android.api.model.config;
  */
 public enum EvaluatorType
 {
-    NODE_TYPE("com.alfresco.client.evaluator.nodeType"), 
-    HAS_ASPECT("com.alfresco.client.evaluator.hasAspect"), 
-    HAS_REPOSITORY_CAPABILITY("com.alfresco.client.evaluator.hasRepositoryCapability");
+    NODE_TYPE("org.alfresco.client.evaluator.nodeType"),
+    HAS_ASPECT("org.alfresco.client.evaluator.hasAspect"),
+    HAS_REPOSITORY_CAPABILITY("org.alfresco.client.evaluator.hasRepositoryCapability"),
+    HAS_PROPERTY_VALUE("org.alfresco.client.evaluator.hasPropertyValue");
 
     /** The value associated to an enum. */
     private final String value;
