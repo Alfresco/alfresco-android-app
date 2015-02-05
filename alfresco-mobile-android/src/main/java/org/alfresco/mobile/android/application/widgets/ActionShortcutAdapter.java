@@ -49,11 +49,11 @@ public class ActionShortcutAdapter extends BaseListAdapter<Integer, GenericViewH
     @Override
     protected void updateIcon(GenericViewHolder vh, Integer item)
     {
-        int iconId = R.drawable.ic_doc;
+        int iconId = R.drawable.ic_doc_light;
         switch (item)
         {
             case R.string.action_text:
-                iconId = R.drawable.ic_doc;
+                iconId = R.drawable.ic_doc_light;
                 break;
             case R.string.action_speech2text:
                 iconId = R.drawable.ic_microphone;

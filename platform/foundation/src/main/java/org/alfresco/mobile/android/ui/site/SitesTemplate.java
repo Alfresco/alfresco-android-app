@@ -21,5 +21,10 @@ import org.alfresco.mobile.android.ui.template.ListingTemplate;
 
 public interface SitesTemplate extends ListingTemplate
 {
-    String ARGUMENT_FAVORITE_SITES = "favorites";
+    String ARGUMENT_SHOW = "show";
+
+    String SHOW_ALL_SITES = "all";
+    String SHOW_MY_SITES = "my";
+    String SHOW_FAVORITE_SITES = "favorites";
+
 }

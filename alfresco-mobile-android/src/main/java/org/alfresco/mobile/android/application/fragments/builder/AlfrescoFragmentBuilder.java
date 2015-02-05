@@ -23,6 +23,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.ConfigurationConstant;
+import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -162,8 +163,25 @@ public abstract class AlfrescoFragmentBuilder
             // Retrieve configuration
             AlfrescoFragmentBuilder builder = (AlfrescoFragmentBuilder) v.getTag();
 
+            // Views can requires a session.
+            // We check against the activity to display the right info.
+            if (builder.sessionRequired && getActivity() instanceof MainActivity)
+            {
+                if (!((MainActivity) getActivity()).hasSessionAvailable()) { return; }
+            }
+
+            int panel = FragmentDisplayer.PANEL_LEFT;
+            if (builder instanceof LeafFragmentBuilder)
+            {
+                builder.back(true);
+                if (DisplayUtils.hasLeftPane(getActivity()))
+                {
+                    panel = FragmentDisplayer.PANEL_CENTRAL;
+                }
+            }
+
             // Create the properties bundle
-            FragmentDisplayer.load(builder).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.load(builder).into(panel);
 
             // Remove
             if (getActivity() instanceof MainActivity)

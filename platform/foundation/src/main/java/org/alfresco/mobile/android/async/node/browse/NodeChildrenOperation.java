@@ -186,7 +186,7 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
     protected void onPostExecute(LoaderResult<PagingResult<Node>> result)
     {
         super.onPostExecute(result);
-        EventBusManager.getInstance().post(new NodeChildrenEvent(getRequestId(), result, parentFolder));
+        EventBusManager.getInstance().post(new NodeChildrenEvent(getRequestId(), result, parentFolder, site));
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataRequest;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
@@ -87,7 +88,7 @@ public final class CloudExceptionUtils
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
                         SessionExceptionHelper.getMessageId(context, exception));
-                // ActionManager.actionDisplayDialog(context, b);
+                BaseActionUtils.actionDisplayDialog(context, b);
                 return;
             }
         }

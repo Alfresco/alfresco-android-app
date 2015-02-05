@@ -51,7 +51,7 @@ public class DateTimeField extends BaseField
     /**
      * Used by the configurationManager
      * 
-     * @param activity
+     * @param context
      * @param configuration
      */
     public DateTimeField(Context context, Property property, FieldConfig configuration)

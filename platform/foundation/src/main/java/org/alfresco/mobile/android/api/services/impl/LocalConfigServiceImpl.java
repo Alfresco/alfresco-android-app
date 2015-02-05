@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.utils.JsonUtils;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -63,7 +64,7 @@ public class LocalConfigServiceImpl implements ConfigService
     public LocalConfigServiceImpl()
     {
     }
-    
+
     public LocalConfigServiceImpl(File configFolder)
     {
         this.configuration = ConfigurationImpl.load(null, null, configFolder);
@@ -139,6 +140,10 @@ public class LocalConfigServiceImpl implements ConfigService
 
             // Finally create the configuration
             config = ConfigurationImpl.parseJson(null, json, info, stringConfig);
+            if (AlfrescoAccountManager.getInstance(context).getDefaultAccount() != null)
+            {
+                config.setPersonId(AlfrescoAccountManager.getInstance(context).getDefaultAccount().getUsername());
+            }
         }
         catch (Exception e)
         {
@@ -152,9 +157,9 @@ public class LocalConfigServiceImpl implements ConfigService
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasConfiguration()
     {
-        return (configuration != null) ;
+        return (configuration != null);
     }
-    
+
     @Override
     public ConfigInfo getConfigInfo()
     {
@@ -270,7 +275,8 @@ public class LocalConfigServiceImpl implements ConfigService
     // ///////////////////////////////////////////////////////////////////////////
     // SESSION
     // ///////////////////////////////////////////////////////////////////////////
-    public void setSession(AlfrescoSession session){
+    public void setSession(AlfrescoSession session)
+    {
         configuration.setSession(session);
     }
 

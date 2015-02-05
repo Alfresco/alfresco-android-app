@@ -69,6 +69,7 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -93,8 +94,8 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -201,8 +202,7 @@ public class MainActivity extends BaseActivity
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawer = (ViewGroup) findViewById(R.id.left_drawer);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.drawable.ic_drawer, R.string.open_in,
-                R.string.cancel)
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_in, R.string.cancel)
         {
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -233,8 +233,6 @@ public class MainActivity extends BaseActivity
         {
             getActionBar().setHomeButtonEnabled(true);
         }
-
-        setProgressBarIndeterminateVisibility((getCurrentAccount() == null && getCurrentSession() == null));
 
         // Is it from a shortcut ?
         if (Intent.ACTION_VIEW.equals(getIntent().getAction()) && PrivateIntent.NODE_TYPE.equals(getIntent().getType())
@@ -495,12 +493,6 @@ public class MainActivity extends BaseActivity
         }
 
     }
-
-    public void showMainMenuFragment(View v)
-    {
-        doMainMenuAction(v.getId());
-    }
-
     // ///////////////////////////////////////////////////////////////////////////
     // SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -533,7 +525,11 @@ public class MainActivity extends BaseActivity
             sessionManager.loadSession(getCurrentAccount());
         }
         invalidateOptionsMenu();
-        setProgressBarIndeterminateVisibility(getCurrentSession() == null);
+    }
+
+    public boolean hasSessionAvailable()
+    {
+        return checkSession(0);
     }
 
     private boolean checkSession(int actionMainMenuId)
@@ -550,11 +546,17 @@ public class MainActivity extends BaseActivity
                 return false;
             case SESSION_LOADING:
                 displayWaitingDialog();
-                fragmentQueue = actionMainMenuId;
+                fragmentQueue = actionMainMenuId != 0 ? actionMainMenuId : -1;
                 return false;
             default:
                 if (!ConnectivityUtils.hasNetwork(this))
                 {
+                    Bundle ba = new Bundle();
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_session_nodata);
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
+                    ActionUtils.actionDisplayDialog(this, ba);
                     return false;
                 }
                 else if (getCurrentAccount() != null && getCurrentAccount().getActivation() != null)
@@ -759,7 +761,6 @@ public class MainActivity extends BaseActivity
 
         // Add accountName in actionBar
         UIUtils.displayTitle(this, getString(R.string.app_name));
-        // getActionBar().setDisplayHomeAsUpEnabled(false);
     }
 
     @Subscribe
@@ -767,6 +768,7 @@ public class MainActivity extends BaseActivity
     {
         setSessionState(SESSION_LOADING);
         setProgressBarIndeterminateVisibility(true);
+        invalidateOptionsMenu();
         setCurrentAccount(event.account);
         if (event != null)
         {
@@ -905,7 +907,7 @@ public class MainActivity extends BaseActivity
     {
         if (currentAccount == null || currentAccount.getId() != event.data) { return; }
 
-        //Display OAuth Authentication
+        // Display OAuth Authentication
         AccountOAuthFragment.with(MainActivity.this).account(event.account).isCreation(false).display();
 
         // Stop progress indication
@@ -917,11 +919,14 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onAccountErrorEvent(LoadAccountErrorEvent event)
     {
-        if (currentAccount == null || currentAccount.getId() != event.data) { return; }
-
         // Display error dialog message
-        // TODO Display Errors!
-        // ActionManager.actionDisplayDialog(this, intent.getExtras());
+
+        Bundle b = new Bundle();
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, SessionExceptionHelper.getMessageId(this, event.exception));
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
+        ActionUtils.actionDisplayDialog(this, b);
 
         // Change status
         setSessionErrorMessageId(event.messageId);
@@ -943,6 +948,7 @@ public class MainActivity extends BaseActivity
 
         setSessionState(SESSION_INACTIVE);
         setProgressBarIndeterminateVisibility(false);
+        invalidateOptionsMenu();
         AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
         return;
     }

@@ -65,7 +65,7 @@ public class AuthorityField extends BaseField
     /**
      * Used by the configurationManager
      * 
-     * @param activity
+     * @param context
      * @param configuration
      */
     public AuthorityField(Context context, Property property, FieldConfig configuration)

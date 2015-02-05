@@ -29,7 +29,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
 
 public class BaseActionUtils
 {
@@ -215,5 +217,29 @@ public class BaseActionUtils
     public interface ActionManagerListener
     {
         void onActivityNotFoundException(ActivityNotFoundException e);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ERRORS & DIALOG
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void actionDisplayDialog(Context context, Bundle bundle)
+    {
+        String intentId = PrivateIntent.ACTION_DISPLAY_DIALOG;
+        Intent i = new Intent(intentId);
+        if (bundle != null)
+        {
+            i.putExtras(bundle);
+        }
+        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
+    }
+
+    public static void actionDisplayError(Fragment f, Exception e)
+    {
+        Intent i = new Intent(PrivateIntent.ACTION_DISPLAY_ERROR);
+        if (e != null)
+        {
+            i.putExtra(PrivateIntent.EXTRA_ERROR_DATA, e);
+        }
+        LocalBroadcastManager.getInstance(f.getActivity()).sendBroadcast(i);
     }
 }

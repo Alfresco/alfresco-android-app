@@ -17,7 +17,7 @@
   limitations under the License.-->
 <resources>
     <!-- HELP -->
-    <string name="help_user_guide_url" formatted="false">http://docsstaging.alfresco.com/android-%1$s/topics/android-mobile-overview.html</string>
-    <string name="help_user_guide_default_url">http://docsstaging.alfresco.com/android/topics/android-mobile-overview.html</string>
+    <string name="help_user_guide_url" formatted="false">http://docsstaging.alfresco.com/android-%1$s/topics/mobile-overview.html</string>
+    <string name="help_user_guide_default_url">http://docsstaging.alfresco.com/android/topics/mobile-overview.html</string>
 
 </resources>

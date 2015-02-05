@@ -37,6 +37,8 @@ public class ConfigScope implements Serializable
 
     public static final String NODE = "ConfigScope.node";
 
+    public static final String PERSON_IDENTIFIER = "ConfigScope.personId";
+
     public static final String SITE_IDENTIFIER = "ConfigScope.siteIdentifier";
 
     private Map<String, Object> mapValues;

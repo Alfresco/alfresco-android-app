@@ -27,7 +27,8 @@ public enum EvaluatorType
     NODE_TYPE("org.alfresco.client.evaluator.nodeType"),
     HAS_ASPECT("org.alfresco.client.evaluator.hasAspect"),
     HAS_REPOSITORY_CAPABILITY("org.alfresco.client.evaluator.hasRepositoryCapability"),
-    HAS_PROPERTY_VALUE("org.alfresco.client.evaluator.hasPropertyValue");
+    HAS_PROPERTY_VALUE("org.alfresco.client.evaluator.hasPropertyValue"),
+    IS_USER("org.alfresco.client.evaluator.isUser");
 
     /** The value associated to an enum. */
     private final String value;

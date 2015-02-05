@@ -33,6 +33,7 @@ import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundExcept
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
+import android.accounts.NetworkErrorException;
 import android.content.Context;
 
 /**
@@ -142,6 +143,10 @@ public final class SessionExceptionHelper
         else if (e instanceof AlfrescoServiceException && e.getMessage().contains("API plan limit exceeded"))
         {
             messageId = R.string.error_general;
+        }
+        else if (e instanceof NetworkErrorException)
+        {
+            messageId = R.string.error_session_nodata;
         }
         else
         // Default case. We don't know what's wrong...

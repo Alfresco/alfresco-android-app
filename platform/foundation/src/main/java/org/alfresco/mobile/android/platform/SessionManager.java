@@ -41,6 +41,7 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
+import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
@@ -190,6 +191,11 @@ public abstract class SessionManager extends Manager
             // Create the session for the specific account
             createSession(accountToLoad);
         }
+        else if (getCurrentAccount() != null && !hasSession(getCurrentAccount().getId()))
+        {
+            // Create the session for the specific account
+            createSession(getCurrentAccount());
+        }
 
         // Mark accountId for the specific activity.
         // Help to retrieve session associated to a specific activity
@@ -204,7 +210,8 @@ public abstract class SessionManager extends Manager
         if (!ConnectivityUtils.hasInternetAvailable(appContext))
         {
             EventBusManager.getInstance().post(
-                    new LoadAccountErrorEvent(null, currentAccount, new NetworkErrorException("Not Online"), -1));
+                    new LoadAccountErrorEvent(null, currentAccount, new NetworkErrorException("Not Online"),
+                            SessionExceptionHelper.getMessageId(appContext, new NetworkErrorException("Not Online"))));
             return;
         }
 
@@ -428,7 +435,8 @@ public abstract class SessionManager extends Manager
         protected void prepareCommonSettings()
         {
             // Default settings for Alfresco Application
-            extraSettings.put(AlfrescoSession.ONPREMISE_SERVICES_CLASSNAME, AlfrescoOnPremiseServiceRegistry.class.getCanonicalName());
+            extraSettings.put(AlfrescoSession.ONPREMISE_SERVICES_CLASSNAME,
+                    AlfrescoOnPremiseServiceRegistry.class.getCanonicalName());
             extraSettings.put(SessionParameter.CONNECT_TIMEOUT, "10000");
             extraSettings.put(SessionParameter.READ_TIMEOUT, "60000");
             extraSettings.put(AlfrescoSession.EXTRACT_METADATA, true);
@@ -460,7 +468,7 @@ public abstract class SessionManager extends Manager
                         url.getHost() + ".properties");
                 if (f.exists() && f.isFile())
                 {
-                    AlfrescoNotificationManager.getInstance(getContext()).showToast( R.string.security_ssl_disable);
+                    AlfrescoNotificationManager.getInstance(getContext()).showToast(R.string.security_ssl_disable);
                     extraSettings.put(ONPREMISE_TRUSTMANAGER_CLASSNAME, NetworkTrustManager.class.getName());
                 }
             }

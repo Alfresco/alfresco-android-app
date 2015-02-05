@@ -173,7 +173,7 @@ public class ConfigManager extends Manager
             ((LocalConfigServiceImpl) embedConfigService).setSession(session);
             currentService.put(accountId, embedConfigService);
         }
-
+        currentProfileId = null;
         eventBus.post(new ConfigurationMenuEvent(accountId));
     }
 
@@ -341,8 +341,6 @@ public class ConfigManager extends Manager
     public void onConfigContextEvent(ConfigurationEvent event)
     {
         if (event.hasException || event.data == null) { return; }
-
-        // load(event.accountId);
 
         if (event.data.hasViewConfig())
         {

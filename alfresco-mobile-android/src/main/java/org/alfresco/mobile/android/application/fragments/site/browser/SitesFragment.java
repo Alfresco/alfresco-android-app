@@ -145,9 +145,17 @@ public class SitesFragment extends CommonBrowserSitesFragment
         @Override
         protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
         {
-            if (properties.containsKey(ARGUMENT_FAVORITE_SITES))
+            if (properties.containsKey(ARGUMENT_SHOW))
             {
-                b.putBoolean(ARGUMENT_FAVORITE_SITES, JSONConverter.getBoolean(properties, ARGUMENT_FAVORITE_SITES));
+                String show = JSONConverter.getString(properties, ARGUMENT_SHOW);
+                if (SHOW_MY_SITES.equals(show))
+                {
+                    b.putBoolean(ARGUMENT_SHOW, false);
+                }
+                else if (SHOW_FAVORITE_SITES.equals(show))
+                {
+                    b.putBoolean(ARGUMENT_SHOW, true);
+                }
             }
         }
 
@@ -156,7 +164,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         // ///////////////////////////////////////////////////////////////////////////
         public Builder favorite(boolean onlyFavorites)
         {
-            extraConfiguration.putSerializable(ARGUMENT_FAVORITE_SITES, onlyFavorites);
+            extraConfiguration.putString(ARGUMENT_SHOW, onlyFavorites ? SHOW_FAVORITE_SITES : SHOW_MY_SITES);
             return this;
         }
 
