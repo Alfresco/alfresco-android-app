@@ -64,6 +64,8 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 
     protected boolean hasConfig = true;
 
+    private String personId;
+
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -170,6 +172,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 
             // Finally create the Configuration Object
             configuration = ConfigurationImpl.parseJson(session, json, info, localHelper);
+            configuration.setPersonId(session.getPersonIdentifier());
         }
         catch (Exception e)
         {

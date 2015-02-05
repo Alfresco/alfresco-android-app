@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.extensions.SamsungManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
-import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -42,9 +41,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
 
@@ -136,30 +133,6 @@ public class ActionUtils extends BaseActionUtils
         intent.setData(Uri.parse(url));
         activity.startActivity(intent);
         return intent;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // ERRORS & DIALOG
-    // ///////////////////////////////////////////////////////////////////////////
-    public static void actionDisplayDialog(Context context, Bundle bundle)
-    {
-        String intentId = PrivateIntent.ACTION_DISPLAY_DIALOG;
-        Intent i = new Intent(intentId);
-        if (bundle != null)
-        {
-            i.putExtras(bundle);
-        }
-        LocalBroadcastManager.getInstance(context).sendBroadcast(i);
-    }
-
-    public static void actionDisplayError(Fragment f, Exception e)
-    {
-        Intent i = new Intent(PrivateIntent.ACTION_DISPLAY_ERROR);
-        if (e != null)
-        {
-            i.putExtra(PrivateIntent.EXTRA_ERROR_DATA, e);
-        }
-        LocalBroadcastManager.getInstance(f.getActivity()).sendBroadcast(i);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -1293,7 +1293,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
-            this.menuIconId = R.drawable.ic_repository_dark;
+            this.menuIconId = R.drawable.ic_doc_dark;
             this.menuTitleId = R.string.details;
             templateArguments = new String[] { ARGUMENT_NODE_ID, ARGUMENT_PATH };
         }

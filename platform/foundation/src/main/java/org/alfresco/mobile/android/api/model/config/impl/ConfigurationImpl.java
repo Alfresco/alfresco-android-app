@@ -71,6 +71,8 @@ public class ConfigurationImpl
 
     private WeakReference<AlfrescoSession> session;
 
+    private String personId;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -147,8 +149,8 @@ public class ConfigurationImpl
         {
             // It's the beta version of configuration file
             configuration.info = info;
-            configuration.viewHelper = new ViewHelper(configuration, stringHelper, prepareBetaViews(
-                    configuration, JSONConverter.getMap(json.get(ConfigConstants.CATEGORY_ROOTMENU))));
+            configuration.viewHelper = new ViewHelper(configuration, stringHelper, prepareBetaViews(configuration,
+                    JSONConverter.getMap(json.get(ConfigConstants.CATEGORY_ROOTMENU))));
             return configuration;
         }
 
@@ -396,6 +398,16 @@ public class ConfigurationImpl
     public AlfrescoSession getSession()
     {
         return session.get();
+    }
+
+    public String getPersonId()
+    {
+        return personId;
+    }
+
+    public void setPersonId(String personId)
+    {
+        this.personId = personId;
     }
 
     public void setSession(AlfrescoSession session)

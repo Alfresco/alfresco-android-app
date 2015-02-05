@@ -122,6 +122,7 @@ public interface ConfigConstants
     // EVALUATORS
     String EVALUATOR = "evaluator";
 
+
     String MATCH_ALL_VALUE = "match-all";
 
     String MATCH_ANY_VALUE = "match-any";
@@ -158,6 +159,8 @@ public interface ConfigConstants
     String PROPERTY_NAME_VALUE = "propertyName";
 
     String PROPERTYVALUE_VALUE = "propertyValue";
+
+    String USERS_VALUE = "users";
 
     // FORMS
     String PARAMS_FORMS = "forms";

@@ -27,11 +27,14 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
+import android.annotation.TargetApi;
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +57,7 @@ public class UIUtils
      * @param background
      */
     @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void setBackground(View v, Drawable background)
     {
         if (AndroidVersion.isJBOrAbove())
@@ -72,6 +76,7 @@ public class UIUtils
      * @param activity
      * @return
      */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public static int[] getScreenDimension(Activity activity)
     {
         int width = 0;
@@ -118,6 +123,7 @@ public class UIUtils
         displayTitle(activity, title, true);
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static void displayTitle(Activity activity, String title, boolean isUpEnable)
     {
         if (activity.getActionBar() != null)
@@ -134,7 +140,22 @@ public class UIUtils
             {
                 bar.setHomeButtonEnabled(isUpEnable);
             }
-            activity.getActionBar().setDisplayHomeAsUpEnabled(isUpEnable);
+
+            //If MenuFragment is visible => up is disable.
+            Fragment fr = activity.getFragmentManager().findFragmentByTag(
+                    "org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
+            if (fr != null && fr.isVisible())
+            {
+                activity.getActionBar().setDisplayHomeAsUpEnabled(false);
+                if (AndroidVersion.isICSOrAbove())
+                {
+                    bar.setHomeButtonEnabled(false);
+                }
+            }
+            else
+            {
+                activity.getActionBar().setDisplayHomeAsUpEnabled(isUpEnable);
+            }
 
             View v = bar.getCustomView();
             if (v == null)
@@ -241,7 +262,7 @@ public class UIUtils
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(activity.getWindow().getCurrentFocus().getWindowToken(), 0);
     }
-    
+
     public static void hideKeyboard(Activity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);

@@ -98,7 +98,9 @@ public abstract class BaseGridFragment extends CommonGridFragment
             onDataDisplayed();
         }
         AccessibilityUtils.sendAccessibilityEvent(getActivity());
-        refreshHelper.setRefreshComplete();
+        if (refreshHelper != null){
+            refreshHelper.setRefreshComplete();
+        }
     }
 
     /** Event after data has been displayed. */

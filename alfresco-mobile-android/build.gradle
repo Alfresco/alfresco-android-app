@@ -46,6 +46,10 @@ android {
         }
 
         release {
+            manifestPlaceholders = [ PROVIDER_AUTHORITY:PROVIDER_AUTHORITY ]
+            resValue "string", "account_name", ACCOUNT_ID
+            resValue "string", "sync_adapter", SYNC_ADAPTER
+
             signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -54,16 +58,6 @@ android {
                     output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
                 }
             }
-            resValue "string", "account_name", ACCOUNT_ID
-            resValue "string", "sync_adapter", SYNC_ADAPTER
-        }
-    }
-
-    productFlavors {
-        beta {
-        }
-
-        production {
         }
     }
 
@@ -81,8 +75,8 @@ dependencies {
     //debugCompile project(':extensions:tools')
 
     //PRODUCTION BUILD VARIANT
-    productionCompile project(':platform:theme')
-    productionCompile project(':platform:localization')
-    productionCompile project(':extensions:samsung')
-    productionCompile project(':extensions:scansnap')
+    releaseCompile project(':platform:theme')
+    releaseCompile project(':platform:localization')
+    releaseCompile project(':extensions:samsung')
+    releaseCompile project(':extensions:scansnap')
 }

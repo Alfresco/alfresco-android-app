@@ -238,7 +238,7 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
             super(activity, configuration);
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
-            templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
+            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW};
         }
 
         // ///////////////////////////////////////////////////////////////////////////

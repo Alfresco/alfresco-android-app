@@ -51,7 +51,7 @@ import org.alfresco.mobile.android.application.fragments.node.create.AddFolderDi
 import org.alfresco.mobile.android.application.fragments.node.create.CreateFolderDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.node.rendition.GalleryPreviewFragment;
+import org.alfresco.mobile.android.application.fragments.node.rendition.CarouselPreviewFragment;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -620,6 +620,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             importFolder = parentFolder;
         }
 
+        if (event.site != null)
+        {
+            this.site = event.site;
+        }
+
         if (adapter == null)
         {
             adapter = onAdapterCreation();
@@ -883,7 +888,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 dialogft.show(getFragmentManager(), DocumentTypesDialogFragment.TAG);
                 return true;
             case R.id.menu_gallery:
-                GalleryPreviewFragment.with(getActivity()).display();
+                CarouselPreviewFragment.with(getActivity()).display();
                 return true;
             default:
                 break;
@@ -1102,7 +1107,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onDocumentCreated(CreateDocumentEvent event)
     {
         if (event.hasException) { return; }
-        if (parentFolder != null && parentFolder.getIdentifier() == event.parentFolder.getIdentifier())
+        if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))
         {
             ((ProgressNodeAdapter) adapter).replaceNode(event.data);
         }
@@ -1233,6 +1238,10 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             this.menuIconId = ICON_ID_REPOSITORY;
             this.menuTitleId = LABEL_ID_REPOSITORY;
+            if (configuration != null && configuration.containsKey(ARGUMENT_SITE_SHORTNAME)){
+                this.menuIconId = R.drawable.ic_site_dark;
+            }
+
             if (configuration != null && configuration.containsKey(NodeBrowserTemplate.ARGUMENT_FOLDER_TYPE_ID))
             {
                 String folderTypeValue = JSONConverter.getString(configuration,
@@ -1241,7 +1250,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 {
                     this.menuIconId = ICON_ID_SHARED;
                     this.menuTitleId = LABEL_ID_SHARED;
-                    // folderIdentifier(FOLDER_TYPE_SHARED);
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_SHARED);
                     shortcut(true);
                 }
@@ -1249,7 +1257,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                 {
                     this.menuIconId = ICON_ID_USERHOME;
                     this.menuTitleId = LABEL_ID_USERHOME;
-                    // folderIdentifier(FOLDER_TYPE_USERHOME);
                     extraConfiguration.putSerializable(ARGUMENT_FOLDER_TYPE_ID, NodeChildrenRequest.FOLDER_USER_HOMES);
                     shortcut(true);
                 }

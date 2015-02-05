@@ -9,10 +9,10 @@
     <string name="form_org_alfresco_client_form_field_text">org.alfresco.mobile.android.application.ui.form.TextField</string>
 
     <!-- FILE SIZE -->
-    <string name="form_org_alfresco_client_form_field_fileSize">org.alfresco.mobile.android.application.ui.form.FileSizeField</string>
+    <string name="form_org_alfresco_client_form_field_size">org.alfresco.mobile.android.application.ui.form.SizeField</string>
 
     <!-- NUMERIC -->
-    <string name="form_org_alfresco_client_form_field_numeric">org.alfresco.mobile.android.application.ui.form.NumberField</string>
+    <string name="form_org_alfresco_client_form_field_number">org.alfresco.mobile.android.application.ui.form.NumberField</string>
     <string name="form_org_alfresco_client_form_field_decimal">org.alfresco.mobile.android.application.ui.form.DecimalField</string>
 
     <!-- DATE TIME -->

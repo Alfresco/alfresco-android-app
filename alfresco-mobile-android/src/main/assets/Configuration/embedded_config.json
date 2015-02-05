@@ -428,7 +428,17 @@
     "cm:name": {
       "model-id": "cm:name",
       "type": "org.alfresco.client.form.field.text",
-      "label-id": "cm_contentmodel.property.cm_name.title"
+      "label-id": "cm_contentmodel.property.cm_name.title",
+      "validation": [
+        {
+          "item-type": "validation-rule-id",
+          "validation-rule-id": "validation-mandatory"
+        },
+        {
+          "item-type": "validation-rule-id",
+          "validation-rule-id": "validation-nodeName"
+        }
+      ]
     },
     "cm:title": {
       "model-id": "cm:title",
@@ -580,12 +590,12 @@
     },
     "exif:pixelXDimension": {
       "model-id": "exif:pixelXDimension",
-      "type": "org.alfresco.client.form.field.decimal",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_pixelXDimension.title"
     },
     "exif:pixelYDimension": {
       "model-id": "exif:pixelYDimension",
-      "type": "org.alfresco.client.form.field.decimal",
+      "type": "org.alfresco.client.form.field.number",
       "label-id": "cm_contentmodel.property.exif_pixelYDimension.title"
     },
     "exif:exposureTime": {
@@ -647,6 +657,16 @@
       "model-id": "exif:resolutionUnit",
       "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.exif_resolutionUnit.title"
+    }
+  },
+  "validation-rules": {
+    "validation-mandatory": {
+      "type": "org.alfresco.client.validation.mandatory",
+      "error-id": "org.alfresco.client.validation.mandatory.error"
+    },
+    "validation-nodeName": {
+      "type": "org.alfresco.client.validation.nodeName",
+      "error-id": "org.alfresco.client.validation.nodeName.error"
     }
   },
   "evaluators": {

@@ -33,6 +33,8 @@ public class ProfileConfigImpl extends BaseConfigImpl implements ProfileConfig
 
     private String rootViewId;
 
+    private String evaluatorId;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -51,6 +53,7 @@ public class ProfileConfigImpl extends BaseConfigImpl implements ProfileConfig
             profileConfig.isDefault = JSONConverter.getBoolean(json, ConfigConstants.DEFAULT_VALUE);
         }
 
+        profileConfig.evaluatorId = JSONConverter.getString(json, ConfigConstants.EVALUATOR);
         profileConfig.rootViewId = JSONConverter.getString(json, ConfigConstants.ROOTVIEW_ID_VALUE);
 
         return profileConfig;
@@ -63,6 +66,11 @@ public class ProfileConfigImpl extends BaseConfigImpl implements ProfileConfig
     public boolean isDefault()
     {
         return isDefault;
+    }
+
+    public String getEvaluator()
+    {
+        return evaluatorId;
     }
 
     @Override

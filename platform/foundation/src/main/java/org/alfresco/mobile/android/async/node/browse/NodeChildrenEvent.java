@@ -20,16 +20,20 @@ package org.alfresco.mobile.android.async.node.browse;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationEvent;
 
 public class NodeChildrenEvent extends OperationEvent<PagingResult<Node>>
 {
-    public Folder parentFolder;
+    public final Folder parentFolder;
+    public final Site site;
 
-    public NodeChildrenEvent(String requestId, LoaderResult<PagingResult<Node>> results, Folder parentFolder)
+
+    public NodeChildrenEvent(String requestId, LoaderResult<PagingResult<Node>> results, Folder parentFolder, Site site)
     {
         super(requestId, results);
         this.parentFolder = parentFolder;
+        this.site = site;
     }
 }

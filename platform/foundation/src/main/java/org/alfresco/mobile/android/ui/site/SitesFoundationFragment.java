@@ -51,9 +51,9 @@ public class SitesFoundationFragment extends BaseGridFragment implements SitesTe
     // //////////////////////////////////////////////////////////////////////
     protected void onRetrieveParameters(Bundle bundle)
     {
-        if (bundle.containsKey(ARGUMENT_FAVORITE_SITES))
+        if (bundle.containsKey(ARGUMENT_SHOW))
         {
-            favorite = bundle.getBoolean(ARGUMENT_FAVORITE_SITES);
+            favorite = bundle.getBoolean(ARGUMENT_SHOW);
         }
     }
 

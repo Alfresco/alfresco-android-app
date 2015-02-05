@@ -25,12 +25,12 @@ import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import android.content.Context;
 import android.text.format.Formatter;
 
-public class FileSizeField extends BaseField
+public class SizeField extends BaseField
 {
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
-    public FileSizeField(Context context, Property property, FieldConfig configuration)
+    public SizeField(Context context, Property property, FieldConfig configuration)
     {
         super(context, property, configuration);
     }

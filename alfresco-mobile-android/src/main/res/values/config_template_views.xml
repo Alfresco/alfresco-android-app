@@ -27,6 +27,9 @@
     <!-- NODE DETAILS -->
     <string name="config_org_alfresco_client_view_node_details">org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment$Builder</string>
 
+    <!-- GALLERY -->
+    <string name="config_org_alfresco_client_view_preview_carousel">org.alfresco.mobile.android.application.fragments.node.rendition.CarouselPreviewFragment$Builder</string>
+
     <!-- REPOSITORY -->
     <string name="config_org_alfresco_client_view_repository">org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment$Builder</string>
     <string name="config_org_alfresco_client_view_repository_search">org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment$Builder</string>

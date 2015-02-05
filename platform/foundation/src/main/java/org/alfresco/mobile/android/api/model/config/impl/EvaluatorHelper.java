@@ -157,6 +157,9 @@ public class EvaluatorHelper extends HelperConfig
             case HAS_ASPECT:
                 result = evaluateHasAspect(evalConfig, extraParameters);
                 break;
+            case IS_USER:
+                result = evaluateIsUser(evalConfig);
+                break;
             default:
                 break;
         }
@@ -169,6 +172,15 @@ public class EvaluatorHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // EVALUATION REGISTRY
     // //////////////////////////////////////////////////////////////////////////
+    private Boolean evaluateIsUser(EvaluatorConfigData evalConfig)
+    {
+        List<Object> users = JSONConverter.getList(evalConfig.getParameter(ConfigConstants.USERS_VALUE));
+
+        String username = ((ConfigurationImpl) getConfiguration()).getPersonId();
+
+        return users.contains(username);
+    }
+
     private Boolean evaluateHasAspect(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
     {
         if (extraParameters == null || extraParameters.getContextValue(ConfigScope.NODE) == null)

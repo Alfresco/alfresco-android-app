@@ -26,8 +26,12 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.application.fragments.node.details.DetailsFragmentTemplate;
+import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.async.node.browse.NodeChildrenEvent;
+import org.alfresco.mobile.android.async.node.browse.NodeChildrenRequest;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -37,32 +41,38 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-public class GalleryPreviewFragment extends AlfrescoFragment
+import com.squareup.otto.Subscribe;
+
+public class CarouselPreviewFragment extends AlfrescoFragment implements DetailsFragmentTemplate
 {
-    public static final String TAG = GalleryPreviewFragment.class.getName();
-
-    public static final String ARGUMENT_NODE = "node";
+    public static final String TAG = CarouselPreviewFragment.class.getName();
 
     private List<Node> nodes = new ArrayList<Node>();
 
     private Node node;
+
+    private String nodePath;
+
+    private String nodeIdentifier;
 
     private DocumentFolderBrowserFragment frag;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
     // //////////////////////////////////////////////////////////////////////
-    public GalleryPreviewFragment()
+    public CarouselPreviewFragment()
     {
     }
 
-    protected static GalleryPreviewFragment newInstanceByTemplate(Bundle b)
+    protected static CarouselPreviewFragment newInstanceByTemplate(Bundle b)
     {
-        GalleryPreviewFragment bf = new GalleryPreviewFragment();
+        CarouselPreviewFragment bf = new CarouselPreviewFragment();
         bf.setArguments(b);
         return bf;
     };
@@ -71,11 +81,16 @@ public class GalleryPreviewFragment extends AlfrescoFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public void onCreate(Bundle savedInstanceState)
     {
-        setSession(SessionUtils.getSession(getActivity()));
-        SessionUtils.checkSession(getActivity(), getSession());
-        View v = inflater.inflate(R.layout.app_gallery, container, false);
+        super.onCreate(savedInstanceState);
+        // Retrieve arguments
+        if (getArguments() != null)
+        {
+            node = (Node) getArguments().get(ARGUMENT_NODE);
+            nodePath = (String) getArguments().get(ARGUMENT_PATH);
+            nodeIdentifier = (String) getArguments().get(ARGUMENT_NODE_ID);
+        }
 
         // Retrieve nodes
         frag = (DocumentFolderBrowserFragment) ((getActivity()).getFragmentManager()
@@ -92,16 +107,44 @@ public class GalleryPreviewFragment extends AlfrescoFragment
             }
         }
 
-        if (getArguments() != null && getArguments().containsKey(ARGUMENT_NODE))
-        {
-            node = (Node) getArguments().get(ARGUMENT_NODE);
-        }
-        else
+        if (node == null && frag != null)
         {
             node = frag.getSelectedNodes();
         }
+    }
 
-        ViewPager viewPager = (ViewPager) v.findViewById(R.id.view_pager);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        setRootView(inflater.inflate(R.layout.app_gallery, container, false));
+
+        // If nodes are available.
+        if (nodes != null && !nodes.isEmpty() || node != null)
+        {
+            displayGallery();
+        }
+        else if (!TextUtils.isEmpty(nodeIdentifier))
+        {
+            Operator.with(getActivity()).load(new NodeChildrenRequest.Builder(nodeIdentifier));
+            displayLoading();
+        }
+        else if (!TextUtils.isEmpty(nodePath))
+        {
+            Operator.with(getActivity()).load(
+                    new NodeChildrenRequest.Builder(NodeBrowserTemplate.ARGUMENT_PATH, nodePath));
+            displayLoading();
+        }
+        else
+        {
+            displayEmptyView();
+        }
+
+        return getRootView();
+    }
+
+    protected void displayGallery()
+    {
+        ViewPager viewPager = (ViewPager) viewById(R.id.view_pager);
         ScreenSlidePagerAdapter adapter = new ScreenSlidePagerAdapter(getActivity().getFragmentManager(), nodes,
                 getActivity());
         viewPager.setAdapter(adapter);
@@ -109,7 +152,7 @@ public class GalleryPreviewFragment extends AlfrescoFragment
         {
             viewPager.setCurrentItem(nodes.indexOf(node));
         }
-        else if (nodes.size() > 0)
+        else if (nodes.size() > 0 && frag != null)
         {
             frag.unselect();
             frag.highLight(nodes.get(0));
@@ -120,8 +163,11 @@ public class GalleryPreviewFragment extends AlfrescoFragment
             @Override
             public void onPageSelected(int location)
             {
-                frag.unselect();
-                frag.highLight(nodes.get(location));
+                if (frag != null)
+                {
+                    frag.unselect();
+                    frag.highLight(nodes.get(location));
+                }
             }
 
             @Override
@@ -139,11 +185,54 @@ public class GalleryPreviewFragment extends AlfrescoFragment
 
         viewPager.setPageTransformer(true, new DepthPageTransformer());
 
-        PagerTabStrip pagerTabStrip = (PagerTabStrip) v.findViewById(R.id.pager_header);
+        PagerTabStrip pagerTabStrip = (PagerTabStrip) viewById(R.id.pager_header);
         pagerTabStrip.setDrawFullUnderline(true);
         pagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.blue_light));
 
-        return v;
+        getActivity().invalidateOptionsMenu();
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // UI UTILS
+    // ///////////////////////////////////////////////////////////////////////////
+    protected void displayData()
+    {
+        hide(R.id.empty);
+        hide(R.id.progressbar);
+        show(R.id.view_pager);
+    }
+
+    protected void displayEmptyView()
+    {
+        show(R.id.empty);
+        hide(R.id.progressbar);
+        hide(R.id.view_pager);
+    }
+
+    protected void displayLoading()
+    {
+        show(R.id.progressbar);
+        hide(R.id.view_pager);
+        hide(R.id.empty);
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EVENTS RECEIVER
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onResult(NodeChildrenEvent event)
+    {
+        if (event.hasException)
+        {
+            displayEmptyView();
+            ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+        }
+        else if (getActivity() != null)
+        {
+            nodes = event.data.getList();
+            displayData();
+            displayGallery();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -170,6 +259,9 @@ public class GalleryPreviewFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
             this.extraConfiguration = new Bundle();
+            this.menuIconId = R.drawable.ic_gallery_dark;
+            this.menuTitleId = R.string.display_gallery;
+            templateArguments = new String[] { ARGUMENT_NODE_ID, ARGUMENT_PATH };
         }
 
         // ///////////////////////////////////////////////////////////////////////////

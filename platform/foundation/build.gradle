@@ -10,15 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-
-        //TODO Implement If then else based on debug and defaultPublishConfig "debug"
-        //publishNonDefault true
-        //buildConfigField "String", "PROVIDER_AUTHORITY", "\""+PROVIDER_AUTHORITY_DEBUG+"\""
-        //buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID_DEBUG+"\""
-
         defaultPublishConfig DEFAULT_PUBLISH
-        buildConfigField "String", "PROVIDER_AUTHORITY", "\""+PROVIDER_AUTHORITY+"\""
-        buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID+"\""
     }
 
     buildTypes {
@@ -39,6 +31,8 @@ android {
         }
 
         release {
+            buildConfigField "String", "PROVIDER_AUTHORITY", "\""+PROVIDER_AUTHORITY+"\""
+            buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID+"\""
         }
     }
 }

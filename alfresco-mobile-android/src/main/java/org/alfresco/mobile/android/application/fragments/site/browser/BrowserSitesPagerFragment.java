@@ -106,7 +106,7 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
             this.extraConfiguration = new Bundle();
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
-            templateArguments = new String[] { SitesTemplate.ARGUMENT_FAVORITE_SITES };
+            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW};
         }
 
         // ///////////////////////////////////////////////////////////////////////////

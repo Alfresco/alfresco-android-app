@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- * 
+ *
  * This file is part of the Alfresco Mobile SDK.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *  
+ *
  *  http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  *  Unless required by applicable law or agreed to in writing, software
  *  distributed under the License is distributed on an "AS IS" BASIS,
  *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,10 +25,9 @@ import java.util.Map.Entry;
 
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class ProfileHelper extends HelperConfig
 {
@@ -45,7 +44,7 @@ public class ProfileHelper extends HelperConfig
     }
 
     ProfileHelper(ConfigurationImpl context, StringHelper localHelper,
-                  LinkedHashMap<String, ProfileConfig> profilesIndex)
+            LinkedHashMap<String, ProfileConfig> profilesIndex)
     {
         super(context, localHelper);
         this.profilesIndex = profilesIndex;
@@ -83,8 +82,27 @@ public class ProfileHelper extends HelperConfig
 
     public List<ProfileConfig> getProfiles()
     {
-        return (profilesIndex != null) ? new ArrayList<ProfileConfig>(profilesIndex.values())
-                : new ArrayList<ProfileConfig>(0);
+        if (profilesIndex != null)
+        {
+            ArrayList<ProfileConfig> array = new ArrayList<ProfileConfig>(profilesIndex.values());
+            ArrayList<ProfileConfig> result = new ArrayList<ProfileConfig>(profilesIndex.size());
+            for (ProfileConfig config : array)
+            {
+                if (((ProfileConfigImpl) config).getEvaluator() != null)
+                {
+                    if (getEvaluatorHelper().evaluate(((ProfileConfigImpl) config).getEvaluator(), null))
+                    {
+                        result.add(config);
+                    }
+                }
+                else
+                {
+                    result.add(config);
+                }
+            }
+            return result;
+        }
+        return new ArrayList<ProfileConfig>(0);
     }
 
     public ProfileConfig getDefaultProfile()

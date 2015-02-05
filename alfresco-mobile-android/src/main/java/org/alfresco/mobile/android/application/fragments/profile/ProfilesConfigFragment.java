@@ -70,6 +70,10 @@ public class ProfilesConfigFragment extends BaseGridFragment
     {
         retrieveProfiles();
         super.onActivityCreated(savedInstanceState);
+
+        //Dsiable refresh
+        refreshHelper.setEnabled(false);
+        refreshHelper = null;
     }
 
     @Override
@@ -85,6 +89,11 @@ public class ProfilesConfigFragment extends BaseGridFragment
     protected OperationBuilder onCreateOperationRequest(ListingContext listingContext)
     {
         return null;
+    }
+
+    @Override
+    public void refresh() {
+       return;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
