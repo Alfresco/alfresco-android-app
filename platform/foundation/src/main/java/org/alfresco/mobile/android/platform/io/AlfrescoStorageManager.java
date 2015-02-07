@@ -139,7 +139,7 @@ public class AlfrescoStorageManager extends Manager
     {
         return getPrivateFolder(DIRECTORY_ASSET, null);
     }
-    
+
     /**
      * Returns a specific file/folder inside the private area of the
      * application.
@@ -181,6 +181,25 @@ public class AlfrescoStorageManager extends Manager
         }
 
         return file;
+    }
+
+    public File getPrivateFolder(AlfrescoAccount acc)
+    {
+        File folder = null;
+        try
+        {
+            if (isExternalStorageAccessible())
+            {
+                folder = appContext.getExternalFilesDir(null);
+                folder = new File(folder, getAccountFolder(acc.getUrl(), acc.getUsername()));
+            }
+        }
+        catch (Exception e)
+        {
+            throw new AlfrescoServiceException(ErrorCodeRegistry.GENERAL_IO, e);
+        }
+
+        return folder;
     }
 
     public File getPrivateFolder(String requestedFolder, AlfrescoAccount acc)

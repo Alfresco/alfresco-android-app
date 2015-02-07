@@ -41,7 +41,7 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
-import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.network.NetworkHttpInvoker;
 import org.alfresco.mobile.android.platform.network.NetworkTrustManager;
@@ -211,7 +211,7 @@ public abstract class SessionManager extends Manager
         {
             EventBusManager.getInstance().post(
                     new LoadAccountErrorEvent(null, currentAccount, new NetworkErrorException("Not Online"),
-                            SessionExceptionHelper.getMessageId(appContext, new NetworkErrorException("Not Online"))));
+                            AlfrescoExceptionHelper.getMessageId(appContext, new NetworkErrorException("Not Online"))));
             return;
         }
 
@@ -441,7 +441,8 @@ public abstract class SessionManager extends Manager
             extraSettings.put(SessionParameter.READ_TIMEOUT, "60000");
             extraSettings.put(AlfrescoSession.EXTRACT_METADATA, true);
             extraSettings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
-            extraSettings.put(SessionParameter.CLIENT_COMPRESSION, "true");
+            extraSettings.put(AlfrescoSession.HTTP_CHUNK_TRANSFERT, "true");
+            //extraSettings.put(SessionParameter.CLIENT_COMPRESSION, "true");
             extraSettings.put(AlfrescoSession.HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
             extraSettings.put(AlfrescoSession.CACHE_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getCacheDir("AlfrescoMobile").getPath());

@@ -30,6 +30,8 @@ import android.widget.TextView;
 
 public class FormConfigManager extends BaseConfigManager
 {
+    public static final String CLEAR_VALUE = "**clear";
+
     private ModelDefinition typeDefinition;
 
     private Node node;
@@ -92,7 +94,9 @@ public class FormConfigManager extends BaseConfigManager
         HashMap<String, Serializable> props = new HashMap<String, Serializable>(fieldsIndex.size());
         for (Entry<String, BaseField> entry : fieldsIndex.entrySet())
         {
-            props.put(entry.getKey(), (Serializable) entry.getValue().getOutputValue());
+            if (entry.getValue().hasChanged()){
+                props.put(entry.getKey(), (Serializable) entry.getValue().getOutputValue());
+            }
         }
         return props;
     }

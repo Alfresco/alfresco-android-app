@@ -87,7 +87,7 @@ public abstract class BaseField
     /**
      * Used by the configurationManager
      * 
-     * @param activity
+     * @param context
      * @param configuration
      */
     public BaseField(Context context, Property property, FieldConfig configuration)
@@ -160,7 +160,7 @@ public abstract class BaseField
     /**
      * Remove a value object to the field.
      * 
-     * @param rawValue
+     * @param object
      */
     public void remove(Object object)
     {
@@ -187,6 +187,24 @@ public abstract class BaseField
     public Object getOutputValue()
     {
         return fieldView.getValue();
+    }
+
+    public boolean hasChanged()
+    {
+        if (originalValue == null && fieldView.getValue() == null)
+        {
+            // Value has been cleared
+            return false;
+        }
+        else if (originalValue != null && originalValue.equals(getOutputValue()))
+        {
+            // Value has not changed
+            return false;
+        }
+        else
+        {
+            return true;
+        }
     }
 
     /**

@@ -238,16 +238,17 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
                     update(site, updatedSite);
                 }
             }
+            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                    String.format(getString(messageId), site.getTitle()));
         }
         else
         {
             messageId = event.oldSite.isFavorite() ? R.string.action_unfavorite_site_error
                     : R.string.action_favorite_error;
             Log.w(TAG, Log.getStackTraceString(event.exception));
+            AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
+                    String.format(getString(messageId), site.getTitle()));
         }
-
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                String.format(getString(messageId), site.getTitle()));
     }
 
     @Subscribe
@@ -269,20 +270,27 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
                 messageId = R.string.action_leave_site_validation;
                 if (isFavoriteListing == true)
                 {
-                    remove(site);
+                    if (!updatedSite.isFavorite()){
+                        remove(site);
+                    } else {
+                        update(site, updatedSite);
+                    }
                 }
                 else
                 {
                     update(site, isMemberSite ? null : updatedSite);
                 }
             }
+            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                    String.format(getString(messageId), site.getTitle()));
         }
         else
         {
             messageId = (event.isJoining) ? R.string.action_join_site_error : R.string.action_leave_site_error;
             Log.w(TAG, Log.getStackTraceString(event.exception));
+            AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
+                    String.format(getString(messageId), site.getTitle()));
         }
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
-                String.format(getString(messageId), site.getTitle()));
+
     }
 }

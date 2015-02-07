@@ -32,22 +32,22 @@ public interface ConfigurationConstant
     // ///////////////////////////////////////////////////////////////////////////
     // DEFAULT TEMPLATE LISTING VIEWS
     // ///////////////////////////////////////////////////////////////////////////
-    String KEY_ACTIVITIES = "com.alfresco.type.activities";
+    String KEY_ACTIVITIES = "org.alfresco.client.view.activities";
 
-    String KEY_REPOSITORY = "com.alfresco.type.repository";
+    String KEY_REPOSITORY = "org.alfresco.client.view.repository";
 
-    String KEY_SITES = "com.alfresco.type.sites";
+    String KEY_SITES = "org.alfresco.client.view.site-browser";
 
-    String KEY_TASKS = "com.alfresco.type.tasks";
+    String KEY_TASKS = "org.alfresco.client.view.tasks";
 
-    String KEY_FAVORITES = "com.alfresco.type.favorites";
+    String KEY_FAVORITES = "org.alfresco.client.view.favorites";
 
-    String KEY_SEARCH = "com.alfresco.type.search";
+    String KEY_SEARCH = "org.alfresco.client.view.search";
 
-    String KEY_PERSONS = "com.alfresco.type.persons";
+    String KEY_PERSONS = "org.alfresco.client.view.persons";
 
-    String KEY_PERSON_PROFILE = "com.alfresco.type.person.profile";
+    String KEY_PERSON_PROFILE = "org.alfresco.client.view.person-profile";
 
-    String KEY_LOCALFILES = "com.alfresco.type.local";
+    String KEY_LOCALFILES = "org.alfresco.client.view.local";
 
 }

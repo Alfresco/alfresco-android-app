@@ -139,7 +139,8 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
     {
         if (SessionUtils.getSession(getActivity()) == null) { return; }
 
-        refreshHelper.setRefreshing();
+        //refreshHelper.setRefreshing();
+        setListShown(false);
 
         SitesRequest.Builder builder;
         if (TAB_MY_SITES.equals(currentTabId))

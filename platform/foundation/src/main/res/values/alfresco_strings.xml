@@ -266,6 +266,10 @@
     <string name="error_session_expired">Your session has expired. Please sign in again.</string>
     <string name="error_session_refresh">Refreshing session.</string>
     <string name="error_chunk_transfert"><![CDATA[The server doesn\'t support chunk transfers.<br/> Please reload your account</b>.]]></string>
+    <string name="error_name_already_exist">Could not rename file. Another file may exist with the same name.</string>
+    <string name="error_unknown_exception">A generic problem occurs : %s</string>
+    <string name="error_unknown">A generic problem occurs : %s</string>
+
 
     <!-- Share -->
     <string name="share_url">Share Link</string>

@@ -45,6 +45,7 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.squareup.otto.Subscribe;
@@ -143,7 +144,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         try {
             super.onDocumentUpdated(event);
         } catch (Exception e){
-
+            Log.e(TAG, Log.getStackTraceString(e));
         }
     }
     

@@ -32,8 +32,6 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.NodeOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
 
-import android.util.Log;
-
 public class UpdateNodeOperation extends NodeOperation<Node>
 {
     private static final String TAG = UpdateNodeOperation.class.getName();
@@ -95,7 +93,6 @@ public class UpdateNodeOperation extends NodeOperation<Node>
         }
         catch (Exception e)
         {
-            Log.e(TAG, Log.getStackTraceString(e));
             result.setException(e);
         }
 

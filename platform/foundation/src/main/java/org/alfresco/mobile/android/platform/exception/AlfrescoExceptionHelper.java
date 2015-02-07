@@ -26,15 +26,20 @@ import java.security.cert.CertificateNotYetValidException;
 import javax.net.ssl.SSLHandshakeException;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisConnectionException;
+import org.apache.chemistry.opencmis.commons.exceptions.CmisContentAlreadyExistsException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisObjectNotFoundException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisRuntimeException;
 import org.apache.chemistry.opencmis.commons.exceptions.CmisUnauthorizedException;
 
 import android.accounts.NetworkErrorException;
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 /**
  * Helper class to find the right user message to display when an exception has
@@ -42,10 +47,10 @@ import android.content.Context;
  * 
  * @author Jean Marie Pascal
  */
-public final class SessionExceptionHelper
+public final class AlfrescoExceptionHelper
 {
 
-    private SessionExceptionHelper()
+    private AlfrescoExceptionHelper()
     {
     }
 
@@ -148,13 +153,41 @@ public final class SessionExceptionHelper
         {
             messageId = R.string.error_session_nodata;
         }
+        else if (e.getCause() instanceof CmisContentAlreadyExistsException)
+        {
+            messageId = R.string.error_name_already_exist;
+        }
         else
         // Default case. We don't know what's wrong...
         {
-            messageId = R.string.error_session_creation;
+            if (context instanceof Activity)
+            {
+                AlfrescoNotificationManager.getInstance(context).showAlertCrouton((Activity) context,
+                        String.format(context.getString(R.string.error_unknown_exception), e.getCause()));
+                messageId = -1;
+            }
+            else
+            {
+                messageId = R.string.error_unknown;
+            }
         }
 
         return messageId;
+    }
+
+    public static boolean checkEventException(Activity activity, OperationEvent event)
+    {
+        if (event.hasException)
+        {
+            int messageId = getMessageId(activity, event.exception);
+            if (messageId != -1)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, messageId);
+            }
+            Log.w("[ERROR]", Log.getStackTraceString(event.exception));
+            return true;
+        }
+        return false;
     }
 
 }

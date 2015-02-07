@@ -15,20 +15,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.async;
+package org.alfresco.mobile.android.async.person;
 
-public class BatchOperationEvent
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationEvent;
+
+public class AvatarEvent extends OperationEvent<String>
 {
-    public final String groupKey;
-
-    @SuppressWarnings("rawtypes")
-    public final Operation operation;
-
-    @SuppressWarnings("rawtypes")
-    public BatchOperationEvent(Operation operation)
+    public AvatarEvent(String requestId, LoaderResult<String> results)
     {
-        this.groupKey = operation.action.groupKey;
-        this.operation = operation;
+        super(requestId, results);
     }
-
 }

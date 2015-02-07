@@ -17,15 +17,16 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.account;
 
+import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -33,7 +34,10 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import com.squareup.picasso.Picasso;
 
 public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericViewHolder>
 {
@@ -71,7 +75,8 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     protected void updateTopText(GenericViewHolder vh, AlfrescoAccount acc)
     {
         vh.topText.setText(acc.getTitle());
-        if (activityRef.get() instanceof PublicDispatcherActivity){
+        if (activityRef.get() instanceof PublicDispatcherActivity)
+        {
             vh.topText.setTextColor(Color.BLACK);
         }
     }
@@ -93,8 +98,9 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     private void updateBottomTextList(GenericViewHolder v, AlfrescoAccount acc)
     {
         v.bottomText.setText(acc.getUsername());
-        if (activityRef.get() instanceof PublicDispatcherActivity){
-            v.bottomText.setTextColor(android.R.color.black);
+        if (activityRef.get() instanceof PublicDispatcherActivity)
+        {
+            v.bottomText.setTextColor(Color.BLACK);
         }
 
         if (selectedItems != null && selectedItems.contains(acc))
@@ -126,8 +132,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                         vh.icon.setImageDrawable(getContext().getResources().getDrawable(defaultIcon));
                         break;
                     default:
-                        RenditionManager.with(activityRef.get()).loadAvatar(acc.getUsername()).placeHolder(defaultIcon)
-                                .into(vh.icon);
+                        displayAvatar(acc, defaultIcon, vh.icon);
                         break;
                 }
                 break;
@@ -136,6 +141,12 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                 break;
         }
 
+    }
+
+    private void displayAvatar(AlfrescoAccount acc, int defaultIcon, ImageView imageView){
+        File f = AlfrescoStorageManager.getInstance(getContext()).getPrivateFolder(acc);
+        File icon = new File(f, acc.getUsername().concat(".jpg"));
+        Picasso.with(activityRef.get()).load(icon).placeholder(defaultIcon).into(imageView);
     }
 
     private void updateIconList(GenericViewHolder vh, AlfrescoAccount acc)
@@ -158,7 +169,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                 descriptionId = R.string.account_alfresco_onpremise;
                 break;
         }
-        RenditionManager.with(activityRef.get()).loadAvatar(acc.getUsername()).placeHolder(iconId).into(vh.icon);
+        displayAvatar(acc, iconId, vh.icon);
         AccessibilityUtils.addContentDescription(vh.icon, descriptionId);
     }
 }
