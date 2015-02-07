@@ -85,7 +85,6 @@ public class BaseActionUtils
      * Allow to open a file with an associated application installed in the
      * device and saved it backed via a requestcode...
      * 
-     * @param context
      * @param myFile
      * @param mimeType
      */
@@ -101,7 +100,8 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -117,7 +117,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_open_file);
         }
     }
 
@@ -139,7 +139,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_link);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_link);
         }
     }
 
@@ -161,7 +161,7 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_content);
         }
     }
 
@@ -190,7 +190,6 @@ public class BaseActionUtils
     /**
      * Utils to get File path
      * 
-     * @param activity
      * @param uri
      * @return
      */

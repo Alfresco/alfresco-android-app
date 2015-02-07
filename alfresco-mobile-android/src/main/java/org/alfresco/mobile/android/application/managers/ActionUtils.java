@@ -72,7 +72,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.error_unable_open_file);
         }
     }
 
@@ -114,7 +114,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_open_file);
         }
     }
 
@@ -229,7 +229,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
         }
     }
 
@@ -250,7 +250,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
         }
     }
 
@@ -279,7 +279,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.decryption_failed);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.decryption_failed);
             Log.d(TAG, Log.getStackTraceString(e));
         }
 
@@ -313,7 +313,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
         }
     }
 
@@ -325,7 +325,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
         }
     }
 
@@ -354,7 +354,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
         }
     }
 
@@ -391,7 +391,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
         }
     }
 
@@ -419,7 +419,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_content);
         }
     }
 
@@ -442,7 +442,7 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showToast(R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.error_unable_open_file);
         }
     }
 

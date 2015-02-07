@@ -74,6 +74,7 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -224,7 +225,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             }
             Operator.with(getActivity()).load(new NodeRequest.Builder(null, nodeIdentifier));
             displayLoading();
-        }else if (nodePath != null){
+        }
+        else if (nodePath != null)
+        {
             if (eventBusRequired)
             {
                 EventBusManager.getInstance().register(this);
@@ -692,7 +695,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         ConfigService configService = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
                 ConfigTypeIds.REPOSITORY);
-        if (configService.getRepositoryConfig() != null)
+        if (configService != null && configService.getRepositoryConfig() != null)
         {
             shareUrl = configService.getRepositoryConfig().getShareURL();
             if (!TextUtils.isEmpty(shareUrl) && !shareUrl.endsWith("/"))
@@ -802,7 +805,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             final File syncFile = syncManager.getSyncFile(acc, node);
             if (syncFile == null || !syncFile.exists())
             {
-                AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
                         getString(R.string.sync_document_not_available));
                 return;
             }
@@ -1166,6 +1169,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
+        if (AlfrescoExceptionHelper.checkEventException(getActivity(), event)) { return; }
+
         Node updatedNode = event.data;
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
@@ -1193,6 +1198,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Subscribe
     public void onContentUpdated(UpdateContentEvent event)
     {
+        if (AlfrescoExceptionHelper.checkEventException(getActivity(), event)) { return; }
+
         Node updatedNode = event.data;
 
         if (!DisplayUtils.hasCentralPane(getActivity()))
@@ -1215,6 +1222,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Subscribe
     public void onNodeDeleted(DeleteNodeEvent event)
     {
+        if (AlfrescoExceptionHelper.checkEventException(getActivity(), event)) { return; }
+
         ((MainActivity) getActivity()).setCurrentNode(null);
         if (DisplayUtils.hasCentralPane(getActivity()))
         {

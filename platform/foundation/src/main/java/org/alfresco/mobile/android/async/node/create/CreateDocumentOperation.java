@@ -57,6 +57,7 @@ public class CreateDocumentOperation extends UpNodeOperation
     @Override
     protected LoaderResult<Document> doInBackground()
     {
+        long ping = System.currentTimeMillis();
         LoaderResult<Document> result = new LoaderResult<Document>();
         try
         {
@@ -125,6 +126,8 @@ public class CreateDocumentOperation extends UpNodeOperation
         }
 
         result.setData(doc);
+        long pong = System.currentTimeMillis();
+        Log.d("[UPLOAD-BACK]", "Duration " + (pong-ping) + " ms" +"["+ (contentFile.getLength() / (pong-ping))  +" b/s]");
 
         return result;
     }

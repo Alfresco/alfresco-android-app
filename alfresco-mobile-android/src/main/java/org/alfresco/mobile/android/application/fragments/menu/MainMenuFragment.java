@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.model.config.ConfigTypeIds;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.services.ConfigService;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.configuration.MainMenuConfigManager;
@@ -43,6 +44,7 @@ import org.alfresco.mobile.android.application.fragments.preferences.GeneralPref
 import org.alfresco.mobile.android.application.fragments.profile.ProfilesConfigFragment;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.ConfigManager.ConfigurationMenuEvent;
+import org.alfresco.mobile.android.async.person.AvatarEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
@@ -478,6 +480,13 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     public void displayFolderShortcut(AlfrescoSession alfSession)
     {
+        if (alfSession == null || alfSession instanceof CloudSession){
+            if (getRootView() != null)
+            {
+                hide(R.id.menu_browse_shared);
+                hide(R.id.menu_browse_userhome);
+            }
+        }
         if (alfSession != null)
         {
             RepositoryInfo repoInfo = alfSession.getRepositoryInfo();
@@ -494,11 +503,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 show(R.id.menu_browse_userhome);
                 return;
             }
-        }
-        if (getRootView() != null)
-        {
-            hide(R.id.menu_browse_shared);
-            hide(R.id.menu_browse_userhome);
         }
     }
 
@@ -601,6 +605,13 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         refresh();
     }
+
+    @Subscribe
+    public void onAvatarLoaded(AvatarEvent event)
+    {
+        refresh();
+    }
+
 
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)

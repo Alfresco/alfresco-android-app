@@ -87,7 +87,7 @@ public final class CloudExceptionUtils
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_general_title);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
-                        SessionExceptionHelper.getMessageId(context, exception));
+                        AlfrescoExceptionHelper.getMessageId(context, exception));
                 BaseActionUtils.actionDisplayDialog(context, b);
                 return;
             }

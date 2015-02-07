@@ -35,6 +35,11 @@ android {
             buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID+"\""
         }
     }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
 }
 
 dependencies {

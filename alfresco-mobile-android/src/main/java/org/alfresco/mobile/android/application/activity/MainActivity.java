@@ -27,7 +27,6 @@ import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.services.ServiceRegistry;
 import org.alfresco.mobile.android.api.services.impl.AlfrescoServiceRegistry;
 import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.RepositorySession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.accounts.AccountOAuthHelper;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
@@ -54,9 +53,11 @@ import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
+import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
 import org.alfresco.mobile.android.async.file.encryption.AccountProtectionEvent;
+import org.alfresco.mobile.android.async.person.AvatarRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountErrorEvent;
@@ -69,7 +70,7 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -493,6 +494,7 @@ public class MainActivity extends BaseActivity
         }
 
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
@@ -779,45 +781,35 @@ public class MainActivity extends BaseActivity
     @Subscribe
     public void onAccountLoaded(LoadAccountCompletedEvent event)
     {
-        if (getCurrentSession() instanceof RepositorySession)
+        // Avoid collision with PublicDispatcherActivity when selecting an
+        // account.
+        if (event.requestId == null) { return; }
+
+        ServiceRegistry registry = getCurrentSession().getServiceRegistry();
+
+        ConfigManager config = ConfigManager.getInstance(this);
+        if (!config.hasConfig(getCurrentAccount().getId()))
         {
-            ServiceRegistry registry = getCurrentSession().getServiceRegistry();
-            if (registry instanceof AlfrescoServiceRegistry)
+            config.init(getCurrentAccount());
+        }
+        if (registry instanceof AlfrescoServiceRegistry)
+        {
+            // Check configuration
+            if (((AlfrescoServiceRegistry) registry).getConfigService() == null)
             {
-                ConfigManager config = ConfigManager.getInstance(this);
-                if (!config.hasConfig(getCurrentAccount().getId()))
-                {
-                    config.init(getCurrentAccount());
-                }
-
-                // Check configuration
-                if (((AlfrescoServiceRegistry) registry).getConfigService() == null)
-                {
-                    // In this case there's no configuration defined on server
-                    // We remove any cached configuration
-                    ConfigManager.getInstance(this).cleanCache(getCurrentAccount());
-                }
-                else
-                {
-                    config.loadRemote(getCurrentAccount().getId(),
-                            ((AlfrescoServiceRegistry) registry).getConfigService());
-                }
-
-                config.setSession(getCurrentAccount().getId(), getCurrentSession());
+                // In this case there's no configuration defined on server
+                // We remove any cached configuration
+                ConfigManager.getInstance(this).cleanCache(getCurrentAccount());
             }
-
-            // Display 4.2+ special folders (userhome/shared)
-            if (getFragment(MainMenuFragment.TAG) != null)
+            else
             {
-                ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).displayFolderShortcut(getCurrentSession());
-            }
-
-            if (getFragment(MainMenuFragment.SLIDING_TAG) != null)
-            {
-                ((MainMenuFragment) getFragment(MainMenuFragment.SLIDING_TAG))
-                        .displayFolderShortcut(getCurrentSession());
+                config.loadRemote(getCurrentAccount().getId(), ((AlfrescoServiceRegistry) registry).getConfigService());
             }
         }
+        config.setSession(getCurrentAccount().getId(), getCurrentSession());
+
+        // Retrieve latest avatar
+        Operator.with(this).load(new AvatarRequest.Builder(getCurrentAccount().getUsername()));
 
         if (!isCurrentAccountToLoad(event)) { return; }
 
@@ -924,7 +916,8 @@ public class MainActivity extends BaseActivity
         Bundle b = new Bundle();
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, SessionExceptionHelper.getMessageId(this, event.exception));
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
+                AlfrescoExceptionHelper.getMessageId(this, event.exception));
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
         ActionUtils.actionDisplayDialog(this, b);
 

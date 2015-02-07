@@ -1106,6 +1106,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Subscribe
     public void onDocumentCreated(CreateDocumentEvent event)
     {
+        Log.d("[UPLOAD]", "Stop " + System.currentTimeMillis() + " ms");
         if (event.hasException) { return; }
         if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))
         {

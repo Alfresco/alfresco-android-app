@@ -173,17 +173,8 @@ public abstract class EditNodePropertiesFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     protected void configure(LayoutInflater inflater)
     {
-        // if (modelDefinition == null)
-        // {
         displayLoading();
         new Generator((ViewGroup) viewById(R.id.properties_body)).execute();
-        /*
-         * } else { ((ViewGroup)
-         * viewById(R.id.properties_body)).removeAllViews(); if (resultView !=
-         * null) { ((ViewGroup)
-         * viewById(R.id.properties_body)).addView(resultView); } displayData();
-         * }
-         */
     }
 
     // ///////////////////////////////////////////////////////////////////////////

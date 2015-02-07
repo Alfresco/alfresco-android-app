@@ -39,6 +39,7 @@
     <!-- +++++++++++++++++++ -->
     <string name="operation_PersonsRequest">org.alfresco.mobile.android.async.person.PersonsOperation</string>
     <string name="operation_PersonRequest">org.alfresco.mobile.android.async.person.PersonOperation</string>
+    <string name="operation_AvatarRequest">org.alfresco.mobile.android.async.person.AvatarOperation</string>
 
     <!-- +++++++++++++++++++ -->
     <!-- NODE/DOC/FOLDER -->

@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.CreateAccountRequest;
-import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
@@ -341,7 +341,7 @@ public class AccountEditFragment extends AlfrescoFragment
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_title);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
-                    SessionExceptionHelper.getMessageId(getActivity(), event.exception));
+                    AlfrescoExceptionHelper.getMessageId(getActivity(), event.exception));
             SimpleAlertDialogFragment.newInstance(b).show(getActivity().getFragmentManager(),
                     SimpleAlertDialogFragment.TAG);
             return;

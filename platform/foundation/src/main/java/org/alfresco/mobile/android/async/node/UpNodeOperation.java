@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl.ReaderListener;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.util.Log;
 
@@ -38,7 +39,7 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
     /** Binary Content of the future document. */
     protected ContentFile contentFile;
 
-    private int segment = 0;
+    private long segment = 0;
 
     private long totalLength = 0;
 
@@ -105,52 +106,12 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
         }
     }
 
-    private int initSegment()
+
+
+
+    private long initSegment()
     {
-        int segment = 1;
-
-        // 100kb
-        if (totalLength < 102400)
-        {
-            segment = 2;
-        }
-        else
-        // 500kb
-        if (totalLength < 512000)
-        {
-            segment = 3;
-        }
-        else if (totalLength < 1048576)
-        {
-            // 1MB
-            segment = 4;
-        }
-        else if (totalLength < 5242880)
-        {
-            // 5MB
-            segment = 10;
-        }
-        else if (totalLength < 10485760)
-        {
-            // 10MB
-            segment = 15;
-        }
-        else if (totalLength < 20971520)
-        {
-            // 20MB
-            segment = 20;
-        }
-        else if (totalLength < 52428800)
-        {
-            // 50MB
-            segment = 25;
-        }
-        else
-        {
-            segment = Math.round(totalLength / 1048576);
-        }
-
-        return segment;
+        return ConnectivityUtils.getAverageSpeed(context);
     }
 
     protected Folder retrieveParentFolder()
@@ -166,7 +127,7 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
     // ///////////////////////////////////////////////////////////////////////////
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
-    public int getSegment()
+    public long getSegment()
     {
         return segment;
     }

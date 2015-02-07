@@ -22,6 +22,8 @@ import java.io.IOException;
 
 import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 
+import android.util.Log;
+
 /**
  * ContentFile represents an abstract way to share file between the client
  * remote api and server.
@@ -34,9 +36,9 @@ public class ContentFileProgressImpl extends ContentFileImpl
 
     private long amountCopied = 0;
 
-    private int segment = 0;
+    private long segment = 0;
 
-    private int currentSegment = 0;
+    private long currentSegment = 0;
 
     private String newFilename = null;
 
@@ -73,17 +75,20 @@ public class ContentFileProgressImpl extends ContentFileImpl
     @Override
     public void fileReadCallback(int nBytes) throws IOException
     {
+        // Log.i("[Read]", fileName + " - " + nBytes + " byte" + "[" +
+        // amountCopied + "]");
         if (nBytes == -1) { return; }
 
         amountCopied += nBytes;
 
-        if (listener != null && amountCopied == getFile().length() || (amountCopied / segment > currentSegment))
+        if (amountCopied == length || amountCopied == currentSegment)
         {
-            if (segment == 0 && amountCopied == getFile().length())
+            Log.e("[Read]", fileName + " - " + nBytes + " byte" + "[" + amountCopied + "]");
+            if (segment == 0 && amountCopied == length)
             {
                 segment = 1;
             }
-            currentSegment = (int) (amountCopied / segment);
+            currentSegment = amountCopied + segment;
             listener.onRead(this, amountCopied);
         }
     }
@@ -119,12 +124,15 @@ public class ContentFileProgressImpl extends ContentFileImpl
     {
         void onRead(ContentFileProgressImpl contentFile, Long amountCopied) throws IOException;
 
-        int getSegment();
+        long getSegment();
     }
 
     public void setReaderListener(ReaderListener listener)
     {
         this.listener = listener;
-        segment = (int) (getFile().length() / listener.getSegment());
+        segment = listener.getSegment();
+        currentSegment = segment;
+
+        Log.e("[PREPARE]", currentSegment + "[" + length + "]");
     }
 }

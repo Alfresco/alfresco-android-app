@@ -17,9 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.managers;
 
-import it.sephiroth.android.library.imagezoom.ImageViewTouch;
-import it.sephiroth.android.library.imagezoom.ImageViewTouchBase.DisplayType;
-
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
@@ -59,6 +56,9 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Picasso.Builder;
+
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import it.sephiroth.android.library.imagezoom.ImageViewTouchBase.DisplayType;
 
 /**
  * Utility class for downloading content and display it.
@@ -138,9 +138,6 @@ public class RenditionManagerImpl extends RenditionManager
     /**
      * Display the content of the url inside an imageview. (thumbnails)
      * 
-     * @param iv
-     * @param url
-     * @param initDrawableId
      */
     private void displayPlaceHolder(WeakReference<ImageView> ivRef, int placeHolderId)
     {

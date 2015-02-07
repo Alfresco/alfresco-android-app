@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.application.ui.form.views.PickerFieldView;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -121,7 +122,7 @@ public class DateTimeField extends BaseField
     @Override
     public Object getOutputValue()
     {
-        if (fieldView instanceof PickerFieldView && ((PickerFieldView) fieldView).getText() == null) { return null; }
+        if (fieldView instanceof PickerFieldView && TextUtils.isEmpty(((PickerFieldView) fieldView).getText())) { return null; }
         if (calendar != null)
         {
             return calendar;

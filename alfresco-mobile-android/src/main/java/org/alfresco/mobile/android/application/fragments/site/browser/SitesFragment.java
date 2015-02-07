@@ -164,7 +164,7 @@ public class SitesFragment extends CommonBrowserSitesFragment
         // ///////////////////////////////////////////////////////////////////////////
         public Builder favorite(boolean onlyFavorites)
         {
-            extraConfiguration.putString(ARGUMENT_SHOW, onlyFavorites ? SHOW_FAVORITE_SITES : SHOW_MY_SITES);
+            extraConfiguration.putBoolean(ARGUMENT_SHOW, onlyFavorites);
             return this;
         }
 

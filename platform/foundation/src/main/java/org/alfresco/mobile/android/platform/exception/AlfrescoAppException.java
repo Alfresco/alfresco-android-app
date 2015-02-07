@@ -46,7 +46,6 @@ public class AlfrescoAppException extends AlfrescoException
      * Instantiates a new Alfresco Application exception.
      * 
      * @param message Exception message
-     * @param errorContent the error content (raw value from the server)
      */
     public AlfrescoAppException(String message, boolean displayMessage)
     {

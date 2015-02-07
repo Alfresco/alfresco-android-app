@@ -57,6 +57,8 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
 
     private Long minDate = null, maxDate = null, startDate = null;
 
+    private DatePickerDialog picker;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // //////////////////////////////////////////////////////////////////////
@@ -150,7 +152,7 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
         int month = c.get(Calendar.MONTH);
         int day = c.get(Calendar.DAY_OF_MONTH);
 
-        final DatePickerDialog picker = new DatePickerDialog(getActivity(), mListener, year, month, day);
+        picker = new DatePickerDialog(getActivity(), mListener, year, month, day);
 
         if (maxDate != null)
         {
@@ -168,6 +170,7 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        picker.onClick(dialog, which);
                         dismiss();
                     }
                 });
@@ -178,6 +181,8 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
                     public void onClick(DialogInterface dialog, int which)
                     {
                         clearValue = true;
+                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(),
+                                picker.getDatePicker().getMonth(), picker.getDatePicker().getDayOfMonth());
                         dismiss();
                     }
                 });
@@ -188,6 +193,8 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
                     public void onClick(DialogInterface dialog, int which)
                     {
                         isCancelled = true;
+                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(),
+                                picker.getDatePicker().getMonth(), picker.getDatePicker().getDayOfMonth());
                         dismiss();
                     }
                 });
@@ -198,7 +205,7 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////
-    public void onDateSet(DatePicker view, int year, int month, int day)
+    public void onDateSet(DatePicker picker, int year, int month, int day)
     {
         if (getArguments() == null || !getArguments().containsKey(ARGUMENT_FRAGMENT_TAG)) { return; }
 

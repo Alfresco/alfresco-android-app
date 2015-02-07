@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
-import org.alfresco.mobile.android.platform.exception.SessionExceptionHelper;
 
 import android.content.Context;
 import android.util.Log;
@@ -91,7 +91,7 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
             case AlfrescoAccount.TYPE_ALFRESCO_CMIS:
                 EventBusManager.getInstance().post(
                         new LoadAccountErrorEvent(task.getRequestId(), ((LoadSessionOperation) task).getAccount(), e,
-                                SessionExceptionHelper.getMessageId(context, e)));
+                                AlfrescoExceptionHelper.getMessageId(context, e)));
                 break;
             default:
                 break;

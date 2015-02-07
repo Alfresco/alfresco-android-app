@@ -148,8 +148,6 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     // ///////////////////////////////////////////////////////////////////////////
     public Dialog onCreateDialog(final Bundle savedInstanceState)
     {
-        Log.d(TAG, "OnCreateDialog");
-        // setRetainInstance(true);
         if (getArguments() != null)
         {
             operationType = getArguments().getInt(ARGUMENT_TYPEID);
@@ -330,9 +328,8 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
     @Subscribe
     public void onBatchOperation(BatchOperationEvent event)
     {
-        if (event.groupKey.equals(operationId))
+        if (event != null && operationId != null && event.groupKey != null && event.groupKey.equals(operationId))
         {
-            Log.d(TAG, "onBatchOperation dismiss");
             dismiss();
         }
     }
