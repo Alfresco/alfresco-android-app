@@ -417,7 +417,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                 public void onClick(View v)
                 {
                     Node item = (Node) v.getTag();
-                    NodeDetailsFragment.with(getActivity()).node(item).display();
+                    NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).back(true).display();
                 }
             });
         }

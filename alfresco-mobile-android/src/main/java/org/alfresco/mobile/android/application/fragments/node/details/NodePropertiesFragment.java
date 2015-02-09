@@ -128,6 +128,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
             hasDisplayed = config.displayProperties(node);
         }
 
+        //TODO Remove it when formConfig is new standard.
         if (!hasDisplayed)
         {
             generateProperties(inflater, propertyViewGroup,

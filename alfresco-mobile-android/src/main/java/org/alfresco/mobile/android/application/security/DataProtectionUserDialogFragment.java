@@ -23,7 +23,6 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -81,7 +80,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         
         // Messages informations
         int titleId = R.string.data_protection;
-        int iconId = R.drawable.ic_alfresco_logo;
+        int iconId = R.drawable.ic_alfresco;
         int messageId = (firstTime) ? R.string.data_protection_blurb : (checked ? R.string.unprotect_question
                 : R.string.protect_question);
         int positiveId = android.R.string.yes;

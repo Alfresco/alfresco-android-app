@@ -163,7 +163,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         ProgressDialog dialog = new ProgressDialog(getActivity());
         if (iconId == 0)
         {
-            iconId = R.drawable.ic_alfresco_logo;
+            iconId = R.drawable.ic_alfresco;
         }
         dialog.setIcon(iconId);
         dialog.setTitle(title);

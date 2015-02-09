@@ -385,8 +385,7 @@ public abstract class PrepareBaseHelper
                         repoSyncIds = new ArrayList<String>();
                     }
                     if (session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(node.getIdentifier()) != null
-                            && session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+                            .getNodeByIdentifier(node.getIdentifier()) != null)
                     {
                         tmpNode.add(node);
                     }
@@ -788,24 +787,33 @@ public abstract class PrepareBaseHelper
 
             // Retrieve local Cursor
             nodeCursor = FavoritesSyncManager.getCursorForId(context, acc, nodeId);
+            nodeCursor.moveToNext();
 
             if (node != null && !session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
             {
-                // Node is unfavorited, Check if the parent is Sync/favorited
-                Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
-                parentCursor = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
-                if (parentCursor != null && parentCursor.getCount() > 0)
+                try
                 {
-                    // Parent is present. We just unfavorite the node
-                    ContentValues cValues = new ContentValues();
-                    cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
-                    context.getContentResolver().update(
-                            FavoritesSyncManager.getUri(nodeCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues,
-                            null, null);
+                    // Node is unfavorited, Check if the parent is
+                    // Sync/favorited
+                    Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                    parentCursor = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
+                    if (parentCursor != null && parentCursor.getCount() > 0)
+                    {
+                        // Parent is present. We just unfavorite the node
+                        ContentValues cValues = new ContentValues();
+                        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
+                        context.getContentResolver().update(
+                                FavoritesSyncManager.getUri(nodeCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
+                                cValues, null, null);
+                    }
+                    else
+                    {
+                        prepareDelete(nodeCursor, nodeId);
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    prepareDelete(nodeCursor, nodeId);
+                    Log.e(TAG, Log.getStackTraceString(e));
                 }
             }
             else

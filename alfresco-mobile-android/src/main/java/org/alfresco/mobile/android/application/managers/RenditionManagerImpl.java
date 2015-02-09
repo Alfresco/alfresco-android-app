@@ -260,7 +260,7 @@ public class RenditionManagerImpl extends RenditionManager
             {
                 if (request.iv.get() instanceof ImageViewTouch)
                 {
-                    if (request.touchViewEnabled)
+                    if (request.touchViewEnabled != null)
                     {
                         ((ImageViewTouch) request.iv.get()).setScaleEnabled(request.touchViewEnabled);
                         ((ImageViewTouch) request.iv.get()).setDoubleTapEnabled(request.touchViewEnabled);

@@ -55,9 +55,9 @@ public class RenditionRequest
     
     public final int renditionTypeId;
     
-    public final boolean touchViewEnabled;
+    public final Boolean touchViewEnabled;
     
-    public RenditionRequest(ImageView iv, String itemId, int renditionType, int placeHolderId, int typeId, int subTypeId, boolean touchViewEnabled)
+    public RenditionRequest(ImageView iv, String itemId, int renditionType, int placeHolderId, int typeId, int subTypeId, Boolean touchViewEnabled)
     {
         super();
         this.iv = new WeakReference<ImageView>(iv);

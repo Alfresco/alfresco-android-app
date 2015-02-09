@@ -122,6 +122,8 @@ import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+
 public abstract class NodeDetailsFragment extends AlfrescoFragment implements DetailsFragmentTemplate
 {
     private static final String TAG = NodeDetailsFragment.class.getName();
@@ -343,7 +345,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                 SessionUtils.getAccount(getActivity())))
                         {
                             FavoritesSyncManager.getInstance(getActivity()).sync(
-                                    SessionUtils.getAccount(getActivity()), node);
+                                    SessionUtils.getAccount(getActivity()), NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
                         }
                     }
                     else
@@ -465,16 +467,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_encrypt, 0);
         }
 
-        // Preview + Thumbnail
-        displayIcon(node, R.drawable.mime_folder, (ImageView) viewById(R.id.icon), false);
+        // Thumbnail
+        displayRendition(node, R.drawable.mime_folder, (ImageView) viewById(R.id.icon), false);
     }
 
     protected void displayToolsBar()
     {
         // BUTTONS
         ImageView b = (ImageView) viewById(R.id.action_openin);
-        if (node.isDocument() && ((DocumentImpl) node).hasAllowableAction(Action.CAN_GET_CONTENT_STREAM.value())
-                && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
+        if (node.isDocument() && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
         {
             b.setOnClickListener(new OnClickListener()
             {
@@ -579,7 +580,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected void displayPreview()
     {
-        displayIcon(node, R.drawable.mime_256_folder, (ImageView) viewById(R.id.preview), true);
+        displayRendition(node, R.drawable.mime_256_folder, (ImageView) viewById(R.id.preview), true);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -606,7 +607,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         hide(R.id.empty);
     }
 
-    private void displayIcon(Node node, int defaultIconId, ImageView iv, boolean isLarge)
+    private void displayRendition(Node node, int defaultIconId, ImageView iv, boolean isLarge)
     {
         if (iv == null) { return; }
 
@@ -620,7 +621,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 if (isLarge)
                 {
                     RenditionManager.with(getActivity()).loadNode(node).placeHolder(iconId)
-                            .rendition(RenditionRequest.RENDITION_PREVIEW).into(iv);
+                            .rendition(RenditionRequest.RENDITION_PREVIEW)
+                            .touchViewEnable(DisplayUtils.hasCentralPane(getActivity())).into(iv);
+
                 }
                 else
                 {
@@ -634,12 +637,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             AccessibilityUtils.addContentDescription(iv,
                     mime != null ? mime.getDescription() : ((Document) node).getContentStreamMimeType());
 
-            if (!isRestrictable && !AccessibilityUtils.isEnabled(getActivity()))
+            if (!isRestrictable && !AccessibilityUtils.isEnabled(getActivity()) && iv instanceof ImageViewTouch)
             {
-                iv.setOnClickListener(new OnClickListener()
+                ((ImageViewTouch) iv).setDoubleTapListener(new ImageViewTouch.OnImageViewTouchDoubleTapListener()
                 {
                     @Override
-                    public void onClick(View v)
+                    public void onDoubleTap()
                     {
                         openin();
                     }
@@ -928,7 +931,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
 
         viewById(R.id.favorite_progress).setVisibility(View.VISIBLE);
-        if (parentNode != null && node != null)
+        if (node != null)
         {
             Operator.with(getActivity(), getAccount()).load(new FavoriteNodeRequest.Builder(parentNode, node));
         }

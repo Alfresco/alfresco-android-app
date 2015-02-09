@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.fragments.sync;
 
 import org.alfresco.mobile.android.application.R;
 
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -55,7 +54,7 @@ public class DisableSyncDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         int titleId = R.string.favorites_deactivate;
-        int iconId = R.drawable.ic_alfresco_logo;
+        int iconId = R.drawable.ic_alfresco;
         int positiveId = android.R.string.yes;
         int messageId = R.string.favorites_deactivate_description;
         int negativeId = android.R.string.no;

@@ -283,7 +283,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             switch (relativePosition)
             {
                 case TAB_PREVIEW:
-                    fr = PreviewFragment.with(activity.get()).node(node).createFragment();
+                    fr = PreviewFragment.with(activity.get()).node(node).touchEnable(DisplayUtils.hasCentralPane(activity.get())).createFragment();
                     break;
                 case TAB_METADATA:
                     if (DisplayUtils.hasCentralPane(activity.get()))

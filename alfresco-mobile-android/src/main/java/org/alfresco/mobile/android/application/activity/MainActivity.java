@@ -540,7 +540,7 @@ public class MainActivity extends BaseActivity
         {
             case SESSION_ERROR:
                 Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, sessionStateErrorMessageId);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
@@ -554,7 +554,7 @@ public class MainActivity extends BaseActivity
                 if (!ConnectivityUtils.hasNetwork(this))
                 {
                     Bundle ba = new Bundle();
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_session_nodata);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
@@ -650,7 +650,7 @@ public class MainActivity extends BaseActivity
                 hideSlideMenu();
                 return true;
             case R.id.menu_help:
-                HelpDialogFragment.with(this).display();
+                HelpDialogFragment.with(this).back(true).display();
                 hideSlideMenu();
                 return true;
             case R.id.menu_about:
@@ -914,7 +914,7 @@ public class MainActivity extends BaseActivity
         // Display error dialog message
 
         Bundle b = new Bundle();
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,
                 AlfrescoExceptionHelper.getMessageId(this, event.exception));
