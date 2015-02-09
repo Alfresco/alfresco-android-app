@@ -192,7 +192,7 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
     {
         super.onDocumentDownloaded(event);
     }
-    
+
     @Subscribe
     public void onFileProtectionEvent(FileProtectionEvent event)
     {
@@ -284,7 +284,8 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
 
     public void addPreview(Node n, int layoutId, boolean backstack)
     {
-        PreviewFragment.with(getActivity()).node(n).back(false).display(layoutId);
+        PreviewFragment.with(getActivity()).node(n).touchEnable(DisplayUtils.hasCentralPane(getActivity())).back(false)
+                .display(layoutId);
     }
 
     public void addComments(Node n, int layoutId, boolean backstack)

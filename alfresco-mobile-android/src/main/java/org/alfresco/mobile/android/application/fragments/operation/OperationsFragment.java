@@ -271,7 +271,7 @@ public class OperationsFragment extends BaseCursorGridFragment
         }
         return result;
     }
-    
+
     @Override
     public void refresh()
     {

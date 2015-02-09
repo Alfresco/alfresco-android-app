@@ -374,6 +374,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         {
             gv.setVisibility(View.VISIBLE);
             pb.setVisibility(View.GONE);
+            ev.setVisibility(View.GONE);
         }
         else
         {

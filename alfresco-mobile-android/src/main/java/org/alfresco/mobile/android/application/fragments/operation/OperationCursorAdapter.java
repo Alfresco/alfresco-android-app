@@ -155,6 +155,7 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
     protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(OperationSchema.COLUMN_TITLE_ID));
+        vh.topText.setFocusable(true);
     }
 
     protected void displayStatut(ProgressViewHolder vh, int imageResource)

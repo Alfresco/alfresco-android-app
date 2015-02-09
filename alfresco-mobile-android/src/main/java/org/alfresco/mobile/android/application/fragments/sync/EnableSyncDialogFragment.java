@@ -21,7 +21,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -59,7 +58,7 @@ public class EnableSyncDialogFragment extends DialogFragment
         AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
 
         String title = String.format(getString(R.string.favorites_activate), acc.getTitle());
-        int iconId = R.drawable.ic_alfresco_logo;
+        int iconId = R.drawable.ic_alfresco;
         int positiveId = R.string.yes;
         int messageId = R.string.favorites_activate_description;
         int negativeId = R.string.no;

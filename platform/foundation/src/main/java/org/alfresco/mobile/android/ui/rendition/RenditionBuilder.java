@@ -36,7 +36,7 @@ public class RenditionBuilder
 
     protected int subTypeId;
 
-    protected boolean enableTouchImageView = false;
+    protected Boolean enableTouchImageView = null;
 
     protected int rendition = RenditionRequest.RENDITION_DEFAULT;
 

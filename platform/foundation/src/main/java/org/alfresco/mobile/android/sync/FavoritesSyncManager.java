@@ -244,20 +244,9 @@ public class FavoritesSyncManager extends Manager
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
+        settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_BOTH);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                FavoritesSyncProvider.AUTHORITY, settingsBundle);
-    }
-
-    public void sync(AlfrescoAccount account, Node n)
-    {
-        if (account == null) { return; }
-        Bundle settingsBundle = new Bundle();
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_NODE);
-        settingsBundle.putSerializable(ARGUMENT_NODE, n);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
                 FavoritesSyncProvider.AUTHORITY, settingsBundle);
     }
@@ -461,7 +450,8 @@ public class FavoritesSyncManager extends Manager
         if (appContext != null && acc != null)
         {
             File synchroFolder = getSynchroFolder(acc);
-            File uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
+            //TODO Check if clean or not ?
+            File uuidFolder = new File(synchroFolder, NodeRefUtils.getCleanIdentifier(NodeRefUtils.getNodeIdentifier(nodeIdentifier)));
             uuidFolder.mkdirs();
             return new File(uuidFolder, documentName);
         }

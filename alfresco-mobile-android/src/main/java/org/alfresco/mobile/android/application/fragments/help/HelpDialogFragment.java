@@ -80,6 +80,7 @@ public class HelpDialogFragment extends DialogFragment
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
                 hasError = false;
+                getActivity().setProgressBarIndeterminateVisibility(true);
             }
 
             @Override
@@ -104,6 +105,7 @@ public class HelpDialogFragment extends DialogFragment
                 } else {
                     view.setVisibility(View.VISIBLE);
                 }
+                getActivity().setProgressBarIndeterminateVisibility(false);
             }
 
             public void onFormResubmission(WebView view, Message dontResend, Message resend) {

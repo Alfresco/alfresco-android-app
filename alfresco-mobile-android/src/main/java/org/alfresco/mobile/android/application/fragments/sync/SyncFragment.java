@@ -378,6 +378,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                     FavoritesSyncManager.getInstance(getActivity()).setActivateSync(true);
                     hasSynchroActive = true;
                     refresh();
+                    refreshSilently();
+                    refreshHelper.setRefreshing();
                 }
 
                 @Override
@@ -386,6 +388,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                     hasSynchroActive = false;
                     FavoritesSyncManager.getInstance(getActivity()).setActivateSync(false);
                     refresh();
+                    refreshSilently();
+                    refreshHelper.setRefreshing();
                 }
             }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
             FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(true);

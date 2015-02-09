@@ -376,7 +376,7 @@ public class NodeActions extends AbstractActions<Node>
             }
             catch (ActivityNotFoundException e)
             {
-                AlfrescoNotificationManager.getInstance(activity).showToast(R.string.error_unable_share_content);
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
             }
         }
         else

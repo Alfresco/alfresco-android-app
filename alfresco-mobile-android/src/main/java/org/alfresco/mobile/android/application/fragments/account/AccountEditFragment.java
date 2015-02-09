@@ -337,7 +337,7 @@ public class AccountEditFragment extends AlfrescoFragment
         {
             ((AlfrescoActivity) getActivity()).removeWaitingDialog();
             Bundle b = new Bundle();
-            b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco_logo);
+            b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_title);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
             b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE,

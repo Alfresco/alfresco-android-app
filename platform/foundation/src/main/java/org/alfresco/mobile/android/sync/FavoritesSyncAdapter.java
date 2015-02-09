@@ -82,6 +82,11 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
             SyncResult syncResult)
     {
+        //Reset all previous values
+        node = null;
+        nodeIdentifier = null;
+        mode = FavoritesSyncManager.MODE_BOTH;
+
         Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
         try
         {
@@ -106,7 +111,7 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
                     node = (Node) extras.getSerializable(FavoritesSyncManager.ARGUMENT_NODE);
                 }
 
-                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_NODE))
+                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_NODE_ID))
                 {
                     nodeIdentifier = extras.getString(FavoritesSyncManager.ARGUMENT_NODE_ID);
                 }
