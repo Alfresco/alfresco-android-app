@@ -77,8 +77,6 @@ public class RetrieveNodeOperation extends NodeOperation<Node>
 
     private AlfrescoSession session;
 
-    private Folder parentFolder;
-
     private List<AlfrescoAccount> accounts;
 
     private String uri;
