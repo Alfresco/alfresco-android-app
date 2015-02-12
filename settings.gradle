@@ -12,3 +12,7 @@ include ':extensions:hockeyapp'
 include ':extensions:samsung'
 include ':extensions:scansnap'
 include ':extensions:tools'
+
+// MDM
+include ':mdm:mobileiron'
+include ':mdm:airwatch'
