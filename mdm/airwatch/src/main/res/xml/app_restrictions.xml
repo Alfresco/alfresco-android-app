@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction
+        android:key="AlfrescoUserName"
+        android:title="Username"
+        android:restrictionType="string"
+        android:defaultValue="user" />
+    <restriction/>
+    <restriction
+        android:key="AlfrescoDisplayName"
+        android:title="Display Name"
+        android:restrictionType="string"
+        android:defaultValue="Alfresco Server" />
+    <restriction/>
+    <restriction
+        android:key="AlfrescoRepositoryURL"
+        android:title="Alfresco Repository URL"
+        android:restrictionType="string"
+        android:defaultValue="" />
+    <restriction/>
+    <restriction
+        android:key="AlfrescoShareURL"
+        android:title="Alfresco Share URL"
+        android:restrictionType="string"
+        android:defaultValue="" />
+    <restriction/>
+</restrictions>
