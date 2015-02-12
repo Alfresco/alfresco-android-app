@@ -13,6 +13,6 @@ include ':extensions:samsung'
 include ':extensions:scansnap'
 include ':extensions:tools'
 
-// MDM
+// MDM INTEGRATION
 include ':mdm:mobileiron'
 include ':mdm:airwatch'
