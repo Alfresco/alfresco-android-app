@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<restrictions xmlns:android="http://schemas.android.com/apk/res/android">
+    <restriction
+        android:key="hostname"
+        android:title="Hostname"
+        android:restrictionType="string" />
+</restrictions>

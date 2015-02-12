@@ -159,10 +159,6 @@ public class MainActivity extends BaseActivity
 
         super.onCreate(savedInstanceState);
 
-        Intent intent=new Intent();
-        intent.setAction("com.emm.auth_config_request");
-        sendBroadcast(intent);
-
         // Loading progress
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);

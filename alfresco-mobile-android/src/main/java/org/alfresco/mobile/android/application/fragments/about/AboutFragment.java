@@ -21,7 +21,6 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.Version;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
@@ -144,19 +143,6 @@ public class AboutFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        }
-
-        @Override
-        public void display()
-        {
-            if (DisplayUtils.hasCentralPane(getActivity()))
-            {
-                displayAsDialog();
-            }
-            else
-            {
-                super.display();
-            }
         }
     }
 }
