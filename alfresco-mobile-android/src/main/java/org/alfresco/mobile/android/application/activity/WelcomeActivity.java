@@ -19,16 +19,15 @@ package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
+import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import com.squareup.otto.Subscribe;
 
@@ -51,9 +50,9 @@ public class WelcomeActivity extends BaseActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
 
-        if (getFragmentManager().findFragmentByTag(WelcomeFragment.TAG) == null)
+        if (getFragment(WelcomeFragment.TAG) == null)
         {
-            FragmentDisplayer.with(this).load(new WelcomeFragment()).back(false).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.load(WelcomeFragment.with(this).back(false)).animate(null).into(FragmentDisplayer.PANEL_LEFT);
         }
     }
 
@@ -71,12 +70,17 @@ public class WelcomeActivity extends BaseActivity
         }
     }
 
-    // ///////////////////////////////////////////////////////////////////////////
-    // ACTIONS
-    // ///////////////////////////////////////////////////////////////////////////
-    public void launch(View v)
+    @Override
+    public void onBackPressed()
     {
-        AccountTypesFragment.with(this).display();
+        if (MobileIronManager.getInstance(this) != null && getFragment(WelcomeFragment.TAG) != null)
+        {
+            finish();
+        }
+        else
+        {
+            super.onBackPressed();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

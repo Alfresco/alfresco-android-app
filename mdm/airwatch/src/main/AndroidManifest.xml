@@ -1,0 +1,25 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.alfresco.mobile.android.application.mdm.airwatch">
+
+    <application>
+
+        <meta-data
+            android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
+
+
+        <receiver android:name="org.alfresco.mobile.android.application.mdm.airwatch.AirwatchReceiver">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_RESTRICTIONS_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="org.alfresco.mobile.android.application.mdm.airwatch.AirwatchReceiver2">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_RESTRICTIONS_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>

@@ -263,6 +263,12 @@ public class UIUtils
         mgr.hideSoftInputFromWindow(activity.getWindow().getCurrentFocus().getWindowToken(), 0);
     }
 
+    public static void showKeyboard(Activity activity, View v)
+    {
+        InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        mgr.showSoftInput(v, 0);
+    }
+
     public static void hideKeyboard(Activity activity, View v)
     {
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
