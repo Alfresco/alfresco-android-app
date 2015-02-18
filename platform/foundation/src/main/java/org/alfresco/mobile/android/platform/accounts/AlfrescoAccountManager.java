@@ -327,7 +327,7 @@ public class AlfrescoAccountManager extends Manager
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_ACTIVATION, activation);
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_ACCESS_TOKEN, accessToken);
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_REFRESH_TOKEN, refreshToken);
-
+        manager.setPassword(acc, pass);
         return retrieveAccount(accountId);
     }
 

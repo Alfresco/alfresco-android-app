@@ -85,7 +85,6 @@ android {
 dependencies {
     //COMMON TO ALL VARIANTS
     compile project(':platform:foundation')
-    //compile project(':mdm:airwatch')
 
     //DEBUG BUILD TYPE
     debugCompile project(':extensions:hockeyapp')

@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
@@ -63,6 +64,8 @@ public class GeneralPreferences extends PreferenceFragment
 
     private AlfrescoAccount account;
 
+    private MobileIronManager mdmManager;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -84,6 +87,8 @@ public class GeneralPreferences extends PreferenceFragment
     {
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
+
+        mdmManager = MobileIronManager.getInstance(getActivity());
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.general_preferences);
@@ -163,6 +168,15 @@ public class GeneralPreferences extends PreferenceFragment
                 return false;
             }
         });
+
+        // In case of MDM we disable all enterprise feature
+        if (mdmManager != null)
+        {
+            pref.setEnabled(false);
+            pref.setSummary(R.string.mdm_managed);
+            privateFoldersPref.setEnabled(false);
+            privateFoldersPref.setSummary(R.string.mdm_managed);
+        }
 
         // FAVORITE SYNC
         final CheckBoxPreference cpref = (CheckBoxPreference) findPreference(getString(R.string.favorite_sync));

@@ -26,6 +26,7 @@ import java.security.cert.CertificateNotYetValidException;
 import javax.net.ssl.SSLHandshakeException;
 
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
+import org.alfresco.mobile.android.api.exceptions.AlfrescoSessionException;
 import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
@@ -65,9 +66,17 @@ public final class AlfrescoExceptionHelper
     {
         int messageId = R.string.error_session_creation;
 
+        //USername error during session creation
+        if (e.getCause() instanceof AlfrescoSessionException)
+        {
+            if (e.getCause().getCause() instanceof CmisUnauthorizedException)
+            {
+                messageId = R.string.error_session_unauthorized;
+            }
+        }
         // Case where the user has no right (server configuration or wrong
         // username/password)
-        if (e.getCause() instanceof CmisUnauthorizedException)
+        else if (e.getCause() instanceof CmisUnauthorizedException)
         {
             messageId = R.string.error_session_unauthorized;
         }

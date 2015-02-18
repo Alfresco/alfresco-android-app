@@ -15,4 +15,3 @@ include ':extensions:tools'
 
 // MDM INTEGRATION
 include ':mdm:mobileiron'
-include ':mdm:airwatch'

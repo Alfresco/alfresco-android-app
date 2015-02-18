@@ -220,7 +220,6 @@ public class AccountDetailsFragment extends AlfrescoFragment
                 ((BaseActivity) getActivity()).setCurrentAccount(acc);
 
                 // Request or create new session for the AlfrescoAccount.
-                // TODO Replace by AccountManager or SessionManager
                 EventBusManager.getInstance().post(new RequestSessionEvent(acc, true));
             }
         });

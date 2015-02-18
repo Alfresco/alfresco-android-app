@@ -26,7 +26,9 @@ import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.RestrictionsManager;
 import android.os.Bundle;
 
 import com.squareup.otto.Subscribe;
@@ -36,6 +38,7 @@ import com.squareup.otto.Subscribe;
  * 
  * @author Jean Marie Pascal
  */
+@TargetApi(21)
 public class WelcomeActivity extends BaseActivity
 {
     private static final String TAG = WelcomeActivity.class.getName();
@@ -47,6 +50,9 @@ public class WelcomeActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        Intent intent = new Intent(RestrictionsManager.ACTION_REQUEST_PERMISSION);
+        sendBroadcast(intent);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
 
