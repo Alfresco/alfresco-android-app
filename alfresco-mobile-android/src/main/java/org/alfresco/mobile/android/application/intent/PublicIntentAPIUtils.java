@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
 import android.content.Intent;

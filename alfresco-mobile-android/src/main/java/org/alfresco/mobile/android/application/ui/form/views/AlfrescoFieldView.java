@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.ui.form.views;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.ui.form.validation.ValidationRule;

@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.async.node.comment.CreateCommentEvent;
 import org.alfresco.mobile.android.async.node.comment.CreateCommentRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.ui.node.comment.CommentsNodeFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;

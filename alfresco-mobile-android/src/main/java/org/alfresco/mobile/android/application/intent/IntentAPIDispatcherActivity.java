@@ -19,15 +19,12 @@ package org.alfresco.mobile.android.application.intent;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
-import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.editors.text.TextEditorActivity;
 import org.alfresco.mobile.android.application.managers.ActionUtils;

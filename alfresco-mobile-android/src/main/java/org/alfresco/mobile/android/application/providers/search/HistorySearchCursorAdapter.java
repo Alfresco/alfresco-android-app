@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.providers.search;
 
 import java.util.List;
 
-import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;

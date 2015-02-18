@@ -22,8 +22,8 @@ import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;

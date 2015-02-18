@@ -17,9 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.rendition;
 
-import it.sephiroth.android.library.imagezoom.ImageViewTouch;
-import it.sephiroth.android.library.imagezoom.ImageViewTouchBase.DisplayType;
-
 import java.io.File;
 import java.util.Date;
 import java.util.Map;
@@ -58,6 +55,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+
+import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import it.sephiroth.android.library.imagezoom.ImageViewTouchBase.DisplayType;
 
 /**
  * @since 1.1

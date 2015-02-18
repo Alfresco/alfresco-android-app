@@ -28,6 +28,12 @@ android {
     }
 
     signingConfigs {
+
+        custom {
+            //EXTENSIONS
+        }
+
+
         release {
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
@@ -63,6 +69,13 @@ android {
 
 
     productFlavors {
+
+        //CUSTOM EXTENSION FLAVOR
+        custom {
+            dependencies {
+
+            }
+        }
 
         //PLAY STORE FLAVOR
         store {
