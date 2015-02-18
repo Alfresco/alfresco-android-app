@@ -53,6 +53,8 @@ public class SessionManagerImpl extends SessionManager
     // ///////////////////////////////////////////////////////////////////////////
     public static SessionManager getInstance(Context context)
     {
+
+
         synchronized (LOCK)
         {
             if (mInstance == null)
