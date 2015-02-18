@@ -63,14 +63,19 @@ android {
 
 
     productFlavors {
-        store {
 
+        //PLAY STORE FLAVOR
+        store {
+            dependencies {
+                releaseCompile project(':extensions:samsung')
+                releaseCompile project(':extensions:scansnap')
+            }
         }
 
+        //MOBILE IRON FLAVOR
         mobileiron {
             dependencies {
-                //MOBILEIRON BUILD VARIANT
-                mobileironCompile project(':mdm:mobileiron')
+                compile project(':mdm:mobileiron')
             }
         }
     }
@@ -88,11 +93,8 @@ dependencies {
 
     //DEBUG BUILD TYPE
     debugCompile project(':extensions:hockeyapp')
-    //debugCompile project(':extensions:tools')
 
     //PRODUCTION BUILD VARIANT
     releaseCompile project(':platform:theme')
     releaseCompile project(':platform:localization')
-    releaseCompile project(':extensions:samsung')
-    releaseCompile project(':extensions:scansnap')
 }

@@ -75,9 +75,11 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.mdm.MDMConstants;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -345,7 +347,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                 SessionUtils.getAccount(getActivity())))
                         {
                             FavoritesSyncManager.getInstance(getActivity()).sync(
-                                    SessionUtils.getAccount(getActivity()), NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+                                    SessionUtils.getAccount(getActivity()),
+                                    NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
                         }
                     }
                     else
@@ -704,6 +707,16 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             if (!TextUtils.isEmpty(shareUrl) && !shareUrl.endsWith("/"))
             {
                 shareUrl.concat("/");
+            }
+        }
+
+        if (MobileIronManager.getInstance(getActivity()) != null)
+        {
+            String tmpShareURL = (String) MobileIronManager.getInstance(getActivity()).getConfig(
+                    MDMConstants.ALFRESCO_SHARE_URL);
+            if (!TextUtils.isEmpty(tmpShareURL))
+            {
+                shareUrl = tmpShareURL;
             }
         }
 

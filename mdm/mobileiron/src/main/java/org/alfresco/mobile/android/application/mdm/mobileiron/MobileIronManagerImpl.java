@@ -86,7 +86,8 @@ public class MobileIronManagerImpl extends MobileIronManager
 
         // REPOSITORY URL
         String repositoryURL = (String) b.get(ALFRESCO_REPOSITORY_URL);
-        if (TextUtils.isEmpty(repositoryURL)) { throw new AlfrescoAppException(ALFRESCO_REPOSITORY_URL + " can't be empty."); }
+        if (TextUtils.isEmpty(repositoryURL)) { throw new AlfrescoAppException(ALFRESCO_REPOSITORY_URL
+                + " can't be empty."); }
 
         URL u = null;
         try
@@ -106,6 +107,7 @@ public class MobileIronManagerImpl extends MobileIronManager
     @Override
     public Object getConfig(String id)
     {
+        if (configBundle == null) { return null; }
         return configBundle.get(id);
     }
 
