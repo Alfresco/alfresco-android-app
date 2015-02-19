@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -19,9 +18,9 @@
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="?MainTheme.Background.White"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="600dip"
@@ -29,7 +28,7 @@
         android:layout_gravity="center"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible" >
+        android:visibility="visible">
 
         <ImageView
             android:layout_width="500dip"
@@ -43,11 +42,10 @@
             style="?MainTheme.Button.Large"
             android:drawableLeft="@drawable/ic_login"
             android:text="@string/home_login"
-            android:contentDescription="@string/home_account"
-            />
+            android:contentDescription="@string/home_account" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
@@ -56,7 +54,7 @@
 
             <ProgressBar
                 android:id="@+id/homescreen_config_progress"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="60dip"
                 style="@android:style/Widget.ProgressBar.Large.Inverse"
                 android:visibility="visible"
@@ -64,11 +62,10 @@
 
             <TextView
                 android:id="@+id/homescreen_config_message"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/home_login"
-                android:gravity="center"
-                />
+                android:gravity="center" />
 
         </LinearLayout>
 

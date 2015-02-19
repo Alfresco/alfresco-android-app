@@ -28,6 +28,12 @@ android {
     }
 
     signingConfigs {
+
+        custom {
+            //EXTENSIONS
+        }
+
+
         release {
             storeFile file(RELEASE_STORE_FILE)
             storePassword RELEASE_STORE_PASSWORD
@@ -63,13 +69,25 @@ android {
 
 
     productFlavors {
-        store {
 
+        //CUSTOM EXTENSION FLAVOR
+        custom {
+            dependencies {
+
+            }
         }
 
+        //PLAY STORE FLAVOR
+        store {
+            dependencies {
+                storeCompile project(':extensions:samsung')
+                storeCompile project(':extensions:scansnap')
+            }
+        }
+
+        //MOBILE IRON FLAVOR
         mobileiron {
             dependencies {
-                //MOBILEIRON BUILD VARIANT
                 mobileironCompile project(':mdm:mobileiron')
             }
         }
@@ -85,15 +103,7 @@ android {
 dependencies {
     //COMMON TO ALL VARIANTS
     compile project(':platform:foundation')
-    //compile project(':mdm:airwatch')
 
     //DEBUG BUILD TYPE
     debugCompile project(':extensions:hockeyapp')
-    //debugCompile project(':extensions:tools')
-
-    //PRODUCTION BUILD VARIANT
-    releaseCompile project(':platform:theme')
-    releaseCompile project(':platform:localization')
-    releaseCompile project(':extensions:samsung')
-    releaseCompile project(':extensions:scansnap')
 }

@@ -296,7 +296,7 @@ public abstract class AlfrescoFragmentBuilder
      */
     protected void retrieveCustomArgument(Map<String, Object> properties, Bundle b)
     {
-        return;
+
     }
 
     protected static void retrieveArguments(Map<String, Object> json, Bundle b, String templateKey)

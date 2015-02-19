@@ -278,7 +278,7 @@ public class SplitPaneLayout extends ViewGroup
                             }
                             case ORIENTATION_VERTICAL:
                             {
-                                temp.offset(0, (int) (y - lastY));
+                                temp.offset(0, (y - lastY));
                                 break;
                             }
                         }
@@ -410,7 +410,7 @@ public class SplitPaneLayout extends ViewGroup
     /**
      * Sets the drawable used for the splitter dragging overlay.
      * 
-     * @param splitterDrawable the desired orientation of the layout
+     * @param splitterDraggingDrawable the desired orientation of the layout
      */
     public void setSplitterDraggingDrawable(Drawable splitterDraggingDrawable)
     {

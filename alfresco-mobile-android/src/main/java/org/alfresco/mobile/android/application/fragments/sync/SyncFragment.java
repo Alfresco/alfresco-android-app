@@ -27,12 +27,11 @@ import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
-import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
+import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
@@ -166,14 +165,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         displayActivateDialog();
 
-        if (getMode() != MODE_PROGRESS)
-        {
-            hasSynchroActive = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
-        }
-        else
-        {
-            hasSynchroActive = true;
-        }
+        hasSynchroActive = getMode() == MODE_PROGRESS
+                || FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
 
         int titleId = R.string.menu_favorites;
         if (hasSynchroActive)
@@ -419,7 +412,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
         if (getFolderId() != null)
         {
-            selection.append(FavoritesSyncSchema.COLUMN_PARENT_ID + " == '" + getFolderId() + "'");
+            selection.append(FavoritesSyncSchema.COLUMN_PARENT_ID).append(" == '").append(getFolderId()).append("'");
         }
         else
         {
@@ -522,7 +515,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
         // Start the CAB using the ActionMode.Callback defined above
         nActions = new NodeIdActions(SyncFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
+        nActions.setOnFinishModeListener(new AbstractActions.onFinishModeListener()
         {
             @Override
             public void onFinish()
@@ -538,7 +531,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         adapter.notifyDataSetChanged();
 
         return true;
-    };
+    }
 
     public int getMode()
     {
@@ -605,7 +598,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     @Override
     public void refresh()
     {
-        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity()))
+        if (!ConnectivityUtils.hasNetwork(getActivity()))
         {
             mi.setActionView(null);
             return;
@@ -626,7 +619,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         if (info != null && info.hasWarning())
         {
             ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(), ErrorSyncDialogFragment.TAG);
-            return;
         }
     }
 
@@ -652,7 +644,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             {
                 ErrorSyncDialogFragment.newInstance().show(getActivity().getFragmentManager(),
                         ErrorSyncDialogFragment.TAG);
-                return;
             }
         }
     }
@@ -720,6 +711,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     public static class Builder extends AlfrescoFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_favorite_dark;
+
         public static final int LABEL_ID = R.string.menu_favorites;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -746,7 +738,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS

@@ -32,13 +32,13 @@ public abstract class LeafFragmentBuilder extends AlfrescoFragmentBuilder
     public LeafFragmentBuilder(Activity activity)
     {
         super(activity);
-        this.hasBackStack = DisplayUtils.hasCentralPane(activity) ? false : true;
+        this.hasBackStack = !DisplayUtils.hasCentralPane(activity);
     }
 
     public LeafFragmentBuilder(Activity activity, Map<String, Object> configuration)
     {
         super(activity, configuration);
-        this.hasBackStack = DisplayUtils.hasCentralPane(activity) ? false : true;
+        this.hasBackStack = !DisplayUtils.hasCentralPane(activity);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.person.PeopleAdapter;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,7 +47,7 @@ public class UserAdapter extends PeopleAdapter
     public UserAdapter(Fragment fr, int textViewResourceId, List<Person> listItems, boolean isEditable)
     {
         super(fr, textViewResourceId, listItems);
-        this.fragmentRef = new WeakReference<Fragment>(fr);
+        this.fragmentRef = new WeakReference<>(fr);
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         ((RenditionManagerImpl) this.renditionManager).setCurrentActivity(fr.getActivity());
         this.isEditable = isEditable;
@@ -57,8 +56,8 @@ public class UserAdapter extends PeopleAdapter
     public UserAdapter(Fragment fr, int textViewResourceId, List<Person> listItems, Map<String, Person> selectedItems)
     {
         super(fr, textViewResourceId, listItems, selectedItems);
-        this.fragmentRef = new WeakReference<Fragment>(fr);
-        this.activityRef = new WeakReference<Activity>(fr.getActivity());
+        this.fragmentRef = new WeakReference<>(fr);
+        this.activityRef = new WeakReference<>(fr.getActivity());
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         ((RenditionManagerImpl) this.renditionManager).setCurrentActivity(fr.getActivity());
     }

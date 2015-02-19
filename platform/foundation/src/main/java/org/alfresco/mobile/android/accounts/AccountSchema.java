@@ -158,9 +158,9 @@ public final class AccountSchema
         if (oldVersion < DatabaseVersionNumber.VERSION_1_5_0)
         {
             //
-            List<Account> accounts = AccountProvider.retrieveAccounts(context, db);
-            android.accounts.Account newAccount = null;
-            String accountName = null;
+            List<Account> accounts = AccountProvider.retrieveAccounts(db);
+            android.accounts.Account newAccount;
+            String accountName;
             AccountManager mAccountManager = AccountManager.get(context);
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
             FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(context);
@@ -190,12 +190,14 @@ public final class AccountSchema
                 // Time to create.
                 if (mAccountManager.addAccountExplicitly(newAccount, account.getPassword(), b))
                 {
-                    //Let's define if sync automatically regarding previous settings
+                    // Let's define if sync automatically regarding previous
+                    // settings
                     syncManager.setActivateSync(sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false));
-                    sharedPref.edit().remove(SYNCHRO_PREFIX + account.getId());
+                    sharedPref.edit().remove(SYNCHRO_PREFIX + account.getId()).commit();
                 }
 
-                Log.i("Migration", "Account " + account.getDescription() + "[" + account.getId() + "] has been migrated");
+                Log.i("Migration", "Account " + account.getDescription() + "[" + account.getId()
+                        + "] has been migrated");
 
             }
             // Delete old table

@@ -220,8 +220,7 @@ public class LocalConfigServiceImpl implements ConfigService
     @Override
     public boolean hasViewConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.hasViewConfig();
+        return configuration != null && configuration.hasViewConfig();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -230,8 +229,7 @@ public class LocalConfigServiceImpl implements ConfigService
     @Override
     public boolean hasFormConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.hasFormConfig();
+        return configuration != null && configuration.hasFormConfig();
     }
 
     @Override
@@ -254,8 +252,7 @@ public class LocalConfigServiceImpl implements ConfigService
     @Override
     public boolean hasCreationConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.getCreationConfig() != null;
+        return configuration != null && configuration.getCreationConfig() != null;
     }
 
     @Override

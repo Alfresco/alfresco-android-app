@@ -107,6 +107,7 @@ public class UpdateNodeRequest extends NodeRequest
         {
             super(parentFolder, node);
             this.properties = properties;
+            this.contentFile = contentFile;
         }
 
         public UpdateNodeRequest build(Context context)

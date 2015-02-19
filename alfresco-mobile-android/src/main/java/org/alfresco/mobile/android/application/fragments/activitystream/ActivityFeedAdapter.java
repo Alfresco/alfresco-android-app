@@ -50,7 +50,7 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
         super(fr, session, textViewResourceId, listItems, selectedItems);
-        this.renditionManager = (RenditionManagerImpl) RenditionManagerImpl.getInstance(fr.getActivity());
+        this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         this.fr = fr;
     }
 
@@ -86,7 +86,7 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
     @Override
     public boolean onMenuItemClick(MenuItem item)
     {
-        boolean onMenuItemClick = true;
+        boolean onMenuItemClick;
         switch (item.getItemId())
         {
             case R.id.menu_activity_profile:

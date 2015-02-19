@@ -69,14 +69,14 @@ public class BaseShortcutActivity extends BaseActivity
 
     public void validateAction(View v)
     {
-       //TO Override by children class
+        // TO Override by children class
     }
-    
+
     public void setUploadFolder(int rootFolderTypeId)
     {
         this.rootFolderTypeId = rootFolderTypeId;
     }
-    
+
     public void setUploadAccount(AlfrescoAccount account)
     {
         this.uploadAccount = account;
@@ -118,7 +118,6 @@ public class BaseShortcutActivity extends BaseActivity
         {
             FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
         }
-        return;
     }
 
     @Subscribe

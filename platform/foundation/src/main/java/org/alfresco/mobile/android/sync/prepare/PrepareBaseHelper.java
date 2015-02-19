@@ -1179,7 +1179,7 @@ public abstract class PrepareBaseHelper
             {
                 sb.append(delimiter);
             }
-            sb.append("'" + token.getIdentifier() + "'");
+            sb.append("'").append(token.getIdentifier()).append("'");
         }
     }
 
@@ -1196,7 +1196,7 @@ public abstract class PrepareBaseHelper
             {
                 sb.append(delimiter);
             }
-            sb.append("'" + token.getIdentifier() + "'");
+            sb.append("'").append(token.getIdentifier()).append("'");
         }
     }
 

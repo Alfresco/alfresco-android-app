@@ -119,7 +119,7 @@ public class NetworksFragment extends CloudNetworksFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

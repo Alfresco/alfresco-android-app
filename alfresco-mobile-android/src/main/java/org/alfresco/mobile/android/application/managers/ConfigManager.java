@@ -18,8 +18,6 @@
 package org.alfresco.mobile.android.application.managers;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ConfigConstants;
 import org.alfresco.mobile.android.api.model.config.ConfigScope;
@@ -38,6 +36,7 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.content.Context;
+import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
 import com.squareup.otto.Subscribe;
@@ -50,11 +49,11 @@ public class ConfigManager extends Manager
 
     protected static Manager mInstance;
 
-    private Map<Long, ConfigService> currentService = new HashMap<Long, ConfigService>();
+    private LongSparseArray<ConfigService> currentService = new LongSparseArray<>();
 
-    private Map<Long, ConfigService> remoteConfigService = new HashMap<Long, ConfigService>();
+    private LongSparseArray<ConfigService> remoteConfigService = new LongSparseArray<>();
 
-    private Map<Long, ConfigService> customConfigService = new HashMap<Long, ConfigService>();
+    private LongSparseArray<ConfigService> customConfigService = new LongSparseArray<>();
 
     private ConfigService embedConfigService;
 
@@ -154,11 +153,11 @@ public class ConfigManager extends Manager
 
     public void setSession(long accountId, AlfrescoSession session)
     {
-        if (remoteConfigService != null && remoteConfigService.containsKey(accountId))
+        if (remoteConfigService != null && remoteConfigService.get(accountId) != null)
         {
             currentService.put(accountId, remoteConfigService.get(accountId));
         }
-        else if (customConfigService != null && customConfigService.containsKey(accountId))
+        else if (customConfigService != null && customConfigService.get(accountId) != null)
         {
             ((LocalConfigServiceImpl) customConfigService.get(accountId)).setSession(session);
             currentService.put(accountId, customConfigService.get(accountId));
@@ -272,7 +271,7 @@ public class ConfigManager extends Manager
 
     public boolean hasConfig(long accountId)
     {
-        return (currentService != null) ? currentService.containsKey(accountId) : false;
+        return (currentService != null) && currentService.get(accountId) != null;
     }
 
     public ConfigService getEmbeddedConfig()
@@ -287,7 +286,7 @@ public class ConfigManager extends Manager
 
     public boolean hasCustomConfig(long accountId)
     {
-        return (customConfigService != null) ? customConfigService.containsKey(accountId) : false;
+        return (customConfigService != null) && customConfigService.get(accountId) != null;
     }
 
     public ConfigService getRemoteConfig(long accountId)
@@ -297,7 +296,7 @@ public class ConfigManager extends Manager
 
     public boolean hasRemoteConfig(long accountId)
     {
-        return (remoteConfigService != null) ? remoteConfigService.containsKey(accountId) : false;
+        return (remoteConfigService != null) && remoteConfigService.get(accountId) != null;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

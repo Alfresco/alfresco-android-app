@@ -58,8 +58,8 @@ public class NumberRangeValidationRule extends ValidationRule
             }
             catch (NumberFormatException e)
             {
-                if ((min == null || min.signum() == -1) && "-".equals((String) object)) { return true; }
-                if ((max == null || max.signum() == 1) && "+".equals((String) object)) { return true; }
+                if ((min == null || min.signum() == -1) && "-".equals(object)) { return true; }
+                if ((max == null || max.signum() == 1) && "+".equals(object)) { return true; }
                 return false;
             }
         }

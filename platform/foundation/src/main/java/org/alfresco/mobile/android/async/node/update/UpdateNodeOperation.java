@@ -62,7 +62,7 @@ public class UpdateNodeOperation extends NodeOperation<Node>
     @Override
     protected LoaderResult<Node> doInBackground()
     {
-        LoaderResult<Node> result = new LoaderResult<Node>();
+        LoaderResult<Node> result = new LoaderResult<>();
         Node resultNode = null;
 
         try

@@ -39,9 +39,11 @@ import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -59,10 +61,6 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
 {
     public static final String TAG = PagerNodeDetailsFragment.class.getName();
 
-    private ViewPager viewPager;
-
-    private PagerSlidingTabStrip tabs;
-
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -76,7 +74,7 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
         PagerNodeDetailsFragment bf = new PagerNodeDetailsFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
@@ -96,11 +94,12 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     // ///////////////////////////////////////////////////////////////////////////
     // CREATE PARTS
     // ///////////////////////////////////////////////////////////////////////////
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     protected void displayTabs()
     {
         // Retrieve pager & pager tabs
-        viewPager = (ViewPager) viewById(R.id.view_pager);
-        tabs = (PagerSlidingTabStrip) viewById(R.id.tabs);
+        ViewPager viewPager = (ViewPager) viewById(R.id.view_pager);
+        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) viewById(R.id.tabs);
 
         tabs.setBackgroundColor(getActivity().getResources().getColor(R.color.grey_lighter));
         NodeDetailsPagerAdapter adapter = new NodeDetailsPagerAdapter(getChildFragmentManager(), getActivity(), node,
@@ -141,13 +140,16 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
-        try {
+        try
+        {
             super.onDocumentUpdated(event);
-        } catch (Exception e){
+        }
+        catch (Exception e)
+        {
             Log.e(TAG, Log.getStackTraceString(e));
         }
     }
-    
+
     @Subscribe
     public void onContentUpdated(UpdateContentEvent event)
     {
@@ -159,13 +161,13 @@ public class PagerNodeDetailsFragment extends NodeDetailsFragment
     {
         super.onNodeDeleted(event);
     }
-    
+
     @Subscribe
     public void onDocumentDownloaded(DownloadEvent event)
     {
         super.onDocumentDownloaded(event);
     }
-    
+
     @Subscribe
     public void onFileProtectionEvent(FileProtectionEvent event)
     {
@@ -260,7 +262,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         Fragment fr = null;
         if (node instanceof Folder)
         {
-            switch (position+1)
+            switch (position + 1)
             {
                 case TAB_METADATA:
                     fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
@@ -283,7 +285,8 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
             switch (relativePosition)
             {
                 case TAB_PREVIEW:
-                    fr = PreviewFragment.with(activity.get()).node(node).touchEnable(DisplayUtils.hasCentralPane(activity.get())).createFragment();
+                    fr = PreviewFragment.with(activity.get()).node(node)
+                            .touchEnable(DisplayUtils.hasCentralPane(activity.get())).createFragment();
                     break;
                 case TAB_METADATA:
                     if (DisplayUtils.hasCentralPane(activity.get()))
@@ -321,7 +324,7 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         int titleId = 0;
         if (node instanceof Folder)
         {
-            switch (position+1)
+            switch (position + 1)
             {
                 case TAB_METADATA:
                     titleId = R.string.metadata;

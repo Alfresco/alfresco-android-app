@@ -20,7 +20,7 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
@@ -39,7 +39,7 @@
             android:contentDescription="@string/home_account" />
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:orientation="horizontal"
@@ -61,8 +61,7 @@
                 android:layout_height="match_parent"
                 android:text="@string/mdm_loading_configuration"
                 style="?MainTheme.TextView.Primary"
-                android:gravity="center"
-                />
+                android:gravity="center" />
 
             <TextView
                 android:id="@+id/homescreen_config_error"
@@ -70,8 +69,7 @@
                 android:layout_height="match_parent"
                 android:text="@string/mdm_loading_configuration"
                 style="?MainTheme.TextView.Secondary"
-                android:gravity="center"
-                />
+                android:gravity="center" />
         </LinearLayout>
 
         <TextView

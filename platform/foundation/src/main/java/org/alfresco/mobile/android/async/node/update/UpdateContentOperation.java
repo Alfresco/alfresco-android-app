@@ -58,7 +58,7 @@ public class UpdateContentOperation extends UpNodeOperation
     @Override
     protected LoaderResult<Document> doInBackground()
     {
-        LoaderResult<Document> result = new LoaderResult<Document>();
+        LoaderResult<Document> result = new LoaderResult<>();
 
         try
         {
@@ -134,7 +134,7 @@ public class UpdateContentOperation extends UpNodeOperation
         {
             if (result == null)
             {
-                result = new LoaderResult<Document>();
+                result = new LoaderResult<>();
             }
             result.setException(e);
             Log.e(TAG, Log.getStackTraceString(e));

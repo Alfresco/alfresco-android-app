@@ -122,8 +122,7 @@ public class DocumentFolderPickerFragment extends Fragment
 
     public static DocumentFolderPickerFragment newInstanceByTemplate(Bundle b)
     {
-        DocumentFolderPickerFragment cbf = new DocumentFolderPickerFragment();
-        return cbf;
+        return new DocumentFolderPickerFragment();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -163,8 +162,8 @@ public class DocumentFolderPickerFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        List<AlfrescoAccount> list = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccounts(getActivity());
-        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null));
+        List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
+        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.sdk_list_row, null));
     }
 
     @Override
@@ -358,6 +357,6 @@ public class DocumentFolderPickerFragment extends Fragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

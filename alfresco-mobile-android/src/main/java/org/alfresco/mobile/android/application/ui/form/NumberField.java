@@ -48,7 +48,7 @@ public class NumberField extends BaseField
     public View getEditView(ModelDefinition typeDefinition, ViewGroup hookView)
     {
         EditTextFieldView v = (EditTextFieldView) super.getEditView(typeDefinition, hookView);
-        v.getEditText().setInputType(EditorInfo.TYPE_CLASS_NUMBER|EditorInfo.TYPE_NUMBER_FLAG_SIGNED);
+        v.getEditText().setInputType(EditorInfo.TYPE_CLASS_NUMBER | EditorInfo.TYPE_NUMBER_FLAG_SIGNED);
         return v;
     }
 
@@ -58,7 +58,7 @@ public class NumberField extends BaseField
     @Override
     public Serializable getOutputValue()
     {
-        String value = ((EditTextFieldView) fieldView).getValue();
+        String value = fieldView.getValue();
         if (TextUtils.isEmpty(value)) { return null; }
         return new BigInteger(value);
     }

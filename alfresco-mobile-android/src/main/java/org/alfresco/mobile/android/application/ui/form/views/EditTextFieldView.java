@@ -12,7 +12,6 @@ import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,7 +20,7 @@ import android.widget.TextView;
 public class EditTextFieldView extends AlfrescoFieldView
 {
     private EditText mEditTextView;
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -85,14 +84,15 @@ public class EditTextFieldView extends AlfrescoFieldView
         super.setText(text);
         mEditTextView.setText(text);
     }
-    
+
     public void clear()
     {
         mText = null;
         mEditTextView.setText(null);
     }
-    
-    public void enablePassword(boolean isPassword){
+
+    public void enablePassword(boolean isPassword)
+    {
         mIsPassword = true;
         mEditTextView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
     }
@@ -107,8 +107,7 @@ public class EditTextFieldView extends AlfrescoFieldView
     {
         if (multiLine)
         {
-            LayoutParams params = new LayoutParams(
-                    ((LinearLayout) mEditTextView.getParent()).getLayoutParams().width,
+            LayoutParams params = new LayoutParams(((LinearLayout) mEditTextView.getParent()).getLayoutParams().width,
                     LayoutParams.WRAP_CONTENT);
             ((LinearLayout) mEditTextView.getParent()).setLayoutParams(params);
             mEditTextView.setMaxLines(5);
@@ -133,7 +132,7 @@ public class EditTextFieldView extends AlfrescoFieldView
 
         mFloatingLabel = (TextView) findViewById(R.id.floating_label_hint);
         mEditTextView = (EditText) findViewById(R.id.floating_label_edit_text);
-        mEditTextUnderlineView = (View) findViewById(R.id.floating_label_underline);
+        mEditTextUnderlineView = findViewById(R.id.floating_label_underline);
         mErrorTextView = (TextView) findViewById(R.id.floating_label_error);
 
         getAttributesFromXmlAndStoreLocally();

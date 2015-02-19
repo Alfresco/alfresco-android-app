@@ -53,7 +53,7 @@ public class UpgradeManager implements VersionNumber
     // ///////////////////////////////////////////////////////////////////////////
     protected UpgradeManager(Context context)
     {
-        this.contextRef = new WeakReference<Context>(context.getApplicationContext());
+        this.contextRef = new WeakReference<>(context.getApplicationContext());
         this.prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         // Check if application has been updated
@@ -149,7 +149,7 @@ public class UpgradeManager implements VersionNumber
                 File oldDownloads = UpgradeVersion110.getOldDownloadFolder(contextRef.get());
                 File newDownloads = AlfrescoStorageManager.getInstance(contextRef.get()).getPrivateFolder("", null);
 
-                if (IOUtils.isFolderEmpty(oldDownloads) == false)
+                if (!IOUtils.isFolderEmpty(oldDownloads))
                 {
                     if (oldDownloads != null && newDownloads != null)
                     {

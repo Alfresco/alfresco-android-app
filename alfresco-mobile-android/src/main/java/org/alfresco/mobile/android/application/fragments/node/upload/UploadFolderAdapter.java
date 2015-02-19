@@ -59,7 +59,7 @@ public class UploadFolderAdapter extends BaseListAdapter<Integer, GenericViewHol
                 iconId = R.drawable.ic_flatten_folder;
                 break;
             case R.string.menu_downloads:
-                iconId = R.drawable.ic_download_dark;
+                iconId = R.drawable.ic_download_light;
                 break;
             case R.string.menu_browse_sites:
                 iconId = R.drawable.ic_site_light;

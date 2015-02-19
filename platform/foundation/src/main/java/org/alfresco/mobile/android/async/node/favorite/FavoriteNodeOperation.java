@@ -49,8 +49,6 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
 
     private boolean hasSyncParent;
 
-    private Boolean batch = Boolean.FALSE;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -61,7 +59,6 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
         {
             nodeIdentifier = ((FavoriteNodeRequest) request).getNodeIdentifier();
             this.value = ((FavoriteNodeRequest) request).markFavorite;
-            this.batch = ((FavoriteNodeRequest) request).batchFavorite;
         }
     }
 

@@ -50,8 +50,7 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
 
     public static ScanSnapPresetsDialogFragment newInstance()
     {
-        ScanSnapPresetsDialogFragment fragment = new ScanSnapPresetsDialogFragment();
-        return fragment;
+        return new ScanSnapPresetsDialogFragment();
     }
 
     public Dialog onCreateDialog(Bundle savedInstanceState)
@@ -72,7 +71,7 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
             }
         });
 
-        List<ScanSnapPreset> presets = new ArrayList<ScanSnapPreset>();
+        List<ScanSnapPreset> presets = new ArrayList<>();
         presets.add(new DefaultPreset());
         presets.add(new PhotoPreset());
         ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), R.layout.sdk_list_row, presets);

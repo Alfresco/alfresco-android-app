@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- CONFIG -->
-    <string name="config_asset_path">Configuration/</string>
-    <string name="config_asset_prefix">embedded</string>
-    <string name="config_asset_file">config.json</string>
-    <string name="config_asset_messages_path">Configuration/Messages/</string>
-    <string name="config_asset_messages_file">embedded_strings.properties</string>
+    <string name="config_asset_path" translatable="false">Configuration/</string>
+    <string name="config_asset_prefix" translatable="false">embedded</string>
+    <string name="config_asset_file" translatable="false">config.json</string>
+    <string name="config_asset_messages_path" translatable="false">Configuration/Messages/</string>
+    <string name="config_asset_messages_file" translatable="false">embedded_strings.properties</string>
 
     <!-- Locale -->
     <string name="asset_folder_prefix">en</string>

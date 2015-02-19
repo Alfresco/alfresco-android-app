@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="72dp"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/floating_label_hint"
@@ -16,8 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-                    android:paddingBottom="8dp"
-         >
+        android:paddingBottom="8dp">
 
         <TextView
             android:id="@+id/floating_label_edit_text"
@@ -27,7 +26,6 @@
             android:layout_margin="0dp"
             android:layout_weight="1"
             android:background="@null"
-            android:hint="tmp"
             android:lines="1"
             android:maxLines="1"
             android:scrollHorizontally="true"
@@ -43,21 +41,20 @@
             android:layout_gravity="right|center_vertical"
             android:checked="true" />
     </LinearLayout>
-    
-     <View
+
+    <View
         android:id="@+id/floating_label_underline"
         android:layout_width="match_parent"
-        android:layout_height="2px"
+        android:layout_height="2dp"
         android:layerType="software"
         android:paddingLeft="8dp"
         android:paddingRight="8dp" />
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:visibility="invisible" >
+        android:visibility="invisible">
 
         <TextView
             android:id="@+id/floating_label_error"

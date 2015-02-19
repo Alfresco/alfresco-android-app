@@ -37,8 +37,6 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 
-import android.accounts.AccountManager;
-
 public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
 {
     protected String baseUrl;
@@ -52,8 +50,6 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
     private OAuthData oauthData;
 
     private Person userPerson;
-
-    private AccountManager mAccountManager;
 
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -87,7 +83,7 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
                 listener.onPreExecute(this);
             }
 
-            AlfrescoSessionSettings settingsHelper = null;
+            AlfrescoSessionSettings settingsHelper;
             if (oauthData != null)
             {
                 settingsHelper = SessionManager.getInstance(context).prepareSettings(oauthData);
@@ -126,16 +122,14 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
     private AlfrescoAccount createAccount()
     {
         String type;
-        boolean isPaidAccount = false;
-        AlfrescoAccount acc = null;
-        mAccountManager = AccountManager.get(context);
+        boolean isPaidAccount;
+        AlfrescoAccount acc;
 
         if (oauthData == null)
         {
             // ON PREMISE
 
             // Retrieve Type
-            type = AlfrescoAccount.REPOSITORY_TYPE_ALFRESCO_CMIS;
             if (session instanceof CloudSession && !session.getBaseUrl().startsWith(OAuthConstant.PUBLIC_API_HOSTNAME))
             {
                 type = AlfrescoAccount.REPOSITORY_TYPE_ALFRESCO_TEST_BASIC;

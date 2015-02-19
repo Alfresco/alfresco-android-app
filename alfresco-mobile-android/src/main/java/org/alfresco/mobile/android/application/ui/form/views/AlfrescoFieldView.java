@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.ui.form.views;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.ui.form.validation.ValidationRule;
@@ -183,7 +182,7 @@ public abstract class AlfrescoFieldView extends LinearLayout
         if (text == null) { return; }
         mText = text;
     }
-    
+
     public void clear()
     {
     }
@@ -202,17 +201,17 @@ public abstract class AlfrescoFieldView extends LinearLayout
         mText = attributesFromXmlLayout.getString(R.styleable.FloatLabelEditText_text);
         mGravity = attributesFromXmlLayout.getInt(R.styleable.FloatLabelEditText_gravity, Gravity.LEFT);
         mTextSizeInSp = getScaledFontSize(attributesFromXmlLayout.getDimensionPixelSize(
-                R.styleable.FloatLabelEditText_textSize, (int) 16));
+                R.styleable.FloatLabelEditText_textSize, 16));
 
         mFloatTextSizeInSp = getScaledFontSize(attributesFromXmlLayout.getDimensionPixelSize(
-                R.styleable.FloatLabelEditText_floatTextSize, (int) 16));
+                R.styleable.FloatLabelEditText_floatTextSize, 16));
 
         mFocusedColor = attributesFromXmlLayout.getColor(R.styleable.FloatLabelEditText_textColorHintFocused,
                 android.R.color.black);
         mUnFocusedColor = attributesFromXmlLayout.getColor(R.styleable.FloatLabelEditText_textColorHintUnFocused,
                 android.R.color.darker_gray);
         mErrorColor = attributesFromXmlLayout.getColor(R.styleable.FloatLabelEditText_textColorHintError,
-                android.R.color.holo_red_dark);
+                R.color.dark_red);
         mFitScreenWidth = attributesFromXmlLayout.getInt(R.styleable.FloatLabelEditText_fitScreenWidth, 0);
         mIsPassword = (attributesFromXmlLayout.getInt(R.styleable.FloatLabelEditText_inputType, 0) == 1);
         attributesFromXmlLayout.recycle();

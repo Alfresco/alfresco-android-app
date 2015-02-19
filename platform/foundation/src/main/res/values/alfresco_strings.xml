@@ -4,8 +4,6 @@
     <!-- ************************** -->
     <!-- ALFRESCO SDK MANUAL -->
     <!-- ************************** -->
-    <string name="name">UI Lib</string>
-
     <!-- Relative Date -->
     <string name="relative_date_just_now">just now</string>
     <string name="relative_date_less_than_a_minute_ago">less than a minute ago</string>

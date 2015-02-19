@@ -47,7 +47,8 @@ public class BooleanField extends BaseField
     public String getHumanReadableValue()
     {
         if (property.getValue() == null) { return ""; }
-        return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
+        return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(
+                R.string.no);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -77,7 +78,6 @@ public class BooleanField extends BaseField
     @Override
     public Serializable getOutputValue()
     {
-        if (fieldView instanceof SwitchFieldView) { return ((SwitchFieldView) fieldView).isChecked(); }
-        return false;
+        return fieldView instanceof SwitchFieldView && ((SwitchFieldView) fieldView).isChecked();
     }
 }

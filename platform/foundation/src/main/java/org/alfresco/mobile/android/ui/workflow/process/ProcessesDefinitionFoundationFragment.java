@@ -46,8 +46,7 @@ public class ProcessesDefinitionFoundationFragment extends BaseGridFragment
 
     public static ProcessesDefinitionFoundationFragment newInstance()
     {
-        ProcessesDefinitionFoundationFragment bf = new ProcessesDefinitionFoundationFragment();
-        return bf;
+        return new ProcessesDefinitionFoundationFragment();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

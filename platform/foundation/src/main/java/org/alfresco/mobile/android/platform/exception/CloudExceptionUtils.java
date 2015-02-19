@@ -46,7 +46,7 @@ public final class CloudExceptionUtils
 
     private CloudExceptionUtils()
     {
-    };
+    }
 
     public static void handleCloudException(Context context, Long accountId, Exception exception, boolean forceRefresh,
             String taskId)
@@ -114,7 +114,6 @@ public final class CloudExceptionUtils
             }
 
             EventBusManager.getInstance().post(new LoadAccountErrorEvent(null, accountId, exception, messageId));
-            return;
         }
     }
 

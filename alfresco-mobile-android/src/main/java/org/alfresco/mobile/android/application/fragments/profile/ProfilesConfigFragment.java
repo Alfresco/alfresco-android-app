@@ -71,7 +71,7 @@ public class ProfilesConfigFragment extends BaseGridFragment
         retrieveProfiles();
         super.onActivityCreated(savedInstanceState);
 
-        //Dsiable refresh
+        // Dsiable refresh
         refreshHelper.setEnabled(false);
         refreshHelper = null;
     }
@@ -92,8 +92,8 @@ public class ProfilesConfigFragment extends BaseGridFragment
     }
 
     @Override
-    public void refresh() {
-       return;
+    public void refresh()
+    {
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ public class ProfilesConfigFragment extends BaseGridFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

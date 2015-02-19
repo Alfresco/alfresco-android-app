@@ -90,8 +90,8 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         // User Profile
         if (item.getType().startsWith(ActivityFeedAdapter.PREFIX_USER))
         {
-            UserProfileFragment.with(getActivity())
-                    .personId(item.getData(OnPremiseConstant.MEMEBERUSERNAME_VALUE)).display();
+            UserProfileFragment.with(getActivity()).personId(item.getData(OnPremiseConstant.MEMEBERUSERNAME_VALUE))
+                    .display();
         }
 
         // Not necessary to enable touch on delete file.
@@ -103,8 +103,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
 
     protected boolean equalsItems(ActivityEntry o1, ActivityEntry o2)
     {
-        if (o1 == null || o2 == null) return false;
-        return o2.equals(o1);
+        return !(o1 == null || o2 == null) && o2.equals(o1);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -122,6 +121,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         super.onCreateOptionsMenu(menu, inflater);
         getMenu(menu);
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // REQUEST & RESULT
     // ///////////////////////////////////////////////////////////////////////////
@@ -144,6 +144,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     public static class Builder extends AlfrescoFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_activities_dark;
+
         public static final int LABEL_ID = R.string.menu_browse_activities;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -163,7 +164,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
     }
 

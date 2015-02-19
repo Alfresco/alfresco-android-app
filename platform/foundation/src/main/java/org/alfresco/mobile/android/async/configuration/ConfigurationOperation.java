@@ -48,7 +48,7 @@ public class ConfigurationOperation extends BaseOperation<ConfigService>
     protected LoaderResult<ConfigService> doInBackground()
     {
         LoaderResult<ConfigService> result = new LoaderResult<ConfigService>();
-        ConfigService config = null;
+        ConfigService config;
 
         try
         {

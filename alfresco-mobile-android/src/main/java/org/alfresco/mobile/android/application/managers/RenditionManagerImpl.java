@@ -73,8 +73,6 @@ public class RenditionManagerImpl extends RenditionManager
 
     private AlfrescoSession session;
 
-    private ImageDownloader imageLoader;
-
     private Picasso picasso;
 
     public static final int TYPE_NODE = 0;
@@ -137,7 +135,6 @@ public class RenditionManagerImpl extends RenditionManager
 
     /**
      * Display the content of the url inside an imageview. (thumbnails)
-     * 
      */
     private void displayPlaceHolder(WeakReference<ImageView> ivRef, int placeHolderId)
     {
@@ -478,8 +475,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     public boolean hasSameSession(AlfrescoSession alfrescoSession)
     {
-        if (alfrescoSession == null || session == null) { return false; }
-        return alfrescoSession.equals(session);
+        return !(alfrescoSession == null || session == null) && alfrescoSession.equals(session);
     }
 
     public String getDocumentRendition(String identifier, String type)
@@ -509,7 +505,7 @@ public class RenditionManagerImpl extends RenditionManager
         {
             picasso.shutdown();
         }
-        imageLoader = new ImageDownloader(appContext, session);
+        ImageDownloader imageLoader = new ImageDownloader(appContext, session);
         Builder builder = new Builder(appContext);
         picasso = builder.downloader(imageLoader).build();
     }

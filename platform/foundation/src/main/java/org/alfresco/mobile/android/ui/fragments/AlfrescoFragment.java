@@ -136,7 +136,6 @@ public abstract class AlfrescoFragment extends DialogFragment
         if (checkSession && requiredSession && !hasSession())
         {
             onSessionMissing();
-            return;
         }
     }
 

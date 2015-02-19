@@ -80,7 +80,7 @@ public class AppConnectService extends IntentService
     {
         if (ACTION_HANDLE_CONFIG.equals(intent.getAction()))
         {
-            Intent i = null;
+            Intent i;
             try
             {
                 Bundle config = intent.getBundleExtra(CONFIG);
@@ -88,13 +88,13 @@ public class AppConnectService extends IntentService
                 if (config == null) { throw new AlfrescoAppException("No Config."); }
 
                 MobileIronManager.getInstance(getApplicationContext()).setConfig(config);
-                i = (Intent) intent.getParcelableExtra(CONFIG_APPLIED_INTENT);
+                i = intent.getParcelableExtra(CONFIG_APPLIED_INTENT);
 
                 EventBusManager.getInstance().post(new MDMEvent());
             }
             catch (Exception e)
             {
-                i = (Intent) intent.getParcelableExtra(CONFIG_ERROR_INTENT);
+                i = intent.getParcelableExtra(CONFIG_ERROR_INTENT);
                 i.putExtra(ERROR_STRING, e.getMessage());
 
                 EventBusManager.getInstance().post(new MDMEvent(e));

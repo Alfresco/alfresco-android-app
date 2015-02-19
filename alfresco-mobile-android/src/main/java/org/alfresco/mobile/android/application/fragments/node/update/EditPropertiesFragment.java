@@ -320,6 +320,6 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

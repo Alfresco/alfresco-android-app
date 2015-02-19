@@ -226,14 +226,7 @@ public class NodeSyncPlaceHolder implements Node
         {
             tmpAspectName = ModelMappingUtils.CMISPREFIX_ASPECTS + aspectName;
         }
-        if (aspects != null)
-        {
-            return aspects.contains(tmpAspectName);
-        }
-        else
-        {
-            return false;
-        }
+        return aspects != null && aspects.contains(tmpAspectName);
     }
 
     /** {@inheritDoc} */
@@ -274,14 +267,7 @@ public class NodeSyncPlaceHolder implements Node
      */
     public boolean hasAllowableAction(Action action)
     {
-        if (allowableActions != null)
-        {
-            return allowableActions.contains(action.value());
-        }
-        else
-        {
-            return false;
-        }
+        return allowableActions != null && allowableActions.contains(action.value());
     }
 
     /**
@@ -291,14 +277,7 @@ public class NodeSyncPlaceHolder implements Node
      */
     public boolean hasAllowableAction(String action)
     {
-        if (allowableActions != null)
-        {
-            return allowableActions.contains(action);
-        }
-        else
-        {
-            return false;
-        }
+        return allowableActions != null && allowableActions.contains(action);
     }
 
     /**

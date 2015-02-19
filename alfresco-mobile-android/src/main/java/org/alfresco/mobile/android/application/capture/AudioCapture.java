@@ -181,7 +181,7 @@ public class AudioCapture extends DeviceCapture
         }
         catch (Exception e)
         {
-
+            throw new IOException("Error during copy file", e);
         }
         finally
         {

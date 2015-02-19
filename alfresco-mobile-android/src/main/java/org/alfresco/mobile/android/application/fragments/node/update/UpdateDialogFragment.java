@@ -71,7 +71,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
     {
         bcreate.setEnabled(false);
 
-        Map<String, Serializable> props = new HashMap<String, Serializable>(2);
+        Map<String, Serializable> props = new HashMap<>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString().trim());
         if (desc.getText() != null && desc.getText().length() > 0)
         {
@@ -128,7 +128,7 @@ public class UpdateDialogFragment extends UpdateNodeDialogFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

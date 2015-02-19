@@ -62,7 +62,6 @@ public class ScanSnapResultActivity extends Activity
             // end this activity. It's just a passthrough
             finish();
             startActivity(i);
-            return;
         }
     }
 }

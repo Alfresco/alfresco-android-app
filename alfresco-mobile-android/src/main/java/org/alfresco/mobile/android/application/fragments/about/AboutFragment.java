@@ -55,7 +55,7 @@ public class AboutFragment extends AlfrescoFragment
         AboutFragment bf = new AboutFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
@@ -84,14 +84,13 @@ public class AboutFragment extends AlfrescoFragment
 
         // Version Number
         TextView tv = (TextView) v.findViewById(R.id.about_buildnumber);
-        String versionNumber = "";
+        String versionNumber;
         try
         {
-            StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version));
-            sb.append(" ");
-            sb.append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName);
-            sb.append(".");
-            sb.append(getText(R.string.bamboo_buildnumber));
+            StringBuilder sb = new StringBuilder(getText(R.string.buildnumber_version))
+                    .append(" ")
+                    .append(getActivity().getPackageManager().getPackageInfo(getActivity().getPackageName(), 0).versionName)
+                    .append(".").append(getText(R.string.bamboo_buildnumber));
             versionNumber = sb.toString();
         }
         catch (NameNotFoundException e)
@@ -102,9 +101,7 @@ public class AboutFragment extends AlfrescoFragment
 
         // SDK Version Number
         tv = (TextView) v.findViewById(R.id.about_sdknumber);
-        StringBuilder sb = new StringBuilder(getText(R.string.sdknumber_version));
-        sb.append(" ");
-        sb.append(Version.SDK);
+        StringBuilder sb = new StringBuilder(getText(R.string.sdknumber_version)).append(" ").append(Version.SDK);
         tv.setText(sb.toString());
 
         return v;

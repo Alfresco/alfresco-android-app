@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Email to send -->
-    <string-array name="bugreport_email">
+    <string-array name="bugreport_email" tools:ignore="MissingTranslation">
         <item>mobile@alfresco.com</item>
     </string-array>
 

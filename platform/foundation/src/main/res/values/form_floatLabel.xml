@@ -25,9 +25,4 @@
         <attr name="textColorHintError" format="color" />
         <attr name="floatTextSize" format="dimension" />
     </declare-styleable>
-
-    <!-- Simple -->
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-
 </resources>

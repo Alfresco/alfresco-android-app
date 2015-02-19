@@ -166,7 +166,7 @@ public class QueryHelper
         {
             builder.append(" AND ");
         }
-        builder.append(" IN_TREE('" + value.getIdentifier() + "')");
+        builder.append(" IN_TREE('").append(value.getIdentifier()).append("')");
     }
 
     private static void addParameter(StringBuilder builder, String key, String operator, String value)
@@ -178,7 +178,7 @@ public class QueryHelper
         }
         builder.append(key);
         builder.append(operator);
-        builder.append("'" + value + "'");
+        builder.append("'").append(value).append("'");
     }
 
     private static void addContainsParameter(StringBuilder builder, String key, String value)
@@ -188,7 +188,7 @@ public class QueryHelper
         {
             builder.append(" AND ");
         }
-        builder.append("CONTAINS('~" + key + ":\\\'" + value + "\\\'')");
+        builder.append("CONTAINS('~").append(key).append(":\\\'").append(value).append("\\\'')");
     }
 
     private static void addDateParameter(StringBuilder builder, String key, String operator, String value)
@@ -202,7 +202,7 @@ public class QueryHelper
         builder.append(" ");
         builder.append(operator);
         builder.append(" TIMESTAMP ");
-        builder.append("'" + value + "'");
+        builder.append("'").append(value).append("'");
     }
 
     private static void addAspectContainsParameter(StringBuilder builder, String key, String value)
@@ -212,7 +212,7 @@ public class QueryHelper
         {
             builder.append(" AND ");
         }
-        builder.append("CONTAINS(t, '~" + key + ":\\\'" + value + "\\\'')");
+        builder.append("CONTAINS(t, '~").append(key).append(":\\\'").append(value).append("\\\'')");
     }
 
     private static void addPersonParameter(StringBuilder builder, String key, String value)
@@ -321,7 +321,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_APPLICATION, "x-mswrite"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createAudioList()
     {
@@ -345,7 +345,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_AUDIO, "x-ms-wma"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createImageList()
     {
@@ -398,7 +398,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_IMAGE, "x-xwindowdump"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createPresentationsList()
     {
@@ -425,7 +425,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.sun.xml.impress"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createSpreadsheetsList()
     {
@@ -448,7 +448,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_APPLICATION, "vnd.openxmlformats-officedocument.spreadsheetml.template"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createTextList()
     {
@@ -466,7 +466,7 @@ public class QueryHelper
                 add(new MimeType(MimeType.TYPE_TEXT, "tab-separated-values"));
             }
         };
-    };
+    }
 
     private static List<MimeType> createVideoList()
     {

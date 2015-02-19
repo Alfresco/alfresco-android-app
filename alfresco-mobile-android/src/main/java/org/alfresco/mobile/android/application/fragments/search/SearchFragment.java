@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
-import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.user.UsersFragment;
@@ -124,7 +123,7 @@ public class SearchFragment extends BaseCursorGridFragment
         SearchFragment bf = new SearchFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -338,7 +337,7 @@ public class SearchFragment extends BaseCursorGridFragment
         StringBuilder pathBuilder = new StringBuilder();
         if (tmpParentFolder != null)
         {
-            String pathValue = (String) tmpParentFolder.getPropertyValue(PropertyIds.PATH);
+            String pathValue = tmpParentFolder.getPropertyValue(PropertyIds.PATH);
             if (site != null)
             {
                 String[] path = pathValue.split("/");
@@ -596,7 +595,7 @@ public class SearchFragment extends BaseCursorGridFragment
 
         // Start the CAB using the ActionMode.Callback defined above
         nActions = new HistorySearchActions(SearchFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
+        nActions.setOnFinishModeListener(new AbstractActions.onFinishModeListener()
         {
             @Override
             public void onFinish()
@@ -643,6 +642,7 @@ public class SearchFragment extends BaseCursorGridFragment
     public static class Builder extends AlfrescoFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_search_dark;
+
         public static final int LABEL_ID = R.string.menu_search;
 
         // ///////////////////////////////////////////////////////////////////////////

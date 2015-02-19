@@ -60,14 +60,14 @@ public abstract class Operation<T> implements OperationStatus, Runnable
         this.operator = operator;
         this.dispatcher = dispatcher;
         this.action = action;
-        this.request = (OperationRequest) action.request;
+        this.request = action.request;
         this.accountId = this.request.accountId;
     }
 
     public Operation(Context context, OperationRequest request)
     {
         this.context = context;
-        this.request = (OperationRequest) request;
+        this.request = request;
         this.accountId = this.request.accountId;
         this.dispatcher = null;
         this.operator = null;

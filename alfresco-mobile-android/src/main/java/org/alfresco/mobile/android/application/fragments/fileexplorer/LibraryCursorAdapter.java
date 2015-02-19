@@ -35,10 +35,12 @@ import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.Menu;
@@ -167,7 +169,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(vh.choose,
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
@@ -175,6 +177,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
             vh.choose.setOnClickListener(new OnClickListener()
             {
 
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 @Override
                 public void onClick(View v)
                 {
@@ -203,7 +206,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(vh.choose, null);
             vh.choose.setVisibility(View.GONE);
         }
     }

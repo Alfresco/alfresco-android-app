@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.util.Properties;
 
-import org.alfresco.mobile.android.api.constants.OAuthConstant;
 import org.alfresco.mobile.android.api.exceptions.AlfrescoServiceException;
 import org.alfresco.mobile.android.api.exceptions.ErrorCodeRegistry;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
@@ -53,7 +52,7 @@ public class DeveloperSessionManager extends SessionManager
 
     private static final String APP_CONFIG_PATH = Environment.getExternalStorageDirectory().getPath()
             + "/alfresco-mobile/app-config.properties";
-    
+
     private static final String BASE_URL = "org.alfresco.mobile.binding.internal.baseurl";
 
     private static final String USER = "org.alfresco.mobile.internal.credential.user";
@@ -61,7 +60,7 @@ public class DeveloperSessionManager extends SessionManager
     private static final String PASSWORD = "org.alfresco.mobile.internal.credential.password";
 
     private static final String CLOUD_BASIC_AUTH = "org.alfresco.mobile.binding.internal.cloud.basic";
-    
+
     private static final String ALFRESCO_CLOUD_URL = "http://my.alfresco.com";
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -111,7 +110,7 @@ public class DeveloperSessionManager extends SessionManager
     @Override
     public Bundle getOAuthSettings()
     {
-        Bundle b = null;
+        Bundle b;
         // Check Properties available inside the device
         b = new Bundle();
         File f = new File(APP_CONFIG_PATH);
@@ -192,7 +191,7 @@ public class DeveloperSessionManager extends SessionManager
         // ///////////////////////////////////////////////////////////////////////////
         protected void prepareData(AlfrescoAccount acc)
         {
-            switch ((int) acc.getTypeId())
+            switch (acc.getTypeId())
             {
                 case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
                     isCloud = true;
@@ -232,7 +231,7 @@ public class DeveloperSessionManager extends SessionManager
 
         protected void prepareCloudSettings(String repositoryId)
         {
-            String tmpurl = null, oauthUrl = null;
+            String tmpurl = null;
             // Check Properties available inside the device
             File f = new File(APP_CONFIG_PATH);
             if (f.exists())
@@ -245,7 +244,6 @@ public class DeveloperSessionManager extends SessionManager
                     // load a properties file
                     prop.load(is);
                     tmpurl = prop.getProperty("url");
-                    oauthUrl = prop.getProperty(OAUTH_URL);
                 }
                 catch (IOException ex)
                 {
@@ -256,7 +254,7 @@ public class DeveloperSessionManager extends SessionManager
                     IOUtils.closeStream(is);
                 }
             }
-            
+
             if (tmpurl != null && (baseUrl != null && baseUrl.startsWith(ALFRESCO_CLOUD_URL)))
             {
                 extraSettings.put(CLOUD_BASIC_AUTH, true);
@@ -264,7 +262,6 @@ public class DeveloperSessionManager extends SessionManager
                 extraSettings.put(PASSWORD, password);
                 extraSettings.put(BASE_URL, tmpurl);
             }
-            
 
             if (repositoryId != null && !repositoryId.isEmpty())
             {

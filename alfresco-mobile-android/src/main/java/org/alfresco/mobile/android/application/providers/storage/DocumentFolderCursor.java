@@ -17,10 +17,13 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.providers.storage;
 
+import android.annotation.TargetApi;
 import android.database.MatrixCursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class DocumentFolderCursor extends MatrixCursor
 {
     private Bundle extras;

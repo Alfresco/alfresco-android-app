@@ -107,14 +107,8 @@ public class CreateDocumentRequest extends UpNodeRequest
             this.documentName = "";
         }
 
-        if (persistentProperties.containsKey(PROP_ISCREATION))
-        {
-            this.isCreation = Boolean.parseBoolean((String) persistentProperties.remove(PROP_ISCREATION));
-        }
-        else
-        {
-            this.isCreation = false;
-        }
+        this.isCreation = persistentProperties.containsKey(PROP_ISCREATION)
+                && Boolean.parseBoolean((String) persistentProperties.remove(PROP_ISCREATION));
 
         List<String> tags = new ArrayList<String>();
         List<String> keys = new ArrayList<String>();
@@ -132,8 +126,7 @@ public class CreateDocumentRequest extends UpNodeRequest
             persistentProperties.remove(key);
         }
 
-        Map<String, Serializable> finalProperties = new HashMap<String, Serializable>(persistentProperties);
-        this.properties = finalProperties;
+        this.properties = new HashMap<String, Serializable>(persistentProperties);
         this.tags = tags;
     }
 
@@ -142,14 +135,12 @@ public class CreateDocumentRequest extends UpNodeRequest
     // ///////////////////////////////////////////////////////////////////////////
     public ContentValues createContentValues(long downloaded)
     {
-        ContentValues cValues = super.createContentValues(downloaded);
-        return cValues;
+        return super.createContentValues(downloaded);
     }
 
     public ContentValues createContentValues(int status)
     {
-        ContentValues cValues = super.createContentValues(status);
-        return cValues;
+        return super.createContentValues(status);
     }
 
     @Override
@@ -185,7 +176,7 @@ public class CreateDocumentRequest extends UpNodeRequest
             requestTypeId = TYPE_ID;
             setNotificationTitle(documentName);
         }
-        
+
         public Builder(Folder parentFolder, String documentName, ContentFile contentFile)
         {
             super(parentFolder, null, contentFile);

@@ -77,7 +77,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         ProcessesFragment bf = new ProcessesFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -240,7 +240,7 @@ public class ProcessesFragment extends ProcessesFoundationFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         public ListingFragmentBuilder itemPosition(int itemPosition)
         {

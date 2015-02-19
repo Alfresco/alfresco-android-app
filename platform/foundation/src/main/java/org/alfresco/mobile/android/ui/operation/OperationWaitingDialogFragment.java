@@ -351,7 +351,6 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
             if (canDismiss && ACTION_OPERATIONS_COMPLETED.equals(intent.getAction()))
             {
                 dismiss();
-                return;
             }
         }
     }

@@ -217,6 +217,6 @@ public class UsersFragment extends PeopleFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

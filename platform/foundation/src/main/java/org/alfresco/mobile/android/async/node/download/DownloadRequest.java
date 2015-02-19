@@ -63,14 +63,8 @@ public class DownloadRequest extends NodeRequest
     public DownloadRequest(Cursor cursor)
     {
         super(cursor);
-        if (persistentProperties.containsKey(PROP_OVERWRITE))
-        {
-            this.overwrite = Boolean.parseBoolean((String) persistentProperties.remove(PROP_OVERWRITE));
-        }
-        else
-        {
-            this.overwrite = false;
-        }
+        this.overwrite = persistentProperties.containsKey(PROP_OVERWRITE)
+                && Boolean.parseBoolean((String) persistentProperties.remove(PROP_OVERWRITE));
 
         if (persistentProperties.containsKey(PROP_LENGTH))
         {

@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.async.clean;
 import org.alfresco.mobile.android.async.impl.BaseOperationRequest;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 
-import android.content.ContentValues;
 import android.content.Context;
 
 public class CleanSyncFavoriteRequest extends BaseOperationRequest
@@ -53,12 +52,6 @@ public class CleanSyncFavoriteRequest extends BaseOperationRequest
     public String getCacheKey()
     {
         return account.getUrl();
-    }
-
-    public ContentValues createContentValues(int status)
-    {
-        ContentValues cValues = super.createContentValues(status);
-        return cValues;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

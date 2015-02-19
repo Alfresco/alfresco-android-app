@@ -92,7 +92,7 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
         setRootView(inflater.inflate(R.layout.app_task_create, container, false));
 
         lv = (LinearLayout) viewById(R.id.create_task_group);
-        pb = (View) viewById(R.id.progressbar);
+        pb = viewById(R.id.progressbar);
         ev = viewById(R.id.empty);
         TextView evt = (TextView) viewById(R.id.empty_text);
         evt.setText(R.string.error_general);
@@ -161,7 +161,8 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
             if (getArguments() != null && getArguments().containsKey(PrivateIntent.EXTRA_DOCUMENTS))
             {
                 CreateTaskFragment.with(getActivity()).processDefinition(review)
-                        .documents(getArguments().getParcelableArrayList(PrivateIntent.EXTRA_DOCUMENTS)).back(false).display();
+                        .documents(getArguments().getParcelableArrayList(PrivateIntent.EXTRA_DOCUMENTS)).back(false)
+                        .display();
             }
             else
             {
@@ -183,7 +184,6 @@ public class CreateTaskTypePickerFragment extends AlfrescoFragment
             if (WorkflowModel.FAMILY_PROCESS_PARALLEL_REVIEW.contains(processDef.getKey()))
             {
                 review = processDef;
-                continue;
             }
         }
     }

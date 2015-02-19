@@ -115,7 +115,7 @@ public abstract class DisplayUtils
     {
         v.findViewById(id).setVisibility(View.VISIBLE);
     }
-    
+
     // ///////////////////////////////////////////
     // SIZE OF THE SCREEN
     // ///////////////////////////////////////////
@@ -130,7 +130,7 @@ public abstract class DisplayUtils
 
         Resources res = context.getResources();
 
-        int coeff = 150;
+        int coeff;
         if (width < 320)
         {
             coeff = res.getInteger(R.integer.width_320);
@@ -192,8 +192,7 @@ public abstract class DisplayUtils
         display.getMetrics(outMetrics);
 
         float density = context.getResources().getDisplayMetrics().density;
-        int width = Math.round(outMetrics.widthPixels / density);
 
-        return width;
+        return Math.round(outMetrics.widthPixels / density);
     }
 }

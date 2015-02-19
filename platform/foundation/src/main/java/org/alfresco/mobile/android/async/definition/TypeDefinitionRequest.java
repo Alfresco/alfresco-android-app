@@ -31,9 +31,9 @@ public class TypeDefinitionRequest extends BaseOperationRequest
     public static final int FOLDER = 1;
 
     public static final int ASPECT = 2;
-    
+
     public static final int TASK = 3;
-    
+
     private static final long serialVersionUID = 1L;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -69,8 +69,7 @@ public class TypeDefinitionRequest extends BaseOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     public ContentValues createContentValues(int status)
     {
-        ContentValues cValues = super.createContentValues(status);
-        return cValues;
+        return super.createContentValues(status);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -79,7 +78,7 @@ public class TypeDefinitionRequest extends BaseOperationRequest
     public static class Builder extends BaseOperationRequest.Builder
     {
         protected String type;
-        
+
         protected Node node;
 
         protected int typeDefinitionId;
@@ -96,7 +95,7 @@ public class TypeDefinitionRequest extends BaseOperationRequest
             this.typeDefinitionId = (node.isDocument()) ? DOCUMENT : FOLDER;
             this.requestTypeId = TYPE_ID;
         }
-        
+
         public Builder(int typeDefinitionId, String type)
         {
             super();

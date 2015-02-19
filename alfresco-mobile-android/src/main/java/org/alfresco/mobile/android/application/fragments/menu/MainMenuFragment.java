@@ -96,8 +96,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private ConfigManager configurationManager;
 
-    private AccountsAdapter accountsAdapter;
-
     public static final String TAG = MainMenuFragment.class.getName();
 
     public static final String SLIDING_TAG = "SlidingMenuFragment";
@@ -432,7 +430,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 null, null, "0", null, "false"));
 
         // Init the adapter and create the menu
-        accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
+        AccountsAdapter accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
         spinnerAccount.setAdapter(accountsAdapter);
         spinnerAccount.setSelection(accountIndex);
 
@@ -480,7 +478,8 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     public void displayFolderShortcut(AlfrescoSession alfSession)
     {
-        if (alfSession == null || alfSession instanceof CloudSession){
+        if (alfSession == null || alfSession instanceof CloudSession)
+        {
             if (getRootView() != null)
             {
                 hide(R.id.menu_browse_shared);
@@ -501,7 +500,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             {
                 show(R.id.menu_browse_shared);
                 show(R.id.menu_browse_userhome);
-                return;
             }
         }
     }
@@ -612,7 +610,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         refresh();
     }
 
-
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
@@ -667,7 +664,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.account;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -27,6 +28,10 @@ import org.alfresco.mobile.android.application.ui.form.views.EditTextFieldView;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.CreateAccountRequest;
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
+import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
 import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.mdm.MDMConstants;
@@ -54,9 +59,15 @@ public class AccountSignInFragment extends AlfrescoFragment
 {
     public static final String TAG = "AccountEditFragment";
 
-    private Button validate;
+    public static final String ARGUMENT_ACCOUNT_ID = "accountID";
+
+    public static final String ARGUMENT_ACCOUNT = "account";
+
+    private AlfrescoAccount account;
 
     private EditTextFieldView passwordField;
+
+    private EditTextFieldView userField;
 
     private MobileIronManager mdmManager;
 
@@ -84,11 +95,16 @@ public class AccountSignInFragment extends AlfrescoFragment
     {
         mdmManager = MobileIronManager.getInstance(getActivity());
 
+        if (getArguments() != null || !getArguments().isEmpty())
+        {
+            account = (AlfrescoAccount) getArguments().getSerializable(ARGUMENT_ACCOUNT);
+        }
+
         getActivity().setTitle(R.string.app_name);
 
         setRootView(inflater.inflate(R.layout.app_signin, container, false));
 
-        validate = (Button) viewById(R.id.next);
+        Button validate = (Button) viewById(R.id.next);
         validate.setEnabled(true);
         validate.setOnClickListener(new OnClickListener()
         {
@@ -99,10 +115,18 @@ public class AccountSignInFragment extends AlfrescoFragment
             }
         });
 
-        EditTextFieldView text = (EditTextFieldView) viewById(R.id.signin_username);
-        text.setReadOnly(true);
-        text.setHint(getString(R.string.account_username));
-        text.setText((String) MobileIronManager.getInstance(getActivity()).getConfig(MDMConstants.ALFRESCO_USERNAME));
+        userField = (EditTextFieldView) viewById(R.id.signin_username);
+        userField.setReadOnly(true);
+        userField.setHint(getString(R.string.account_username));
+        if (account != null)
+        {
+            userField.setText(account.getUsername());
+        }
+        else
+        {
+            userField.setText((String) MobileIronManager.getInstance(getActivity()).getConfig(
+                    MDMConstants.ALFRESCO_USERNAME));
+        }
 
         try
         {
@@ -128,13 +152,34 @@ public class AccountSignInFragment extends AlfrescoFragment
     {
         if (retrieveFormValues())
         {
+
             // Remove Keyboard
             UIUtils.hideKeyboard(getActivity());
 
-            // Retrieve all information
-            String repositoryURL = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_REPOSITORY_URL);
-            String username = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_USERNAME);
+            // Retrieve user/pass information
             String password = passwordField.getText();
+            String username = userField.getText();
+
+            // Creation or Update Password ?
+            if (account != null)
+            {
+                // Update Account
+                AlfrescoAccount acc = AlfrescoAccountManager.getInstance(getActivity()).update(account.getId(),
+                        account.getTitle(), account.getUrl(), username, password, account.getRepositoryId(),
+                        account.getTypeId(), null, account.getAccessToken(), account.getRefreshToken(),
+                        account.getIsPaidAccount() ? 1 : 0);
+
+                // Reload
+                // Affect new AlfrescoAccount to activity
+                ((BaseActivity) getActivity()).setCurrentAccount(acc);
+                EventBusManager.getInstance().post(new RequestSessionEvent(acc, true));
+                getFragmentManager().popBackStackImmediate();
+
+                return;
+            }
+
+            // Retrieve MDM information
+            String repositoryURL = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_REPOSITORY_URL);
             String description = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_DISPLAY_NAME);
 
             // Create AlfrescoAccount + Session
@@ -204,11 +249,20 @@ public class AccountSignInFragment extends AlfrescoFragment
         }
 
         // ///////////////////////////////////////////////////////////////////////////
-        // SETTERS
+        // CREATE
         // ///////////////////////////////////////////////////////////////////////////
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
+
+        // ///////////////////////////////////////////////////////////////////////////
+        // SETTERS
+        // ///////////////////////////////////////////////////////////////////////////
+        public Builder account(AlfrescoAccount account)
+        {
+            extraConfiguration.putSerializable(ARGUMENT_ACCOUNT, account);
+            return this;
+        }
     }
 }

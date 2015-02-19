@@ -76,12 +76,13 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
                 AlfrescoAccount acc = loadingTask.getAccount();
                 if (acc.getActivation() == null)
                 {
-                    //OAuth Error
-                    CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true, task.getRequestId());
+                    // OAuth Error
+                    CloudExceptionUtils.handleCloudException(context, loadingTask.getAccount().getId(), e, true,
+                            task.getRequestId());
                 }
                 else
                 {
-                    //Cloud Account is not active
+                    // Cloud Account is not active
                     EventBusManager.getInstance().post(
                             new LoadInactiveAccountEvent(task.getRequestId(), ((LoadSessionOperation) task)
                                     .getAccount()));
@@ -123,9 +124,9 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
                 else
                 {
                     acc = AlfrescoAccountManager.getInstance(context).update(acc.getId(), acc.getTitle(), acc.getUrl(),
-                            acc.getUsername(), acc.getPassword(), acc.getRepositoryId(),
-                            Integer.valueOf((int) acc.getTypeId()), null, loadingTask.getOAuthData().getAccessToken(),
-                            loadingTask.getOAuthData().getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
+                            acc.getUsername(), acc.getPassword(), acc.getRepositoryId(), acc.getTypeId(), null,
+                            loadingTask.getOAuthData().getAccessToken(), loadingTask.getOAuthData().getRefreshToken(),
+                            acc.getIsPaidAccount() ? 1 : 0);
                 }
 
                 if (acc == null)
@@ -145,6 +146,8 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
     // ///////////////////////////////////////////////////////////////////////////
     public static class LoadAccountCompletedEvent extends OperationEvent<AlfrescoAccount>
     {
+        public static final String RELOAD = "reloaded";
+
         public AlfrescoAccount account;
 
         public LoadAccountCompletedEvent(String requestId, AlfrescoAccount account)

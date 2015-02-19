@@ -112,7 +112,6 @@ public class PrivateDialogActivity extends BaseActivity
             Fragment f = docs.isEmpty() ? new CreateTaskTypePickerFragment() : CreateTaskTypePickerFragment
                     .newInstance(docs);
             FragmentDisplayer.with(this).load(f).back(false).animate(null).into(FragmentDisplayer.PANEL_LEFT);
-            return;
         }
     }
 

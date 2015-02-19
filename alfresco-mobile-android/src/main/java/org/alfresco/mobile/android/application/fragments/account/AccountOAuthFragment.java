@@ -119,7 +119,7 @@ public class AccountOAuthFragment extends OAuthFragment
             }
         }
 
-        AccountOAuthFragment oauthFragment = null;
+        AccountOAuthFragment oauthFragment;
         if (oauthUrl == null || oauthUrl.isEmpty())
         {
             oauthFragment = new AccountOAuthFragment();
@@ -357,6 +357,6 @@ public class AccountOAuthFragment extends OAuthFragment
             {
                 return newInstance(getActivity(), account);
             }
-        };
+        }
     }
 }

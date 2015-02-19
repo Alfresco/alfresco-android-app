@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <org.alfresco.mobile.android.application.ui.form.views.EditTextFieldView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:floatlabel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/property"
     android:layout_width="wrap_content"
@@ -8,6 +7,6 @@
     android:layout_weight="1"
     floatlabel:floatTextSize="12sp"
     floatlabel:textColorHintError="@color/field_error"
-    floatlabel:textColorHintFocused="@android:color/holo_blue_dark"
+    floatlabel:textColorHintFocused="@color/holo_blue_dark"
     floatlabel:textColorHintUnFocused="@android:color/darker_gray"
     floatlabel:textSize="16sp" />

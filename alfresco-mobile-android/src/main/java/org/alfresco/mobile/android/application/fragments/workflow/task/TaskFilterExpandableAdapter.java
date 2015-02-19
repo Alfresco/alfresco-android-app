@@ -37,7 +37,7 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
 {
     LayoutInflater inflater;
 
-    private Map<Integer, Integer> selectedItems = new HashMap<Integer, Integer>(4);
+    private Map<Integer, Integer> selectedItems = new HashMap<>(4);
 
     public TaskFilterExpandableAdapter(Activity context, Map<Integer, Integer> selectedItems)
     {
@@ -144,7 +144,7 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
         vh = (CheckBoxViewHolder) convertView.getTag();
         vh.topText.setText(item);
         vh.bottomText.setVisibility(View.GONE);
-        if (selectedItems.get(FAMILY.get(groupPosition)) == item)
+        if (selectedItems.get(FAMILY.get(groupPosition)).equals(item))
         {
             vh.checkBox.setChecked(true);
         }

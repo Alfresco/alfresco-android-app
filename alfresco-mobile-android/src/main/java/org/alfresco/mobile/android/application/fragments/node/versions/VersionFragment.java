@@ -98,8 +98,7 @@ public class VersionFragment extends VersionsNodeFragment
     {
         super.onListItemClick(l, v, position, id);
         Document versionedDoc = (Document) l.getItemAtPosition(position);
-        if (versionedDoc.getVersionLabel() != null
-                && !versionedDoc.getVersionLabel().equals(((Document) node).getVersionLabel()))
+        if (versionedDoc.getVersionLabel() != null && !versionedDoc.getVersionLabel().equals(node.getVersionLabel()))
         {
             NodeDetailsFragment.with(getActivity()).node(versionedDoc).parentFolder(parentFolder).display();
         }
@@ -135,7 +134,7 @@ public class VersionFragment extends VersionsNodeFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         public Builder parentFolder(Folder folder)
         {

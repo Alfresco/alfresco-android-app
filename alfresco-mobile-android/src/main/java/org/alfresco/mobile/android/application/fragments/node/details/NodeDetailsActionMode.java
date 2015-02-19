@@ -129,7 +129,6 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item)
     {
-        Boolean b = false;
         switch (item.getItemId())
         {
             case R.id.menu_action_download:
@@ -162,12 +161,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
                 getFragment().startActivity(in);
                 return true;
         }
-        if (b)
-        {
-            selectedItems.clear();
-            mode.finish();
-        }
-        return b;
+        return false;
     }
 
 }

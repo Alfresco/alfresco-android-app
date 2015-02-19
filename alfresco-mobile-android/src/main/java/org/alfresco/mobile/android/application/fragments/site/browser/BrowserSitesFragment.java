@@ -139,27 +139,27 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
     {
         if (SessionUtils.getSession(getActivity()) == null) { return; }
 
-        //refreshHelper.setRefreshing();
+        // refreshHelper.setRefreshing();
         setListShown(false);
 
         SitesRequest.Builder builder;
-        if (TAB_MY_SITES.equals(currentTabId))
+        switch (currentTabId)
         {
-            builder = new SitesRequest.Builder(false);
-            isFavoriteListing = false;
-            isMemberSite = true;
-        }
-        else if (TAB_FAV_SITES.equals(currentTabId))
-        {
-            builder = new SitesRequest.Builder(true);
-            isFavoriteListing = true;
-            isMemberSite = false;
-        }
-        else
-        {
-            builder = new SitesRequest.Builder(null);
-            isFavoriteListing = false;
-            isMemberSite = false;
+            case TAB_MY_SITES:
+                builder = new SitesRequest.Builder(false);
+                isFavoriteListing = false;
+                isMemberSite = true;
+                break;
+            case TAB_FAV_SITES:
+                builder = new SitesRequest.Builder(true);
+                isFavoriteListing = true;
+                isMemberSite = false;
+                break;
+            default:
+                builder = new SitesRequest.Builder(null);
+                isFavoriteListing = false;
+                isMemberSite = false;
+                break;
         }
         performRequest(builder.setListingContext(getListing()));
     }
@@ -224,6 +224,7 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
     public static class Builder extends ListingFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_site_dark;
+
         public static final int LABEL_ID = R.string.menu_browse_sites;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -239,7 +240,7 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
             super(activity, configuration);
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
-            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW};
+            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW };
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -248,7 +249,7 @@ public class BrowserSitesFragment extends CommonBrowserSitesFragment implements 
         protected Fragment createFragment(Bundle b)
         {
             return BrowserSitesFragment.newInstanceByTemplate(b);
-        };
+        }
 
     }
 }

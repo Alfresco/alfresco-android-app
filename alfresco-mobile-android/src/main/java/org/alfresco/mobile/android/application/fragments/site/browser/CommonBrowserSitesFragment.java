@@ -127,7 +127,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
 
         MenuFragmentHelper.getMenu(getActivity(), menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -216,7 +216,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     @Subscribe
     public void onSiteFavoriteEvent(SiteFavoriteEvent event)
     {
-        int messageId = R.string.error_general;
+        int messageId;
         Site site = event.oldSite;
         if (!event.hasException)
         {
@@ -229,7 +229,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             else
             {
                 messageId = R.string.action_unfavorite_site_validation;
-                if (isFavoriteListing == true)
+                if (isFavoriteListing)
                 {
                     remove(site);
                 }
@@ -254,7 +254,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     @Subscribe
     public void onSiteMembershipEvent(SiteMembershipEvent event)
     {
-        int messageId = R.string.error_general;
+        int messageId;
         Site site = event.oldSite;
         if (!event.hasException)
         {
@@ -268,11 +268,14 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
             else
             {
                 messageId = R.string.action_leave_site_validation;
-                if (isFavoriteListing == true)
+                if (isFavoriteListing)
                 {
-                    if (!updatedSite.isFavorite()){
+                    if (!updatedSite.isFavorite())
+                    {
                         remove(site);
-                    } else {
+                    }
+                    else
+                    {
                         update(site, updatedSite);
                     }
                 }

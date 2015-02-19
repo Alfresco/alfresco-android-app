@@ -68,9 +68,7 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
     @Override
     public View getDropDownView(int position, View convertView, ViewGroup parent)
     {
-        View v = super.getView(position, convertView, parent);
-
-        return v;
+        return super.getView(position, convertView, parent);
     }
 
     public View getView(int position, View convertView, ViewGroup parent)

@@ -43,13 +43,9 @@ public class TaskFilterFragment extends AlfrescoFragment
 {
     public static final String TAG = TaskFilterFragment.class.getName();
 
-    private ExpandableListView expandableList;
-
     private TaskFilterExpandableAdapter expListAdapter;
 
-    private Button validate;
-
-    private Map<Integer, Integer> selectedItems = new HashMap<Integer, Integer>(0);
+    private Map<Integer, Integer> selectedItems = new HashMap<>(0);
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -74,7 +70,7 @@ public class TaskFilterFragment extends AlfrescoFragment
         setSession(SessionUtils.getSession(getActivity()));
         SessionUtils.checkSession(getActivity(), getSession());
 
-        expandableList = (ExpandableListView) rootView.findViewById(R.id.filters_list);
+        ExpandableListView expandableList = (ExpandableListView) rootView.findViewById(R.id.filters_list);
         expandableList.setGroupIndicator(null);
         expListAdapter = new TaskFilterExpandableAdapter(getActivity(), selectedItems);
         expandableList.setAdapter(expListAdapter);
@@ -89,7 +85,7 @@ public class TaskFilterFragment extends AlfrescoFragment
             }
         });
 
-        validate = UIUtils.initValidation(rootView, R.string.task_filter_view, true);
+        Button validate = UIUtils.initValidation(rootView, R.string.task_filter_view, true);
         validate.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -142,7 +138,7 @@ public class TaskFilterFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

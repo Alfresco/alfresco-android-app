@@ -69,8 +69,8 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
         if (item != null)
         {
             ((TextView) v.findViewById(R.id.bottomtext)).setText(ITEMS.get(item));
-            ((TextView) v.findViewById(R.id.toptext)).setVisibility(View.GONE);
-            ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.toptext).setVisibility(View.GONE);
+            v.findViewById(R.id.icon).setVisibility(View.VISIBLE);
             ((ImageView) v.findViewById(R.id.icon)).setImageResource(ITEMS_ICONS.get(item));
         }
         return v;
@@ -99,7 +99,7 @@ public class SearchOptionAdapter extends ArrayAdapter<Integer>
             }
 
             ((TextView) v.findViewById(R.id.bottomtext)).setText(ITEMS.get(getItem(position)));
-            ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.GONE);
+            v.findViewById(R.id.icon).setVisibility(View.GONE);
         }
         return v;
     }

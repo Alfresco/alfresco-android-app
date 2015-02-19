@@ -97,21 +97,18 @@ public class AlfrescoAccountManager extends Manager
 
     public boolean hasAccount()
     {
-        if (accountsSize == null) { return false; }
-        return (accountsSize > 0);
+        return accountsSize != null && (accountsSize > 0);
     }
 
     public boolean hasMultipleAccount()
     {
-        if (accountsSize == null) { return false; }
-        return (accountsSize > 1);
+        return accountsSize != null && (accountsSize > 1);
     }
 
     public boolean isEmpty()
     {
         getCount();
-        if (accountsSize == null) { return true; }
-        return (accountsSize == 0);
+        return accountsSize == null || (accountsSize == 0);
     }
 
     public AlfrescoAccount getDefaultAccount()
@@ -218,7 +215,7 @@ public class AlfrescoAccountManager extends Manager
         // Check Account Name
         String accountName = defaultName;
         AccountManager mAccountManager = AccountManager.get(appContext);
-        Map<String, Account> accountIndex = null;
+        Map<String, Account> accountIndex;
         Account[] accounts = mAccountManager.getAccountsByType(AlfrescoAccount.ACCOUNT_TYPE);
         if (accounts.length > 0)
         {
@@ -246,8 +243,7 @@ public class AlfrescoAccountManager extends Manager
     protected long getAccountId()
     {
         long accountIndex = 0;
-        Account[] accounts = AccountManager.get(appContext).getAccountsByType(
-                AlfrescoAccount.ACCOUNT_TYPE);
+        Account[] accounts = AccountManager.get(appContext).getAccountsByType(AlfrescoAccount.ACCOUNT_TYPE);
         for (Account accountAvailable : accounts)
         {
             String value = AccountManager.get(appContext).getUserData(accountAvailable, AlfrescoAccount.ACCOUNT_ID);
@@ -327,7 +323,7 @@ public class AlfrescoAccountManager extends Manager
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_ACTIVATION, activation);
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_ACCESS_TOKEN, accessToken);
         manager.setUserData(acc, AlfrescoAccount.ACCOUNT_REFRESH_TOKEN, refreshToken);
-
+        manager.setPassword(acc, pass);
         return retrieveAccount(accountId);
     }
 

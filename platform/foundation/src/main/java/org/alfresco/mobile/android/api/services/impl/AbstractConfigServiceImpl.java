@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.api.services.impl;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,10 +61,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
 
     private ConfigurationImpl configuration;
 
-    protected boolean hasConfig = true;
-
-    private String personId;
-
     /**
      * Default Constructor. Only used inside ServiceRegistry.
      * 
@@ -92,8 +87,8 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     protected ConfigurationImpl retrieveConfiguration()
     {
         Node configurationDocument = null;
-        Folder applicationConfigurationFolder = null;
-        long lastModificationTime = -1;
+        Folder applicationConfigurationFolder;
+        long lastModificationTime;
         ConfigurationImpl configuration = null;
         StringHelper localHelper = null;
         try
@@ -138,9 +133,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                 }
                 return null;
             }
-
-            // Prepare & Create Configuration Object
-            hasConfig = true;
 
             // Retrieve Configuration Data
             lastModificationTime = configurationDocument.getModifiedAt().getTimeInMillis();
@@ -219,10 +211,6 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
                 }
                 config = StringHelper.load(inputStream);
             }
-        }
-        catch (IOException e)
-        {
-            Log.w(TAG, Log.getStackTraceString(e));
         }
         catch (Exception e)
         {
@@ -343,8 +331,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     @Override
     public boolean hasViewConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.hasViewConfig();
+        return configuration != null && configuration.hasViewConfig();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -353,8 +340,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     @Override
     public boolean hasFormConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.hasFormConfig();
+        return configuration != null && configuration.hasFormConfig();
     }
 
     @Override
@@ -362,6 +348,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     {
         if (configuration == null) { return null; }
         return configuration.getFormConfig(formId, null);
+
     }
 
     @Override
@@ -377,8 +364,7 @@ public abstract class AbstractConfigServiceImpl extends AlfrescoService implemen
     @Override
     public boolean hasCreationConfig()
     {
-        if (configuration == null) { return false; }
-        return configuration.getCreationConfig() != null;
+        return configuration != null && configuration.getCreationConfig() != null;
     }
 
     @Override

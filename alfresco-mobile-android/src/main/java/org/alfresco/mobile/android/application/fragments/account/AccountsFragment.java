@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
+import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.ui.fragments.SelectableGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -50,7 +51,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
 
     private List<AlfrescoAccount> accountListing;
 
-    // private List<Long> selectedAccounts = new ArrayList<Long>(1);
+    private MobileIronManager mdmManager;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -79,6 +80,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+        mdmManager = MobileIronManager.getInstance(getActivity());
         retrieveAccountList();
         super.onActivityCreated(savedInstanceState);
     }
@@ -116,13 +118,19 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
 
     protected void onItemSelected(AlfrescoAccount selectedAccount)
     {
-        displayAccountDetails(selectedAccount.getId());
+        if (mdmManager != null)
+        {
+            AccountSignInFragment.with(getActivity()).account(selectedAccount).display();
+        }
+        else
+        {
+            displayAccountDetails(selectedAccount.getId());
+        }
     }
 
     protected boolean equalsItems(AlfrescoAccount o1, AlfrescoAccount o2)
     {
-        if (o1 == null || o2 == null) return false;
-        return o2.getId() == o1.getId();
+        return !(o1 == null || o2 == null) && o2.getId() == o1.getId();
     }
 
     // /////////////////////////////////////////////////////////////
@@ -269,6 +277,6 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

@@ -79,8 +79,8 @@ public class TextField extends BaseField
     {
         if (isMultiValued)
         {
-            return new MultiValuedStringAdapter(fr, R.layout.app_item_row, new ArrayList<String>(
-                    (List<String>) multiValue), true);
+            return new MultiValuedStringAdapter(fr, R.layout.app_item_row, new ArrayList<>((List<String>) multiValue),
+                    true);
         }
         else
         {
@@ -92,7 +92,7 @@ public class TextField extends BaseField
     {
         if (isMultiValued && object instanceof String)
         {
-            multiValue.remove((String) object);
+            multiValue.remove(object);
             setPropertyValue(multiValue);
         }
     }
@@ -131,7 +131,8 @@ public class TextField extends BaseField
         if (originalValue == null) { return null; }
         if (PropertyType.BOOLEAN.equals(property.getType()))
         {
-            return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(R.string.no);
+            return ((Boolean) property.getValue()) ? getContext().getString(R.string.yes) : getContext().getString(
+                    R.string.no);
         }
         else if (PropertyType.DATETIME.equals(property.getType()))
         {

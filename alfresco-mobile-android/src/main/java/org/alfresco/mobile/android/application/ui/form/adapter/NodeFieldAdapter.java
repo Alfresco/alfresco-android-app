@@ -71,24 +71,25 @@ public class NodeFieldAdapter extends BaseListAdapter<Node, GenericViewHolder>
     @Override
     protected void updateBottomText(GenericViewHolder vh, Node item)
     {
-        if (NodeField.OUTPUT_ID.equals(outputValue))
+        switch (outputValue)
         {
-            vh.bottomText.setText(item.getIdentifier());
-        }
-        else if (NodeField.OUTPUT_OBJECT.equals(outputValue))
-        {
-            vh.bottomText.setText(item.getName());
-        }
-        else
-        {
-            if (item.getProperty(outputValue) != null)
-            {
-                vh.bottomText.setText(BaseField.getStringValue(getContext(), item.getProperty(outputValue).getValue()));
-            }
-            else
-            {
-                vh.bottomText.setText("");
-            }
+            case NodeField.OUTPUT_ID:
+                vh.bottomText.setText(item.getIdentifier());
+                break;
+            case NodeField.OUTPUT_OBJECT:
+                vh.bottomText.setText(item.getName());
+                break;
+            default:
+                if (item.getProperty(outputValue) != null)
+                {
+                    vh.bottomText.setText(BaseField.getStringValue(getContext(), item.getProperty(outputValue)
+                            .getValue()));
+                }
+                else
+                {
+                    vh.bottomText.setText("");
+                }
+                break;
         }
     }
 

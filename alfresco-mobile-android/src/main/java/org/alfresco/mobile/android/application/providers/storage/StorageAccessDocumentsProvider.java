@@ -78,6 +78,7 @@ import android.provider.DocumentsContract;
 import android.provider.DocumentsContract.Document;
 import android.provider.DocumentsContract.Root;
 import android.provider.DocumentsProvider;
+import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -133,7 +134,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
     protected Folder parentFolder;
 
-    private Map<Long, AlfrescoAccount> accountsIndex;
+    private LongSparseArray<AlfrescoAccount> accountsIndex;
 
     private Map<Long, AlfrescoSession> sessionIndex;
 
@@ -182,9 +183,9 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
         final Uri uri = DocumentsContract.buildRootsUri(mAuthority);
         try
         {
-            for (Entry<Long, AlfrescoAccount> accountEntry : accountsIndex.entrySet())
+            for (int i = 0; i < accountsIndex.size(); i++)
             {
-                addRootRow(rootCursor, accountEntry.getValue());
+                addRootRow(rootCursor, accountsIndex.get(accountsIndex.keyAt(i)));
             }
         }
         catch (Exception e)
@@ -704,7 +705,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 {
                     mLoadingUris.put(uri, Boolean.FALSE);
                     getContext().getContentResolver().notifyChange(uri, null);
-                };
+                }
             }.execute();
         }
     }
@@ -733,10 +734,11 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
     private void initAccounts()
     {
         // Refresh in case of crash
-        if (accountsIndex == null || accountsIndex.isEmpty())
+        if (accountsIndex == null || accountsIndex.size() == 0)
         {
             List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(getContext());
-            accountsIndex = new HashMap<Long, AlfrescoAccount>(accounts.size());
+            accountsIndex = new LongSparseArray<AlfrescoAccount>(accounts.size());
+
             sessionIndex = new HashMap<Long, AlfrescoSession>(accounts.size());
             sessionManager = SessionManager.getInstance(getContext());
             for (AlfrescoAccount account : accounts)
@@ -1054,7 +1056,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
 
         row.add(Document.COLUMN_LAST_MODIFIED, isRoot ? null : node.getModifiedAt().getTimeInMillis());
         row.add(Document.COLUMN_FLAGS, flags);
-        row.add(Document.COLUMN_ICON, R.drawable.ic_avatar);
+        row.add(Document.COLUMN_ICON, R.drawable.ic_person);
     }
 
     // //////////////////////////////////////////////////////////////////////
@@ -1155,12 +1157,7 @@ public class StorageAccessDocumentsProvider extends DocumentsProvider implements
                 }
             }
         }
-        catch (FileNotFoundException e)
-        {
-            Log.e(TAG, Log.getStackTraceString(e));
-            copied = false;
-        }
-        catch (IOException e)
+        catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
             copied = false;

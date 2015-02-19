@@ -31,10 +31,9 @@ import org.alfresco.mobile.android.api.model.config.GroupConfig;
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class ViewHelper extends HelperConfig
 {
@@ -50,8 +49,7 @@ public class ViewHelper extends HelperConfig
         super(context, localHelper);
     }
 
-    ViewHelper(ConfigurationImpl context, StringHelper localHelper,
-               LinkedHashMap<String, ViewConfig> viewConfigIndex)
+    ViewHelper(ConfigurationImpl context, StringHelper localHelper, LinkedHashMap<String, ViewConfig> viewConfigIndex)
     {
         super(context, localHelper);
         this.viewConfigIndex = viewConfigIndex;
@@ -60,10 +58,10 @@ public class ViewHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////////////////////////////////////
-    void addViews(Map<String,Object> views)
+    void addViews(Map<String, Object> views)
     {
-        viewConfigIndex = new LinkedHashMap<String, ViewConfig>(views.size());
-        ViewConfig viewConfig = null;
+        viewConfigIndex = new LinkedHashMap<>(views.size());
+        ViewConfig viewConfig;
         for (Entry<String, Object> entry : views.entrySet())
         {
             viewConfig = parse(JSONConverter.getMap(entry.getValue()), entry.getKey());
@@ -77,8 +75,8 @@ public class ViewHelper extends HelperConfig
 
     void addViewGroups(List<Object> viewsGroup)
     {
-        jsonViewConfigGroups = new LinkedHashMap<String, Object>(viewsGroup.size());
-        String viewGroupId = null;
+        jsonViewConfigGroups = new LinkedHashMap<>(viewsGroup.size());
+        String viewGroupId;
         for (Object object : viewsGroup)
         {
             viewGroupId = JSONConverter.getString(JSONConverter.getMap(object), ConfigConstants.ID_VALUE);
@@ -95,14 +93,15 @@ public class ViewHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     public boolean hasViewConfig()
     {
-        return ((jsonViewConfigGroups != null && !jsonViewConfigGroups.isEmpty())  || (viewConfigIndex != null && !viewConfigIndex.isEmpty()));
+        return ((jsonViewConfigGroups != null && !jsonViewConfigGroups.isEmpty()) || (viewConfigIndex != null && !viewConfigIndex
+                .isEmpty()));
     }
-    
+
     public ViewConfig getViewById(String id)
     {
         return getViewById(id, null);
     }
-    
+
     public ViewConfig getViewById(String id, ConfigScope scope)
     {
         return retrieveConfig(id, scope);
@@ -145,14 +144,14 @@ public class ViewHelper extends HelperConfig
     @SuppressWarnings("unchecked")
     private ArrayList<ViewConfig> evaluateChildren(List<ViewConfig> listConfig)
     {
-        if (listConfig == null) { return new ArrayList<ViewConfig>(0); }
-        ArrayList<ViewConfig> evaluatedViews = new ArrayList<ViewConfig>(listConfig.size());
+        if (listConfig == null) { return new ArrayList<>(0); }
+        ArrayList<ViewConfig> evaluatedViews = new ArrayList<>(listConfig.size());
         boolean addViewAsChild = true;
         for (ViewConfig viewConfig : listConfig)
         {
             if (getEvaluatorHelper() == null)
             {
-                addViewAsChild = (((ViewConfigImpl) viewConfig).getEvaluator() == null) ? true : false;
+                addViewAsChild = (((ViewConfigImpl) viewConfig).getEvaluator() == null);
             }
             else if (!getEvaluatorHelper().evaluate(((ViewConfigImpl) viewConfig).getEvaluator(), null))
             {
@@ -179,7 +178,7 @@ public class ViewHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     protected static ViewConfig parseBeta(String type, Map<String, Object> json)
     {
-        Map<String, Object> props = new HashMap<String, Object>(1);
+        Map<String, Object> props = new HashMap<>(1);
         props.put(ConfigConstants.VISIBLE_VALUE, JSONConverter.getBoolean(json, ConfigConstants.VISIBLE_VALUE));
         return new ViewConfigImpl(type, null, null, null, type, props, null, null);
     }
@@ -212,10 +211,10 @@ public class ViewHelper extends HelperConfig
                 {
                     case VIEW_ID:
                         // View is defined inside the views registry
-                        return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_ID.value()));
+                        return getViewById(JSONConverter.getString(viewMap, ViewConfigType.VIEW_ID.value()));
                     case VIEW_GROUP_ID:
                         // View is defined inside the view group registry
-                        return getViewById((String) JSONConverter.getString(viewMap, ViewConfigType.VIEW_GROUP_ID.value()));
+                        return getViewById(JSONConverter.getString(viewMap, ViewConfigType.VIEW_GROUP_ID.value()));
                     case VIEW:
                     default:
                         // inline definition
@@ -246,7 +245,7 @@ public class ViewHelper extends HelperConfig
         if (json.containsKey(ConfigConstants.PARAMS_FORMS))
         {
             List<Object> listFormId = JSONConverter.getList(json.get(ConfigConstants.PARAMS_FORMS));
-            formsId = new ArrayList<String>(listFormId.size());
+            formsId = new ArrayList<>(listFormId.size());
             for (Object formId : listFormId)
             {
                 if (formId instanceof String)
@@ -257,7 +256,7 @@ public class ViewHelper extends HelperConfig
         }
         else
         {
-            formsId = new ArrayList<String>(0);
+            formsId = new ArrayList<>(0);
         }
 
         // Check if it's a group view
@@ -265,8 +264,7 @@ public class ViewHelper extends HelperConfig
         if (json.containsKey(ConfigConstants.ITEMS_VALUE))
         {
             List<Object> childrenObject = JSONConverter.getList(json.get(ConfigConstants.ITEMS_VALUE));
-            LinkedHashMap<String, ViewConfig> childrenViewConfig = new LinkedHashMap<String, ViewConfig>(
-                    childrenObject.size());
+            LinkedHashMap<String, ViewConfig> childrenViewConfig = new LinkedHashMap<>(childrenObject.size());
             ViewConfig viewConfig = null;
             for (Object child : childrenObject)
             {
@@ -278,13 +276,13 @@ public class ViewHelper extends HelperConfig
                 childrenViewConfig.put(viewConfig.getIdentifier(), viewConfig);
             }
             childrenIndex = childrenViewConfig;
-            return new ViewGroupConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties,
-                    childrenIndex, formsId, data.evaluatorId);
+            return new ViewGroupConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description,
+                    data.type, data.properties, childrenIndex, formsId, data.evaluatorId);
         }
         else
         {
-            return new ViewConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type, data.properties,
-                    formsId, data.evaluatorId);
+            return new ViewConfigImpl(data.identifier, data.iconIdentifier, data.label, data.description, data.type,
+                    data.properties, formsId, data.evaluatorId);
         }
     }
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="org.alfresco.mobile.android.application">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -227,7 +228,8 @@
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.ActionShortcutActivity"
             android:theme="@style/MainTheme.Dialog"
-            android:label="@string/shortcut_actions_title">
+            android:label="@string/shortcut_actions_title"
+            android:enabled="@bool/widgetEnabled">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
@@ -238,7 +240,8 @@
         <activity
             android:name="org.alfresco.mobile.android.application.widgets.FolderShortcutActivity"
             android:theme="@style/MainTheme.Dialog"
-            android:label="@string/shortcut_title">
+            android:label="@string/shortcut_title"
+            android:enabled="@bool/widgetEnabled">
             <intent-filter>
                 <action android:name="android.intent.action.CREATE_SHORTCUT" />
 
@@ -249,7 +252,9 @@
         <!-- *************************************************************** -->
         <!-- WIDGET -->
         <!-- *************************************************************** -->
-        <receiver android:name="org.alfresco.mobile.android.application.widgets.ToolbarWidgetProvider">
+        <receiver
+            android:name="org.alfresco.mobile.android.application.widgets.ToolbarWidgetProvider"
+            android:enabled="@bool/widgetEnabled">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -279,7 +284,7 @@
             android:name="org.alfresco.mobile.android.application.providers.search.HistorySearchProvider"
             android:authorities="${PROVIDER_AUTHORITY}.searches"
             android:exported="false" />
-       <provider
+        <provider
             android:name="org.alfresco.mobile.android.application.providers.storage.StorageAccessDocumentsProvider"
             android:authorities="${PROVIDER_AUTHORITY}.documents"
             android:enabled="@bool/atLeastKitKat"
@@ -296,7 +301,8 @@
         <!-- *************************************************************** -->
         <service
             android:name="org.alfresco.mobile.android.sync.FavoritesSyncService"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
@@ -309,7 +315,8 @@
         <!-- Used For AlfrescoAccount Authentication -->
         <service
             android:name="org.alfresco.mobile.android.application.accounts.AccountAuthenticationService"
-            android:exported="true">
+            android:exported="true"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -325,7 +332,7 @@
         <!-- SAMSUNG Multi Windows. -->
         <uses-library
             android:name="com.sec.android.app.multiwindow"
-            android:required="false"></uses-library>
+            android:required="false" />
 
         <meta-data
             android:name="com.sec.android.support.multiwindow"

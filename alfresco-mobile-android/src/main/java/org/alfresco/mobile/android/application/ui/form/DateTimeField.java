@@ -129,7 +129,7 @@ public class DateTimeField extends BaseField
         }
         else if (property.getValue() != null)
         {
-            return (GregorianCalendar) property.getValue();
+            return property.getValue();
         }
         else
         {

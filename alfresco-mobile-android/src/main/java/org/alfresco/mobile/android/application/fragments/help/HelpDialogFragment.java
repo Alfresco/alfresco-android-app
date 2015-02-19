@@ -64,7 +64,7 @@ public class HelpDialogFragment extends DialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.sdk_webview, container, false);
+        View v = inflater.inflate(R.layout.app_webview, container, false);
 
         webView = (WebView) v.findViewById(org.alfresco.mobile.android.foundation.R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
@@ -73,24 +73,28 @@ public class HelpDialogFragment extends DialogFragment
 
         defaultUrl = activity.getString(R.string.help_user_guide_default_url);
 
-        webView.setWebViewClient(new WebViewClient() {
+        webView.setWebViewClient(new WebViewClient()
+        {
             boolean hasError = false;
 
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            {
                 super.onPageStarted(view, url, favicon);
                 hasError = false;
                 getActivity().setProgressBarIndeterminateVisibility(true);
             }
 
             @Override
-            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl) {
+            public void onReceivedError(WebView view, int errorCode, String description, String failingUrl)
+            {
                 super.onReceivedError(view, errorCode, description, failingUrl);
 
                 // We redirect to default EN documentation if locale docs are
                 // not available.
                 if ((errorCode == ERROR_FILE_NOT_FOUND || errorCode == ERROR_HOST_LOOKUP) && !isDefault
-                        && failingUrl.equals(rootUrl)) {
+                        && failingUrl.equals(rootUrl))
+                {
                     hasError = true;
                     view.loadUrl(defaultUrl);
                     view.setVisibility(View.GONE);
@@ -98,17 +102,22 @@ public class HelpDialogFragment extends DialogFragment
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
+            public void onPageFinished(WebView view, String url)
+            {
                 super.onPageFinished(view, url);
-                if (hasError) {
+                if (hasError)
+                {
                     view.setVisibility(View.GONE);
-                } else {
+                }
+                else
+                {
                     view.setVisibility(View.VISIBLE);
                 }
                 getActivity().setProgressBarIndeterminateVisibility(false);
             }
 
-            public void onFormResubmission(WebView view, Message dontResend, Message resend) {
+            public void onFormResubmission(WebView view, Message dontResend, Message resend)
+            {
                 resend.sendToTarget();
             }
 
@@ -192,6 +201,6 @@ public class HelpDialogFragment extends DialogFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

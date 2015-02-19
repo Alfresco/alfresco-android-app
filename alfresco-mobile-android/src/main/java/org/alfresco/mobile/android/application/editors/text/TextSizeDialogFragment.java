@@ -117,7 +117,7 @@ public class TextSizeDialogFragment extends DialogFragment
         final View v = inflater.inflate(R.layout.sdk_list, null);
         ListView lv = (ListView) v.findViewById(R.id.listView);
 
-        ArrayList<Integer> list = new ArrayList<Integer>(SIZE_MAP.values());
+        ArrayList<Integer> list = new ArrayList<>(SIZE_MAP.values());
 
         if (list.isEmpty())
         {
@@ -125,7 +125,6 @@ public class TextSizeDialogFragment extends DialogFragment
             // warning message.
             lv.setVisibility(View.GONE);
             v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            v.findViewById(R.id.empty_picture).setVisibility(View.GONE);
             ((TextView) v.findViewById(R.id.empty_text))
                     .setText(R.string.create_document_editor_not_available_description);
             title = R.string.create_document_editor_not_available;

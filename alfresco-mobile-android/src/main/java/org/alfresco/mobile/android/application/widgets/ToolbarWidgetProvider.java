@@ -91,28 +91,24 @@ public class ToolbarWidgetProvider extends AppWidgetProvider
     private PendingIntent createAlfrescoIntent(Context context)
     {
         Intent intent = new Intent(context, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        return pendingIntent;
+        return PendingIntent.getActivity(context, 0, intent, 0);
     }
 
     private PendingIntent createSpeechTextEditorIntent(Context context)
     {
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 1, PublicIntentAPIUtils.speechToTextIntent(),
+        return PendingIntent.getActivity(context, 1, PublicIntentAPIUtils.speechToTextIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
     }
 
     private PendingIntent createTextEditorIntent(Context context)
     {
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, PublicIntentAPIUtils.createTextIntent(),
+        return PendingIntent.getActivity(context, 0, PublicIntentAPIUtils.createTextIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
     }
 
     private PendingIntent createPhotoCaptureIntent(Context context)
     {
-        PendingIntent pendingIntent = PendingIntent.getActivity(context, 2, PublicIntentAPIUtils.captureImageIntent(),
+        return PendingIntent.getActivity(context, 2, PublicIntentAPIUtils.captureImageIntent(),
                 PendingIntent.FLAG_UPDATE_CURRENT);
-        return pendingIntent;
     }
 }

@@ -94,7 +94,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
     // ///////////////////////////////////////////////////////////////////////////
     // VARIABLES
     // ///////////////////////////////////////////////////////////////////////////
-    private Map<String, Person> assignees = new HashMap<String, Person>(1);
+    private Map<String, Person> assignees = new HashMap<>(1);
 
     private Button modifiedByButton;
 
@@ -772,7 +772,7 @@ public class AdvancedSearchFragment extends AlfrescoFragment implements UserPick
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
     }
 }

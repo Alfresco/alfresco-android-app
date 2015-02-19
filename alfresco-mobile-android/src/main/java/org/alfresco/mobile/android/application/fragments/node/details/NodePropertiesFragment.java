@@ -74,7 +74,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         NodePropertiesFragment bf = new NodePropertiesFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
@@ -121,14 +121,15 @@ public class NodePropertiesFragment extends NodeDetailsFragment
 
         // Configuration available ?
         boolean hasDisplayed = false;
-        ConfigService service = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(), ConfigTypeIds.FORMS);
+        ConfigService service = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
+                ConfigTypeIds.FORMS);
         if (service != null && service.getFormConfig(ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
             FormConfigManager config = new FormConfigManager(this, service, propertyViewGroup);
             hasDisplayed = config.displayProperties(node);
         }
 
-        //TODO Remove it when formConfig is new standard.
+        // TODO Remove it when formConfig is new standard.
         if (!hasDisplayed)
         {
             generateProperties(inflater, propertyViewGroup,
@@ -151,7 +152,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     {
         ViewGroup groupview = rootView;
 
-        if (groupId != ContentModel.ASPECT_GENERAL)
+        if (!groupId.equals(ContentModel.ASPECT_GENERAL))
         {
             if (!currentNode.hasAspect(groupId)) { return; }
         }

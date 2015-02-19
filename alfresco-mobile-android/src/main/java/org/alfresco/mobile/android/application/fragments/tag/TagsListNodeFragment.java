@@ -106,7 +106,7 @@ public class TagsListNodeFragment extends TagsNodeFoundationFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         public Builder node(Node node)
         {

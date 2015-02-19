@@ -316,7 +316,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         adapter.notifyDataSetChanged();
 
         return true;
-    };
+    }
 
     private void displayNavigation(File file, boolean backstack)
     {
@@ -510,6 +510,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     public static class Builder extends AlfrescoFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_download_dark;
+
         public static final int LABEL_ID = R.string.menu_local_files;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -559,7 +560,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
     }
 }

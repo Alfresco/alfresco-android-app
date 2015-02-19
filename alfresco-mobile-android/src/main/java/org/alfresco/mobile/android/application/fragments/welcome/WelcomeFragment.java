@@ -54,10 +54,6 @@ public class WelcomeFragment extends AlfrescoFragment
 {
     public static final String TAG = WelcomeFragment.class.getName();
 
-    private View rootView;
-
-    private MobileIronManager mdmManager;
-
     public WelcomeFragment()
     {
         requiredSession = false;
@@ -101,7 +97,7 @@ public class WelcomeFragment extends AlfrescoFragment
         setRootView(inflater.inflate(R.layout.app_homescreen, container, false));
 
         // Request Mobile Iron Info
-        mdmManager = MobileIronManager.getInstance(getActivity());
+        MobileIronManager mdmManager = MobileIronManager.getInstance(getActivity());
         if (mdmManager != null)
         {
             mdmManager.requestConfig(getActivity(), BuildConfig.APPLICATION_ID);

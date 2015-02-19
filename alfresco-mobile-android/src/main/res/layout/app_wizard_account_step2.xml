@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -20,43 +19,39 @@
     style="?MainTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center"
-    android:minWidth="600dp" >
+    android:minWidth="600dp">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_margin="@dimen/wizard_main_margin"
         android:gravity="top"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include layout="@layout/app_wizard_account_step2_header" />
 
-        <include
-            android:layout_height="wrap_content"
-            layout="@layout/app_account_form" />
+        <include layout="@layout/app_account_form" />
 
-            
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="?android:attr/dividerVertical"
-            android:layout_marginTop="@dimen/margin_large"
-            />
+            android:layout_marginTop="@dimen/margin_large" />
 
         <Button
             android:id="@+id/next"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/account_validate"
             android:textSize="@dimen/home_button_size" />
 
         <View
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="1dip"
             android:background="?android:attr/dividerVertical" />
-            
+
     </LinearLayout>
 
 </ScrollView>

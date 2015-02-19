@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
@@ -16,10 +15,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <SeekBar
         android:id="@+id/seekbar_pages"
@@ -28,24 +27,23 @@
         android:layout_marginLeft="10dip"
         android:layout_marginTop="10dip"
         android:layout_marginRight="10dip"
-         android:layout_marginBottom="2dip" />
-    
+        android:layout_marginBottom="2dip" />
+
     <TextView
         android:id="@+id/pages_number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        />
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
 
     <LinearLayout
         style="?android:attr/buttonBarStyle"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:gravity="bottom"
@@ -53,12 +51,12 @@
         android:orientation="horizontal"
         android:paddingLeft="2dip"
         android:paddingRight="2dip"
-        android:paddingTop="0dip" >
+        android:paddingTop="0dip">
 
         <Button
             android:id="@+id/cancel"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/cancel" />
@@ -66,7 +64,7 @@
         <Button
             android:id="@+id/create_document"
             style="?android:attr/buttonBarButtonStyle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/ok" />

@@ -98,7 +98,7 @@ public class DataProtectionManager extends Manager
     {
         if (account == null) { return; }
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(sourceFiles.size());
-        File destinationFile = null;
+        File destinationFile;
         for (File sourceFile : sourceFiles)
         {
             destinationFile = new File(folderStorage, sourceFile.getName());
@@ -117,9 +117,8 @@ public class DataProtectionManager extends Manager
         Operator.with(appContext, SessionUtils.getAccount(appContext)).load(requestsBuilder);
     }
 
-    public void copyAndEncrypt(AlfrescoAccount account, File sourceFile, File destinationFile)
+    public void copyAndEncrypt(File sourceFile, File destinationFile)
     {
-        if (account == null) { return; }
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>();
         if (isEncryptionEnable())
         {
@@ -228,14 +227,12 @@ public class DataProtectionManager extends Manager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         sharedPref.edit().putBoolean(DATA_PROTECTION_ENABLE, isEnabled).commit();
     }
-    
+
     public File getRequiredDataProtectionFile()
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         String filePath = sharedPref.getString(REQUIRES_ENCRYPT, "");
-        if (TextUtils.isEmpty(filePath)){
-            return null;
-        }
+        if (TextUtils.isEmpty(filePath)) { return null; }
         return new File(filePath);
     }
 
@@ -244,7 +241,7 @@ public class DataProtectionManager extends Manager
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(appContext);
         prefs.edit().putString(REQUIRES_ENCRYPT, file.getPath()).commit();
     }
-    
+
     public boolean hasDataProtectionUserRequested()
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);

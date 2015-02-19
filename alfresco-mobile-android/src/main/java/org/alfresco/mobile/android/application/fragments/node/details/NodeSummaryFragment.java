@@ -60,9 +60,9 @@ public class NodeSummaryFragment extends NodePropertiesFragment
         NodeSummaryFragment bf = new NodeSummaryFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
- // ///////////////////////////////////////////////////////////////////////////
+    // ///////////////////////////////////////////////////////////////////////////
     // CREATE PARTS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
@@ -81,7 +81,7 @@ public class NodeSummaryFragment extends NodePropertiesFragment
         }
         displayProperties();
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // EVENTS RECEIVER
     // ///////////////////////////////////////////////////////////////////////////
@@ -90,37 +90,37 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     {
         super.onResult(event);
     }
-    
+
     @Subscribe
     public void onLikeEvent(LikeNodeEvent event)
     {
         super.onLikeEvent(event);
     }
-    
+
     @Subscribe
     public void onFavoriteEvent(FavoritedNodeEvent event)
     {
         super.onIsFavoriteEvent(event);
     }
-    
+
     @Subscribe
     public void onFavoriteEvent(FavoriteNodeEvent event)
     {
         super.onFavoriteNodeEvent(event);
     }
-    
+
     @Subscribe
     public void onDocumentUpdated(UpdateNodeEvent event)
     {
         super.onDocumentUpdated(event);
     }
-    
+
     @Subscribe
     public void onDocumentDownloaded(DownloadEvent event)
     {
         super.onDocumentDownloaded(event);
     }
-    
+
     @Subscribe
     public void onNodeDeleted(DeleteNodeEvent event)
     {
@@ -134,7 +134,7 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     {
         return new Builder(activity);
     }
-    
+
     public static class Builder extends NodePropertiesFragment.Builder
     {
         // ///////////////////////////////////////////////////////////////////////////

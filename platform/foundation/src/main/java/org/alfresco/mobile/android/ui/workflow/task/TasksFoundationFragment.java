@@ -48,7 +48,7 @@ public class TasksFoundationFragment extends BaseGridFragment implements TasksTe
 {
     private static final String TAG = TasksFoundationFragment.class.getName();
 
-    protected List<Task> selectedItems = new ArrayList<Task>(1);
+    protected List<Task> selectedItems = new ArrayList<>(1);
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS

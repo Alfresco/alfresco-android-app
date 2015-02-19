@@ -76,6 +76,6 @@ public abstract class TaskOperation<T> extends BaseOperation<T>
         {
             Log.w(TAG, Log.getStackTraceString(e));
         }
-        return new LoaderResult<T>();
+        return new LoaderResult<>();
     }
 }

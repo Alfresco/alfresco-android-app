@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <org.alfresco.mobile.android.application.ui.form.views.PickerFieldView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:floatlabel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/property"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     floatlabel:floatTextSize="12sp"
-    floatlabel:textColorHintFocused="@android:color/holo_blue_dark"
+    floatlabel:textColorHintFocused="@color/holo_blue_dark"
     floatlabel:textColorHintUnFocused="@android:color/darker_gray"
     floatlabel:textSize="16sp" />

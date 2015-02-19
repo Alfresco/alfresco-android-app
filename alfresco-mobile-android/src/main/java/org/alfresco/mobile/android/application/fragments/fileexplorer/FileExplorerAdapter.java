@@ -43,10 +43,12 @@ import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -172,7 +174,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity
                 && ((downloadPath != null && item.getPath().startsWith(downloadPath)) || (item.isFile())))
         {
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(vh.choose,
                     getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
@@ -182,6 +184,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
             vh.choose.setOnClickListener(new OnClickListener()
             {
 
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 @Override
                 public void onClick(View v)
                 {
@@ -210,7 +213,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(vh.choose, null);
             vh.choose.setVisibility(View.GONE);
         }
     }

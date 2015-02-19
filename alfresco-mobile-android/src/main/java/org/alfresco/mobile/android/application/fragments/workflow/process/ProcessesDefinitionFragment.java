@@ -52,8 +52,7 @@ public class ProcessesDefinitionFragment extends ProcessesDefinitionFoundationFr
 
     public static ProcessesDefinitionFragment newInstanceByTemplate()
     {
-        ProcessesDefinitionFragment bf = new ProcessesDefinitionFragment();
-        return bf;
+        return new ProcessesDefinitionFragment();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -109,6 +108,7 @@ public class ProcessesDefinitionFragment extends ProcessesDefinitionFoundationFr
         }
         return false;
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////

@@ -59,7 +59,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
         super(activity, layoutId, items);
         this.selectedItems = selectedItems;
         this.layoutId = layoutId;
-        this.activityRef = new WeakReference<Activity>(activity);
+        this.activityRef = new WeakReference<>(activity);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -143,7 +143,8 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
 
     }
 
-    private void displayAvatar(AlfrescoAccount acc, int defaultIcon, ImageView imageView){
+    private void displayAvatar(AlfrescoAccount acc, int defaultIcon, ImageView imageView)
+    {
         File f = AlfrescoStorageManager.getInstance(getContext()).getPrivateFolder(acc);
         File icon = new File(f, acc.getUsername().concat(".jpg"));
         Picasso.with(activityRef.get()).load(icon).placeholder(defaultIcon).into(imageView);
@@ -151,8 +152,8 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
 
     private void updateIconList(GenericViewHolder vh, AlfrescoAccount acc)
     {
-        int iconId = R.drawable.ic_onpremise;
-        int descriptionId = R.string.account_alfresco_onpremise;
+        int iconId;
+        int descriptionId;
         switch (acc.getTypeId())
         {
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_BASIC:

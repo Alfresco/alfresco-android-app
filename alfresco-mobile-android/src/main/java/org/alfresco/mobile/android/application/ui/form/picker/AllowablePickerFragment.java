@@ -65,8 +65,6 @@ public class AllowablePickerFragment extends DialogFragment
 
     private boolean singleSelection = false;
 
-    private String pickFragmentTag;
-
     private Fragment fragmentPick;
 
     private String fieldId;
@@ -102,7 +100,7 @@ public class AllowablePickerFragment extends DialogFragment
             title = getArguments().getString(ARGUMENT_TITLE);
             fieldId = getArguments().getString(ARGUMENT_FIELD_ID);
             singleSelection = getArguments().getBoolean(ARGUMENT_SINGLE_SELECTION);
-            pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
+            String pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
             fragmentPick = getFragmentManager().findFragmentByTag(pickFragmentTag);
             if (fragmentPick != null && fragmentPick instanceof UserPickerCallback)
             {
@@ -168,7 +166,7 @@ public class AllowablePickerFragment extends DialogFragment
         else
         {
             // Retrieve selected value
-            //Object value = property.getValue();
+            // Object value = property.getValue();
 
             // Let's construct a map of single value
             this.allowableValues = new HashMap<String, Object>(definition.getAllowableValues().size());

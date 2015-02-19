@@ -75,7 +75,7 @@ public class CarouselPreviewFragment extends AlfrescoFragment implements Details
         CarouselPreviewFragment bf = new CarouselPreviewFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE

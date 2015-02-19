@@ -29,7 +29,7 @@ public class MandatoryValidationRule extends ValidationRule
     // ///////////////////////////////////////////////////////////////////////////
     public MandatoryValidationRule(Context context, ValidationConfig configuration)
     {
-        super(context,configuration);
+        super(context, configuration);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -38,20 +38,6 @@ public class MandatoryValidationRule extends ValidationRule
     @Override
     public boolean isValid(Object object)
     {
-        if (object == null)
-        {
-            return false;
-        }
-        else
-        {
-            if (object instanceof String)
-            {
-                return (!TextUtils.isEmpty((String) object));
-            }
-            else
-            {
-                return true;
-            }
-        }
+        return object != null && (!(object instanceof String) || (!TextUtils.isEmpty((String) object)));
     }
 }

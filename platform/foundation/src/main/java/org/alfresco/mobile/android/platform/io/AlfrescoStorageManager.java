@@ -31,7 +31,9 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
@@ -297,7 +299,6 @@ public class AlfrescoStorageManager extends Manager
         if (isTempFile(file))
         {
             file.delete();
-            return;
         }
 
         /*
@@ -310,6 +311,7 @@ public class AlfrescoStorageManager extends Manager
     // ///////////////////////////////////////////////////////////////////////////
     // STORAGE SPACE
     // ///////////////////////////////////////////////////////////////////////////
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @SuppressWarnings("deprecation")
     public float getAvailableBytesByPath(File f)
     {
@@ -360,7 +362,7 @@ public class AlfrescoStorageManager extends Manager
      */
     public File getCacheDir(String extendedPath)
     {
-        File folder = null;
+        File folder;
         try
         {
             folder = createFolder(appContext.getCacheDir(), extendedPath);
@@ -375,7 +377,7 @@ public class AlfrescoStorageManager extends Manager
 
     protected static File createFolder(File f, String extendedPath)
     {
-        File tmpFolder = null;
+        File tmpFolder;
         tmpFolder = new File(f, extendedPath);
         if (!tmpFolder.exists())
         {

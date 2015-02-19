@@ -42,9 +42,8 @@ public final class ManagerFactory
     // ///////////////////////////////////////////////////////////////////////////
     protected static int getBooleanId(Context context, String key)
     {
-        int boolId = context.getResources().getIdentifier(
-                ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR), BOOLEAN, context.getApplicationContext().getPackageName());
-        return boolId;
+        return context.getResources().getIdentifier(ISENABLE.concat(SEPARATOR).concat(key).replace(".", SEPARATOR),
+                BOOLEAN, context.getApplicationContext().getPackageName());
     }
 
     protected static boolean isEnable(Context context, String key)

@@ -249,7 +249,7 @@ public abstract class BaseField
      */
     public View createReadableView()
     {
-        View vr = null;
+        View vr;
         if (isMultiValued)
         {
             // Multi Value
@@ -315,7 +315,7 @@ public abstract class BaseField
         }
 
         // Select the right UI depending on criteria (list or not)
-        AlfrescoFieldView tmpFieldView = null;
+        AlfrescoFieldView tmpFieldView;
         if (propertyDefinition != null && !propertyDefinition.getAllowableValues().isEmpty() && !enforceEdition)
         {
             tmpFieldView = (PickerFieldView) inflater.inflate(R.layout.form_edit_picker, hookView, false);

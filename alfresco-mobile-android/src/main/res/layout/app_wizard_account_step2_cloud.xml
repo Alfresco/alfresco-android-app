@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -18,26 +17,27 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?MainTheme.Background.White"
     android:layout_gravity="center"
-    android:gravity="center" >
+    android:gravity="center">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:gravity="top"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include layout="@layout/app_wizard_account_step2_header" />
 
         <include
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center"
             layout="@layout/app_waiting" />
 
         <include
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/sdk_webview" />
+            layout="@layout/app_webview" />
     </LinearLayout>
 
 </LinearLayout>

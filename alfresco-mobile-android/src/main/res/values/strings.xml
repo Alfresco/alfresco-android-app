@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -19,16 +18,11 @@
 <resources>
 
     <string name="app_name">Alfresco</string>
-    <string name="app_name_beta">Beta</string>
     <string name="empty_accounts">No AlfrescoAccount available</string>
 
     <!-- HOME SCREEN -->
     <string name="home_login">Login</string>
-    <string name="home_title">Let\'s get you started&#8230; </string>
-    <string name="home_sign_cloud">Sign up for Alfresco Cloud</string>
-    <string name="home_sign_cloud_description">New to Alfresco? Create a free online AlfrescoAccount to store and access your content from anywhere.</string>
     <string name="home_account">I already have an account</string>
-    <string name="home_account_description">Choose this option if you already have an Alfresco Cloud AlfrescoAccount or you want to connect to an Alfresco Server</string>
     <string name="home_helper">If you want to learn more about Alfresco Mobile take a look at <a href="alfresco://view_help_guide/">our guide</a> in the Help area</string>
 
     <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
@@ -36,8 +30,6 @@
     <string name="account_wizard_alfresco_server_description">Connect to an Alfresco Server</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
     <string name="account_wizard_alfresco_cloud_description">Access your Alfresco Cloud account</string>
-    <string name="account_wizard_alfresco_help">New to Alfresco? <a href="alfresco://sign_up_cloud/">Sign Up</a> for a free account</string>
-    <string name="account_wizard_alfresco_help_inside_app">New to Alfresco? <a href="alfresco://sign_up_cloud_i/">Sign Up</a> for a free account</string>
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">Account</string>
@@ -63,7 +55,6 @@
     <string name="account_servicedocument_hint">Service URL (Optional). </string>
     <string name="account_wizard_step2_title">Account Authentication Information</string>
     <string name="account_verify">Verifying Alfresco Account Information&#8230;</string>
-    <string name="email_hint">example@acme.com</string>
     <string name="account_validate">Save</string>
     <string name="account_validate_hint">Save your AlfrescoAccount information</string>
     <string name="account_validate_disable_hint">Please fill Username, Password and Hostname fields.</string>
@@ -81,7 +72,6 @@
 
     <!-- ACCOUNTS -->
     <string name="account_not_activated">Your Alfresco Account is not activated. Please check the Manage Alfresco Account screen.</string>
-    <string name="account_not_activated_description">Your Alfresco Account is still waiting for verification</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
     <string name="account_edit_hint">Edit "%s" AlfrescoAccount information</string>
@@ -135,7 +125,6 @@
     <!-- DETAILS -->
     <string name="geolocation">Geolocation</string>
     <string name="action_version">Versions</string>
-    <string name="document_comments_header">Comments</string>
     <string name="document_tags_header">Tags</string>
     <string name="document_version_header">Version</string>
 
@@ -149,10 +138,9 @@
     <string name="optional">Optional</string>
     <string name="required">Required</string>
     <string name="field_required">(Required)</string>
-    
+
     <!-- LOCAL FIlE -->
     <string name="action_rename">Rename</string>
-    <string name="action_rename_desc">New name for %s</string>
 
     <!-- MAIN MENU -->
     <string name="menu_browse_root">Repository</string>
@@ -162,7 +150,6 @@
     <string name="menu_browse_all_sites">All Sites</string>
     <string name="menu_browse_my_sites">My Sites</string>
     <string name="menu_browse_favorite_sites">Favorite Sites</string>
-    <string name="menu_browse_tags">Tags</string>
     <string name="menu_browse_activities">Activities</string>
     <string name="menu_search">Search</string>
     <string name="menu_downloads">Downloads</string>
@@ -173,15 +160,10 @@
     <string name="menu_view">Views</string>
     <string name="menu_help">Help</string>
     <string name="menu_prefs">Settings</string>
-    <string name="menu_resources">Resources</string>
 
     <!-- UPLOAD -->
     <string name="upload_title">Upload&#8230;</string>
     <string name="upload_pick_document">Choose content&#8230;</string>
-    <string name="upload_photos">Photos</string>
-    <string name="upload_videos">Videos</string>
-    <string name="upload_files">Files</string>
-    <string name="upload_third_application">Another application</string>
 
     <!-- ACCOUNTS -->
     <string name="accounts_manage">Accounts</string>
@@ -204,8 +186,6 @@
     <string name="cloud_authentication">Authentication</string>
 
     <!-- NETWORK -->
-    <string name="error_network_title">No Network.</string>
-    <string name="error_network_details">Your device is not connected to a network, some features may be disabled.</string>
 
     <!-- NOTIFICATION -->
     <string name="upload">Upload </string>
@@ -215,22 +195,19 @@
     <string name="update_in_progress">Update in progress&#8230;</string>
     <string name="error_unable_open_file_title">The file could not be opened.</string>
     <string name="error_unable_open_file">This file format is not supported. You need to install an app that can read it.</string>
-    <string name="error_unable_pick_file">There\'s no external application to pick a file.</string>
 
     <!-- OTHER -->
     <string name="unlike">Unlike</string>
     <string name="error_retrieve_likes">The Like/Unlike tag for this content could not be retrieved.</string>
     <string name="next">Next</string>
     <string name="save">Save</string>
-    <string name="enter_details">Enter your details</string>
     <string name="share_content">Share Content with&#8230;</string>
 
     <!-- HELP -->
     <string name="asset_folder_prefix">en</string>
-    <string name="docs_prefix"></string>
+    <string name="docs_prefix" />
 
     <!-- About Message -->
-    <string name="about_description_title">Description</string>
     <string name="buildnumber_version">Version: </string>
     <string name="sdknumber_version">SDK: </string>
     <string name="about_description">
@@ -242,7 +219,6 @@
     </string>
 
     <!-- Waiting Message -->
-    <string name="get_pdf_viewer">You need a PDF viewer to display this content.\n\nDo you want to get one now?</string>
     <string name="send_email">Share attachment</string>
     <string name="link_or_attach">Do you want to share this as an attachment, or a clickable link?</string>
     <string name="full_attachment">Attachment</string>
@@ -259,7 +235,7 @@
     <string name="delete_in_progress">Delete in progress&#8230;</string>
     <string name="delete_complete">Delete complete</string>
     <string name="delete_sucess">\"%s\" has been deleted successfully.</string>
-    
+
     <!-- Save Back -->
     <string name="save_back_description">\"%s\" has been modified. Do you want to upload this new version?</string>
     <string name="update_sucess">\"%s\" has been updated successfully.</string>
@@ -267,21 +243,13 @@
     <string name="cannot_capture">Cannot complete the capturing of this information</string>
 
     <!-- Upload -->
-    <string name="action_processing">Processing&#8230;</string>
-    <string name="action_upload_error">Unable to upload&#8230;</string>
 
     <!-- Create Document -->
     <string name="open_play_store">Open Google Play Store</string>
     <string name="create_document">Create&#8230;</string>
     <string name="create_document_title">Create&#8230;</string>
-    <string name="create_document_word">Word Document</string>
-    <string name="create_document_powerpoint">Powerpoint Presentation</string>
-    <string name="create_document_excel">Excel Spreadsheet</string>
-    <string name="create_document_text">Text Document</string>
     <string name="create_document_name_hint">Type the file name here</string>
     <string name="create_document_filename_error">This name is already in use.</string>
-    <string name="create_document_save">An error occurred: Your file is saved inside "Downloads".</string>
-    <string name="upload_error_alreadyexist">An error occurred: This name is already in use.</string>
     <string name="create_document_editor_title">Complete action using</string>
     <string name="create_document_editor_not_available">No application available</string>
     <string name="create_document_editor_not_available_description">You don\'t have an app that will create this file type.</string>
@@ -293,23 +261,13 @@
     <string name="comment_add_hint">Add your comment here&#8230;</string>
 
     <!-- DATA PROTECTION -->
-    <string name="encrypt_title">Encrypting content</string>
-    <string name="content_being_encrypted">Content is being protected. Please wait</string>
-    <string name="content_being_decrypted">Content is being unprotected. Please wait</string>
     <string name="data_protection">Data Protection</string>
     <string name="data_protection_blurb"><![CDATA[<p><b>Data protection is available.</b><br/> Do you want to enable it? <p>  This will encrypt all downloaded Alfresco content for every account, and will mean this content cannot be read by other apps, only from within the Alfresco app. ]]></string>
-    <string name="encryption_failed">Encryption failed</string>
     <string name="decryption_failed">Decryption failed</string>
     <string name="protect_question"><![CDATA[<p><b>Would you like to protect all downloaded Alfresco content now?</b><p>  This will be applied to all content you\'ve downloaded from all your Alfresco accounts, and will mean this content cannot be read by other apps, only from within the Alfresco app.]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>Would you like to unprotect all downloaded Alfresco content now?</b><p>  This will be applied to all content you\'ve downloaded from all your Alfresco accounts.]]></string>
-    <string name="already_encrypted">This content is already encrypted!</string>
-    <string name="already_decrypted">This content is already decrypted!</string>
     <string name="decryption_title">Deactivating Data Protection&#8230;</string>
     <string name="encryption_title">Activating Data Protection&#8230;</string>
-    <string name="copy_file_title">Copy in progress&#8230;</string>
-    <string name="copy_file_completed">Copy completed</string>
-    <string name="copy_file_description">File copy in progress&#8230;</string>
-    <string name="metadata_general">General</string>
     <string name="encrypt_action">Encrypt</string>
     <string name="decrypt_action">Decrypt</string>
 
@@ -344,10 +302,7 @@
     <string name="import_document_name">File Name</string>
     <string name="import_documents">File</string>
     <string name="import_account">Account</string>
-    <string name="import_send_download">The file is available inside \"%s\"\'s Download folder.</string>
-    <string name="import_send_downloads">Files are available inside your \"Downloads\" folder.</string>
     <string name="import_folder">Upload Folder</string>
-    <string name="import_error">An error occurred during the upload.</string>
     <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
@@ -467,7 +422,7 @@
     <string name="upload_await">Waiting to upload&#8230;</string>
     <string name="download_await">Waiting to download&#8230;</string>
     <string name="sync_favorites">Favorites</string>
-    
+
 
     <plurals name="sync_complete_description">
         <item quantity="zero">no content synced</item>
@@ -515,7 +470,6 @@
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">Duplicate name</string>
     <string name="error_duplicate_description"><![CDATA[<p>There\'s already a downloaded file with the same name.</p> Do you want to overwrite the existing file?]]></string>
-    <string name="error_duplicate_rename"><![CDATA[ <b>%s</b> is already in use. <br/> Please retry with another one.]]></string>
 
     <!-- Quick Action Folder -->
     <string name="action_view_properties">View Properties</string>
@@ -523,13 +477,8 @@
     <string name="like_in_progress">"Like" in progress</string>
     <string name="like_completed">Like completed</string>
     <string name="like_complete">Like complete</string>
-    <string name="unlike_completed">Unlike completed</string>
     <string name="favorite">Favorite</string>
     <string name="unfavorite">Unfavorite</string>
-    <string name="favorite_in_progress">"Favorite" in progress</string>
-    <string name="favorite_completed">Favorite completed</string>
-    <string name="favorite_complete">Favorite complete</string>
-    <string name="unfavorite_completed">Unfavorite completed</string>
 
     <!-- Operations Status -->
     <string name="status_pending">Pending</string>
@@ -551,53 +500,30 @@
     <string name="FavoriteNodeRequest">Favorite</string>
     <string name="CreateFolderRequest">Create Folder</string>
     <string name="LoadSessionRequest">Load Session</string>
-    <string name="CreateAccountRequest">Create Account</string>
-    <string name="UpdatePropertiesRequest">Update Properties</string>
-    <string name="DeleteFileRequest">Delete File</string>
-    <string name="CreateDirectoryRequest">Create Folder</string>
-    <string name="RenameRequest">Rename File</string>
-    <string name="SyncFavoriteRequest">Sync</string>
-    <string name="UnSyncFavoriteRequest">Unsync</string>
-    <string name="RetrieveDocumentNameRequest">Check File Name</string>
 
     <!-- Multi selection -->
     <string name="empty">Nothing at all</string>
     <string name="operations_empty">No Operations</string>
-    <string name="operations">Operations</string>
     <string name="select_all">Select All</string>
-    <string name="unselect_all">Unselect all</string>
     <string name="cancel_all">Cancel All</string>
     <string name="dismiss_all">Clear List</string>
 
     <!-- Creation Folder -->
     <string name="create_folder_in_progress">Create folder in progress</string>
-    <string name="create_folder_complete">Create folder complete</string>
-    <string name="sdcard_desc">SD card</string>
-    <string name="download_folder_desc">Download folder</string>
-    <string name="camera_folder_desc">Camera folder</string>
-    <string name="savebutton">Save</string>
-    <string name="discardbutton">Discard</string>
-    <string name="new_file">New text file</string>
     <string name="textfile_populate_failed">Failed to load text into built-in editor</string>
-    <string name="textfile_too_large">Text file is too large for editor</string>
 
     <!-- FILE EXPLORER Menu -->
-    <string name="shortcuts">Shortcuts</string>
-    <string name="shortcut_alfresco">Alfresco</string>
     <string name="shortcut_alfresco_downloads">Downloads</string>
-    <string name="shortcut_alfresco_sync">Sync</string>
     <string name="shortcut_library">Library</string>
     <string name="shortcut_library_images">Images</string>
     <string name="shortcut_library_videos">Videos</string>
     <string name="shortcut_library_audios">Music</string>
     <string name="shortcut_library_office">Office</string>
-    <string name="shortcut_library_pdf">Office</string>
     <string name="shortcut_local">Device Shortcut</string>
     <string name="shortcut_local_downloads">Device Downloads</string>
     <string name="shortcut_local_sdcard">SD Card</string>
     <string name="shortcut_thirdparty_app">Applications</string>
     <string name="shortcut_thirdparty_applications">3rd party applications</string>
-    <string name="action_select">Select</string>
 
     <!-- FILE Editor Menu -->
     <string name="file_editor_name">Alfresco Text Editor</string>
@@ -609,7 +535,6 @@
     <string name="file_editor_save">Save</string>
     <string name="file_editor_discard">Discard</string>
     <string name="file_editor_save_confirmation">File has been saved.</string>
-    <string name="file_editor_loading">Please wait a few moments&#8230;</string>
     <string name="file_editor_encoding">Encoding</string>
     <string name="file_editor_text_size">Text Size</string>
     <string name="file_editor_speech_to_text">Speech to Text</string>
@@ -621,9 +546,6 @@
     <!-- People -->
     <string name="my_profile">My Profile</string>
     <string name="user_profile">User Profile</string>
-    <string name="about">About</string>
-    <string name="firstName">First Name</string>
-    <string name="lastName">Last Name</string>
     <string name="work_at">%1$s at %2$s</string>
     <string name="jobTitle">Job Title</string>
     <string name="location">Location</string>
@@ -660,15 +582,11 @@
     <!-- PERSON SEARCH -->
     <string name="person_not_found">No users found</string>
     <string name="person_search">Search</string>
-    <string name="person_selected">Persons selected</string>
 
     <!-- Activities -->
-    <string name="activity_site">Site details</string>
     <string name="activity_profile">Profile of %s</string>
-    <string name="activity_profile2">Profile of %s</string>
 
     <!-- Workflow -->
-    <string name="variables">Variables</string>
     <string name="empty_tasks">No Tasks</string>
     <string name="empty_items">No Attachments</string>
     <string name="task_items">Attachment(s)</string>
@@ -696,13 +614,6 @@
     <string name="tasks_assignee_all">All</string>
     <string name="tasks_assignee_unassigned">Unassigned</string>
 
-    <!-- Multi Selection -->
-    <plurals name="selected_task">
-        <item quantity="zero">no task</item>
-        <item quantity="one">1 task</item>
-        <item quantity="other">%1$s tasks</item>
-    </plurals>
-
     <!-- Tasks -->
     <string name="task_filter_view">View Tasks</string>
     <string name="validate">Validate</string>
@@ -712,12 +623,10 @@
     <string name="task_user_approved"><![CDATA[%s <b>approved the content</b>]]></string>
     <string name="task_user_rejected"><![CDATA[%s <b>rejected the content</b>]]></string>
     <string name="task_user_commented">and commented:</string>
-    <string name="task_user_no_comment">, but did not provide a comment</string>
     <string name="task_user_completed"><![CDATA[%s <b>completed this task</b>]]></string>
     <string name="task_user_not_completed"><![CDATA[%s <b>did not complete this task yet</b>]]></string>
     <string name="task_approve">Approve</string>
     <string name="task_reject">Reject</string>
-    <string name="task_comment">Comment</string>
     <string name="task_response">Response</string>
     <string name="done">Done</string>
     <string name="task_completing">Completing Task</string>
@@ -729,7 +638,6 @@
     <string name="task_type">Task Type</string>
     <string name="task_initiator">Initiator of the task</string>
     <string name="task_dueat">Due Date</string>
-    <string name="task_no_dueat">Due Date</string>
     <string name="tasks_history">Tasks History</string>
 
     <!-- Tasks Filters -->
@@ -746,13 +654,11 @@
     <string name="process_start_review">Start review</string>
     <string name="process_choose_definition">Choose task type</string>
     <string name="process_create_task">Create Task</string>
-    <string name="process_choose_assignees">Choose assignees</string>
     <string name="process_choose_attachments">Choose attachments</string>
     <string name="process_start_title">Start Process</string>
     <string name="process_title">Title</string>
     <string name="process_title_hint">New Task Title (Required)</string>
     <string name="process_due_on">Due on</string>
-    <string name="process_no_date">No date</string>
     <string name="process_assignees">Assignees</string>
     <string name="process_diagram">Process Diagram</string>
     <string name="task_review_document">Please review %s</string>
@@ -765,8 +671,7 @@
     <string name="task_attachments_selection">Select attachments&#8230;</string>
     <string name="task_attachments">Attachments</string>
     <string name="process_no_description">(No Message)</string>
-    <string name="process_no_assignees">No assignee</string>
-    <string name="process_initiator">Initiator</string>
+
     <string name="process_attachments">Attachments</string>
     <string name="process_no_attachments">No content attached</string>
     <string name="process_priority">Priority</string>
@@ -788,7 +693,6 @@
     <string name="action_add_approvers">Add one approver</string>
 
 
-
     <!-- PROCESS NAME -->
     <string name="process_adhoc">Adhoc Workflow</string>
     <string name="process_parallel_review">Parallel Review and Approve</string>
@@ -808,7 +712,6 @@
     <string name="picker_attach_document">{0,choice,0#Attach|1#Attach 1 file|1&lt;Attach {0} files}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
-    <string name="display_views">Views</string>
     <string name="display_gallery">Display Gallery</string>
 
     <!-- Metadata RESTRICTABLE -->
@@ -865,15 +768,12 @@
 
     <string name="multi_selection_enable">MultiSelection</string>
     <string name="create_content_type">Type</string>
-    
+
     <!-- CUSTOM FORMS -->
     <string name="picker_selected_value">Selected %s</string>
     <string name="picker_select_value">Add %s&#8230;</string>
     <string name="picker_multi_value_selected">{0,choice,0#No %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
-    
-    <!-- SCANSNAP EXTENSIONS-->
-    <string name="scan_document">Scan document</string>
-    
+
     <!-- SHORTCUT & ACTIONS -->
     <string name="select_folder">Select</string>
     <string name="shortcut_actions_title">Alfresco - Create</string>
@@ -882,13 +782,17 @@
     <string name="shortcut_action_create">Define your action...</string>
     <string name="action_associated">Actions associated</string>
     <string name="action_photo">Take photo</string>
-    <string name="action_video">Record video</string>
-    <string name="action_audio">Record audio</string>
     <string name="action_text">Write text</string>
     <string name="action_speech2text">Speech to text</string>
 
+    <string name="mdm_managed">Managed by your administrator</string>
     <string name="mdm_loading_configuration">Loading configuration...</string>
     <string name="sign_in">Sign in</string>
     <string name="error_mdm_loading_configuration"><![CDATA[<p><b>Your application configuration seems wrong.</b><br/> If the problem persists please contact your administrator.</p> <br/> Error : %s]]></string>
+    <string name="discardbutton">Discard</string>
+    <string name="filename_error_character">Invalid file name</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="waiting_operations">Please wait</string>
+    <string name="shortcut_alfresco">Alfresco</string>
 
 </resources>

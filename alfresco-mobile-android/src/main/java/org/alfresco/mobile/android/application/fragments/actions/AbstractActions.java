@@ -35,7 +35,7 @@ import android.view.Menu;
 
 public abstract class AbstractActions<T> implements ActionMode.Callback
 {
-    protected onFinishModeListerner mListener;
+    protected onFinishModeListener mListener;
 
     protected ActionMode mode;
 
@@ -44,7 +44,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     protected WeakReference<Fragment> fragmentRef;
 
     protected boolean multiSelectionEnable = true;
-    
+
     protected List<T> selectedItems = new ArrayList<T>();
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -87,10 +87,11 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     public void selectNode(T n)
     {
-        if (!multiSelectionEnable){
+        if (!multiSelectionEnable)
+        {
             selectedItems.clear();
         }
-        
+
         if (selectedItems.contains(n))
         {
             removeNode(n);
@@ -156,7 +157,8 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     {
         if (activity != null && node != null && SessionUtils.getAccount(activity) != null)
         {
-            File folder = AlfrescoStorageManager.getInstance(activity).getDownloadFolder(SessionUtils.getAccount(activity));
+            File folder = AlfrescoStorageManager.getInstance(activity).getDownloadFolder(
+                    SessionUtils.getAccount(activity));
             if (folder != null) { return new File(folder, node.getName()); }
         }
 
@@ -177,12 +179,12 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////////////
     // LISTENER
     // ///////////////////////////////////////////////////////////////////////////////////
-    public interface onFinishModeListerner
+    public interface onFinishModeListener
     {
         void onFinish();
     }
 
-    public void setOnFinishModeListerner(onFinishModeListerner mListener)
+    public void setOnFinishModeListener(onFinishModeListener mListener)
     {
         this.mListener = mListener;
     }
@@ -199,28 +201,28 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     {
         return fragmentRef.get();
     }
-    
+
     protected AlfrescoSession getSession()
     {
-        if (getActivity() == null) {return null;}
+        if (getActivity() == null) { return null; }
         return SessionUtils.getSession(getActivity());
     }
 
     protected AlfrescoAccount getAccount()
     {
-        if (getActivity() == null) {return null;}
+        if (getActivity() == null) { return null; }
         return SessionUtils.getAccount(getActivity());
     }
-    
+
     protected T getCurrentItem()
     {
-        if (selectedItems == null || selectedItems.isEmpty()) {return null;}
+        if (selectedItems == null || selectedItems.isEmpty()) { return null; }
         return selectedItems.get(0);
     }
-    
+
     public boolean hasMultiSelectionEnabled()
     {
         return multiSelectionEnable;
     }
-    
+
 }

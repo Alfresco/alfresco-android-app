@@ -48,8 +48,6 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
 
     private List<Person> assignees;
 
-    private View vRoot;
-
     private CreateTaskFragment createTaskFragment;
 
     private int mode = MODE_PERSON;
@@ -93,7 +91,7 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
             assignees = createTaskFragment.getAssignees();
         }
 
-        int titleId = -1;
+        int titleId;
         if (getDialog() != null)
         {
             titleId = R.string.task_assignees;
@@ -107,22 +105,22 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
         setRetainInstance(true);
         setSession(SessionUtils.getSession(getActivity()));
         SessionUtils.checkSession(getActivity(), getSession());
-        vRoot = inflater.inflate(R.layout.app_picker_list, container, false);
-        if (getSession() == null) { return vRoot; }
+        setRootView(inflater.inflate(R.layout.app_picker_list, container, false));
+        if (getSession() == null) { return getRootView(); }
 
         if (mode == MODE_PERSON)
         {
-            ((ListView) vRoot.findViewById(R.id.listView)).setAdapter(new UserAdapter(this, R.layout.app_item_row,
-                    assignees, true));
+            ((ListView) viewById(R.id.listView)).setAdapter(new UserAdapter(this, R.layout.app_item_row, assignees,
+                    true));
         }
         else if (mode == MODE_DOCUMENT)
         {
-            ((ListView) vRoot.findViewById(R.id.listView)).setAdapter(new NodeAdapter(this,
-                    R.layout.app_task_progress_row, docs, true));
+            ((ListView) viewById(R.id.listView)).setAdapter(new NodeAdapter(this, R.layout.app_task_progress_row, docs,
+                    true));
         }
 
         // Button Selection
-        Button b = (Button) vRoot.findViewById(R.id.action_select);
+        Button b = (Button) viewById(R.id.action_select);
         titleId = R.string.task_assignees_selection;
         if (mode == MODE_DOCUMENT)
         {
@@ -146,7 +144,7 @@ public class CreateTaskPickerFragment extends AlfrescoFragment
             }
         });
 
-        return vRoot;
+        return getRootView();
     }
 
     public void removeAssignee(Person item)

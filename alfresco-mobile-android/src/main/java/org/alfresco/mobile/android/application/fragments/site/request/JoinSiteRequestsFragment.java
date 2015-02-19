@@ -137,7 +137,8 @@ public class JoinSiteRequestsFragment extends SitesPendingMembershipFoundationFr
             Log.w(TAG, Log.getStackTraceString(event.exception));
         }
 
-        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(String.format(getString(messageId), event.oldSite.getShortName()));
+        AlfrescoNotificationManager.getInstance(getActivity()).showLongToast(
+                String.format(getString(messageId), event.oldSite.getShortName()));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -171,7 +172,7 @@ public class JoinSiteRequestsFragment extends SitesPendingMembershipFoundationFr
         protected Fragment createFragment(Bundle b)
         {
             return JoinSiteRequestsFragment.newInstanceByTemplate(b);
-        };
+        }
 
     }
 }

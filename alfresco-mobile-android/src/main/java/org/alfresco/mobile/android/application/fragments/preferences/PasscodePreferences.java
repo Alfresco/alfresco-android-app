@@ -22,18 +22,20 @@ import java.util.Date;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
+import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
@@ -116,13 +118,14 @@ public class PasscodePreferences extends PreferenceFragment
         addPreferencesFromResource(R.xml.passcode_preferences);
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     public void onResume()
     {
         super.onResume();
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         passcodeEnable = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
-        boolean maxAttemptActivated = (sharedPref.getInt(KEY_PASSCODE_MAX_ATTEMPT, 0) == 0) ? false : true;
+        boolean maxAttemptActivated = (sharedPref.getInt(KEY_PASSCODE_MAX_ATTEMPT, 0) != 0);
         long timeout = Long.parseLong(sharedPref.getString(KEY_PASSCODE_TIMEOUT, "300000"));
 
         // ENABLE PASSCODE
@@ -231,7 +234,7 @@ public class PasscodePreferences extends PreferenceFragment
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
         passcodeEnable = sharedPref.getBoolean(KEY_PASSCODE_ENABLE, false);
 
-        Preference pref = (Preference) findPreference(getString(R.string.passcode_enable_key));
+        Preference pref = findPreference(getString(R.string.passcode_enable_key));
         // Depending on Android version we use different component.
         // Checkbox for A < 14 and Switch for A > 14
         if (pref instanceof CheckBoxPreference)
@@ -322,7 +325,7 @@ public class PasscodePreferences extends PreferenceFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

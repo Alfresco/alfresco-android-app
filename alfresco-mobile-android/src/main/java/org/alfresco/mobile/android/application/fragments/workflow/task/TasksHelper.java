@@ -48,16 +48,10 @@ public final class TasksHelper
     {
         SharedPreferences prefs = activity.getSharedPreferences(TASK_FILTER_PREFS, 0);
         int currentSelection = prefs.getInt(TASK_FILTER_DEFAULT, 0);
-        displayNavigationMode(activity, true, currentSelection, true);
+        displayNavigationMode(activity, true, currentSelection);
     }
 
     public static void displayNavigationMode(final Activity activity, final boolean backStack, int menuId)
-    {
-        displayNavigationMode(activity, backStack, menuId, false);
-    }
-
-    private static void displayNavigationMode(final Activity activity, final boolean backStack, int menuId,
-            final boolean firstTime)
     {
         activity.getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
         TasksShortCutAdapter adapter = new TasksShortCutAdapter(activity);
@@ -128,8 +122,7 @@ public final class TasksHelper
             }
         };
         activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        int currentSelection = menuId;
-        activity.getActionBar().setSelectedNavigationItem(currentSelection);
+        activity.getActionBar().setSelectedNavigationItem(menuId);
     }
 
     public static ListingFilter createFilter(Collection<Integer> selectedItems)

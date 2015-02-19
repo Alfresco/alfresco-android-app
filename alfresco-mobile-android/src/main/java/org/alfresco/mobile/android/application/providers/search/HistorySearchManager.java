@@ -74,21 +74,18 @@ public final class HistorySearchManager
 
     public boolean hasAccount()
     {
-        if (historySize == null) { return false; }
-        return (historySize > 0);
+        return historySize != null && (historySize > 0);
     }
 
     public boolean hasMultipleAccount()
     {
-        if (historySize == null) { return false; }
-        return (historySize > 1);
+        return historySize != null && (historySize > 1);
     }
 
     public boolean isEmpty()
     {
         getCount();
-        if (historySize == null) { return true; }
-        return (historySize == 0);
+        return historySize == null || (historySize == 0);
     }
 
     public static HistorySearch retrieveHistorySearch(Context context, long id)

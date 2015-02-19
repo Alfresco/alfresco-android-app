@@ -95,18 +95,12 @@ public abstract class BaseGridFragment extends CommonGridFragment
         {
             displayPagingData((PagingResult<?>) event.data);
             setListShown(true);
-            onDataDisplayed();
         }
         AccessibilityUtils.sendAccessibilityEvent(getActivity());
-        if (refreshHelper != null){
+        if (refreshHelper != null)
+        {
             refreshHelper.setRefreshComplete();
         }
-    }
-
-    /** Event after data has been displayed. */
-    protected void onDataDisplayed()
-    {
-        // Can be used by deriaved classes.
     }
 
     @SuppressWarnings("unchecked")
@@ -160,15 +154,9 @@ public abstract class BaseGridFragment extends CommonGridFragment
     private boolean isDataPresent(PagingResult<?> data)
     {
         ArrayAdapter<Object> arrayAdapter = ((ArrayAdapter<Object>) adapter);
-        if (arrayAdapter.isEmpty())
-        {
-            return false;
-        }
-        else
-        {
-            return !(data.getList() != null && !data.getList().contains(
-                    arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
-        }
+        return !arrayAdapter.isEmpty()
+                && !(data.getList() != null && !data.getList().contains(
+                        arrayAdapter.getItem(arrayAdapter.getCount() - 1)));
     }
 
     protected void onRetrieveParameters(Bundle bundle)

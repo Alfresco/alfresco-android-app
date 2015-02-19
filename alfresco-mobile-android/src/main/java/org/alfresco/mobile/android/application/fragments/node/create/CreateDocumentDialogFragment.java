@@ -299,7 +299,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         }
         else
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_file);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.mime_256_generic);
         }
         super.onStart();
     }

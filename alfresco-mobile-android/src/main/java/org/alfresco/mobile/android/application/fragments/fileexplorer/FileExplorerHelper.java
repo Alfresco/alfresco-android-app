@@ -126,7 +126,6 @@ public final class FileExplorerHelper
 
         };
         activity.getActionBar().setListNavigationCallbacks(adapter, mOnNavigationListener);
-        int currentSelection = menuId;
-        activity.getActionBar().setSelectedNavigationItem(currentSelection);
+        activity.getActionBar().setSelectedNavigationItem(menuId);
     }
 }

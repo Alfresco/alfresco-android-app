@@ -82,11 +82,9 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
 
     private static final String ARGUMENT_TITLE = "queryDescription";
 
-    private Map<String, Person> selectedItems = new HashMap<String, Person>(1);
+    private Map<String, Person> selectedItems = new HashMap<>(1);
 
     private int mode = MODE_LISTING;
-
-    private String pickFragmentTag;
 
     private Fragment fragmentPick;
 
@@ -138,7 +136,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             mTitle = getArguments().getString(ARGUMENT_TITLE);
             mode = getArguments().getInt(ARGUMENT_MODE);
             singleChoice = getArguments().getBoolean(ARGUMENT_SINGLE_CHOICE);
-            pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
+            String pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
             fragmentPick = getFragmentManager().findFragmentByTag(pickFragmentTag);
             if (fragmentPick != null && fragmentPick instanceof UserPickerCallback)
             {
@@ -167,7 +165,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
         else
         {
             // Init form search
-           searchForm = (EditText) viewById(R.id.search_query);
+            searchForm = (EditText) viewById(R.id.search_query);
             searchForm.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
 
             searchForm.setOnEditorActionListener(new OnEditorActionListener()
@@ -194,7 +192,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
                     return false;
                 }
             });
-            
+
             // Speech to Text
             Boolean hasTextToSpeech = ActionUtils.hasSpeechToText(getActivity());
             ImageButton speechToText = (ImageButton) viewById(R.id.search_microphone);
@@ -319,7 +317,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         }
     }
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -385,7 +383,7 @@ public class UserSearchFragment extends BaseGridFragment implements ListingModeF
             AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.file_editor_error_speech);
         }
     }
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIST ACTIONS
     // ///////////////////////////////////////////////////////////////////////////

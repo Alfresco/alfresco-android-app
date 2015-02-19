@@ -79,7 +79,7 @@ public class ConfigurationImpl
     public static ConfigurationImpl load(File sourceFile, String sourceAsString, File configFolder)
     {
         ConfigurationImpl config = null;
-        File configFile = null;
+        File configFile;
         try
         {
             if (sourceFile != null && sourceFile.exists())
@@ -104,7 +104,7 @@ public class ConfigurationImpl
             StringHelper stringConfig = StringHelper.load(localizedFile);
 
             // Try to retrieve configuration data
-            Map<String, Object> json = null;
+            Map<String, Object> json;
             if (sourceAsString != null)
             {
                 json = JsonUtils.parseObject(sourceAsString);
@@ -259,7 +259,7 @@ public class ConfigurationImpl
             Map<String, Object> json)
     {
         LinkedHashMap<String, ViewConfig> viewConfigIndex = new LinkedHashMap<String, ViewConfig>(json.size());
-        ViewConfig viewConfig = null;
+        ViewConfig viewConfig;
         for (Entry<String, Object> objectEntry : json.entrySet())
         {
             viewConfig = ViewHelper.parseBeta(objectEntry.getKey(), JSONConverter.getMap(objectEntry.getValue()));
