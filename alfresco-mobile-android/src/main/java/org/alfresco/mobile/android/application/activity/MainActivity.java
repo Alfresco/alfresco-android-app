@@ -270,13 +270,6 @@ public class MainActivity extends BaseActivity
         super.onStart();
         AccountOAuthHelper.requestRefreshToken(getCurrentSession(), this);
         FavoritesSyncManager.getInstance(this).cronSync(currentAccount);
-
-        if (requestUpdate)
-        {
-            EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
-            requestUpdate = false;
-        }
     }
 
     @Override
@@ -284,6 +277,13 @@ public class MainActivity extends BaseActivity
     {
         super.onResume();
         checkSession();
+
+        if (getFragment(MainMenuFragment.TAG) != null && requestUpdate)
+        {
+            EventBusManager.getInstance().post(
+                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
+            requestUpdate = false;
+        }
     }
 
     @Override
