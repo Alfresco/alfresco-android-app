@@ -178,6 +178,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
+        // HomeScreen Shortcut ?
+        if (getArguments() != null && getArguments().containsKey(ARGUMENT_IS_SHORTCUT))
+        {
+            checkSession = false;
+        }
+
         // In case of Import mode, we disable thumbnails.
         if (getActivity() instanceof PublicDispatcherActivity)
         {

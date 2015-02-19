@@ -66,6 +66,7 @@ import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadInactiv
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -76,7 +77,6 @@ import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
@@ -151,6 +151,9 @@ public class MainActivity extends BaseActivity
 
     private static ActionBarDrawerToggle mDrawerToggle;
 
+    /** Flag to indicate account creation from the welcome screen. */
+    private boolean requestUpdate = false;
+
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // ///////////////////////////////////////////////////////////////////////////
@@ -186,20 +189,15 @@ public class MainActivity extends BaseActivity
             MainMenuFragment.with(this).display();
         }
 
-        if (SessionUtils.getAccount(this) != null)
+        // After account creation via welcome screen
+        if (currentAccount != null)
         {
-            currentAccount = SessionUtils.getAccount(this);
-
+            requestUpdate = true;
             if (currentAccount.getIsPaidAccount()
                     && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
 
-                if (mdmManager != null)
-                {
-                    // TODO Do we want to provide different behaviours in case
-                    // of MDM ?
-                }
-                else
+                if (mdmManager == null)
                 {
                     // Check if we've prompted the user for Data Protection yet.
                     // This is needed on new AlfrescoAccount creation, as the
@@ -248,7 +246,9 @@ public class MainActivity extends BaseActivity
             getActionBar().setHomeButtonEnabled(true);
         }
 
-        // Is it from a shortcut ?
+        // Is it from an alfresco shortcut ?
+        openShortcut(getIntent());
+
         if (Intent.ACTION_VIEW.equals(getIntent().getAction()) && PrivateIntent.NODE_TYPE.equals(getIntent().getType())
                 && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_FOLDER_ID))
         {
@@ -270,6 +270,13 @@ public class MainActivity extends BaseActivity
         super.onStart();
         AccountOAuthHelper.requestRefreshToken(getCurrentSession(), this);
         FavoritesSyncManager.getInstance(this).cronSync(currentAccount);
+
+        if (requestUpdate)
+        {
+            EventBusManager.getInstance().post(
+                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
+            requestUpdate = false;
+        }
     }
 
     @Override
@@ -355,19 +362,8 @@ public class MainActivity extends BaseActivity
                 return;
             }
 
-            //
-            if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
-            {
-                if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(intent.getData().getAuthority()))
-                {
-                    DocumentFolderBrowserFragment.with(this)
-                            .folderIdentifier(intent.getData().getPathSegments().get(0)).shortcut(true).display();
-                }
-                else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
-                {
-                    FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
-                }
-            }
+            // Is it from an alfresco shortcut ?
+            openShortcut(intent);
         }
         catch (Exception e)
         {
@@ -381,6 +377,22 @@ public class MainActivity extends BaseActivity
         super.onSaveInstanceState(outState);
         outState.putBundle(MainActivityHelper.TAG,
                 MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
+    }
+
+    protected void openShortcut(Intent intent)
+    {
+        if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
+        {
+            if (AlfrescoIntentAPI.AUTHORITY_FOLDER.equals(intent.getData().getAuthority()))
+            {
+                DocumentFolderBrowserFragment.with(this).folderIdentifier(intent.getData().getPathSegments().get(0))
+                        .shortcut(true).display();
+            }
+            else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
+            {
+                FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
+            }
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -802,7 +814,7 @@ public class MainActivity extends BaseActivity
     {
         // Avoid collision with PublicDispatcherActivity when selecting an
         // account.
-        if (event.requestId == null) { return; }
+        if (event.requestId == null || getCurrentSession() == null) { return; }
 
         ServiceRegistry registry = getCurrentSession().getServiceRegistry();
 

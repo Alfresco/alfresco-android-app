@@ -141,7 +141,7 @@ public class UIUtils
                 bar.setHomeButtonEnabled(isUpEnable);
             }
 
-            //If MenuFragment is visible => up is disable.
+            // If MenuFragment is visible => up is disable.
             Fragment fr = activity.getFragmentManager().findFragmentByTag(
                     "org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment");
             if (fr != null && fr.isVisible())
@@ -259,6 +259,7 @@ public class UIUtils
 
     public static void hideKeyboard(Activity activity)
     {
+        if (activity.getWindow().getCurrentFocus() == null) { return; }
         InputMethodManager mgr = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         mgr.hideSoftInputFromWindow(activity.getWindow().getCurrentFocus().getWindowToken(), 0);
     }

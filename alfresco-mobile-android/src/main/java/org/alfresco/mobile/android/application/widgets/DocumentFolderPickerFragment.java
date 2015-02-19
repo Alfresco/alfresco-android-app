@@ -163,7 +163,7 @@ public class DocumentFolderPickerFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
-        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null));
+        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.sdk_list_row, null));
     }
 
     @Override

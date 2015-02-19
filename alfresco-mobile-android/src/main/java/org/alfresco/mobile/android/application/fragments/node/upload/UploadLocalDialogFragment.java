@@ -20,10 +20,10 @@ package org.alfresco.mobile.android.application.fragments.node.upload;
 import java.io.File;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.AlertDialog;
@@ -148,8 +148,12 @@ public class UploadLocalDialogFragment extends DialogFragment
                 {
                     UIUtils.hideKeyboard(getActivity());
 
-                    DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(
-                            SessionUtils.getAccount(getActivity()), file, newFile);
+                    DataProtectionManager.getInstance(getActivity()).copyAndEncrypt(file, newFile);
+
+                    if (getActivity() instanceof PublicDispatcherActivity)
+                    {
+                        getActivity().finish();
+                    }
                 }
                 dismiss();
             }

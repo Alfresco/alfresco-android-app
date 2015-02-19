@@ -146,6 +146,8 @@ public class LoadSessionCallBack implements Operation.OperationCallback<Alfresco
     // ///////////////////////////////////////////////////////////////////////////
     public static class LoadAccountCompletedEvent extends OperationEvent<AlfrescoAccount>
     {
+        public static final String RELOAD = "reloaded";
+
         public AlfrescoAccount account;
 
         public LoadAccountCompletedEvent(String requestId, AlfrescoAccount account)

@@ -117,9 +117,8 @@ public class DataProtectionManager extends Manager
         Operator.with(appContext, SessionUtils.getAccount(appContext)).load(requestsBuilder);
     }
 
-    public void copyAndEncrypt(AlfrescoAccount account, File sourceFile, File destinationFile)
+    public void copyAndEncrypt(File sourceFile, File destinationFile)
     {
-        if (account == null) { return; }
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>();
         if (isEncryptionEnable())
         {

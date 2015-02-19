@@ -212,6 +212,12 @@ public abstract class AlfrescoActivity extends Activity
 
     public AlfrescoSession getCurrentSession()
     {
+        if (sessionManager == null)
+        {
+            sessionManager = SessionManager.getInstance(this);
+            return null;
+        }
+
         if (sessionManager != null && currentAccount == null)
         {
             currentAccount = sessionManager.getCurrentAccount();
