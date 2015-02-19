@@ -30,22 +30,25 @@ import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.Notification.Builder;
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
+
+import de.keyboardsurfer.android.widget.crouton.Crouton;
+import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Manager responsible of all dialog, notification and warning
@@ -240,9 +243,10 @@ public class AlfrescoNotificationManager extends Manager
         return createNotification(notificationId, b);
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public int createNotification(int notificationId, Bundle params)
     {
-        Notification notification = null;
+        Notification notification;
 
         // Get the builder to create notification.
         Builder builder = new Builder(appContext.getApplicationContext());
@@ -252,7 +256,7 @@ public class AlfrescoNotificationManager extends Manager
             builder.setContentText(params.getString(ARGUMENT_DESCRIPTION));
         }
         builder.setNumber(0);
-        builder.setSmallIcon(R.drawable.ic_notif_alfresco);
+        builder.setSmallIcon(R.drawable.ic_empty);
 
         if (params.containsKey(ARGUMENT_DESCRIPTION))
         {
@@ -269,13 +273,13 @@ public class AlfrescoNotificationManager extends Manager
             builder.setSmallIcon(params.getInt(ARGUMENT_SMALL_ICON));
         }
 
-        Intent i = null;
-        PendingIntent pIntent = null;
+        Intent i;
+        PendingIntent pIntent;
         switch (notificationId)
         {
             case CHANNEL_SYNC:
                 i = new Intent(PrivateIntent.ACTION_SYNCHRO_DISPLAY);
-                pIntent = PendingIntent.getActivity(appContext, 0, i, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                pIntent = PendingIntent.getActivity(appContext, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
                 break;
 
             default:
@@ -448,7 +452,7 @@ public class AlfrescoNotificationManager extends Manager
         channelStatus[getIndex(channelId)] = false;
         channelTimers[getIndex(channelId)] = null;
     }
-    
+
     public void unMonitorChannel(int requestTypeId)
     {
         Log.d(TAG, "[Refresh] STOP");
@@ -478,7 +482,7 @@ public class AlfrescoNotificationManager extends Manager
         int inProgress = 0;
         int completed = 0;
         long downloadedSoFar = 0, totalSize = 0;
-        int total = 0;
+        int total;
         String title = null, description = null, contentInfo = null;
         try
         {

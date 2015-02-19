@@ -82,7 +82,7 @@ public class ScanSnapManagerImpl extends ScanSnapManager
             AlfrescoNotificationManager notification = AlfrescoNotificationManager.getInstance(appContext);
             try
             {
-                ScanSnapPreset preset = null;
+                ScanSnapPreset preset;
                 switch (presetId)
                 {
                     case DefaultPreset.ID:
@@ -106,7 +106,7 @@ public class ScanSnapManagerImpl extends ScanSnapManager
                 Log.d(ScanSnapManagerImpl.TAG, uri.toString());
 
                 // check whether the url format is correct
-                if (uri == null || uri.getScheme() == null)
+                if (uri.getScheme() == null)
                 {
                     notification.showToast(appContext.getResources().getString(R.string.err_msg_url_parse));
                     return;
@@ -120,12 +120,10 @@ public class ScanSnapManagerImpl extends ScanSnapManager
             {
                 // specified application can not be found
                 notification.showToast(appContext.getResources().getString(R.string.err_msg_launch_failed));
-                return;
             }
             catch (NullPointerException e)
             {
                 notification.showToast(appContext.getResources().getString(R.string.err_msg_url_parse));
-                return;
             }
         }
     }

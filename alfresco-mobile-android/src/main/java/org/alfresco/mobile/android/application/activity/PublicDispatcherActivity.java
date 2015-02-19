@@ -231,11 +231,11 @@ public class PublicDispatcherActivity extends BaseActivity
         {
             case R.string.menu_browse_sites:
                 type = ConfigurationConstant.KEY_SITES;
-                //BrowserSitesFragment.with(this).display();
+                // BrowserSitesFragment.with(this).display();
                 break;
             case R.string.menu_browse_root:
                 type = ConfigurationConstant.KEY_REPOSITORY;
-                //DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
+                // DocumentFolderBrowserFragment.with(this).folder(getCurrentSession().getRootFolder()).display();
                 break;
             case R.string.menu_favorites_folder:
                 FavoritesFragment.with(this).setMode(FavoriteNodesRequest.MODE_FOLDERS).display();
@@ -243,15 +243,13 @@ public class PublicDispatcherActivity extends BaseActivity
             default:
                 break;
         }
-        
+
         if (type != null)
         {
             AlfrescoFragmentBuilder viewConfig = FragmentBuilderFactory.createViewConfig(this, type, null);
             if (viewConfig == null) { return; }
             viewConfig.display();
         }
-        
-        return;
     }
 
     @Subscribe

@@ -50,7 +50,8 @@ public class GridAdapterHelper
     {
         int displayItemLayout = R.layout.app_grid_large_progress_row;
 
-        if (activity instanceof PublicDispatcherActivity || activity instanceof PrivateDialogActivity || activity instanceof BaseShortcutActivity)
+        if (activity instanceof PublicDispatcherActivity || activity instanceof PrivateDialogActivity
+                || activity instanceof BaseShortcutActivity)
         {
             gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 1000));
             return R.layout.app_grid_large_progress_row;
@@ -127,8 +128,6 @@ public class GridAdapterHelper
             fragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
         }
 
-        int[] layouts = { layoutId, flagLayoutId };
-
-        return layouts;
+        return new int[] { layoutId, flagLayoutId };
     }
 }

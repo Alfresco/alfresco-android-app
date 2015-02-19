@@ -19,7 +19,9 @@ package org.alfresco.mobile.android.platform.utils;
 
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -42,6 +44,7 @@ public class AccessibilityUtils
         return am.isEnabled();
     }
 
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public static boolean isTouchExplorationEnabled(Context context)
     {
         AccessibilityManager am = (AccessibilityManager) context.getSystemService(Context.ACCESSIBILITY_SERVICE);
@@ -73,6 +76,7 @@ public class AccessibilityUtils
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void addContentDescription(View v, String contentDescription)
     {
         if (isEnabled(v.getContext()))
@@ -98,6 +102,7 @@ public class AccessibilityUtils
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static void removeContentDescription(View v)
     {
         if (isEnabled(v.getContext()))

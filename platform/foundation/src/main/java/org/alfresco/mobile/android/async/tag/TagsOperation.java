@@ -17,7 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.tag;
 
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.api.model.Tag;
@@ -67,8 +66,7 @@ public class TagsOperation extends ListingOperation<PagingResult<Tag>>
             {
                 if (nodeIdentifier != null && node == null)
                 {
-                    node = (Document) session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(nodeIdentifier);
+                    node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
                 }
 
                 if (node == null)

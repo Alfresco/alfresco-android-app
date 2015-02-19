@@ -58,7 +58,7 @@ public class ActivityStreamOperation extends ListingOperation<PagingResult<Activ
         {
             super.doInBackground();
 
-            LoaderResult<PagingResult<ActivityEntry>> result = new LoaderResult<PagingResult<ActivityEntry>>();
+            LoaderResult<PagingResult<ActivityEntry>> result = new LoaderResult<>();
             PagingResult<ActivityEntry> pagingResult = null;
 
             try
@@ -92,7 +92,7 @@ public class ActivityStreamOperation extends ListingOperation<PagingResult<Activ
         {
             Log.w(TAG, Log.getStackTraceString(e));
         }
-        return new LoaderResult<PagingResult<ActivityEntry>>();
+        return new LoaderResult<>();
     }
 
     @Override

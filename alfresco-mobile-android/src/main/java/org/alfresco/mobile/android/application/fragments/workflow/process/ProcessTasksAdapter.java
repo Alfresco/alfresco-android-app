@@ -25,7 +25,6 @@ import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
-import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.ViewHolder;
@@ -44,13 +43,10 @@ public class ProcessTasksAdapter extends BaseListAdapter<Task, ProcessViewHolder
 {
     protected WeakReference<Activity> activityRef;
 
-    private RenditionManagerImpl renditionManager;
-
     public ProcessTasksAdapter(Activity activity, int textViewResourceId, List<Task> listItems)
     {
         super(activity, textViewResourceId, listItems);
         this.activityRef = new WeakReference<Activity>(activity);
-        renditionManager = RenditionManagerImpl.getInstance(activity);
         this.vhClassName = ProcessViewHolder.class.getCanonicalName();
     }
 
@@ -160,7 +156,7 @@ public class ProcessTasksAdapter extends BaseListAdapter<Task, ProcessViewHolder
             }
         });
         RenditionManager.with(activityRef.get()).loadAvatar(item.getAssigneeIdentifier())
-                .placeHolder(R.drawable.ic_avatar).into(vh.icon);
+                .placeHolder(R.drawable.ic_person).into(vh.icon);
     }
 }
 

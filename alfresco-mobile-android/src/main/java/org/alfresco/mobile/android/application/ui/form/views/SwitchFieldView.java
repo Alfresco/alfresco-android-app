@@ -1,11 +1,11 @@
 package org.alfresco.mobile.android.application.ui.form.views;
 
-
 import org.alfresco.mobile.android.application.R;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.Editable;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -89,12 +89,13 @@ public class SwitchFieldView extends AlfrescoFieldView
     {
         mTextView.setEnabled(enabled);
     }
-    
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void setChecked(boolean checked)
     {
         mSwitch.setChecked(checked);
     }
-    
+
     public boolean isChecked()
     {
         return mSwitch.isChecked();
@@ -113,7 +114,7 @@ public class SwitchFieldView extends AlfrescoFieldView
         mFloatingLabel = (TextView) findViewById(R.id.floating_label_hint);
         mTextView = (TextView) findViewById(R.id.floating_label_edit_text);
         mErrorTextView = (TextView) findViewById(R.id.floating_label_error);
-        mEditTextUnderlineView = (View) findViewById(R.id.floating_label_underline);
+        mEditTextUnderlineView = findViewById(R.id.floating_label_underline);
         mSwitch = (Switch) findViewById(R.id.floating_label_switch);
 
         getAttributesFromXmlAndStoreLocally();

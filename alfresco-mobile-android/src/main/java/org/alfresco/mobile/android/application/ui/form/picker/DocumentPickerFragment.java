@@ -46,8 +46,6 @@ public class DocumentPickerFragment extends AlfrescoFragment
 {
     public static final String TAG = DocumentPickerFragment.class.getName();
 
-    private View vRoot;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -73,12 +71,12 @@ public class DocumentPickerFragment extends AlfrescoFragment
         container.setVisibility(View.VISIBLE);
         setSession(SessionUtils.getSession(getActivity()));
         SessionUtils.checkSession(getActivity(), getSession());
-        vRoot = inflater.inflate(R.layout.app_document_picker, container, false);
+        setRootView(inflater.inflate(R.layout.app_document_picker, container, false));
 
-        if (getSession() == null) { return vRoot; }
+        if (getSession() == null) { return getRootView(); }
 
         // BUTTONS
-        Button b = (Button) vRoot.findViewById(R.id.picker_root);
+        Button b = (Button) viewById(R.id.picker_root);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -88,7 +86,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
             }
         });
 
-        b = (Button) vRoot.findViewById(R.id.picker_sites);
+        b = (Button) viewById(R.id.picker_sites);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -98,7 +96,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
             }
         });
 
-        b = (Button) vRoot.findViewById(R.id.picker_favorites);
+        b = (Button) viewById(R.id.picker_favorites);
         b.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -108,7 +106,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
             }
         });
 
-        return vRoot;
+        return getRootView();
     }
 
     @Override
@@ -157,7 +155,7 @@ public class DocumentPickerFragment extends AlfrescoFragment
         {
             super(appActivity, configuration);
         }
-        
+
         public Builder fieldId(String fieldId)
         {
             BundleUtils.addIfNotNull(extraConfiguration, PrivateDialogActivity.EXTRA_FIELD_ID, fieldId);
@@ -170,16 +168,15 @@ public class DocumentPickerFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
-    
-    
+
     public interface onPickDocumentFragment
     {
         void onNodeSelected(String fieldId, Map<String, Node> p);
 
         void onNodeClear(String fieldId);
-        
+
         Map<String, Node> getNodeSelected(String fieldId);
     }
 }

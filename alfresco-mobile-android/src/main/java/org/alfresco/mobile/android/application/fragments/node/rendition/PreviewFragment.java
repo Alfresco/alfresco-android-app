@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.application.fragments.node.download.DownloadD
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
-import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
@@ -77,8 +76,6 @@ public class PreviewFragment extends AlfrescoFragment
     private Node node;
 
     protected boolean isRestrictable = false;
-
-    private RenditionManagerImpl renditionManager;
 
     private boolean touchEnabled;
 
@@ -126,8 +123,6 @@ public class PreviewFragment extends AlfrescoFragment
 
         // Detect if isRestrictable
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
-
-        renditionManager = RenditionManagerImpl.getInstance(getActivity());
 
         ImageView iv = (ImageView) viewById(R.id.preview);
         int iconId = R.drawable.mime_folder;
@@ -206,7 +201,7 @@ public class PreviewFragment extends AlfrescoFragment
         else
         {
             // Other case
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
@@ -254,7 +249,7 @@ public class PreviewFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         public Builder node(Node node)
         {

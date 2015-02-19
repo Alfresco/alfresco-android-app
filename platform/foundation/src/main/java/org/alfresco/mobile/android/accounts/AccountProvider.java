@@ -28,7 +28,6 @@ import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -70,7 +69,7 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
     {
         int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase db = databaseManager.getWriteDb();
-        int rowsDeleted = 0;
+        int rowsDeleted;
         switch (uriType)
         {
             case ACCOUNTS:
@@ -106,7 +105,7 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
     {
         int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase db = databaseManager.getWriteDb();
-        long id = 0;
+        long id;
 
         switch (uriType)
         {
@@ -160,7 +159,7 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
     {
         int uriType = URI_MATCHER.match(uri);
         SQLiteDatabase sqlDB = databaseManager.getWriteDb();
-        int rowsUpdated = 0;
+        int rowsUpdated;
         switch (uriType)
         {
             case ACCOUNTS:
@@ -200,7 +199,7 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
 
     public static final String[] COLUMN_ALL = AccountSchema.COLUMN_ALL;
 
-    public static List<Account> retrieveAccounts(Context context, SQLiteDatabase db)
+    public static List<Account> retrieveAccounts(SQLiteDatabase db)
     {
         List<Account> accounts = new ArrayList<Account>();
         try
@@ -227,12 +226,11 @@ public abstract class AccountProvider extends ContentProvider implements Alfresc
 
     private static Account createAccountWithoutClose(Cursor c)
     {
-        Account account = new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
+        return new Account(c.getInt(AccountSchema.COLUMN_ID_ID), c.getString(AccountSchema.COLUMN_NAME_ID),
                 c.getString(AccountSchema.COLUMN_URL_ID), c.getString(AccountSchema.COLUMN_USERNAME_ID),
                 c.getString(AccountSchema.COLUMN_PASSWORD_ID), c.getString(AccountSchema.COLUMN_REPOSITORY_ID_ID),
                 c.getInt(AccountSchema.COLUMN_REPOSITORY_TYPE_ID), c.getString(AccountSchema.COLUMN_ACTIVATION_ID),
                 c.getString(AccountSchema.COLUMN_ACCESS_TOKEN_ID), c.getString(AccountSchema.COLUMN_REFRESH_TOKEN_ID),
                 c.getInt(AccountSchema.COLUMN_IS_PAID_ACCOUNT_ID));
-        return account;
     }
 }

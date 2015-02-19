@@ -24,10 +24,9 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
 import org.alfresco.mobile.android.api.model.config.ViewGroupConfig;
+
 /**
- * 
  * @author Jean Marie Pascal
- *
  */
 public class ViewGroupConfigImpl extends ViewConfigImpl implements ViewGroupConfig
 {
@@ -38,19 +37,19 @@ public class ViewGroupConfigImpl extends ViewConfigImpl implements ViewGroupConf
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    ViewGroupConfigImpl(String identifier, String label, String type, ArrayList<ViewConfig> children,
-            String evaluatorId)
+    ViewGroupConfigImpl(String identifier, String label, String type, ArrayList<ViewConfig> children, String evaluatorId)
     {
         super(identifier, label, type, evaluatorId);
         this.children = (children == null) ? new ArrayList<ViewConfig>(0) : children;
     }
 
-    ViewGroupConfigImpl(String identifier,  String iconIdentifier, String label, String description, String type, Map<String, Object> properties,
-            LinkedHashMap<String, ViewConfig> childrenIndex, ArrayList<String> forms, String evaluatorId)
+    ViewGroupConfigImpl(String identifier, String iconIdentifier, String label, String description, String type,
+            Map<String, Object> properties, LinkedHashMap<String, ViewConfig> childrenIndex, ArrayList<String> forms,
+            String evaluatorId)
     {
         super(identifier, iconIdentifier, label, description, type, properties, forms, evaluatorId);
         this.childrenIndex = (childrenIndex == null) ? new LinkedHashMap<String, ViewConfig>(0) : childrenIndex;
-        this.children = new ArrayList<ViewConfig>(this.childrenIndex.values());
+        this.children = new ArrayList<>(this.childrenIndex.values());
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -53,15 +53,9 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
 
     private AlfrescoAccount acc;
 
-    private long syncScanningTimeStamp;
-
-    private List<FavoriteSync> requests;
-
     private int mode = FavoritesSyncManager.MODE_BOTH;
 
     private boolean ignoreWarning = false;
-
-    private String nodeIdentifier;
 
     private Node node;
 
@@ -82,9 +76,9 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider,
             SyncResult syncResult)
     {
-        //Reset all previous values
+        // Reset all previous values
         node = null;
-        nodeIdentifier = null;
+        String nodeIdentifier = null;
         mode = FavoritesSyncManager.MODE_BOTH;
 
         Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
@@ -151,10 +145,11 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
 
         // Timestamp the scan process
         syncManager.saveStartSyncPrepareTimestamp();
-        syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
+        long syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
 
         // DISPATCHER
         // Depending on what we want to achieve we use the associated helper
+        List<FavoriteSync> requests;
         if (syncManager.hasActivateSync(acc))
         {
             if (syncManager.canSyncEverything(acc))

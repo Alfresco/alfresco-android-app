@@ -4,8 +4,6 @@ include ':alfresco-mobile-android'
 // FOUNDATION
 include ':platform:thirdparty'
 include ':platform:foundation'
-include ':platform:localization'
-include ':platform:theme'
 
 // EXTENSIONS
 include ':extensions:hockeyapp'

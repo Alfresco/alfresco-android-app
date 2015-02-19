@@ -39,24 +39,24 @@ public final class DeviceCaptureHelper
         Folder parentRepositoryFolder = null;
         File parentFolder = null;
 
-        if (((DocumentFolderBrowserFragment) c.getFragment(DocumentFolderBrowserFragment.TAG)) != null)
+        if ((c.getFragment(DocumentFolderBrowserFragment.TAG)) != null)
         {
             parentRepositoryFolder = ((DocumentFolderBrowserFragment) c.getFragment(DocumentFolderBrowserFragment.TAG))
                     .getParent();
         }
 
-        if (((FileExplorerFragment) c.getFragment(FileExplorerFragment.TAG)) != null)
+        if ((c.getFragment(FileExplorerFragment.TAG)) != null)
         {
             parentFolder = ((FileExplorerFragment) c.getFragment(FileExplorerFragment.TAG)).getParent();
         }
 
         switch (id)
         {
-            
+
             case R.id.menu_device_capture_camera_photo:
                 capture = new PhotoCapture(c, parentRepositoryFolder, parentFolder);
                 break;
-            case  R.id.menu_device_capture_camera_video:
+            case R.id.menu_device_capture_camera_video:
                 capture = new VideoCapture(c, parentRepositoryFolder, parentFolder);
                 break;
             case R.id.menu_device_capture_mic_audio:

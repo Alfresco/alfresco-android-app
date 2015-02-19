@@ -226,6 +226,7 @@ public class TasksFragment extends TasksFoundationFragment
     public static class Builder extends ListingFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_task_dark;
+
         public static final int LABEL_ID = R.string.my_tasks;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -276,6 +277,6 @@ public class TasksFragment extends TasksFoundationFragment
                 TasksHelper.displayNavigationMode(activity.get());
                 return null;
             }
-        };
+        }
     }
 }

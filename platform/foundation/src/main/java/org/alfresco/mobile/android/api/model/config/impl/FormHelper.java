@@ -70,8 +70,7 @@ public class FormHelper extends HelperConfig
         super(context, localHelper);
     }
 
-    FormHelper(ConfigurationImpl context, StringHelper localHelper,
-               LinkedHashMap<String, Object> viewConfigIndex)
+    FormHelper(ConfigurationImpl context, StringHelper localHelper, LinkedHashMap<String, Object> viewConfigIndex)
     {
         super(context, localHelper);
         this.jsonFieldConfigGroups = viewConfigIndex;
@@ -212,7 +211,7 @@ public class FormHelper extends HelperConfig
         {
             if (getEvaluatorHelper() == null)
             {
-                addViewAsChild = (((FieldConfigImpl) fieldConfig).getEvaluator() == null) ? true : false;
+                addViewAsChild = (((FieldConfigImpl) fieldConfig).getEvaluator() == null);
             }
             else if (!getEvaluatorHelper().evaluate(((FieldConfigImpl) fieldConfig).getEvaluator(), null))
             {
@@ -284,7 +283,7 @@ public class FormHelper extends HelperConfig
                     {
                         fieldConfig = getFieldGroupsById(getTypeId(ContentModel.TYPE_FOLDER), scope);
                     }
-                    
+
                     if (fieldConfig != null)
                     {
                         fieldsGroup.add(fieldConfig);
@@ -357,11 +356,9 @@ public class FormHelper extends HelperConfig
                 switch (type)
                 {
                     case FIELD_ID:
-                        return getFieldById(
-                                (String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_ID.value()), scope);
+                        return getFieldById(JSONConverter.getString(viewMap, FieldConfigType.FIELD_ID.value()), scope);
                     case FIELD_GROUP_ID:
-                        return getFieldById(
-                                (String) JSONConverter.getString(viewMap, FieldConfigType.FIELD_GROUP_ID.value()),
+                        return getFieldById(JSONConverter.getString(viewMap, FieldConfigType.FIELD_GROUP_ID.value()),
                                 scope);
                     case FIELD_GROUP:
                         return parse(
@@ -442,8 +439,7 @@ public class FormHelper extends HelperConfig
                         {
                             case VALIDATION_RULE_ID:
                                 validation = getConfiguration().getValidationHelper().getValidationRuleById(
-                                        (String) JSONConverter.getString(rule,
-                                                ValidationConfigType.VALIDATION_RULE_ID.value()));
+                                        JSONConverter.getString(rule, ValidationConfigType.VALIDATION_RULE_ID.value()));
                                 break;
                             case VALIDATION_RULE:
                             default:

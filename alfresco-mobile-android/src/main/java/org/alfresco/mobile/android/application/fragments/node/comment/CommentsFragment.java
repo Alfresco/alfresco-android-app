@@ -255,7 +255,7 @@ public class CommentsFragment extends CommentsNodeFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         public Builder node(Node node)
         {

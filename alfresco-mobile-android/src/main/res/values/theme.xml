@@ -2,10 +2,10 @@
 <resources>
 
     <!-- Change parent to override with custom theme. -->
-    <style name="MainTheme" parent="AlfrescoHoloTheme"></style>
+    <style name="MainTheme" parent="AlfrescoHoloTheme" />
 
-    <style name="MainTheme.Dialog" parent="AlfrescoHoloTheme.Dialog"></style>
-    
+    <style name="MainTheme.Dialog" parent="AlfrescoHoloTheme.Dialog" />
+
     <dimen name="widget_margin">8dp</dimen>
 
 

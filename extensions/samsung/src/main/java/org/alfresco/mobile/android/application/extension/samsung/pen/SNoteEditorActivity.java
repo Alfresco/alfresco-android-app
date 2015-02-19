@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.extension.samsung.pen;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.alfresco.mobile.android.application.extension.samsung.utils.SNoteUtil
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
@@ -40,6 +40,7 @@ import android.graphics.Color;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.DisplayMetrics;
@@ -110,8 +111,6 @@ public class SNoteEditorActivity extends Activity
     // UI
     private SubMenu toolsSubMenu;
 
-    private Rect mScreenRect;
-
     private SNoteEditorActionMode nActions;
 
     // FLAGS
@@ -128,6 +127,7 @@ public class SNoteEditorActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -162,7 +162,7 @@ public class SNoteEditorActivity extends Activity
         }
         catch (SsdkUnsupportedException e)
         {
-            if (SNoteUtils.processUnsupportedException(this, e) == true) { return; }
+            if (SNoteUtils.processUnsupportedException(this, e)) { return; }
         }
         catch (Exception e1)
         {
@@ -174,7 +174,7 @@ public class SNoteEditorActivity extends Activity
         RelativeLayout spenViewLayout = (RelativeLayout) findViewById(R.id.spenViewLayout);
 
         // PEN SETTINGS
-        spenSettingView = new SpenSettingPenLayout(context, new String(), spenViewLayout);
+        spenSettingView = new SpenSettingPenLayout(context, "", spenViewLayout);
         if (spenSettingView == null)
         {
             finish();
@@ -182,7 +182,7 @@ public class SNoteEditorActivity extends Activity
         spenViewContainer.addView(spenSettingView);
 
         // ERASER SETTINGS
-        eraserSettingView = new SpenSettingEraserLayout(context, new String(), spenViewLayout);
+        eraserSettingView = new SpenSettingEraserLayout(context, "", spenViewLayout);
         if (eraserSettingView == null)
         {
             finish();
@@ -190,8 +190,7 @@ public class SNoteEditorActivity extends Activity
         spenViewContainer.addView(eraserSettingView);
 
         // TEXT SETTINGS
-        textSettingView = new SpenSettingTextLayout(context, new String(), new HashMap<String, String>(),
-                spenViewLayout);
+        textSettingView = new SpenSettingTextLayout(context, "", new HashMap<String, String>(), spenViewLayout);
         if (textSettingView == null)
         {
             finish();
@@ -199,7 +198,7 @@ public class SNoteEditorActivity extends Activity
         spenViewContainer.addView(textSettingView);
 
         // SELECTION SETTINGS
-        selectionSettingView = new SpenSettingSelectionLayout(context, new String(), spenViewLayout);
+        selectionSettingView = new SpenSettingSelectionLayout(context, "", spenViewLayout);
         if (textSettingView == null)
         {
             finish();
@@ -220,7 +219,7 @@ public class SNoteEditorActivity extends Activity
 
         // NOTE DOCUMENT
         Display display = getWindowManager().getDefaultDisplay();
-        mScreenRect = new Rect();
+        Rect mScreenRect = new Rect();
         display.getRectSize(mScreenRect);
         try
         {
@@ -247,10 +246,6 @@ public class SNoteEditorActivity extends Activity
                 spenPageDoc.clearHistory();
             }
         }
-        catch (IOException e)
-        {
-            finish();
-        }
         catch (Exception e)
         {
             finish();
@@ -260,7 +255,7 @@ public class SNoteEditorActivity extends Activity
         spenSurfaceView.setPageDoc(spenPageDoc, true);
         spenSurfaceView.setBlankColor(getResources().getColor(R.color.grey_light));
 
-        if (isSpenFeatureEnabled == false)
+        if (!isSpenFeatureEnabled)
         {
             mToolType = SpenSurfaceView.TOOL_FINGER;
             spenSurfaceView.setToolTypeAction(mToolType, SpenSurfaceView.ACTION_STROKE);
@@ -323,7 +318,7 @@ public class SNoteEditorActivity extends Activity
             }
             spenNoteDoc = null;
         }
-    };
+    }
 
     @Override
     public void onBackPressed()
@@ -434,6 +429,7 @@ public class SNoteEditorActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     private SpenTouchListener penTouchListener = new SpenTouchListener()
     {
+        @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
         @Override
         public boolean onTouch(View view, MotionEvent event)
         {
@@ -620,7 +616,7 @@ public class SNoteEditorActivity extends Activity
                 }
                 catch (Exception e)
                 {
-                    return;
+                    // DO NOTHING
                 }
             }
         }
@@ -633,8 +629,8 @@ public class SNoteEditorActivity extends Activity
 
         if (height > reqHeight || width > reqWidth)
         {
-            final int heightRatio = Math.round((float) height / (float) reqHeight);
-            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            final int heightRatio = Math.round(height / reqHeight);
+            final int widthRatio = Math.round(width / reqWidth);
             inSampleSize = heightRatio > widthRatio ? heightRatio : widthRatio;
         }
 

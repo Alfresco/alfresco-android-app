@@ -51,21 +51,6 @@ public class MenuConfigFragment extends AlfrescoFragment
 {
     public static final String TAG = MenuConfigFragment.class.getSimpleName();
 
-    private static final ArrayList<String> VIEW_IDS = new ArrayList<String>(9)
-    {
-        {
-            add(VIEW_ACTIVITIES);
-            add(VIEW_REPOSITORY);
-            add(VIEW_REPOSITORY_SHARED);
-            add(VIEW_SITES);
-            add(VIEW_REPOSITORY_USERHOME);
-            add(VIEW_TASKS);
-            add(VIEW_FAVORITES);
-            add(VIEW_SEARCH);
-            add(VIEW_LOCAL_FILE);
-        }
-    };
-
     public static final String VIEW_ACTIVITIES = "view-activities-default";
 
     public static final String VIEW_REPOSITORY = "view-repository-default";
@@ -88,6 +73,7 @@ public class MenuConfigFragment extends AlfrescoFragment
     // VARIABLES
     // //////////////////////////////////////////////////////////////////////
     private LinkedHashMap<String, MenuItemConfig> defaultMenuItems;
+
     private ArrayList<MenuItemConfig> menuConfigItems;
 
     private MenuItemConfigAdapter adapter;
@@ -95,8 +81,6 @@ public class MenuConfigFragment extends AlfrescoFragment
     private ConfigService customConfiguration;
 
     private ConfigManager configManager;
-
-    private int selectedCounter = 0;
 
     private Button save;
 
@@ -175,7 +159,7 @@ public class MenuConfigFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     public void updateCounter(int counter)
     {
-        selectedCounter = counter;
+        int selectedCounter = counter;
         save.setEnabled(selectedCounter != 0);
     }
 
@@ -185,7 +169,7 @@ public class MenuConfigFragment extends AlfrescoFragment
         boolean hasItems = false;
         try
         {
-            //INFO
+            // INFO
             JSONObject info = new JSONObject();
             info.put(ConfigConstants.SCHEMA_VERSION_VALUE, 0.1);
             info.putOpt(ConfigConstants.CONFIG_VERSION_VALUE, 0.1);
@@ -212,7 +196,7 @@ public class MenuConfigFragment extends AlfrescoFragment
             MenuItemConfig itemConfig = null;
             for (int i = 0; i < adapter.getCount(); i++)
             {
-                itemConfig = (MenuItemConfig) menuConfigItems.get(i);
+                itemConfig = menuConfigItems.get(i);
                 if (itemConfig.isEnable())
                 {
                     items.put(((ViewConfigImpl) itemConfig.config).toJson());
@@ -369,7 +353,6 @@ public class MenuConfigFragment extends AlfrescoFragment
             return newInstanceByTemplate(b);
         }
 
-        ;
     }
 
     // ///////////////////////////////////////////////////////////////////////////

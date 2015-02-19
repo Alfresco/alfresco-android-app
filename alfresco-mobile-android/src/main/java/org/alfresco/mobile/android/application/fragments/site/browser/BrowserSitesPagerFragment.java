@@ -26,9 +26,11 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -54,11 +56,12 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
         BrowserSitesPagerFragment bf = new BrowserSitesPagerFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
@@ -89,6 +92,7 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
     public static class Builder extends ListingFragmentBuilder
     {
         public static final int ICON_ID = R.drawable.ic_site_dark;
+
         public static final int LABEL_ID = R.string.menu_browse_sites;
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -106,7 +110,7 @@ public class BrowserSitesPagerFragment extends AlfrescoFragment
             this.extraConfiguration = new Bundle();
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
-            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW};
+            templateArguments = new String[] { SitesTemplate.ARGUMENT_SHOW };
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -165,7 +169,7 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
 
     public CharSequence getPageTitle(int position)
     {
-        int titleId = 0;
+        int titleId;
         switch (position)
         {
             case TAB_FAV_SITES:

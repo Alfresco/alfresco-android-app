@@ -38,13 +38,6 @@ public class FileNameValidationRule extends ValidationRule
     @Override
     public boolean isValid(Object object)
     {
-        if (object instanceof String)
-        {
-            return !UIUtils.hasInvalidName(((String) object).trim());
-        }
-        else
-        {
-            return false;
-        }
+        return object instanceof String && !UIUtils.hasInvalidName(((String) object).trim());
     }
 }

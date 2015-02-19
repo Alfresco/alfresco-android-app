@@ -31,7 +31,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 public class FolderPathAdapter extends ArrayAdapter<String>
@@ -59,8 +58,8 @@ public class FolderPathAdapter extends ArrayAdapter<String>
         if (item != null)
         {
             ((TextView) v.findViewById(R.id.bottomtext)).setText(item + "  ");
-            ((TextView) v.findViewById(R.id.toptext)).setVisibility(View.GONE);
-            ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.VISIBLE);
+            v.findViewById(R.id.toptext).setVisibility(View.GONE);
+            v.findViewById(R.id.icon).setVisibility(View.VISIBLE);
         }
         return v;
     }
@@ -88,7 +87,7 @@ public class FolderPathAdapter extends ArrayAdapter<String>
             }
 
             ((TextView) v.findViewById(R.id.bottomtext)).setText(getItem(position));
-            ((ImageView) v.findViewById(R.id.icon)).setVisibility(View.GONE);
+            v.findViewById(R.id.icon).setVisibility(View.GONE);
         }
         return v;
     }

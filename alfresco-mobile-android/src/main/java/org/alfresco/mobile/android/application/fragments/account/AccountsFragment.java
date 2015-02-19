@@ -130,8 +130,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
 
     protected boolean equalsItems(AlfrescoAccount o1, AlfrescoAccount o2)
     {
-        if (o1 == null || o2 == null) return false;
-        return o2.getId() == o1.getId();
+        return !(o1 == null || o2 == null) && o2.getId() == o1.getId();
     }
 
     // /////////////////////////////////////////////////////////////
@@ -278,6 +277,6 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

@@ -76,14 +76,14 @@ public class EvaluatorHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     public boolean evaluateIfEvaluator(Map<String, Object> evaluatorsConfiguration, ConfigScope extraParameters)
     {
-        if (!evaluatorsConfiguration.containsKey(ConfigConstants.EVALUATOR)) { return true; }
-        return evaluate(JSONConverter.getString(evaluatorsConfiguration, ConfigConstants.EVALUATOR), extraParameters);
+        return !evaluatorsConfiguration.containsKey(ConfigConstants.EVALUATOR)
+                || evaluate(JSONConverter.getString(evaluatorsConfiguration, ConfigConstants.EVALUATOR),
+                        extraParameters);
     }
 
     public boolean evaluate(String evaluatorId, ConfigScope extraParameters)
     {
-        if (evaluatorId == null) { return true; }
-        return resolveEvaluator(evaluatorId, extraParameters);
+        return evaluatorId == null || resolveEvaluator(evaluatorId, extraParameters);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -137,7 +137,8 @@ public class EvaluatorHelper extends HelperConfig
         EvaluatorType configtype = EvaluatorType.fromValue(evalConfig.type);
         if (configtype == null)
         {
-            //TODO Implement mechanism to retrieve custom evaluators via config file
+            // TODO Implement mechanism to retrieve custom evaluators via config
+            // file
             Log.w(TAG, "Evaluator Type  [" + evalConfig.type + "]  for [" + evalConfig.identifier
                     + "] doesn't exist. Check your configuration.");
             return false;
@@ -176,7 +177,7 @@ public class EvaluatorHelper extends HelperConfig
     {
         List<Object> users = JSONConverter.getList(evalConfig.getParameter(ConfigConstants.USERS_VALUE));
 
-        String username = ((ConfigurationImpl) getConfiguration()).getPersonId();
+        String username = getConfiguration().getPersonId();
 
         return users.contains(username);
     }
@@ -226,9 +227,7 @@ public class EvaluatorHelper extends HelperConfig
 
         Node node = (Node) extraParameters.getContextValue(ConfigScope.NODE);
         Object value = node.getPropertyValue(propertyName);
-        if (value == null) {return false;}
-
-        return propertyValue.equals(value.toString());
+        return value != null && propertyValue.equals(value.toString());
     }
 
     private Boolean evaluateNodeType(EvaluatorConfigData evalConfig, ConfigScope extraParameters)
@@ -255,7 +254,7 @@ public class EvaluatorHelper extends HelperConfig
     {
         boolean result = true;
 
-        if (!hasConfiguration() || ((ConfigurationImpl) getConfiguration()).getSession() == null)
+        if (!hasConfiguration() || getConfiguration().getSession() == null)
         {
             Log.w(TAG, "Evaluator  [" + evalConfig.identifier + "] requires a session.");
             return false;
@@ -266,11 +265,13 @@ public class EvaluatorHelper extends HelperConfig
         {
             result = false;
             String sessionType = JSONConverter.getString(evalConfig.configMap, ConfigConstants.SESSION_VALUE);
-            if (ConfigConstants.CLOUD_VALUE.equals(sessionType) && ((ConfigurationImpl) getConfiguration()).getSession() instanceof CloudSession)
+            if (ConfigConstants.CLOUD_VALUE.equals(sessionType)
+                    && getConfiguration().getSession() instanceof CloudSession)
             {
                 result = true;
             }
-            else if (ConfigConstants.ONPREMISE_VALUE.equals(sessionType) && ((ConfigurationImpl) getConfiguration()).getSession() instanceof RepositorySession)
+            else if (ConfigConstants.ONPREMISE_VALUE.equals(sessionType)
+                    && getConfiguration().getSession() instanceof RepositorySession)
             {
                 result = true;
             }
@@ -278,7 +279,7 @@ public class EvaluatorHelper extends HelperConfig
 
         if (!result) { return false; }
 
-        RepositoryInfo repoInfo = ((ConfigurationImpl) getConfiguration()).getSession().getRepositoryInfo();
+        RepositoryInfo repoInfo = getConfiguration().getSession().getRepositoryInfo();
 
         // Edition
         if (evalConfig.configMap.containsKey(ConfigConstants.EDITION_VALUE))

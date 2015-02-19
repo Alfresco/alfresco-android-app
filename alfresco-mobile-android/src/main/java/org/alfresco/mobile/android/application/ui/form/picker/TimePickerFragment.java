@@ -82,7 +82,7 @@ public class TimePickerFragment extends DialogFragment implements OnTimeSetListe
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        this.mListener = (OnTimeSetListener) this;
+        this.mListener = this;
     }
 
     @Override
@@ -155,10 +155,6 @@ public class TimePickerFragment extends DialogFragment implements OnTimeSetListe
         if (clearValue)
         {
             fragmentPick.onTimeClear(dateId);
-        }
-        else if (isCancelled)
-        {
-            return;
         }
         else
         {

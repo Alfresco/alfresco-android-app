@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2012 Alfresco Software Limited.
+  
+  Este fichero forma parte de Alfresco Mobile SDK.
+  
+  Autorizado bajo la licencia Apache, Versión 2.0 (la "Licencia"),
+  solo se puede utilizar este fichero en conformidad con la Licencia.
+  Puede obtener una copia de la licencia en
+   
+   http://www.apache.org/licenses/LICENSE-2.0
+  
+   A menos que lo requiera la ley aplicable o se acuerde por escrito,
+   el software distribuido bajo la licencia se distribuye "TAL CUAL",
+   SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
+   Consulte la licencia para los permisos específicos de lenguaje que rige y
+   limitaciones bajo la Licencia.
+-->
+<resources>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK MANUAL -->
+    <!-- ************************** -->
+    <!-- Relative Date -->
+    <string name="relative_date_just_now">hace un momento</string>
+    <string name="relative_date_less_than_a_minute_ago">hace menos de un minuto</string>
+
+    <plurals name="relative_date_minutes_ago">
+        <item quantity="one">hace %1$s minuto</item>
+        <item quantity="other">hace %1$s minutos</item>
+    </plurals>
+    <plurals name="relative_date_hours_ago">
+        <item quantity="one">hace %1$s hora</item>
+        <item quantity="other">hace %1$s horas</item>
+    </plurals>
+    <plurals name="relative_date_days_ago">
+        <item quantity="one">hace %1$s día</item>
+        <item quantity="other">hace %1$s días</item>
+    </plurals>
+    <plurals name="relative_date_years_ago">
+        <item quantity="one">hace %1$s año</item>
+        <item quantity="other">hace %1$s años</item>
+    </plurals>
+
+    <!-- ************************** -->
+    <!-- ALFRESCO SDK AUTO -->
+    <!-- ************************** -->
+    <!-- Generic -->
+    <string name="actions">Acciones</string>
+    <string name="confirm">Confirmar</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <!-- Listing -->
+    <string name="load_more">Cargar más&#8230;</string>
+    <string name="load_more_progress">Cara en curso&#8230;</string>
+    <string name="listing_nodata">Sin datos.</string>
+    <!-- Dialog -->
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel">Cancelar</string>
+    <string name="dialog_wait">Espere</string>
+    <!-- Activities -->
+    <string name="activities">Actividades</string>
+    <string name="org_alfresco_blog_post_created">Entrada {0} del blog creada por {1}</string>
+    <string name="org_alfresco_blog_post_updated">Entrada {0} del blog actualizada por {1}</string>
+    <string name="org_alfresco_blog_post_deleted">Entrada {0} del blog eliminada por {1}</string>
+    <string name="org_alfresco_comments_comment_created">{1} ha comentado sobre {0}</string>
+    <string name="org_alfresco_comments_comment_updated">{1} ha actualizado el comentario sobre {0}</string>
+    <string name="org_alfresco_comments_comment_deleted">{1} ha eliminado el comentario de {0}</string>
+    <string name="org_alfresco_discussions_post_created">{0} foro iniciado por {1}</string>
+    <string name="org_alfresco_discussions_post_updated">{0} foro actualizado por {1}</string>
+    <string name="org_alfresco_discussions_post_deleted">{0} foro eliminado por {1}</string>
+    <string name="org_alfresco_discussions_reply_created">{1} ha respondido al foro {0}</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} ha actualizado una respuesta a {0}</string>
+    <string name="org_alfresco_calendar_event_created">Evento {0} del calendario creado por {1}</string>
+    <string name="org_alfresco_calendar_event_updated">Evento {0} del calendario actualizado por {1}</string>
+    <string name="org_alfresco_calendar_event_deleted">Evento {0} del calendario eliminado por {1}</string>
+    <string name="org_alfresco_documentlibrary_file_added">Fichero {0} añadido por {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">Ficheros {0} añadidos por {1}</string>
+    <string name="org_alfresco_documentlibrary_file_created">Fichero {0} creado por {1}</string>
+    <string name="org_alfresco_documentlibrary_file_deleted">{0} fue eliminado por {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">Ficheros {0} eliminados por {1}</string>
+    <string name="org_alfresco_documentlibrary_file_updated">Fichero {0} actualizado por {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">Ficheros {0} actualizados por {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_added">Carpeta {0} añadida por {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_added">Carpetas {0} añadidas por {1}</string>
+    <string name="org_alfresco_documentlibrary_folder_deleted">{0} fue eliminado por {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">Carpetas {0} eliminadas {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">Fichero {0} descargado de Google Docs por {1}</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">Fichero {0} cargado a Google Docs por {1}</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">Fichero {0} editado por {1}</string>
+    <string name="org_alfresco_documentlibrary_file_liked">A {1} le gusta el fichero {0}</string>
+    <string name="org_alfresco_documentlibrary_folder_liked">A {1} le gusta la carpeta {0}</string>
+    <string name="org_alfresco_wiki_page_created">Página wiki {0} creada por {1}</string>
+    <string name="org_alfresco_wiki_page_edited">Página wiki {0} actualizada por {1}</string>
+    <string name="org_alfresco_wiki_page_renamed">Nombre de la página wiki {2} cambiado a {0} por {1}</string>
+    <string name="org_alfresco_wiki_page_deleted">Página wiki {0} eliminada por {1}</string>
+    <string name="org_alfresco_site_group_added">Grupo {1} añadido al sitio {4} con el rol {2}</string>
+    <string name="org_alfresco_site_group_removed">Grupo {1} eliminado del sitio {4}</string>
+    <string name="org_alfresco_site_group_role_changed">Rol del grupo {1} cambiado a {2}</string>
+    <string name="org_alfresco_site_user_joined">{1} se unió al sitio {4} con el rol {2}</string>
+    <string name="org_alfresco_site_user_left">{1} dejó el sitio {4}</string>
+    <string name="org_alfresco_site_user_role_changed">Rol {1} cambiado a {2}</string>
+    <string name="org_alfresco_links_link_created">Enlace {0} creado por {1}</string>
+    <string name="org_alfresco_links_link_updated">Enlace {0} actualizado por {1}</string>
+    <string name="org_alfresco_links_link_deleted">Enlace {0} eliminado por {1}</string>
+    <string name="org_alfresco_datalists_list_created">Lista de datos {0} creada por {1}</string>
+    <string name="org_alfresco_datalists_list_updated">Detalles de la lista de datos {0} actualizados por {1}</string>
+    <string name="org_alfresco_datalists_list_deleted">Lista de datos {0} eliminada por {1}</string>
+    <string name="org_alfresco_subscriptions_followed">{1} ahora es seguidor de {5}</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} se ha suscrito a {2}</string>
+    <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <!-- Metadata -->
+    <string name="thumbnail">Miniatura</string>
+    <string name="metadata_prop_name">Nombre</string>
+    <string name="metadata_prop_path">Ruta</string>
+    <string name="metadata_prop_type">Tipo</string>
+    <string name="metadata_prop_content_mimetype">Tipo de mime</string>
+    <string name="metadata_prop_content_size">Tamaño</string>
+    <!-- Metadata Titled -->
+    <string name="metadata_aspect_titled">Titulado</string>
+    <string name="metadata_prop_title">Título</string>
+    <string name="metadata_prop_description">Descripción</string>
+    <!-- Metadata Auditable -->
+    <string name="metadata_aspect_auditable">Auditable</string>
+    <string name="metadata_prop_creator">Creador</string>
+    <string name="metadata_prop_creationdate">Fecha de creación</string>
+    <string name="metadata_prop_modifier">Modificador</string>
+    <string name="metadata_prop_modificationdate">Fecha de modificación</string>
+    <!-- Metadata Author -->
+    <string name="metadata_aspect_author">Autor</string>
+    <string name="metadata_prop_author">Autor</string>
+    <!-- Metadata EXIF -->
+    <string name="metadata_aspect_exif">EXIF</string>
+    <string name="metadata_prop_datetime_original">Fecha y hora</string>
+    <string name="metadata_prop_pixelx_dimension">Anchura de imagen</string>
+    <string name="metadata_prop_pixely_dimension">Altura de imagen</string>
+    <string name="metadata_prop_exposure_time">Tiempo de exposición</string>
+    <string name="metadata_prop_fnumber">Número F</string>
+    <string name="metadata_prop_flash_activated">Flash activado</string>
+    <string name="metadata_prop_focal_length">Distancia focal</string>
+    <string name="metadata_prop_iso_speed">Velocidad ISO</string>
+    <string name="metadata_prop_manufacturer">Fabricante de la cámara</string>
+    <string name="metadata_prop_model">Modelo de cámara</string>
+    <string name="metadata_prop_software">Software de la cámara</string>
+    <string name="metadata_prop_orientation">Orientación</string>
+    <string name="metadata_prop_xresolution">Resolución horizontal</string>
+    <string name="metadata_prop_yresolution">Resolución vertical</string>
+    <string name="metadata_prop_resolution_unit">Unidad de resolución</string>
+    <!-- Metadata Geographic -->
+    <string name="metadata_aspect_geographic">Geográfico</string>
+    <string name="metadata_prop_latitude">Latitud</string>
+    <string name="metadata_prop_longitude">Longitud</string>
+    <!-- Metadata Audio -->
+    <string name="metadata_aspect_audio">Audio</string>
+    <string name="metadata_prop_album">Álbum</string>
+    <string name="metadata_prop_artist">Artista</string>
+    <string name="metadata_prop_composer">Compositor</string>
+    <string name="metadata_prop_engineer">Ingeniero</string>
+    <string name="metadata_prop_genre">Género</string>
+    <string name="metadata_prop_track_number">Número de canción</string>
+    <string name="metadata_prop_release_date">Fecha de lanzamiento</string>
+    <string name="metadata_prop_sample_rate">Tasa de muestreo</string>
+    <string name="metadata_prop_sample_type">Tipo de muestreo</string>
+    <string name="metadata_prop_channel_type">Tipo de canal</string>
+    <string name="metadata_prop_compressor">Compresor</string>
+    <!-- Metadata Version -->
+    <string name="metadata_prop_version">Versión</string>
+    <string name="metadata_prop_version_modification_date">Fecha de modificación</string>
+    <string name="metadata_prop_version_modified_by">Última modificación realizada por</string>
+    <string name="metadata_prop_version_comment">Comentario</string>
+    <string name="metadata_prop_version_current">Versión actual</string>
+    <!-- Upload/Create Content -->
+    <string name="content_app_pick_file">Elija una aplicación para seleccionar un fichero</string>
+    <string name="content_upload">Cargar fichero</string>
+    <string name="content_name">Nombre</string>
+    <string name="content_name_hint">Introduzca un nombre (obligatorio)</string>
+    <string name="content_description">Descripción</string>
+    <string name="content_description_hint">Introduzca una descripción (opcional)</string>
+    <string name="content_tags">Etiquetas</string>
+    <string name="content_tags_hint">Valores de etiqueta separados por comas (opcional)</string>
+    <string name="content_title">Título</string>
+    <!-- Create Folder -->
+    <string name="folder_create">Crear una carpeta</string>
+    <string name="folder_name">Nombre</string>
+    <string name="folder_name_hint">Escriba el nombre de la carpeta aquí&#8230;</string>
+    <!-- Update Properties -->
+    <string name="edit">Editar</string>
+    <string name="update">Actualizar</string>
+    <string name="edit_metadata">Editar propiedades</string>
+    <!-- Download -->
+    <string name="download">Descargar</string>
+    <string name="download_complete">Descarga completa</string>
+    <string name="download_error">Se ha producido un error durante la operación de descarga.</string>
+    <string name="download_progress">Descarga en curso&#8230;</string>
+    <!-- Empty -->
+    <string name="empty_child">No se encontró ningún fichero</string>
+    <string name="empty_site">Ningún sitio disponible</string>
+    <string name="empty_version">No hay versiones del historial disponibles</string>
+    <string name="empty_session">Ninguna sesión disponible</string>
+    <string name="empty_actvity">No se encontró ninguna actividad</string>
+    <string name="empty_tag">No se encontró ninguna etiqueta</string>
+    <string name="empty_comment">No se encontró ningún comentario</string>
+    <string name="empty_search">No se encontró ningún fichero</string>
+    <!-- Size -->
+    <string name="file_size_empty">0 byte</string>
+    <string name="file_size_bytes">bytes</string>
+    <string name="file_size_kilobytes">KB</string>
+    <string name="file_size_megabytes">MB</string>
+    <string name="file_size_gigabytes">GB</string>
+    <!-- Search -->
+    <string name="search_hint">Introduzca el término de búsqueda</string>
+    <!-- Comments -->
+    <string name="comments">Comentarios</string>
+    <!-- Actions -->
+    <string name="create">Crear</string>
+    <string name="add">Añadir</string>
+    <string name="like">Me gusta</string>
+    <string name="open_in">Abrir en</string>
+    <string name="take_photo">Hacer foto</string>
+    <string name="make_video">Grabar vídeo</string>
+    <string name="record_audio">Grabar audio</string>
+    <string name="version_history">Versión de historial</string>
+    <string name="tags">Etiquetas</string>
+    <string name="share">Compartir</string>
+    <string name="refresh">Actualizar</string>
+    <string name="delete">Eliminar</string>
+    <string name="save_back">Volver a guardar</string>
+    <!-- Errors -->
+    <string name="error_unable_share_link">No se puede compartir el enlace</string>
+    <string name="error_unable_share_content">No se puede compartir el contenido</string>
+    <!-- Share -->
+    <string name="share_url">Compartir enlace</string>
+    <string name="share_url_long">Compartiendo enlace desde Alfresco Android Mobile</string>
+
+</resources>

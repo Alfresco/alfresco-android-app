@@ -28,7 +28,7 @@ public abstract class ValidationRule
     protected WeakReference<Context> contextRef;
 
     protected ValidationConfig validationConfig;
-    
+
     protected String errorMessage = null;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ public abstract class ValidationRule
     // ///////////////////////////////////////////////////////////////////////////
     public ValidationRule(Context context, ValidationConfig configuration)
     {
-        this.contextRef = new WeakReference<Context>(context);
+        this.contextRef = new WeakReference<>(context);
         this.validationConfig = configuration;
         errorMessage = validationConfig.getErrorMessage();
     }

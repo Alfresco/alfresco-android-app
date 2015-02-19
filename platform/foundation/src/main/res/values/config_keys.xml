@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
@@ -16,14 +15,14 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- OAuth Keys -->
     <string name="oauth_api_key">${oauth_api_key}</string>
     <string name="oauth_api_secret">${oauth_api_secret}</string>
     <string name="oauth_callback">${oauth_callback}</string>
     <string name="oauth_scope">${oauth_scope}</string>
-    
+
     <!-- Hockey App Key -->
     <string name="hockeyapp_key">${hockeyapp_key}</string>
-    
+
 </resources>

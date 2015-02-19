@@ -54,7 +54,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
 
     protected WeakReference<Activity> activityRef;
 
-    protected List<ActivityEntry> selectedOptionItems = new ArrayList<ActivityEntry>();
+    protected List<ActivityEntry> selectedOptionItems = new ArrayList<>();
 
     public ActivityStreamAdapter(Fragment fr, AlfrescoSession session, int textViewResourceId,
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
@@ -62,7 +62,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
         super(fr.getActivity(), textViewResourceId, listItems);
         this.vhClassName = ActivityEventViewHolder.class.getCanonicalName();
         this.selectedItems = selectedItems;
-        this.activityRef = new WeakReference<Activity>(fr.getActivity());
+        this.activityRef = new WeakReference<>(fr.getActivity());
     }
 
     @Override
@@ -108,7 +108,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
 
         if (type.startsWith(PREFIX_FILE))
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_avatar)
+            RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
                     .into(vh.icon);
         }
         else if (type.startsWith(PREFIX_GROUP))
@@ -122,7 +122,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             {
                 tmp = null;
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
         }
         else if (type.startsWith(PREFIX_SUBSCRIPTION))
         {
@@ -131,11 +131,11 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             {
                 tmp = null;
             }
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
         }
         else
         {
-            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+            RenditionManager.with(activityRef.get()).loadAvatar(tmp).placeHolder(R.drawable.ic_person).into(vh.icon);
         }
     }
 
@@ -196,7 +196,7 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             put(PREFIX_LINK, R.drawable.ic_menu_share);
             put(PREFIX_EVENT, R.drawable.ic_menu_today);
             put(PREFIX_WIKI, R.drawable.ic_menu_notif);
-            put(PREFIX_USER, R.drawable.ic_avatar);
+            put(PREFIX_USER, R.drawable.ic_person);
             put(PREFIX_DATALIST, R.drawable.ic_menu_notif);
             put(PREFIX_DISCUSSIONS, R.drawable.ic_action_dialog);
             put(PREFIX_FOLDER, R.drawable.ic_menu_archive);

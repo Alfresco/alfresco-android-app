@@ -385,7 +385,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
 
     protected void displayEmptyView()
     {
-        if (!isVisible()) {return;}
+        if (!isVisible()) { return; }
         gv.setEmptyView(ev);
         isFullLoad = Boolean.TRUE;
         if (adapter != null)
@@ -437,12 +437,6 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     // LOAD MORE
     // ////////////////////////////////////////////////////////////
     protected abstract void performRequest(ListingContext lcorigin);
-
-    /** Event after data has been displayed. */
-    protected void onDataDisplayed()
-    {
-        // Can be used by deriaved classes.
-    }
 
     @SuppressWarnings("unchecked")
     protected void calculateSkipCount(ListingContext lc)

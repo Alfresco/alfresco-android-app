@@ -58,7 +58,7 @@ public class FileCleanerService extends Service
         try
         {
             Intent intent = intents.pop();
-            if (intent.getAction() == PrivateIntent.ACTION_CLEAN_SHARE_FILE)
+            if (intent.getAction().equals(PrivateIntent.ACTION_CLEAN_SHARE_FILE))
             {
                 deleteShareFile(intent.getExtras().getString(PrivateIntent.EXTRA_FILE_PATH));
             }
@@ -88,6 +88,5 @@ public class FileCleanerService extends Service
             }
         }
         stopSelf();
-        return;
     }
 }

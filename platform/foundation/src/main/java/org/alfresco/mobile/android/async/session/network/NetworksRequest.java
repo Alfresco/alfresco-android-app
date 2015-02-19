@@ -43,8 +43,7 @@ public class NetworksRequest extends BaseOperationRequest
     // ///////////////////////////////////////////////////////////////////////////
     public ContentValues createContentValues(int status)
     {
-        ContentValues cValues = super.createContentValues(status);
-        return cValues;
+        return super.createContentValues(status);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

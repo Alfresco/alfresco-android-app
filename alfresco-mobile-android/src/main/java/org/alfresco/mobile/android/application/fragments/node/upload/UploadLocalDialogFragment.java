@@ -40,7 +40,6 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 /**
  * This Fragment is responsible to prompt user for file name during import.<br/>
@@ -85,7 +84,7 @@ public class UploadLocalDialogFragment extends DialogFragment
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         final View v = inflater.inflate(R.layout.app_create_document, (ViewGroup) this.getView());
 
-        ((TextView) v.findViewById(R.id.document_extension)).setVisibility(View.GONE);
+        v.findViewById(R.id.document_extension).setVisibility(View.GONE);
 
         final EditText textName = ((EditText) v.findViewById(R.id.document_name));
         final Button validate = UIUtils.initValidation(v, R.string.create);

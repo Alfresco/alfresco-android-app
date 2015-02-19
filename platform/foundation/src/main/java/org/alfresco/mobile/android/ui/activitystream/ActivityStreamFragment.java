@@ -37,7 +37,7 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
 {
     public static final String TAG = ActivityStreamFragment.class.getName();
 
-    private List<ActivityEntry> selectedEntry = new ArrayList<ActivityEntry>(1);
+    private List<ActivityEntry> selectedEntry = new ArrayList<>(1);
 
     protected String siteShortName = null;
 
@@ -73,8 +73,8 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     // ///////////////////////////////////////////////////////////////////////////
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ActivityStreamAdapter(ActivityStreamFragment.this, getSession(),
-                R.layout.app_grid_row_activities, new ArrayList<ActivityEntry>(0), selectedEntry);
+        return new ActivityStreamAdapter(ActivityStreamFragment.this, getSession(), R.layout.app_grid_row_activities,
+                new ArrayList<ActivityEntry>(0), selectedEntry);
     }
 
     @Subscribe

@@ -68,7 +68,7 @@ public class ProcessesFoundationFragment extends BaseGridFragment
         b.putSerializable(ARGUMENT_FILTER, f);
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     public static ProcessesFoundationFragment newInstance(ListingFilter f, int menuId)
     {
@@ -78,7 +78,7 @@ public class ProcessesFoundationFragment extends BaseGridFragment
         b.putInt(ARGUMENT_MENUID, menuId);
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE

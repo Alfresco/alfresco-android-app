@@ -104,7 +104,7 @@ public class NodeByPathOperation extends BaseOperation<Node>
         {
             if (node != null)
             {
-                parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
             }
         }
         catch (Exception e)

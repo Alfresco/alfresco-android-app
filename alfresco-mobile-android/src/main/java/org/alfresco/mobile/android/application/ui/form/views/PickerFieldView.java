@@ -104,7 +104,7 @@ public class PickerFieldView extends AlfrescoFieldView
 
         mFloatingLabel = (TextView) findViewById(R.id.floating_label_hint);
         mTextView = (TextView) findViewById(R.id.floating_label_edit_text);
-        mEditTextUnderlineView = (View) findViewById(R.id.floating_label_underline);
+        mEditTextUnderlineView = findViewById(R.id.floating_label_underline);
         mErrorTextView = (TextView) findViewById(R.id.floating_label_error);
         mSpinner = (LinearLayout) findViewById(R.id.floating_spinner);
         mExpand = (ImageView) findViewById(R.id.floating_label_expand);

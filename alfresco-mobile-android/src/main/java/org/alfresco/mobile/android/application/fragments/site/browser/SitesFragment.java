@@ -174,6 +174,6 @@ public class SitesFragment extends CommonBrowserSitesFragment
         protected Fragment createFragment(Bundle b)
         {
             return SitesFragment.newInstanceByTemplate(b);
-        };
+        }
     }
 }

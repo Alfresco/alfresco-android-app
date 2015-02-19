@@ -46,7 +46,6 @@ import org.alfresco.mobile.android.application.fragments.user.UserSearchFragment
 import org.alfresco.mobile.android.application.fragments.workflow.ProcessDiagramFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessTasksFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.process.ProcessesAdapter;
-import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.workflow.ItemsEvent;
 import org.alfresco.mobile.android.async.workflow.ItemsRequest;
@@ -117,8 +116,6 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
 
     private Person initiator;
 
-    private RenditionManagerImpl renditionManager;
-
     private List<Document> items;
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -134,7 +131,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         TaskDetailsFragment bf = new TaskDetailsFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFECYCLE
@@ -158,16 +155,13 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         // Init variable depending on object
         initVariables();
 
-        // Rendition Manager
-        renditionManager = RenditionManagerImpl.getInstance(getActivity());
-
         // Header
         TextView tv = (TextView) vRoot.findViewById(R.id.title);
         tv.setText(description);
 
         // Other parts
         initHeader();
-        initCompleteForm(inflater);
+        initCompleteForm();
         initInitiator();
 
         if (items == null)
@@ -242,7 +236,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         }
     }
 
-    public void initCompleteForm(LayoutInflater inflater)
+    public void initCompleteForm()
     {
         if (currentProcess != null)
         {

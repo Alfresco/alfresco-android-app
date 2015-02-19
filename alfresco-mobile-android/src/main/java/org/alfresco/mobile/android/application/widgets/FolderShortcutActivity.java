@@ -54,13 +54,14 @@ public class FolderShortcutActivity extends BaseShortcutActivity
     {
         createShortcut(file.getName(), PublicIntentAPIUtils.viewFile(uploadAccount.getId(), file));
     }
-    
+
     private void createShortcut(AlfrescoAccount uploadAccount, Folder folder)
     {
         createShortcut(folder.getName(), PublicIntentAPIUtils.viewFolder(uploadAccount.getId(), folder.getIdentifier()));
     }
-    
-    private void createShortcut(String shortcutName, Intent shortcutIntent){
+
+    private void createShortcut(String shortcutName, Intent shortcutIntent)
+    {
         Intent addIntent = new Intent();
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
         addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, shortcutName);
@@ -68,7 +69,6 @@ public class FolderShortcutActivity extends BaseShortcutActivity
                 Intent.ShortcutIconResource.fromContext(this, R.drawable.widget_folder));
         setResult(RESULT_OK, addIntent);
         finish();
-        return;
     }
 
     // ////////////////////////////////////////////////////////

@@ -43,6 +43,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.speech.RecognizerIntent;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 
 /**
@@ -72,7 +73,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -114,7 +116,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -224,33 +227,36 @@ public class ActionUtils extends BaseActionUtils
             }
             else
             {
-                actionSend(activity, myFile);
+                actionSend(activity, myFile, mimeType);
             }
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_open_file);
         }
     }
 
     public static void actionSendDocument(Fragment fr, File myFile)
     {
-        actionSend(fr.getActivity(), myFile);
+        actionSend(fr.getActivity(), myFile, (String) null);
     }
 
-    public static void actionSend(Activity activity, File contentFile)
+    public static void actionSend(Activity activity, File contentFile, String mimetype)
     {
         try
         {
             Intent i = new Intent(Intent.ACTION_SEND);
             i.putExtra(Intent.EXTRA_SUBJECT, contentFile.getName());
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
-            i.setType(MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName()));
+            i.setType((TextUtils.isEmpty(mimetype)) ? MimeTypeManager.getInstance(activity).getMIMEType(
+                    contentFile.getName()) : mimetype);
             activity.startActivity(Intent.createChooser(i, activity.getText(R.string.share_content)));
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_share_content);
         }
     }
 
@@ -279,22 +285,12 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.decryption_failed);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.decryption_failed);
             Log.d(TAG, Log.getStackTraceString(e));
         }
 
         return false;
-    }
-
-    public static boolean actionSendMailWithLink(Context c, String subject, String content, Uri link)
-    {
-        Intent i = new Intent(Intent.ACTION_SEND);
-        i.putExtra(Intent.EXTRA_SUBJECT, subject);
-        i.putExtra(Intent.EXTRA_TEXT, content);
-        i.setType("text/plain");
-        c.startActivity(Intent.createChooser(i, String.format(c.getString(R.string.send_email), link.toString())));
-
-        return true;
     }
 
     public static void actionSendDocumentToAlfresco(Activity activity, File file)
@@ -313,7 +309,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -325,7 +322,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_share_content);
         }
     }
 
@@ -349,12 +347,13 @@ public class ActionUtils extends BaseActionUtils
             }
             else
             {
-                actionSend(activity, myFile);
+                actionSend(activity, myFile, (String) null);
             }
         }
         catch (Exception e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -365,7 +364,7 @@ public class ActionUtils extends BaseActionUtils
     {
         actionSendDocumentsToAlfresco(fr.getActivity(), files);
     }
-    
+
     public static void actionSendDocumentsToAlfresco(Activity activity, List<File> files)
     {
         if (files.size() == 1)
@@ -378,7 +377,7 @@ public class ActionUtils extends BaseActionUtils
         {
             Intent i = new Intent(activity, PublicDispatcherActivity.class);
             i.setAction(Intent.ACTION_SEND_MULTIPLE);
-            ArrayList<Uri> uris = new ArrayList<Uri>();
+            ArrayList<Uri> uris = new ArrayList<>();
             // convert from paths to Android friendly Parcelable Uri's
             for (File file : files)
             {
@@ -391,7 +390,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity, R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                    R.string.error_unable_share_content);
         }
     }
 
@@ -406,7 +406,7 @@ public class ActionUtils extends BaseActionUtils
         try
         {
             Intent i = new Intent(Intent.ACTION_SEND_MULTIPLE);
-            ArrayList<Uri> uris = new ArrayList<Uri>();
+            ArrayList<Uri> uris = new ArrayList<>();
             // convert from paths to Android friendly Parcelable Uri's
             for (File file : files)
             {
@@ -419,7 +419,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_share_content);
         }
     }
 
@@ -442,7 +443,8 @@ public class ActionUtils extends BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_file);
         }
     }
 

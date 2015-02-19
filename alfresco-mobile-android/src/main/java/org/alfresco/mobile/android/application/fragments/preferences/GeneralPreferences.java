@@ -341,7 +341,7 @@ public class GeneralPreferences extends PreferenceFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 
 }

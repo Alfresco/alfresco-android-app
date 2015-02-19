@@ -219,11 +219,10 @@ public class MimeTypeManager extends Manager
 
     private static MimeType createMimeType(Cursor c)
     {
-        MimeType account = new MimeType(c.getLong(MimeTypeSchema.COLUMN_ID_ID),
-                c.getString(MimeTypeSchema.COLUMN_EXTENSION_ID), c.getString(MimeTypeSchema.COLUMN_TYPE_ID),
-                c.getString(MimeTypeSchema.COLUMN_SUBTYPE_ID), c.getString(MimeTypeSchema.COLUMN_DESCRIPTION_ID),
-                c.getString(MimeTypeSchema.COLUMN_SMALL_ICON_ID), c.getString(MimeTypeSchema.COLUMN_LARGE_ICON_ID));
-        return account;
+        return new MimeType(c.getLong(MimeTypeSchema.COLUMN_ID_ID), c.getString(MimeTypeSchema.COLUMN_EXTENSION_ID),
+                c.getString(MimeTypeSchema.COLUMN_TYPE_ID), c.getString(MimeTypeSchema.COLUMN_SUBTYPE_ID),
+                c.getString(MimeTypeSchema.COLUMN_DESCRIPTION_ID), c.getString(MimeTypeSchema.COLUMN_SMALL_ICON_ID),
+                c.getString(MimeTypeSchema.COLUMN_LARGE_ICON_ID));
     }
 
     public MimeType createMimeType(String extension, String type, String subtype, String description, String smallIcon,
@@ -276,15 +275,13 @@ public class MimeTypeManager extends Manager
 
     public boolean hasMimeTypes()
     {
-        if (mimetypeSize == null) { return false; }
-        return (mimetypeSize > 0);
+        return mimetypeSize != null && (mimetypeSize > 0);
     }
 
     public boolean isEmpty()
     {
         getCount();
-        if (mimetypeSize == null) { return true; }
-        return (mimetypeSize == 0);
+        return mimetypeSize == null || (mimetypeSize == 0);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

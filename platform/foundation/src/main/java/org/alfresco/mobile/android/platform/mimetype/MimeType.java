@@ -158,14 +158,7 @@ public class MimeType implements Serializable
     // /////////////////////////////////////////////////////////////////
     public boolean isType(String typeRequested)
     {
-        if (type != null)
-        {
-            return type.contains(typeRequested);
-        }
-        else
-        {
-            return false;
-        }
+        return type != null && type.contains(typeRequested);
     }
 
 }

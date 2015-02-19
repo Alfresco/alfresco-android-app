@@ -74,8 +74,7 @@ public class LikeNodeRequest extends NodeRequest
     // ///////////////////////////////////////////////////////////////////////////
     public ContentValues createContentValues(int status)
     {
-        ContentValues cValues = super.createContentValues(status);
-        return cValues;
+        return super.createContentValues(status);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

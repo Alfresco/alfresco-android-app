@@ -44,10 +44,12 @@ import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.database.Cursor;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -229,7 +231,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         if (mode == SyncFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(vh.choose,
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
@@ -243,6 +245,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                             cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID)));
             vh.choose.setOnClickListener(new OnClickListener()
             {
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 @Override
                 public void onClick(View v)
                 {
@@ -277,7 +280,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(vh.choose, null);
         }
     }
 

@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.async.node.comment;
 
 import org.alfresco.mobile.android.api.model.Comment;
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.async.LoaderResult;
@@ -67,8 +66,7 @@ public class CommentsOperation extends ListingOperation<PagingResult<Comment>>
             {
                 if (nodeIdentifier != null && node == null)
                 {
-                    node = (Document) session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(nodeIdentifier);
+                    node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
                 }
 
                 pagingResult = session.getServiceRegistry().getCommentService().getComments(node, listingContext);

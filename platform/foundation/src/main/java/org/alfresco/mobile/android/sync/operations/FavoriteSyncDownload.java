@@ -19,9 +19,7 @@ package org.alfresco.mobile.android.sync.operations;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -228,12 +226,7 @@ public class FavoriteSyncDownload extends FavoriteSync
             }
 
         }
-        catch (FileNotFoundException e)
-        {
-            Log.e(TAG, Log.getStackTraceString(e));
-            copied = false;
-        }
-        catch (IOException e)
+        catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
             copied = false;

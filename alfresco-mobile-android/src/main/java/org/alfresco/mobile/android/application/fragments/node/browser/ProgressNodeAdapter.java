@@ -51,12 +51,14 @@ import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -92,8 +94,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     private Map<String, FavoriteInfo> favoriteInfos;
 
     private boolean hasFavorite = false;
-
-    private boolean isSyncFolder;
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
@@ -257,7 +257,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         if (item instanceof NodePlaceHolder)
         {
             vh.bottomText.setEnabled(false);
-            int status = (Integer) item.getPropertyValue(PublicAPIPropertyIds.REQUEST_STATUS);
+            int status = item.getPropertyValue(PublicAPIPropertyIds.REQUEST_STATUS);
             if (status == Operation.STATUS_PAUSED || status == Operation.STATUS_PENDING)
             {
                 vh.bottomText.setVisibility(View.VISIBLE);
@@ -294,7 +294,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     {
         if (item instanceof NodePlaceHolder)
         {
-            UIUtils.setBackground(((View) vh.icon), null);
+            UIUtils.setBackground(vh.icon, null);
             vh.icon.setImageResource(MimeTypeManager.getInstance(getActivity()).getIcon(item.getName()));
             vh.choose.setVisibility(View.GONE);
             return;
@@ -311,7 +311,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }
 
-            UIUtils.setBackground(((View) vh.choose),
+            UIUtils.setBackground(vh.choose,
                     getActivity().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
             vh.choose.setVisibility(View.VISIBLE);
@@ -321,6 +321,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             vh.choose.setOnClickListener(new OnClickListener()
             {
 
+                @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
                 @Override
                 public void onClick(View v)
                 {
@@ -349,7 +350,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
         else
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(vh.choose, null);
         }
     }
 
@@ -491,15 +492,13 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
         if (permission.canEdit())
         {
-            mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50,
-                    R.string.action_edit_properties);
+            mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 50, R.string.action_edit_properties);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         if (permission.canDelete())
         {
-            mi = menu.add(Menu.NONE, R.id.menu_action_delete_folder, Menu.FIRST + 1000,
-                    R.string.delete);
+            mi = menu.add(Menu.NONE, R.id.menu_action_delete_folder, Menu.FIRST + 1000, R.string.delete);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
@@ -514,7 +513,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             case R.id.menu_node_details:
                 onMenuItemClick = true;
                 NodeDetailsFragment.with(getActivity()).node(selectedOptionItems.get(0)).display();
-                if (DisplayUtils.hasCentralPane(getActivity())){
+                if (DisplayUtils.hasCentralPane(getActivity()))
+                {
                     selectedItems.add(selectedOptionItems.get(0));
                 }
                 notifyDataSetChanged();
@@ -568,7 +568,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     public boolean hasParentFavorite()
     {
         Cursor parentCursorId = null;
-        isSyncFolder = false;
+        boolean isSyncFolder = false;
         try
         {
             parentCursorId = FavoritesSyncManager.getCursorForId(getActivity(), SessionUtils.getAccount(getContext()),

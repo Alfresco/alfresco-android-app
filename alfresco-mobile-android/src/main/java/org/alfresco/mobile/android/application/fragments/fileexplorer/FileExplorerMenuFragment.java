@@ -202,6 +202,6 @@ public class FileExplorerMenuFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

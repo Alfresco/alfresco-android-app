@@ -52,6 +52,7 @@ import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
 import com.squareup.otto.Subscribe;
@@ -67,7 +68,7 @@ public abstract class SessionManager extends Manager
 
     protected static Manager mInstance;
 
-    protected Map<Long, AlfrescoSession> sessionIndex = new HashMap<Long, AlfrescoSession>();
+    protected LongSparseArray<AlfrescoSession> sessionIndex = new LongSparseArray<>();
 
     protected AlfrescoAccount currentAccount;
 
@@ -264,7 +265,7 @@ public abstract class SessionManager extends Manager
 
     public boolean hasSession(Long accountId)
     {
-        return sessionIndex.containsKey(accountId);
+        return sessionIndex.get(accountId) != null;
     }
 
     public AlfrescoSession getSession(Long accountId)
@@ -402,7 +403,7 @@ public abstract class SessionManager extends Manager
         // ///////////////////////////////////////////////////////////////////////////
         protected void prepareData(AlfrescoAccount acc)
         {
-            switch ((int) acc.getTypeId())
+            switch (acc.getTypeId())
             {
                 case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
                     isCloud = true;
@@ -442,7 +443,7 @@ public abstract class SessionManager extends Manager
             extraSettings.put(AlfrescoSession.EXTRACT_METADATA, true);
             extraSettings.put(AlfrescoSession.CREATE_THUMBNAIL, true);
             extraSettings.put(AlfrescoSession.HTTP_CHUNK_TRANSFERT, "true");
-            //extraSettings.put(SessionParameter.CLIENT_COMPRESSION, "true");
+            // extraSettings.put(SessionParameter.CLIENT_COMPRESSION, "true");
             extraSettings.put(AlfrescoSession.HTTP_INVOKER_CLASSNAME, NetworkHttpInvoker.class.getName());
             extraSettings.put(AlfrescoSession.CACHE_FOLDER, AlfrescoStorageManager.getInstance(getContext())
                     .getCacheDir("AlfrescoMobile").getPath());

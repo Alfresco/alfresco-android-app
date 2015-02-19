@@ -60,7 +60,7 @@ public class TasksOperation extends ListingOperation<PagingResult<Task>>
         {
             super.doInBackground();
 
-            LoaderResult<PagingResult<Task>> result = new LoaderResult<PagingResult<Task>>();
+            LoaderResult<PagingResult<Task>> result = new LoaderResult<>();
             PagingResult<Task> pagingResult = null;
 
             try
@@ -94,7 +94,7 @@ public class TasksOperation extends ListingOperation<PagingResult<Task>>
         {
             Log.w(TAG, Log.getStackTraceString(e));
         }
-        return new LoaderResult<PagingResult<Task>>();
+        return new LoaderResult<>();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

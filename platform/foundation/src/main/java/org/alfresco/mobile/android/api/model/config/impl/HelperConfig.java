@@ -48,14 +48,12 @@ public class HelperConfig
 
     protected boolean hasConfiguration()
     {
-        if (configurationRef == null) { return false; }
-        return configurationRef.get() != null;
+        return configurationRef != null && configurationRef.get() != null;
     }
 
     protected boolean hasEvaluatorHelper()
     {
-        if (configurationRef == null) { return false; }
-        return configurationRef.get().getEvaluatorHelper() != null;
+        return configurationRef != null && configurationRef.get().getEvaluatorHelper() != null;
     }
 
     protected EvaluatorHelper getEvaluatorHelper()

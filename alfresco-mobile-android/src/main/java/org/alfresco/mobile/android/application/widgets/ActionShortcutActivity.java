@@ -89,7 +89,6 @@ public class ActionShortcutActivity extends BaseShortcutActivity
                 Intent.ShortcutIconResource.fromContext(this, iconId));
         setResult(RESULT_OK, shortcutIntent);
         finish();
-        return;
     }
 
     // ////////////////////////////////////////////////////////

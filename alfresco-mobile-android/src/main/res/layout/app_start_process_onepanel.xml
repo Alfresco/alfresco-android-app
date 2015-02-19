@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -19,49 +18,48 @@
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="?MainTheme.Background.White"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:fillViewport="true" >
+        android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-             android:layout_marginLeft="16dp"
+            android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_title" />
 
             <EditText
                 android:id="@+id/process_title"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/process_title_hint"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_due_on" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/process_due_on"
@@ -84,15 +82,15 @@
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_assignees" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="true"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/process_assignee"
@@ -115,15 +113,15 @@
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_attachments" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="true"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/process_attachments"
@@ -147,23 +145,26 @@
             <TextView
                 android:id="@+id/process_approvers_group_title"
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_approvers" />
 
             <LinearLayout
                 android:id="@+id/process_approvers_group"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:baselineAligned="true"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <EditText
                     android:id="@+id/process_approvers"
                     android:layout_width="0dip"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:editable="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:clickable="false"
+                    android:cursorVisible="false"
                     android:hint="@string/process_no_approvers" />
 
                 <ImageButton
@@ -185,15 +186,15 @@
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_priority" />
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="right|center_vertical"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <ToggleButton
                     android:id="@+id/action_priority_low"
@@ -236,7 +237,7 @@
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/process_notification" />
 
@@ -248,13 +249,13 @@
     </ScrollView>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:layout_marginTop="@dimen/margin_top"
         android:background="?android:attr/dividerVertical" />
 
     <include
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
 

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -17,11 +16,11 @@
   limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:minHeight="48dip"
     android:minWidth="200dip"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <ImageView
         android:id="@+id/icon"
@@ -36,17 +35,15 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/toptext"
-            style="?MainTheme.TextView.ListItem.Secondary"
-            />
+            style="?MainTheme.TextView.ListItem.Secondary" />
 
         <TextView
             android:id="@+id/bottomtext"
-            style="?MainTheme.TextView.ListItem.Primary"
-             />
+            style="?MainTheme.TextView.ListItem.Primary" />
     </LinearLayout>
 
 </LinearLayout>

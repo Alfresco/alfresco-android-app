@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
@@ -17,29 +16,29 @@
    limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minWidth="@dimen/width_dialog"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/picker"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TableLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_dialog"
             android:shrinkColumns="1"
-            android:stretchColumns="1" >
+            android:stretchColumns="1">
 
             <TableRow
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -52,13 +51,12 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/content_name_hint"
                     android:imeOptions="actionNext"
-                    android:inputType="text" >
-                </EditText>
+                    android:inputType="text"></EditText>
             </TableRow>
 
             <TextView
                 android:id="@+id/content_size"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:gravity="right"
@@ -68,7 +66,7 @@
                 android:id="@+id/types_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone" >
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -78,15 +76,14 @@
 
                 <Spinner
                     android:id="@+id/types_spinner"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/accounts_label"
                     android:textColor="@color/hint_foreground_holo_light" />
             </TableRow>
 
             <TableRow
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -99,14 +96,13 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/content_description_hint"
                     android:imeOptions="actionNext"
-                    android:inputType="text" >
-                </EditText>
+                    android:inputType="text"></EditText>
             </TableRow>
 
             <TableRow
                 android:id="@+id/tags_line"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" >
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -125,12 +121,12 @@
     </LinearLayout>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
 
     <include
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
 

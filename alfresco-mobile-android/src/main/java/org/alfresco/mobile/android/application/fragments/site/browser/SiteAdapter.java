@@ -76,11 +76,11 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
 
         if (mode == ListingModeFragment.MODE_IMPORT || mode == ListingModeFragment.MODE_PICK)
         {
-            UIUtils.setBackground(((View) vh.choose), null);
+            UIUtils.setBackground(vh.choose, null);
             return;
         }
 
-        UIUtils.setBackground(((View) vh.choose),
+        UIUtils.setBackground(vh.choose,
                 getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
         vh.choose.setVisibility(View.VISIBLE);

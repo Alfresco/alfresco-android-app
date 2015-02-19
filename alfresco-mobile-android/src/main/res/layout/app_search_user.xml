@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -17,90 +16,86 @@
   limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_marginLeft="@dimen/browse_margin"
         android:layout_marginRight="@dimen/browse_margin"
         android:layout_weight="1"
-        android:fillViewport="true" >
+        android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/search_name" />
 
             <EditText
                 android:id="@+id/search_name"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/jobTitle" />
 
             <EditText
                 android:id="@+id/jobTitle"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/company" />
 
             <EditText
                 android:id="@+id/company"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/location" />
 
             <EditText
                 android:id="@+id/location"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
         </LinearLayout>
     </ScrollView>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
 
     <include
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
-    
+
 </LinearLayout>

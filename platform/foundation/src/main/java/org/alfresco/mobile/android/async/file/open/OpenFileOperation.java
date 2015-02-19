@@ -24,6 +24,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 
+import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
@@ -104,9 +105,14 @@ public class OpenFileOperation extends ListingOperation<String>
             MappedByteBuffer bb = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
             return charset.decode(bb).toString();
         }
+        catch (Exception e)
+        {
+            // DO Nothing
+            return null;
+        }
         finally
         {
-            stream.close();
+            IOUtils.closeStream(stream);
         }
     }
 }

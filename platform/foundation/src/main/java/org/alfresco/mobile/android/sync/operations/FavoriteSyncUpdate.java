@@ -49,8 +49,6 @@ public class FavoriteSyncUpdate extends FavoriteSync
 
     private final ContentFile contentFile;
 
-    private final String parentIdentifier;
-
     private final Document document;
 
     private final boolean doRemove;
@@ -62,7 +60,6 @@ public class FavoriteSyncUpdate extends FavoriteSync
             String parentIdentifier, Document document, ContentFile contentFile, Uri localUri, boolean doRemove)
     {
         super(context, acc, session, syncResult, localUri);
-        this.parentIdentifier = parentIdentifier;
         this.document = document;
         this.contentFile = contentFile;
         this.doRemove = doRemove;
@@ -80,7 +77,7 @@ public class FavoriteSyncUpdate extends FavoriteSync
         {
             if (contentFile != null)
             {
-                //Disable data protection if necessary
+                // Disable data protection if necessary
                 if (DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
                 {
                     // Decrypt now !
@@ -138,7 +135,7 @@ public class FavoriteSyncUpdate extends FavoriteSync
                 updatedNode = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
 
-                //Enable data protection if necessary
+                // Enable data protection if necessary
                 if (DataProtectionManager.getInstance(context).isEncryptionEnable()
                         && !DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
                 {

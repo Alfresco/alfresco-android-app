@@ -83,7 +83,7 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
         TabsNodeDetailsFragment bf = new TabsNodeDetailsFragment();
         bf.setArguments(b);
         return bf;
-    };
+    }
 
     // //////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
@@ -255,7 +255,7 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
         if (TAB_METADATA.equals(tabId))
         {
             tabSelected = 1;
-            addMetadata(node);
+            addMetadata();
         }
         else if (TAB_COMMENTS.equals(tabId))
         {
@@ -279,26 +279,26 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
     // ///////////////////////////////////////////////////////////////////////////
     public void addPreview(Node n)
     {
-        addPreview(n, android.R.id.tabcontent, false);
+        addPreview(n, android.R.id.tabcontent);
     }
 
-    public void addPreview(Node n, int layoutId, boolean backstack)
+    public void addPreview(Node n, int layoutId)
     {
         PreviewFragment.with(getActivity()).node(n).touchEnable(DisplayUtils.hasCentralPane(getActivity())).back(false)
                 .display(layoutId);
     }
 
-    public void addComments(Node n, int layoutId, boolean backstack)
+    public void addComments(Node n, int layoutId)
     {
         CommentsFragment.with(getActivity()).node(n).back(false).display(layoutId);
     }
 
     public void addComments(Node n)
     {
-        addComments(n, android.R.id.tabcontent, false);
+        addComments(n, android.R.id.tabcontent);
     }
 
-    public void addMetadata(Node n)
+    public void addMetadata()
     {
         if (DisplayUtils.hasCentralPane(getActivity()))
         {
@@ -312,14 +312,14 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
         }
     }
 
-    public void addVersions(Document d, int layoutId, boolean backstack)
+    public void addVersions(Document d, int layoutId)
     {
         VersionFragment.with(getActivity()).node(d).parentFolder(parentNode).back(false).display(layoutId);
     }
 
     public void addVersions(Document d)
     {
-        addVersions(d, android.R.id.tabcontent, false);
+        addVersions(d, android.R.id.tabcontent);
     }
 
     protected Fragment getFragment(String tag)

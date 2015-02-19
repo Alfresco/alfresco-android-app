@@ -124,7 +124,7 @@ public abstract class NodeOperation<T> extends BaseOperation<T>
 
             if (parentFolder == null && node != null)
             {
-                parentFolder = (Folder) session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
+                parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
             }
         }
         catch (Exception e)

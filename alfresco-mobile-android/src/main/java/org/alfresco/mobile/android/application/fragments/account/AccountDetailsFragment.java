@@ -87,12 +87,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
 
     public static final String ARGUMENT_ACCOUNT = "account";
 
-    private String url = null, host = null, username = null, password = null, servicedocument = null,
-            description = null;
-
-    private boolean https = false;
-
-    private int port;
+    private String url = null, username = null, password = null, description = null;
 
     private AlfrescoAccount acc;
 
@@ -173,14 +168,13 @@ public class AccountDetailsFragment extends AlfrescoFragment
         super.onDetach();
         getActivity().invalidateOptionsMenu();
     }
-    
 
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
     private void initValues()
     {
-        URL tmprUrl = null;
+        URL tmprUrl;
         try
         {
             tmprUrl = new URL(acc.getUrl());
@@ -213,9 +207,11 @@ public class AccountDetailsFragment extends AlfrescoFragment
         }
 
         Button button = (Button) viewById(R.id.browse_document);
-        button.setOnClickListener(new OnClickListener() {
+        button.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 // Affect new AlfrescoAccount to activity
                 ((BaseActivity) getActivity()).setCurrentAccount(acc);
 
@@ -225,9 +221,11 @@ public class AccountDetailsFragment extends AlfrescoFragment
         });
 
         button = (Button) viewById(R.id.my_profile);
-        button.setOnClickListener(new OnClickListener() {
+        button.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
                 UserProfileFragment.with(getActivity()).personId(acc.getUsername()).displayAsDialog();
             }
         });
@@ -307,6 +305,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
 
     private boolean retrieveFormValues()
     {
+        String host;
         // Check values
         EditText formValue = (EditText) viewById(R.id.repository_hostname);
         if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
@@ -349,10 +348,11 @@ public class AccountDetailsFragment extends AlfrescoFragment
         }
 
         CheckBox sw = (CheckBox) viewById(R.id.repository_https);
-        https = sw.isChecked();
+        boolean https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
         formValue = (EditText) viewById(R.id.repository_port);
+        int port;
         if (formValue.getText().length() > 0)
         {
             port = Integer.parseInt(formValue.getText().toString());
@@ -363,8 +363,8 @@ public class AccountDetailsFragment extends AlfrescoFragment
         }
 
         formValue = (EditText) viewById(R.id.repository_servicedocument);
-        servicedocument = formValue.getText().toString();
-        URL u = null;
+        String servicedocument = formValue.getText().toString();
+        URL u;
         try
         {
             u = new URL(protocol, host, port, servicedocument);
@@ -386,7 +386,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_password, R.id.repository_hostname,
                 R.id.repository_servicedocument, R.id.repository_description, R.id.repository_port };
-        EditText formValue = null;
+        EditText formValue;
         for (int i = 0; i < ids.length; i++)
         {
             formValue = (EditText) viewById(ids[i]);
@@ -398,7 +398,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_password, R.id.repository_hostname,
                 R.id.repository_servicedocument, R.id.repository_description, R.id.repository_port };
-        EditText formValue = null;
+        EditText formValue;
         for (int i = 0; i < ids.length; i++)
         {
             formValue = (EditText) viewById(ids[i]);
@@ -460,8 +460,8 @@ public class AccountDetailsFragment extends AlfrescoFragment
                 retrieveFormValues();
                 acc = AlfrescoAccountManager.getInstance(getActivity()).update(
                         getArguments().getLong(ARGUMENT_ACCOUNT_ID), description, (url != null) ? url : acc.getUrl(),
-                        username, password, acc.getRepositoryId(), Integer.valueOf((int) acc.getTypeId()), null,
-                        acc.getAccessToken(), acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
+                        username, password, acc.getRepositoryId(), acc.getTypeId(), null, acc.getAccessToken(),
+                        acc.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
 
                 initValues();
                 show(R.id.browse_document);
@@ -514,7 +514,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
 
                 // If there's one account with paid service, data protection is
                 // still valid
-                if (alfrescoAccount.getIsPaidAccount() == true)
+                if (alfrescoAccount.getIsPaidAccount())
                 {
                     dataProtectionDeletion = false;
                     break;
@@ -649,6 +649,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
             getActivity().finish();
         }
     }
+
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
@@ -744,7 +745,7 @@ public class AccountDetailsFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS

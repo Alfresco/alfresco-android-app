@@ -48,11 +48,13 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.content.ClipData;
 import android.content.ClipData.Item;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -95,7 +97,7 @@ public class UploadFormFragment extends Fragment
 
     protected int selectedPosition;
 
-    protected List<File> files = new ArrayList<File>();
+    protected List<File> files = new ArrayList<>();
 
     private Spinner spinnerDoc;
 
@@ -150,10 +152,11 @@ public class UploadFormFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState)
     {
         super.onActivityCreated(savedInstanceState);
-        List<AlfrescoAccount> list = AlfrescoAccountManager.getInstance(getActivity()).retrieveAccounts(getActivity());
+        List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
         spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null));
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onStart()
     {
@@ -187,7 +190,8 @@ public class UploadFormFragment extends Fragment
                             }
                             else
                             {
-                                String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN).format(new Date());
+                                String timeStamp = new SimpleDateFormat(DeviceCapture.TIMESTAMP_PATTERN)
+                                        .format(new Date());
                                 File localParentFolder = AlfrescoStorageManager.getInstance(getActivity()).getCacheDir(
                                         "AlfrescoMobile/import");
                                 File f = createFile(localParentFolder, timeStamp + ".txt", item.getText().toString());
@@ -265,7 +269,7 @@ public class UploadFormFragment extends Fragment
 
                 if (file == null && Intent.ACTION_SEND.equals(action) && type != null)
                 {
-                    Uri uri = (Uri) intent.getParcelableExtra(Intent.EXTRA_STREAM);
+                    Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
                     retrieveIntentInfo(uri);
                 }
                 else if (action == null && intent.getData() != null)

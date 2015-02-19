@@ -64,10 +64,7 @@ public class AccountEditFragment extends AlfrescoFragment
 
     private Button validate;
 
-    private String url = null, host = null, username = null, password = null, servicedocument = null,
-            description = null;
-
-    private int port;
+    private String url = null, username = null, password = null, description = null;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -111,7 +108,7 @@ public class AccountEditFragment extends AlfrescoFragment
             @Override
             public void onClick(View v)
             {
-                validateServer(v);
+                validateServer();
             }
         });
 
@@ -186,7 +183,7 @@ public class AccountEditFragment extends AlfrescoFragment
     // /////////////////////////////////////////////////////////////
     // INTERNALS
     // ////////////////////////////////////////////////////////////
-    private void validateServer(View v)
+    private void validateServer()
     {
         if (retrieveFormValues())
         {
@@ -206,7 +203,7 @@ public class AccountEditFragment extends AlfrescoFragment
     {
         int[] ids = new int[] { R.id.repository_username, R.id.repository_hostname, R.id.repository_password,
                 R.id.repository_port };
-        EditText formValue = null;
+        EditText formValue;
         for (int i = 0; i < ids.length; i++)
         {
             formValue = (EditText) findViewByIdInternal(ids[i]);
@@ -271,6 +268,7 @@ public class AccountEditFragment extends AlfrescoFragment
             return false;
         }
 
+        String host;
         formValue = (EditText) findViewByIdInternal(R.id.repository_hostname);
         if (formValue != null && formValue.getText() != null && formValue.getText().length() > 0)
         {
@@ -286,6 +284,7 @@ public class AccountEditFragment extends AlfrescoFragment
         boolean https = sw.isChecked();
         String protocol = https ? "https" : "http";
 
+        int port;
         formValue = (EditText) findViewByIdInternal(R.id.repository_port);
         if (formValue.getText().length() > 0)
         {
@@ -297,8 +296,8 @@ public class AccountEditFragment extends AlfrescoFragment
         }
 
         formValue = (EditText) findViewByIdInternal(R.id.repository_servicedocument);
-        servicedocument = formValue.getText().toString();
-        URL u = null;
+        String servicedocument = formValue.getText().toString();
+        URL u;
         try
         {
             u = new URL(protocol, host, port, servicedocument);
@@ -403,6 +402,6 @@ public class AccountEditFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

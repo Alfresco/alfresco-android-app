@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -16,77 +15,73 @@
   See the License for the specific language governing permissions and
   limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <ScrollView
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_marginLeft="@dimen/browse_margin"
         android:layout_marginRight="@dimen/browse_margin"
         android:layout_weight="1"
-        android:fillViewport="true" >
+        android:fillViewport="true">
 
         <LinearLayout
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_name" />
 
             <EditText
                 android:id="@+id/metadata_prop_name"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_title" />
 
             <EditText
                 android:id="@+id/metadata_prop_title"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text" >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_prop_description" />
 
             <EditText
                 android:id="@+id/metadata_prop_description"
                 style="?MainTheme.TextView"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="text"
-                >
-            </EditText>
+                android:inputType="text"></EditText>
 
             <TextView
                 android:id="@+id/metadata_prop_mimetype_header"
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_type" />
 
             <Spinner
                 android:id="@+id/metadata_prop_mimetype"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/spinner_holo_light"
                 android:gravity="left|bottom"
@@ -94,18 +89,18 @@
 
             <TextView
                 style="?MainTheme.TextView.SearchHeader"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/metadata_modification_date" />
 
             <LinearLayout
                 android:id="@+id/modified_by_group"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left|bottom"
                 android:layout_margin="0dip"
                 android:orientation="horizontal"
-                android:padding="0dip" >
+                android:padding="0dip">
 
                 <TextView
                     style="?MainTheme.TextView.SearchHeader"
@@ -133,15 +128,15 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     style="?MainTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
-                    android:layout_height="fill_parent"
+                    android:layout_height="match_parent"
                     android:text="@string/metadata_modification_date_from" />
 
                 <Button
@@ -159,19 +154,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/ic_calendar_pick"
-                    android:contentDescription="@string/picker_date_from"  />
+                    android:contentDescription="@string/picker_date_from" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <TextView
                     style="?MainTheme.TextView.SearchHeader"
                     android:layout_width="50dip"
-                    android:layout_height="fill_parent"
+                    android:layout_height="match_parent"
                     android:text="@string/metadata_modification_date_to" />
 
                 <Button
@@ -195,12 +190,12 @@
     </ScrollView>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
-    
-      <include
-        android:layout_width="fill_parent"
+
+    <include
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
 

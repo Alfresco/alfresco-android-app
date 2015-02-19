@@ -44,7 +44,7 @@ public class ValidationHelper extends HelperConfig
     // ///////////////////////////////////////////////////////////////////////////
     void addValidation(Map<String, Object> validations)
     {
-        validationConfigIndex = new LinkedHashMap<String, ValidationConfig>(validations.size());
+        validationConfigIndex = new LinkedHashMap<>(validations.size());
         ValidationConfigData data = null;
         for (Entry<String, Object> entry : validations.entrySet())
         {

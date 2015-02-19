@@ -7,6 +7,6 @@
     android:layout_weight="1"
     floatlabel:floatTextSize="12sp"
     floatlabel:textColorHintError="@color/field_error"
-    floatlabel:textColorHintFocused="@android:color/holo_blue_dark"
+    floatlabel:textColorHintFocused="@color/holo_blue_dark"
     floatlabel:textColorHintUnFocused="@android:color/darker_gray"
     floatlabel:textSize="16sp" />

@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.async.node.download;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,8 +51,6 @@ public class DownloadOperation extends NodeOperation<ContentFile>
     private int downloaded;
 
     private long totalDownloaded;
-
-    private File destFile;
 
     private int segment;
 
@@ -89,7 +86,7 @@ public class DownloadOperation extends NodeOperation<ContentFile>
         {
             result = super.doInBackground();
 
-            destFile = getDownloadFile();
+            File destFile = getDownloadFile();
 
             ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService()
                     .getContentStream((Document) node);
@@ -162,12 +159,7 @@ public class DownloadOperation extends NodeOperation<ContentFile>
             }
 
         }
-        catch (FileNotFoundException e)
-        {
-            Log.e(TAG, Log.getStackTraceString(e));
-            copied = false;
-        }
-        catch (IOException e)
+        catch (Exception e)
         {
             Log.e(TAG, Log.getStackTraceString(e));
             copied = false;

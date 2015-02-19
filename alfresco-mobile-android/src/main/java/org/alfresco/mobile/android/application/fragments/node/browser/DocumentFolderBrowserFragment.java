@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
@@ -42,7 +41,6 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
-import org.alfresco.mobile.android.application.fragments.actions.AbstractActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
@@ -200,11 +198,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         super.onActivityCreated(savedInstanceState);
 
-        if (getSession() == null)
-        {
-
-        }
-        else if (RepositoryVersionHelper.isAlfrescoProduct(getSession()))
+        if (getSession() != null && RepositoryVersionHelper.isAlfrescoProduct(getSession()))
         {
             setActivateThumbnail(true);
         }
@@ -213,7 +207,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View v = null;
+        View v;
         // In case of Import mode, we wrap the listing with buttons.
         if (getActivity() instanceof PublicDispatcherActivity || getActivity() instanceof PrivateDialogActivity
                 || getActivity() instanceof BaseShortcutActivity)
@@ -426,7 +420,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             path = new String[] { "/" };
         }
 
-        String tmpPath = "";
+        String tmpPath;
 
         List<String> listFolder = new ArrayList<String>(path.length);
         for (int i = path.length - 1; i > -1; i--)
@@ -491,7 +485,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
             else
             {
-                pickedNodes.put(item.getIdentifier(), (Document) item);
+                pickedNodes.put(item.getIdentifier(), item);
             }
             l.setItemChecked(position, true);
             checkValidationButton();
@@ -557,7 +551,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
 
         Node n = (Node) l.getItemAtPosition(position);
-        boolean b = true;
+        boolean b;
         if (n instanceof NodePlaceHolder)
         {
             getActivity().startActivity(
@@ -576,7 +570,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
         }
         return b;
-    };
+    }
 
     private boolean startSelection(Node item)
     {
@@ -587,7 +581,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
         // Start the CAB using the ActionMode.Callback defined above
         nActions = new NodeActions(DocumentFolderBrowserFragment.this, selectedItems);
-        nActions.setOnFinishModeListerner(new onFinishModeListerner()
+        nActions.setOnFinishModeListener(new AbstractActions.onFinishModeListener()
         {
             @Override
             public void onFinish()
@@ -738,7 +732,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                         new ContentFileProgressImpl(file))
                         .setNotificationVisibility(OperationRequest.VISIBILITY_NOTIFICATIONS));
             }
-            String operationId = Operator.with(getActivity(), getAccount()).load(requestsBuilder);
+            Operator.with(getActivity(), getAccount()).load(requestsBuilder);
 
             if (getActivity() instanceof PublicDispatcherActivity)
             {
@@ -760,7 +754,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public void refresh()
     {
-        if (!ConnectivityUtils.hasNetwork((BaseActivity) getActivity())) { return; }
+        if (!ConnectivityUtils.hasNetwork(getActivity())) { return; }
 
         if (parentFolder == null)
         {
@@ -810,7 +804,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         MenuItem mi;
 
         if (parentFolder == null) { return; }
-        Permissions permission = null;
+        Permissions permission;
         try
         {
             permission = session.getServiceRegistry().getDocumentFolderService().getPermissions(parentFolder);
@@ -941,7 +935,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public List<Node> getNodes()
     {
-        if (((ProgressNodeAdapter) adapter) != null)
+        if (adapter != null)
         {
             return ((ProgressNodeAdapter) adapter).getNodes();
         }
@@ -953,7 +947,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     private boolean hasDocument()
     {
-        if (((ProgressNodeAdapter) adapter) != null)
+        if (adapter != null)
         {
             for (Node node : ((ProgressNodeAdapter) adapter).getNodes())
             {
@@ -1097,7 +1091,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onDocumentDownloaded(DownloadEvent event)
     {
         if (event.hasException) { return; }
-        if (parentFolder != null && parentFolder.getIdentifier() == event.parentFolder.getIdentifier())
+        if (parentFolder != null && parentFolder.getIdentifier().equals(event.parentFolder.getIdentifier()))
         {
             ((ProgressNodeAdapter) adapter).replaceNode(event.document);
         }
@@ -1239,7 +1233,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
             this.menuIconId = ICON_ID_REPOSITORY;
             this.menuTitleId = LABEL_ID_REPOSITORY;
-            if (configuration != null && configuration.containsKey(ARGUMENT_SITE_SHORTNAME)){
+            if (configuration != null && configuration.containsKey(ARGUMENT_SITE_SHORTNAME))
+            {
                 this.menuIconId = R.drawable.ic_site_dark;
             }
 
@@ -1320,6 +1315,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

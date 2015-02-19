@@ -43,7 +43,7 @@ public class PeopleAdapter extends BaseListAdapter<Person, GenericViewHolder>
     protected Map<String, Person> selectedItems;
 
     protected RenditionManager renditionManager;
-    
+
     protected WeakReference<Activity> activityRef;
 
     public PeopleAdapter(Fragment fr, int textViewResourceId, List<Person> listItems)
@@ -52,8 +52,7 @@ public class PeopleAdapter extends BaseListAdapter<Person, GenericViewHolder>
         this.activityRef = new WeakReference<Activity>(fr.getActivity());
     }
 
-    public PeopleAdapter(Fragment fr, int textViewResourceId, List<Person> listItems,
-                         Map<String, Person> selectedItems)
+    public PeopleAdapter(Fragment fr, int textViewResourceId, List<Person> listItems, Map<String, Person> selectedItems)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
         this.selectedItems = selectedItems;
@@ -90,7 +89,8 @@ public class PeopleAdapter extends BaseListAdapter<Person, GenericViewHolder>
     @Override
     protected void updateIcon(final GenericViewHolder vh, final Person item)
     {
-        RenditionManager.with(activityRef.get()).loadAvatar(item.getIdentifier()).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+        RenditionManager.with(activityRef.get()).loadAvatar(item.getIdentifier()).placeHolder(R.drawable.ic_person)
+                .into(vh.icon);
     }
 
     @Override

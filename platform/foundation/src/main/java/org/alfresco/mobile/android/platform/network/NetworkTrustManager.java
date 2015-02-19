@@ -62,7 +62,7 @@ public class NetworkTrustManager implements X509TrustManager
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
     {
-        return;
+
     }
 
     static X509TrustManager findX509TrustManager(TrustManagerFactory tmf)

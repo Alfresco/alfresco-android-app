@@ -53,7 +53,7 @@ public class TypeDefinitionOperation extends BaseOperation<ModelDefinition>
     @Override
     protected LoaderResult<ModelDefinition> doInBackground()
     {
-        LoaderResult<ModelDefinition> result = new LoaderResult<ModelDefinition>();
+        LoaderResult<ModelDefinition> result = new LoaderResult<>();
 
         try
         {
@@ -103,7 +103,7 @@ public class TypeDefinitionOperation extends BaseOperation<ModelDefinition>
             result.setException(e);
         }
 
-        result.setData((ModelDefinition) typeDefinition);
+        result.setData(typeDefinition);
 
         return result;
     }

@@ -144,28 +144,27 @@ public class AuthorityField extends BaseField
     {
         if (persons.values() == null || persons.values().isEmpty()) { return null; }
 
-        if (OUTPUT_FULLNAME.equals(outputValue))
+        switch (outputValue)
         {
-            List<String> names = new ArrayList<String>(persons.size());
-            for (Person person : persons.values())
-            {
-                names.add(person.getIdentifier());
-            }
-            return (allowMultipleSelection) ? names : names.get(0);
-        }
-        else if (OUTPUT_OBJECT.equals(outputValue))
-        {
-            return (allowMultipleSelection) ? new ArrayList<Person>(persons.values()) : new ArrayList<Person>(
-                    persons.values()).get(0);
-        }
-        else
-        {
-            List<String> ids = new ArrayList<String>(persons.size());
-            for (Person person : persons.values())
-            {
-                ids.add(person.getIdentifier());
-            }
-            return (allowMultipleSelection) ? ids : ids.get(0);
+            case OUTPUT_FULLNAME:
+                List<String> names = new ArrayList<String>(persons.size());
+                for (Person person : persons.values())
+                {
+                    names.add(person.getIdentifier());
+                }
+                return (allowMultipleSelection) ? names : names.get(0);
+
+            case OUTPUT_OBJECT:
+                return (allowMultipleSelection) ? new ArrayList<Person>(persons.values()) : new ArrayList<Person>(
+                        persons.values()).get(0);
+
+            default:
+                List<String> ids = new ArrayList<String>(persons.size());
+                for (Person person : persons.values())
+                {
+                    ids.add(person.getIdentifier());
+                }
+                return (allowMultipleSelection) ? ids : ids.get(0);
         }
     }
 

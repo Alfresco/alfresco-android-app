@@ -294,7 +294,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 // Check if the file has been modified (lastmodificationDate)
                 long datetime = dlFile.lastModified();
                 d = new Date(datetime);
-                modified = (d != null && downloadDateTime != null) ? d.after(downloadDateTime) : false;
+                modified = (d != null && downloadDateTime != null) && d.after(downloadDateTime);
 
                 if (node instanceof NodeSyncPlaceHolder && modified)
                 {
@@ -694,7 +694,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             else
             {
                 // If sync file + sync activate
-                ActionUtils.actionSend(getActivity(), syncFile);
+                ActionUtils.actionSend(getActivity(), syncFile, (String) null);
             }
             return;
         }
@@ -725,7 +725,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             // Only sharing as attachment is allowed when we're not on a cloud
             // account
             Bundle b = new Bundle();
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
@@ -742,7 +742,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 public void onClick(DialogInterface dialog, int item)
                 {
                     Bundle b = new Bundle();
-                    b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+                    b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
                     b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
                     DialogFragment frag = new DownloadDialogFragment();
                     frag.setArguments(b);
@@ -852,7 +852,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         else
         {
             // Other case
-            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, (Document) node);
+            b.putParcelable(DownloadDialogFragment.ARGUMENT_DOCUMENT, node);
             b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_OPEN);
             DialogFragment frag = new DownloadDialogFragment();
             frag.setArguments(b);
@@ -1199,8 +1199,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
-                DocumentFolderBrowserFragment.TAG)) != null)
+        else if (getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
             ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
                     DocumentFolderBrowserFragment.TAG)).select(updatedNode);
@@ -1223,8 +1222,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             getActivity().getFragmentManager().popBackStack(NodeDetailsFragment.getDetailsTag(),
                     FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
-                DocumentFolderBrowserFragment.TAG)) != null)
+        else if (getActivity().getFragmentManager().findFragmentByTag(DocumentFolderBrowserFragment.TAG) != null)
         {
             ((DocumentFolderBrowserFragment) getActivity().getFragmentManager().findFragmentByTag(
                     DocumentFolderBrowserFragment.TAG)).select(updatedNode);
@@ -1256,7 +1254,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
                 String.format(getResources().getString(R.string.delete_sucess), event.data.getName()));
-        return;
     }
 
     @Subscribe

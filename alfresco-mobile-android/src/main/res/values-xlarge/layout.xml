@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2012 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -20,7 +19,5 @@
 
     <item name="app_main" type="layout">@layout/app_main_two_panes</item>
     <item name="app_details" type="layout">@layout/app_details_tab_tablet</item>
-
-    <bool name="tablet_middle">false</bool>
 
 </resources>

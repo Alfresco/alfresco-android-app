@@ -85,7 +85,8 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, CommentViewHol
     @Override
     protected void updateIcon(CommentViewHolder vh, final Comment item)
     {
-        RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_avatar).into(vh.icon);
+        RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
+                .into(vh.icon);
         AccessibilityUtils.addContentDescription(vh.icon, String.format(getContext().getString(R.string.contact_card),
                 ((CommentImpl) item).getCreatedByPerson().getFullName()));
 

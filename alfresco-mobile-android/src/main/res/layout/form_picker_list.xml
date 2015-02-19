@@ -5,17 +5,17 @@
     android:layout_gravity="top"
     android:orientation="vertical"
     android:paddingLeft="@dimen/properties_padding"
-    android:paddingRight="@dimen/properties_padding" >
+    android:paddingRight="@dimen/properties_padding">
 
     <LinearLayout
         android:id="@+id/picker_group"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginBottom="4dip"
         android:layout_marginTop="4dip"
         android:gravity="right"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/action_select"
@@ -38,13 +38,13 @@
         layout="@layout/sdk_list" />
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:layout_marginTop="4dip"
         android:background="?android:attr/dividerVertical" />
 
     <include
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
 

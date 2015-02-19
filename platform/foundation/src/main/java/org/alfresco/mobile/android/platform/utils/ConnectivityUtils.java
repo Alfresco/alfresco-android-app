@@ -75,28 +75,14 @@ public final class ConnectivityUtils
 
     public static boolean hasNetwork(Context context)
     {
-        if (!ConnectivityUtils.hasInternetAvailable(context))
-        {
-            return false;
-        }
-        else
-        {
-            return true;
-        }
+        return ConnectivityUtils.hasInternetAvailable(context);
     }
 
     public static boolean hasMobileConnectivity(Context context)
     {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobileInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mobileInfo != null)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return (mobileInfo != null);
     }
 
     public static long getAverageSpeed(Context context)

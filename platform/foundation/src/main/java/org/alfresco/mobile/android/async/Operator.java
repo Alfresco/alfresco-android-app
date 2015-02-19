@@ -20,7 +20,6 @@ package org.alfresco.mobile.android.async;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 
-import org.alfresco.mobile.android.async.node.download.DownloadRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -184,13 +183,18 @@ public class Operator
                         operation.operator.complete(operation);
                         if (operation.request.notificationVisibility == OperationRequest.VISIBILITY_NOTIFICATIONS)
                         {
-                            AlfrescoNotificationManager.getInstance(operation.operator.context).unMonitorChannel(operation.request.requestTypeId);
+                            AlfrescoNotificationManager.getInstance(operation.operator.context).unMonitorChannel(
+                                    operation.request.requestTypeId);
                         }
                         EventBusManager.getInstance().post(new BatchOperationEvent(operation));
-                        /*if (!operation.isCancelled() || (!operation.request.isLongRunning() && operation.isCancelled()))
-                        {
-                            OperationsUtils.removeOperationUri(operation.operator.context, operation.action.request);
-                        }*/
+                        /*
+                         * if (!operation.isCancelled() ||
+                         * (!operation.request.isLongRunning() &&
+                         * operation.isCancelled())) {
+                         * OperationsUtils.removeOperationUri
+                         * (operation.operator.context,
+                         * operation.action.request); }
+                         */
                     }
                     break;
                 }
@@ -203,7 +207,10 @@ public class Operator
     // ///////////////////////////////////////////////////////////////////////////
     // BUILDER
     // ///////////////////////////////////////////////////////////////////////////
-    /** Fluent API for creating {@link org.alfresco.mobile.android.async.Operator} instances. */
+    /**
+     * Fluent API for creating
+     * {@link org.alfresco.mobile.android.async.Operator} instances.
+     */
     public static class Builder
     {
         private final Context context;
@@ -222,7 +229,10 @@ public class Operator
             this.context = context.getApplicationContext();
         }
 
-        /** Start building a new {@link org.alfresco.mobile.android.async.Operator} instance. */
+        /**
+         * Start building a new
+         * {@link org.alfresco.mobile.android.async.Operator} instance.
+         */
         public Builder(Context context, AlfrescoAccount acc)
         {
             if (context == null) { throw new IllegalArgumentException("Context must not be null."); }
@@ -237,7 +247,10 @@ public class Operator
             return this;
         }
 
-        /** Create the {@link org.alfresco.mobile.android.async.Operator} instance. */
+        /**
+         * Create the {@link org.alfresco.mobile.android.async.Operator}
+         * instance.
+         */
         public Operator build()
         {
             Context context = this.context;

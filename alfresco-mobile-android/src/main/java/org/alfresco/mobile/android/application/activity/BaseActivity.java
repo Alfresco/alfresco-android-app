@@ -126,6 +126,6 @@ public abstract class BaseActivity extends AlfrescoActivity
 
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
-        getWindow().setAttributes((WindowManager.LayoutParams) params);
+        getWindow().setAttributes(params);
     }
 }

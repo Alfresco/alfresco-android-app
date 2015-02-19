@@ -130,8 +130,7 @@ public class FavoritesSyncManager extends Manager
             {
                 if (mInstance == null)
                 {
-                    mInstance = (FavoritesSyncManager) Manager.getInstance(context,
-                            FavoritesSyncManager.class.getSimpleName());
+                    mInstance = Manager.getInstance(context, FavoritesSyncManager.class.getSimpleName());
                 }
 
                 return (FavoritesSyncManager) mInstance;
@@ -295,9 +294,7 @@ public class FavoritesSyncManager extends Manager
 
     public boolean isSynced(AlfrescoAccount account, Node node)
     {
-        if (account == null || node == null) { return false; }
-        if (node.isFolder()) { return false; }
-        return isSynced(account, node.getIdentifier());
+        return !(account == null || node == null) && !node.isFolder() && isSynced(account, node.getIdentifier());
     }
 
     public File getSyncFile(AlfrescoAccount account, Node node)
@@ -347,8 +344,6 @@ public class FavoritesSyncManager extends Manager
 
     /**
      * Flag the activity time.
-     * 
-     * @param context
      */
     public void saveStartSyncPrepareTimestamp()
     {
@@ -418,8 +413,8 @@ public class FavoritesSyncManager extends Manager
 
     public static boolean isFolder(Cursor cursor)
     {
-        if (cursor == null) { return false; }
-        return ContentModel.TYPE_FOLDER.equals(cursor.getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID));
+        return cursor != null
+                && ContentModel.TYPE_FOLDER.equals(cursor.getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID));
     }
 
     public boolean isSyncFile(File file)
@@ -450,8 +445,9 @@ public class FavoritesSyncManager extends Manager
         if (appContext != null && acc != null)
         {
             File synchroFolder = getSynchroFolder(acc);
-            //TODO Check if clean or not ?
-            File uuidFolder = new File(synchroFolder, NodeRefUtils.getCleanIdentifier(NodeRefUtils.getNodeIdentifier(nodeIdentifier)));
+            // TODO Check if clean or not ?
+            File uuidFolder = new File(synchroFolder, NodeRefUtils.getCleanIdentifier(NodeRefUtils
+                    .getNodeIdentifier(nodeIdentifier)));
             uuidFolder.mkdirs();
             return new File(uuidFolder, documentName);
         }

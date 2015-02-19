@@ -315,11 +315,11 @@ public class CreateTaskFragment extends AlfrescoFragment implements UserPickerCa
         // Email Notification
         if (AndroidVersion.isICSOrAbove())
         {
-            emailNotification = (Switch) viewById(R.id.action_send_notification);
+            emailNotification = viewById(R.id.action_send_notification);
         }
         else
         {
-            emailNotification = (CheckBox) viewById(R.id.action_send_notification);
+            emailNotification = viewById(R.id.action_send_notification);
         }
 
         return getRootView();

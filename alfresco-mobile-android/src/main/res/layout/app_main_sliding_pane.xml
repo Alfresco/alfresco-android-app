@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -18,17 +17,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/slide_pane"
     android:layout_width="@dimen/sliding_panel"
-    android:layout_height="fill_parent"
+    android:layout_height="match_parent"
     android:clickable="false"
     android:focusable="false"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <fragment
         android:id="@+id/sliding_menu"
         android:name="org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:tag="SlidingMenuFragment" />
 
 </LinearLayout>

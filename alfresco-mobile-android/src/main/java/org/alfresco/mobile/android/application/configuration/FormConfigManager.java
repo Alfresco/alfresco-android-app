@@ -94,7 +94,8 @@ public class FormConfigManager extends BaseConfigManager
         HashMap<String, Serializable> props = new HashMap<String, Serializable>(fieldsIndex.size());
         for (Entry<String, BaseField> entry : fieldsIndex.entrySet())
         {
-            if (entry.getValue().hasChanged()){
+            if (entry.getValue().hasChanged())
+            {
                 props.put(entry.getKey(), (Serializable) entry.getValue().getOutputValue());
             }
         }
@@ -103,17 +104,17 @@ public class FormConfigManager extends BaseConfigManager
 
     public void setPropertyValue(String propertyId, Object object)
     {
-        ((BaseField) fieldsIndex.get(propertyId)).setPropertyValue(object);
+        fieldsIndex.get(propertyId).setPropertyValue(object);
     }
 
     public Object getValuePicked(String propertyId)
     {
-        return  ((BaseField) fieldsIndex.get(propertyId)).getValuePicked();
+        return fieldsIndex.get(propertyId).getValuePicked();
     }
 
     public BaseField getField(String fieldId)
     {
-        return  ((BaseField) fieldsIndex.get(fieldId));
+        return fieldsIndex.get(fieldId);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -121,7 +122,7 @@ public class FormConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     protected View generateProperties(String formIdentifier, LayoutInflater li, boolean isEdition)
     {
-        ViewGroup rootView =  (ViewGroup) li.inflate(R.layout.form_root, null);
+        ViewGroup rootView = (ViewGroup) li.inflate(R.layout.form_root, null);
         ViewGroup hookView = rootView;
         if (isEdition)
         {
@@ -181,7 +182,7 @@ public class FormConfigManager extends BaseConfigManager
                 continue;
             }
 
-            //Retrieve the Field builder based on config
+            // Retrieve the Field builder based on config
             Property nodeProp = node.getProperty(fieldConfig.getModelIdentifier());
             View fieldView = null;
             BaseField field = createField(nodeProp, fieldConfig, typeDefinition);
@@ -190,13 +191,15 @@ public class FormConfigManager extends BaseConfigManager
                 continue;
             }
 
-            //View Generation depending on State : Edition or Read
+            // View Generation depending on State : Edition or Read
             if (isEdition)
             {
                 Log.d("Form", fieldConfig.getModelIdentifier() + " " + field.getClass());
                 fieldView = field.getEditView(typeDefinition, groupview);
-                if(currentValues != null){
-                    String value = currentValues.get(fieldConfig.getModelIdentifier()) == null ? "" : currentValues.get(fieldConfig.getModelIdentifier()).toString();
+                if (currentValues != null)
+                {
+                    String value = currentValues.get(fieldConfig.getModelIdentifier()) == null ? "" : currentValues
+                            .get(fieldConfig.getModelIdentifier()).toString();
                     ((AlfrescoFieldView) fieldView).setText(value);
                 }
                 fieldsIndex.put(fieldConfig.getModelIdentifier(), field);
@@ -206,13 +209,13 @@ public class FormConfigManager extends BaseConfigManager
                 fieldView = field.createReadableView();
             }
 
-            //If a view has been generated we kept it.
+            // If a view has been generated we kept it.
             if (fieldView != null)
             {
                 groupview.addView(fieldView);
             }
 
-            //If requires fragment for pickers.
+            // If requires fragment for pickers.
             if (field.requiresPicker())
             {
                 field.initPicker(fr);

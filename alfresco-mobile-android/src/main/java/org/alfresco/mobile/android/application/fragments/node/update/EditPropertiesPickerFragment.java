@@ -44,17 +44,11 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
 
     private static final String ARGUMENT_FIELD_ID = "fieldId";
 
-    private EditPropertiesFragment editProperties;
-
-    private String fieldId;
-
     private BaseField field;
 
     private ListView lv;
 
     private AlfrescoFieldView fieldView;
-
-    private String titleId;
 
     protected View pb;
 
@@ -89,13 +83,13 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         if (getArguments() == null || !getArguments().containsKey(ARGUMENT_FIELD_ID)) { return null; }
-        fieldId = getArguments().getString(ARGUMENT_FIELD_ID);
+        String fieldId = getArguments().getString(ARGUMENT_FIELD_ID);
 
         // Retrieve parameters
-        editProperties = ((EditPropertiesFragment) getFragmentManager().findFragmentByTag(
+        EditPropertiesFragment editProperties = ((EditPropertiesFragment) getFragmentManager().findFragmentByTag(
                 EditPropertiesFragment.TAG));
         field = editProperties.getField(fieldId);
-        titleId = field.getLabel();
+        String titleId = field.getLabel();
 
         if (getDialog() != null)
         {
@@ -109,7 +103,7 @@ public class EditPropertiesPickerFragment extends AlfrescoFragment
         if (getSession() == null) { return getRootView(); }
 
         lv = ((ListView) viewById(R.id.listView));
-        pb = (View) viewById(R.id.progressbar);
+        pb = viewById(R.id.progressbar);
         ev = viewById(R.id.empty);
 
         TextView evt = (TextView) viewById(R.id.empty_text);

@@ -60,7 +60,6 @@ public class PrepareFavoriteHelper extends PrepareBaseHelper
         cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, doc.getIdentifier());
         cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
         context.getContentResolver().update(localUri, cValues, null, null);
-        return;
     }
 
     protected void rename(Document doc, File localFile, Uri localUri)
@@ -73,7 +72,6 @@ public class PrepareFavoriteHelper extends PrepareBaseHelper
 
     protected void prepareUpdate(Document doc, Cursor cursorId, File localFile, Uri localUri)
     {
-        return;
     }
 
     protected void prepareDelete(String id, Cursor cursorId)
@@ -81,6 +79,5 @@ public class PrepareFavoriteHelper extends PrepareBaseHelper
         // If Favorite listing simply delete the entry.
         context.getContentResolver().delete(
                 FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), null, null);
-        return;
     }
 }

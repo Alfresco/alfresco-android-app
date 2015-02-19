@@ -34,8 +34,6 @@ public class ReassignTaskOperation extends TaskOperation<Task>
 
     private Task updatedTask = null;
 
-    private Person assignee;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -55,7 +53,7 @@ public class ReassignTaskOperation extends TaskOperation<Task>
         {
             result = super.doInBackground();
 
-            assignee = ((ReassignTaskRequest) request).assignee;
+            Person assignee = ((ReassignTaskRequest) request).assignee;
             if (assignee == null)
             {
                 assignee = session.getServiceRegistry().getPersonService()

@@ -55,6 +55,6 @@ public class SitesFoundationAdapter extends BaseListAdapter<Site, GenericViewHol
     @Override
     protected void updateIcon(GenericViewHolder vh, Site item)
     {
-        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_site));
+        vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
     }
 }

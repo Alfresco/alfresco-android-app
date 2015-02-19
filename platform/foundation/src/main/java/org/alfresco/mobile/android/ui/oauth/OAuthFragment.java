@@ -57,9 +57,7 @@ public abstract class OAuthFragment extends DialogFragment
 
     private String scope;
 
-    private String code;
-
-    private int layout_id = R.layout.sdk_webview;
+    private int layout_id = R.layout.app_webview;
 
     private String baseOAuthUrl = OAuthConstant.PUBLIC_API_HOSTNAME;
 
@@ -202,7 +200,7 @@ public abstract class OAuthFragment extends DialogFragment
 
             // authorization complete hide webview for now & retrieve
             // the acces token
-            code = OAuthHelper.retrieveCode(url);
+            String code = OAuthHelper.retrieveCode(url);
             if (code != null)
             {
                 retrieveAccessToken(code);

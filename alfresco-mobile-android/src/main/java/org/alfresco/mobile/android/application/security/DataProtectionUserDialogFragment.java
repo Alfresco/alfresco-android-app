@@ -76,8 +76,8 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         }
 
         prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        checked =  DataProtectionManager.getInstance(getActivity()).hasDataProtectionEnable();
-        
+        checked = DataProtectionManager.getInstance(getActivity()).hasDataProtectionEnable();
+
         // Messages informations
         int titleId = R.string.data_protection;
         int iconId = R.drawable.ic_alfresco;
@@ -148,7 +148,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
         @Override
         public void onPositive()
         {
-            int localMessageId = R.string.decryption_title;
+            int localMessageId;
             if (firstTime)
             {
                 DataProtectionManager.getInstance(getActivity()).setDataProtectionUserRequested(true);

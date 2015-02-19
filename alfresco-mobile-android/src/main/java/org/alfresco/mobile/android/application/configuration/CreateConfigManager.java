@@ -53,7 +53,7 @@ public class CreateConfigManager extends BaseConfigManager
     public List<DocumentTypeRecord> retrieveCreationDocumentList()
     {
         List<DocumentTypeRecord> fileTypes = new ArrayList<DocumentTypeRecord>();
-        String extension = null, templatePath = null;
+        String extension, templatePath;
         for (ItemConfig itemConfig : creationConfig.getCreatableMimeTypes())
         {
             extension = (String) itemConfig.getParameter("extension");

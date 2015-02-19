@@ -59,7 +59,6 @@ public abstract class BaseCursorGridFragment extends CommonGridFragment implemen
                 gv.setAdapter(adapter);
             }
             ((CursorAdapter) adapter).changeCursor(onChangeCursor(cursor));
-            onDataDisplayed();
         }
         setListShown(true);
 
@@ -96,7 +95,7 @@ public abstract class BaseCursorGridFragment extends CommonGridFragment implemen
         getLoaderManager().restartLoader(loaderId, getArguments(), this);
         getLoaderManager().getLoader(loaderId).forceLoad();
     }
-    
+
     protected void refreshSilently()
     {
         isFullLoad = Boolean.FALSE;

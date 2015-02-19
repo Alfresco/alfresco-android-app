@@ -77,7 +77,7 @@ public class AccountOAuthHelper
         }
         else
         {
-            switch ((int) acc.getTypeId())
+            switch (acc.getTypeId())
             {
                 case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
                 case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
@@ -92,14 +92,13 @@ public class AccountOAuthHelper
 
     private static void saveNewOauthData(Activity activity, AlfrescoAccount acc, OAuthData data)
     {
-        switch ((int) acc.getTypeId())
+        switch (acc.getTypeId())
         {
             case AlfrescoAccount.TYPE_ALFRESCO_TEST_OAUTH:
             case AlfrescoAccount.TYPE_ALFRESCO_CLOUD:
                 acc = AlfrescoAccountManager.getInstance(activity).update(acc.getId(), acc.getTitle(), acc.getUrl(),
-                        acc.getUsername(), acc.getPassword(), acc.getRepositoryId(),
-                        Integer.valueOf((int) acc.getTypeId()), null, data.getAccessToken(), data.getRefreshToken(),
-                        acc.getIsPaidAccount() ? 1 : 0);
+                        acc.getUsername(), acc.getPassword(), acc.getRepositoryId(), acc.getTypeId(), null,
+                        data.getAccessToken(), data.getRefreshToken(), acc.getIsPaidAccount() ? 1 : 0);
                 break;
             default:
                 break;

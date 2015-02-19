@@ -58,7 +58,7 @@ public class OpenAsDialogFragment extends DialogFragment
     /**
      * Static constructor.
      * 
-     * @param currentAccount : Alfresco AlfrescoAccount.
+     * @param f
      * @return a dialogfragment to dipslay file type creation list.
      */
     public static OpenAsDialogFragment newInstance(File f)

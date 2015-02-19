@@ -176,7 +176,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
             if (item.isDocument())
             {
                 // Show properties
-                NodeDetailsFragment.with((Activity) getActivity()).nodeId(item.getIdentifier()).display();
+                NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).display();
             }
             else
             {
@@ -262,7 +262,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS

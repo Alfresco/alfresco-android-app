@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -18,14 +17,14 @@
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="?MainTheme.Background.White"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:gravity="center_horizontal" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <include layout="@layout/app_account_form" />
 
@@ -38,13 +37,13 @@
 
         <LinearLayout
             android:id="@+id/profile_group"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/my_profile"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/wizard_main_margin"
                 android:layout_marginRight="@dimen/wizard_main_margin"
@@ -56,7 +55,7 @@
         <LinearLayout
             android:id="@+id/edit_account"
             style="?android:attr/buttonBarStyle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="bottom"
@@ -64,12 +63,12 @@
             android:orientation="horizontal"
             android:paddingLeft="2dip"
             android:paddingRight="2dip"
-            android:paddingTop="0dip" >
+            android:paddingTop="0dip">
 
             <Button
                 android:id="@+id/cancel_account"
                 style="?MainTheme.Button"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/cancel"
@@ -78,7 +77,7 @@
             <Button
                 android:id="@+id/validate_account"
                 style="?MainTheme.Button"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:enabled="false"

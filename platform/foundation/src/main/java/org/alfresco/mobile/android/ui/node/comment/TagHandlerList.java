@@ -60,7 +60,7 @@ public class TagHandlerList implements TagHandler
             {
                 if (first)
                 {
-                    output.append("\n\t" + index + ". ");
+                    output.append("\n\t").append(Integer.toString(index)).append(". ");
                     first = false;
                     index++;
                 }

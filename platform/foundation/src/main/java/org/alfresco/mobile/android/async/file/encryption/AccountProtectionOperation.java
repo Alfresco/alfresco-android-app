@@ -52,7 +52,7 @@ public class AccountProtectionOperation extends FileOperation<Void>
     @Override
     protected LoaderResult<Void> doInBackground()
     {
-        LoaderResult<Void> result = new LoaderResult<Void>();
+        LoaderResult<Void> result = new LoaderResult<>();
         try
         {
             result = super.doInBackground();

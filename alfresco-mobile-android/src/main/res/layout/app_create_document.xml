@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of the Alfresco Mobile SDK.
@@ -16,16 +15,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <EditText
             android:id="@+id/document_name"
@@ -33,8 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dip"
             android:layout_weight="1"
-            android:hint="@string/create_document_name_hint" >
-        </EditText>
+            android:hint="@string/create_document_name_hint"></EditText>
 
         <TextView
             android:id="@+id/document_extension"
@@ -45,12 +43,12 @@
     </LinearLayout>
 
     <View
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="?android:attr/dividerVertical" />
 
     <include
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         layout="@layout/app_validation_button" />
 

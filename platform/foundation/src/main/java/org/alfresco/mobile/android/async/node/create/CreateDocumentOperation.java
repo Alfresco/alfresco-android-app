@@ -41,8 +41,6 @@ public class CreateDocumentOperation extends UpNodeOperation
 
     protected Document doc = null;
 
-    private String finalDocumentName = null;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -65,7 +63,7 @@ public class CreateDocumentOperation extends UpNodeOperation
 
             String filename = getContentFile().getFile().getPath();
             boolean encdec = DataProtectionManager.getInstance(context).isEncryptable(acc, new File(filename));
-            finalDocumentName = createUniqueName();
+            String finalDocumentName = createUniqueName();
 
             // Update the document Name with the final name
             ContentValues cValues = new ContentValues();
@@ -127,7 +125,8 @@ public class CreateDocumentOperation extends UpNodeOperation
 
         result.setData(doc);
         long pong = System.currentTimeMillis();
-        Log.d("[UPLOAD-BACK]", "Duration " + (pong-ping) + " ms" +"["+ (contentFile.getLength() / (pong-ping))  +" b/s]");
+        Log.d("[UPLOAD-BACK]", "Duration " + (pong - ping) + " ms" + "[" + (contentFile.getLength() / (pong - ping))
+                + " b/s]");
 
         return result;
     }

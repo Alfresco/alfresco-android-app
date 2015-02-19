@@ -130,35 +130,32 @@ public class NodeField extends BaseField
     {
         if (nodes.values() == null || nodes.values().isEmpty()) { return null; }
 
-        if (OUTPUT_ID.equals(outputValue))
+        switch (outputValue)
         {
-            List<String> names = new ArrayList<String>(nodes.size());
-            for (Node node : nodes.values())
-            {
-                names.add(node.getIdentifier());
-            }
-            return (allowMultipleSelection) ? names : names.get(0);
-        }
-        else if (OUTPUT_OBJECT.equals(outputValue))
-        {
-            return (allowMultipleSelection) ? new ArrayList<Node>(nodes.values()) : new ArrayList<Node>(nodes.values())
-                    .get(0);
-        }
-        else
-        {
-            List<String> values = new ArrayList<String>(nodes.size());
-            for (Node node : nodes.values())
-            {
-                if (node.getProperty(outputValue) != null)
+            case OUTPUT_ID:
+                List<String> names = new ArrayList<String>(nodes.size());
+                for (Node node : nodes.values())
                 {
-                    values.add(BaseField.getStringValue(getContext(), node.getProperty(outputValue).getValue()));
+                    names.add(node.getIdentifier());
                 }
-                else
+                return (allowMultipleSelection) ? names : names.get(0);
+            case OUTPUT_OBJECT:
+                return (allowMultipleSelection) ? new ArrayList<Node>(nodes.values()) : new ArrayList<Node>(
+                        nodes.values()).get(0);
+            default:
+                List<String> values = new ArrayList<String>(nodes.size());
+                for (Node node : nodes.values())
                 {
-                    values.add(null);
+                    if (node.getProperty(outputValue) != null)
+                    {
+                        values.add(BaseField.getStringValue(getContext(), node.getProperty(outputValue).getValue()));
+                    }
+                    else
+                    {
+                        values.add(null);
+                    }
                 }
-            }
-            return (allowMultipleSelection) ? values : values.get(0);
+                return (allowMultipleSelection) ? values : values.get(0);
         }
     }
 

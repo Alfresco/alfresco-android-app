@@ -37,10 +37,6 @@ public class ProcessDiagramFragment extends AlfrescoFragment
 
     public static final String ARGUMENT_PROCESSID = "processId";
 
-    private String processId;
-
-    private ImageView preview;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
     // ///////////////////////////////////////////////////////////////////////////
@@ -81,9 +77,9 @@ public class ProcessDiagramFragment extends AlfrescoFragment
         View v = inflater.inflate(R.layout.app_process_preview, container, false);
         if (getSession() == null) { return v; }
 
-        processId = getArguments().getString(ARGUMENT_PROCESSID);
+        String processId = getArguments().getString(ARGUMENT_PROCESSID);
         if (processId == null || processId.isEmpty()) { return null; }
-        preview = (ImageView) v.findViewById(R.id.preview);
+        ImageView preview = (ImageView) v.findViewById(R.id.preview);
         RenditionManager.with(getActivity()).loadProcessDiagram(processId).placeHolder(R.drawable.ic_px).into(preview);
         return v;
     }

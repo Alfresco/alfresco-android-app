@@ -58,17 +58,16 @@ public class AuthorityAdapter extends PeopleAdapter
     @Override
     protected void updateTopText(GenericViewHolder vh, Person item)
     {
-        if (AuthorityField.OUTPUT_FULLNAME.equals(outputValue))
+        switch (outputValue)
         {
-            vh.topText.setText(item.getFullName());
-        }
-        else if (AuthorityField.OUTPUT_OBJECT.equals(outputValue))
-        {
-            vh.topText.setText(item.getFullName());
-        }
-        else
-        {
-            vh.topText.setText(item.getIdentifier());
+            case AuthorityField.OUTPUT_FULLNAME:
+                vh.topText.setText(item.getFullName());
+                break;
+            case AuthorityField.OUTPUT_OBJECT:
+                vh.topText.setText(item.getFullName());
+                break;
+            default:
+                vh.topText.setText(item.getIdentifier());
         }
     }
 

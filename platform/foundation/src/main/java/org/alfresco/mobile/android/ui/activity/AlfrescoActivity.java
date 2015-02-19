@@ -331,8 +331,6 @@ public abstract class AlfrescoActivity extends Activity
                 AlfrescoNotificationManager.getInstance(activity).showLongToast(errorMessage);
 
                 CloudExceptionUtils.handleCloudException(activity, e, false);
-
-                return;
             }
         }
     }

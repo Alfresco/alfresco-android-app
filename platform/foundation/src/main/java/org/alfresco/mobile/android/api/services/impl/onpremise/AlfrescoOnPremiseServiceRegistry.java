@@ -47,8 +47,7 @@ public class AlfrescoOnPremiseServiceRegistry extends OnPremiseServiceRegistry i
     {
         boolean initConfiguration = true;
         if (session.getParameter(ConfigService.CONFIGURATION_INIT) != null
-                && ConfigService.CONFIGURATION_INIT_NONE.equals((String) session
-                        .getParameter(ConfigService.CONFIGURATION_INIT)))
+                && ConfigService.CONFIGURATION_INIT_NONE.equals(session.getParameter(ConfigService.CONFIGURATION_INIT)))
         {
             initConfiguration = false;
         }

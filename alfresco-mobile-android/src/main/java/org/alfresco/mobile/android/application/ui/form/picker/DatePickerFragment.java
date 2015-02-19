@@ -109,7 +109,7 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-        this.mListener = (OnDateSetListener) this;
+        this.mListener = this;
     }
 
     @Override
@@ -181,8 +181,8 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
                     public void onClick(DialogInterface dialog, int which)
                     {
                         clearValue = true;
-                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(),
-                                picker.getDatePicker().getMonth(), picker.getDatePicker().getDayOfMonth());
+                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(), picker.getDatePicker()
+                                .getMonth(), picker.getDatePicker().getDayOfMonth());
                         dismiss();
                     }
                 });
@@ -193,8 +193,8 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
                     public void onClick(DialogInterface dialog, int which)
                     {
                         isCancelled = true;
-                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(),
-                                picker.getDatePicker().getMonth(), picker.getDatePicker().getDayOfMonth());
+                        onDateSet(picker.getDatePicker(), picker.getDatePicker().getYear(), picker.getDatePicker()
+                                .getMonth(), picker.getDatePicker().getDayOfMonth());
                         dismiss();
                     }
                 });
@@ -212,15 +212,11 @@ public class DatePickerFragment extends DialogFragment implements OnDateSetListe
         String pickFragmentTag = getArguments().getString(ARGUMENT_FRAGMENT_TAG);
         String dateId = getArguments().getString(ARGUMENT_DATE_ID);
         onPickDateFragment fragmentPick = ((onPickDateFragment) getFragmentManager().findFragmentByTag(pickFragmentTag));
-        if (fragmentPick == null) { return; }
+        if (fragmentPick == null || isCancelled) { return; }
 
         if (clearValue)
         {
             fragmentPick.onDateClear(dateId);
-        }
-        else if (isCancelled)
-        {
-            return;
         }
         else
         {

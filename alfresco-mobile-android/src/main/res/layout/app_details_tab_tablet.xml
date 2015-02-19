@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -17,30 +16,31 @@
   limitations under the License.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     style="?MainTheme.Background.White"
     android:gravity="center"
     android:orientation="vertical"
-    android:visibility="visible" >
+    android:visibility="visible">
 
     <LinearLayout
         android:id="@+id/properties_details"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="5dip"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/group_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_margin="4dip"
                 android:baselineAligned="false"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                     android:background="@color/grey_lighter"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:padding="2dip" >
+                    android:padding="2dip">
 
                     <ImageView
                         android:id="@+id/icon"
@@ -67,7 +67,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:paddingLeft="4dip" >
+                    android:paddingLeft="4dip">
 
                     <TextView
                         android:id="@+id/title"
@@ -76,14 +76,14 @@
                         android:layout_margin="0dp"
                         android:paddingLeft="0dip"
                         android:paddingRight="@dimen/properties_details_padding"
-                        android:text="Green Grasssd fgsdf gdsf gds fgds fg fdgsdf gsdf gsdf gsd fgdsfg sdf.JPG" />
+                        tools:text="Green Grasssd fgsdf gdsf gds fgds fg fdgsdf gsdf gsdf gsd fgdsfg sdf.JPG" />
 
                     <TextView
                         android:id="@+id/details"
                         style="?MainTheme.TextView.ListItem.Secondary"
                         android:layout_marginLeft="0dip"
                         android:paddingLeft="0dip"
-                        android:text="G419 days ago - 142Kb, version 1.0" />
+                        tools:text="G419 days ago - 142Kb, version 1.0" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/properties_actions_margin"
                 android:layout_marginLeft="@dimen/browse_margin"
-                android:layout_marginTop="@dimen/properties_actions_margin" >
+                android:layout_marginTop="@dimen/properties_actions_margin">
 
                 <ImageView
                     android:id="@+id/action_openin"
@@ -104,7 +104,7 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center" >
+                    android:gravity="center">
 
                     <ImageView
                         android:id="@+id/action_favorite"
@@ -128,7 +128,7 @@
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center" >
+                    android:gravity="center">
 
                     <ImageView
                         android:id="@+id/action_like"
@@ -155,8 +155,8 @@
         </LinearLayout>
 
         <include
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_marginLeft="@dimen/properties_details_padding"
             android:layout_marginRight="@dimen/properties_details_padding"
             android:layout_marginTop="@dimen/properties_details_padding"
@@ -164,8 +164,8 @@
     </LinearLayout>
 
     <include
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         layout="@layout/app_progress_emtpy" />
 
 </FrameLayout>

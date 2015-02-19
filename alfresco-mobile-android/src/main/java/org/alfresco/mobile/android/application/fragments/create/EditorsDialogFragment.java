@@ -96,9 +96,6 @@ public class EditorsDialogFragment extends DialogFragment
         // ACTION_EDIT doesn't work
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(new File("/sdcard/test" + documentType.extension)), documentType.mimetype);
-        // intent.setDataAndType(Uri.fromFile(new
-        // File("/storage/sdcard0/Android/data/org.alfresco.mobile.android.application/files/ec2-176-34-173-67.eu-west-1.compute.amazonaws.com-admin/Download/yyy.spd")),
-        // documentType.mimetype)
         final PackageManager mgr = getActivity().getPackageManager();
         List<ResolveInfo> list = mgr.queryIntentActivities(intent, 0);
         Collections.sort(list, new EditorComparator(getActivity(), true));
@@ -109,7 +106,6 @@ public class EditorsDialogFragment extends DialogFragment
             // warning message.
             lv.setVisibility(View.GONE);
             v.findViewById(R.id.empty).setVisibility(View.VISIBLE);
-            v.findViewById(R.id.empty_picture).setVisibility(View.GONE);
             ((TextView) v.findViewById(R.id.empty_text))
                     .setText(R.string.create_document_editor_not_available_description);
             title = R.string.create_document_editor_not_available;

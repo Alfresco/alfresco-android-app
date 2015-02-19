@@ -63,8 +63,6 @@ public class AccountSignInFragment extends AlfrescoFragment
 
     public static final String ARGUMENT_ACCOUNT = "account";
 
-    private Button validate;
-
     private AlfrescoAccount account;
 
     private EditTextFieldView passwordField;
@@ -106,7 +104,7 @@ public class AccountSignInFragment extends AlfrescoFragment
 
         setRootView(inflater.inflate(R.layout.app_signin, container, false));
 
-        validate = (Button) viewById(R.id.next);
+        Button validate = (Button) viewById(R.id.next);
         validate.setEnabled(true);
         validate.setOnClickListener(new OnClickListener()
         {
@@ -168,8 +166,8 @@ public class AccountSignInFragment extends AlfrescoFragment
                 // Update Account
                 AlfrescoAccount acc = AlfrescoAccountManager.getInstance(getActivity()).update(account.getId(),
                         account.getTitle(), account.getUrl(), username, password, account.getRepositoryId(),
-                        Integer.valueOf((int) account.getTypeId()), null, account.getAccessToken(),
-                        account.getRefreshToken(), account.getIsPaidAccount() ? 1 : 0);
+                        account.getTypeId(), null, account.getAccessToken(), account.getRefreshToken(),
+                        account.getIsPaidAccount() ? 1 : 0);
 
                 // Reload
                 // Affect new AlfrescoAccount to activity
@@ -256,7 +254,7 @@ public class AccountSignInFragment extends AlfrescoFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS

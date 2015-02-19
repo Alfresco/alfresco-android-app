@@ -271,7 +271,7 @@ public abstract class ScanSnapPreset
     // GETTERS
     // ///////////////////////////////////////////////////////////////////////////
     public abstract int getIdentifier();
-    
+
     public int getTitleId()
     {
         return titleId;
@@ -445,27 +445,19 @@ public abstract class ScanSnapPreset
         return Uri.parse(builder.toString());
     }
 
-    protected StringBuilder addParameter(StringBuilder builder, String key, int value)
+    protected void addParameter(StringBuilder builder, String key, int value)
     {
         if (value != EMPTY_VALUE)
         {
-            return builder.append("&").append(key).append("=").append(value);
-        }
-        else
-        {
-            return builder;
+            builder.append("&").append(key).append("=").append(value);
         }
     }
 
-    protected StringBuilder addParameter(StringBuilder builder, String key, String value)
+    protected void addParameter(StringBuilder builder, String key, String value)
     {
         if (value != null)
         {
-            return builder.append("&").append(key).append("=").append(value);
-        }
-        else
-        {
-            return builder;
+            builder.append("&").append(key).append("=").append(value);
         }
     }
 }

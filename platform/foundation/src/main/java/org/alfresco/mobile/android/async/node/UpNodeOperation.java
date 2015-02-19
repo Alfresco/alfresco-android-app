@@ -41,8 +41,6 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
 
     private long segment = 0;
 
-    private long totalLength = 0;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
@@ -52,7 +50,6 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
         if (request instanceof UpNodeRequest)
         {
             this.contentFile = ((UpNodeRequest) request).contentFile;
-            this.totalLength = contentFile.getLength();
             this.segment = initSegment();
         }
     }
@@ -80,7 +77,7 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
         {
             Log.w(TAG, Log.getStackTraceString(e));
         }
-        return new LoaderResult<Document>();
+        return new LoaderResult<>();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -105,9 +102,6 @@ public abstract class UpNodeOperation extends NodeOperation<Document> implements
                     ((UpNodeRequest) request).createContentValues(progress), null, null);
         }
     }
-
-
-
 
     private long initSegment()
     {

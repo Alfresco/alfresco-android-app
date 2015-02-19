@@ -49,7 +49,7 @@ public class LoaderResult<T>
     }
 
     /**
-     * @param Exception
+     * @param exception
      */
     public void setException(Exception exception)
     {

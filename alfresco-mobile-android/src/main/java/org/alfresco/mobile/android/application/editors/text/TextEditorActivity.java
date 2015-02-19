@@ -178,7 +178,6 @@ public class TextEditorActivity extends BaseActivity
                 AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.file_editor_error_open));
                 finish();
             }
-            return;
         }
     }
 

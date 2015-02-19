@@ -367,7 +367,6 @@ public class MainActivity extends BaseActivity
                 {
                     FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
                 }
-                return;
             }
         }
         catch (Exception e)
@@ -752,7 +751,6 @@ public class MainActivity extends BaseActivity
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
             }
         }
-        return;
     }
 
     @Subscribe
@@ -920,7 +918,6 @@ public class MainActivity extends BaseActivity
         {
             FavoritesSyncManager.getInstance(this).sync(currentAccount);
         }
-        return;
     }
 
     @Subscribe
@@ -970,7 +967,6 @@ public class MainActivity extends BaseActivity
         setProgressBarIndeterminateVisibility(false);
         invalidateOptionsMenu();
         AlfrescoNotificationManager.getInstance(this).showLongToast(getString(R.string.account_not_activated));
-        return;
     }
 
     @Subscribe
@@ -1023,15 +1019,12 @@ public class MainActivity extends BaseActivity
     // load.
     private boolean isCurrentAccountToLoad(Intent intent)
     {
-        if (currentAccount == null) { return false; }
-        if (!intent.hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID)) { return false; }
-        return (currentAccount.getId() == intent.getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID));
+        return currentAccount != null && intent.hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID)
+                && (currentAccount.getId() == intent.getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID));
     }
 
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)
     {
-        if (currentAccount == null) { return false; }
-        if (event == null) { return false; }
-        return (currentAccount.getId() == event.account.getId());
+        return currentAccount != null && event != null && (currentAccount.getId() == event.account.getId());
     }
 }

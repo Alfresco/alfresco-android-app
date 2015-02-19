@@ -134,7 +134,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
             else
             {
                 // Show properties
-                NodeDetailsFragment.with((Activity) getActivity()).nodeId(item.getIdentifier()).display();
+                NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).display();
             }
         }
     }
@@ -163,7 +163,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
 
             menuIconId = R.drawable.ic_favorite_dark;
             menuTitleId = R.string.menu_favorites;
-            templateArguments = new String[] {FILTER_KEY_MODE};
+            templateArguments = new String[] { FILTER_KEY_MODE };
         }
 
         // ///////////////////////////////////////////////////////////////////////////
@@ -212,6 +212,6 @@ public class FavoritesFragment extends FavoritesNodeFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
     }
 }

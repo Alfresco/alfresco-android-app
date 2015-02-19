@@ -244,7 +244,7 @@ public class LibraryFragment extends BaseCursorGridFragment
         adapter.notifyDataSetChanged();
 
         return true;
-    };
+    }
 
     // ///////////////////////////////////////////////////////////////////////////
     // CURSOR ADAPTER
@@ -354,7 +354,7 @@ public class LibraryFragment extends BaseCursorGridFragment
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
     }
 }

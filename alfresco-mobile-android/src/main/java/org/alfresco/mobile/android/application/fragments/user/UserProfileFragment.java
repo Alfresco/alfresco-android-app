@@ -119,7 +119,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
 
         // Icon
-        RenditionManager.with(getActivity()).loadAvatar(userName).placeHolder(R.drawable.ic_avatar)
+        RenditionManager.with(getActivity()).loadAvatar(userName).placeHolder(R.drawable.ic_person)
                 .into((ImageView) viewById(R.id.preview));
         return getRootView();
     }
@@ -142,7 +142,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         super.onStart();
         if (getDialog() != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_avatar);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_person);
             getDialog().setTitle(titleId);
         }
         else
@@ -229,7 +229,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
                 mi = menu.add(Menu.NONE, R.id.menu_user_videocall, Menu.FIRST + 2, R.string.start_video_call);
-                mi.setIcon(R.drawable.ic_videocall);
+                mi.setIcon(R.drawable.ic_videos);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
                 break;
             case MODE_EMAIL:
@@ -757,8 +757,6 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         // where that
         // handler can go away...)
         myContext.startActivity(myIntent);
-
-        return;
     }
 
     /**
@@ -795,7 +793,6 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         {
 
         }
-        return;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -831,7 +828,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         protected Fragment createFragment(Bundle b)
         {
             return newInstanceByTemplate(b);
-        };
+        }
 
         // ///////////////////////////////////////////////////////////////////////////
         // SETTERS

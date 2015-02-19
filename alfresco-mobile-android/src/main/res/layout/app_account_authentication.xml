@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2014 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -20,15 +19,15 @@
     style="?MainTheme.Background.White"
     android:layout_gravity="center"
     android:gravity="center"
-    android:minWidth="600dp" >
+    android:minWidth="600dp">
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
         android:layout_margin="15dip"
         android:gravity="top"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/advanced"
@@ -36,13 +35,14 @@
             android:text="@string/cloud_authentication" />
 
         <include
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             layout="@layout/app_waiting" />
 
         <include
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            layout="@layout/sdk_webview" />
+            layout="@layout/app_webview" />
     </LinearLayout>
 
 </ScrollView>

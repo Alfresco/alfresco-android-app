@@ -100,13 +100,13 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
             }
         });
 
-        final Button bcreate = (Button) v.findViewById(R.id.validate_action);
-        bcreate.setText(R.string.update);
-        bcreate.setOnClickListener(new OnClickListener()
+        final Button bCreate = (Button) v.findViewById(R.id.validate_action);
+        bCreate.setText(R.string.update);
+        bCreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
             {
-                updateNode(tv, desc, bcreate);
+                updateNode(tv, desc, bCreate);
             }
         });
 
@@ -118,7 +118,7 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE)
                 {
-                    updateNode(tv, desc, bcreate);
+                    updateNode(tv, desc, bCreate);
                     handled = true;
                 }
                 return handled;
@@ -145,7 +145,7 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
                 desc.setText(node.getProperty(ContentModel.PROP_DESCRIPTION).getValue().toString());
             }
 
-            bcreate.setEnabled(true);
+            bCreate.setEnabled(true);
 
         }
         else
@@ -153,32 +153,29 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
             tsize.setVisibility(View.GONE);
         }
 
-        final EditText textName = ((EditText) v.findViewById(R.id.content_name));
-        final Button validate = (Button) v.findViewById(R.id.validate_action);
-
         // This Listener is responsible to enable or not the validate button and
         // error message.
-        textName.addTextChangedListener(new TextWatcher()
+        tv.addTextChangedListener(new TextWatcher()
         {
             public void afterTextChanged(Editable s)
             {
                 if (s.length() > 0)
                 {
-                    validate.setEnabled(true);
+                    bCreate.setEnabled(true);
                     if (UIUtils.hasInvalidName(s.toString().trim()))
                     {
-                        textName.setError(getString(R.string.filename_error_character));
-                        validate.setEnabled(false);
+                        tv.setError(getString(R.string.filename_error_character));
+                        bCreate.setEnabled(false);
                     }
                     else
                     {
-                        textName.setError(null);
+                        tv.setError(null);
                     }
                 }
                 else
                 {
-                    validate.setEnabled(false);
-                    textName.setError(null);
+                    bCreate.setEnabled(false);
+                    tv.setError(null);
                 }
             }
 
@@ -223,7 +220,7 @@ public abstract class UpdateNodeDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     protected void updateNode(EditText tv, EditText desc, Button bcreate)
     {
-        Map<String, Serializable> props = new HashMap<String, Serializable>(2);
+        Map<String, Serializable> props = new HashMap<>(2);
         props.put(ContentModel.PROP_NAME, tv.getText().toString());
         if (desc.getText() != null && desc.getText().length() > 0)
         {

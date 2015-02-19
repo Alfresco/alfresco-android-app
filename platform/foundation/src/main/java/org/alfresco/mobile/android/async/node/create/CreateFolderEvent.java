@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.async.OperationEvent;
 
 public class CreateFolderEvent extends OperationEvent<Folder>
 {
-    private Folder parentFolder;
+    final Folder parentFolder;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS

@@ -73,7 +73,7 @@ public class UpdateContentRequest extends UpNodeRequest
             requestTypeId = TYPE_ID;
         }
 
-        public Builder(String parentFolderId, String documentId, String documentName, ContentFile contentFile)
+        public Builder(String parentFolderId, String documentId, ContentFile contentFile)
         {
             super(parentFolderId, documentId, contentFile);
             requestTypeId = TYPE_ID;
