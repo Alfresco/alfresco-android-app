@@ -51,7 +51,7 @@ public abstract class AlfrescoFieldView extends LinearLayout
 
     protected float mFloatTextSizeInSp;
 
-    protected String mHintText, mText, mErrorText;
+    protected String mHintText, mContentDescription, mText, mErrorText;
 
     // -----------------------------------------------------------------------
     // FLAGS
@@ -127,6 +127,13 @@ public abstract class AlfrescoFieldView extends LinearLayout
             return;
         }
         mValidationRules = rules;
+    }
+
+    // -----------------------------------------------------------------------
+    // Content Description
+    public void setContentDescription(String contentDescription)
+    {
+        mContentDescription = contentDescription;
     }
 
     // -----------------------------------------------------------------------

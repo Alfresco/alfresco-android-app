@@ -75,7 +75,7 @@ public class TextEditorActivity extends BaseActivity
 
     private TextView tview;
 
-    private boolean changed = false;
+    private boolean changed = false, modified = false;
 
     private String title;
 
@@ -308,7 +308,11 @@ public class TextEditorActivity extends BaseActivity
             }
             else
             {
-                if (isCreation)
+                if (modified && isCreation)
+                {
+                    exit();
+                }
+                else if (isCreation)
                 {
                     file.delete();
                 }
@@ -352,6 +356,7 @@ public class TextEditorActivity extends BaseActivity
                 if (!changed && s.length() != originalLength)
                 {
                     changed = true;
+                    modified = true;
                 }
             }
 
@@ -404,6 +409,23 @@ public class TextEditorActivity extends BaseActivity
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC ACTION
     // ///////////////////////////////////////////////////////////////////////////
+    private void exit()
+    {
+        if (isCreation)
+        {
+            if (hasOuput)
+            {
+                TextEditorActivity.this.startActivity(PublicIntentAPIUtils.uploadFileIntent(file, ouputAccountId,
+                        outputFolderId));
+                TextEditorActivity.this.finish();
+            }
+            else
+            {
+                ActionUtils.actionSendDocumentToAlfresco(TextEditorActivity.this, file);
+            }
+        }
+    }
+
     public void save(boolean stopActivity)
     {
         TextView view = (TextView) findViewById(R.id.texteditor);
@@ -457,20 +479,7 @@ public class TextEditorActivity extends BaseActivity
             public void onClick(DialogInterface dialog, int item)
             {
                 save(true);
-
-                if (isCreation)
-                {
-                    if (hasOuput)
-                    {
-                        TextEditorActivity.this.startActivity(PublicIntentAPIUtils.uploadFileIntent(file,
-                                ouputAccountId, outputFolderId));
-                        TextEditorActivity.this.finish();
-                    }
-                    else
-                    {
-                        ActionUtils.actionSendDocumentToAlfresco(TextEditorActivity.this, file);
-                    }
-                }
+                exit();
                 dialog.dismiss();
             }
         });

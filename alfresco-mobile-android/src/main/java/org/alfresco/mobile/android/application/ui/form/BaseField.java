@@ -338,6 +338,7 @@ public abstract class BaseField
         }
 
         // Configure Field
+        tmpFieldView.setContentDescription(fieldConfig.getModelIdentifier());
         tmpFieldView.setHint(fieldConfig.getLabel());
         configureFromDefinition(tmpFieldView);
         tmpFieldView.setReadOnly(isReadOnly);

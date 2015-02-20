@@ -274,6 +274,7 @@ public class LocalConfigServiceImpl implements ConfigService
     // ///////////////////////////////////////////////////////////////////////////
     public void setSession(AlfrescoSession session)
     {
+        if (configuration == null) { return; }
         configuration.setSession(session);
     }
 

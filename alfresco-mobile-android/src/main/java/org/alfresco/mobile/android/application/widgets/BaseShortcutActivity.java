@@ -17,6 +17,8 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.widgets;
 
+import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
@@ -27,9 +29,11 @@ import org.alfresco.mobile.android.async.node.favorite.FavoriteNodesRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.squareup.otto.Subscribe;
@@ -80,6 +84,21 @@ public class BaseShortcutActivity extends BaseActivity
     public void setUploadAccount(AlfrescoAccount account)
     {
         this.uploadAccount = account;
+    }
+
+    protected String getName(Folder folder, Site selectedSite)
+    {
+        String shortcutName = (folder.getProperty(PropertyIds.PATH).getValue());
+        if (TextUtils.isEmpty(shortcutName))
+        {
+            shortcutName = folder.getName();
+        }
+        else
+        {
+            shortcutName = (selectedSite != null && shortcutName.startsWith("/Sites") && shortcutName
+                    .endsWith("documentLibrary")) ? selectedSite.getTitle() : folder.getName();
+        }
+        return shortcutName;
     }
 
     // ////////////////////////////////////////////////////////

@@ -177,7 +177,7 @@ public class TextField extends BaseField
     // ///////////////////////////////////////////////////////////////////////////
     public Object getOutputValue()
     {
-        if (property == null) { return null; }
+        if (property == null) { return super.getOutputValue(); }
         if (property.isMultiValued())
         {
             return multiValue;
