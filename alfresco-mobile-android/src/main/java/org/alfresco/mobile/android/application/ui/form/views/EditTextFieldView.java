@@ -67,6 +67,13 @@ public class EditTextFieldView extends AlfrescoFieldView
         setupEditTextView();
     }
 
+    public void setContentDescription(String contentDescription)
+    {
+        super.setContentDescription(contentDescription);
+        mEditTextView.setContentDescription(contentDescription);
+        setupEditTextView();
+    }
+
     public void setHintOnly(String hintText)
     {
         super.setHintOnly(hintText);
@@ -153,6 +160,7 @@ public class EditTextFieldView extends AlfrescoFieldView
         mEditTextView.setHint(mIsMandatory ? mHintText.concat(" " + getContext().getString(R.string.field_required))
                 : mHintText);
         mEditTextView.setHintTextColor(mUnFocusedColor);
+        mEditTextView.setContentDescription(mContentDescription);
         mEditTextView.setText(mText);
         mEditTextView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mTextSizeInSp);
         mEditTextView.addTextChangedListener(getTextWatcher());

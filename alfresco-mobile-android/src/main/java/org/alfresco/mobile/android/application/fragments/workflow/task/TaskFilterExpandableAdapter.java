@@ -144,7 +144,7 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
         vh = (CheckBoxViewHolder) convertView.getTag();
         vh.topText.setText(item);
         vh.bottomText.setVisibility(View.GONE);
-        if (selectedItems.get(FAMILY.get(groupPosition)).equals(item))
+        if (selectedItems.get(FAMILY.get(groupPosition)) == item)
         {
             vh.checkBox.setChecked(true);
         }

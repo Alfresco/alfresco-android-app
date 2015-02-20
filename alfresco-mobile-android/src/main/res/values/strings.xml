@@ -794,5 +794,6 @@
     <string name="my_tasks">My Tasks</string>
     <string name="waiting_operations">Please wait</string>
     <string name="shortcut_alfresco">Alfresco</string>
+    <string name="error_offline"><![CDATA[<p><b>Alfresco Mobile help can\'t be accessed because you\'re offline.</b><br/></p> Please try again when you\'re back online.]]></string>
 
 </resources>

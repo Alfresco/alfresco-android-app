@@ -1027,13 +1027,6 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    // Due to dropdown the AlfrescoAccount loaded might not be the last one to
-    // load.
-    private boolean isCurrentAccountToLoad(Intent intent)
-    {
-        return currentAccount != null && intent.hasExtra(PrivateIntent.EXTRA_ACCOUNT_ID)
-                && (currentAccount.getId() == intent.getExtras().getLong(PrivateIntent.EXTRA_ACCOUNT_ID));
-    }
 
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)
     {

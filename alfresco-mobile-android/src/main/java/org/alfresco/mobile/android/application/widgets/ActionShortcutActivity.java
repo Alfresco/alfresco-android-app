@@ -18,6 +18,7 @@
 package org.alfresco.mobile.android.application.widgets;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
@@ -43,9 +44,9 @@ public class ActionShortcutActivity extends BaseShortcutActivity
     // ///////////////////////////////////////////////////////////////////////////
     public void validateAction(View v)
     {
-        Folder parentFolder = ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
-                .getParentFolder();
-        createShortcut(uploadAccount, parentFolder, actionId);
+        DocumentFolderBrowserFragment frag = (DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG);
+        if (frag == null) { return; }
+        createShortcut(uploadAccount, frag.getParentFolder(), frag.getSite(), actionId);
     }
 
     public void setActionId(int actionId)
@@ -56,7 +57,7 @@ public class ActionShortcutActivity extends BaseShortcutActivity
     // ///////////////////////////////////////////////////////////////////////////
     // Intent
     // ///////////////////////////////////////////////////////////////////////////
-    private void createShortcut(AlfrescoAccount uploadAccount, Folder folder, int actionId)
+    private void createShortcut(AlfrescoAccount uploadAccount, Folder folder, Site site, int actionId)
     {
         // Intent associated to the shortcut
         Intent actionIntent = null;
@@ -84,7 +85,7 @@ public class ActionShortcutActivity extends BaseShortcutActivity
         // Result Intent
         Intent shortcutIntent = new Intent();
         shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, actionIntent);
-        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, folder.getName());
+        shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, getName(folder, site));
         shortcutIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
                 Intent.ShortcutIconResource.fromContext(this, iconId));
         setResult(RESULT_OK, shortcutIntent);

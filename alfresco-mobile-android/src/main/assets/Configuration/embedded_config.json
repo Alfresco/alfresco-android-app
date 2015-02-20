@@ -176,18 +176,15 @@
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:title",
-          "evaluator": "hasTitledAspect"
+          "field-id": "cm:title"
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:description",
-          "evaluator": "hasTitledAspect"
+          "field-id": "cm:description"
         },
         {
           "item-type": "field-id",
-          "field-id": "cm:author",
-          "evaluator": "hasAuthorAspect"
+          "field-id": "cm:author"
         }
       ]
     },
@@ -248,6 +245,30 @@
         {
           "item-type": "field-id",
           "field-id": "cm:description"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:author"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "size"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:creator"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:created"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:modifier"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "cm:modified"
         }
       ]
     },
@@ -337,6 +358,27 @@
         }
       ]
     },
+    "aspect:cm:geographic": {
+      "label-id": "cm_contentmodel.aspect.cm_geographic.title",
+      "items": [
+        {
+          "item-type": "field",
+          "field": {
+            "id": "cm:latitude",
+            "model-id": "cm:latitude",
+            "label-id": "cm_contentmodel.property.cm_latitude.title"
+          }
+        },
+        {
+          "item-type": "field",
+          "field": {
+            "id": "cm:longitude",
+            "model-id": "cm:longitude",
+            "label-id": "cm_contentmodel.property.cm_longitude.title"
+          }
+        }
+      ]
+    },
     "aspect:exif:exif": {
       "label-id": "cm_contentmodel.aspect.exif_exif.title",
       "items": [
@@ -401,27 +443,6 @@
           "field-id": "exif:resolutionUnit"
         }
       ]
-    },
-    "aspect:cm:geographic": {
-      "label-id": "cm_contentmodel.aspect.cm_geographic.title",
-      "items": [
-        {
-          "item-type": "field",
-          "field": {
-            "id": "cm:latitude",
-            "model-id": "cm:latitude",
-            "label-id": "cm_contentmodel.property.cm_latitude.title"
-          }
-        },
-        {
-          "item-type": "field",
-          "field": {
-            "id": "cm:longitude",
-            "model-id": "cm:longitude",
-            "label-id": "cm_contentmodel.property.cm_longitude.title"
-          }
-        }
-      ]
     }
   },
   "fields": {
@@ -457,6 +478,11 @@
       "model-id": "mimetype",
       "type": "org.alfresco.client.form.field.text",
       "label-id": "cm_contentmodel.property.cm_mimetype.title"
+    },
+    "path": {
+      "model-id": "path",
+      "type": "org.alfresco.client.form.field.text",
+      "label-id": "cm_contentmodel.property.cm_path.title"
     },
     "cm:author": {
       "model-id": "cm:author",

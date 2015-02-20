@@ -997,6 +997,11 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         return parentFolder;
     }
 
+    public Site getSite()
+    {
+        return site;
+    }
+
     @Override
     public int getMode()
     {
@@ -1263,7 +1268,9 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
                     shortcut(true);
                 }
             }
-            else if (configuration != null)
+            else if (configuration != null
+                    && (configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 1)
+                    || (!configuration.containsKey(NodeBrowserTemplate.ARGUMENT_LABEL) && configuration.size() > 0))
             {
                 shortcut(true);
             }

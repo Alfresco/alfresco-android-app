@@ -42,9 +42,11 @@ public class FolderShortcutActivity extends BaseShortcutActivity
     // ///////////////////////////////////////////////////////////////////////////
     public void validateAction(View v)
     {
-        Folder parentFolder = ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG))
-                .getParentFolder();
-        createShortcut(uploadAccount, parentFolder);
+        DocumentFolderBrowserFragment frag = (DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG);
+        if (frag == null) { return; }
+        Folder parentFolder = frag.getParentFolder();
+        createShortcut(getName(parentFolder, frag.getSite()),
+                PublicIntentAPIUtils.viewFolder(uploadAccount.getId(), parentFolder.getIdentifier()));
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -53,11 +55,6 @@ public class FolderShortcutActivity extends BaseShortcutActivity
     public void createShortcut(AlfrescoAccount uploadAccount, File file)
     {
         createShortcut(file.getName(), PublicIntentAPIUtils.viewFile(uploadAccount.getId(), file));
-    }
-
-    private void createShortcut(AlfrescoAccount uploadAccount, Folder folder)
-    {
-        createShortcut(folder.getName(), PublicIntentAPIUtils.viewFolder(uploadAccount.getId(), folder.getIdentifier()));
     }
 
     private void createShortcut(String shortcutName, Intent shortcutIntent)
