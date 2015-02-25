@@ -86,7 +86,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         if (!favoriteCursor.moveToFirst()) { return createErrorDialog(); }
         // Messages informations
         int titleId = R.string.sync_error_title;
-        int iconId = R.drawable.ic_alfresco;
+        int iconId = R.drawable.ic_application_logo;
         int messageId = R.string.sync_error_node_unfavorited;
         int positiveId = android.R.string.yes;
         int negativeId = -1;
@@ -322,7 +322,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     private Dialog createErrorDialog()
     {
         // Error !
-        Builder builder = new Builder(getActivity()).setIcon(R.drawable.ic_alfresco)
+        Builder builder = new Builder(getActivity()).setIcon(R.drawable.ic_application_logo)
                 .setTitle(R.string.sync_error_title).setMessage(R.string.error_general);
         return builder.create();
     }

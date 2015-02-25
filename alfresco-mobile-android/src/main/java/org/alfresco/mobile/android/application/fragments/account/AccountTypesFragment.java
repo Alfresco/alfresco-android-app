@@ -104,7 +104,7 @@ public class AccountTypesFragment extends AlfrescoFragment
     {
         if (getDialog() != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_application_logo);
         }
         getActivity().invalidateOptionsMenu();
         AccessibilityUtils.sendAccessibilityEvent(getActivity());

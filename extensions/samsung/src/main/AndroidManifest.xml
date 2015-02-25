@@ -7,9 +7,9 @@
             android:name="org.alfresco.mobile.android.application.extension.samsung.pen.SNoteEditorActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="false"
-            android:icon="@drawable/ic_alfresco_logo"
+            android:icon="@drawable/ic_application_icon"
             android:label="@string/note_editor_name"
-            android:uiOptions="splitActionBarWhenNarrow" >
+            android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="org.alfresco.mobile.android.extension.intent.ACTION_START_SAMSUNG_NOTE" />
 

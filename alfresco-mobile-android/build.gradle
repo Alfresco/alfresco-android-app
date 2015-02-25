@@ -4,15 +4,17 @@ android {
     compileSdkVersion 21
     buildToolsVersion "21.1.2"
 
-
     defaultConfig {
         applicationId APPLICATION_ID
+
         minSdkVersion 11
         targetSdkVersion 21
         versionCode 40
         versionName VERSION_NAME
 
         manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]
+        resValue "string", "account_name", ACCOUNT_ID
+        resValue "string", "sync_adapter", SYNC_ADAPTER
 
         defaultPublishConfig DEFAULT_PUBLISH
         resValue "string", "oauth_api_key", OAUTH_API_KEY
@@ -30,7 +32,7 @@ android {
     signingConfigs {
 
         custom {
-            //EXTENSIONS
+            //Add here your custom sign configuration
         }
 
 
@@ -44,17 +46,19 @@ android {
 
     buildTypes {
         debug {
+            // Important : In case of custom application
+            // Don't forget to change all values to custom debug values
             applicationIdSuffix ".debug"
+
             manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY_DEBUG]
             resValue "string", "account_name", ACCOUNT_ID_DEBUG
-            resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
             resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
+
+            resValue "string", "hockeOapp_key", HOCKEYAPP_KEY
+
         }
 
         release {
-            manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]
-            resValue "string", "account_name", ACCOUNT_ID
-            resValue "string", "sync_adapter", SYNC_ADAPTER
 
             signingConfig signingConfigs.release
             minifyEnabled false
@@ -69,11 +73,12 @@ android {
 
 
     productFlavors {
-
         //CUSTOM EXTENSION FLAVOR
         custom {
-            dependencies {
+            //Add here custom configuration
 
+            dependencies {
+                //Add here 3rd party dependencies
             }
         }
 

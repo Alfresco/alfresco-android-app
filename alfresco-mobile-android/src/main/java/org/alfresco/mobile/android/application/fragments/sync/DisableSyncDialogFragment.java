@@ -54,7 +54,7 @@ public class DisableSyncDialogFragment extends DialogFragment
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         int titleId = R.string.favorites_deactivate;
-        int iconId = R.drawable.ic_alfresco;
+        int iconId = R.drawable.ic_application_logo;
         int positiveId = android.R.string.yes;
         int messageId = R.string.favorites_deactivate_description;
         int negativeId = android.R.string.no;

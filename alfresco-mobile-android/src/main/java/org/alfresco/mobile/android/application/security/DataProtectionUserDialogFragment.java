@@ -80,7 +80,7 @@ public class DataProtectionUserDialogFragment extends DialogFragment
 
         // Messages informations
         int titleId = R.string.data_protection;
-        int iconId = R.drawable.ic_alfresco;
+        int iconId = R.drawable.ic_application_logo;
         int messageId = (firstTime) ? R.string.data_protection_blurb : (checked ? R.string.unprotect_question
                 : R.string.protect_question);
         int positiveId = android.R.string.yes;

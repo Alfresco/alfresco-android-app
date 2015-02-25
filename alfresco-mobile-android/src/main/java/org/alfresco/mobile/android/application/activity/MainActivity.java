@@ -564,7 +564,7 @@ public class MainActivity extends BaseActivity
         {
             case SESSION_ERROR:
                 Bundle b = new Bundle();
-                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
+                b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, sessionStateErrorMessageId);
                 b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
@@ -578,7 +578,7 @@ public class MainActivity extends BaseActivity
                 if (!ConnectivityUtils.hasNetwork(this))
                 {
                     Bundle ba = new Bundle();
-                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
+                    ba.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, R.string.error_session_nodata);
                     ba.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
@@ -633,7 +633,7 @@ public class MainActivity extends BaseActivity
         if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
                 && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
         {
-            AccountsFragment.getMenu(this, menu);
+            ((AccountsFragment) getFragment(AccountsFragment.TAG)).getMenu(this, menu);
             return true;
         }
 
@@ -951,7 +951,7 @@ public class MainActivity extends BaseActivity
     {
         // Display error dialog message
         Bundle b = new Bundle();
-        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_alfresco);
+        b.putInt(SimpleAlertDialogFragment.ARGUMENT_ICON, R.drawable.ic_application_logo);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_TITLE, R.string.error_session_creation_message);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_MESSAGE, event.messageId);
         b.putInt(SimpleAlertDialogFragment.ARGUMENT_POSITIVE_BUTTON, android.R.string.ok);
@@ -1026,7 +1026,6 @@ public class MainActivity extends BaseActivity
             }
         }
     }
-
 
     private boolean isCurrentAccountToLoad(LoadAccountCompletedEvent event)
     {

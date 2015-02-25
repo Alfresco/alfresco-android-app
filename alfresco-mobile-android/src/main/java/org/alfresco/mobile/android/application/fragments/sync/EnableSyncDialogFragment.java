@@ -58,7 +58,7 @@ public class EnableSyncDialogFragment extends DialogFragment
         AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
 
         String title = String.format(getString(R.string.favorites_activate), acc.getTitle());
-        int iconId = R.drawable.ic_alfresco;
+        int iconId = R.drawable.ic_application_logo;
         int positiveId = R.string.yes;
         int messageId = R.string.favorites_activate_description;
         int negativeId = R.string.no;

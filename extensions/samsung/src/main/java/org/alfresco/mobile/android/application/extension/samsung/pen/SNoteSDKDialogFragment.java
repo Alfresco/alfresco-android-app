@@ -70,7 +70,7 @@ public class SNoteSDKDialogFragment extends DialogFragment
         }
         // Messages informations
         int titleId = R.string.error_sdk_dialog;
-        int iconId = R.drawable.ic_alfresco_logo;
+        int iconId = R.drawable.ic_application_icon;
         int messageId = R.string.error_sdk_unsupported;
         switch (error)
         {
