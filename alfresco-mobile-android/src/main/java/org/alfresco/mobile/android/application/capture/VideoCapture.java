@@ -65,6 +65,12 @@ public class VideoCapture extends DeviceCapture
                 if (folder != null)
                 {
                     Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    if (intent.resolveActivity(context.getPackageManager()) == null)
+                    {
+                        AlfrescoNotificationManager.getInstance(context).showAlertCrouton(parentActivity,
+                                context.getString(R.string.feature_disable));
+                        return false;
+                    }
 
                     payload = new File(folder.getPath(), createFilename("VID", "mp4"));
 
@@ -77,7 +83,8 @@ public class VideoCapture extends DeviceCapture
                 }
                 else
                 {
-                    AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(parentActivity.getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(
+                            parentActivity.getString(R.string.sdinaccessible));
                 }
             }
             catch (Exception e)

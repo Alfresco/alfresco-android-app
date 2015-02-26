@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.person.PersonEvent;
 import org.alfresco.mobile.android.async.person.PersonRequest;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.exception.CloudExceptionUtils;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -577,7 +578,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionAddContact(Context c, Person member)
+    public static void actionAddContact(Activity activity, Person member)
     {
         if (member != null)
         {
@@ -637,7 +638,14 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
             try
             {
-                c.startActivity(Intent.createChooser(intent, c.getString(R.string.contact_add)));
+                if (intent.resolveActivity(activity.getPackageManager()) == null)
+                {
+                    AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                            activity.getString(R.string.feature_disable));
+                    return;
+                }
+
+                activity.startActivity(Intent.createChooser(intent, activity.getString(R.string.contact_add)));
             }
             catch (ActivityNotFoundException e)
             {
@@ -646,7 +654,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionEmail(Activity a, String email, String subject, String content)
+    public static void actionEmail(Activity activity, String email, String subject, String content)
     {
         if (subject == null) subject = "";
         if (content == null) content = "";
@@ -659,7 +667,13 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
         try
         {
-            a.startActivity(Intent.createChooser(emailIntent, "Select email application."));
+            if (emailIntent.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                        activity.getString(R.string.feature_disable));
+                return;
+            }
+            activity.startActivity(Intent.createChooser(emailIntent, "Select email application."));
         }
         catch (ActivityNotFoundException e)
         {
@@ -667,11 +681,18 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionCall(Activity a, String number)
+    public static void actionCall(Activity activity, String number)
     {
         try
         {
-            a.startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number)));
+            Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + number));
+            if (intent.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                        activity.getString(R.string.feature_disable));
+                return;
+            }
+            activity.startActivity(intent);
         }
         catch (ActivityNotFoundException e)
         {
@@ -679,14 +700,20 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionStartIm(Activity a, String personId)
+    public static void actionStartIm(Activity activity, String personId)
     {
         Uri imUri = new Uri.Builder().scheme("imto").authority("gtalk").appendPath(personId).build();
         Intent intent = new Intent(Intent.ACTION_SENDTO, imUri);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         try
         {
-            a.startActivity(intent);
+            if (intent.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                        activity.getString(R.string.feature_disable));
+                return;
+            }
+            activity.startActivity(intent);
         }
         catch (ActivityNotFoundException e)
         {
@@ -694,7 +721,7 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         }
     }
 
-    public static void actionSendSMS(Activity a, String number)
+    public static void actionSendSMS(Activity activity, String number)
     {
         Intent sendIntent = new Intent(Intent.ACTION_VIEW);
         sendIntent.putExtra("address", number);
@@ -703,7 +730,13 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
         try
         {
-            a.startActivity(Intent.createChooser(sendIntent, "Select SMS application."));
+            if (sendIntent.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                        activity.getString(R.string.feature_disable));
+                return;
+            }
+            activity.startActivity(Intent.createChooser(sendIntent, "Select SMS application."));
         }
         catch (ActivityNotFoundException e)
         {
@@ -717,12 +750,12 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
 
     public static final int ACTION_VIDEO_CALL = 2;
 
-    public void actionSkype(Context myContext, int skypeAction, String personId)
+    public void actionSkype(Activity activity, int skypeAction, String personId)
     {
         // Make sure the Skype for Android client is installed
-        if (!isSkypeClientInstalled(myContext))
+        if (!isSkypeClientInstalled(activity))
         {
-            goToMarket(myContext);
+            goToMarket(activity);
             return;
         }
 
@@ -756,7 +789,13 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
         // presence of its handler (although there is an extremely minute window
         // where that
         // handler can go away...)
-        myContext.startActivity(myIntent);
+        if (myIntent.resolveActivity(activity.getPackageManager()) == null)
+        {
+            AlfrescoNotificationManager.getInstance(activity).showAlertCrouton((Activity) activity,
+                    activity.getString(R.string.feature_disable));
+            return;
+        }
+        activity.startActivity(myIntent);
     }
 
     /**
@@ -787,6 +826,12 @@ public class UserProfileFragment extends AlfrescoFragment implements OnMenuItemC
             Uri marketUri = Uri.parse("market://details?id=com.skype.raider");
             Intent myIntent = new Intent(Intent.ACTION_VIEW, marketUri);
             myIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (myIntent.resolveActivity(myContext.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(myContext).showAlertCrouton((Activity) myContext,
+                        myContext.getString(R.string.feature_disable));
+                return;
+            }
             myContext.startActivity(myIntent);
         }
         catch (ActivityNotFoundException e)

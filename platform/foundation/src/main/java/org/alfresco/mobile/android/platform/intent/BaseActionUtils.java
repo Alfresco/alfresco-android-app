@@ -35,52 +35,6 @@ import android.support.v4.content.LocalBroadcastManager;
 
 public class BaseActionUtils
 {
-
-    /**
-     * Allow to open a file with an associated application installed in the
-     * device.
-     * 
-     * @param context
-     * @param myFile
-     * @param mimeType
-     */
-    public static void actionView(final Context context, File myFile, String mimeType)
-    {
-        actionView(context, myFile, mimeType, new ActionManagerListener()
-        {
-            @Override
-            public void onActivityNotFoundException(ActivityNotFoundException e)
-            {
-                AlfrescoNotificationManager.getInstance(context).showToast(R.string.error_unable_open_file);
-            }
-        });
-    }
-
-    /**
-     * @param context
-     * @param myFile
-     * @param mimeType
-     * @since 1.0.1
-     */
-    public static void actionView(Context context, File myFile, String mimeType, ActionManagerListener listener)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri data = Uri.fromFile(myFile);
-        intent.setDataAndType(data, mimeType.toLowerCase());
-
-        try
-        {
-            context.startActivity(intent);
-        }
-        catch (ActivityNotFoundException e)
-        {
-            if (listener != null)
-            {
-                listener.onActivityNotFoundException(e);
-            }
-        }
-    }
-
     /**
      * Allow to open a file with an associated application installed in the
      * device and saved it backed via a requestcode...
@@ -117,7 +71,8 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_open_file);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_file);
         }
     }
 
@@ -139,7 +94,8 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_link);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_share_link);
         }
     }
 
@@ -161,7 +117,8 @@ public class BaseActionUtils
         }
         catch (ActivityNotFoundException e)
         {
-            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(), R.string.error_unable_share_content);
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_share_content);
         }
     }
 

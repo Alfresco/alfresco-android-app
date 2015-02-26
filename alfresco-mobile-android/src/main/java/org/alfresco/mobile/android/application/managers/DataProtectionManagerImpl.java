@@ -19,6 +19,8 @@ package org.alfresco.mobile.android.application.managers;
 
 import java.io.File;
 
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateRequestCode;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 
@@ -84,7 +86,16 @@ public class DataProtectionManagerImpl extends DataProtectionManager
         try
         {
             if (intentAction == DataProtectionManager.ACTION_NONE || intentAction == 0) { return; }
-            activity.startActivityForResult(createActionIntent(activity, intentAction, f), PrivateRequestCode.DECRYPTED);
+            Intent i = createActionIntent(activity, intentAction, f);
+            if (i.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                        activity.getString(R.string.feature_disable));
+            }
+            else
+            {
+                activity.startActivityForResult(i, PrivateRequestCode.DECRYPTED);
+            }
         }
         catch (ActivityNotFoundException e)
         {
@@ -97,8 +108,16 @@ public class DataProtectionManagerImpl extends DataProtectionManager
         try
         {
             if (intentAction == DataProtectionManager.ACTION_NONE || intentAction == 0) { return; }
-            fragment.startActivityForResult(createActionIntent(fragment.getActivity(), intentAction, f),
-                    PrivateRequestCode.DECRYPTED);
+            Intent i = createActionIntent(fragment.getActivity(), intentAction, f);
+            if (i.resolveActivity(fragment.getActivity().getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(fragment.getActivity()).showAlertCrouton(
+                        fragment.getActivity(), fragment.getString(R.string.feature_disable));
+            }
+            else
+            {
+                fragment.startActivityForResult(i, PrivateRequestCode.DECRYPTED);
+            }
         }
         catch (ActivityNotFoundException e)
         {

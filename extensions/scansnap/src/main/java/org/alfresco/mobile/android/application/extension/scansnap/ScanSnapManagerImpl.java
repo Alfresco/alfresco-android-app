@@ -17,8 +17,6 @@
  ******************************************************************************/
 package org.alfresco.mobile.android.application.extension.scansnap;
 
-import java.util.List;
-
 import org.alfresco.mobile.android.application.extension.scansnap.presets.BusinessCardPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.DefaultPreset;
 import org.alfresco.mobile.android.application.extension.scansnap.presets.DocumentPreset;
@@ -31,8 +29,6 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.util.Log;
 
@@ -134,14 +130,9 @@ public class ScanSnapManagerImpl extends ScanSnapManager
         try
         {
             Uri uri = Uri.parse("scansnap:///Scan&OutMode=3");
-
             Intent in = new Intent();
             in.setData(uri);
-
-            final PackageManager mgr = appContext.getPackageManager();
-            List<ResolveInfo> list = mgr.queryIntentActivities(in, PackageManager.MATCH_DEFAULT_ONLY);
-
-            return list.size() > 0;
+            return in.resolveActivity(appContext.getPackageManager()) != null;
         }
         catch (Exception e)
         {

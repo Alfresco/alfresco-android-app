@@ -297,6 +297,12 @@ public class SearchFragment extends BaseCursorGridFragment
 
         try
         {
+            if (intent.resolveActivity(getActivity().getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(getActivity()).showAlertCrouton(getActivity(),
+                        getString(R.string.feature_disable));
+                return;
+            }
             startActivityForResult(intent, RequestCode.TEXT_TO_SPEECH);
         }
         catch (ActivityNotFoundException a)

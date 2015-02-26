@@ -796,4 +796,6 @@
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="error_offline"><![CDATA[<p><b>Alfresco Mobile help can\'t be accessed because you\'re offline.</b><br/></p> Please try again when you\'re back online.]]></string>
 
+    <string name="feature_disable">This feature is not supported or has been disabled on your device.</string>
+
 </resources>
