@@ -182,13 +182,16 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(Context context, Menu menu)
+    public void getMenu(Context context, Menu menu)
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, R.id.menu_account_add, Menu.FIRST, R.string.action_add_account);
-        mi.setIcon(R.drawable.ic_account_add);
-        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        if (mdmManager == null)
+        {
+            mi = menu.add(Menu.NONE, R.id.menu_account_add, Menu.FIRST, R.string.action_add_account);
+            mi.setIcon(R.drawable.ic_account_add);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
     }
 
     @Override

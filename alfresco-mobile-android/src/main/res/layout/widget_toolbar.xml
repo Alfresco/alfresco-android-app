@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/widget_margin" >
+    android:padding="@dimen/widget_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/appwidget_bg"
         android:gravity="center_vertical"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/quickaction_home"
@@ -17,13 +17,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_default_holo_light"
-            android:drawableLeft="@drawable/ic_alfresco"
+            android:drawableLeft="@drawable/ic_application_logo"
             android:gravity="left" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right" >
+            android:gravity="right">
 
             <TextView
                 android:layout_width="1dp"

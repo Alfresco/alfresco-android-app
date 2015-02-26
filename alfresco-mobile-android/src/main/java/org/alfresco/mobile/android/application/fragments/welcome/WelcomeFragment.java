@@ -76,7 +76,7 @@ public class WelcomeFragment extends AlfrescoFragment
         setRetainInstance(true);
         if (getDialog() != null)
         {
-            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_alfresco);
+            getDialog().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON, R.drawable.ic_application_logo);
         }
         super.onStart();
     }

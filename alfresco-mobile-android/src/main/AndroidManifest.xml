@@ -24,10 +24,10 @@
         android:allowBackup="false"
         android:configChanges="locale|keyboardHidden|orientation|screenSize"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_alfresco_logo"
+        android:icon="@drawable/ic_application_icon"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:logo="@drawable/ic_alfresco"
+        android:logo="@drawable/ic_application_logo"
         android:theme="@style/MainTheme">
 
         <!-- *************************************************************** -->
@@ -54,7 +54,7 @@
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="true"
             android:launchMode="singleTop"
-            android:logo="@drawable/ic_alfresco"
+            android:logo="@drawable/ic_application_logo"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -152,9 +152,9 @@
             android:name="org.alfresco.mobile.android.application.activity.PublicDispatcherActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:icon="@drawable/ic_alfresco_logo"
+            android:icon="@drawable/ic_application_icon"
             android:label="@string/app_name"
-            android:logo="@drawable/ic_alfresco_logo"
+            android:logo="@drawable/ic_application_icon"
             android:theme="@style/MainTheme.Dialog"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -176,9 +176,9 @@
         <activity
             android:name="org.alfresco.mobile.android.application.activity.PrivateDialogActivity"
             android:exported="false"
-            android:icon="@drawable/ic_alfresco_logo"
+            android:icon="@drawable/ic_application_icon"
             android:label="@string/app_name"
-            android:logo="@drawable/ic_alfresco_logo"
+            android:logo="@drawable/ic_application_icon"
             android:theme="@style/MainTheme.Dialog"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

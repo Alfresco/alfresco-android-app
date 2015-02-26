@@ -313,7 +313,7 @@ public class AlfrescoNotificationManager extends Manager
         else
         {
             RemoteViews remote = new RemoteViews(appContext.getPackageName(), R.layout.app_notification);
-            remote.setImageViewResource(R.id.status_icon, R.drawable.ic_alfresco);
+            remote.setImageViewResource(R.id.status_icon, R.drawable.ic_application_logo);
             remote.setTextViewText(R.id.status_text, params.getString(ARGUMENT_TITLE));
             remote.setProgressBar(R.id.status_progress, params.getInt(ARGUMENT_PROGRESS_MAX), 0, false);
             builder.setContent(remote);

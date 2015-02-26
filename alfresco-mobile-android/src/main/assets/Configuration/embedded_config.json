@@ -13,7 +13,7 @@
   "view-groups": [
     {
       "id": "views-menu-default",
-      "label-id": "Default Menu",
+      "label-id": "home.menu.header",
       "items": [
         {
           "item-type": "view-id",

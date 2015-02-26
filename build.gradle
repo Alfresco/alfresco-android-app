@@ -10,6 +10,12 @@ buildscript {
 allprojects {
     repositories {
         mavenLocal()
+        maven {
+            url "https://artifacts.alfresco.com/nexus/content/groups/public"
+        }
+        maven {
+            url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots"
+        }
         jcenter()
         mavenCentral()
     }

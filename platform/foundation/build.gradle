@@ -13,26 +13,23 @@ android {
         defaultPublishConfig DEFAULT_PUBLISH
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
     lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
 
-   buildTypes {
+    buildTypes {
         debug {
-            buildConfigField "String", "PROVIDER_AUTHORITY", "\""+PROVIDER_AUTHORITY_DEBUG+"\""
-            buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID_DEBUG+"\""
+            buildConfigField "String", "PROVIDER_AUTHORITY", "\"" + PROVIDER_AUTHORITY_DEBUG + "\""
+            buildConfigField "String", "ACCOUNT_ID", "\"" + ACCOUNT_ID_DEBUG + "\""
         }
 
         release {
-            buildConfigField "String", "PROVIDER_AUTHORITY", "\""+PROVIDER_AUTHORITY+"\""
-            buildConfigField "String", "ACCOUNT_ID", "\""+ACCOUNT_ID+"\""
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "PROVIDER_AUTHORITY", "\"" + PROVIDER_AUTHORITY + "\""
+            buildConfigField "String", "ACCOUNT_ID", "\"" + ACCOUNT_ID + "\""
         }
     }
 
