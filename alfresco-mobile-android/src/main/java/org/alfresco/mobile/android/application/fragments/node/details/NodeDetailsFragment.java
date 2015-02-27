@@ -75,11 +75,10 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.platform.mdm.MDMConstants;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -710,10 +709,9 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             }
         }
 
-        if (MobileIronManager.getInstance(getActivity()) != null)
+        if (MDMManager.getInstance(getActivity()).hasConfig())
         {
-            String tmpShareURL = (String) MobileIronManager.getInstance(getActivity()).getConfig(
-                    MDMConstants.ALFRESCO_SHARE_URL);
+            String tmpShareURL = (String) MDMManager.getInstance(getActivity()).getShareURL();
             if (!TextUtils.isEmpty(tmpShareURL))
             {
                 shareUrl = tmpShareURL;

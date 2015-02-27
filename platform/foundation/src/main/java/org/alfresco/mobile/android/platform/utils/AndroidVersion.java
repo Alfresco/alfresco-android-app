@@ -17,6 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.platform.utils;
 
+import android.os.Build;
+
 public final class AndroidVersion
 {
     private AndroidVersion()
@@ -32,7 +34,7 @@ public final class AndroidVersion
     {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN;
     }
-    
+
     public static boolean isJBMR1OrAbove()
     {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
@@ -46,6 +48,11 @@ public final class AndroidVersion
     public static boolean isKitKatOrAbove()
     {
         return android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT;
+    }
+
+    public static boolean isLollipopOrAbove()
+    {
+        return android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     }
 
     public static boolean isHCOrAbove()

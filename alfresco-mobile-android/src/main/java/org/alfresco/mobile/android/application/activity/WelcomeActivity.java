@@ -23,8 +23,8 @@ import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment
 import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -76,7 +76,7 @@ public class WelcomeActivity extends BaseActivity
     @Override
     public void onBackPressed()
     {
-        if (MobileIronManager.getInstance(this) != null && getFragment(WelcomeFragment.TAG) != null)
+        if (MDMManager.getInstance(this).hasConfig() && getFragment(WelcomeFragment.TAG) != null)
         {
             finish();
         }

@@ -31,7 +31,7 @@ import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.ui.fragments.SelectableGridFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -51,7 +51,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
 
     private List<AlfrescoAccount> accountListing;
 
-    private MobileIronManager mdmManager;
+    private MDMManager mdmManager;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -80,7 +80,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     @Override
     public void onActivityCreated(Bundle savedInstanceState)
     {
-        mdmManager = MobileIronManager.getInstance(getActivity());
+        mdmManager = MDMManager.getInstance(getActivity());
         retrieveAccountList();
         super.onActivityCreated(savedInstanceState);
     }
@@ -118,7 +118,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
 
     protected void onItemSelected(AlfrescoAccount selectedAccount)
     {
-        if (mdmManager != null)
+        if (mdmManager.hasConfig())
         {
             AccountSignInFragment.with(getActivity()).account(selectedAccount).display();
         }
@@ -186,7 +186,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     {
         MenuItem mi;
 
-        if (mdmManager == null)
+        if (!mdmManager.hasConfig())
         {
             mi = menu.add(Menu.NONE, R.id.menu_account_add, Menu.FIRST, R.string.action_add_account);
             mi.setIcon(R.drawable.ic_account_add);

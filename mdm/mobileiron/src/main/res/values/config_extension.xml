@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
 
-    <!-- Fujitsu ScanSnap Extension -->
+    <!-- MobileIron Extension -->
     <bool name="manager_isEnable_MobileIronManager">true</bool>
     <string name="manager_MobileIronManager">org.alfresco.mobile.android.application.mdm.mobileiron.MobileIronManagerImpl</string>
 

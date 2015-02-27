@@ -29,8 +29,8 @@ import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.security.DataProtectionUserDialogFragment;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -64,7 +64,7 @@ public class GeneralPreferences extends PreferenceFragment
 
     private AlfrescoAccount account;
 
-    private MobileIronManager mdmManager;
+    private MDMManager mdmManager;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -88,7 +88,7 @@ public class GeneralPreferences extends PreferenceFragment
         setRetainInstance(true);
         super.onCreate(savedInstanceState);
 
-        mdmManager = MobileIronManager.getInstance(getActivity());
+        mdmManager = MDMManager.getInstance(getActivity());
 
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.general_preferences);
@@ -170,7 +170,7 @@ public class GeneralPreferences extends PreferenceFragment
         });
 
         // In case of MDM we disable all enterprise feature
-        if (mdmManager != null)
+        if (mdmManager.hasConfig())
         {
             pref.setEnabled(false);
             pref.setSummary(R.string.mdm_managed);

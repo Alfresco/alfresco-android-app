@@ -33,8 +33,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
-import org.alfresco.mobile.android.platform.mdm.MDMConstants;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -69,7 +68,7 @@ public class AccountSignInFragment extends AlfrescoFragment
 
     private EditTextFieldView userField;
 
-    private MobileIronManager mdmManager;
+    private MDMManager mdmManager;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -93,7 +92,7 @@ public class AccountSignInFragment extends AlfrescoFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        mdmManager = MobileIronManager.getInstance(getActivity());
+        mdmManager = MDMManager.getInstance(getActivity());
 
         if (getArguments() != null || !getArguments().isEmpty())
         {
@@ -124,8 +123,7 @@ public class AccountSignInFragment extends AlfrescoFragment
         }
         else
         {
-            userField.setText((String) MobileIronManager.getInstance(getActivity()).getConfig(
-                    MDMConstants.ALFRESCO_USERNAME));
+            userField.setText(MDMManager.getInstance(getActivity()).getUsername());
         }
 
         try
@@ -178,13 +176,10 @@ public class AccountSignInFragment extends AlfrescoFragment
                 return;
             }
 
-            // Retrieve MDM information
-            String repositoryURL = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_REPOSITORY_URL);
-            String description = (String) mdmManager.getConfig(MDMConstants.ALFRESCO_DISPLAY_NAME);
-
             // Create AlfrescoAccount + Session
             Operator.with(getActivity()).load(
-                    new CreateAccountRequest.Builder(repositoryURL, username, password, description));
+                    new CreateAccountRequest.Builder(mdmManager.getAlfrescoURL(), username, password, mdmManager
+                            .getDescription()));
 
             OperationWaitingDialogFragment.newInstance(CreateAccountRequest.TYPE_ID, R.drawable.ic_onpremise,
                     getString(R.string.account), getString(R.string.account_verify), null, -1, null).show(

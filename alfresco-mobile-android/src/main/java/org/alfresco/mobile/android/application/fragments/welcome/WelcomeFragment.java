@@ -25,8 +25,8 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.account.AccountSignInFragment;
 import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.mdm.MDMEvent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -96,12 +96,19 @@ public class WelcomeFragment extends AlfrescoFragment
 
         setRootView(inflater.inflate(R.layout.app_homescreen, container, false));
 
-        // Request Mobile Iron Info
-        MobileIronManager mdmManager = MobileIronManager.getInstance(getActivity());
-        if (mdmManager != null)
-        {
-            mdmManager.requestConfig(getActivity(), BuildConfig.APPLICATION_ID);
+        return getRootView();
+    }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        // Request Mobile Iron Info
+        MDMManager mdmManager = MDMManager.getInstance(getActivity());
+        mdmManager.requestConfig(getActivity(), BuildConfig.APPLICATION_ID);
+
+        if (mdmManager.hasConfig())
+        {
             // Display progressbar until MDM Event
             show(R.id.homescreen_configuration);
             hide(R.id.homescreen_login);
@@ -121,8 +128,6 @@ public class WelcomeFragment extends AlfrescoFragment
             TextView tv = (TextView) viewById(R.id.help_guide);
             tv.setMovementMethod(LinkMovementMethod.getInstance());
         }
-
-        return getRootView();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

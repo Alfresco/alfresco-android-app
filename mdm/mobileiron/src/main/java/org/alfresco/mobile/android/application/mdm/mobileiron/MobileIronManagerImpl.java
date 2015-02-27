@@ -33,6 +33,8 @@ public class MobileIronManagerImpl extends MobileIronManager
 {
     private static final String TAG = MobileIronManagerImpl.class.getSimpleName();
 
+    public static final String WRAPPED_KEY = "com.mobileiron.wrapped";
+
     private Bundle configBundle;
 
     // ///////////////////////////////////////////////////////////////////////////

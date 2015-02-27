@@ -351,6 +351,13 @@
             android:resource="@dimen/app_minimumsize_h" />
 
         <!-- *************************************************************** -->
+        <!-- EXTENSION : ANDROID FOR WORK -->
+        <!-- *************************************************************** -->
+        <meta-data
+            android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
+
+        <!-- *************************************************************** -->
         <!-- DEPRECATED -->
         <!-- *************************************************************** -->
         <!-- Accounts are managed by Android AccountManager. -->
