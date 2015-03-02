@@ -397,6 +397,12 @@ public class TextEditorActivity extends BaseActivity
 
         try
         {
+            if (intent.resolveActivity(getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(this).showAlertCrouton(this,
+                        getString(R.string.feature_disable));
+                return;
+            }
             startActivityForResult(intent, RequestCode.TEXT_TO_SPEECH);
         }
         catch (ActivityNotFoundException a)

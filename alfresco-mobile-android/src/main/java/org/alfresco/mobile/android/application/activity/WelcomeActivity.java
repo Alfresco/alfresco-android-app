@@ -23,12 +23,11 @@ import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment
 import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.session.oauth.RetrieveOAuthDataEvent;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.RestrictionsManager;
 import android.os.Bundle;
 
 import com.squareup.otto.Subscribe;
@@ -50,15 +49,13 @@ public class WelcomeActivity extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        Intent intent = new Intent(RestrictionsManager.ACTION_REQUEST_PERMISSION);
-        sendBroadcast(intent);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.app_main_single);
 
         if (getFragment(WelcomeFragment.TAG) == null)
         {
-            FragmentDisplayer.load(WelcomeFragment.with(this).back(false)).animate(null).into(FragmentDisplayer.PANEL_LEFT);
+            FragmentDisplayer.load(WelcomeFragment.with(this).back(false)).animate(null)
+                    .into(FragmentDisplayer.PANEL_LEFT);
         }
     }
 
@@ -79,7 +76,7 @@ public class WelcomeActivity extends BaseActivity
     @Override
     public void onBackPressed()
     {
-        if (MobileIronManager.getInstance(this) != null && getFragment(WelcomeFragment.TAG) != null)
+        if (MDMManager.getInstance(this).hasConfig() && getFragment(WelcomeFragment.TAG) != null)
         {
             finish();
         }

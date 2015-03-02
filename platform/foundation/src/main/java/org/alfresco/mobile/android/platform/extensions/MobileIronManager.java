@@ -22,7 +22,6 @@ import org.alfresco.mobile.android.platform.mdm.MDMConstants;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 
 public abstract class MobileIronManager extends Manager implements MDMConstants
@@ -30,12 +29,6 @@ public abstract class MobileIronManager extends Manager implements MDMConstants
     protected static final Object LOCK = new Object();
 
     protected static Manager mInstance;
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // CONSTANTS
-    // ///////////////////////////////////////////////////////////////////////////
-
-    public static final String WRAPPED_KEY = "com.mobileiron.wrapped";
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -63,12 +56,7 @@ public abstract class MobileIronManager extends Manager implements MDMConstants
     // ///////////////////////////////////////////////////////////////////////////
     public abstract boolean isWrapped();
 
-    public void requestConfig(Activity activity, String applicationId)
-    {
-        Intent intent = new Intent("com.mobileiron.REQUEST_CONFIG");
-        intent.putExtra("packageName", applicationId);
-        activity.startService(intent);
-    }
+    public abstract void requestConfig(Activity activity, String applicationId);
 
     public abstract void setConfig(Bundle b);
 

@@ -327,6 +327,7 @@ public class AlfrescoStorageManager extends Manager
     }
 
     @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public float getTotalBytesByPath(File f)
     {
         StatFs stat = new StatFs(f.getPath());

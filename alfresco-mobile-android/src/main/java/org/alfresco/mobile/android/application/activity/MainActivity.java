@@ -71,9 +71,9 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
-import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
@@ -133,7 +133,7 @@ public class MainActivity extends BaseActivity
 
     private Node currentNode;
 
-    private MobileIronManager mdmManager;
+    private MDMManager mdmManager;
 
     // Device capture (made static as we don't seem to be getting instance state
     // back through creation).
@@ -167,7 +167,7 @@ public class MainActivity extends BaseActivity
         // Loading progress
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.app_main);
-        mdmManager = MobileIronManager.getInstance(this);
+        mdmManager = MDMManager.getInstance(this);
 
         if (capture != null) capture.setActivity(this);
 
@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity
                     && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
 
-                if (mdmManager == null)
+                if (mdmManager.hasConfig())
                 {
                     // Check if we've prompted the user for Data Protection yet.
                     // This is needed on new AlfrescoAccount creation, as the
@@ -205,7 +205,6 @@ public class MainActivity extends BaseActivity
                     // re-created after the AlfrescoAccount is created.
                     DataProtectionUserDialogFragment.newInstance(true).show(getFragmentManager(),
                             DataProtectionUserDialogFragment.TAG);
-
                     prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
                 }
             }
@@ -746,12 +745,15 @@ public class MainActivity extends BaseActivity
     public void onAccountCreated(CreateAccountEvent event)
     {
         if (event.hasException) { return; }
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         AlfrescoAccount tmpAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data.getId());
+
+        onAccountLoading(new LoadAccountStartedEvent("-1", tmpAccount));
+        onAccountLoaded(new LoadAccountCompletedEvent("-1", tmpAccount));
+
         if (tmpAccount.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
         {
-            if (mdmManager != null)
+            if (mdmManager.hasConfig())
             {
                 // TODO Do we want to provide different behaviours in case
                 // of MDM ?
@@ -906,7 +908,7 @@ public class MainActivity extends BaseActivity
                 SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
                 prefs.edit().putBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, true).commit();
 
-                if (mdmManager != null)
+                if (mdmManager.hasConfig())
                 {
                     // TODO Do we want to provide different behaviours in case
                     // of MDM ?

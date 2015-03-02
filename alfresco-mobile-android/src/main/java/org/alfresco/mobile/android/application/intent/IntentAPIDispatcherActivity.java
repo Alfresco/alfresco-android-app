@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
 import org.alfresco.mobile.android.application.editors.text.TextEditorActivity;
@@ -33,6 +34,7 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.create.CreateDocumentRequest;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -93,6 +95,13 @@ public class IntentAPIDispatcherActivity extends BaseActivity
                 }
                 payload = new File(folder.getPath(), createFilename("IMG_", "jpg"));
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(payload));
+                if (intent.resolveActivity(getPackageManager()) == null)
+                {
+                    AlfrescoNotificationManager.getInstance(this).showAlertCrouton(this,
+                            getString(R.string.feature_disable));
+                    return;
+                }
+
                 startActivityForResult(intent, 1);
                 return;
             }

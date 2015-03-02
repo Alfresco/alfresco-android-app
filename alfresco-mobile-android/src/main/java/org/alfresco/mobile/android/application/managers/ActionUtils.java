@@ -81,6 +81,31 @@ public class ActionUtils extends BaseActionUtils
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION VIEW
     // ///////////////////////////////////////////////////////////////////////////
+    public static void actionView(Activity context, File myFile, String mimeType, ActionManagerListener listener)
+    {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri data = Uri.fromFile(myFile);
+        intent.setDataAndType(data, mimeType.toLowerCase());
+
+        try
+        {
+            if (intent.resolveActivity(context.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(context).showAlertCrouton(context,
+                        context.getString(R.string.feature_disable));
+                return;
+            }
+            context.startActivity(intent);
+        }
+        catch (ActivityNotFoundException e)
+        {
+            if (listener != null)
+            {
+                listener.onActivityNotFoundException(e);
+            }
+        }
+    }
+
     /**
      * Open a local file with a 3rd party application. Manage automatically with
      * Data Protection.
@@ -128,43 +153,6 @@ public class ActionUtils extends BaseActionUtils
         intent.setDataAndType(data, MimeTypeManager.getInstance(activity).getMIMEType(contentFile.getName())
                 .toLowerCase());
         return intent;
-    }
-
-    public static Intent openURL(Activity activity, String url)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse(url));
-        activity.startActivity(intent);
-        return intent;
-    }
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // PDF
-    // ///////////////////////////////////////////////////////////////////////////
-    public static boolean launchPDF(Context c, String pdfFile)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(pdfFile)), "application/pdf");
-
-        PackageManager pm = c.getPackageManager();
-        List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
-        if (activities.size() > 0)
-        {
-            c.startActivity(intent);
-        }
-        else
-        {
-            return false;
-        }
-
-        return true;
-    }
-
-    public static void getAdobeReader(Context c)
-    {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("market://details?id=com.adobe.reader"));
-        c.startActivity(intent);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -251,6 +239,14 @@ public class ActionUtils extends BaseActionUtils
             i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(contentFile));
             i.setType((TextUtils.isEmpty(mimetype)) ? MimeTypeManager.getInstance(activity).getMIMEType(
                     contentFile.getName()) : mimetype);
+
+            if (i.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                        activity.getString(R.string.feature_disable));
+                return;
+            }
+
             activity.startActivity(Intent.createChooser(i, activity.getText(R.string.share_content)));
         }
         catch (ActivityNotFoundException e)
@@ -279,6 +275,14 @@ public class ActionUtils extends BaseActionUtils
             i.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(content));
             i.putExtra(Intent.EXTRA_STREAM, attachment);
             i.setType("text/plain");
+
+            if (i.resolveActivity(fr.getActivity().getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                        fr.getString(R.string.feature_disable));
+                return false;
+            }
+
             fr.startActivityForResult(Intent.createChooser(i, fr.getString(R.string.send_email)), requestCode);
 
             return true;
@@ -318,7 +322,16 @@ public class ActionUtils extends BaseActionUtils
     {
         try
         {
-            activity.startActivity(createSendFileToAlfrescoIntent(activity, contentFile));
+            Intent i = createSendFileToAlfrescoIntent(activity, contentFile);
+            if (i.resolveActivity(activity.getPackageManager()) == null)
+            {
+                AlfrescoNotificationManager.getInstance(activity).showAlertCrouton(activity,
+                        activity.getString(R.string.feature_disable));
+            }
+            else
+            {
+                activity.startActivity(i);
+            }
         }
         catch (ActivityNotFoundException e)
         {
@@ -457,8 +470,7 @@ public class ActionUtils extends BaseActionUtils
         {
             Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
             intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, Locale.getDefault());
-            List<ResolveInfo> list = context.getPackageManager().queryIntentActivities(intent, 0);
-            return !list.isEmpty();
+            return intent.resolveActivity(context.getPackageManager()) != null;
         }
         catch (Exception e)
         {

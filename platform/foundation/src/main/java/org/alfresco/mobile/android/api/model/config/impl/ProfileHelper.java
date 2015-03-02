@@ -52,7 +52,7 @@ public class ProfileHelper extends HelperConfig
 
     public void addProfiles(Map<String, Object> profilesMap)
     {
-        profilesIndex = new LinkedHashMap<String, ProfileConfig>(profilesMap.size());
+        profilesIndex = new LinkedHashMap<>(profilesMap.size());
         ProfileConfig profileConfig = null;
         for (Entry<String, Object> entry : profilesMap.entrySet())
         {
@@ -84,9 +84,9 @@ public class ProfileHelper extends HelperConfig
     {
         if (profilesIndex != null)
         {
-            ArrayList<ProfileConfig> array = new ArrayList<ProfileConfig>(profilesIndex.values());
-            ArrayList<ProfileConfig> result = new ArrayList<ProfileConfig>(profilesIndex.size());
-            for (ProfileConfig config : array)
+            ArrayList<ProfileConfig> profiles = new ArrayList<>(profilesIndex.values());
+            ArrayList<ProfileConfig> result = new ArrayList<>(profilesIndex.size());
+            for (ProfileConfig config : profiles)
             {
                 if (((ProfileConfigImpl) config).getEvaluator() != null)
                 {
@@ -102,7 +102,7 @@ public class ProfileHelper extends HelperConfig
             }
             return result;
         }
-        return new ArrayList<ProfileConfig>(0);
+        return new ArrayList<>(0);
     }
 
     public ProfileConfig getDefaultProfile()

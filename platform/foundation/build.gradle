@@ -43,5 +43,4 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':platform:thirdparty')
     compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.0-SNAPSHOT'
-    compile 'com.mattprecious.telescope:telescope:1.3.0@aar'
 }

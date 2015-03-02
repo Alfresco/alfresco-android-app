@@ -28,8 +28,9 @@ public class DocumentPreset extends DefaultPreset
 {
     public static final int ID = 1;
 
-    public DocumentPreset()
+    public DocumentPreset(String applicationID)
     {
+        super(applicationID);
         // UI parameters
         titleId = R.string.scan_preset_document;
         iconId = R.drawable.mime_pdf;

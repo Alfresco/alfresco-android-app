@@ -56,8 +56,11 @@ public class MainMenuConfigManager extends BaseConfigManager
             {
                 profileId = configService.getDefaultProfile().getIdentifier();
             }
-            rootMenuViewConfig = configService.getViewConfig(configService.getProfile(profileId).getRootViewId(),
-                    configManager.getCurrentScope());
+            if (configService.getProfile(profileId) != null)
+            {
+                rootMenuViewConfig = configService.getViewConfig(configService.getProfile(profileId).getRootViewId(),
+                        configManager.getCurrentScope());
+            }
         }
         this.vRoot = (ViewGroup) vRoot.findViewById(R.id.custom_menu_group);
     }

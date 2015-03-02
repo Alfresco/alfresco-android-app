@@ -14,16 +14,13 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
 -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     style="?MainTheme.Background.White"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="600dip"
+        android:layout_width="@dimen/welcome_screen_dimen"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
@@ -47,14 +44,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:id="@+id/homescreen_configuration">
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal"
+            style="?MainTheme.Button.Large"
+            android:id="@+id/homescreen_configuration"
+            android:visibility="gone">
 
             <ProgressBar
                 android:id="@+id/homescreen_config_progress"
-                android:layout_width="match_parent"
+                android:layout_width="60dip"
                 android:layout_height="60dip"
                 style="@android:style/Widget.ProgressBar.Large.Inverse"
                 android:visibility="visible"
@@ -63,10 +61,18 @@
             <TextView
                 android:id="@+id/homescreen_config_message"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/home_login"
+                android:layout_height="match_parent"
+                android:text="@string/mdm_loading_configuration"
+                style="?MainTheme.TextView.Primary"
                 android:gravity="center" />
 
+            <TextView
+                android:id="@+id/homescreen_config_error"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/mdm_loading_configuration"
+                style="?MainTheme.TextView.Secondary"
+                android:gravity="center" />
         </LinearLayout>
 
         <TextView

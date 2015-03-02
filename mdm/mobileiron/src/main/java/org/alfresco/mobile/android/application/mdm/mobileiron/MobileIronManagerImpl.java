@@ -23,13 +23,17 @@ import java.net.URL;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.extensions.MobileIronManager;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
 public class MobileIronManagerImpl extends MobileIronManager
 {
     private static final String TAG = MobileIronManagerImpl.class.getSimpleName();
+
+    public static final String WRAPPED_KEY = "com.mobileiron.wrapped";
 
     private Bundle configBundle;
 
@@ -57,6 +61,13 @@ public class MobileIronManagerImpl extends MobileIronManager
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
+    public void requestConfig(Activity activity, String applicationId)
+    {
+        Intent intent = new Intent("com.mobileiron.REQUEST_CONFIG");
+        intent.putExtra("packageName", applicationId);
+        activity.startService(intent);
+    }
+
     @Override
     public boolean isWrapped()
     {

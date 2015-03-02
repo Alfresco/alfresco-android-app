@@ -28,9 +28,9 @@ public class PhotoPreset extends DefaultPreset
 {
     public static final int ID = 2;
 
-    public PhotoPreset()
+    public PhotoPreset(String applicationID)
     {
-        super();
+        super(applicationID);
         // UI parameters
         titleId = R.string.scan_preset_photo;
         iconId = R.drawable.mime_img;

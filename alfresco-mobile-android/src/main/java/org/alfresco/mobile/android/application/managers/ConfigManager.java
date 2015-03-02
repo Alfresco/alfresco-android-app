@@ -308,7 +308,7 @@ public class ConfigManager extends Manager
         currentProfileId = profileId;
         if (config.hasViewConfig())
         {
-            eventBus.post(new ConfigurationMenuEvent(acc.getId()));
+            eventBus.post(new ConfigurationProfileEvent(acc.getId()));
         }
         return true;
     }
@@ -352,6 +352,17 @@ public class ConfigManager extends Manager
         public final long accountId;
 
         public ConfigurationMenuEvent(long accountId)
+        {
+            super();
+            this.accountId = accountId;
+        }
+    }
+
+    public static class ConfigurationProfileEvent
+    {
+        public final long accountId;
+
+        public ConfigurationProfileEvent(long accountId)
         {
             super();
             this.accountId = accountId;

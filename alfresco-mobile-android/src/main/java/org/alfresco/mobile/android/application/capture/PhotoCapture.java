@@ -60,6 +60,12 @@ public class PhotoCapture extends DeviceCapture
             try
             {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (intent.resolveActivity(context.getPackageManager()) == null)
+                {
+                    AlfrescoNotificationManager.getInstance(context).showAlertCrouton(parentActivity,
+                            context.getString(R.string.feature_disable));
+                    return false;
+                }
 
                 File folder = parentFolder;
                 if (folder != null)
@@ -72,7 +78,8 @@ public class PhotoCapture extends DeviceCapture
                 }
                 else
                 {
-                    AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(parentActivity.getString(R.string.sdinaccessible));
+                    AlfrescoNotificationManager.getInstance(parentActivity).showLongToast(
+                            parentActivity.getString(R.string.sdinaccessible));
                 }
             }
             catch (Exception e)

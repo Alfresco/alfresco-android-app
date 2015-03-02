@@ -157,6 +157,13 @@ public class AlfrescoAccount implements Serializable
         return acc;
     }
 
+    public AlfrescoAccount(String url, String username)
+    {
+        super();
+        this.url = url;
+        this.username = username;
+    }
+
     /** Create a Alfresco account. */
     public AlfrescoAccount(long id, String accountLabel, String url, String username, String password,
             String repositoryId, String typeId, String activation, String accessToken, String refreshToken,

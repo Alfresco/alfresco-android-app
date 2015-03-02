@@ -69,11 +69,20 @@ public class AudioCapture extends DeviceCapture
             try
             {
                 Intent intent = new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                parentActivity.startActivityForResult(intent, getRequestCode());
+                if (intent.resolveActivity(context.getPackageManager()) == null)
+                {
+                    AlfrescoNotificationManager.getInstance(context).showAlertCrouton(parentActivity,
+                            context.getString(R.string.feature_disable));
+                    return false;
+                }
+                else
+                {
+                    parentActivity.startActivityForResult(intent, getRequestCode());
+                }
             }
             catch (Exception e)
             {
-                AlfrescoNotificationManager.getInstance(context).showLongToast(
+                AlfrescoNotificationManager.getInstance(context).showAlertCrouton(parentActivity,
                         context.getString(R.string.no_voice_recorder));
                 Log.d(TAG, Log.getStackTraceString(e));
                 return false;

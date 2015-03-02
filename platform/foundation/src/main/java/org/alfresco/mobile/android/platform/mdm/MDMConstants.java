@@ -2,6 +2,8 @@ package org.alfresco.mobile.android.platform.mdm;
 
 /**
  * Created by jpascal on 11/02/2015.
+ * 
+ * @since 1.5
  */
 public interface MDMConstants
 {

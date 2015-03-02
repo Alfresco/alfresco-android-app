@@ -161,4 +161,12 @@
     <string name="cloud_share_url" tools:ignore="StringFormatInvalid" formatted="false" translatable="false">https://my.alfresco.com/share/%s/page/site/%s/document-details?nodeRef=workspace://SpacesStore/%s</string>
     <string name="onpremise_share_url" tools:ignore="StringFormatInvalid" formatted="false" translatable="false">/page/document-details?nodeRef=workspace://SpacesStore/%s</string>
 
+
+    <!-- ANDROID FOR WORK -->
+    <string name="alfresco_username" translatable="false">AlfrescoUserName/</string>
+    <string name="alfresco_repository_url" translatable="false">AlfrescoRepositoryURL/</string>
+    <string name="alfresco_share_url" translatable="false">AlfrescoShareURL/</string>
+    <string name="alfresco_display_name" translatable="false">AlfrescoDisplayName/</string>
+
+
 </resources>

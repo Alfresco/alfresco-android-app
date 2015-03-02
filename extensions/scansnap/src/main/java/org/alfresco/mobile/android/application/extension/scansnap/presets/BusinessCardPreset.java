@@ -28,8 +28,10 @@ public class BusinessCardPreset extends DefaultPreset
 {
     public static final int ID = 3;
     
-    public BusinessCardPreset()
+    public BusinessCardPreset(String applicationID)
     {
+        super(applicationID);
+
         //UI parameters
         titleId = R.string.scan_preset_business_card;
         iconId = R.drawable.ic_person;
