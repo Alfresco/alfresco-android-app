@@ -269,6 +269,10 @@
         {
           "item-type": "field-id",
           "field-id": "cm:modified"
+        },
+         {
+          "item-type": "field-id",
+          "field-id": "path"
         }
       ]
     },
