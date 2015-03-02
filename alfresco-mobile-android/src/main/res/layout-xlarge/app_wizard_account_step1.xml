@@ -23,9 +23,9 @@
     android:gravity="center">
 
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/welcome_screen_dimen"
         android:layout_height="wrap_content"
-        android:layout_gravity="top"
+        android:layout_gravity="top|center_horizontal"
         android:gravity="top"
         android:orientation="vertical">
 

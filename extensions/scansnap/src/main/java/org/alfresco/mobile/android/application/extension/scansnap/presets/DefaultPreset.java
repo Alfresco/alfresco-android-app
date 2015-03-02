@@ -29,7 +29,7 @@ public class DefaultPreset extends ScanSnapPreset
 {
     public static final int ID = 0;
 
-    public DefaultPreset()
+    public DefaultPreset(String applicationID)
     {
         // UI parameters
         titleId = R.string.scan_preset_default;
@@ -42,7 +42,7 @@ public class DefaultPreset extends ScanSnapPreset
         reduceBleedThrough = REDUCEBLEEDTHROUGH_ENABLE;
         blankPageSkip = BLANKPAGESKIP_ENABLE;
         scanMode = SCANMODE_AUTO;
-        callBack = "org.alfresco.mobile.android.application,".concat(ScanSnapResultActivity.class.getName());
+        callBack = applicationID.concat(",").concat(ScanSnapResultActivity.class.getName());
     }
 
     @Override

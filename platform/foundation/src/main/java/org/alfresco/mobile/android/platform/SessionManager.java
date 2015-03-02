@@ -378,6 +378,8 @@ public abstract class SessionManager extends Manager
             this.baseUrl = baseUrl;
             this.username = username;
             this.password = password;
+            prepareConfigurationSettings(new AlfrescoAccount(baseUrl, username));
+            prepareSSLSettings();
             return this;
         }
 

@@ -76,25 +76,26 @@ public class ScanSnapManagerImpl extends ScanSnapManager
         if (hasScanSnapApplication())
         {
             AlfrescoNotificationManager notification = AlfrescoNotificationManager.getInstance(appContext);
+            String activityId = activity.getApplicationContext().getPackageName();
             try
             {
                 ScanSnapPreset preset;
                 switch (presetId)
                 {
                     case DefaultPreset.ID:
-                        preset = new DefaultPreset();
+                        preset = new DefaultPreset(activityId);
                         break;
                     case DocumentPreset.ID:
-                        preset = new DocumentPreset();
+                        preset = new DocumentPreset(activityId);
                         break;
                     case PhotoPreset.ID:
-                        preset = new PhotoPreset();
+                        preset = new PhotoPreset(activityId);
                         break;
                     case BusinessCardPreset.ID:
-                        preset = new BusinessCardPreset();
+                        preset = new BusinessCardPreset(activityId);
                         break;
                     default:
-                        preset = new DefaultPreset();
+                        preset = new DefaultPreset(activityId);
                         break;
                 }
 

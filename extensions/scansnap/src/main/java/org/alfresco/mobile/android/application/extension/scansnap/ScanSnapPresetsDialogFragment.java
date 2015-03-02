@@ -72,8 +72,8 @@ public class ScanSnapPresetsDialogFragment extends DialogFragment
         });
 
         List<ScanSnapPreset> presets = new ArrayList<>();
-        presets.add(new DefaultPreset());
-        presets.add(new PhotoPreset());
+        presets.add(new DefaultPreset(getActivity().getApplicationContext().getPackageName()));
+        presets.add(new PhotoPreset(getActivity().getApplicationContext().getPackageName()));
         ScanSnapPresetAdapter adapter = new ScanSnapPresetAdapter(getActivity(), R.layout.sdk_list_row, presets);
         lv.setAdapter(adapter);
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.scan_preset).setView(v).create();

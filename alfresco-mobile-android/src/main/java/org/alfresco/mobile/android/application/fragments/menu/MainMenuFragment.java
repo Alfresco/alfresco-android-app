@@ -94,7 +94,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private Button menuSlidingFavorites;
 
-    private ConfigManager configurationManager;
+    private ConfigManager configManager;
 
     public static final String TAG = MainMenuFragment.class.getName();
 
@@ -144,17 +144,17 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         super.onActivityCreated(savedInstanceState);
 
         // retrieve accounts
-        configurationManager = ConfigManager.getInstance(getActivity());
+        configManager = ConfigManager.getInstance(getActivity());
         AlfrescoAccount acc = getAccount();
         if (acc == null)
         {
             acc = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
         }
-        if (configurationManager != null && acc != null)
+        if (configManager != null && acc != null)
         {
             // Configuration
-            configurationManager.init(acc);
-            configure(configurationManager.getConfig(acc.getId(), ConfigTypeIds.VIEWS));
+            configManager.init(acc);
+            configure(configManager.getConfig(acc.getId(), ConfigTypeIds.VIEWS));
         }
 
         refresh();
@@ -419,8 +419,8 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         // We add profiles management option if at least there's 2 profiles
         // available
-        if (configurationManager != null && configurationManager.getConfig(currentAccount.getId()) != null
-                && configurationManager.getConfig(currentAccount.getId()).getProfiles().size() > 1)
+        if (configManager != null && configManager.getConfig(currentAccount.getId()) != null
+                && configManager.getConfig(currentAccount.getId()).getProfiles().size() > 1)
         {
             list.add(new AlfrescoAccount(AccountsAdapter.PROFILES_ITEM, getString(R.string.profiles_switch), null,
                     null, null, null, "0", null, "false"));
@@ -613,16 +613,26 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     @Subscribe
     public void onConfigureMenuEvent(ConfigurationMenuEvent event)
     {
-        configurationManager = ConfigManager.getInstance(getActivity());
-        if (configurationManager != null && configurationManager.hasConfig(event.accountId))
+        configManager = ConfigManager.getInstance(getActivity());
+        if (configManager != null && configManager.hasConfig(event.accountId))
         {
             refresh();
-            configure(configurationManager.getConfig(event.accountId));
+            configure(configManager.getConfig(event.accountId));
         }
         else
         {
             display();
         }
+    }
+
+    @Subscribe
+    public void onConfigureProfileEvent(ConfigManager.ConfigurationProfileEvent event)
+    {
+        configManager = ConfigManager.getInstance(getActivity());
+        refresh();
+        MainMenuConfigManager config = new MainMenuConfigManager(getActivity(),
+                configManager.getConfig(event.accountId), (ViewGroup) getRootView());
+        config.createMenu();
     }
 
     @Subscribe

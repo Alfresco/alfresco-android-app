@@ -745,9 +745,12 @@ public class MainActivity extends BaseActivity
     public void onAccountCreated(CreateAccountEvent event)
     {
         if (event.hasException) { return; }
-
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         AlfrescoAccount tmpAccount = AlfrescoAccountManager.getInstance(this).retrieveAccount(event.data.getId());
+
+        onAccountLoading(new LoadAccountStartedEvent("-1", tmpAccount));
+        onAccountLoaded(new LoadAccountCompletedEvent("-1", tmpAccount));
+
         if (tmpAccount.getIsPaidAccount() && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
         {
             if (mdmManager.hasConfig())
