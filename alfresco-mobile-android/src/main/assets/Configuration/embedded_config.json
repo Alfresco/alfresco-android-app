@@ -269,6 +269,10 @@
         {
           "item-type": "field-id",
           "field-id": "cm:modified"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "path"
         }
       ]
     },
@@ -443,6 +447,20 @@
           "field-id": "exif:resolutionUnit"
         }
       ]
+    },
+    "aspect:cm:taggable": {
+      "label-id": "cm_contentmodel.aspect.taggable.title",
+      "items": [
+        {
+          "item-type": "field",
+          "field": {
+            "id": "d:category",
+            "model-id": "d:category",
+            "type": "org.alfresco.client.form.field.tags",
+            "label-id": "cm_contentmodel.property.cm_tags.title"
+          }
+        }
+      ]
     }
   },
   "fields": {
@@ -481,7 +499,7 @@
     },
     "path": {
       "model-id": "path",
-      "type": "org.alfresco.client.form.field.text",
+      "type": "org.alfresco.client.form.field.path",
       "label-id": "cm_contentmodel.property.cm_path.title"
     },
     "cm:author": {

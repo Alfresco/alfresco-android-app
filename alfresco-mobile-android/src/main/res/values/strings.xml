@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -18,7 +18,7 @@
 <resources>
 
     <string name="app_name">Alfresco</string>
-    <string name="empty_accounts">No AlfrescoAccount available</string>
+    <string name="empty_accounts">No Alfresco account available</string>
 
     <!-- HOME SCREEN -->
     <string name="home_login">Login</string>
@@ -56,13 +56,13 @@
     <string name="account_wizard_step2_title">Account Authentication Information</string>
     <string name="account_verify">Verifying Alfresco Account Information&#8230;</string>
     <string name="account_validate">Save</string>
-    <string name="account_validate_hint">Save your AlfrescoAccount information</string>
+    <string name="account_validate_hint">Save your Alfresco account information</string>
     <string name="account_validate_disable_hint">Please fill Username, Password and Hostname fields.</string>
-    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your Alfresco Account settings.</string>
+    <string name="account_validate_disable_url_hint">Your hostname and service URL value seem to be wrong. Please check your Alfresco account settings.</string>
 
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">Your Alfresco Account is ready for you to use.</string>
+    <string name="account_wizard_alldone_description">Your Alfresco account is ready for you to use.</string>
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP -->
     <string name="account_wizard_step1">Step 1 of 2</string>
@@ -71,10 +71,10 @@
     <string name="account_wizard_step2_description">Account Information</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">Your Alfresco Account is not activated. Please check the Manage Alfresco Account screen.</string>
+    <string name="account_not_activated">Your Alfresco account is not activated. Please check the Manage Account screen.</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Alfresco Server</string>
-    <string name="account_edit_hint">Edit "%s" AlfrescoAccount information</string>
+    <string name="account_edit_hint">Edit "%s" Alfresco Account information</string>
     <string name="account_delete_hint">Delete "%s" account</string>
 
 
@@ -86,14 +86,14 @@
     <string name="retry_account_loading">Retry</string>
     <string name="error_session_creation_title">Save Account</string>
     <string name="error_session_creation_message">Connection Error</string>
-    <string name="error_session_creation">Unable to authenticate. Check your AlfrescoAccount settings.</string>
-    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong<br/> or you may need to <b>activate your VPN</b>.<br/> Please check your Alfresco Account settings.]]></string>
+    <string name="error_session_creation">Unable to authenticate. Check your Alfresco account settings.</string>
+    <string name="error_session_hostname"><![CDATA[Your <b>hostname</b> value seems to be wrong<br/> or you may need to <b>activate your VPN</b>.<br/> Please check your Alfresco account settings.]]></string>
     <string name="error_session_nodata"><![CDATA[<p><b>Your device has no data connection.</b><br/></p> Please check your device settings and enable a data connection.]]></string>
-    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your Alfresco Account settings <b>(Username/Password)</b>.]]></string>
-    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your Alfresco Account settings.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[You are not allowed to access this server.<br/> Please check your Alfresco account settings <b>(Username/Password)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[Your <b>service url</b> value is incorrect.<br/> Please check your Alfresco account settings.]]></string>
     <string name="error_session_service_unavailable"><![CDATA[The server is temporarily unable to service your request due to maintenance downtime or capacity problems.<br/> Please try again later.]]></string>
-    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your Alfresco Account settings.]]></string>
-    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your Alfresco Account settings.]]></string>
+    <string name="error_session_notfound"><![CDATA[Your server couldn\'t be reached.<br/> Please check your Alfresco account settings.]]></string>
+    <string name="error_session_port"><![CDATA[Your <b>port</b> value is incorrect.<br/> Please check your Alfresco account settings.]]></string>
     <string name="error_session_certificate">
 <![CDATA[<p><b>The server\'s security certificate is not trusted!</b><br/></p>
 		The third-party organization that issued your server destination\'s certificate is not one that your device recognizes.<br/>
@@ -106,7 +106,7 @@
     </string>
     <string name="error_session_ssl">
 <![CDATA[<p><b>An error occurred with the SSL protocol.</b><br/></p>
-        Please check your AlfrescoAccount settings and try again.<br/> If the problem persists please contact your administrator.]]>
+        Please check your Alfresco account settings and try again.<br/> If the problem persists please contact your administrator.]]>
     </string>
     <string name="error_session_cloud_unavailable">
 <![CDATA[<p><b>Alfresco in the Cloud is under heavy load right now!</b><br/></p>
@@ -119,7 +119,7 @@
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">An error has occurred.</string>
     <string name="error_general">An error has occurred. Please try again.</string>
-    <string name="error_account_url">The URL is incorrect. Please check your AlfrescoAccount settings.</string>
+    <string name="error_account_url">The URL is incorrect. Please check your Alfresco account settings.</string>
     <string name="error_unknown_filepath">Failed to find the resource.</string>
 
     <!-- DETAILS -->
@@ -234,7 +234,7 @@
     <string name="delete_description_data_protection">Data protection is active.\n\nIf you delete this account, your content will return to an unprotected state.\n\nAre you sure you want to delete \"%s\"?</string>
     <string name="delete_in_progress">Delete in progress&#8230;</string>
     <string name="delete_complete">Delete complete</string>
-    <string name="delete_sucess">\"%s\" has been deleted successfully.</string>
+    <string name="delete_sucess">\"%s\" has been successfully deleted.</string>
 
     <!-- Save Back -->
     <string name="save_back_description">\"%s\" has been modified. Do you want to upload this new version?</string>
@@ -255,7 +255,7 @@
     <string name="create_document_editor_not_available_description">You don\'t have an app that will create this file type.</string>
     <string name="preview_unavailable">Preview is not available.</string>
     <string name="sdinaccessible">SD card must be accessible for this operation</string>
-    <string name="loginfirst">Please login to an AlfrescoAccount first</string>
+    <string name="loginfirst">Please login to an Alfresco account first</string>
 
     <!-- Comment -->
     <string name="comment_add_hint">Add your comment here&#8230;</string>
@@ -290,7 +290,7 @@
     <string name="action_unfavorite_site_validation">\"%s\" has been unfavorited.</string>
     <string name="action_join_request_site_validation">You have requested to join \"%s\"</string>
     <string name="joinsiterequest_list_title">List of pending requests</string>
-    <string name="joinsiterequest_cancel_description">Cancel your request for Site %s</string>
+    <string name="joinsiterequest_cancel_description">Cancel your request to join site %s</string>
     <string name="action_cancel_join_site_request">Your request to join \"%s\" has been cancelled.</string>
     <string name="action_join_site_error">A problem prevented you from joining the site \"%s\".</string>
     <string name="action_leave_site_error">A problem prevented you from leaving the site \"%s\".</string>
@@ -303,7 +303,7 @@
     <string name="import_documents">File</string>
     <string name="import_account">Account</string>
     <string name="import_folder">Upload Folder</string>
-    <string name="import_unsupported_intent">Alfresco Mobile : Unable to retrieve information.</string>
+    <string name="import_unsupported_intent">Alfresco Mobile: Unable to retrieve information.</string>
     <string name="action_upload">Upload</string>
     <string name="action_import">Import</string>
 
@@ -375,9 +375,9 @@
     <string name="settings_favorite_sync_data">Data Usage</string>
     <string name="settings_favorite_sync_data_all">Use Cellular Data for Sync.</string>
     <string name="settings_custom_menu">Customization</string>
-    <string name="settings_custom_menu_summary">Define your home menu</string>
-    <string name="settings_custom_menu_manage">Home Menu</string>
-    <string name="settings_custom_menu_disable">Admin has disable this feature</string>
+    <string name="settings_custom_menu_summary">Select which tabs are available on your menu.</string>
+    <string name="settings_custom_menu_manage">Menu</string>
+    <string name="settings_custom_menu_disable">Your Alfresco Administrator has disabled this feature.</string>
 
 
     <!-- Multi Selection -->
@@ -795,9 +795,9 @@
     <string name="waiting_operations">Please wait</string>
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="error_offline"><![CDATA[<p><b>Alfresco Mobile help can\'t be accessed because you\'re offline.</b><br/></p> Please try again when you\'re back online.]]></string>
+    <string name="feature_disable">This feature is not supported or has been disabled on your device.</string>
 
     <!-- ANDROID FOR WORK -->
-    <string name="feature_disable">This feature is not supported or has been disabled on your device.</string>
     <!-- AlfrescoUserName restriction -->
     <string name="title_alfresco_username">Username</string>
     <string name="description_alfresco_username">User name used to connect to Alfresco Server</string>

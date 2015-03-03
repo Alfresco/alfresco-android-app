@@ -99,6 +99,26 @@ public class PreviewFragment extends AlfrescoFragment
     // LIFE CYCLE
     // //////////////////////////////////////////////////////////////////////
     @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null)
+        {
+            node = (Node) getArguments().get(ARGUMENT_NODE);
+            if (getArguments().containsKey(ARGUMENT_TOUCH_ENABLED))
+            {
+                touchEnabled = getArguments().getBoolean(ARGUMENT_TOUCH_ENABLED);
+            }
+        }
+
+        if (node != null && node instanceof NodeSyncPlaceHolder)
+        {
+            checkSession = false;
+            requiredSession = false;
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         setRetainInstance(false);
@@ -107,19 +127,11 @@ public class PreviewFragment extends AlfrescoFragment
         {
             container.setVisibility(View.VISIBLE);
         }
-        setSession(SessionUtils.getSession(getActivity()));
-        SessionUtils.checkSession(getActivity(), getSession());
 
         setRootView(inflater.inflate(R.layout.app_preview, container, false));
+
         if (getSession() == null) { return getRootView(); }
-
-        node = (Node) getArguments().get(ARGUMENT_NODE);
         if (node == null) { return null; }
-
-        if (getArguments().containsKey(ARGUMENT_TOUCH_ENABLED))
-        {
-            touchEnabled = getArguments().getBoolean(ARGUMENT_TOUCH_ENABLED);
-        }
 
         // Detect if isRestrictable
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);

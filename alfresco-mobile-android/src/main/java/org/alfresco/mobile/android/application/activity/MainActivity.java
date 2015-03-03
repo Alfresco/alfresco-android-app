@@ -197,7 +197,7 @@ public class MainActivity extends BaseActivity
                     && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
 
-                if (mdmManager.hasConfig())
+                if (!mdmManager.hasConfig())
                 {
                     // Check if we've prompted the user for Data Protection yet.
                     // This is needed on new AlfrescoAccount creation, as the
@@ -283,6 +283,7 @@ public class MainActivity extends BaseActivity
                     new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
             requestUpdate = false;
         }
+
     }
 
     @Override

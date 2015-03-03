@@ -37,6 +37,7 @@ import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
+import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
@@ -237,7 +238,13 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         this.node = node;
         this.parentFolder = parentFolder;
 
-        if (node instanceof Folder)
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            // Summary (without preview)
+            numberOfFragment = 1;
+
+        }
+        else if (node instanceof Folder)
         {
             // Summary (without preview) / Comments
             numberOfFragment = 2;
@@ -260,7 +267,12 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
     public Fragment getItem(int position)
     {
         Fragment fr = null;
-        if (node instanceof Folder)
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder).isFavorite(true)
+                    .createFragment();
+        }
+        else if (node instanceof Folder)
         {
             switch (position + 1)
             {
@@ -322,7 +334,11 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
     public CharSequence getPageTitle(int position)
     {
         int titleId = 0;
-        if (node instanceof Folder)
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            titleId = R.string.metadata;
+        }
+        else if (node instanceof Folder)
         {
             switch (position + 1)
             {

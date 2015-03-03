@@ -36,6 +36,8 @@ import org.alfresco.mobile.android.application.ui.form.validation.ValidationRule
 import org.alfresco.mobile.android.application.ui.form.views.AlfrescoFieldView;
 import org.alfresco.mobile.android.application.ui.form.views.EditTextFieldView;
 import org.alfresco.mobile.android.application.ui.form.views.PickerFieldView;
+import org.alfresco.mobile.android.async.OperationEvent;
+import org.alfresco.mobile.android.async.OperationRequest;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;
@@ -173,6 +175,24 @@ public abstract class BaseField
      */
     public void add(Object rawValue)
     {
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // REQUIRE REST API
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean requireAsync()
+    {
+        return false;
+    }
+
+    public OperationRequest.OperationBuilder requestData(Object extra)
+    {
+        return null;
+    }
+
+    public void setOperationData(OperationEvent event)
+    {
+        // TO Be Implemented by subclass
     }
 
     // ///////////////////////////////////////////////////////////////////////////

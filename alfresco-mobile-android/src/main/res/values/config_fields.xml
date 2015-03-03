@@ -27,6 +27,12 @@
     <!-- NODE : Document/Folder -->
     <string name="form_org_alfresco_client_form_field_node" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.NodeField</string>
 
+    <!-- PATH -->
+    <string name="form_org_alfresco_client_form_field_path" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.PathField</string>
+
+    <!-- TAGS -->
+    <string name="form_org_alfresco_client_form_field_tags" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.TagsField</string>
+
 
     <!-- +++++++++++++++++++++++++++ -->
     <!-- VALIDATION -->

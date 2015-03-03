@@ -1,7 +1,9 @@
 package org.alfresco.mobile.android.application.configuration;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -19,6 +21,8 @@ import org.alfresco.mobile.android.application.ui.form.BaseField;
 import org.alfresco.mobile.android.application.ui.form.FieldTypeFactory;
 import org.alfresco.mobile.android.application.ui.form.FieldTypeRegistry;
 import org.alfresco.mobile.android.application.ui.form.views.AlfrescoFieldView;
+import org.alfresco.mobile.android.async.OperationEvent;
+import org.alfresco.mobile.android.async.Operator;
 
 import android.app.Fragment;
 import android.text.TextUtils;
@@ -39,6 +43,10 @@ public class FormConfigManager extends BaseConfigManager
     private Map<String, BaseField> fieldsIndex;
 
     private HashMap<String, Serializable> currentValues;
+
+    private List<String> modelRequested = new ArrayList<>();
+
+    private HashMap<String, RequestHolder> operationFieldIndex = new HashMap<>();
 
     private Fragment fr;
 
@@ -115,6 +123,21 @@ public class FormConfigManager extends BaseConfigManager
     public BaseField getField(String fieldId)
     {
         return fieldsIndex.get(fieldId);
+    }
+
+    public void setOperationData(String requestId, OperationEvent event)
+    {
+        if (!operationFieldIndex.containsKey(requestId)) { return; }
+
+        // TODO Display Error Message
+        if (operationFieldIndex.containsKey(requestId) && event.hasException) { return; }
+
+        RequestHolder holder = operationFieldIndex.get(requestId);
+        holder.field.setOperationData(event);
+
+        // Update Index
+        operationFieldIndex.remove(requestId);
+        modelRequested.remove(holder.modelId);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -204,7 +227,11 @@ public class FormConfigManager extends BaseConfigManager
                 }
                 fieldsIndex.put(fieldConfig.getModelIdentifier(), field);
             }
-            else if (nodeProp.getValue() != null)
+            else if (nodeProp != null && nodeProp.getValue() != null)
+            {
+                fieldView = field.createReadableView();
+            }
+            else if (field.requireAsync())
             {
                 fieldView = field.createReadableView();
             }
@@ -219,6 +246,15 @@ public class FormConfigManager extends BaseConfigManager
             if (field.requiresPicker())
             {
                 field.initPicker(fr);
+            }
+
+            // If requires Async
+            if (field.requireAsync() && !modelRequested.contains(fieldConfig.getModelIdentifier()))
+            {
+                String requestId = Operator.with(getActivity()).load(field.requestData(node));
+                RequestHolder holder = new RequestHolder(field, fieldConfig.getModelIdentifier(), requestId);
+                modelRequested.add(fieldConfig.getModelIdentifier());
+                operationFieldIndex.put(requestId, holder);
             }
         }
     }
@@ -247,5 +283,21 @@ public class FormConfigManager extends BaseConfigManager
         }
 
         return fieldManager;
+    }
+
+    private static class RequestHolder
+    {
+        public final BaseField field;
+
+        public final String modelId;
+
+        public final String requestId;
+
+        public RequestHolder(BaseField field, String modelId, String requestId)
+        {
+            this.field = field;
+            this.modelId = modelId;
+            this.requestId = requestId;
+        }
     }
 }
