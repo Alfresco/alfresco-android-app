@@ -139,7 +139,7 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
     @Override
     protected void displayPartsOffline(NodeSyncPlaceHolder refreshedNode)
     {
-        // TODO
+        displayTabs();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -158,7 +158,7 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
     }
 
     @Subscribe
-    public void onFavoriteEvent(FavoritedNodeEvent event)
+    public void onIsFavoriteEvent(FavoritedNodeEvent event)
     {
         super.onIsFavoriteEvent(event);
     }
@@ -218,6 +218,12 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
 
         mTabHost.setup();
         mTabHost.setOnTabChangedListener(this);
+
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            mTabHost.addTab(newTab(TAB_METADATA, R.string.metadata, android.R.id.tabcontent));
+            return;
+        }
 
         if (DisplayUtils.hasCentralPane(getActivity()) && node.isDocument() && ((Document) node).isLatestVersion())
         {

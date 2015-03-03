@@ -73,6 +73,14 @@ public class TagsField extends BaseField
         {
             PagingResult<Tag> result = ((TagsEvent) event).data;
 
+            // No Tags but taggable aspect present
+            // Hide tags group
+            if (result.getTotalItems() == 0)
+            {
+                ((ViewGroup) tv.getParent().getParent().getParent()).setVisibility(View.GONE);
+                return;
+            }
+
             if (AndroidVersion.isICSOrAbove())
             {
                 StringBuilder builder = new StringBuilder();

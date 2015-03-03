@@ -38,7 +38,6 @@ import org.alfresco.mobile.android.async.tag.TagsEvent;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.Context;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -122,9 +121,6 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     protected void displayProperties()
     {
         ViewGroup propertyViewGroup = (ViewGroup) viewById(R.id.metadata);
-        LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-
-        // Configuration available ?
         boolean hasDisplayed = false;
         ConfigService service = ConfigManager.getInstance(getActivity()).getConfig(getAccount().getId(),
                 ConfigTypeIds.FORMS);

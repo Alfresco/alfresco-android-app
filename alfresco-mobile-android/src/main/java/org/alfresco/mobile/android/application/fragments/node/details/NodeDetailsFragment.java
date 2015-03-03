@@ -89,6 +89,7 @@ import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
 import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
+import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolderFormatter;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.WaitingDialogFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
@@ -124,6 +125,7 @@ import android.widget.TextView;
 import com.squareup.otto.Subscribe;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
+import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
 
 public abstract class NodeDetailsFragment extends AlfrescoFragment implements DetailsFragmentTemplate
 {
@@ -439,7 +441,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
     protected void displayPartsOffline(NodeSyncPlaceHolder refreshedNode)
     {
-
+        display(refreshedNode);
     }
 
     protected void display(Node refreshedNode)
@@ -462,7 +464,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         TextView tv = (TextView) viewById(R.id.title);
         tv.setText(node.getName());
         tv = (TextView) viewById(R.id.details);
-        tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
+        if (node instanceof Document)
+        {
+            tv.setText(Formatter.createContentBottomText(getActivity(), node, true));
+        }
+        else if (node instanceof NodeSyncPlaceHolder)
+        {
+            tv.setText(NodeSyncPlaceHolderFormatter.createContentBottomText(getActivity(), (NodeSyncPlaceHolder) node,
+                    true));
+        }
 
         if (isRestrictable)
         {
@@ -477,7 +487,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // BUTTONS
         ImageView b = (ImageView) viewById(R.id.action_openin);
-        if (node.isDocument() && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
+        if ((node instanceof Document && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
+                || (node instanceof NodeSyncPlaceHolder && !isRestrictable))
         {
             b.setOnClickListener(new OnClickListener()
             {
@@ -539,7 +550,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         // BUTTONS
         b = (ImageView) viewById(R.id.action_favorite);
-        if (!isRestrictable)
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            b.setVisibility(View.VISIBLE);
+            b.setImageResource(R.drawable.ic_favorite_light);
+            viewById(R.id.favorite_progress).setVisibility(View.GONE);
+        }
+        else if (!isRestrictable)
         {
             isFavorite(b);
             b.setOnClickListener(new OnClickListener()
@@ -618,7 +635,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             MimeType mime = MimeTypeManager.getInstance(getActivity()).getMimetype(node.getName());
             iconId = MimeTypeManager.getInstance(getActivity()).getIcon(node.getName(), isLarge);
-            if (((Document) node).isLatestVersion())
+            if (node instanceof Document && ((Document) node).isLatestVersion())
             {
                 if (isLarge)
                 {
@@ -635,12 +652,22 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             else
             {
                 iv.setImageResource(iconId);
+                if (iv instanceof ImageViewTouch)
+                {
+                    ((ImageViewTouch) iv).setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+                    if (((ViewGroup) iv.getParent()).findViewById(R.id.preview_message) != null)
+                    {
+                        ((ViewGroup) iv.getParent()).findViewById(R.id.preview_message).setVisibility(View.VISIBLE);
+                    }
+                }
             }
-            AccessibilityUtils.addContentDescription(iv,
-                    mime != null ? mime.getDescription() : ((Document) node).getContentStreamMimeType());
+
+            AccessibilityUtils.addContentDescription(iv, mime != null ? mime.getDescription() : (String) node
+                    .getProperty(PropertyIds.CONTENT_STREAM_MIME_TYPE).getValue());
 
             if (!isRestrictable && !AccessibilityUtils.isEnabled(getActivity()) && iv instanceof ImageViewTouch)
             {
+                ((ImageViewTouch) iv).setDoubleTapEnabled(false);
                 ((ImageViewTouch) iv).setDoubleTapListener(new ImageViewTouch.OnImageViewTouchDoubleTapListener()
                 {
                     @Override
@@ -984,6 +1011,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
         }
+
+        if (session == null) { return; }
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canEdit())
         {

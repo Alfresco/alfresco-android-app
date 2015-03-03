@@ -227,7 +227,7 @@ public class FormConfigManager extends BaseConfigManager
                 }
                 fieldsIndex.put(fieldConfig.getModelIdentifier(), field);
             }
-            else if (nodeProp.getValue() != null)
+            else if (nodeProp != null && nodeProp.getValue() != null)
             {
                 fieldView = field.createReadableView();
             }

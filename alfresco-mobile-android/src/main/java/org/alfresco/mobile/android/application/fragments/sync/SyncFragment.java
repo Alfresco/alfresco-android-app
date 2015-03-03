@@ -18,8 +18,10 @@
 package org.alfresco.mobile.android.application.fragments.sync;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,11 +41,13 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.async.Operation;
+import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
+import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
@@ -53,6 +57,7 @@ import org.alfresco.mobile.android.sync.FavoritesSyncScanEvent;
 import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
 import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.RefreshFragment;
@@ -125,6 +130,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         super();
         emptyListMessageId = R.string.empty_favorites;
+        mode = MODE_LISTING;
         checkSession = false;
         setHasOptionsMenu(true);
     }
@@ -496,8 +502,14 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             }
             else
             {
-                // Show properties
-                NodeDetailsFragment.with(getActivity()).nodeId(nodeId).isFavorite(true).display();
+                if (!ConnectivityUtils.hasInternetAvailable(getActivity()))
+                {
+                    NodeDetailsFragment.with(getActivity()).node(getOfflineNode(nodeId)).isFavorite(true).display();
+                }
+                else
+                {
+                    NodeDetailsFragment.with(getActivity()).nodeId(nodeId).isFavorite(true).display();
+                }
             }
         }
         adapter.notifyDataSetChanged();
@@ -535,8 +547,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     public int getMode()
     {
-        Bundle b = getArguments();
-        return b.getInt(ARGUMENT_MODE);
+        return getArguments().containsKey(ARGUMENT_MODE) ? getArguments().getInt(ARGUMENT_MODE) : mode;
     }
 
     public String getFolderId()
@@ -562,6 +573,45 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     public void setDecryptDateTime(Date decryptDateTime)
     {
         this.decryptDateTime = decryptDateTime;
+    }
+
+    private Node getOfflineNode(String nodeIdentifier)
+    {
+        Node syncedNode = null;
+        try
+        {
+            FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(getActivity());
+            // Retrieve Sync Cursor for the specified node
+            Uri localUri = syncManager.getUri(acc, nodeIdentifier);
+            Cursor syncCursor = getActivity().getContentResolver().query(localUri, FavoritesSyncSchema.COLUMN_ALL,
+                    null, null, null);
+            if (syncCursor.getCount() == 1 && syncCursor.moveToFirst())
+            {
+                Map<String, Serializable> properties = retrievePropertiesMap(syncCursor);
+                syncedNode = new NodeSyncPlaceHolder(properties);
+            }
+            CursorUtils.closeCursor(syncCursor);
+        }
+        catch (Exception e)
+        {
+            // Do Nothing
+        }
+
+        return syncedNode;
+    }
+
+    protected Map<String, Serializable> retrievePropertiesMap(Cursor cursor)
+    {
+        // PROPERTIES
+        String rawProperties = cursor.getString(OperationSchema.COLUMN_PROPERTIES_ID);
+        if (rawProperties != null)
+        {
+            return MapUtil.stringToMap(rawProperties);
+        }
+        else
+        {
+            return new HashMap<>();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -727,6 +777,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         {
             super(appActivity, configuration);
 
+            sessionRequired = false;
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
             templateArguments = new String[] {};

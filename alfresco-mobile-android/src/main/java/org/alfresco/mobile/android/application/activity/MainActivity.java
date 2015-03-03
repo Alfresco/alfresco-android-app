@@ -283,6 +283,7 @@ public class MainActivity extends BaseActivity
                     new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
             requestUpdate = false;
         }
+
     }
 
     @Override
