@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+﻿<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
   This file is part of Alfresco Mobile for Android.
@@ -796,5 +796,20 @@
     <string name="shortcut_alfresco">Alfresco</string>
     <string name="error_offline"><![CDATA[<p><b>Alfresco Mobile help can\'t be accessed because you\'re offline.</b><br/></p> Please try again when you\'re back online.]]></string>
     <string name="feature_disable">This feature is not supported or has been disabled on your device.</string>
+
+    <!-- ANDROID FOR WORK -->
+    <!-- AlfrescoUserName restriction -->
+    <string name="title_alfresco_username">Username</string>
+    <string name="description_alfresco_username">User name used to connect to Alfresco Server</string>
+    <!-- AlfrescoRepositoryURL restriction -->
+    <string name="title_alfresco_repository_url">Alfresco Repository URL</string>
+    <string name="description_alfresco_repository_url">Alfresco Server to connect to</string>
+    <!-- AlfrescoShareURL restriction -->
+    <string name="title_alfresco_share_url">Alfresco Share URL</string>
+    <string name="description_alfresco_share_url">Alfresco Share Server to connect to</string>
+    <!-- AlfrescoDisplayName restriction -->
+    <string name="title_alfresco_display_name">Account Display Name</string>
+    <string name="description_alfresco_display_name">Name of the server associated to the repository.</string>
+    <string name="default_alfresco_display_name">Alfresco Server</string>
 
 </resources>

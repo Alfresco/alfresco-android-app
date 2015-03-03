@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.configuration.FormConfigManager;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
+import org.alfresco.mobile.android.async.tag.TagsEvent;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -50,6 +51,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.squareup.otto.Subscribe;
+
 /**
  * Responsible to display details of a specific Node.
  * 
@@ -60,6 +63,8 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     public static final String TAG = NodePropertiesFragment.class.getName();
 
     private String descriptionLabel;
+
+    private FormConfigManager config;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -125,26 +130,15 @@ public class NodePropertiesFragment extends NodeDetailsFragment
                 ConfigTypeIds.FORMS);
         if (service != null && service.getFormConfig(ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
-            FormConfigManager config = new FormConfigManager(this, service, propertyViewGroup);
+            config = new FormConfigManager(this, service, propertyViewGroup);
             hasDisplayed = config.displayProperties(node);
         }
 
-        // TODO Remove it when formConfig is new standard.
         if (!hasDisplayed)
         {
-            generateProperties(inflater, propertyViewGroup,
-                    MetadataUtils.getPropertyLabel(ContentModel.ASPECT_GENERAL), node, ContentModel.ASPECT_GENERAL);
-            generateProperties(inflater, propertyViewGroup,
-                    MetadataUtils.getPropertyLabel(ContentModel.ASPECT_GEOGRAPHIC), node,
-                    ContentModel.ASPECT_GEOGRAPHIC);
-            generateProperties(inflater, propertyViewGroup, MetadataUtils.getPropertyLabel(ContentModel.ASPECT_EXIF),
-                    node, ContentModel.ASPECT_EXIF);
-            generateProperties(inflater, propertyViewGroup, MetadataUtils.getPropertyLabel(ContentModel.ASPECT_AUDIO),
-                    node, ContentModel.ASPECT_AUDIO);
-            generateProperties(inflater, propertyViewGroup,
-                    MetadataUtils.getPropertyLabel(ContentModel.ASPECT_RESTRICTABLE), node,
-                    ContentModel.ASPECT_RESTRICTABLE);
+            // Display Errors.
         }
+
     }
 
     private void generateProperties(LayoutInflater inflater, ViewGroup rootView, Map<String, Integer> properties,
@@ -251,6 +245,15 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         });
         tv.setTag(currentNode);
         return vr;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // REQUEST
+    // ///////////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onTagsEvent(TagsEvent event)
+    {
+        config.setOperationData(event.requestId, event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
+import org.alfresco.mobile.android.async.tag.TagsEvent;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -125,6 +126,12 @@ public class NodeSummaryFragment extends NodePropertiesFragment
     public void onNodeDeleted(DeleteNodeEvent event)
     {
         super.onNodeDeleted(event);
+    }
+
+    @Subscribe
+    public void onTagsEvent(TagsEvent event)
+    {
+        super.onTagsEvent(event);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
