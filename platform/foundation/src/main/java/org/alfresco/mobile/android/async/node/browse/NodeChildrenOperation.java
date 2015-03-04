@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.impl.ListingOperation;
+import org.alfresco.mobile.android.async.utils.ISO9075;
 import org.alfresco.mobile.android.platform.EventBusManager;
 
 import android.util.Log;
@@ -107,7 +108,7 @@ public class NodeChildrenOperation extends ListingOperation<PagingResult<Node>>
                             break;
                         case NodeChildrenRequest.FOLDER_USER_HOMES:
                             query = "SELECT * FROM cmis:folder WHERE CONTAINS ('QNAME:\"app:company_home/app:user_homes/cm:"
-                                    + session.getPersonIdentifier() + "\"')";
+                                    + ISO9075.encode(session.getPersonIdentifier()) + "\"')";
                             break;
                         default:
                             break;
