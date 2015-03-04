@@ -54,7 +54,7 @@ android {
             resValue "string", "account_name", ACCOUNT_ID_DEBUG
             resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
 
-            resValue "string", "hockeOapp_key", HOCKEYAPP_KEY
+            resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
 
         }
 
