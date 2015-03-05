@@ -17,12 +17,16 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.async.file.encryption;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.OperationAction;
 import org.alfresco.mobile.android.async.OperationsDispatcher;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.FileOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
+import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
 
@@ -57,11 +61,24 @@ public class AccountProtectionOperation extends FileOperation<Void>
         {
             result = super.doInBackground();
 
+            // Generate exclusion Folders
+            List<String> excludes = new ArrayList<>(3);
+            try
+            {
+                excludes.add(AlfrescoStorageManager.getInstance(context).getConfigurationFolder().getPath());
+                excludes.add(AlfrescoStorageManager.getInstance(context).getConfigurationFolder(getAccount()).getPath());
+                excludes.add(AlfrescoStorageManager.getInstance(context).getCustomFolder(getAccount()).getPath());
+            }
+            catch (Exception e)
+            {
+                // Do nothing
+            }
+
             if (file.isDirectory())
             {
                 if (doEncrypt)
                 {
-                    if (EncryptionUtils.encryptFiles(context, file.getPath(), true))
+                    if (EncryptionUtils.encryptFiles(context, file.getPath(), true, excludes))
                     {
                         DataProtectionManager.getInstance(context).setDataProtectionEnable(true);
                     }
