@@ -221,10 +221,17 @@ public class FavoriteNodeOperation extends NodeOperation<Boolean>
         }
         else if (cursorId.getCount() == 1 && cursorId.moveToFirst())
         {
+            ContentValues cValues = new ContentValues();
+
+            // Already present : Is it Hidden ?
+            if (cursorId.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID) == FavoriteSyncStatus.STATUS_HIDDEN)
+            {
+                cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_SUCCESSFUL);
+            }
+
             // Already present in sync which means it's inside a
             // synced folder
             // We simply update the favorite
-            ContentValues cValues = new ContentValues();
             cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
             context.getContentResolver().update(
                     FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
