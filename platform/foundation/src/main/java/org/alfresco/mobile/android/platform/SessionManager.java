@@ -186,7 +186,7 @@ public abstract class SessionManager extends Manager
         {
             session = getSession(accountToLoad.getId());
             EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, accountToLoad));
+                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, accountToLoad));
         }
         else if (getCurrentAccount() == null || accountToLoad.getId() != getCurrentAccount().getId())
         {

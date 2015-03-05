@@ -360,17 +360,21 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args)
     {
-        if (id == LOADER_OPERATION_ID)
+        switch (id)
         {
-            return new CursorLoader(getActivity(), OperationsContentProvider.CONTENT_URI, OperationSchema.COLUMN_ALL,
-                    OperationSchema.COLUMN_PARENT_ID + "=\"" + parentNode.getIdentifier() + "\" AND "
-                            + OperationSchema.COLUMN_REQUEST_TYPE + " IN(" + CreateDocumentRequest.TYPE_ID + " , "
-                            + DownloadRequest.TYPE_ID + " , " + UpdateContentRequest.TYPE_ID + ")", null, null);
+            case LOADER_OPERATION_ID:
+                return new CursorLoader(getActivity(), OperationsContentProvider.CONTENT_URI,
+                        OperationSchema.COLUMN_ALL, OperationSchema.COLUMN_PARENT_ID + "=\""
+                                + parentNode.getIdentifier() + "\" AND " + OperationSchema.COLUMN_REQUEST_TYPE + " IN("
+                                + CreateDocumentRequest.TYPE_ID + " , " + DownloadRequest.TYPE_ID + " , "
+                                + UpdateContentRequest.TYPE_ID + ")", null, null);
+
+            case LOADER_SYNC_ID:
+                return new CursorLoader(getActivity(), FavoritesSyncProvider.CONTENT_URI,
+                        FavoritesSyncSchema.COLUMN_ALL, FavoritesSyncSchema.COLUMN_PARENT_ID + " =\""
+                                + parentNode.getIdentifier() + "\" AND " + FavoritesSyncSchema.COLUMN_STATUS
+                                + " NOT IN (" + FavoriteSyncStatus.STATUS_HIDDEN + ")", null, null);
         }
-        else if (id == LOADER_SYNC_ID) { return new CursorLoader(getActivity(), FavoritesSyncProvider.CONTENT_URI,
-                FavoritesSyncSchema.COLUMN_ALL, FavoritesSyncSchema.COLUMN_PARENT_ID + " =\""
-                        + parentNode.getIdentifier() + "\" AND " + FavoritesSyncSchema.COLUMN_STATUS + " NOT IN ("
-                        + FavoriteSyncStatus.STATUS_HIDDEN + ")", null, null); }
         return null;
     }
 

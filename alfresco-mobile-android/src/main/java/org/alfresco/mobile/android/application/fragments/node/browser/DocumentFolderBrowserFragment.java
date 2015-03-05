@@ -343,6 +343,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         super.onStop();
     }
 
+    public void refreshListView()
+    {
+        super.refreshListView();
+        if (adapter != null && adapter instanceof ProgressNodeAdapter)
+        {
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+        }
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // PATH
     // //////////////////////////////////////////////////////////////////////

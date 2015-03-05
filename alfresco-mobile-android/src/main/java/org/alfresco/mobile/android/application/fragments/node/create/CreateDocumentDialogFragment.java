@@ -54,7 +54,6 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -336,7 +335,6 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Folder parentFolder = (Folder) getArguments().get(ARGUMENT_FOLDER);
         Boolean isCreation = getArguments().getBoolean(ARGUMENT_IS_CREATION);
 
-        Log.d("[UPLOAD]", "Start " + System.currentTimeMillis() + " ms");
         Operator.with(getActivity(), getAccount()).load(
                 new CreateDocumentRequest.Builder(parentFolder, documentName, (type != null) ? type.getIdentifier()
                         : null, f, props, listTagValue, isCreation)

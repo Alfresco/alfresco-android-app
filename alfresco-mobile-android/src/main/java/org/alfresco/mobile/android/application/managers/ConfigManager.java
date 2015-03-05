@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.api.services.impl.onpremise.OnPremiseConfigSe
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.async.LoaderResult;
 import org.alfresco.mobile.android.async.configuration.ConfigurationEvent;
+import org.alfresco.mobile.android.async.session.RequestSessionEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -344,6 +345,16 @@ public class ConfigManager extends Manager
         if (event.data.hasViewConfig())
         {
             eventBus.post(new ConfigurationMenuEvent(event.accountId));
+        }
+    }
+
+    @Subscribe
+    public void onSessionRequested(RequestSessionEvent event)
+    {
+        if (hasConfig(event.accountToLoad.getId()))
+        {
+            currentService.remove(event.accountToLoad.getId());
+            remoteConfigService.remove(event.accountToLoad.getId());
         }
     }
 

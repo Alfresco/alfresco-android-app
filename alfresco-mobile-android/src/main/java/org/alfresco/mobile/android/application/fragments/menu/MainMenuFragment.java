@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.application.managers.ConfigManager.Configurat
 import org.alfresco.mobile.android.async.person.AvatarEvent;
 import org.alfresco.mobile.android.async.session.LoadSessionCallBack.LoadAccountCompletedEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
-import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
@@ -86,6 +85,10 @@ import com.squareup.otto.Subscribe;
 
 public class MainMenuFragment extends AlfrescoFragment implements OnItemSelectedListener
 {
+    private AccountsAdapter accountsAdapter;
+
+    private AlfrescoAccount currentAccount;
+
     private Spinner spinnerAccount;
 
     private int accountIndex;
@@ -125,7 +128,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         setRootView(inflater.inflate(R.layout.app_main_menu, container, false));
 
         spinnerAccount = (Spinner) getRootView().findViewById(R.id.accounts_spinner);
-        spinnerAccount.setOnItemSelectedListener(this);
+        // spinnerAccount.setOnItemSelectedListener(this);
 
         menuFavorites = (Button) viewById(R.id.menu_favorites);
 
@@ -145,16 +148,16 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         // retrieve accounts
         configManager = ConfigManager.getInstance(getActivity());
-        AlfrescoAccount acc = getAccount();
-        if (acc == null)
+        currentAccount = getAccount();
+        if (currentAccount == null)
         {
-            acc = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
+            currentAccount = AlfrescoAccountManager.getInstance(getActivity()).getDefaultAccount();
         }
-        if (configManager != null && acc != null)
+        if (configManager != null && currentAccount != null)
         {
             // Configuration
-            configManager.init(acc);
-            configure(configManager.getConfig(acc.getId(), ConfigTypeIds.VIEWS));
+            configManager.init(currentAccount);
+            configure(configManager.getConfig(currentAccount.getId(), ConfigTypeIds.VIEWS));
         }
 
         refresh();
@@ -225,7 +228,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // DPUBLIC
+    // PUBLIC
     // ///////////////////////////////////////////////////////////////////////////
     public void refreshData()
     {
@@ -259,24 +262,37 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 hideSlidingMenu(false);
                 refresh();
                 break;
-
             default:
-                AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
                 if (currentAccount != null && currentAccount.getId() != accountId)
                 {
-                    hideSlidingMenu(true);
-
-                    // Switch to current account
                     if (getActivity() instanceof AlfrescoActivity)
                     {
-                        ((AlfrescoActivity) getActivity()).setCurrentAccount(accountId);
-                        UIUtils.displayTitle(getActivity(), getString(R.string.app_name), false);
+                        ((AlfrescoActivity) getActivity()).swapAccount(acc);
+                        if (SLIDING_TAG.equals(getTag()))
+                        {
+                            ((MainMenuFragment) ((AlfrescoActivity) getActivity()).getFragment(TAG)).swapAccount();
+                        }
+                        else
+                        {
+                            ((MainMenuFragment) ((AlfrescoActivity) getActivity()).getFragment(SLIDING_TAG))
+                                    .swapAccount();
+                        }
                     }
-
-                    // Request session loading for the selected AlfrescoAccount.
-                    SessionManager.getInstance(getActivity()).loadSession(
-                            AlfrescoAccountManager.getInstance(getActivity()).retrieveAccount(accountId));
                 }
+
+                /*
+                 * if (currentAccount != null && currentAccount.getId() !=
+                 * accountId) { hideSlidingMenu(true); currentAccount = acc; //
+                 * Switch to current account if (getActivity() instanceof
+                 * AlfrescoActivity) { ((AlfrescoActivity)
+                 * getActivity()).setCurrentAccount(accountId);
+                 * UIUtils.displayTitle(getActivity(),
+                 * getString(R.string.app_name), false); } // Request session
+                 * loading for the selected AlfrescoAccount.
+                 * SessionManager.getInstance(getActivity()).loadSession(
+                 * AlfrescoAccountManager
+                 * .getInstance(getActivity()).retrieveAccount(accountId)); }
+                 */
                 break;
         }
     }
@@ -284,6 +300,16 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     @Override
     public void onNothingSelected(AdapterView<?> arg0)
     {
+    }
+
+    public void swapAccount()
+    {
+        AlfrescoAccount tmpAccount = getAccount();
+        if (tmpAccount != null && currentAccount != null && tmpAccount.getId() != currentAccount.getId())
+        {
+            currentAccount = tmpAccount;
+            refresh();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -329,13 +355,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private void display()
     {
-        AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
-
         DisplayUtils.show(viewById(R.id.main_menu_group));
         show(R.id.menu_browse_activities);
         show(R.id.menu_browse_root);
         show(R.id.menu_browse_my_sites);
-        if (acc != null && acc.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
+        if (currentAccount != null && currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
             hide(R.id.menu_workflow);
         }
@@ -346,7 +370,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         show(R.id.menu_favorites);
         show(R.id.menu_search);
         show(R.id.menu_downloads);
-        if (OperationsFragment.canDisplay(getActivity(), acc))
+        if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
             show(R.id.menu_notifications);
         }
@@ -391,13 +415,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private void refresh()
     {
-        AlfrescoAccount currentAccount = SessionUtils.getAccount(getActivity());
         if (currentAccount == null)
         {
             currentAccount = AccountsPreferences.getDefaultAccount(getActivity());
+            if (currentAccount == null) { return; }
         }
-
-        if (currentAccount == null) { return; }
 
         // We retrieve index of the current account to select it
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
@@ -430,9 +452,20 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 null, null, "0", null, "false"));
 
         // Init the adapter and create the menu
-        AccountsAdapter accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
+        if (accountsAdapter == null)
+        {
+            accountsAdapter = new AccountsAdapter(getActivity(), list, R.layout.app_account_list_row, null);
+        }
+        else
+        {
+            accountsAdapter.clear();
+            accountsAdapter.addAll(list);
+        }
+
+        accountsAdapter.setNotifyOnChange(false);
         spinnerAccount.setAdapter(accountsAdapter);
-        spinnerAccount.setSelection(accountIndex);
+        spinnerAccount.setSelection(accountIndex, false);
+        spinnerAccount.setOnItemSelectedListener(this);
 
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
@@ -512,11 +545,12 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
         try
         {
-            AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
-            Boolean hasSynchroActive = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
+            Boolean hasSynchroActive = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(currentAccount);
 
-            long startTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(acc);
-            long finalTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getSyncPrepareTimestamp(acc);
+            long startTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(
+                    currentAccount);
+            long finalTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getSyncPrepareTimestamp(
+                    currentAccount);
 
             // Sync Prepare in Progress ?
             if (startTimeStamp > finalTimeStamp)
@@ -529,7 +563,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 // Sync Prepare done
 
                 // Is there a policy warning ?
-                SyncScanInfo syncScanInfo = SyncScanInfo.getLastSyncScanData(getActivity(), acc);
+                SyncScanInfo syncScanInfo = SyncScanInfo.getLastSyncScanData(getActivity(), currentAccount);
                 if (syncScanInfo != null && syncScanInfo.hasWarning())
                 {
                     // ==> Sync requires a user input
@@ -538,13 +572,14 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             }
 
             // Is there a doc warning ?
-            if (hasSynchroActive && acc != null)
+            if (hasSynchroActive && currentAccount != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
                         FavoritesSyncProvider.CONTENT_URI,
                         FavoritesSyncSchema.COLUMN_ALL,
-                        FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_STATUS
-                                + " == " + FavoriteSyncStatus.STATUS_REQUEST_USER, null, null);
+                        FavoritesSyncProvider.getAccountFilter(currentAccount) + " AND "
+                                + FavoritesSyncSchema.COLUMN_STATUS + " == " + FavoriteSyncStatus.STATUS_REQUEST_USER,
+                        null, null);
                 if (statutCursor.getCount() > 0)
                 {
                     statut = getActivity().getResources().getDrawable(R.drawable.ic_warning_light);
@@ -601,6 +636,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     @Subscribe
     public void onAccountLoaded(LoadAccountCompletedEvent event)
     {
+        currentAccount = event.account;
         refresh();
     }
 

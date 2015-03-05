@@ -30,6 +30,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import javax.crypto.Cipher;
 import javax.crypto.CipherInputStream;
@@ -291,46 +292,33 @@ public class EncryptionUtils
                             {
                                 Log.w(TAG, "Could not delete original file " + tempSrc.getPath());
                             }
-/*
-                            // If the file lives in Sync folder
-                            if (FavoritesSyncManager.getInstance(ctxt).isSynchroFile(src))
-                            {
-                                try
-                                {
-                                    favoriteCursor = ctxt.getContentResolver().query(
-                                            FavoritesSyncProvider.CONTENT_URI,
-                                            FavoritesSyncSchema.COLUMN_ALL,
-                                            FavoritesSyncSchema.COLUMN_LOCAL_URI + " LIKE '"
-                                                    + Uri.fromFile(src).toString() + "%'", null, null);
-
-                                    if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
-                                    {
-                                        statut = favoriteCursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID);
-                                        if (statut != FavoriteSyncStatus.STATUS_MODIFIED)
-                                        {
-                                            uri = Uri.parse(FavoritesSyncProvider.CONTENT_URI + "/"
-                                                    + favoriteCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID));
-                                            if (cValues == null)
-                                            {
-                                                cValues = new ContentValues();
-                                            }
-                                            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP,
-                                                    src.lastModified());
-                                            ctxt.getContentResolver().update(uri, cValues, null, null);
-                                        }
-                                    }
-                                }
-                                catch (Exception e)
-                                {
-                                }
-                                finally
-                                {
-                                    if (favoriteCursor != null)
-                                    {
-                                        favoriteCursor.close();
-                                    }
-                                }
-                            }*/
+                            /*
+                             * // If the file lives in Sync folder if
+                             * (FavoritesSyncManager
+                             * .getInstance(ctxt).isSynchroFile(src)) { try {
+                             * favoriteCursor = ctxt.getContentResolver().query(
+                             * FavoritesSyncProvider.CONTENT_URI,
+                             * FavoritesSyncSchema.COLUMN_ALL,
+                             * FavoritesSyncSchema.COLUMN_LOCAL_URI + " LIKE '"
+                             * + Uri.fromFile(src).toString() + "%'", null,
+                             * null); if (favoriteCursor.getCount() == 1 &&
+                             * favoriteCursor.moveToFirst()) { statut =
+                             * favoriteCursor
+                             * .getInt(FavoritesSyncSchema.COLUMN_STATUS_ID); if
+                             * (statut != FavoriteSyncStatus.STATUS_MODIFIED) {
+                             * uri = Uri.parse(FavoritesSyncProvider.CONTENT_URI
+                             * + "/" +
+                             * favoriteCursor.getLong(FavoritesSyncSchema
+                             * .COLUMN_ID_ID)); if (cValues == null) { cValues =
+                             * new ContentValues(); }
+                             * cValues.put(FavoritesSyncSchema
+                             * .COLUMN_LOCAL_MODIFICATION_TIMESTAMP,
+                             * src.lastModified());
+                             * ctxt.getContentResolver().update(uri, cValues,
+                             * null, null); } } } catch (Exception e) { }
+                             * finally { if (favoriteCursor != null) {
+                             * favoriteCursor.close(); } } }
+                             */
                         }
                         else
                         {
@@ -451,11 +439,7 @@ public class EncryptionUtils
         }
     }
 
-    /*
-     * Encrypt an entire folder, recursively if required. Rollback is
-     * implemented if any failures occur. NOTE: This method is not thread-safe.
-     */
-    public static boolean encryptFiles(Context ctxt, String sourceFolder, boolean recursive)
+    public static boolean encryptFiles(Context ctxt, String sourceFolder, boolean recursive, List<String> excludes)
     {
         boolean startPoint = false;
         boolean result = true;
@@ -487,10 +471,10 @@ public class EncryptionUtils
                     }
                     else
                     {
-                        if (sourceFile.isDirectory() && recursive && !sourceFile.getName().equals(".")
-                                && !sourceFile.getName().equals(".."))
+                        if (sourceFile.isDirectory() && !excludes.contains(sourceFile.getPath()) && recursive
+                                && !sourceFile.getName().equals(".") && !sourceFile.getName().equals(".."))
                         {
-                            result = encryptFiles(ctxt, sourceFile.getPath(), recursive);
+                            result = encryptFiles(ctxt, sourceFile.getPath(), recursive, excludes);
                         }
                     }
 
@@ -566,6 +550,15 @@ public class EncryptionUtils
 
             return false;
         }
+    }
+
+    /*
+     * Encrypt an entire folder, recursively if required. Rollback is
+     * implemented if any failures occur. NOTE: This method is not thread-safe.
+     */
+    public static boolean encryptFiles(Context ctxt, String sourceFolder, boolean recursive)
+    {
+        return encryptFiles(ctxt, sourceFolder, recursive, new ArrayList<String>(0));
     }
 
     // ///////////////////////////////////////////////////////////////////////////

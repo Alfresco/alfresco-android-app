@@ -19,6 +19,6 @@ android {
 }
 
 dependencies {
-    compile 'net.hockeyapp.android:HockeySDK:3.0.1'
+    compile 'net.hockeyapp.android:HockeySDK:3.5.0'
     compile project(':platform:foundation')
 }

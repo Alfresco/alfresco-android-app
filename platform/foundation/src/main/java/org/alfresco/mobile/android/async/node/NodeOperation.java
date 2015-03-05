@@ -95,6 +95,7 @@ public abstract class NodeOperation<T> extends BaseOperation<T>
             if (!ignoreParentFolder)
             {
                 parentFolder = retrieveParentFolder();
+                parentFolderIdentifier = (parentFolder != null) ? parentFolder.getIdentifier() : null;
             }
 
             if (listener != null)

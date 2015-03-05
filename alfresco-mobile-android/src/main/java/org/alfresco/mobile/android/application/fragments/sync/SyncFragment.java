@@ -660,8 +660,12 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             // Display spinning wheel instead of refresh
             mi.setActionView(R.layout.app_spinning);
         }
-        ((SyncCursorAdapter) adapter).refresh();
-        gv.setAdapter(adapter);
+
+        if (adapter != null)
+        {
+            ((SyncCursorAdapter) adapter).refresh();
+            gv.setAdapter(adapter);
+        }
     }
 
     public void displayWarning()
