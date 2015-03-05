@@ -90,7 +90,7 @@ public class ReassignTaskRequest extends TaskRequest
         public Builder(Task task, String assigneeId, Boolean isClaimed)
         {
             super(task);
-            this.assigneeId = assignee.getIdentifier();
+            this.assigneeId = assigneeId;
             this.isClaimed = isClaimed;
         }
 

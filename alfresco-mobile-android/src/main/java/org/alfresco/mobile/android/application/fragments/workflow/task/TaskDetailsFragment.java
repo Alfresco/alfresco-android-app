@@ -191,6 +191,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     // ///////////////////////////////////////////////////////////////////////////
     // INIT
     // ///////////////////////////////////////////////////////////////////////////
+    private String state = null;
+
     private String description;
 
     private String type;
@@ -221,6 +223,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
             dueAt = currentTask.getDueAt();
             processId = currentTask.getProcessIdentifier();
             processDefinitionId = currentTask.getProcessDefinitionIdentifier();
+            state = (String) ((TaskImpl) currentTask).getData().get(OnPremiseConstant.STATE_VALUE);
         }
         else if (currentProcess != null)
         {
@@ -252,7 +255,9 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
             comment = (EditText) vRoot.findViewById(R.id.task_comment);
 
             if (WorkflowModel.TASK_REVIEW.equals(currentTask.getKey())
-                    || WorkflowModel.TASK_ACTIVITI_REVIEW.equals(currentTask.getKey()))
+                    || WorkflowModel.TASK_ACTIVITI_REVIEW.equals(currentTask.getKey())
+                    || "imwf:activitiModeratedInvitationReviewTask".equals(currentTask.getKey())
+                    || "imwf:moderatedInvitationReviewTask".equals(currentTask.getKey()))
             {
                 isReviewTask = true;
                 reject.setVisibility(View.VISIBLE);
@@ -449,7 +454,13 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
                         : outcome.toLowerCase();
             }
 
-            if ((getSession().getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4))
+            // TODO Move constants to SDK level
+            if ("imwf:activitiModeratedInvitationReviewTask".equals(task.getKey()))
+            {
+                outcome = outcome.toLowerCase();
+                variables.put("imwf_reviewOutcome", outcome);
+            }
+            else if ((getSession().getRepositoryInfo().getMajorVersion() < OnPremiseConstant.ALFRESCO_VERSION_4))
             {
                 variables.put(WorkflowModel.PROP_TRANSITIONS_VALUE, outcome);
             }
@@ -517,8 +528,8 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
         }
         // claim : I assign to me an unassigned task (created by a pooled
         // process)
-        else if (currentTask.getAssigneeIdentifier() == null
-                && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW.contains(processDefinitionKey))
+        else if ((currentTask.getAssigneeIdentifier() == null && WorkflowModel.FAMILY_PROCESS_POOLED_REVIEW
+                .contains(processDefinitionKey)) || "unclaimed".equals(state))
         {
             mi = menu.add(Menu.NONE, R.id.menu_task_claim, Menu.FIRST + 4, R.string.task_claim);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT);
@@ -716,5 +727,4 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
             return newInstanceByTemplate(b);
         }
     }
-
 }
