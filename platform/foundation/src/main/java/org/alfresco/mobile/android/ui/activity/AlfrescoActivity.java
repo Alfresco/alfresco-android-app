@@ -195,6 +195,12 @@ public abstract class AlfrescoActivity extends Activity
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNTS / SESSION MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
+    public void swapAccount(AlfrescoAccount account)
+    {
+        setCurrentAccount(account);
+        SessionManager.getInstance(this).loadSession(account);
+    }
+
     public void setCurrentAccount(AlfrescoAccount account)
     {
         this.currentAccount = account;

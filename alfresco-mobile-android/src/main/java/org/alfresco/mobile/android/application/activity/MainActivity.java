@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity
     private static ActionBarDrawerToggle mDrawerToggle;
 
     /** Flag to indicate account creation from the welcome screen. */
-    private boolean requestUpdate = false;
+    private boolean requestSwapAccount = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // LIFE CYCLE
@@ -192,7 +192,7 @@ public class MainActivity extends BaseActivity
         // After account creation via welcome screen
         if (currentAccount != null)
         {
-            requestUpdate = true;
+            requestSwapAccount = true;
             if (currentAccount.getIsPaidAccount()
                     && !prefs.getBoolean(GeneralPreferences.HAS_ACCESSED_PAID_SERVICES, false))
             {
@@ -277,11 +277,11 @@ public class MainActivity extends BaseActivity
         super.onResume();
         checkSession();
 
-        if (getFragment(MainMenuFragment.TAG) != null && requestUpdate)
+        if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
             EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.RELOAD, currentAccount));
-            requestUpdate = false;
+                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
+            requestSwapAccount = false;
         }
 
     }
@@ -768,14 +768,12 @@ public class MainActivity extends BaseActivity
         }
     }
 
-    @Subscribe
-    public void onSessionRequested(RequestSessionEvent event)
+    private void swapSession(AlfrescoAccount currentAccount)
     {
         // Change activity state to loading.
         setSessionState(SESSION_LOADING);
 
-        // Assign the account
-        currentAccount = event.accountToLoad;
+        this.currentAccount = currentAccount;
 
         if (getFragment(MainMenuFragment.TAG) != null)
         {
@@ -799,9 +797,22 @@ public class MainActivity extends BaseActivity
         UIUtils.displayTitle(this, getString(R.string.app_name));
     }
 
+    boolean fromSessionRequested = false;
+
+    @Subscribe
+    public void onSessionRequested(RequestSessionEvent event)
+    {
+        swapSession(event.accountToLoad);
+        fromSessionRequested = true;
+    }
+
     @Subscribe
     public void onAccountLoading(LoadAccountStartedEvent event)
     {
+        if (fromSessionRequested)
+        {
+            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).refreshData();
+        }
         setSessionState(SESSION_LOADING);
         setProgressBarIndeterminateVisibility(true);
         invalidateOptionsMenu();
@@ -818,6 +829,16 @@ public class MainActivity extends BaseActivity
         // Avoid collision with PublicDispatcherActivity when selecting an
         // account.
         if (event.requestId == null || getCurrentSession() == null) { return; }
+
+        if (event.requestId == LoadAccountCompletedEvent.SWAP)
+        {
+            swapSession(event.account);
+        }
+
+        if (fromSessionRequested)
+        {
+            fromSessionRequested = false;
+        }
 
         ServiceRegistry registry = getCurrentSession().getServiceRegistry();
 
