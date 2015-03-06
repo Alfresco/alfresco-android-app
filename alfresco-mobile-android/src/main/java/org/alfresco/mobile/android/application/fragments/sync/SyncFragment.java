@@ -406,6 +406,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             setListShown(false);
         }
         StringBuilder selection = new StringBuilder();
+        if (acc == null)
+        {
+            acc = getAccount();
+        }
         if (acc != null)
         {
             selection.append(FavoritesSyncProvider.getAccountFilter(acc));

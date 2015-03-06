@@ -69,6 +69,39 @@ public interface ConfigConstants
     String PROP_VISIBILE = "visible";
 
     // ///////////////////////////////////////////////////////////////////////////
+    // VIEW MODEL 1.0
+    // ///////////////////////////////////////////////////////////////////////////
+    String VIEW_MODEL_ACTIVITIES = "org.alfresco.client.view.activities";
+
+    String VIEW_MODEL_PEOPLE = "org.alfresco.client.view.people";
+
+    String VIEW_MODEL_PERSON_PROFILE = "org.alfresco.client.view.person-profile";
+
+    String VIEW_MODEL_LOCAL_FILES = "org.alfresco.client.view.local-files";
+
+    String VIEW_MODEL_SEARCH = "org.alfresco.client.view.search";
+
+    String VIEW_MODEL_SEARCH_ADVANCED = "org.alfresco.client.view.search-advanced";
+
+    String VIEW_MODEL_SITE_BROWSER = "org.alfresco.client.view.site-browser";
+
+    String VIEW_MODEL_SITES = "org.alfresco.client.view.sites";
+
+    String VIEW_MODEL_NODE_DETAILS = "org.alfresco.client.view.node-details";
+
+    String VIEW_MODEL_PREVIEW_CAROUSEL = "org.alfresco.client.view.preview-carousel";
+
+    String VIEW_MODEL_REPOSITORY = "org.alfresco.client.view.repository";
+
+    String VIEW_MODEL_REPOSITORY_SEARCH = "org.alfresco.client.view.repository-search";
+
+    String VIEW_MODEL_TASKS = "org.alfresco.client.view.tasks";
+
+    String VIEW_MODEL_FAVORITES = "org.alfresco.client.view.sync";
+
+    String VIEW_MODEL_SYNC = "org.alfresco.client.view.favorites";
+
+    // ///////////////////////////////////////////////////////////////////////////
     // DEFAULT VIEW
     // ///////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +154,6 @@ public interface ConfigConstants
 
     // EVALUATORS
     String EVALUATOR = "evaluator";
-
 
     String MATCH_ALL_VALUE = "match-all";
 

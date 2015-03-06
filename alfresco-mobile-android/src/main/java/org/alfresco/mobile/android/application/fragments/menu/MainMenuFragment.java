@@ -17,6 +17,7 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.menu;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -95,7 +96,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private Button menuFavorites;
 
-    private Button menuSlidingFavorites;
+    private List<View> syncFavoritesMenuItem = new ArrayList<>();
 
     private ConfigManager configManager;
 
@@ -128,13 +129,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         setRootView(inflater.inflate(R.layout.app_main_menu, container, false));
 
         spinnerAccount = (Spinner) getRootView().findViewById(R.id.accounts_spinner);
-        // spinnerAccount.setOnItemSelectedListener(this);
 
         menuFavorites = (Button) viewById(R.id.menu_favorites);
 
         if (SLIDING_TAG.equals(getTag()))
         {
-            menuSlidingFavorites = (Button) viewById(R.id.menu_favorites);
             setRetainInstance(true);
         }
 
@@ -175,7 +174,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             FragmentDisplayer.clearCentralPane(getActivity());
         }
 
-        UIUtils.displayTitle(getActivity(), R.string.app_name);
+        UIUtils.displayTitle(getActivity(), R.string.app_name, !TAG.equals(getTag()));
         EventBusManager.getInstance().register(this);
     }
 
@@ -279,20 +278,6 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                         }
                     }
                 }
-
-                /*
-                 * if (currentAccount != null && currentAccount.getId() !=
-                 * accountId) { hideSlidingMenu(true); currentAccount = acc; //
-                 * Switch to current account if (getActivity() instanceof
-                 * AlfrescoActivity) { ((AlfrescoActivity)
-                 * getActivity()).setCurrentAccount(accountId);
-                 * UIUtils.displayTitle(getActivity(),
-                 * getString(R.string.app_name), false); } // Request session
-                 * loading for the selected AlfrescoAccount.
-                 * SessionManager.getInstance(getActivity()).loadSession(
-                 * AlfrescoAccountManager
-                 * .getInstance(getActivity()).retrieveAccount(accountId)); }
-                 */
                 break;
         }
     }
@@ -350,6 +335,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             MainMenuConfigManager config = new MainMenuConfigManager(getActivity(), configService,
                     (ViewGroup) getRootView());
             config.createMenu();
+            syncFavoritesMenuItem.addAll(config.getViewsByType(ConfigConstants.VIEW_MODEL_SYNC));
         }
     }
 
@@ -591,11 +577,15 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 statut = null;
             }
 
-            if (menuSlidingFavorites != null)
-            {
-                menuSlidingFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
-            }
             menuFavorites.setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+            for (View v : syncFavoritesMenuItem)
+            {
+                if (v instanceof Button)
+                {
+                    ((Button) v).setCompoundDrawablesWithIntrinsicBounds(icon, null, statut, null);
+                }
+            }
+
         }
         catch (Exception e)
         {
