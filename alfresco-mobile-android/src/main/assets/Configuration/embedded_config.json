@@ -229,6 +229,10 @@
         {
           "item-type": "field-id",
           "field-id": "cm:modified"
+        },
+        {
+          "item-type": "field-id",
+          "field-id": "path_document"
         }
       ]
     },
@@ -499,9 +503,14 @@
     },
     "path": {
       "model-id": "path",
-      "type": "org.alfresco.client.form.field.path",
+      "type": "org.alfresco.client.form.field.folder-path",
       "label-id": "cm_contentmodel.property.cm_path.title"
     },
+     "path_document": {
+          "model-id": "path",
+          "type": "org.alfresco.client.form.field.path",
+          "label-id": "cm_contentmodel.property.cm_path.title"
+        },
     "cm:author": {
       "model-id": "cm:author",
       "type": "org.alfresco.client.form.field.text",

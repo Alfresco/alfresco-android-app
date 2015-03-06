@@ -127,7 +127,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
         if (service != null && service.getFormConfig(ConfigConstants.VIEW_NODE_PROPERTIES) != null)
         {
             config = new FormConfigManager(this, service, propertyViewGroup);
-            hasDisplayed = config.displayProperties(node);
+            hasDisplayed = config.displayProperties(node, parentNode);
         }
 
         if (!hasDisplayed)

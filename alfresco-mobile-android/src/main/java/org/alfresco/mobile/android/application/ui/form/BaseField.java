@@ -42,6 +42,7 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Fragment;
 import android.content.Context;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -191,6 +192,19 @@ public abstract class BaseField
     }
 
     public void setOperationData(OperationEvent event)
+    {
+        // TO Be Implemented by subclass
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // REQUIRE EXTRA
+    // ///////////////////////////////////////////////////////////////////////////
+    public boolean requireExtra()
+    {
+        return false;
+    }
+
+    public void setExtra(Bundle b)
     {
         // TO Be Implemented by subclass
     }

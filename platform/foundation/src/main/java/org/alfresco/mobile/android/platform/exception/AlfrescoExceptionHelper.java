@@ -66,7 +66,7 @@ public final class AlfrescoExceptionHelper
     {
         int messageId = R.string.error_session_creation;
 
-        //USername error during session creation
+        // USername error during session creation
         if (e.getCause() instanceof AlfrescoSessionException)
         {
             if (e.getCause().getCause() instanceof CmisUnauthorizedException)
@@ -154,6 +154,10 @@ public final class AlfrescoExceptionHelper
         {
             messageId = R.string.error_session_notfound;
         }
+        else if (e.getCause() instanceof CmisConnectionException)
+        {
+            messageId = R.string.error_session_notfound;
+        }
         else if (e instanceof AlfrescoServiceException && e.getMessage().contains("API plan limit exceeded"))
         {
             messageId = R.string.error_general;
@@ -173,7 +177,7 @@ public final class AlfrescoExceptionHelper
             {
                 AlfrescoNotificationManager.getInstance(context).showAlertCrouton((Activity) context,
                         String.format(context.getString(R.string.error_unknown_exception), e.getCause()));
-                messageId = -1;
+                messageId = R.string.error_unknown;
             }
             else
             {

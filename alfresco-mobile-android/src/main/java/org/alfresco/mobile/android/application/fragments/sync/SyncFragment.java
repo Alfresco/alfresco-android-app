@@ -76,7 +76,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -316,7 +315,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             {
                 if (isSyncing)
                 {
-                    Log.d(TAG, "[Refresh] START");
+                    // Log.d(TAG, "[Refresh] START");
                     // Start timing Refresh
                     startRefresh();
                 }
@@ -324,9 +323,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 {
                     // Stop Refresh
                     stopRefresh = true;
-                    Log.d(TAG, "[Refresh] STOP");
+                    // Log.d(TAG, "[Refresh] STOP");
 
-                    Log.d(TAG, "Refresh");
                     Bundle b = new Bundle();
                     b.putBoolean(ARGUMENT_HIDE, false);
                     getLoaderManager().restartLoader(0, b, SyncFragment.this);
@@ -439,8 +437,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         }
 
         selection.append(FavoritesSyncSchema.COLUMN_STATUS + " NOT IN (" + FavoriteSyncStatus.STATUS_HIDDEN + ")");
-
-        Log.d(TAG, selection.toString());
 
         return new CursorLoader(getActivity(), FavoritesSyncProvider.CONTENT_URI, FavoritesSyncSchema.COLUMN_ALL,
                 selection.toString(), null, FavoritesSyncSchema.COLUMN_TITLE + " COLLATE NOCASE ASC");
