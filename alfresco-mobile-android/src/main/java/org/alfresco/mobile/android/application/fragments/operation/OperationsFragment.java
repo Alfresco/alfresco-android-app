@@ -221,6 +221,8 @@ public class OperationsFragment extends BaseCursorGridFragment
         if (cursor.getCount() == 0)
         {
             dismissAll.setVisibility(View.GONE);
+            ev.setVisibility(View.VISIBLE);
+            displayEmptyView();
         }
         else
         {
@@ -266,6 +268,10 @@ public class OperationsFragment extends BaseCursorGridFragment
             result = operationsToDisplay.getCount() > 0;
         }
         catch (Exception e)
+        {
+            // Do Nothing
+        }
+        finally
         {
             CursorUtils.closeCursor(operationsToDisplay);
         }

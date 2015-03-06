@@ -626,7 +626,7 @@ public class MainActivity extends BaseActivity
 
         if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
         {
-            MainMenuFragment.getMenu(menu);
+            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).getMenu(menu);
             return true;
         }
 
@@ -680,6 +680,9 @@ public class MainActivity extends BaseActivity
             case R.id.menu_about:
                 AboutFragment.with(this).display();
                 hideSlideMenu();
+                return true;
+            case R.id.menu_notifications:
+                doMainMenuAction(R.id.menu_notifications);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

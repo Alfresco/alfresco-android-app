@@ -19,6 +19,7 @@ package org.alfresco.mobile.android.application.activity;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.welcome.WelcomeFragment;
 import org.alfresco.mobile.android.async.account.CreateAccountEvent;
@@ -29,6 +30,8 @@ import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.squareup.otto.Subscribe;
 
@@ -83,6 +86,32 @@ public class WelcomeActivity extends BaseActivity
         else
         {
             super.onBackPressed();
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // MENU
+    // ///////////////////////////////////////////////////////////////////////////
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuItem mi = menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 2, R.string.menu_about);
+        mi.setIcon(R.drawable.ic_about_light);
+        mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.menu_about:
+                AboutFragment.with(this).display();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
