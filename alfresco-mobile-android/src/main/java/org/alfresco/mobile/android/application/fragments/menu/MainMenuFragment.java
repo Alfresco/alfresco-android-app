@@ -86,6 +86,8 @@ import com.squareup.otto.Subscribe;
 
 public class MainMenuFragment extends AlfrescoFragment implements OnItemSelectedListener
 {
+    private boolean showOperationsMenu = false;
+
     private AccountsAdapter accountsAdapter;
 
     private AlfrescoAccount currentAccount;
@@ -359,10 +361,12 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
             show(R.id.menu_notifications);
+            showOperationsMenu = true;
         }
         else
         {
             hide(R.id.menu_notifications);
+            showOperationsMenu = false;
         }
         displayFolderShortcut(SessionUtils.getSession(getActivity()));
     }
@@ -456,11 +460,14 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
             show(R.id.menu_notifications);
+            showOperationsMenu = true;
         }
         else
         {
             hide(R.id.menu_notifications);
+            showOperationsMenu = false;
         }
+        getActivity().invalidateOptionsMenu();
     }
 
     private void hideSlidingMenu(boolean goHome)
@@ -603,21 +610,28 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // OVERFLOW MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public static void getMenu(Menu menu)
+    public void getMenu(Menu menu)
     {
         MenuItem mi;
 
-        mi = menu.add(Menu.NONE, R.id.menu_settings, Menu.FIRST, R.string.menu_prefs);
+        mi = menu.add(Menu.NONE, R.id.menu_settings, Menu.FIRST + 1, R.string.menu_prefs);
         mi.setIcon(R.drawable.ic_settings_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        mi = menu.add(Menu.NONE, R.id.menu_help, Menu.FIRST + 1, R.string.menu_help);
+        mi = menu.add(Menu.NONE, R.id.menu_help, Menu.FIRST + 2, R.string.menu_help);
         mi.setIcon(R.drawable.ic_help);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
-        mi = menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 2, R.string.menu_about);
+        mi = menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 3, R.string.menu_about);
         mi.setIcon(R.drawable.ic_about_light);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+
+        if (showOperationsMenu)
+        {
+            mi = menu.add(Menu.NONE, R.id.menu_notifications, Menu.FIRST, R.string.notifications);
+            mi.setIcon(R.drawable.ic_events_dark);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
