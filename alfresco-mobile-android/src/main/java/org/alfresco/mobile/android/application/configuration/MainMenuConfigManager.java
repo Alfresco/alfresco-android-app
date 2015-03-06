@@ -17,7 +17,10 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.configuration;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.alfresco.mobile.android.api.model.config.ViewConfig;
@@ -33,6 +36,7 @@ import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
@@ -42,6 +46,8 @@ public class MainMenuConfigManager extends BaseConfigManager
     private static final String TAG = MainMenuConfigManager.class.getName();
 
     private ViewConfig rootMenuViewConfig;
+
+    private HashMap<String, List<WeakReference<Button>>> menuIndex = new HashMap<>();
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS & HELPERS
@@ -102,6 +108,7 @@ public class MainMenuConfigManager extends BaseConfigManager
             menuItem.setId(UIUtils.generateViewId());
             configureView(viewConfig, menuItem);
             hookView.addView(menuItem);
+            addViewIntoIndex(viewConfig.getType(), menuItem);
         }
     }
 
@@ -132,5 +139,35 @@ public class MainMenuConfigManager extends BaseConfigManager
             Log.e(TAG, Log.getStackTraceString(e));
             Log.e(TAG, "Error during menu creation : " + config.getIdentifier());
         }
+    }
+
+    private void addViewIntoIndex(String typeId, Button button)
+    {
+        if (menuIndex.containsKey(typeId))
+        {
+            menuIndex.get(typeId).add(new WeakReference<>(button));
+        }
+        else
+        {
+            ArrayList<WeakReference<Button>> values = new ArrayList<>();
+            values.add(new WeakReference<>(button));
+            menuIndex.put(typeId, values);
+        }
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // SETTERS
+    // ///////////////////////////////////////////////////////////////////////////
+    public List<View> getViewsByType(String type)
+    {
+        List<View> views = new ArrayList<>(0);
+        if (menuIndex.containsKey(type))
+        {
+            for (WeakReference<Button> b : menuIndex.get(type))
+            {
+                views.add(b.get());
+            }
+        }
+        return views;
     }
 }

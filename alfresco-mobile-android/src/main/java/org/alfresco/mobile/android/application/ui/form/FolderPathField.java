@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2015 Alfresco Software Limited.
+ * Copyright (C) 2005-2014 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -17,84 +17,95 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.ui.form;
 
-import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Property;
 import org.alfresco.mobile.android.api.model.config.FieldConfig;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class PathField extends FolderPathField
+public class FolderPathField extends BaseField
 {
-    public static final String EXTRA_PARENT_FOLDER = "extraParentFolder";
-
-    private TextView tv;
-
-    private String pathValue;
-
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
-    public PathField(Context context, Property property, FieldConfig configuration)
+    public FolderPathField(Context context, Property property, FieldConfig configuration)
     {
         super(context, property, configuration);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // REQUIRE EXTRA
+    // READ MODE
     // ///////////////////////////////////////////////////////////////////////////
-    public boolean requireExtra()
+    @Override
+    public String getHumanReadableValue()
     {
-        return true;
-    }
-
-    public void setExtra(Bundle b)
-    {
-        if (b.containsKey(EXTRA_PARENT_FOLDER))
-        {
-            Folder parentFolder = (Folder) b.getSerializable(EXTRA_PARENT_FOLDER);
-            pathValue = parentFolder.getPropertyValue(PropertyIds.PATH);
-            if (!TextUtils.isEmpty(pathValue))
-            {
-                tv.setText(pathValue);
-            }
-        }
+        // Manage single value
+        if (originalValue == null) { return null; }
+        return super.getHumanReadableValue();
     }
 
     @Override
     public View createReadableView()
     {
-        pathValue = "";
+        final String value = getHumanReadableValue();
+        if (TextUtils.isEmpty(value)) { return null; }
 
         View vr = inflater.inflate(R.layout.form_read_row, null);
-        tv = (TextView) vr.findViewWithTag("propertyName");
+        TextView tv = (TextView) vr.findViewWithTag("propertyName");
         tv.setText(fieldConfig.getLabel());
         tv = (TextView) vr.findViewWithTag("propertyValue");
-        tv.setText(pathValue);
+        tv.setText(value);
         tv.setClickable(true);
         tv.setFocusable(true);
         tv.setPaintFlags(tv.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        tv.setOnClickListener(new View.OnClickListener()
+        tv.setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 if (v.getContext() instanceof Activity)
                 {
-                    DocumentFolderBrowserFragment.with((Activity) v.getContext()).path(pathValue).shortcut(true)
-                            .display();
+                    DocumentFolderBrowserFragment.with((Activity) v.getContext()).path(value).shortcut(true).display();
                 }
             }
         });
         return vr;
+    }
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // EDITION MODE
+    // ///////////////////////////////////////////////////////////////////////////
+    public Object getOutputValue()
+    {
+        if (property == null) { return super.getOutputValue(); }
+        if (property.isMultiValued())
+        {
+            return multiValue;
+        }
+        else
+        {
+            return super.getOutputValue();
+        }
+    }
+
+    @Override
+    public View getEditView(ModelDefinition typeDefinition, ViewGroup hookView)
+    {
+        return null;
+    }
+
+    public boolean requiresPicker()
+    {
+        return false;
     }
 
 }

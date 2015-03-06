@@ -45,7 +45,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 
 @SuppressWarnings("rawtypes")
 public class OperationsDispatcher
@@ -193,7 +192,8 @@ public class OperationsDispatcher
 
         if (operation != null)
         {
-            Log.d("Operations", "[Start] " + operation.getOperationId() + " " + action.request.getClass().getName());
+            // Log.d("Operations", "[Start] " + operation.getOperationId() + " "
+            // + action.request.getClass().getName());
             operation.setOperationCallBack(callback);
 
             if (action.request.isLongRunning())

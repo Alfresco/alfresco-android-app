@@ -954,6 +954,8 @@ public class MainActivity extends BaseActivity
         {
             FavoritesSyncManager.getInstance(this).sync(currentAccount);
         }
+
+        invalidateOptionsMenu();
     }
 
     @Subscribe

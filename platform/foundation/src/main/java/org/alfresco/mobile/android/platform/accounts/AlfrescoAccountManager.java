@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.async.account.CreateAccountEvent;
 import org.alfresco.mobile.android.async.account.DeleteAccountEvent;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.Manager;
-import org.alfresco.mobile.android.platform.provider.AlfrescoContentProvider;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 
 import android.accounts.Account;
@@ -133,8 +132,6 @@ public class AlfrescoAccountManager extends Manager
         try
         {
             AccountManager mAccountManager = AccountManager.get(context);
-            Log.d("[AccountType]", AlfrescoAccount.ACCOUNT_TYPE);
-            Log.d("[Authority]", AlfrescoContentProvider.AUTHORITY_ALFRESCO_BASE);
             Account[] accountMs = mAccountManager.getAccountsByType(AlfrescoAccount.ACCOUNT_TYPE);
             accounts = new ArrayList<AlfrescoAccount>(accountMs.length);
             for (Account account : accountMs)

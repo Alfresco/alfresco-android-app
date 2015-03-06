@@ -89,7 +89,7 @@ public abstract class OperationsContentProvider extends ContentProvider implemen
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        Log.d("Provider", "[REMOVE] " + uri);
+        // Log.d("Provider", "[REMOVE] " + uri);
         return rowsDeleted;
     }
 
@@ -119,7 +119,7 @@ public abstract class OperationsContentProvider extends ContentProvider implemen
             Log.e(TAG, uri + " " + values);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        Log.d("Provider", "[Insert] " + uri);
+        // Log.d("Provider", "[Insert] " + uri);
 
         return Uri.parse(CONTENT_URI + "/" + id);
     }
@@ -183,7 +183,7 @@ public abstract class OperationsContentProvider extends ContentProvider implemen
                 throw new IllegalArgumentException("Unknown URI: " + uri);
         }
         getContext().getContentResolver().notifyChange(uri, null);
-        Log.d("Provider", "[Update] " + uri);
+        // Log.d("Provider", "[Update] " + uri);
         return rowsUpdated;
     }
 
@@ -203,7 +203,7 @@ public abstract class OperationsContentProvider extends ContentProvider implemen
     {
         return OperationsSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
-    
+
     public static String getAccountFilter(long accountId)
     {
         return OperationsSchema.COLUMN_ACCOUNT_ID + " == " + accountId;

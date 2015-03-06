@@ -422,6 +422,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // ///////////////////////////////////////////////////////////////////////////
     protected void displayParts()
     {
+        if (node == null)
+        {
+            displayEmptyView();
+            ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            return;
+        }
+
         displayData();
         if (node instanceof Document || node instanceof Folder)
         {

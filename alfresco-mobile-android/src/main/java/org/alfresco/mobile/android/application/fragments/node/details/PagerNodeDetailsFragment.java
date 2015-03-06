@@ -269,8 +269,16 @@ class NodeDetailsPagerAdapter extends FragmentStatePagerAdapter
         Fragment fr = null;
         if (node instanceof NodeSyncPlaceHolder)
         {
-            fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder).isFavorite(true)
-                    .createFragment();
+            if (DisplayUtils.hasCentralPane(activity.get()))
+            {
+                fr = new NodePropertiesFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        .isFavorite(true).createFragment();
+            }
+            else
+            {
+                fr = new NodeSummaryFragment.Builder(activity.get()).node(node).parentFolder(parentFolder)
+                        .isFavorite(true).createFragment();
+            }
         }
         else if (node instanceof Folder)
         {

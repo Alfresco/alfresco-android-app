@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.ModelDefinition;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Property;
@@ -20,11 +21,13 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.ui.form.BaseField;
 import org.alfresco.mobile.android.application.ui.form.FieldTypeFactory;
 import org.alfresco.mobile.android.application.ui.form.FieldTypeRegistry;
+import org.alfresco.mobile.android.application.ui.form.PathField;
 import org.alfresco.mobile.android.application.ui.form.views.AlfrescoFieldView;
 import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.async.Operator;
 
 import android.app.Fragment;
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -39,6 +42,8 @@ public class FormConfigManager extends BaseConfigManager
     private ModelDefinition typeDefinition;
 
     private Node node;
+
+    private Folder parentFolder;
 
     private Map<String, BaseField> fieldsIndex;
 
@@ -63,11 +68,12 @@ public class FormConfigManager extends BaseConfigManager
     // ///////////////////////////////////////////////////////////////////////////
     // PUBLIC METHODS
     // ///////////////////////////////////////////////////////////////////////////
-    public boolean displayProperties(Node node)
+    public boolean displayProperties(Node node, Folder parentFolder)
     {
         try
         {
             this.node = node;
+            this.parentFolder = parentFolder;
 
             vRoot.removeAllViews();
             View v = generateProperties(ConfigConstants.VIEW_NODE_PROPERTIES, LayoutInflater.from(getActivity()), false);
@@ -231,7 +237,7 @@ public class FormConfigManager extends BaseConfigManager
             {
                 fieldView = field.createReadableView();
             }
-            else if (field.requireAsync())
+            else if (field.requireAsync() || field.requireExtra())
             {
                 fieldView = field.createReadableView();
             }
@@ -255,6 +261,15 @@ public class FormConfigManager extends BaseConfigManager
                 RequestHolder holder = new RequestHolder(field, fieldConfig.getModelIdentifier(), requestId);
                 modelRequested.add(fieldConfig.getModelIdentifier());
                 operationFieldIndex.put(requestId, holder);
+            }
+
+            // TODO Generalize extra information required. For the moment it's
+            // tight to parentFolder.
+            if (field.requireExtra())
+            {
+                Bundle b = new Bundle();
+                b.putSerializable(PathField.EXTRA_PARENT_FOLDER, parentFolder);
+                field.setExtra(b);
             }
         }
     }
