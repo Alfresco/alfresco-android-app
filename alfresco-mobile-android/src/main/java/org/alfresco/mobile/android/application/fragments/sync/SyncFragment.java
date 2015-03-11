@@ -365,8 +365,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     // ////////////////////////////////////////////////////////////
     private void displayActivateDialog()
     {
-        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync() && getMode() != MODE_PROGRESS)
+        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync(getAccount())
+                && getMode() != MODE_PROGRESS)
         {
+            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(getAccount(), true);
             EnableSyncDialogFragment.newInstance(new OnSyncChangeListener()
             {
                 @Override
@@ -389,7 +391,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                     refreshHelper.setRefreshing();
                 }
             }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
-            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(true);
         }
     }
 

@@ -723,24 +723,20 @@ public class FavoritesSyncManager extends Manager
         }
     }
 
-    public void setDisplayActivateSync(boolean isActive)
+    public void setDisplayActivateSync(AlfrescoAccount account, boolean isActive)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (SessionUtils.getAccount(appContext) != null)
+        if (account != null)
         {
-            final AlfrescoAccount account = SessionUtils.getAccount(appContext);
             sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
         }
     }
 
-    public boolean hasDisplayedActivateSync()
+    public boolean hasDisplayedActivateSync(AlfrescoAccount account)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (SessionUtils.getAccount(appContext) != null)
-        {
-            final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false);
-        }
+        if (SessionUtils.getAccount(appContext) != null) { return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX
+                + account.getId(), false); }
         return false;
     }
 
