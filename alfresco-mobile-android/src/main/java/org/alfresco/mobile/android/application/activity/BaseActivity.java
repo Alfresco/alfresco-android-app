@@ -28,6 +28,7 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -125,11 +126,20 @@ public abstract class BaseActivity extends AlfrescoActivity
         int height = values[1];
         int width = values[0];
 
+        double coefficient = 0.90f;
+        try
+        {
+            TypedValue outValue = new TypedValue();
+            getResources().getValue(R.dimen.dialog_min_width_minor, outValue, true);
+            coefficient = outValue.getFloat();
+        }
+        catch (Exception e)
+        {
+            coefficient = 0.90f;
+        }
+
         params.height = (int) Math.round(height * 0.9);
-        params.width = (int) Math
-                .round(width
-                        * (Float.parseFloat(getResources().getString(android.R.dimen.dialog_min_width_minor).replace(
-                                "%", "")) * 0.01));
+        params.width = (int) Math.round(width * coefficient);
 
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;

@@ -25,4 +25,6 @@
     <item name="app_task_header" type="layout">@layout/app_task_header_single</item>
     <item name="app_passcode" type="layout">@layout/app_passcode_simple</item>
 
+    <item name="dialog_min_width_minor" format="float" type="dimen">0.95</item>
+
 </resources>
