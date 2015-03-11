@@ -651,7 +651,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (!ConnectivityUtils.hasNetwork(getActivity()))
         {
-            mi.setActionView(null);
+            if (mi != null)
+            {
+                mi.setActionView(null);
+            }
             return;
         }
 
