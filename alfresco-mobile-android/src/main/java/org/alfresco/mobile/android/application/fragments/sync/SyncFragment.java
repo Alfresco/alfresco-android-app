@@ -365,14 +365,16 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     // ////////////////////////////////////////////////////////////
     private void displayActivateDialog()
     {
-        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync() && getMode() != MODE_PROGRESS)
+        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync(getAccount())
+                && getMode() != MODE_PROGRESS)
         {
+            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(getAccount(), true);
             EnableSyncDialogFragment.newInstance(new OnSyncChangeListener()
             {
                 @Override
                 public void onPositive()
                 {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(true);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
                     hasSynchroActive = true;
                     refresh();
                     refreshSilently();
@@ -383,13 +385,12 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 public void onNegative()
                 {
                     hasSynchroActive = false;
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(false);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
                     refresh();
                     refreshSilently();
                     refreshHelper.setRefreshing();
                 }
             }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
-            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(true);
         }
     }
 
@@ -650,7 +651,10 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (!ConnectivityUtils.hasNetwork(getActivity()))
         {
-            mi.setActionView(null);
+            if (mi != null)
+            {
+                mi.setActionView(null);
+            }
             return;
         }
 

@@ -1026,6 +1026,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         boolean enable = false;
         if (mode == MODE_IMPORT)
         {
+            if (getActivity() instanceof FolderShortcutActivity)
+            {
+                validationButton.setEnabled(true);
+                return;
+            }
+
             if (parentFolder != null)
             {
                 Permissions permission = getSession().getServiceRegistry().getDocumentFolderService()

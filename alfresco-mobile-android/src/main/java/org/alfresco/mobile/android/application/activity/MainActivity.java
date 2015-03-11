@@ -953,7 +953,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Start Sync if active
-        if (FavoritesSyncManager.getInstance(this).hasDisplayedActivateSync())
+        if (FavoritesSyncManager.getInstance(this).hasDisplayedActivateSync(currentAccount))
         {
             FavoritesSyncManager.getInstance(this).sync(currentAccount);
         }

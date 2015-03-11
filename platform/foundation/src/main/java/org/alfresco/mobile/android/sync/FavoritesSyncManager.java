@@ -706,41 +706,35 @@ public class FavoritesSyncManager extends Manager
         return false;
     }
 
-    public void setActivateSync(boolean isActive)
+    public void setActivateSync(long accountId, boolean isActive)
     {
-        setActivateSync(SessionUtils.getAccount(appContext), isActive);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
+        sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).commit();
+        ContentResolver.setSyncAutomatically(AlfrescoAccountManager.getInstance(appContext)
+                .getAndroidAccount(accountId), FavoritesSyncProvider.AUTHORITY, isActive);
     }
 
     public void setActivateSync(AlfrescoAccount account, boolean isActive)
     {
         if (account != null)
         {
-            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            sharedPref.edit().putBoolean(SYNCHRO_PREFIX + account.getId(), isActive).commit();
-            ContentResolver.setSyncAutomatically(
-                    AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                    FavoritesSyncProvider.AUTHORITY, isActive);
+            setActivateSync(account.getId(), isActive);
         }
     }
 
-    public void setDisplayActivateSync(boolean isActive)
+    public void setDisplayActivateSync(AlfrescoAccount account, boolean isActive)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (SessionUtils.getAccount(appContext) != null)
+        if (account != null)
         {
-            final AlfrescoAccount account = SessionUtils.getAccount(appContext);
             sharedPref.edit().putBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), isActive).commit();
         }
     }
 
-    public boolean hasDisplayedActivateSync()
+    public boolean hasDisplayedActivateSync(AlfrescoAccount account)
     {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-        if (SessionUtils.getAccount(appContext) != null)
-        {
-            final AlfrescoAccount account = SessionUtils.getAccount(appContext);
-            return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false);
-        }
+        if (account != null) { return sharedPref.getBoolean(SYNCHRO_DISPLAY_PREFIX + account.getId(), false); }
         return false;
     }
 

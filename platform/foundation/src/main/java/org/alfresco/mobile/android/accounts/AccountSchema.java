@@ -192,7 +192,8 @@ public final class AccountSchema
                 {
                     // Let's define if sync automatically regarding previous
                     // settings
-                    syncManager.setActivateSync(sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false));
+                    syncManager.setActivateSync(account.getId(),
+                            sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false));
                     sharedPref.edit().remove(SYNCHRO_PREFIX + account.getId()).commit();
                 }
 

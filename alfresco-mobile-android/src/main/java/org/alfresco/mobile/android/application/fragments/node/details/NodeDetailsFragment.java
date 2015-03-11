@@ -955,24 +955,24 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         if (isRestrictable) { return; }
 
-        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync())
+        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync(getAccount()))
         {
+            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(getAccount(), true);
             EnableSyncDialogFragment.newInstance(new OnSyncChangeListener()
             {
                 @Override
                 public void onPositive()
                 {
                     FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(true);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
                 }
 
                 @Override
                 public void onNegative()
                 {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(false);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
                 }
             }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
-            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(true);
         }
 
         viewById(R.id.favorite_progress).setVisibility(View.VISIBLE);

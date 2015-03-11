@@ -25,6 +25,7 @@ import org.alfresco.mobile.android.application.ui.utils.IconCheckBoxViewHolder;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
+import android.os.Build;
 import android.view.View;
 
 public class MenuItemConfigAdapter extends BaseListAdapter<MenuConfigFragment.MenuItemConfig, IconCheckBoxViewHolder>
@@ -106,6 +107,6 @@ public class MenuItemConfigAdapter extends BaseListAdapter<MenuConfigFragment.Me
     @Override
     public boolean hasStableIds()
     {
-        return true;
+        return android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP;
     }
 }
