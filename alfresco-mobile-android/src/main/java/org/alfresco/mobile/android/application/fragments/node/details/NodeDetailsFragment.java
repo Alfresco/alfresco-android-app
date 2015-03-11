@@ -964,13 +964,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 public void onPositive()
                 {
                     FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(true);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
                 }
 
                 @Override
                 public void onNegative()
                 {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(false);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
                 }
             }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
         }

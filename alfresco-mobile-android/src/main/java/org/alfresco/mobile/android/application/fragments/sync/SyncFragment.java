@@ -374,7 +374,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 @Override
                 public void onPositive()
                 {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(true);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
                     hasSynchroActive = true;
                     refresh();
                     refreshSilently();
@@ -385,7 +385,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 public void onNegative()
                 {
                     hasSynchroActive = false;
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(false);
+                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
                     refresh();
                     refreshSilently();
                     refreshHelper.setRefreshing();
