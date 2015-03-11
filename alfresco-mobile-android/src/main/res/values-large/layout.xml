@@ -17,9 +17,6 @@
 -->
 <resources>
 
-    <item name="app_main" type="layout">@layout/app_main_two_panes</item>
-    <item name="app_details" type="layout">@layout/app_details_tab_tablet</item>
-
-    <item name="dialog_min_width_minor" format="float" type="dimen">0.72</item>
+    <item name="dialog_min_width_minor" format="float" type="dimen">0.80</item>
 
 </resources>

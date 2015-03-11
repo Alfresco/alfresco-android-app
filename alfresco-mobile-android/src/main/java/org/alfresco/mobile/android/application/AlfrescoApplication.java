@@ -35,8 +35,8 @@ public class AlfrescoApplication extends Application
 
         // Execute some upgrade if necessary
         UpgradeManager.execute(this);
-        
-        //Remove operations if necessary
+
+        // Remove operations if necessary
         OperationsUtils.clean(this);
     }
 }
