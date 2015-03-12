@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.application.activity.WelcomeActivity;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.security.PassCodeActivity;
 import org.alfresco.mobile.android.application.security.PassCodeDialogFragment;
+import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -136,32 +137,70 @@ public class PasscodePreferences extends PreferenceFragment
         }
         else if (pref instanceof SwitchPreference)
         {
-            pref.setSelectable(false);
+            pref.setSelectable(AndroidVersion.isLollipopOrAbove());
             ((SwitchPreference) pref).setChecked(passcodeEnable);
         }
-        pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+
+        if (AndroidVersion.isLollipopOrAbove())
         {
-            @Override
-            public boolean onPreferenceChange(Preference preference, Object newValue)
+            pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
             {
-                if (valueHasChanged)
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    valueHasChanged = false;
-                    return true;
+                    return false;
                 }
-                PassCodeDialogFragment f = null;
-                if (passcodeEnable)
+            });
+            pref.setOnPreferenceClickListener(new OnPreferenceClickListener()
+            {
+                @Override
+                public boolean onPreferenceClick(Preference preference)
                 {
-                    f = PassCodeDialogFragment.disable();
+                    if (valueHasChanged)
+                    {
+                        valueHasChanged = false;
+                        return true;
+                    }
+                    PassCodeDialogFragment f = null;
+                    if (passcodeEnable)
+                    {
+                        f = PassCodeDialogFragment.disable();
+                    }
+                    else
+                    {
+                        f = PassCodeDialogFragment.enable();
+                    }
+                    f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
+                    return false;
                 }
-                else
+            });
+        }
+        else
+        {
+            pref.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+            {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object newValue)
                 {
-                    f = PassCodeDialogFragment.enable();
+                    if (valueHasChanged)
+                    {
+                        valueHasChanged = false;
+                        return true;
+                    }
+                    PassCodeDialogFragment f = null;
+                    if (passcodeEnable)
+                    {
+                        f = PassCodeDialogFragment.disable();
+                    }
+                    else
+                    {
+                        f = PassCodeDialogFragment.enable();
+                    }
+                    f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
+                    return false;
                 }
-                f.show(getActivity().getFragmentManager(), PassCodeDialogFragment.TAG);
-                return false;
-            }
-        });
+            });
+        }
 
         // CHANGE PASSCODE
         pref = findPreference(getString(R.string.passcode_change));

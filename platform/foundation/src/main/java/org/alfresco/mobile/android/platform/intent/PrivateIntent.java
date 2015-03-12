@@ -35,8 +35,6 @@ public interface PrivateIntent
 
     String EXTRA_FOLDER_ID = "org.alfresco.mobile.android.intent.EXTRA_FOLDER_ID";
 
-    String NODE_TYPE = "org.alfresco.mobile.android/object.node";
-
     String EXTRA_DOCUMENT = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENT";
 
     String EXTRA_DOCUMENTS = "org.alfresco.mobile.android.intent.EXTRA_DOCUMENTS";
@@ -101,21 +99,6 @@ public interface PrivateIntent
     String ACTION_DISPLAY_SETTINGS = "org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS";
 
     // ///////////////////////////////////////////////////////////////////////////
-    // ENCRYPTION
-    // ///////////////////////////////////////////////////////////////////////////
-    // BROADCAST
-    //String ACTION_ENCRYPT_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_ENCRYPT_COMPLETED";
-
-    //String ACTION_DECRYPT_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DECRYPT_COMPLETED";
-
-    //String ACTION_ENCRYPT_ALL_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_ENCRYPT_ALL_COMPLETED";
-
-    //String ACTION_DECRYPT_ALL_COMPLETED = "org.alfresco.mobile.android.intent.ACTION_DECRYPT_ALL_COMPLETED";
-
-    // EXTRA
-    //String EXTRA_INTENT_ACTION = "org.alfresco.mobile.android.intent.EXTRA_INTENT_ACTION";
-
-    // ///////////////////////////////////////////////////////////////////////////
     // DATA CLEANER
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION
@@ -126,14 +109,13 @@ public interface PrivateIntent
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION
     String ACTION_START_PROCESS = "org.alfresco.mobile.android.intent.ACTION_START_PROCESS";
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // SCAN MANAGEMENT
     // ///////////////////////////////////////////////////////////////////////////
     // ACTION
     String ACTION_SCAN_RESULT = "org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT";
-    
-    
+
     // ///////////////////////////////////////////////////////////////////////////
     // TEXT EDITOR
     // ///////////////////////////////////////////////////////////////////////////
