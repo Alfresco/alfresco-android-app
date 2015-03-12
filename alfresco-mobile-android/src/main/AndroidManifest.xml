@@ -326,6 +326,10 @@
                 android:resource="@xml/authenticator" />
         </service>
 
+        <service
+            android:name="org.alfresco.mobile.android.platform.io.FileCleanerService"
+            android:exported="false" />
+
         <!-- *************************************************************** -->
         <!-- EXTENSION : SAMSUNG -->
         <!-- *************************************************************** -->

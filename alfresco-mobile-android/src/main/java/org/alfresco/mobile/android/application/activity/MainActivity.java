@@ -146,9 +146,6 @@ public class MainActivity extends BaseActivity
 
     private ViewGroup mDrawer;
 
-    /** Used to display the shortcut folder during app first init. */
-    private String shortcutFolderId;
-
     private static ActionBarDrawerToggle mDrawerToggle;
 
     /** Flag to indicate account creation from the welcome screen. */
@@ -244,21 +241,6 @@ public class MainActivity extends BaseActivity
         {
             getActionBar().setHomeButtonEnabled(true);
         }
-
-        // Is it from an alfresco shortcut ?
-        openShortcut(getIntent());
-
-        if (Intent.ACTION_VIEW.equals(getIntent().getAction()) && PrivateIntent.NODE_TYPE.equals(getIntent().getType())
-                && getIntent().getExtras().containsKey(PrivateIntent.EXTRA_FOLDER_ID))
-        {
-            shortcutFolderId = getIntent().getStringExtra(PrivateIntent.EXTRA_FOLDER_ID);
-            getIntent().removeExtra(PrivateIntent.EXTRA_FOLDER_ID);
-            if (getCurrentSession() != null)
-            {
-                DocumentFolderBrowserFragment.with(this).folderIdentifier(shortcutFolderId).shortcut(true).display();
-                shortcutFolderId = null;
-            }
-        }
     }
 
     @Override
@@ -284,6 +266,8 @@ public class MainActivity extends BaseActivity
             requestSwapAccount = false;
         }
 
+        // Is it from an alfresco shortcut ?
+        openShortcut(getIntent());
     }
 
     @Override
@@ -379,7 +363,7 @@ public class MainActivity extends BaseActivity
                 MainActivityHelper.createBundle(outState, currentAccount, capture, fragmentQueue, importParent));
     }
 
-    protected void openShortcut(Intent intent)
+    public void openShortcut(Intent intent)
     {
         if (AlfrescoIntentAPI.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null)
         {
@@ -887,12 +871,7 @@ public class MainActivity extends BaseActivity
         removeWaitingDialog();
 
         // Used for launching last pressed action button from main menu
-        if (shortcutFolderId != null)
-        {
-            DocumentFolderBrowserFragment.with(this).folderIdentifier(shortcutFolderId).shortcut(true).display();
-            shortcutFolderId = null;
-        }
-        else if (fragmentQueue != -1)
+        if (fragmentQueue != -1)
         {
             doMainMenuAction(fragmentQueue);
         }
