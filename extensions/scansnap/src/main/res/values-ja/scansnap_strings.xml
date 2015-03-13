@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.-->
+<resources>
+
+    <!-- SCANSNAP EXTENSIONS -->
+
+    <!-- ERRORS -->
+    <string name="err_msg_launch_failed">ScanSnap Connect アプリケーションの起動に失敗しました。</string>
+    <string name="err_msg_url_parse">URL の解析に失敗しました。 指定した URL パラメータが正しいことを確認してから、操作をやり直してください。</string>
+
+    <!-- PRESETS -->
+    <string name="scan_preset">スキャンのプリセット</string>
+    <string name="scan_preset_default">文書 PDF</string>
+    <string name="scan_preset_document">文書</string>
+    <string name="scan_preset_photo">画像</string>
+    <string name="scan_preset_business_card">名刺</string>
+
+</resources>

@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
-  
-  本文件是 Alfresco Mobile SDK 的一部分。
-  
-  经 2.0 版 Apache License（以下简称“许可”）许可，
-  只有在遵循许可的条件下才能使用此文件。
-  您可从
-   
-   http://www.apache.org/licenses/LICENSE-2.0 获取许可的副本
-  
-   除非适用法律要求或获得书面同意，
-   依据此许可分发的软件“按照原样”分发，
-   不提供任何明示或暗示的保证或条件。
-   请参见此许可，了解关于此许可特定语言版本的
-   约束性允许和限制。
--->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- ************************** -->
@@ -45,6 +29,7 @@
     <!-- ALFRESCO SDK AUTO -->
     <!-- ************************** -->
     <!-- Generic -->
+    <string name="required">必填</string>
     <string name="actions">操作</string>
     <string name="confirm">确认</string>
     <string name="ok">确定</string>
@@ -107,8 +92,16 @@
     <string name="org_alfresco_datalists_list_deleted">{1} 删除了 {0} 数据列表</string>
     <string name="org_alfresco_subscriptions_followed">{1} 正在关注 {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} 已订阅 {2}</string>
-    <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <string name="org_alfresco_profile_status_changed">{1}：{6}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} 已预览文档 {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} 已下载文档 {0}</string>
+    <string name="activity_role_None">无权限</string>
+    <string name="activity_role_SiteConsumer">使用者</string>
+    <string name="activity_role_SiteManager">管理员</string>
+    <string name="activity_role_SiteCollaborator">合作者</string>
+    <string name="activity_role_SiteContributor">贡献者</string>
     <!-- Metadata -->
+    <string name="metadata">属性</string>
     <string name="thumbnail">缩略图</string>
     <string name="metadata_prop_name">名称</string>
     <string name="metadata_prop_path">路径</string>
@@ -135,7 +128,7 @@
     <string name="metadata_prop_pixely_dimension">图像高度</string>
     <string name="metadata_prop_exposure_time">曝光时间</string>
     <string name="metadata_prop_fnumber">光圈值</string>
-    <string name="metadata_prop_flash_activated">激活闪光灯</string>
+    <string name="metadata_prop_flash_activated">已激活闪光灯</string>
     <string name="metadata_prop_focal_length">焦距</string>
     <string name="metadata_prop_iso_speed">ISO 速度</string>
     <string name="metadata_prop_manufacturer">相机制造商</string>
@@ -168,6 +161,9 @@
     <string name="metadata_prop_version_modified_by">上次修改者</string>
     <string name="metadata_prop_version_comment">评论</string>
     <string name="metadata_prop_version_current">当前版本</string>
+    <!-- Metadata RESTRICTABLE -->
+    <string name="metadata_aspect_restrictable">可限制</string>
+    <string name="metadata_prop_offline_expires_after">离线有效期剩余时间（小时）</string>
     <!-- Upload/Create Content -->
     <string name="content_app_pick_file">选择一个应用程序来选取文件</string>
     <string name="content_upload">上传文件</string>
@@ -175,7 +171,7 @@
     <string name="content_name_hint">输入名称（必填）</string>
     <string name="content_description">说明</string>
     <string name="content_description_hint">输入说明（可选）</string>
-    <string name="content_tags">标签</string>
+    <string name="content_tags">标记</string>
     <string name="content_tags_hint">逗号分隔的标签值（可选）</string>
     <string name="content_title">标题</string>
     <!-- Create Folder -->
@@ -192,6 +188,7 @@
     <string name="download_error">下载操作期间出错。</string>
     <string name="download_progress">正在下载&#8230;</string>
     <!-- Empty -->
+    <string name="empty_users">未找到用户</string>
     <string name="empty_child">未找到文件</string>
     <string name="empty_site">无可用站点</string>
     <string name="empty_version">无可用版本历史记录</string>
@@ -207,13 +204,15 @@
     <string name="file_size_megabytes">MB</string>
     <string name="file_size_gigabytes">GB</string>
     <!-- Search -->
+    <string name="search">搜索</string>
     <string name="search_hint">输入搜索词</string>
     <!-- Comments -->
     <string name="comments">评论</string>
+    <string name="comment_add_hint">在此处输入您的评论&#8230;</string>
     <!-- Actions -->
     <string name="create">创建</string>
     <string name="add">添加</string>
-    <string name="like">点赞</string>
+    <string name="like">喜欢</string>
     <string name="open_in">打开方式</string>
     <string name="take_photo">拍照</string>
     <string name="make_video">录制视频</string>
@@ -224,11 +223,216 @@
     <string name="refresh">刷新</string>
     <string name="delete">删除</string>
     <string name="save_back">存回</string>
-    <!-- Errors -->
+
+    <!-- MESSAGE ERROR -->
+    <string name="error_general">出错了。 请重试。</string>
+    <string name="error_general_title">出错了。</string>
+    <string name="error_unable_open_file">无法打开此文件</string>
     <string name="error_unable_share_link">无法共享链接</string>
     <string name="error_unable_share_content">无法共享内容</string>
+
+    <!-- SESSION ERROR -->
+    <string name="retry_account_loading">重试</string>
+    <string name="error_session_creation_title">保存帐户</string>
+    <string name="error_session_creation_message">连接错误</string>
+    <string name="error_session_creation">无法进行身份验证。 检查您的帐户设置。</string>
+    <string name="error_session_hostname"><![CDATA[您的<b>主机名</b>值可能有误<br/>或者您可能需要<b>打开您的 VPN</b>。<br/>请检查您的帐户设置。]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>您的设备没有数据连接。</b><br/></p>请检查您的设备设置并启用数据连接。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[不允许您访问此服务器。<br/>请检查您的帐户设置<b>（用户名/密码）</b>。]]></string>
+    <string name="error_session_service_url"><![CDATA[您的<b>服务 url</b> 值不正确。<br/>请检查您的帐户设置。]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[由于维护停机或容量问题服务器暂时无法接收您的请求。<br/>请稍后重试。]]></string>
+    <string name="error_session_notfound"><![CDATA[无法连接您的服务器。<br/>请检查您的帐户设置。]]></string>
+    <string name="error_session_port"><![CDATA[您的<b>端口</b>值不正确。<br/>请检查您的帐户设置。]]></string>
+    <string name="error_session_certificate">
+<![CDATA[<p><b>服务器的安全证书不受信任！</b><br/></p>
+		颁发您的目标服务器证书的第三方组织不是您的设备所认可的同一组织。<br/>
+		为了让 Alfresco Mobile 确认您正在与合适的服务器连接，其证书必须来自受信任的组织。<br/>
+		如果您的服务器有一个自签发的证书，请将其添加到您的设备上以便成功进行连接。<br/> ]]>
+    </string>
+    <string name="error_session_certificate_expired">
+<![CDATA[<p><b>服务器的安全证书已过期或无效！</b><br/></p>
+		请检查您的设备设置的日期和时间。<br/>如果问题仍然存在，请联系您的管理员。 ]]>
+    </string>
+    <string name="error_session_ssl">
+<![CDATA[<p><b>SSL 协议出错。</b><br/></p>
+        请检查您的帐户设置并重试。<br/>如果问题仍然存在，请联系您的管理员。]]>
+    </string>
+    <string name="error_session_cloud_unavailable">
+<![CDATA[<p><b>云端的 Alfresco 现在非常繁忙！</b><br/></p>
+        请过几分钟再试。<br/>]]>
+    </string>
+    <string name="error_session_expired">您的会话已过期。 请重新登录。</string>
+    <string name="error_session_refresh">正在刷新会话。</string>
+    <string name="error_chunk_transfert"><![CDATA[服务器不支持分块传输。<br/>请重新加载您的帐户</b>。]]></string>
+    <string name="error_name_already_exist">无法重命名文件。 可能存在另一同名文件。</string>
+    <string name="error_unknown_exception">出现错误：%s</string>
+    <string name="error_unknown">出现错误：%s</string>
+
+
     <!-- Share -->
     <string name="share_url">共享链接</string>
+    <string name="share_content">共享内容</string>
     <string name="share_url_long">从 Alfresco Android Mobile 共享链接</string>
+    <string name="validate">验证</string>
 
+    <!-- SSL -->
+    <string name="security_ssl_disable">SSL 证书验证已禁用。</string>
+
+    <!-- ACCOUNT -->
+    <string name="account_verify">正在验证帐户信息&#8230;</string>
+    <string name="account_wizard_alldone_description">您的帐户已可使用。</string>
+    <string name="account_default_onpremise">Alfresco 服务器</string>
+    <string name="account_default_cloud">Alfresco 云</string>
+
+    <!-- WAITING SESSION -->
+    <string name="wait_title">请稍候</string>
+    <string name="wait_message">正在连接您的服务器&#8230;</string>
+    <string name="session_loaded">会话已就绪</string>
+
+    <!-- Creation Folder -->
+    <string name="create_folder_in_progress">正在创建文件夹</string>
+    <string name="create_folder_complete">创建文件夹完成</string>
+
+    <!-- Workflow FILTERS -->
+    <string name="empty_tasks">无任务</string>
+    <string name="tasks_assignee_unassigned">未指派</string>
+    <string name="task_delegate_in_progress">正在重新指派&#8230;</string>
+    <string name="task_delegate_complete">重新指派完成</string>
+    <string name="update_sucess">\"%s\" 已成功更新。</string>
+
+    <!-- Delete -->
+    <string name="delete_in_progress">正在删除&#8230;</string>
+    <string name="delete_complete">删除完成</string>
+
+    <!-- Quick Action Folder -->
+    <string name="like_in_progress">正在处理"点赞"</string>
+    <string name="like_completed">已完成点赞</string>
+    <string name="like_complete">点赞完成</string>
+
+    <!-- MEMBERS -->
+    <string name="members">成员列表</string>
+    <string name="members_of">%s 的成员</string>
+
+    <!-- MAIN MENU -->
+    <string name="menu_browse_userhome">我的文件</string>
+    <string name="menu_browse_shared">共享文件</string>
+
+    <!-- Accessibility -->
+    <string name="mime_folder">文件夹</string>
+    <string name="mime_document">文档</string>
+    <string name="more_options_folder">文件夹 %s 的更多选项</string>
+    <string name="more_options_favorite">%s 的更多选项</string>
+    <string name="mime_site">站点</string>
+    <string name="more_options_site">站点 %s 的更多选项</string>
+    <string name="navigation_drawer_description">Alfresco：打开主页面板</string>
+    <string name="metadata_modified">已修改 </string>
+    <string name="metadata_created_by">由 %s 创建</string>
+    <string name="metadata_size">大小 </string>
+    <string name="contact_card">打开 %s 的联系人卡片 </string>
+    <string name="add_comment">发送评论</string>
+    <string name="advanced_search_hint">高级搜索</string>
+    <string name="add_menu">添加至此文件夹</string>
+
+    <!-- Site Membership Request -->
+    <string name="empty_joinsiterequest">无待决请求</string>
+
+    <!-- Update Properties -->
+    <string name="filename_error_character">此名称无效。</string>
+
+    <!-- NETWORKS -->
+    <string name="cloud_networks_empty">无可用网络</string>
+    <string name="manage_accounts">管理帐户&#8230;</string>
+    <string name="cloud_networks_switch">切换网络&#8230;</string>
+
+    <!-- PROFILES -->
+    <string name="profiles_empty">无可用个人档案</string>
+    <string name="manage_profiles">管理个人档案&#8230;</string>
+    <string name="profiles_switch">切换个人档案&#8230;</string>
+
+    <!-- WORKFLOW -->
+    <string name="empty_process_definition">无进程</string>
+    <string name="my_tasks">我的任务</string>
+
+    <!-- BUG REPORT -->
+    <string name="bug_report_title">[故障报告] ： </string>
+    <string name="waiting_operations">请稍候&#8230;</string>
+
+    <!-- Favorites -->
+    <string name="menu_favorites_folder">收藏夹文件夹</string>
+    <string name="menu_favorites">收藏夹</string>
+    <string name="synced_documents">已同步内容</string>
+    <string name="empty_favorites">无收藏夹</string>
+    <string name="favorites_document">收藏夹</string>
+    <string name="error_retrieve_favorite">无法检索此内容的收藏夹信息。</string>
+    <string name="favorites_activate">\"%s\" 的同步内容</string>
+    <string name="favorites_activate_description">您是否想让您的收藏夹内容自动与此设备同步？</string>
+    <string name="favorites_deactivate">停用同步</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>您是否想要停用同步？</p> 所有已同步内容将从您的设备删除。]]></string>
+    <string name="sync_error_title">同步错误</string>
+    <string name="sync_error_node_unfavorited"><![CDATA[从您开始编辑时<p>您就已取消收藏<b>%s</b>。 <br/> <b>将</b>您编辑的版本同步到服务器或<b>保存</b>到您的 \"Downloads\" 文件夹。 </p>]]></string>
+    <string name="sync_error_node_deleted"><![CDATA[<p><b>%s</b> 已从服务器中删除，但是在您的 \"Downloads\" 文件夹中保留了一个副本。</p>]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p>您没有上传 <b>%s</b> 的已编辑版本所需要的权限。 您可以将其<b>保存</b>到您的 \"Downloads\"文件夹，或用服务器版本<b>覆盖</b>它以放弃您的编辑。]]></string>
+    <string name="sync_error_node_local_modification">同步错误</string>
+    <string name="sync_action">同步</string>
+    <string name="sync_override_action">覆盖</string>
+    <string name="sync_save_action">保存</string>
+    <string name="sync_resolve_conflict">解决冲突</string>
+    <string name="sync_complete">同步完成</string>
+    <string name="sync_in_progress">正在同步&#8230;</string>
+    <string name="upload_await">等待上传&#8230;</string>
+    <string name="download_await">等待下载&#8230;</string>
+    <string name="sync_favorites">收藏夹</string>
+
+    <plurals name="sync_complete_description">
+        <item quantity="zero">没有同步内容</item>
+        <item quantity="one">已同步 1 个文件</item>
+        <item quantity="other">已同步 %1$s 个文件</item>
+    </plurals>
+    <plurals name="download_complete_description">
+        <item quantity="zero">没有下载内容</item>
+        <item quantity="one">可离线使用 1 个文件</item>
+        <item quantity="other">可离线使用 %1$s 个文件</item>
+    </plurals>
+    <plurals name="upload_complete_description">
+        <item quantity="zero">没有上传内容。</item>
+        <item quantity="one">上传了 1 项。</item>
+        <item quantity="other">上传了 %1$s 项。</item>
+    </plurals>
+    <plurals name="update_complete_description">
+        <item quantity="zero">没有更新内容。</item>
+        <item quantity="one">已更新 1 个文件。</item>
+        <item quantity="other">已更新 %1$s 个文件。</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="zero">没有传输失败。</item>
+        <item quantity="one">1 个传输失败。</item>
+        <item quantity="other">%1$s 个传输失败。</item>
+    </plurals>
+    <plurals name="batch_in_progress">
+        <item quantity="zero">没有正在进行的传输。</item>
+        <item quantity="one">正在进行 1 个传输。</item>
+        <item quantity="other">正在进行 %1$s 个传输。</item>
+    </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">没有正在进行的下载。</item>
+        <item quantity="one">正在进行 1 项下载。</item>
+        <item quantity="other">正在进行 %1$s 项下载。</item>
+    </plurals>
+
+    <string name="sync_warning">同步警告</string>
+    <string name="sync_error">同步错误</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> 您即将通过移动运营商的连接来同步（可能会产生付费流量）<b>%s</b>。</p>是否继续？]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> 您正在尝试同步 <b>%1$s</b>，仅 %2$s 可用。</p> 您需要释放您的设备上的一些空间或取消收藏一些内容。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> 您即将同步 <b>%1$s</b>，您的设备上仅剩 %2$s。</p> 是否继续？]]></string>
+    <string name="sync_document_not_available">此文档在您的设备上不可用。</string>
+
+    <!-- NOTIFICATION -->
+    <string name="upload">上传 </string>
+    <string name="upload_complete">上传完成。</string>
+    <string name="upload_in_progress">正在上传&#8230;</string>
+    <string name="update_complete">更新完成。</string>
+    <string name="update_in_progress">正在更新&#8230;</string>
+
+    <!-- Fujitsu ScanSnap -->
+    <string name="scan">扫描</string>
 </resources>

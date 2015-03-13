@@ -119,6 +119,14 @@ public abstract class PrepareBaseHelper
         }
     }
 
+    // nodeIdentifier
+    public PrepareBaseHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
+            long syncScanningTimeStamp, SyncResult result, String nodeIdentifier)
+    {
+        this(context, acc, session, mode, syncScanningTimeStamp, result);
+        this.nodeIdentifier = nodeIdentifier;
+    }
+
     public abstract List<FavoriteSync> prepare();
 
     protected void scan()
@@ -385,7 +393,8 @@ public abstract class PrepareBaseHelper
                         repoSyncIds = new ArrayList<String>();
                     }
                     if (session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(node.getIdentifier()) != null)
+                            .getNodeByIdentifier(node.getIdentifier()) != null
+                            && session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
                     {
                         tmpNode.add(node);
                     }
@@ -788,6 +797,8 @@ public abstract class PrepareBaseHelper
             // Retrieve local Cursor
             nodeCursor = FavoritesSyncManager.getCursorForId(context, acc, nodeId);
             nodeCursor.moveToNext();
+
+            if (syncResult.stats.numEntries == 1) { return; }
 
             if (node != null && !session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
             {

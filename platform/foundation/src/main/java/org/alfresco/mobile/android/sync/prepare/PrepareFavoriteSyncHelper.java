@@ -58,6 +58,15 @@ public class PrepareFavoriteSyncHelper extends PrepareFavoriteHelper
         group = new ArrayList<FavoriteSync>();
     }
 
+    public PrepareFavoriteSyncHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
+            long syncScanningTimeStamp, SyncResult result, String nodeIdentifier)
+    {
+        super(context, acc, session, mode, syncScanningTimeStamp, result, nodeIdentifier);
+
+        // Create the group
+        group = new ArrayList<FavoriteSync>();
+    }
+
     @Override
     public List<FavoriteSync> prepare()
     {

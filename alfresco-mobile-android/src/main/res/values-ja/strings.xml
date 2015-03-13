@@ -1,125 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  このファイルは、Alfresco Mobile for Androidの一部です。
+  This file is part of Alfresco Mobile for Android.
   
-  Apacheライセンスバージョン2.0（「ライセンス」）に基づき、
-  ライセンスに準ずる場合を除き、このファイルを使用することはできません。
-  本ライセンスのコピーは、
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
   
-    http://www.apache.org/licenses/LICENSE-2.0で入手できます。
+    http://www.apache.org/licenses/LICENSE-2.0
   
-  適用される法律により求められる場合または書面により合意する場合を除き、
-  本ライセンスに基づくソフトウェアは「現状渡し」の状態で提供され、明示または暗示を問わず、
-  一切の保証または条件は適用されません。
-  ライセンスに基づいて許可と制限を規定する特定の言語については、
-  ライセンスを参照してください。
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 -->
 <resources>
 
     <string name="app_name">Alfresco</string>
-    <string name="empty_accounts">使用できるアカウントがありません</string>
+    <string name="empty_accounts">使用できる Alfresco アカウントがありません</string>
 
     <!-- HOME SCREEN -->
     <string name="home_login">ログイン</string>
     <string name="home_account">アカウントをお持ちの方</string>
-    <string name="home_helper">Alfresco Mobileの詳細については、[ヘルプ]領域で<a href="alfresco://view_help_guide/">ガイド</a>をご覧ください</string>
+    <string name="home_helper">Alfresco Mobile の詳細については、[ヘルプ] にある<a href="alfresco://view_help_guide/">ガイド</a>をご覧ください</string>
 
-    <!-- ACCOUNT WIZARD SCRE STEP 1 -->
-    <string name="account_wizard_alfresco_server">Alfrescoサーバー</string>
-    <string name="account_wizard_alfresco_server_description">Alfrescoサーバーに接続</string>
+    <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
+    <string name="account_wizard_alfresco_server">Alfresco Server</string>
+    <string name="account_wizard_alfresco_server_description">Alfresco Server に接続します</string>
     <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
-    <string name="account_wizard_alfresco_cloud_description">Alfresco Cloudアカウントにアクセス</string>
+    <string name="account_wizard_alfresco_cloud_description">Alfresco Cloud のアカウントにアクセスします</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP 2 -->
+    <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">アカウント</string>
-    <string name="action_add_account">アカウントを追加</string>
+    <string name="action_add_account">アカウントを追加してください</string>
     <string name="account_username">ユーザー名</string>
-    <string name="account_username_required_hint">ユーザー名（必須）</string>
+    <string name="account_username_required_hint">ユーザー名 (必須)</string>
     <string name="account_password">パスワード</string>
-    <string name="account_password_required_hint">パスワード（必須）</string>
+    <string name="account_password_required_hint">パスワード (必須)</string>
     <string name="account_hostname">ホスト名</string>
-    <string name="account_hostname_required_hint">ホスト名は、www.example.com（必須）のようになります。</string>
-    <string name="account_hostname_hint">www.example.com（必須）</string>
+    <string name="account_hostname_required_hint">ホスト名は、www.example.com のような形式で入力してください (必須です)。</string>
+    <string name="account_hostname_hint">www.example.com (必須)</string>
     <string name="account_description">説明</string>
-    <string name="account_description_optional_hint">説明（オプション）です。デフォルトはAlfrescoサーバー</string>
-    <string name="account_description_hint">Alfrescoサーバー（オプション）</string>
-    <string name="account_advanced">詳細</string>
-    <string name="account_authentication">アカウント認証</string>
+    <string name="account_description_optional_hint">説明を入力します (任意です)。 デフォルトは Alfresco Server です</string>
+    <string name="account_description_hint">Alfresco Server (任意)</string>
+    <string name="account_advanced">詳細設定</string>
+    <string name="account_authentication">アカウントの認証方法</string>
     <string name="account_https">HTTPS</string>
-    <string name="account_https_on_hint">HTTPSオン</string>
-    <string name="account_https_off_hint">HTTPSオフ</string>
+    <string name="account_https_on_hint">HTTPS オン</string>
+    <string name="account_https_off_hint">HTTPS オフ</string>
     <string name="account_port">ポート</string>
-    <string name="account_port_hint">ポート（オプション）</string>
-    <string name="account_servicedocument">サービスURL</string>
-    <string name="account_servicedocument_hint">サービスURL（オプション）です。</string>
-    <string name="account_wizard_step2_title">アカウント認証情報</string>
-    <string name="account_verify">アカウント情報を確認&#8230;</string>
+    <string name="account_port_hint">ポート (任意)</string>
+    <string name="account_servicedocument">サービス URL</string>
+    <string name="account_servicedocument_hint">サービスの URL (任意です)。 </string>
+    <string name="account_wizard_step2_title">アカウントの認証情報</string>
+    <string name="account_verify">Alfresco アカウント情報を確認しています&#8230;</string>
     <string name="account_validate">保存</string>
-    <string name="account_validate_hint">アカウント情報を保存</string>
-    <string name="account_validate_disable_hint">ユーザー名、パスワード、ホスト名フィールドを入力してください。</string>
-    <string name="account_validate_disable_url_hint">ホスト名とサービスURLの値に誤りがあります。アカウント設定を確認してください。</string>
+    <string name="account_validate_hint">Alfresco アカウント情報を保存します</string>
+    <string name="account_validate_disable_hint">[ユーザー名]、[パスワード]、[ホスト名] の各フィールドに入力してください。</string>
+    <string name="account_validate_disable_url_hint">ホスト名とサービス URL の値に誤りがあります。 Alfresco アカウントの設定を確認してください。</string>
 
 
-    <!-- ACCOUNT WIZARD SCREEN STEP 3 -->
-    <string name="account_wizard_alldone_description">アカウントを使用する準備ができました。</string>
+    <!-- AlfrescoAccount WIZARD SCREEN STEP 3 -->
+    <string name="account_wizard_alldone_description">Alfresco アカウントを使用する準備ができました。</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP -->
-    <string name="account_wizard_step1">手順1/2</string>
-    <string name="account_wizard_step1_description">アカウントを選択</string>
-    <string name="account_wizard_step2">手順2/2</string>
+    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
+    <string name="account_wizard_step1">手順 1/2</string>
+    <string name="account_wizard_step1_description">アカウントの選択</string>
+    <string name="account_wizard_step2">手順 2/2</string>
     <string name="account_wizard_step2_description">アカウント情報</string>
 
     <!-- ACCOUNTS -->
-    <string name="account_not_activated">アカウントが有効ではありません。[アカウント管理]画面を確認してください。</string>
+    <string name="account_not_activated">Alfresco アカウントが有効化されていません。 [アカウントの管理] 画面を確認してください。</string>
     <string name="account_default_cloud">Alfresco Cloud</string>
-    <string name="account_default_onpremise">Alfrescoサーバー</string>
-    <string name="account_edit_hint">"%s"アカウント情報を編集</string>
-    <string name="account_delete_hint">"%s"アカウントを削除</string>
+    <string name="account_default_onpremise">Alfresco Server</string>
+    <string name="account_edit_hint">"%s" Alfresco アカウント情報を編集します</string>
+    <string name="account_delete_hint">"%s" アカウントを削除します</string>
 
 
     <!-- WAITING SESSION -->
     <string name="wait_title">お待ちください</string>
-    <string name="wait_message">サーバーに問い合わせています&#8230;</string>
+    <string name="wait_message">サーバーに接続しています...</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">再試行</string>
     <string name="error_session_creation_title">アカウントの保存</string>
     <string name="error_session_creation_message">接続エラー</string>
-    <string name="error_session_creation">認証できません。アカウント設定を確認してください。</string>
-    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがある<br/>、またはVPN<b>を有効にする必要があります</b>。<br/> アカウント設定を確認してください。]]></string>
-    <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p> デバイス設定を確認して、データ接続を有効にしてください。]]></string>
-    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス許可がありません。<br/> アカウント設定を確認してください<b>（ユーザー名/パスワード）</b>。]]></string>
-    <string name="error_session_service_url"><![CDATA[<b>サービスURL</b>の値に誤りがあります。<br/> アカウント設定を確認してください。]]></string>
-    <string name="error_session_service_unavailable"><![CDATA[メンテナンスによるダウンタイムまたは容量の問題により、サーバーは一時的にお客様の要求を処理できません。<br/> しばらくたってから、操作をやり直してください。]]></string>
-    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> アカウント設定を確認してください。]]></string>
-    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> アカウント設定を確認してください。]]></string>
+    <string name="error_session_creation">認証できません。 Alfresco アカウントの設定を確認してください。</string>
+    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがあるか<br/>、<b>VPN を有効にする</b>必要があります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p> デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/> Alfresco アカウントの設定 <b>(ユーザー名/パスワード)</b> を確認してください。]]></string>
+    <string name="error_session_service_url"><![CDATA[<b>サービス URL</b> の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[メンテナンス中によりサーバーがダウンしているか、容量に問題があるため、一時的に要求を処理できません。<br/> しばらくしてから、操作をやり直してください。]]></string>
+    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> Alfresco アカウントの設定を確認してください。]]></string>
+    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> Alfresco アカウントの設定を確認してください。]]></string>
     <string name="error_session_certificate">
-<![CDATA[<p><b>サーバーのセキュリティ証明が信頼されていません。</b><br/></p>
-		サーバー宛先の証明書を発行した第三者機関がデバイスが認識した機関と一致しません。<br/>
-		正しいサーバーに接続していることをAlfresco Mobileで確認できるようにするには、信頼できる機関からの証明書が必要です。<br/>
-		サーバーの証明書が自己署名されている場合、正常に接続するためには、デバイスに追加してください。<br/> ]]>
+<![CDATA[<p><b>サーバーのセキュリティ証明書が信頼されていません。</b><br/></p>
+		サーバーの接続先の証明書を発行した第三者機関が、デバイスで認識された機関と一致しません。<br/>
+		正しいサーバーに接続していることを Alfresco Mobile で確認できるようにするには、信頼できる機関からの証明書が必要です。<br/>
+		サーバーの証明書が自己署名された証明書の場合は、それをデバイスに追加する必要があります。<br/> ]]>
     </string>
     <string name="error_session_certificate_expired">
-<![CDATA[<p><b>サーバーのセキュリティ証明書の期限が過ぎているか、有効ではありません!</b><br/></p>
-		デバイスが設定された日時を確認してください。<br/> 問題が解決しない場合、管理者に問い合わせてください。]]>
+<![CDATA[<p><b>サーバーのセキュリティ証明書の期限が切れているか、まだ有効化されていません。</b><br/></p>
+		デバイスで証明書が設定された日時を確認してください。<br/> 問題が解決しない場合は、管理者に問い合わせてください。 ]]>
     </string>
     <string name="error_session_ssl">
-<![CDATA[<p><b>SSLプロトコルにエラーが発生しました。</b><br/></p>
-        アカウント設定を確認して、もう一度やり直してください。<br/> 問題が解決しない場合、管理者に問い合わせてください。]]>
+<![CDATA[<p><b>SSL プロトコルにエラーが発生しました。</b><br/></p>
+        Alfresco アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Alfresco in the Cloudは現在負荷が大きく、処理に時間がかかっています。</b><br/></p>
-        しばらくたってからもう一度やり直してください。<br/>]]>
+<![CDATA[<p><b>Alfresco in the Cloud は現在大量の処理を行っています。</b><br/></p>
+        しばらくしてから、操作をやり直してください。<br/>]]>
     </string>
-    <string name="error_session_expired">セッションの期限が過ぎています。もう一度サインインしてください。</string>
-    <string name="error_session_refresh">セッションを更新します。</string>
-    <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送をサポートしていません。<br/> アカウントを再読み込みしてください</b>。]]></string>
+    <string name="error_session_expired">セッションの期限が切れています。 もう一度サインインしてください。</string>
+    <string name="error_session_refresh">セッションを再読み込みしています。</string>
+    <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送に対応していません。<br/>アカウントを再読み込みしてください</b>。]]></string>
 
     <!-- MESSAGE ERROR -->
     <string name="error_general_title">エラーが発生しました。</string>
-    <string name="error_general">エラーが発生しました。もう一度やり直してください。</string>
-    <string name="error_account_url">URLが正しくありません。アカウント設定を確認してください。</string>
+    <string name="error_general">エラーが発生しました。 操作をやり直してください。</string>
+    <string name="error_account_url">URL が正しくありません。 Alfresco アカウントの設定を確認してください。</string>
     <string name="error_unknown_filepath">リソースが見つかりませんでした。</string>
 
     <!-- DETAILS -->
@@ -132,11 +132,12 @@
     <string name="empty_download">ファイルがありません</string>
 
     <!-- SEARCH -->
-    <string name="search_form_hint">検索条件を入力してください</string>
+    <string name="search_form_hint">検索キーワードを入力してください</string>
 
-    <!-- ACCOUNT WIZARD SCREEN STEP -->
-    <string name="optional">オプション</string>
+    <!-- AlfrescoAccount WIZARD SCREEN STEP -->
+    <string name="optional">任意</string>
     <string name="required">必須</string>
+    <string name="field_required">(必須)</string>
 
     <!-- LOCAL FIlE -->
     <string name="action_rename">名前の変更</string>
@@ -144,7 +145,7 @@
     <!-- MAIN MENU -->
     <string name="menu_browse_root">リポジトリ</string>
     <string name="menu_browse_sites">サイト</string>
-    <string name="menu_browse_userhome">マイファイル</string>
+    <string name="menu_browse_userhome">あなたのファイル</string>
     <string name="menu_browse_shared">共有ファイル</string>
     <string name="menu_browse_all_sites">すべてのサイト</string>
     <string name="menu_browse_my_sites">あなたのサイト</string>
@@ -153,7 +154,7 @@
     <string name="menu_search">検索</string>
     <string name="menu_downloads">ダウンロード</string>
     <string name="menu_local_files">ローカルファイル</string>
-    <string name="menu_about">プロフィール</string>
+    <string name="menu_about">バージョン情報</string>
     <string name="menu_settings">設定</string>
     <string name="menu_accounts">アカウント</string>
     <string name="menu_view">表示</string>
@@ -161,8 +162,8 @@
     <string name="menu_prefs">設定</string>
 
     <!-- UPLOAD -->
-    <string name="upload_title">アップロード&#8230;</string>
-    <string name="upload_pick_document">コンテンツの選択&#8230;</string>
+    <string name="upload_title">アップロード...</string>
+    <string name="upload_pick_document">コンテンツの選択...</string>
 
     <!-- ACCOUNTS -->
     <string name="accounts_manage">アカウント</string>
@@ -174,10 +175,12 @@
     <string name="metadata">プロパティ</string>
     <string name="preview">プレビュー</string>
 
+
     <!-- NETWORKS -->
-    <string name="cloud_networks_empty">利用可能なネットワークがありません</string>
-    <string name="manage_accounts">アカウントの管理&#8230;</string>
-    <string name="cloud_networks_switch">ネットワークの切り替え&#8230;</string>
+    <string name="cloud_networks_empty">使用可能なネットワークはありません</string>
+    <string name="manage_accounts">アカウントの管理...</string>
+    <string name="cloud_networks_switch">ネットワークの切り替え...</string>
+
 
     <!-- AUTHENTICATION -->
     <string name="cloud_authentication">認証</string>
@@ -187,92 +190,92 @@
     <!-- NOTIFICATION -->
     <string name="upload">アップロード </string>
     <string name="upload_complete">アップロードが完了しました。</string>
-    <string name="upload_in_progress">アップロードしています&#8230;</string>
+    <string name="upload_in_progress">アップロードしています...</string>
     <string name="update_complete">更新が完了しました。</string>
-    <string name="update_in_progress">更新しています&#8230;</string>
+    <string name="update_in_progress">更新しています...</string>
     <string name="error_unable_open_file_title">ファイルを開けませんでした。</string>
-    <string name="error_unable_open_file">このファイルフォーマットはサポートされていません。ファイルを読み取れるアプリをインストールしてください。</string>
+    <string name="error_unable_open_file">このファイル形式は使用できません。 このファイルを読み取ることができるアプリをインストールしてください。</string>
 
     <!-- OTHER -->
-    <string name="unlike">[いいね!を取り消す]</string>
-    <string name="error_retrieve_likes">このコンテンツの[いいね!]/[いいね!を取り消す]タグを取得できませんでした。</string>
+    <string name="unlike">[いいね !] の取り消し</string>
+    <string name="error_retrieve_likes">このコンテンツの[いいね!]/[いいね!の取り消し] タグを取得できませんでした。</string>
     <string name="next">次へ</string>
     <string name="save">保存</string>
-    <string name="share_content">コンテンツの共有化&#8230;</string>
+    <string name="share_content">コンテンツの共有...</string>
 
     <!-- HELP -->
     <string name="asset_folder_prefix">ja</string>
-    <string name="docs_prefix">ja</string>
+    <string name="docs_prefix" />
 
     <!-- About Message -->
     <string name="buildnumber_version">バージョン: </string>
-    <string name="sdknumber_version">SDK：</string>
+    <string name="sdknumber_version">SDK:  </string>
     <string name="about_description">
 <![CDATA[
-<p>Alfresco Mobileは、Alfresco in the cloudとAlfresco on premise servers（3.4以上）に接続し、外出先でも企業のコンテンツに安全なアクセスを提供します。</p>
+<p>Alfresco Mobile は Alfresco in the cloud とオンプレミスの Alfresco Server  (3.4 以上) に接続して、社内のコンテンツに外出先から安全にアクセスできるようにします。</p>
 
-<p>Alfresco Mobileは、Alfrescoログイン証明書（HTTPまたはHTTPSを経由）を使用してAlfrescoリポジトリに接続し、権限に基づいてユーザーアクセスを管理します。</p>
+<p> Alfresco Mobile は、Alfresco のログイン資格情報を使用して (HTTP または HTTPS 経由で)  Alfresco のリポジトリに接続し、権限に基づいてユーザーのアクセスを管理します。</p>
 ]]>
     </string>
 
     <!-- Waiting Message -->
-    <string name="send_email">添付ファイルを共有化</string>
+    <string name="send_email">添付ファイルの共有</string>
     <string name="link_or_attach">これを添付ファイル、またはクリック可能なリンクとして共有しますか?</string>
     <string name="full_attachment">添付ファイル</string>
     <string name="link_to_repo">クリック可能なリンク</string>
-    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body><a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile</a>で送信</body></html>]]></string>
+    <string name="email_content"><![CDATA[<!DOCTYPE html><html><body><a href="http://play.google.com/store/apps/details?id=org.alfresco.mobile.android.application">Alfresco Mobile </a>で送信</body></html>]]></string>
 
     <!-- Delete -->
     <plurals name="delete_items">
-        <item quantity="one">\"%s\"を削除しますか?</item>
-        <item quantity="other">\"%s\"件のアイテムを削除しますか？</item>
+        <item quantity="one">\"%s\" を削除しますか?</item>
+        <item quantity="other">\"%s\" 個のアイテムを削除しますか？</item>
     </plurals>
 
-    <string name="delete_description_data_protection">データ保護が有効です。\n\nこのアカウントを削除すると、コンテンツは保護されていない状態に戻ります。\n\n\"%s\"を削除しますか?</string>
-    <string name="delete_in_progress">削除しています&#8230;</string>
+    <string name="delete_description_data_protection">データ保護が有効です。\n\n このアカウントを削除すると、コンテンツは保護されていない状態に戻ります。\n\n\"%s\"を削除しますか?</string>
+    <string name="delete_in_progress">削除しています...</string>
     <string name="delete_complete">削除が完了しました</string>
+    <string name="delete_sucess">\"%s\" は正常に削除されました。</string>
 
     <!-- Save Back -->
-    <string name="save_back_description">\"%s\"は変更されています。この新しいバージョンをアップロードしますか?</string>
-    <string name="update_sucess">\"%s\"の更新が完了しました。</string>
-    <string name="no_voice_recorder">このデバイスにはボイスレコーダーがありません</string>
+    <string name="save_back_description">\"%s\" は変更されています。 この新しいバージョンをアップロードしますか?</string>
+    <string name="update_sucess">\"%s\" の更新が完了しました。</string>
+    <string name="no_voice_recorder">このデバイスにはボイスレコーダーはありません</string>
     <string name="cannot_capture">この情報を取得できません</string>
 
     <!-- Upload -->
 
     <!-- Create Document -->
-    <string name="open_play_store">Google Play Storeを開く</string>
+    <string name="open_play_store">Google Play Store を開く</string>
     <string name="create_document">作成&#8230;</string>
     <string name="create_document_title">作成&#8230;</string>
-    <string name="create_document_name_hint">ここにファイル名を入力</string>
-    <string name="filename_error_character">この名前は無効です。</string>
-    <string name="create_document_filename_error">この名前はすでに使用されています。</string>
+    <string name="create_document_name_hint">ここにファイル名を入力してください</string>
+    <string name="create_document_filename_error">この名前は既に使用されています。</string>
     <string name="create_document_editor_title">以下を使用したアクションが完了しました</string>
-    <string name="create_document_editor_not_available">利用可能なアプリケーションがありません</string>
-    <string name="create_document_editor_not_available_description">このファイルタイプを作成するアプリがありません。</string>
+    <string name="create_document_editor_not_available">使用可能なアプリケーションがありません</string>
+    <string name="create_document_editor_not_available_description">この種類のファイルを作成するアプリがありません。</string>
     <string name="preview_unavailable">プレビューは使用できません。</string>
-    <string name="sdinaccessible">この操作ではSDカードがアクセス可能である必要があります</string>
-    <string name="loginfirst">まずアカウントにログインしてください</string>
+    <string name="sdinaccessible">この操作を行うには、SD カードがアクセス可能な状態でなければなりません。</string>
+    <string name="loginfirst">まず Alfresco アカウントにログインしてください</string>
 
     <!-- Comment -->
-    <string name="comment_add_hint">ここにコメントを追加&#8230;</string>
+    <string name="comment_add_hint">ここにコメントを追加してください...</string>
 
     <!-- DATA PROTECTION -->
     <string name="data_protection">データ保護</string>
-    <string name="data_protection_blurb"><![CDATA[<p><b>データ保護は利用可能です。</b><br/> 有効にしますか? <p>  これによって、すべてのアカウントでダウンロードされたAlfrescoコンテンツが暗号化され、Alfresco以外のアプリからは読み取れなくなることを意味します。]]></string>
-    <string name="decryption_failed">暗号解読できませんでした</string>
-    <string name="protect_question"><![CDATA[<p><b>今すぐ、ダウンロードしたすべてのAlfrescoコンテンツを保護しますか?</b><p>  これはお客様のすべてのAlfrescoアカウントからダウンロードしたすべてのコンテンツに適用され、Alfresco以外のアプリからは読み取れなくなることを意味します。]]></string>
-    <string name="unprotect_question"><![CDATA[<p><b>今すぐ、ダウンロードしたすべてのAlfrescoコンテンツの保護を解除しますか?</b><p>  これはお客様のすべてのAlfrescoアカウントからダウンロードしたすべてのコンテンツに適用されます。]]></string>
-    <string name="decryption_title">データ保護を無効にしています&#8230;</string>
-    <string name="encryption_title">データ保護を有効にしています&#8230;</string>
+    <string name="data_protection_blurb"><![CDATA[<p><b>データ保護は使用可能です。</b><br/> 有効にしますか? <p>  有効にすると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。 ]]></string>
+    <string name="decryption_failed">暗号の解除が失敗しました</string>
+    <string name="protect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツを今すぐ保護しますか?</b><p>  保護することを選択すると、各アカウントでダウンロードしたすべての Alfresco コンテンツが暗号化され、Alfresco 以外のアプリでは読み取ることができなくなります。]]></string>
+    <string name="unprotect_question"><![CDATA[<p><b>ダウンロードしたすべての Alfresco コンテンツの保護を今すぐ解除しますか?</b><p>  解除することを選択すると、各 Alfresco アカウントからダウンロードしたすべてのコンテンツの保護が解除されます。]]></string>
+    <string name="decryption_title">データ保護を無効にしています...</string>
+    <string name="encryption_title">データ保護を有効にしています...</string>
     <string name="encrypt_action">暗号化</string>
-    <string name="decrypt_action">暗号解読</string>
+    <string name="decrypt_action">暗号解除</string>
 
     <!-- OPEN AS.. -->
     <string name="open_as_title">変換して開く&#8230;</string>
     <string name="open_as_image">画像</string>
     <string name="open_as_audio">オーディオ</string>
-    <string name="open_as_video">ビデオ</string>
+    <string name="open_as_video">動画</string>
     <string name="open_as_txt">テキスト文書</string>
 
     <!-- SITES ACTION -->
@@ -281,57 +284,58 @@
     <string name="action_leave_site">退会</string>
     <string name="action_favorite_site">お気に入り</string>
     <string name="action_unfavorite_site">お気に入りを解除</string>
-    <string name="action_join_site_validation">現在\"%s\"のメンバーです。</string>
-    <string name="action_leave_site_validation">\"%s\"を退会しました。</string>
-    <string name="action_favorite_site_validation">\"%s\"は現在お気に入りに登録されています。</string>
+    <string name="action_join_site_validation">\"%s\" のメンバーになりました。</string>
+    <string name="action_leave_site_validation">\"%s\" を退会しました。</string>
+    <string name="action_favorite_site_validation">\"%s\" がお気に入りに登録されました。</string>
     <string name="action_unfavorite_site_validation">\"%s\"はお気に入りから解除されました。</string>
-    <string name="action_join_request_site_validation">\"%s\"への参加をリクエストしました。</string>
-    <string name="joinsiterequest_list_title">保留中のリクエストリスト</string>
-    <string name="action_cancel_join_site_request">\"%s\"への参加リクエストはキャンセルされています。</string>
-    <string name="action_join_site_error">問題が発生し、サイト\"%s\"に参加できませんでした。</string>
-    <string name="action_leave_site_error">問題が発生し、サイト\"%s\"を退会できませんでした。</string>
-    <string name="action_favorite_error">問題が発生し、サイト\"%s\"をお気に入りに登録できませんでした。</string>
-    <string name="action_unfavorite_site_error">問題が発生し、サイト\"%s\"をお気に入りから解除できませんでした</string>
+    <string name="action_join_request_site_validation">\"%s\" への参加をリクエストしました。</string>
+    <string name="joinsiterequest_list_title">保留中リクエストのリスト</string>
+    <string name="joinsiterequest_cancel_description">サイト %sへの参加リクエストをキャンセルします。</string>
+    <string name="action_cancel_join_site_request">\"%s\" への参加リクエストはキャンセルされています。</string>
+    <string name="action_join_site_error">問題が発生したため、サイト \"%s\" に参加できませんでした。</string>
+    <string name="action_leave_site_error">問題が発生したため、サイト \"%s\" を退会できませんでした。</string>
+    <string name="action_favorite_error">問題が発生したため、サイト \"%s\" をお気に入りに登録できませんでした。</string>
+    <string name="action_unfavorite_site_error">問題が発生したため、サイト \"%s\" をお気に入りから解除できませんでした</string>
 
     <!-- IMPORT -->
-    <string name="import_document_title">Alfresco Mobileでアップロード</string>
+    <string name="import_document_title">Alfresco Mobile でアップロード</string>
     <string name="import_document_name">ファイル名</string>
     <string name="import_documents">ファイル</string>
     <string name="import_account">アカウント</string>
     <string name="import_folder">フォルダのアップロード</string>
-    <string name="import_unsupported_intent">Alfresco Mobile：情報を取得できません。</string>
+    <string name="import_unsupported_intent">Alfresco Mobile: 情報を取得できません。</string>
     <string name="action_upload">アップロード</string>
     <string name="action_import">インポート</string>
 
     <!-- SSL -->
-    <string name="security_ssl_disable">SSL証明書の検証が無効になっています。</string>
-    <string name="data_protection_unavailable">データ保護は利用できません（有料アカウント所持者のみ）</string>
-    <string name="data_protection_off">データ保護は現在オフになっています</string>
-    <string name="data_protection_on">データ保護は現在オンになっています</string>
+    <string name="security_ssl_disable">SSL 証明書の検証が無効になっています。</string>
+    <string name="data_protection_unavailable">データ保護は使用できません (有料アカウント所持者のみ)</string>
+    <string name="data_protection_off">データ保護は現在オフになっています"</string>
+    <string name="data_protection_on">データ保護は現在オンになっています"</string>
 
     <!-- PIN Code -->
-    <string name="passcode_title">パスコードを入力</string>
-    <string name="passcode_enable_title">パスコードを有効にする</string>
+    <string name="passcode_title">パスコードの入力</string>
+    <string name="passcode_enable_title">パスコードの有効化</string>
     <string name="passcode_preference">パスコード保護</string>
     <string name="passcode_enable">有効</string>
     <string name="passcode_disable">無効</string>
     <string name="passcode_change">パスコードの変更</string>
     <string name="passcode_timeout">期限</string>
-    <string name="passcode_timeout_summary">{0,choice,0# 0分後|1#1分後|1&lt;{0}分後}</string>
-    <string name="passcode_erase_data">データを消去</string>
-    <string name="passcode_erase_data_summary">パスコードの入力を10回間違えると、このデバイスからAlfresco Mobileデータがすべて消去されます。</string>
-    <string name="passcode_edit">新しいパスコードを入力</string>
-    <string name="passcode_confirmation">パスコードを再入力</string>
+    <string name="passcode_timeout_summary">{0,choice,0# 0 分後|1#1 分後|1&lt;{0} 分後}</string>
+    <string name="passcode_erase_data">データの消去</string>
+    <string name="passcode_erase_data_summary">パスコードの入力を 10 回間違えると、このデバイスから Alfresco Mobile のデータがすべて消去されます。</string>
+    <string name="passcode_edit">新しいパスコードを入力してください</string>
+    <string name="passcode_confirmation">パスコードを再入力してください</string>
     <string name="passcode_error_confirmation">パスコードが一致しません。</string>
-    <string name="passcode_unknown">パスコードは正しくありません。</string>
+    <string name="passcode_unknown">パスコードが間違っています。</string>
     <string name="passcode_erase_data_complete">ローカルデータがすべて削除されました。</string>
     <string name="passcode_timeout_title">パスコードのタイムアウト</string>
-    <string name="passcode_timeout_1min">1分</string>
-    <string name="passcode_timeout_2min">2分</string>
-    <string name="passcode_timeout_5min">5分</string>
-    <string name="passcode_timeout_10min">10分</string>
-    <string name="passcode_timeout_30min">30分</string>
-    <string name="passcode_timeout_60min">1時間</string>
+    <string name="passcode_timeout_1min">1 分</string>
+    <string name="passcode_timeout_2min">2 分</string>
+    <string name="passcode_timeout_5min">5 分</string>
+    <string name="passcode_timeout_10min">10 分</string>
+    <string name="passcode_timeout_30min">30 分</string>
+    <string name="passcode_timeout_60min">1 時間</string>
 
     <string-array name="passcode_timeout_entries">
         <item>@string/passcode_timeout_1min</item>
@@ -352,118 +356,129 @@
 
     <!-- Settings -->
     <string name="settings">設定</string>
-    <string name="settings_enterprise">エンタープライズ設定</string>
-    <string name="settings_privatefolder_summary">データ保護を設定すると、ダウンロードされたコンテンツはすべてAlfrescoアプリでしか読み取れなくなります。（エンタープライズカスタマーのみ）</string>
+    <string name="settings_enterprise">エンタープライズサブスクリプションの設定</string>
+    <string name="settings_privatefolder_summary">データ保護を設定すると、ダウンロードしたすべてのコンテンツが Alfresco アプリでしか読み取ることができなくなります。 (エンタープライズサブスクリプションのお客様のみ)</string>
     <string name="settings_privatefolder_title">データ保護</string>
     <string name="settings_links">リンク</string>
     <string name="settings_links_website">Alfresco</string>
-    <string name="settings_links_website_summary">Alfrescoの公式Webサイトにアクセス</string>
+    <string name="settings_links_website_summary">Alfresco の公式 Web サイトにアクセス</string>
     <string name="settings_links_website_url">http://www.alfresco.com/products/mobile</string>
     <string name="settings_rating">レビューを書く</string>
-    <string name="settings_rating_summary">Google PlayでAlfresco Mobileを評価する</string>
+    <string name="settings_rating_summary">Google Play で Alfresco Mobile の評価を書きます</string>
     <string name="settings_rating_url">market://details?id=org.alfresco.mobile.android.application</string>
-    <string name="settings_links_facebook">FacebookでAlfrescoにいいね!をつける</string>
-    <string name="settings_links_facebook_summary">Facebookのいいね!</string>
+    <string name="settings_links_facebook">Facebook で Alfresco に「いいね!」をつける</string>
+    <string name="settings_links_facebook_summary">Facebook で「いいね!」をつけます</string>
     <string name="settings_links_facebook_url">http://www.facebook.com/alfrescosoftware</string>
     <string name="settings_favorite">お気に入り</string>
-    <string name="settings_favorite_sync">\"%s\"の同期を有効にする</string>
+    <string name="settings_favorite_sync">同期の有効化</string>
+    <string name="settings_favorite_sync_summary">\"%s\" の同期を有効にします</string>
     <string name="settings_favorite_sync_data">データ使用量</string>
     <string name="settings_favorite_sync_data_all">同期に携帯電話のデータを使用します。</string>
+    <string name="settings_custom_menu">カスタマイズ</string>
+    <string name="settings_custom_menu_summary">メニューに表示するタブを選択してください。</string>
+    <string name="settings_custom_menu_manage">メニュー</string>
+    <string name="settings_custom_menu_disable">Alfresco 管理者がこの機能を無効に設定しています。</string>
+
 
     <!-- Multi Selection -->
     <plurals name="selected_document">
         <item quantity="zero">ファイルがありません</item>
-        <item quantity="one">1ファイル</item>
-        <item quantity="other">%1$sファイル</item>
+        <item quantity="one">1 個のファイル</item>
+        <item quantity="other">%1$s 個のファイル</item>
     </plurals>
     <plurals name="selected_folders">
         <item quantity="zero">フォルダがありません</item>
-        <item quantity="one">1フォルダ</item>
-        <item quantity="other">%1$sフォルダ</item>
+        <item quantity="one">1 個のフォルダ</item>
+        <item quantity="other">%1$s 個のフォルダ</item>
+    </plurals>
+    <plurals name="selected_search">
+        <item quantity="zero">クエリがありません</item>
+        <item quantity="one">1 個のクエリ</item>
+        <item quantity="other">%1$s 個のクエリ</item>
     </plurals>
 
-    <string name="waiting_operations">お待ちください&#8230;</string>
-
     <!-- Favorites -->
-    <string name="menu_favorites_folder">お気に入りフォルダ</string>
+    <string name="menu_favorites_folder">お気に入りのフォルダ</string>
     <string name="menu_favorites">お気に入り</string>
     <string name="synced_documents">同期されているコンテンツ</string>
-    <string name="empty_favorites">お気に入りがありません</string>
+    <string name="empty_favorites">お気に入りはありません</string>
     <string name="favorites_document">お気に入り</string>
-    <string name="error_retrieve_favorite">このコンテンツのお気に入り情報は取得できませんでした。</string>
-    <string name="favorites_activate">\"%s\"のコンテンツを同期</string>
-    <string name="favorites_activate_description">自動的にお気に入りのコンテンツをこのデバイスと同期させますか?</string>
-    <string name="favorites_deactivate">同期を無効にする</string>
-    <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 同期されているコンテンツがすべてデバイスから削除されます。]]></string>
+    <string name="error_retrieve_favorite">このコンテンツのお気に入り情報を取得できませんでした。</string>
+    <string name="favorites_activate">\"%s\" のコンテンツを同期します</string>
+    <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期させますか?</string>
+    <string name="favorites_deactivate">同期の無効化</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 無効にすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
     <string name="sync_error_title">同期エラー</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b>のお気に入りが解除されました。<br/>編集済みのバージョンをサーバーと<b>同期</b>させるか、<b>保存</b>（\"ダウンロード\"フォルダ）します。</p>]]></string>
-    <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b>はサーバーから削除されましたが、\"ダウンロード\"フォルダにコピーが保存されています。</p>]]></string>
-    <string name="sync_error_no_permission"><![CDATA[<p> 編集済みバージョンの<b>%s</b>をアップロードするのに必要な権限がありません。<b>保存</b>（\"ダウンロード\"フォルダ）するか、サーバーのバージョンで<b>上書き</b>することはできます。この場合、編集した項目は破棄されます。]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b> のお気に入りが解除されました。 <br/> 編集済みのバージョンをサーバーと<b>同期</b>させるか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
+    <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> はサーバーから削除されましたが、\"ダウンロード\" フォルダにコピーが保存されています。</p>]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。 \"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
     <string name="sync_error_node_local_modification">同期エラー</string>
     <string name="sync_action">同期</string>
     <string name="sync_override_action">上書き</string>
     <string name="sync_save_action">保存</string>
-    <string name="sync_resolve_conflict">コンフリクトを解決</string>
+    <string name="sync_resolve_conflict">競合の解決</string>
     <string name="sync_complete">同期が完了しました</string>
-    <string name="sync_in_progress">同期しています&#8230;</string>
-    <string name="upload_await">アップロードを待っています&#8230;</string>
-    <string name="download_await">ダウンロードを待っています&#8230;</string>
+    <string name="sync_in_progress">同期しています...</string>
+    <string name="upload_await">アップロードを待っています...</string>
+    <string name="download_await">ダウンロードを待っています...</string>
+    <string name="sync_favorites">お気に入り</string>
+
 
     <plurals name="sync_complete_description">
-        <item quantity="zero">同期されたコンテンツがありません</item>
-        <item quantity="one">1ファイル同期済み</item>
-        <item quantity="other">%1$sファイル同期済み</item>
+        <item quantity="zero">同期されたコンテンツはありません</item>
+        <item quantity="one">1 個のファイルが同期されました</item>
+        <item quantity="other">%1$s 個のファイルが同期されました</item>
     </plurals>
     <plurals name="download_complete_description">
-        <item quantity="zero">ダウンロードされたコンテンツがありません</item>
-        <item quantity="one">オフラインで1ファイル利用可能</item>
-        <item quantity="other">オフラインで%1$sファイル利用可能</item>
+        <item quantity="zero">ダウンロードされたコンテンツはありません</item>
+        <item quantity="one">オフラインで使用できるファイルが 1 個あります</item>
+        <item quantity="other">オフラインで使用できるファイルが %1$s 個あります</item>
     </plurals>
     <plurals name="upload_complete_description">
-        <item quantity="zero">アップロードされたコンテンツがありません。</item>
-        <item quantity="one">1アイテムアップロード済み。</item>
-        <item quantity="other">%1$sアイテムアップロード済み。</item>
+        <item quantity="zero">アップロードされたコンテンツはありません</item>
+        <item quantity="one">1 個のアイテムがアップロードされました。</item>
+        <item quantity="other">%1$s 個のアイテムがアップロードされました。</item>
     </plurals>
     <plurals name="update_complete_description">
-        <item quantity="zero">更新されたコンテンツがありません。</item>
-        <item quantity="one">1ファイル更新済み。</item>
-        <item quantity="other">%1$sファイル更新済み。</item>
+        <item quantity="zero">更新されたコンテンツはありません。</item>
+        <item quantity="one">1 個のファイルが更新されました。</item>
+        <item quantity="other">%1$s 個のファイルが更新されました。</item>
     </plurals>
     <plurals name="batch_failed">
         <item quantity="zero">失敗した転送はありません。</item>
-        <item quantity="one">1個の転送に失敗しました。</item>
-        <item quantity="other">%1$s個の転送に失敗しました。</item>
+        <item quantity="one">1 個の転送に失敗しました。</item>
+        <item quantity="other">%1$s 個の転送に失敗しました。</item>
     </plurals>
     <plurals name="batch_in_progress">
         <item quantity="zero">進行中の転送はありません。</item>
-        <item quantity="one">1個の転送が進行中です。</item>
-        <item quantity="other">%1$s個の転送が進行中です。</item>
+        <item quantity="one">1 個の転送が進行中です。</item>
+        <item quantity="other">%1$s 個の転送が進行中です。</item>
     </plurals>
     <plurals name="download_in_progress">
         <item quantity="zero">進行中のダウンロードはありません。</item>
-        <item quantity="one">1個のダウンロードが進行中です。</item>
-        <item quantity="other">%1$s個のダウンロードが進行中です。</item>
+        <item quantity="one">1 個のダウンロードが進行中です。</item>
+        <item quantity="other">%1$s 個のダウンロードが進行中です。</item>
     </plurals>
 
-    <string name="sync_warning">同期を待機</string>
+    <string name="sync_warning">同期の警告</string>
     <string name="sync_error">同期エラー</string>
-    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して<b>%s</b>を同期しようとしています。</p> 続行しますか?]]></string>
-    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b>を同期しようとしていますが、利用できるのは%2$sだけです。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
-    <string name="sync_warning_storage"><![CDATA[<p> <b>%1$s</b>を同期しようとしていますが、デバイスにあるのは%2$sだけです。</p> 続行しますか?]]></string>
-    <string name="sync_document_not_available">この文書はデバイスで利用できません。</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、容量が %2$s しかありません。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
+    <string name="sync_document_not_available">この文書はデバイスにありません。</string>
 
     <!-- Handling duplicate name -->
     <string name="error_duplicate_title">名前が重複しています</string>
-    <string name="error_duplicate_description"><![CDATA[<p>同じ名前のダウンロード済みファイルがあります。</p> 既存のファイルを上書きしますか?]]></string>
+    <string name="error_duplicate_description"><![CDATA[<p>既に同じ名前のダウンロード済みファイルがあります。</p> 既存のファイルを上書きしますか?]]></string>
 
     <!-- Quick Action Folder -->
-    <string name="action_view_properties">プロパティを表示</string>
-    <string name="action_edit_properties">プロパティを編集</string>
-    <string name="like_in_progress">[いいね!]をつけています</string>
-    <string name="like_completed">[いいね!]が完了しました</string>
-    <string name="like_complete">[いいね!]完了</string>
+    <string name="action_view_properties">プロパティの表示</string>
+    <string name="action_edit_properties">プロパティの編集</string>
+    <string name="like_in_progress">[いいね !] をつけています</string>
+    <string name="like_completed">[いいね!] が完了しました</string>
+    <string name="like_complete">[いいね!] 完了</string>
     <string name="favorite">お気に入り</string>
-    <string name="unfavorite">お気に入りを解除</string>
+    <string name="unfavorite">お気に入りの解除</string>
 
     <!-- Operations Status -->
     <string name="status_pending">保留</string>
@@ -484,7 +499,7 @@
     <string name="LikeNodeRequest">いいね!</string>
     <string name="FavoriteNodeRequest">お気に入り</string>
     <string name="CreateFolderRequest">フォルダの作成</string>
-    <string name="LoadSessionRequest">セッションを読み込む</string>
+    <string name="LoadSessionRequest">セッションの読み込み</string>
 
     <!-- Multi selection -->
     <string name="empty">なし</string>
@@ -494,86 +509,91 @@
     <string name="dismiss_all">リストをクリア</string>
 
     <!-- Creation Folder -->
-    <string name="create_folder_in_progress">フォルダを作成中です</string>
-    <string name="create_folder_complete">フォルダ作成が完了しました</string>
-    <string name="discardbutton">破棄</string>
+    <string name="create_folder_in_progress">フォルダを作成しています</string>
     <string name="textfile_populate_failed">内蔵エディタにテキストを読み込めませんでした</string>
 
     <!-- FILE EXPLORER Menu -->
-    <string name="shortcut_alfresco">Alfresco</string>
     <string name="shortcut_alfresco_downloads">ダウンロード</string>
     <string name="shortcut_library">ライブラリ</string>
     <string name="shortcut_library_images">画像</string>
-    <string name="shortcut_library_videos">ビデオ</string>
+    <string name="shortcut_library_videos">動画</string>
     <string name="shortcut_library_audios">音楽</string>
-    <string name="shortcut_local">デバイスのショートカット</string>
-    <string name="shortcut_local_downloads">デバイスのダウンロード</string>
-    <string name="shortcut_local_sdcard">SDカード</string>
+    <string name="shortcut_library_office">Office</string>
+    <string name="shortcut_local">デバイス上のショートカット</string>
+    <string name="shortcut_local_downloads">デバイス上のダウンロードコンテンツ</string>
+    <string name="shortcut_local_sdcard">SD カード</string>
     <string name="shortcut_thirdparty_app">アプリケーション</string>
-    <string name="shortcut_thirdparty_applications">サードパーティのアプリケーション</string>
+    <string name="shortcut_thirdparty_applications">他社製アプリケーション</string>
 
     <!-- FILE Editor Menu -->
     <string name="file_editor_name">Alfresco Text Editor</string>
     <string name="file_editor_error_open">このファイルを開けません。</string>
-    <string name="file_editor_error_too_large">このファイルはサイズ制限を超えており、Alfresco Text Editorでは開くことができません。</string>
-    <string name="file_editor_error_speech">テキストの読み上げ機能はデバイスで利用できません。</string>
-    <string name="file_editor_save_request">ファイルは変更されています。</string>
-    <string name="file_editor_save_description"><![CDATA[保存せずに終了しますか? <br/>保存されていない変更項目は失われます。]]></string>
+    <string name="file_editor_error_too_large">このファイルは、Alfresco Text Editor で開けるサイズを超えています。</string>
+    <string name="file_editor_error_speech">このデバイスではテキストの読み上げ機能は使用できません。</string>
+    <string name="file_editor_save_request">このファイルは変更されています。</string>
+    <string name="file_editor_save_description"><![CDATA[保存せずに終了しますか? <br/> このまま終了すると、保存されていない変更は失われます。]]></string>
     <string name="file_editor_save">保存</string>
     <string name="file_editor_discard">破棄</string>
     <string name="file_editor_save_confirmation">ファイルは保存されています。</string>
-    <string name="file_editor_encoding">コーディング</string>
+    <string name="file_editor_encoding">符号化</string>
     <string name="file_editor_text_size">テキストサイズ</string>
-    <string name="file_editor_speech_to_text">音声認識機能</string>
+    <string name="file_editor_speech_to_text">音声入力</string>
 
     <!-- Simple -->
     <string name="yes">はい</string>
     <string name="no">いいえ</string>
 
     <!-- People -->
+    <string name="my_profile">あなたのプロフィール</string>
     <string name="user_profile">ユーザープロフィール</string>
     <string name="work_at">%1$s/%2$s</string>
     <string name="jobTitle">役職名</string>
     <string name="location">場所</string>
     <string name="summary">概要</string>
     <string name="contactInformation">連絡先</string>
-    <string name="email">Eメール</string>
+    <string name="email">E メール</string>
     <string name="telephone">電話</string>
     <string name="mobile">携帯</string>
     <string name="skypeId">Skype</string>
     <string name="instantMessagingId">IM</string>
     <string name="instantMessaging">インスタントメッセージング</string>
-    <string name="googleId">Googleユーザー名</string>
+    <string name="googleId">Google ユーザー名</string>
     <string name="company">会社</string>
     <string name="companyDetails">勤務先</string>
-    <string name="companyName">会社名</string>
+    <string name="companyName">氏名</string>
     <string name="companyAdress">住所</string>
     <string name="companyPostCode">郵便番号</string>
     <string name="companyTelephone">電話</string>
     <string name="companyFax">ファックス</string>
-    <string name="companyEmail">Eメール</string>
+    <string name="companyEmail">E メール</string>
     <string name="call">通話</string>
     <string name="skype">Skype</string>
-    <string name="start_chat">チャット開始</string>
-    <string name="start_call">通話開始</string>
-    <string name="start_video_call">テレビ電話開始</string>
-    <string name="search_person_hint">名前またはユーザー名で検索</string>
-    <string name="contact_add">連絡先を追加</string>
+    <string name="start_chat">チャットの開始</string>
+    <string name="start_call">通話の開始</string>
+    <string name="start_video_call">ビデオ通話の開始</string>
+    <string name="search_person_hint">名前またはユーザー名で検索します</string>
+    <string name="contact_add">連絡先の追加</string>
 
     <!-- MEMBERS -->
-    <string name="members">メンバーリスト</string>
-    <string name="members_of">%sのメンバー</string>
+    <string name="members">メンバーのリスト</string>
+    <string name="users">ユーザーのリスト</string>
+    <string name="members_of">%s のメンバー</string>
 
     <!-- PERSON SEARCH -->
     <string name="person_not_found">ユーザーが見つかりません</string>
     <string name="person_search">検索</string>
 
     <!-- Activities -->
-    <string name="activity_profile">%sのプロフィール</string>
+    <string name="activity_profile">%s のプロフィール</string>
 
     <!-- Workflow -->
-    <string name="my_tasks">あなたのタスク</string>
-    <string name="empty_tasks">タスクはありません</string>
+    <string name="empty_tasks">タスクなし</string>
+    <string name="empty_items">添付ファイルなし</string>
+    <string name="task_items">添付ファイル</string>
+    <string name="workflow_start">タスクの作成</string>
+    <string name="task_actions">応答</string>
+    <string name="tasks">タスク</string>
+    <string name="task_workflow">プロセス</string>
 
     <!-- Workflow FILTERS -->
     <string name="tasks_status">タスクのステータス</string>
@@ -582,10 +602,10 @@
     <string name="tasks_due">期限</string>
     <string name="tasks_due_today">今日</string>
     <string name="tasks_due_tomorrow">明日</string>
-    <string name="tasks_due_week">7日以内</string>
+    <string name="tasks_due_week">7 日以内</string>
     <string name="tasks_due_over">期限切れ</string>
     <string name="tasks_due_no_date">日付なし</string>
-    <string name="tasks_priority">優先</string>
+    <string name="tasks_priority">優先度</string>
     <string name="tasks_priority_low">低</string>
     <string name="tasks_priority_medium">中</string>
     <string name="tasks_priority_high">高</string>
@@ -597,26 +617,28 @@
     <!-- Tasks -->
     <string name="task_filter_view">タスクの表示</string>
     <string name="validate">検証</string>
-    <string name="workflow_priority_low">優先度：低</string>
-    <string name="workflow_priority_medium">優先度：中</string>
-    <string name="workflow_priority_high">優先度：高</string>
+    <string name="workflow_priority_low">優先度: 低</string>
+    <string name="workflow_priority_medium">優先度: 中</string>
+    <string name="workflow_priority_high">優先度: 高</string>
     <string name="task_user_approved"><![CDATA[%s <b>がコンテンツを承認しました</b>]]></string>
-    <string name="task_user_commented">コメントが追加されています：</string>
-    <string name="task_user_completed"><![CDATA[%s <b>はこのタスクを完了しました</b>]]></string>
-    <string name="task_user_not_completed"><![CDATA[%s <b>はこのタスクを完了しませんでした</b>]]></string>
+    <string name="task_user_rejected"><![CDATA[%s <b>がコンテンツを却下しました</b>]]></string>
+    <string name="task_user_commented">コメントが追加されています: </string>
+    <string name="task_user_completed"><![CDATA[%s <b>がこのタスクを完了しました</b>]]></string>
+    <string name="task_user_not_completed"><![CDATA[%s <b>はまだこのタスクを完了していません</b>]]></string>
     <string name="task_approve">承認</string>
-    <string name="task_response">レスポンス</string>
+    <string name="task_reject">却下</string>
+    <string name="task_response">応答</string>
     <string name="done">完了</string>
     <string name="task_completing">タスクの完了</string>
     <string name="task_reassign">再割り当て</string>
-    <string name="task_reassign_long">このタスクを再割り当てする&#8230;</string>
+    <string name="task_reassign_long">このタスクを再割り当てする...</string>
     <string name="task_claim">要求</string>
-    <string name="task_unclaim">プールにリリース</string>
-    <string name="task_priority">優先</string>
+    <string name="task_unclaim">プールに戻す</string>
+    <string name="task_priority">優先度</string>
     <string name="task_type">タスクの種類</string>
     <string name="task_initiator">タスクの開始者</string>
     <string name="task_dueat">締切日</string>
-    <string name="tasks_history">タスク履歴</string>
+    <string name="tasks_history">タスクの履歴</string>
 
     <!-- Tasks Filters -->
     <string name="task_filter_active">アクティブなタスク</string>
@@ -626,49 +648,56 @@
     <string name="task_filter_due_today">本日が期限のタスク</string>
     <string name="task_filter_overdue">期限が過ぎたタスク</string>
     <string name="task_filter_assigned_me">あなたに割り当てられたタスク</string>
-    <string name="task_filter_custom">あなたのフィルタ&#8230;</string>
+    <string name="task_filter_custom">あなたのフィルタ...</string>
 
     <!-- Process Start -->
-    <string name="process_choose_attachments">添付ファイルを選択</string>
+    <string name="process_start_review">レビューの開始</string>
+    <string name="process_choose_definition">タスクのタイプを選択</string>
+    <string name="process_create_task">タスクの作成</string>
+    <string name="process_choose_attachments">添付ファイルの選択</string>
     <string name="process_start_title">プロセスの開始</string>
-    <string name="process_title">題名</string>
+    <string name="process_title">タイトル</string>
+    <string name="process_title_hint">新しいタスクタイトル (必須)</string>
+    <string name="process_due_on">締切日</string>
     <string name="process_assignees">担当者</string>
-    <string name="process_diagram">プロセスの図</string>
-    <string name="task_review_document">%sをレビューしてください</string>
+    <string name="process_diagram">プロセス図</string>
+    <string name="task_review_document">%s をレビューしてください</string>
     <string name="task_review_documents">このコンテンツをレビューしてください</string>
-    <string name="task_assignees_plurals">{0,choice,0#担当者なし|1#1名の担当者|1&lt;{0}名の担当者}</string>
+    <string name="task_assignees_plurals">{0,choice,0#担当者なし|1#1 名の担当者|1&lt;{0}名の担当者}</string>
     <string name="task_assignees">担当者</string>
-    <string name="task_assignees_selection">担当者を選択&#8230;</string>
-    <string name="process_approvers_plurals">{0,choice,0#承認者なし|1#1/1名の承認者|1&lt;%s/{0}名の承認者}</string>
-    <string name="task_attachments_plurals">{0,choice,0#添付ファイルなし|1#1個の添付ファイル|1&lt;{0}個の添付ファイル}</string>
-    <string name="task_attachments_selection">添付ファイルを選択&#8230;</string>
+    <string name="task_assignees_selection">担当者の選択...</string>
+    <string name="process_approvers_plurals">{0,choice,0#承認者なし|1#1/1 名の承認者|1&lt;%s/{0}名の承認者}</string>
+    <string name="task_attachments_plurals">{0,choice,0#添付ファイルなし|1#1 個の添付ファイル|1&lt;{0} 個の添付ファイル}</string>
+    <string name="task_attachments_selection">添付ファイルの選択...</string>
     <string name="task_attachments">添付ファイル</string>
+    <string name="process_no_description">(メッセージなし)</string>
+
     <string name="process_attachments">添付ファイル</string>
-    <string name="process_no_attachments">添付されているコンテンツがありません</string>
-    <string name="process_priority">優先</string>
-    <string name="process_notification">Eメール通知</string>
+    <string name="process_no_attachments">添付されているコンテンツはありません</string>
+    <string name="process_priority">優先度</string>
+    <string name="process_notification">E メール通知</string>
     <string name="process_approvers">承認者</string>
     <string name="process_no_approvers">承認者なし</string>
     <string name="process_starting">プロセスの開始</string>
-    <string name="task_create">タスクの作成</string>
-    <string name="task_todo">Todo（作業リスト）</string>
-    <string name="task_todo_description">タスクを担当者に割り当てる</string>
+    <string name="task_create">タスクを作成</string>
+    <string name="task_todo">タスクの作成</string>
+    <string name="task_todo_description">タスクを担当者に割り当てます</string>
     <string name="task_review_approve">レビューと承認</string>
-    <string name="task_review_approve_description">タスクを複数の担当者に割り当て、コンテンツのレビューと承認を行う。</string>
-    <string name="task_delegate_in_progress">再割り当てしています&#8230;</string>
+    <string name="task_review_approve_description">タスクをコンテンツのレビューと承認を行う担当者に割り当てます。</string>
+    <string name="task_delegate_in_progress">再割り当てをしています...</string>
     <string name="task_delegate_complete">再割り当てが完了しました</string>
-    <string name="picker_assignees">担当者を選択</string>
-    <string name="picker_due_date">締切日を選択</string>
-    <string name="picker_attachments">添付ファイルを選択</string>
-    <string name="action_remove_approvers">1名の承認者を削除</string>
-    <string name="action_add_approvers">1名の承認者を追加</string>
+    <string name="picker_assignees">担当者の選択</string>
+    <string name="picker_due_date">締切日の選択</string>
+    <string name="picker_attachments">添付ファイルの選択</string>
+    <string name="action_remove_approvers">承認者を 1 名削除</string>
+    <string name="action_add_approvers">承認者を 1 名追加</string>
 
 
     <!-- PROCESS NAME -->
-    <string name="process_adhoc">アドホックワークフロー（Activiti）</string>
-    <string name="process_parallel_review">並列のレビューと承認（Activiti）</string>
+    <string name="process_adhoc">アドホックワークフロー</string>
+    <string name="process_parallel_review">並列のレビューと承認 (Activiti)</string>
     <string name="process_review">レビューと承認</string>
-    <string name="process_pooled_review">プールされたレビューと承認（Activiti）</string>
+    <string name="process_pooled_review">プールされたレビューと承認 (Activiti)</string>
 
     <!-- AGGREGATOR SEARCH -->
     <string name="search">検索</string>
@@ -678,39 +707,39 @@
     <string name="search_advanced">詳細検索</string>
 
     <!-- DOCUMENT PICKER -->
-    <string name="picker_document_title">添付ファイルを選択</string>
-    <string name="picker_assign_person">{0,choice,0#割り当て|1#1名に割り当て|1&lt;{0}名に割り当て}</string>
-    <string name="picker_attach_document">{0,choice,0#添付|1#1個のファイルを添付|1&lt; {0}個のファイルを添付}</string>
+    <string name="picker_document_title">添付ファイルの選択</string>
+    <string name="picker_assign_person">{0,choice,0#割り当て|1#1 名に割り当て|1&lt;{0} 名に割り当て}</string>
+    <string name="picker_attach_document">{0,choice,0#添付|1#1 個のファイルを添付|1&lt; {0} 個 のファイルを添付}</string>
 
     <!-- DISLAY VIEWS ITEMS -->
     <string name="display_gallery">ギャラリーの表示</string>
 
     <!-- Metadata RESTRICTABLE -->
     <string name="metadata_aspect_restrictable">限定可能</string>
-    <string name="metadata_prop_offline_expires_after">オフライン期限切れの残り時間</string>
+    <string name="metadata_prop_offline_expires_after">オフラインでの残り使用時間</string>
 
     <!-- Advanced Search -->
-    <string name="search_title">検索：%s</string>
-    <string name="clear">クリア</string>
+    <string name="search_title">検索: %s</string>
+    <string name="clear">消去</string>
     <string name="metadata_type">タイプ</string>
     <string name="metadata_modified_by">変更者</string>
-    <string name="modified_by">単位</string>
-    <string name="metadata_modification_date">最終変更</string>
+    <string name="modified_by">変更者</string>
+    <string name="metadata_modification_date">最終変更日</string>
     <string name="metadata_modification_date_from">開始日</string>
     <string name="metadata_modification_date_to">終了日</string>
-    <string name="search_name">名前またはユーザー名</string>
+    <string name="search_name">氏名またはユーザー名</string>
     <string name="mimetype_unknown">不明</string>
     <string name="mimetype_documents">文書</string>
     <string name="mimetype_presentations">プレゼンテーション</string>
     <string name="mimetype_spreadsheets">スプレッドシート</string>
     <string name="mimetype_images">画像</string>
-    <string name="mimetype_videos">ビデオ</string>
+    <string name="mimetype_videos">動画</string>
     <string name="mimetype_music">音楽</string>
     <string name="mimetype_text">テキスト</string>
-    <string name="error_search_fields_empty">少なくとも1つのフィールドを入力してください</string>
-    <string name="picker_user">担当者を選択</string>
-    <string name="picker_date_from">開始日を選択</string>
-    <string name="picker_date_to">終了日を選択</string>
+    <string name="error_search_fields_empty">少なくとも 1 つのフィールドに入力してください</string>
+    <string name="picker_user">担当者を選択してください</string>
+    <string name="picker_date_from">開始日を選択してください</string>
+    <string name="picker_date_to">終了日を選択してください</string>
 
 
     <!-- Storage Access Framework -->
@@ -723,19 +752,49 @@
     <!-- Accessibility -->
     <string name="mime_folder">フォルダ</string>
     <string name="mime_document">文書</string>
-    <string name="more_options_folder">フォルダ%sの追加オプション</string>
-    <string name="more_options_favorite">%sの追加オプション</string>
+    <string name="more_options_folder">フォルダ %s のその他のオプション</string>
+    <string name="more_options_file">ファイル %s のその他のオプション</string>
+    <string name="more_options_favorite">%s のその他のオプション</string>
     <string name="mime_site">サイト</string>
-    <string name="more_options_site">サイト%sの追加オプション</string>
-    <string name="navigation_drawer_description">Alfresco: Open Navigation Drawer</string>
-    <string name="metadata_modified">変更済み </string>
-    <string name="metadata_created_by">作成者：%s</string>
+    <string name="more_options_site">サイト %s のその他のオプション</string>
+    <string name="navigation_drawer_description">Alfresco: Navigation Drawer を開きます</string>
+    <string name="metadata_modified">変更日 </string>
+    <string name="metadata_created_by">作成者: %s</string>
     <string name="metadata_size">サイズ </string>
-    <string name="contact_card">%sの連絡先カードを開く </string>
-    <string name="add_comment">コメントの送信</string>
+    <string name="contact_card">%s の連絡先カードを開きます </string>
+    <string name="add_comment">コメントを送信します</string>
     <string name="advanced_search_hint">詳細検索ボタン</string>
     <string name="add_menu">このフォルダに追加</string>
 
+    <string name="multi_selection_enable">複数選択</string>
+    <string name="create_content_type">タイプ</string>
+
+    <!-- CUSTOM FORMS -->
+    <string name="picker_selected_value">%s を選択しました</string>
+    <string name="picker_select_value">%s を追加します...</string>
+    <string name="picker_multi_value_selected">{0,choice,0#No %2$s|1#1 %2$s|1&lt;%1$s %2$s}</string>
+
+    <!-- SHORTCUT & ACTIONS -->
+    <string name="select_folder">選択</string>
+    <string name="shortcut_actions_title">Alfresco - 作成</string>
+    <string name="shortcut_title">Alfresco - ショートカット</string>
+    <string name="shortcut_create">ショートカットの作成...</string>
+    <string name="shortcut_action_create">アクションの定義...</string>
+    <string name="action_associated">関連付けられているアクション</string>
+    <string name="action_photo">写真を撮影する</string>
+    <string name="action_text">テキストを書く</string>
+    <string name="action_speech2text">音声入力</string>
+
+    <string name="mdm_managed">管理者によって管理されています</string>
+    <string name="mdm_loading_configuration">設定を読み込んでいます...</string>
+    <string name="sign_in">サインイン</string>
+    <string name="error_mdm_loading_configuration"><![CDATA[<p><b>アプリケーションの設定が間違っているようです。</b><br/>問題が解決しない場合は、管理者に問い合わせてください。</p> <br/> エラー : %s]]></string>
+    <string name="discardbutton">破棄</string>
+    <string name="filename_error_character">ファイル名が無効です</string>
+    <string name="my_tasks">あなたのタスク</string>
+    <string name="waiting_operations">お待ちください</string>
+    <string name="shortcut_alfresco">Alfresco</string>
+    <string name="error_offline"><![CDATA[<p><b>オフラインのため Alfresco Mobile のヘルプにアクセスできません。</b><br/></p>オンラインに戻ってから、操作をやり直してください。]]></string>
+    <string name="feature_disable">この機能は使用できないか、お使いのデバイスで無効に設定されています。</string>
 
 </resources>
-

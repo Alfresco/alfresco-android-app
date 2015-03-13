@@ -168,6 +168,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     @Override
     public void onResume()
     {
+        getLoaderManager().restartLoader(0, null, this);
+
         displayActivateDialog();
 
         hasSynchroActive = getMode() == MODE_PROGRESS

@@ -103,13 +103,13 @@ public class FavoriteSyncDownload extends FavoriteSync
             File destFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc, doc);
 
             // Download content
-            ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
-            if (contentStream != null)
+            persistDocument(destFile);
+
+            if (!destFile.exists())
             {
-                totalLength = contentStream.getLength();
-                segment = (int) (contentStream.getLength() / SEGMENT) + 1;
-                copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
+                persistDocument(destFile);
             }
+
             contentFileResult = new ContentFileImpl(destFile);
 
             // Delete previous versioned file (name.txt, new.txt)
@@ -185,6 +185,17 @@ public class FavoriteSyncDownload extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    private void persistDocument(File destFile)
+    {
+        ContentStream contentStream = session.getServiceRegistry().getDocumentFolderService().getContentStream(doc);
+        if (contentStream != null)
+        {
+            totalLength = contentStream.getLength();
+            segment = (int) (contentStream.getLength() / SEGMENT) + 1;
+            copyFile(contentStream.getInputStream(), contentStream.getLength(), destFile);
+        }
+    }
+
     private void publishProgress()
     {
         if ((totalDownloaded / segment > currentSegment) || totalDownloaded == totalLength)

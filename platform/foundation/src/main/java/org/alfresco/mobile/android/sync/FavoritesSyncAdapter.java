@@ -59,6 +59,8 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
 
     private Node node;
 
+    private String nodeIdentifier;
+
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
     // ///////////////////////////////////////////////////////////////////////////
@@ -78,7 +80,6 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     {
         // Reset all previous values
         node = null;
-        String nodeIdentifier = null;
         mode = FavoritesSyncManager.MODE_BOTH;
 
         Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
@@ -121,10 +122,18 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
                 syncResult.stats.numAuthExceptions++;
             }
 
-            // Retrieve node
-            if (nodeIdentifier != null && node == null)
+            try
             {
-                node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                // Retrieve node
+                if (nodeIdentifier != null && node == null)
+                {
+                    node = session.getServiceRegistry().getDocumentFolderService().getNodeByIdentifier(nodeIdentifier);
+                }
+            }
+            catch (Exception e)
+            {
+                // Node has been deleted
+                node = null;
             }
 
             // Sync
@@ -160,9 +169,17 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
             }
             else
             {
-                // FAVORITE SYNC
-                requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
-                        syncResult, node).prepare();
+                if (node != null)
+                {
+                    // FAVORITE SYNC
+                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
+                            syncResult, node).prepare();
+                }
+                else
+                {
+                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
+                            syncResult, nodeIdentifier).prepare();
+                }
             }
         }
         else

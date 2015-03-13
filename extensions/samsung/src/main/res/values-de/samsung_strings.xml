@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  Diese Datei ist Teil von Alfresco Mobile für Android.
+  This file is part of Alfresco Mobile for Android.
   
-  Lizenziert unter der Apache-Lizenz, Version 2.0 ("Lizenz");
-  diese Datei darf nur gemäß dieser Lizenz verwendet werden.
-  Eine Kopie dieser Lizenz kann über
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
   
-    http://www.apache.org/licenses/LICENSE-2.0 bezogen werden.
+    http://www.apache.org/licenses/LICENSE-2.0
   
-  Soweit nicht durch geltendes Recht erforderlich oder schriftlich vereinbart,
-  wird die unter dieser Lizenz verteilte Software OHNE MÄNGELGEWÄHR,
-  OHNE GARANTIEN ODER BEDINGUNGEN, weder ausdrücklich noch impliziert, verteilt.
-  Geltende Berechtigungen und Beschränkungen für die jeweilige Sprache
-  unter dieser Lizenz sind der Lizenz zu entnehmen.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 -->
 <resources>
 
@@ -25,8 +24,8 @@
     <string name="search_hint">Suchbegriff eingeben</string>
     <string name="comment_add_hint">Kommentar hier eingeben...</string>
     <string name="add">Hinzufügen</string>
-    
-    
+
+
     <!-- Samsung -->
     <string name="extension_name">Samsung Extension</string>
     <string name="thumbnail">Miniaturansicht</string>
@@ -86,5 +85,5 @@
     <string name="error_sdk_library_not_installed"><![CDATA[<p>Sie müssen zusätzliche S Pen-Software installieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
     <string name="error_sdk_library_update_required"><![CDATA[<p>Sie müssen Ihre S Pen-Software aktualisieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>Wir empfehlen Ihnen, Ihre S Pen-Software zu aktualisieren, bevor Sie diese Funktion nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
-    
+
 </resources>

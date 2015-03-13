@@ -97,9 +97,9 @@ public interface ConfigConstants
 
     String VIEW_MODEL_TASKS = "org.alfresco.client.view.tasks";
 
-    String VIEW_MODEL_FAVORITES = "org.alfresco.client.view.sync";
+    String VIEW_MODEL_FAVORITES = "org.alfresco.client.view.favorites";
 
-    String VIEW_MODEL_SYNC = "org.alfresco.client.view.favorites";
+    String VIEW_MODEL_SYNC = "org.alfresco.client.view.sync";
 
     // ///////////////////////////////////////////////////////////////////////////
     // DEFAULT VIEW

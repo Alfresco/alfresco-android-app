@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+
+    <!-- Override -->
+    <string name="ok">OK</string>
+    <string name="cancel">キャンセル</string>
+    <string name="search">検索</string>
+    <string name="search_hint">検索キーワードを入力してください</string>
+    <string name="comment_add_hint">ここにコメントを入力してください...</string>
+    <string name="add">追加</string>
+
+
+    <!-- Samsung -->
+    <string name="extension_name">Samsung 拡張機能</string>
+    <string name="thumbnail">サムネイル</string>
+    <string name="note_editor_name">Alfresco S Note Editor</string>
+
+    <!-- Editor -->
+    <string name="editor_select">Samsung 拡張機能</string>
+
+    <!-- Editor MENU -->
+    <!-- Tools -->
+    <string name="editor_tools">ツール</string>
+    <string name="editor_pen">ペン</string>
+    <string name="editor_selection">選択</string>
+    <string name="editor_eraser">消しゴム</string>
+    <string name="editor_text">テキスト</string>
+
+    <!-- Settings -->
+    <string name="editor_tools_settings">ツール設定</string>
+
+    <!-- Action Mode -->
+    <string name="editor_group_menu">グループ化</string>
+    <string name="editor_group">グループ化</string>
+    <string name="editor_ungroup">グループ解除</string>
+    <string name="editor_front_menu">最前面に移動</string>
+    <string name="editor_forward">前面に移動</string>
+    <string name="editor_front">最前面に移動</string>
+    <string name="editor_back_menu">最背面に移動</string>
+    <string name="editor_backward">背面に移動</string>
+    <string name="editor_back">最背面に移動</string>
+
+    <!-- Add -->
+    <string name="editor_add_menu">追加...</string>
+    <string name="editor_add_page">ページの追加</string>
+    <string name="editor_add_image">画像の追加</string>
+
+    <!-- Pages -->
+    <string name="editor_pages">ページ...</string>
+    <string name="editor_pages_add">ページの追加</string>
+    <string name="editor_pages_remove">ページ`の削除</string>
+    <string name="editor_pages_move">ページに移動</string>
+
+    <!-- Extra -->
+    <string name="editor_error_open">この S Note を開けません。</string>
+    <string name="editor_save_request">S Note は変更されています。</string>
+    <string name="editor_save_description"><![CDATA[保存せずに終了しますか? <br/>保存されていない変更は失われます。]]></string>
+    <string name="editor_save">保存</string>
+    <string name="editor_discard">破棄</string>
+    <string name="editor_save_confirmation">S Note は保存されています。</string>
+    <string name="editor_paging">%1$s / %2$s ページ</string>
+
+    <!-- CREATION -->
+    <string name="create_samsung_note">Samsung S Note</string>
+
+    <!-- ERROR PEN SDK -->
+    <string name="error_sdk_dialog">S Note の要件</string>
+    <string name="error_sdk_unsupported">このデバイスは S Pen をサポートしていません</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>この機能を使用するには、追加で S Pen ソフトウェアをインストールする必要があります。 <br/>インストール画面に移動します。</p> ソフトウェアをインストールしたら、このアプリケーションを再起動してください。]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>この機能を使用するには、S Pen ソフトウェアをアップデートする必要があります。 <br/>インストール画面に移動します。</p> ソフトウェアをインストールしたら、このアプリケーションを再起動してください。]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>この機能を使用する前に、S Pen ソフトウェアをアップデートすることをお勧めします。 <br/>インストール画面に移動します。</p> ソフトウェアをインストールしたら、このアプリケーションを再起動してください。]]></string>
+
+</resources>

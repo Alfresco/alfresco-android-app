@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
-  
-  Ce fichier fait partie du SDK Alfresco Mobile.
-  
-  Sous licence Apache Version 2.0 (la « Licence »),
-  vous ne pouvez utiliser ce fichier qu\'à condition de respecter la Licence.
-  Vous pouvez obtenir une copie de la Licence sur
-   
-   http://www.apache.org/licenses/LICENSE-2.0
-  
-   Sauf si requis par la loi en vigueur ou accord écrit,
-   le logiciel distribué sous cette Licence est distribué « TEL QUEL »,
-   SANS GARANTIES OU CONDITIONS DE QUELQUE NATURE QUE CE SOIT, expresse ou implicite.
-   Consultez la Licence pour les autorisations d\'administration
-   linguistiques spécifiques et les limitations en vertu de la Licence.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- ************************** -->
@@ -25,26 +9,27 @@
     <string name="relative_date_less_than_a_minute_ago">il y a moins d\'une minute</string>
 
     <plurals name="relative_date_minutes_ago">
-        <item quantity="one">il y a %1$s minute</item>
-        <item quantity="other">il y a %1$s minutes</item>
+        <item quantity="one">il y a %1$s minute</item>
+        <item quantity="other">il y a %1$s minutes</item>
     </plurals>
     <plurals name="relative_date_hours_ago">
-        <item quantity="one">il y a %1$s heure</item>
-        <item quantity="other">il y a %1$s heures</item>
+        <item quantity="one">il y a %1$s heure</item>
+        <item quantity="other">il y a %1$s heures</item>
     </plurals>
     <plurals name="relative_date_days_ago">
-        <item quantity="one">il y a %1$s jour</item>
-        <item quantity="other">il y a %1$s jours</item>
+        <item quantity="one">il y a %1$s jour</item>
+        <item quantity="other">il y a %1$s jours</item>
     </plurals>
     <plurals name="relative_date_years_ago">
-        <item quantity="one">il y a %1$s an</item>
-        <item quantity="other">il y a %1$s ans</item>
+        <item quantity="one">il y a %1$s an</item>
+        <item quantity="other">il y a %1$s ans</item>
     </plurals>
 
     <!-- ************************** -->
     <!-- ALFRESCO SDK AUTO -->
     <!-- ************************** -->
     <!-- Generic -->
+    <string name="required">Obligatoire</string>
     <string name="actions">Actions</string>
     <string name="confirm">Confirmer</string>
     <string name="ok">OK</string>
@@ -74,19 +59,19 @@
     <string name="org_alfresco_calendar_event_updated">Événement de calendrier {0} mis à jour par {1}</string>
     <string name="org_alfresco_calendar_event_deleted">Événement de calendrier {0} supprimé par {1}</string>
     <string name="org_alfresco_documentlibrary_file_added">Fichier {0} ajouté par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_added">Fichiers {0} ajoutés par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_added">{0} fichiers ajoutés par {1}</string>
     <string name="org_alfresco_documentlibrary_file_created">Fichier {0} créé par {1}</string>
     <string name="org_alfresco_documentlibrary_file_deleted">{0} a été supprimé par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">Fichiers {0} supprimés par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{0} fichiers supprimés par {1}</string>
     <string name="org_alfresco_documentlibrary_file_updated">Fichier {0} mis à jour par {1}</string>
-    <string name="org_alfresco_documentlibrary_files_updated">Fichiers {0} mis à jour par {1}</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{0} fichiers mis à jour par {1}</string>
     <string name="org_alfresco_documentlibrary_folder_added">Dossier {0} ajouté par {1}</string>
-    <string name="org_alfresco_documentlibrary_folders_added">Dossiers {0} ajoutés par {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_added">{0} dossiers ajoutés par {1}</string>
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} a été supprimé par {1}</string>
-    <string name="org_alfresco_documentlibrary_folders_deleted">Dossiers {0} supprimés par {1}</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">{0} dossiers supprimés par {1}</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkout">Fichier {0} envoyé vers Google Docs par {1}</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkin">Fichier {0} reçu de Google Docs par {1}</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">Fichier {0} mis à jour par {1}</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">Fichier {0} modifié par {1}</string>
     <string name="org_alfresco_documentlibrary_file_liked">{1} a aimé le fichier {0}</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} a aimé le dossier {0}</string>
     <string name="org_alfresco_wiki_page_created">Page wiki {0} créée par {1}</string>
@@ -107,8 +92,16 @@
     <string name="org_alfresco_datalists_list_deleted">Liste des données {0} supprimée par {1}</string>
     <string name="org_alfresco_subscriptions_followed">{1} suit maintenant {5}</string>
     <string name="org_alfresco_subscriptions_subscribed">{1} s\'est inscrit à {2}</string>
-    <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <string name="org_alfresco_profile_status_changed">{1} : {6}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} a prévisualisé le document {0}</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} a téléchargé le document {0}</string>
+    <string name="activity_role_None">Aucun privilège</string>
+    <string name="activity_role_SiteConsumer">Lecteur</string>
+    <string name="activity_role_SiteManager">Gestionnaire</string>
+    <string name="activity_role_SiteCollaborator">Collaborateur</string>
+    <string name="activity_role_SiteContributor">Contributeur</string>
     <!-- Metadata -->
+    <string name="metadata">Propriétés</string>
     <string name="thumbnail">Vignette</string>
     <string name="metadata_prop_name">Nom</string>
     <string name="metadata_prop_path">Chemin d\'accès</string>
@@ -167,12 +160,15 @@
     <string name="metadata_prop_version_modification_date">Date de modification</string>
     <string name="metadata_prop_version_modified_by">Dernière modification effectuée par</string>
     <string name="metadata_prop_version_comment">Commentaire</string>
-    <string name="metadata_prop_version_current">Version en cours</string>
+    <string name="metadata_prop_version_current">Version actuelle</string>
+    <!-- Metadata RESTRICTABLE -->
+    <string name="metadata_aspect_restrictable">Limité</string>
+    <string name="metadata_prop_offline_expires_after">Le hors-ligne expire après (heures)</string>
     <!-- Upload/Create Content -->
     <string name="content_app_pick_file">Choisir une application pour sélectionner un fichier</string>
     <string name="content_upload">Ajouter un fichier</string>
     <string name="content_name">Nom</string>
-    <string name="content_name_hint">Entrer un nom (obligatoire)</string>
+    <string name="content_name_hint">Entrer un nom (requis)</string>
     <string name="content_description">Description</string>
     <string name="content_description_hint">Entrer une description (facultatif)</string>
     <string name="content_tags">Tags</string>
@@ -181,7 +177,7 @@
     <!-- Create Folder -->
     <string name="folder_create">Créer un nouveau dossier</string>
     <string name="folder_name">Nom</string>
-    <string name="folder_name_hint">Saisir le nom du dossier ici &#8230;</string>
+    <string name="folder_name_hint">Saisir le nom du dossier ici&#8230;</string>
     <!-- Update Properties -->
     <string name="edit">Modifier</string>
     <string name="update">Mettre à jour</string>
@@ -190,8 +186,9 @@
     <string name="download">Télécharger</string>
     <string name="download_complete">Téléchargement terminé</string>
     <string name="download_error">Un erreur s\'est produite lors du téléchargement.</string>
-    <string name="download_progress">Téléchargement en cours &#8230;</string>
+    <string name="download_progress">Téléchargement en cours&#8230;</string>
     <!-- Empty -->
+    <string name="empty_users">Aucun utilisateur trouvé</string>
     <string name="empty_child">Aucun fichier trouvé</string>
     <string name="empty_site">Aucun site disponible</string>
     <string name="empty_version">Aucun historique de version disponible</string>
@@ -201,15 +198,17 @@
     <string name="empty_comment">Aucun commentaire trouvé</string>
     <string name="empty_search">Aucun fichier trouvé</string>
     <!-- Size -->
-    <string name="file_size_empty">0 octet</string>
+    <string name="file_size_empty">0 octet</string>
     <string name="file_size_bytes">octets</string>
     <string name="file_size_kilobytes">Ko</string>
     <string name="file_size_megabytes">Mo</string>
     <string name="file_size_gigabytes">Go</string>
     <!-- Search -->
-    <string name="search_hint">Saisissez un terme de recherche</string>
+    <string name="search">Rechercher</string>
+    <string name="search_hint">Entrer un terme de recherche</string>
     <!-- Comments -->
     <string name="comments">Commentaires</string>
+    <string name="comment_add_hint">Entrer votre commentaire ici&#8230;</string>
     <!-- Actions -->
     <string name="create">Créer</string>
     <string name="add">Ajouter</string>
@@ -223,12 +222,217 @@
     <string name="share">Partager</string>
     <string name="refresh">Actualiser</string>
     <string name="delete">Supprimer</string>
-    <string name="save_back">Enregistrer &amp; Retour</string>
-    <!-- Errors -->
+    <string name="save_back">Enregistrer et retour</string>
+
+    <!-- MESSAGE ERROR -->
+    <string name="error_general">Une erreur s\'est produite. Veuillez réessayer.</string>
+    <string name="error_general_title">Une erreur s\'est produite.</string>
+    <string name="error_unable_open_file">Impossible d\'ouvrir ce fichier</string>
     <string name="error_unable_share_link">Impossible de partager un lien</string>
     <string name="error_unable_share_content">Impossible de partager du contenu</string>
+
+    <!-- SESSION ERROR -->
+    <string name="retry_account_loading">Réessayer</string>
+    <string name="error_session_creation_title">Enregistrer le compte</string>
+    <string name="error_session_creation_message">Erreur de connexion</string>
+    <string name="error_session_creation">Impossible d\'authentifier. Vérifiez les paramètres de votre compte.</string>
+    <string name="error_session_hostname"><![CDATA[La valeur de votre <b>nom d\'hôte</b> semble erronée<br/> ou vous devez peut-être <b>activer votre VPN</b>.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>Votre appareil n\'a aucune connexion aux données.</b><br/></p> Vérifiez les paramètres de votre appareil et activez une connexion aux données.]]></string>
+    <string name="error_session_unauthorized"><![CDATA[Vous n\'êtes pas autorisé à accéder à ce serveur.<br/> Vérifiez les paramètres de votre compte <b>(nom d\'utilisateur/mot de passe)</b>.]]></string>
+    <string name="error_session_service_url"><![CDATA[La valeur de votre <b>URL de service</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[En raison d\'un arrêt de maintenance ou de problèmes de capacité, le serveur ne peut traiter votre demande pour l\'instant.<br/>Réessayez ultérieurement.]]></string>
+    <string name="error_session_notfound"><![CDATA[Impossible d\'atteindre votre serveur.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_port"><![CDATA[La valeur de votre <b>port</b> est incorrecte.<br/> Vérifiez les paramètres de votre compte.]]></string>
+    <string name="error_session_certificate">
+<![CDATA[<p><b>Le certificat de sécurité du serveur n\'est pas vérifié !</b><br/></p>
+		L\'organisation de tierce partie qui a émis le certificat de destination de votre serveur ne fait pas partie de celles que votre appareil reconnaît.<br/>
+		Afin qu\'Alfresco Mobile puisse vérifier que vous vous connectez avec le serveur approprié, son certificat doit provenir d\'une organisation de confiance.<br/>
+		Si votre serveur dispose d\'un certificat auto-signé, ajoutez-le à votre appareil pour vous connecter.<br/> ]]>
+    </string>
+    <string name="error_session_certificate_expired">
+<![CDATA[<p><b>Le certificat de sécurité du serveur a expiré ou n\'est pas encore valide !</b><br/></p>
+		Vérifiez la date et l\'heure de votre appareil.<br/> Si le problème persiste, contactez votre administrateur. ]]>
+    </string>
+    <string name="error_session_ssl">
+<![CDATA[<p><b>Une erreur s\'est produite avec le protocole SSL.</b><br/></p>
+        Vérifiez vos paramètres de compte et réessayez.<br/> Si le problème persiste, contactez votre administrateur.]]>
+    </string>
+    <string name="error_session_cloud_unavailable">
+<![CDATA[<p><b>Alfresco Cloud est actuellement surchargé !</b><br/></p>
+        Réessayez dans quelques minutes.<br/>]]>
+    </string>
+    <string name="error_session_expired">Votre session a expiré. Veuillez vous reconnecter.</string>
+    <string name="error_session_refresh">Rafraîchissement de la session.</string>
+    <string name="error_chunk_transfert"><![CDATA[Le serveur ne prend pas en charge les transferts par bloc.<br/> Rechargez votre compte</b>.]]></string>
+    <string name="error_name_already_exist">Impossible de renommer le fichier. Un fichier du même nom existe déjà.</string>
+    <string name="error_unknown_exception">Une erreur s\'est produite : %s</string>
+    <string name="error_unknown">Une erreur s\'est produite : %s</string>
+
+
     <!-- Share -->
     <string name="share_url">Partager un lien</string>
+    <string name="share_content">Partager du contenu</string>
     <string name="share_url_long">Partage de lien à partir d\'Alfresco Android Mobile</string>
+    <string name="validate">Valider</string>
 
+    <!-- SSL -->
+    <string name="security_ssl_disable">La validation du certificat SSL a été désactivée.</string>
+
+    <!-- ACCOUNT -->
+    <string name="account_verify">Vérification des informations du compte&#8230;</string>
+    <string name="account_wizard_alldone_description">Vous pouvez maintenant utiliser votre compte.</string>
+    <string name="account_default_onpremise">Serveur Alfresco</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
+
+    <!-- WAITING SESSION -->
+    <string name="wait_title">Veuillez patienter</string>
+    <string name="wait_message">Contact avec votre serveur en cours&#8230;</string>
+    <string name="session_loaded">Session prête</string>
+
+    <!-- Creation Folder -->
+    <string name="create_folder_in_progress">Création du dossier en cours</string>
+    <string name="create_folder_complete">Création du dossier terminée</string>
+
+    <!-- Workflow FILTERS -->
+    <string name="empty_tasks">Aucune tâche</string>
+    <string name="tasks_assignee_unassigned">Non assignée</string>
+    <string name="task_delegate_in_progress">Réaffectation en cours&#8230;</string>
+    <string name="task_delegate_complete">Réaffectation terminée</string>
+    <string name="update_sucess">\"%s\" a été mis à jour.</string>
+
+    <!-- Delete -->
+    <string name="delete_in_progress">Suppression en cours&#8230;</string>
+    <string name="delete_complete">Suppression terminée</string>
+
+    <!-- Quick Action Folder -->
+    <string name="like_in_progress">"J\'aime" en cours</string>
+    <string name="like_completed">J\'aime effectué</string>
+    <string name="like_complete">J\'aime terminé</string>
+
+    <!-- MEMBERS -->
+    <string name="members">Liste des membres</string>
+    <string name="members_of">Membres de %s</string>
+
+    <!-- MAIN MENU -->
+    <string name="menu_browse_userhome">Mes fichiers</string>
+    <string name="menu_browse_shared">Fichiers partagés</string>
+
+    <!-- Accessibility -->
+    <string name="mime_folder">Dossier</string>
+    <string name="mime_document">Document</string>
+    <string name="more_options_folder">Plus d\'options pour le dossier %s</string>
+    <string name="more_options_favorite">Plus d\'options pour %s</string>
+    <string name="mime_site">Site</string>
+    <string name="more_options_site">Plus d\'options pour le site %s</string>
+    <string name="navigation_drawer_description">Alfresco : panneau Ouvrir l\'accueil</string>
+    <string name="metadata_modified">Modifié </string>
+    <string name="metadata_created_by">Créé par %s</string>
+    <string name="metadata_size">Taille </string>
+    <string name="contact_card">Ouvrir fiche de contact pour %s </string>
+    <string name="add_comment">Envoyer un commentaire</string>
+    <string name="advanced_search_hint">Recherche avancée</string>
+    <string name="add_menu">Ajouter à ce dossier</string>
+
+    <!-- Site Membership Request -->
+    <string name="empty_joinsiterequest">Aucune demande en attente</string>
+
+    <!-- Update Properties -->
+    <string name="filename_error_character">Ce nom n\'est pas valide.</string>
+
+    <!-- NETWORKS -->
+    <string name="cloud_networks_empty">Aucun réseau disponible</string>
+    <string name="manage_accounts">Gérer les comptes&#8230;</string>
+    <string name="cloud_networks_switch">Changer de réseau&#8230;</string>
+
+    <!-- PROFILES -->
+    <string name="profiles_empty">Aucun profil disponible</string>
+    <string name="manage_profiles">Gérer les profils&#8230;</string>
+    <string name="profiles_switch">Changer de profil&#8230;</string>
+
+    <!-- WORKFLOW -->
+    <string name="empty_process_definition">Aucun processus</string>
+    <string name="my_tasks">Mes tâches</string>
+
+    <!-- BUG REPORT -->
+    <string name="bug_report_title">[Rapport de bogue] : </string>
+    <string name="waiting_operations">Veuillez patienter&#8230;</string>
+
+    <!-- Favorites -->
+    <string name="menu_favorites_folder">Dossiers favoris</string>
+    <string name="menu_favorites">Favoris</string>
+    <string name="synced_documents">Contenu synchronisé</string>
+    <string name="empty_favorites">Aucun favori</string>
+    <string name="favorites_document">Favori</string>
+    <string name="error_retrieve_favorite">Impossible de récupérer les infos de favori de ce contenu.</string>
+    <string name="favorites_activate">Synchroniser le contenu pour "%s"</string>
+    <string name="favorites_activate_description">Voulez-vous conserver automatiquement vos contenus favoris en synchronisation avec cet appareil ?</string>
+    <string name="favorites_deactivate">Désactiver la synchronisation</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>Voulez-vous désactiver la synchronisation ?</p> Tous les contenus synchronisés seront supprimés de votre appareil.]]></string>
+    <string name="sync_error_title">Erreurs de synchronisation</string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>Vous avez supprimé <b>%s</b> des favoris depuis que vous l\'avez édité. <br/> <b>Synchronisez</b> votre version modifiée sur le serveur ou <b>Enregistrez-la</b> sur votre dossier \"Téléchargements\". </p>]]></string>
+    <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> a été supprimé sur le serveur mais une copie a été enregistrée dans votre dossier \"Téléchargements\".</p>]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> Vous n\'avez pas les droits d\'accès nécessaires pour ajouter votre version modifiée de <b>%s</b>. Vous pouvez l\'<b>Enregistrer</b> dans votre dossier \"Téléchargements\" ou la <b>Remplacer</b> avec la version du serveur qui annulera vos modifications.]]></string>
+    <string name="sync_error_node_local_modification">Erreurs de synchronisation</string>
+    <string name="sync_action">Synchroniser</string>
+    <string name="sync_override_action">Remplacer</string>
+    <string name="sync_save_action">Enregistrer</string>
+    <string name="sync_resolve_conflict">Résoudre le conflit</string>
+    <string name="sync_complete">Synchronisation terminée</string>
+    <string name="sync_in_progress">Synchronisation en cours&#8230;</string>
+    <string name="upload_await">En attente pour ajouter&#8230;</string>
+    <string name="download_await">En attente pour télécharger&#8230;</string>
+    <string name="sync_favorites">Favoris</string>
+
+    <plurals name="sync_complete_description">
+        <item quantity="zero">aucun contenu synchronisé</item>
+        <item quantity="one">1 fichier synchronisé</item>
+        <item quantity="other">%1$s fichiers synchronisés</item>
+    </plurals>
+    <plurals name="download_complete_description">
+        <item quantity="zero">aucun contenu téléchargé</item>
+        <item quantity="one">1 fichier disponible hors ligne</item>
+        <item quantity="other">%1$s fichiers disponibles hors ligne</item>
+    </plurals>
+    <plurals name="upload_complete_description">
+        <item quantity="zero">aucun contenu ajouté.</item>
+        <item quantity="one">1 élément ajouté.</item>
+        <item quantity="other">%1$s éléments ajoutés.</item>
+    </plurals>
+    <plurals name="update_complete_description">
+        <item quantity="zero">aucun contenu mis à jour.</item>
+        <item quantity="one">1 fichier mis à jour.</item>
+        <item quantity="other">%1$s fichiers mis à jour.</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="zero">aucun échec de transfert.</item>
+        <item quantity="one">1 transfert échoué.</item>
+        <item quantity="other">%1$s transferts échoués.</item>
+    </plurals>
+    <plurals name="batch_in_progress">
+        <item quantity="zero">aucun transfert en cours.</item>
+        <item quantity="one">1 transfert en cours.</item>
+        <item quantity="other">%1$s transferts en cours.</item>
+    </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">aucun téléchargement en cours.</item>
+        <item quantity="one">1 téléchargement en cours.</item>
+        <item quantity="other">%1$s téléchargements en cours.</item>
+    </plurals>
+
+    <string name="sync_warning">Avertissement de synchronisation</string>
+    <string name="sync_error">Erreur de synchronisation</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p> Vous êtes sur le point de synchroniser <b>%s</b> sur une connexion de données.</p> Voulez-vous continuer ?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> Vous essayez de synchroniser <b>%1$s</b>, seulement %2$s sont disponibles.</p> Vous devez libérer de l\'espace sur votre appareil ou supprimer des contenus de vos favoris.]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> Vous êtes sur le point de synchroniser <b>%1$s</b>, seulement %2$s sont disponibles sur votre appareil.</p> Voulez-vous continuer ?]]></string>
+    <string name="sync_document_not_available">Ce document n\'est pas disponible sur votre appareil.</string>
+
+    <!-- NOTIFICATION -->
+    <string name="upload">Ajouter </string>
+    <string name="upload_complete">Ajout terminé.</string>
+    <string name="upload_in_progress">Ajout en cours&#8230;</string>
+    <string name="update_complete">Mise à jour terminée.</string>
+    <string name="update_in_progress">Mise à jour en cours&#8230;</string>
+
+    <!-- Fujitsu ScanSnap -->
+    <string name="scan">Scanner</string>
 </resources>

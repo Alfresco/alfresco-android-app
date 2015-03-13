@@ -1,32 +1,31 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  Este archivo forma parte de Alfresco Mobile para Android.
+  This file is part of Alfresco Mobile for Android.
   
-  Autorizado bajo la licencia Apache, Versión 2.0 (la "Licencia"),
-  solo se puede utilizar este archivo en conformidad con la Licencia.
-  Puede obtener una copia de la licencia en
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
   
     http://www.apache.org/licenses/LICENSE-2.0
   
-  A menos que lo requiera la ley aplicable o se acuerde por escrito,
-  el software distribuido bajo la licencia se distribuye "TAL CUAL",
-  SIN GARANTÍAS NI CONDICIONES DE NINGÚN TIPO, ya sean expresas o implícitas.
-  Consulte la licencia para los permisos específicos de lenguaje que rige y 
-  limitaciones bajo la Licencia.
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 -->
 <resources>
 
     <!-- Override -->
-    <string name="ok">OK</string>
+    <string name="ok">Aceptar</string>
     <string name="cancel">Cancelar</string>
     <string name="search">Buscar</string>
     <string name="search_hint">Introduzca el término de búsqueda</string>
     <string name="comment_add_hint">Introduzca su comentario aquí&#8230;</string>
     <string name="add">Añadir</string>
-    
-    
+
+
     <!-- Samsung -->
     <string name="extension_name">Samsung Extension</string>
     <string name="thumbnail">Miniatura</string>
@@ -38,7 +37,7 @@
     <!-- Editor MENU -->
     <!-- Tools -->
     <string name="editor_tools">Herramientas</string>
-    <string name="editor_pen">Bolígrafo</string>
+    <string name="editor_pen">Lápiz</string>
     <string name="editor_selection">Selección</string>
     <string name="editor_eraser">Borrador</string>
     <string name="editor_text">Texto</string>
@@ -86,5 +85,5 @@
     <string name="error_sdk_library_not_installed"><![CDATA[<p>Es necesario instalar el software S Pen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
     <string name="error_sdk_library_update_required"><![CDATA[<p>Es necesario actualizar el software S Pen adicional para usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
     <string name="error_sdk_library_update_recommended"><![CDATA[<p>Recomendamos actualizar el software S Pen antes de usar esta función. <br/>Accederá a la pantalla de instalación.</p> Reinicie esta aplicación una vez instalado el software.]]></string>
-    
+
 </resources>

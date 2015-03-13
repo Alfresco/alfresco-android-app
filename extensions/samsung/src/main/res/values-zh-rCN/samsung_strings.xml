@@ -1,20 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   Copyright (C) 2005-2013 Alfresco Software Limited.
   
-  本文件是 Alfresco Mobile for Android 的一部分。
+  This file is part of Alfresco Mobile for Android.
   
-  经 2.0 版 Apache License（以下简称“许可”）许可，
-  只有在遵循许可的条件下才能使用此文件。
-  您可从
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
   
-    http://www.apache.org/licenses/LICENSE-2.0 获取许可的副本
+    http://www.apache.org/licenses/LICENSE-2.0
   
-  除非适用法律要求或获得书面同意，
-  依据此许可分发的软件“按照原样”分发，
-  不提供任何明示或暗示的保证或条件。
-  请参见此许可，了解关于此许可特定语言版本的
-  约束性允许和限制。
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
 -->
 <resources>
 
@@ -23,10 +22,10 @@
     <string name="cancel">取消</string>
     <string name="search">搜索</string>
     <string name="search_hint">输入搜索词</string>
-    <string name="comment_add_hint">在此处输入您的评论...</string>
+    <string name="comment_add_hint">在此处输入您的评论&#8230;</string>
     <string name="add">添加</string>
-    
-    
+
+
     <!-- Samsung -->
     <string name="extension_name">Samsung 扩展</string>
     <string name="thumbnail">缩略图</string>
@@ -71,7 +70,7 @@
     <!-- Extra -->
     <string name="editor_error_open">无法打开此 S Note。</string>
     <string name="editor_save_request">S Note 已修改。</string>
-    <string name="editor_save_description"><![CDATA[你是否要不保存就退出？<br/> 未保存的全部更改将丢失。]]></string>
+    <string name="editor_save_description"><![CDATA[是否想要退出而不保存？ <br/> 未保存的全部更改将丢失。]]></string>
     <string name="editor_save">保存</string>
     <string name="editor_discard">放弃</string>
     <string name="editor_save_confirmation">S Note 已保存。</string>
@@ -83,8 +82,8 @@
     <!-- ERROR PEN SDK -->
     <string name="error_sdk_dialog">S Note 要求</string>
     <string name="error_sdk_unsupported">此设备不支持 S Pen</string>
-    <string name="error_sdk_library_not_installed"><![CDATA[<p>您需要安装其他 S Pen 软件才能使用此功能。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
-    <string name="error_sdk_library_update_required"><![CDATA[<p>您需要更新 S Pen 软件才能使用此功能。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
-    <string name="error_sdk_library_update_recommended"><![CDATA[<p>我们建议您在使用此功能之前更新 S Pen 软件。<br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
-    
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>您需要安装其他 S Pen 软件才能使用此功能。 <br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>您需要更新 S Pen 软件才能使用此功能。 <br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>我们建议您在使用此功能之前更新 S Pen 软件。 <br/>您将被转到安装屏幕。</p> 安装完软件之后请重新启动此应用程序。]]></string>
+
 </resources>
