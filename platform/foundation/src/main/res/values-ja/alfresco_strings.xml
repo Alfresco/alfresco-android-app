@@ -1,20 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  Copyright (C) 2005-2012 Alfresco Software Limited.
-  
-  このファイルは、Alfresco Mobile SDKの一部です。
-  
-  Apacheライセンスバージョン2.0（「ライセンス」）に基づき、
-  ライセンスに準ずる場合を除き、このファイルを使用することはできません。
-  本ライセンスのコピーは、
-   
-   http://www.apache.org/licenses/LICENSE-2.0で入手できます。
-  
-   適用される法律により求められる場合または書面により合意する場合を除き、
-   本ライセンスに基づくソフトウェアは「現状渡し」の状態で提供され、明示または暗示を問わず、
-   一切の保証または条件は適用されません。
-   ライセンスに基づいて許可と制限を規定する特定の
-   言語については、ライセンスを参照してください。
--->
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- ************************** -->
@@ -22,7 +6,7 @@
     <!-- ************************** -->
     <!-- Relative Date -->
     <string name="relative_date_just_now">たった今</string>
-    <string name="relative_date_less_than_a_minute_ago">1分以内</string>
+    <string name="relative_date_less_than_a_minute_ago">1 分以内</string>
 
     <plurals name="relative_date_minutes_ago">
         <item quantity="one">%1$s 分前</item>
@@ -45,13 +29,14 @@
     <!-- ALFRESCO SDK AUTO -->
     <!-- ************************** -->
     <!-- Generic -->
+    <string name="required">必須</string>
     <string name="actions">アクション</string>
     <string name="confirm">確認</string>
     <string name="ok">OK</string>
     <string name="cancel">キャンセル</string>
     <!-- Listing -->
-    <string name="load_more">さらに読み込む&#8230;</string>
-    <string name="load_more_progress">読み込んでいます&#8230;</string>
+    <string name="load_more">さらに読み込む...</string>
+    <string name="load_more_progress">読み込んでいます...</string>
     <string name="listing_nodata">データがありません。</string>
     <!-- Dialog -->
     <string name="dialog_ok">OK</string>
@@ -59,92 +44,100 @@
     <string name="dialog_wait">お待ちください</string>
     <!-- Activities -->
     <string name="activities">アクティビティ</string>
-    <string name="org_alfresco_blog_post_created">"{0}"Blog投稿が{1}によって作成されました </string>
-    <string name="org_alfresco_blog_post_updated">"{0}"Blog投稿が{1}によって更新されました </string>
-    <string name="org_alfresco_blog_post_deleted">"{0}"Blog投稿が{1}によって削除されました </string>
-    <string name="org_alfresco_comments_comment_created">{1}が{0}に関してコメントしました</string>
-    <string name="org_alfresco_comments_comment_updated">{1}が{0}に関するコメントを更新しました</string>
-    <string name="org_alfresco_comments_comment_deleted">{1}が{0}からコメントを削除しました</string>
-    <string name="org_alfresco_discussions_post_created">"{0}"ディスカッションが{1}によって開始されました</string>
-    <string name="org_alfresco_discussions_post_updated">"{0}"ディスカッションが{1}によって更新されました</string>
-    <string name="org_alfresco_discussions_post_deleted">"{0}"ディスカッションが{1}によって削除されました</string>
-    <string name="org_alfresco_discussions_reply_created">{1}がディスカッション"{0}"に返信しました</string>
-    <string name="org_alfresco_discussions_reply_updated">{1}が{0}への返信を更新しました</string>
-    <string name="org_alfresco_calendar_event_created">"{0}"カレンダイベントが{1}によって作成されました</string>
-    <string name="org_alfresco_calendar_event_updated">"{0}"カレンダイベントが{1}によって更新されました</string>
-    <string name="org_alfresco_calendar_event_deleted">"{0}"カレンダイベントが{1}によって削除されました</string>
-    <string name="org_alfresco_documentlibrary_file_added">"{0}"ファイルが{1}によって追加されました</string>
-    <string name="org_alfresco_documentlibrary_files_added">"{0}"ファイルが{1}によって追加されました</string>
-    <string name="org_alfresco_documentlibrary_file_created">"{0}"ファイルが{1}によって作成されました</string>
-    <string name="org_alfresco_documentlibrary_file_deleted">"{0}"が{1}によって削除されました</string>
-    <string name="org_alfresco_documentlibrary_files_deleted">"{0}"ファイルが{1}によって削除されました</string>
-    <string name="org_alfresco_documentlibrary_file_updated">"{0}"ファイルが{1}によって更新されました</string>
-    <string name="org_alfresco_documentlibrary_files_updated">"{0}"ファイルが{1}によって更新されました</string>
-    <string name="org_alfresco_documentlibrary_folder_added">"{0}"フォルダが{1}によって追加されました</string>
-    <string name="org_alfresco_documentlibrary_folders_added">"{0}"フォルダが{1}によって追加されました</string>
-    <string name="org_alfresco_documentlibrary_folder_deleted">"{0}"が{1}によって削除されました</string>
-    <string name="org_alfresco_documentlibrary_folders_deleted">{0} フォルダが削除されました {1}</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkout">"{0}"ファイルが{1}によってGoogle Docsにチェックアウトされました</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">"{0}"ファイルが{1}によってGoogle Docsからチェックインされました</string>
-    <string name="org_alfresco_documentlibrary_inline_edit">"{0}"ファイルが{1}によって編集されました</string>
-    <string name="org_alfresco_documentlibrary_file_liked">{1}がファイル{0}に[いいね!]を付けました</string>
-    <string name="org_alfresco_documentlibrary_folder_liked">{1}がフォルダ{0}に[いいね!]を付けました</string>
-    <string name="org_alfresco_wiki_page_created">"{0}"Wikiページが{1}によって作成されました</string>
-    <string name="org_alfresco_wiki_page_edited">"{0}"Wikiページが{1}によって更新されました</string>
-    <string name="org_alfresco_wiki_page_renamed">"{2}"Wikiページの名前が{1}によって"{0}"に変更されました</string>
-    <string name="org_alfresco_wiki_page_deleted">"{0}"Wikiページが{1}によって削除されました</string>
-    <string name="org_alfresco_site_group_added">"{1}"グループが役割"{2}"でサイト"{4}"に追加されました</string>
-    <string name="org_alfresco_site_group_removed">"{1}"グループがサイト"{4}"から削除されました</string>
-    <string name="org_alfresco_site_group_role_changed">"{1}"グループの役割が"{2}"に変更されました</string>
-    <string name="org_alfresco_site_user_joined">"{1}"が役割"{2}"でサイト"{4}"に参加しました</string>
-    <string name="org_alfresco_site_user_left">{1}がサイト"{4}"を退会しました</string>
-    <string name="org_alfresco_site_user_role_changed">{1}の役割が"{2}"に変更されました</string>
-    <string name="org_alfresco_links_link_created">"{0}"リンクが{1}によって作成されました</string>
-    <string name="org_alfresco_links_link_updated">"{0}"リンクが{1}によって更新されました</string>
-    <string name="org_alfresco_links_link_deleted">"{0}"リンクが{1}によって削除されました</string>
-    <string name="org_alfresco_datalists_list_created">"{0}"データリストが{1}によって作成されました</string>
-    <string name="org_alfresco_datalists_list_updated">"{0}"データリストの詳細が{1}によって更新されました</string>
-    <string name="org_alfresco_datalists_list_deleted">"{0}"データリストが{1}によって削除されました</string>
-    <string name="org_alfresco_subscriptions_followed">{1}が現在{5}をフォローしています</string>
-    <string name="org_alfresco_subscriptions_subscribed">{1}が{2}を購読しました</string>
+    <string name="org_alfresco_blog_post_created">{0} ブログ投稿が {1} によって作成されました</string>
+    <string name="org_alfresco_blog_post_updated">{0} ブログ投稿が {1} によって更新されました</string>
+    <string name="org_alfresco_blog_post_deleted">{0} ブログ投稿が {1} によって削除されました</string>
+    <string name="org_alfresco_comments_comment_created">{1} が {0} についてコメントしました</string>
+    <string name="org_alfresco_comments_comment_updated">{1} が {0} についてのコメントを更新しました</string>
+    <string name="org_alfresco_comments_comment_deleted">{1} が {0} からコメントを削除しました</string>
+    <string name="org_alfresco_discussions_post_created">{0} ディスカッションが {1} によって開始されました</string>
+    <string name="org_alfresco_discussions_post_updated">{0} ディスカッションが {1} によって更新されました</string>
+    <string name="org_alfresco_discussions_post_deleted">{0} ディスカッションが {1} によって削除されました</string>
+    <string name="org_alfresco_discussions_reply_created">{1} がディスカッション {0} に返信しました</string>
+    <string name="org_alfresco_discussions_reply_updated">{1} が {0} への返信を更新しました</string>
+    <string name="org_alfresco_calendar_event_created">{0} カレンダイベントが {1} によって作成されました</string>
+    <string name="org_alfresco_calendar_event_updated">{0} カレンダイベントが {1} によって更新されました</string>
+    <string name="org_alfresco_calendar_event_deleted">{0} カレンダイベントが {1} によって削除されました</string>
+    <string name="org_alfresco_documentlibrary_file_added">{0} ファイルが {1} によって追加されました</string>
+    <string name="org_alfresco_documentlibrary_files_added">{0} 個のファイルが {1} によって追加されました</string>
+    <string name="org_alfresco_documentlibrary_file_created">{0} ファイルが {1} によって作成されました</string>
+    <string name="org_alfresco_documentlibrary_file_deleted">{0} が {1} によって削除されました</string>
+    <string name="org_alfresco_documentlibrary_files_deleted">{0} 個のファイルが {1} によって削除されました</string>
+    <string name="org_alfresco_documentlibrary_file_updated">{0} ファイルが {1} によって更新されました</string>
+    <string name="org_alfresco_documentlibrary_files_updated">{0} 個のファイルが {1} によって更新されました</string>
+    <string name="org_alfresco_documentlibrary_folder_added">{0} フォルダが {1} によって追加されました</string>
+    <string name="org_alfresco_documentlibrary_folders_added">{0} 個のフォルダが {1} によって追加されました</string>
+    <string name="org_alfresco_documentlibrary_folder_deleted">{0} が {1} によって削除されました</string>
+    <string name="org_alfresco_documentlibrary_folders_deleted">{0} 個のフォルダが {1} によって削除されました</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} ファイルが {1} によってGoogle ドキュメント™ にチェックアウトされました</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} ファイルが {1} によって Google Docs からチェックインされました</string>
+    <string name="org_alfresco_documentlibrary_inline_edit">{0} ファイルが {1} によって編集されました</string>
+    <string name="org_alfresco_documentlibrary_file_liked">{1} がファイル {0} に [いいね !] を付けました</string>
+    <string name="org_alfresco_documentlibrary_folder_liked">{1} がフォルダ {0} に [いいね!] を付けました</string>
+    <string name="org_alfresco_wiki_page_created">{0} Wiki ページが {1} によって作成されました</string>
+    <string name="org_alfresco_wiki_page_edited">{0} Wiki ページが {1} によって更新されました</string>
+    <string name="org_alfresco_wiki_page_renamed">{2} Wiki ページの名前が {1} によって{0} に変更されました</string>
+    <string name="org_alfresco_wiki_page_deleted">{0} Wiki ページが {1} によって削除されました</string>
+    <string name="org_alfresco_site_group_added">{1} グループが役割 {2} でサイト {4} に追加されました</string>
+    <string name="org_alfresco_site_group_removed">{1} グループがサイト {4} から削除されました</string>
+    <string name="org_alfresco_site_group_role_changed">{1} グループの役割が {2} に変更されました</string>
+    <string name="org_alfresco_site_user_joined">{1} が役割 {2} でサイト {4} に参加しました</string>
+    <string name="org_alfresco_site_user_left">{1} がサイト {4} を退会しました</string>
+    <string name="org_alfresco_site_user_role_changed">{1} の役割が {2} に変更されました</string>
+    <string name="org_alfresco_links_link_created">{0} リンクが {1} によって作成されました</string>
+    <string name="org_alfresco_links_link_updated">{0} リンクが {1} によって更新されました</string>
+    <string name="org_alfresco_links_link_deleted">{0} リンクが {1} によって削除されました</string>
+    <string name="org_alfresco_datalists_list_created">{0} データリストが {1} によって作成されました</string>
+    <string name="org_alfresco_datalists_list_updated">{0} データリストの詳細が {1} によって更新されました</string>
+    <string name="org_alfresco_datalists_list_deleted">{0} データリストが {1} によって削除されました</string>
+    <string name="org_alfresco_subscriptions_followed">{1} は現在 {5} をフォローしています</string>
+    <string name="org_alfresco_subscriptions_subscribed">{1} が {2} を購読しました</string>
     <string name="org_alfresco_profile_status_changed">{1}: {6}</string>
+    <string name="org_alfresco_documentlibrary_file_previewed">{1} が文書 {0} をプレビューしました</string>
+    <string name="org_alfresco_documentlibrary_file_downloaded">{1} が文書 {0} をダウンロードしました</string>
+    <string name="activity_role_None">権限なし</string>
+    <string name="activity_role_SiteConsumer">利用者</string>
+    <string name="activity_role_SiteManager">マネージャ</string>
+    <string name="activity_role_SiteCollaborator">共同作業者</string>
+    <string name="activity_role_SiteContributor">投稿者</string>
     <!-- Metadata -->
+    <string name="metadata">プロパティ</string>
     <string name="thumbnail">サムネイル</string>
-    <string name="metadata_prop_name">会社名</string>
+    <string name="metadata_prop_name">名前</string>
     <string name="metadata_prop_path">パス</string>
     <string name="metadata_prop_type">タイプ</string>
-    <string name="metadata_prop_content_mimetype">MIMEタイプ</string>
+    <string name="metadata_prop_content_mimetype">MIME タイプ</string>
     <string name="metadata_prop_content_size">サイズ</string>
     <!-- Metadata Titled -->
-    <string name="metadata_aspect_titled">タイトルのある</string>
-    <string name="metadata_prop_title">題名</string>
+    <string name="metadata_aspect_titled">アスペクト名</string>
+    <string name="metadata_prop_title">タイトル</string>
     <string name="metadata_prop_description">説明</string>
     <!-- Metadata Auditable -->
     <string name="metadata_aspect_auditable">監査可能</string>
     <string name="metadata_prop_creator">作成者</string>
     <string name="metadata_prop_creationdate">作成日</string>
-    <string name="metadata_prop_modifier">修正者</string>
+    <string name="metadata_prop_modifier">変更者</string>
     <string name="metadata_prop_modificationdate">変更日</string>
     <!-- Metadata Author -->
-    <string name="metadata_aspect_author">作成者</string>
-    <string name="metadata_prop_author">作成者</string>
+    <string name="metadata_aspect_author">著者</string>
+    <string name="metadata_prop_author">著者</string>
     <!-- Metadata EXIF -->
-    <string name="metadata_aspect_exif">EXIF情報</string>
+    <string name="metadata_aspect_exif">EXIF 情報</string>
     <string name="metadata_prop_datetime_original">日時</string>
     <string name="metadata_prop_pixelx_dimension">画像幅</string>
     <string name="metadata_prop_pixely_dimension">画像高</string>
     <string name="metadata_prop_exposure_time">露光時間</string>
-    <string name="metadata_prop_fnumber">F値</string>
+    <string name="metadata_prop_fnumber">F 値</string>
     <string name="metadata_prop_flash_activated">フラッシュあり</string>
     <string name="metadata_prop_focal_length">焦点距離</string>
-    <string name="metadata_prop_iso_speed">ISO感度</string>
-    <string name="metadata_prop_manufacturer">カメラメーカー</string>
-    <string name="metadata_prop_model">カメラモデル</string>
-    <string name="metadata_prop_software">カメラソフトウェア</string>
-    <string name="metadata_prop_orientation">方向</string>
+    <string name="metadata_prop_iso_speed">ISO 感度</string>
+    <string name="metadata_prop_manufacturer">カメラのメーカー</string>
+    <string name="metadata_prop_model">カメラのモデル</string>
+    <string name="metadata_prop_software">カメラのソフトウェア</string>
+    <string name="metadata_prop_orientation">向き</string>
     <string name="metadata_prop_xresolution">水平解像度</string>
     <string name="metadata_prop_yresolution">垂直解像度</string>
-    <string name="metadata_prop_resolution_unit">解像度単位</string>
+    <string name="metadata_prop_resolution_unit">解像度の単位</string>
     <!-- Metadata Geographic -->
     <string name="metadata_aspect_geographic">地理情報</string>
     <string name="metadata_prop_latitude">緯度</string>
@@ -161,37 +154,41 @@
     <string name="metadata_prop_sample_rate">サンプリングレート</string>
     <string name="metadata_prop_sample_type">サンプリングタイプ</string>
     <string name="metadata_prop_channel_type">チャネルタイプ</string>
-    <string name="metadata_prop_compressor">コンプレッサー</string>
+    <string name="metadata_prop_compressor">圧縮ツール</string>
     <!-- Metadata Version -->
     <string name="metadata_prop_version">バージョン</string>
     <string name="metadata_prop_version_modification_date">変更日</string>
     <string name="metadata_prop_version_modified_by">最終変更者</string>
     <string name="metadata_prop_version_comment">コメント</string>
     <string name="metadata_prop_version_current">現在のバージョン</string>
+    <!-- Metadata RESTRICTABLE -->
+    <string name="metadata_aspect_restrictable">限定可能</string>
+    <string name="metadata_prop_offline_expires_after">オフラインでの残り使用時間</string>
     <!-- Upload/Create Content -->
-    <string name="content_app_pick_file">ファイルをピックするアプリケーションを選択</string>
+    <string name="content_app_pick_file">ファイルを見つけるアプリケーションを選択してください</string>
     <string name="content_upload">ファイルのアップロード</string>
-    <string name="content_name">会社名</string>
-    <string name="content_name_hint">名前を入力（必須）</string>
+    <string name="content_name">名前</string>
+    <string name="content_name_hint">名前を入力してください (必須)</string>
     <string name="content_description">説明</string>
-    <string name="content_description_hint">説明を入力（オプション）</string>
+    <string name="content_description_hint">説明を入力してください (オプション)</string>
     <string name="content_tags">タグ</string>
-    <string name="content_tags_hint">コンマ区切りのタグ値（オプション）</string>
-    <string name="content_title">題名</string>
+    <string name="content_tags_hint">タグの値をコンマ区切りで入力してください (任意)</string>
+    <string name="content_title">タイトル</string>
     <!-- Create Folder -->
-    <string name="folder_create">新規フォルダの作成</string>
-    <string name="folder_name">会社名</string>
-    <string name="folder_name_hint">ここにフォルダ名を入力&#8230;</string>
+    <string name="folder_create">新しいフォルダを作成してください</string>
+    <string name="folder_name">名前</string>
+    <string name="folder_name_hint">ここにフォルダ名を入力してください...</string>
     <!-- Update Properties -->
     <string name="edit">編集</string>
     <string name="update">更新</string>
-    <string name="edit_metadata">プロパティを編集</string>
+    <string name="edit_metadata">プロパティの編集</string>
     <!-- Download -->
     <string name="download">ダウンロード</string>
-    <string name="download_complete">ダウンロード完了</string>
+    <string name="download_complete">ダウンロードが完了しました</string>
     <string name="download_error">ダウンロード中にエラーが発生しました。</string>
-    <string name="download_progress">ダウンロード中です&#8230;</string>
+    <string name="download_progress">ダウンロードしています...</string>
     <!-- Empty -->
+    <string name="empty_users">ユーザーが見つかりません</string>
     <string name="empty_child">ファイルが見つかりません</string>
     <string name="empty_site">サイトがありません</string>
     <string name="empty_version">バージョン履歴がありません</string>
@@ -201,15 +198,17 @@
     <string name="empty_comment">コメントが見つかりません</string>
     <string name="empty_search">ファイルが見つかりません</string>
     <!-- Size -->
-    <string name="file_size_empty">0バイト</string>
+    <string name="file_size_empty">0 バイト</string>
     <string name="file_size_bytes">バイト</string>
     <string name="file_size_kilobytes">KB</string>
     <string name="file_size_megabytes">MB</string>
     <string name="file_size_gigabytes">GB</string>
     <!-- Search -->
-    <string name="search_hint">検索キーワードの入力</string>
+    <string name="search">検索</string>
+    <string name="search_hint">検索キーワードを入力してください</string>
     <!-- Comments -->
     <string name="comments">コメント</string>
+    <string name="comment_add_hint">ここにコメントを入力してください...</string>
     <!-- Actions -->
     <string name="create">作成</string>
     <string name="add">追加</string>
@@ -224,10 +223,216 @@
     <string name="refresh">再読み込み</string>
     <string name="delete">削除</string>
     <string name="save_back">保存して戻る</string>
-    <!-- Errors -->
+
+    <!-- MESSAGE ERROR -->
+    <string name="error_general">エラーが発生しました。 もう一度操作をやり直してください。</string>
+    <string name="error_general_title">エラーが発生しました。</string>
+    <string name="error_unable_open_file">このファイルを開けません</string>
     <string name="error_unable_share_link">リンクを共有できません</string>
     <string name="error_unable_share_content">コンテンツを共有できません</string>
+
+    <!-- SESSION ERROR -->
+    <string name="retry_account_loading">再試行</string>
+    <string name="error_session_creation_title">アカウントの保存</string>
+    <string name="error_session_creation_message">接続エラー</string>
+    <string name="error_session_creation">認証できません。 アカウントの設定を確認してください。</string>
+    <string name="error_session_hostname"><![CDATA[<b>ホスト名</b>の値に誤りがあるか<br/>、 <b>VPN を有効にする</b>必要があります。<br/>アカウントの設定を確認してください。]]></string>
+    <string name="error_session_nodata"><![CDATA[<p><b>デバイスにデータ接続がありません。</b><br/></p> デバイスの設定を確認して、データ接続を有効にしてください。]]></string>
+    <string name="error_session_unauthorized"><![CDATA[このサーバーへのアクセス権がありません。<br/>アカウントの設定を確認してください<b> (ユーザー名/パスワード)</b>。]]></string>
+    <string name="error_session_service_url"><![CDATA[<b>サービス URL</b>の値に誤りがあります。<br/> アカウントの設定を確認してください。]]></string>
+    <string name="error_session_service_unavailable"><![CDATA[メンテナンス中によりサーバーがダウンしているか、容量に問題があるため、一時的に要求を処理できません。<br/> しばらくしてから、操作をやり直してください。]]></string>
+    <string name="error_session_notfound"><![CDATA[サーバーに接続できませんでした。<br/> アカウントの設定を確認してください。]]></string>
+    <string name="error_session_port"><![CDATA[<b>ポート</b>の値に誤りがあります。<br/> アカウントの設定を確認してください。]]></string>
+    <string name="error_session_certificate">
+<![CDATA[<p><b>サーバーのセキュリティ証明書が信頼されていません。</b><br/></p>
+		サーバーの接続先の証明書を発行した第三者機関が、デバイスで認識された機関と一致しません。<br/>
+		正しいサーバーに接続していることを Alfresco Mobile で確認できるようにするには、信頼できる機関からの証明書が必要です。<br/>
+		サーバーの証明書が自己署名された証明書の場合は、それをデバイスに追加する必要があります。<br/> ]]>
+    </string>
+    <string name="error_session_certificate_expired">
+<![CDATA[<p><b>サーバーのセキュリティ証明書の期限が切れているか、まだ有効化されていません。</b><br/></p>
+		デバイスで証明書が設定された日時を確認してください。<br/> 問題が解決しない場合は、管理者に問い合わせてください。 ]]>
+    </string>
+    <string name="error_session_ssl">
+<![CDATA[<p><b>SSL プロトコルにエラーが発生しました。</b><br/></p>
+        アカウントの設定を確認してから、もう一度やり直してください。<br/>問題が解決しない場合は、管理者に問い合わせてください。]]>
+    </string>
+    <string name="error_session_cloud_unavailable">
+<![CDATA[<p><b>Alfresco in the Cloud は現在大量の処理を行っています。</b><br/></p>
+        しばらくしてから、操作をやり直してください。<br/>]]>
+    </string>
+    <string name="error_session_expired">セッションの期限が切れています。 もう一度サインインしてください。</string>
+    <string name="error_session_refresh">セッションを再読み込みしています。</string>
+    <string name="error_chunk_transfert"><![CDATA[サーバーはチャンク転送に対応していません。<br/>アカウントを再読み込みしてください</b>。]]></string>
+    <string name="error_name_already_exist">ファイルの名前を変更できませんでした。 同じ名前のファイルが既に存在する可能性があります。</string>
+    <string name="error_unknown_exception">エラーが発生しました : %s</string>
+    <string name="error_unknown">エラーが発生しました : %s</string>
+
+
     <!-- Share -->
-    <string name="share_url">リンクを共有化</string>
-    <string name="share_url_long">Alfresco Android Mobileとリンクを共有する</string>
+    <string name="share_url">リンクの共有</string>
+    <string name="share_content">コンテンツの共有</string>
+    <string name="share_url_long">Alfresco Android Mobile からリンクを共有</string>
+    <string name="validate">検証</string>
+
+    <!-- SSL -->
+    <string name="security_ssl_disable">SSL 証明書の検証が無効になっています。</string>
+
+    <!-- ACCOUNT -->
+    <string name="account_verify">アカウント情報を確認しています&#8230;</string>
+    <string name="account_wizard_alldone_description">アカウントを使用する準備ができました。</string>
+    <string name="account_default_onpremise">Alfresco Server</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
+
+    <!-- WAITING SESSION -->
+    <string name="wait_title">お待ちください</string>
+    <string name="wait_message">サーバーに接続しています...</string>
+    <string name="session_loaded">セッション準備完了</string>
+
+    <!-- Creation Folder -->
+    <string name="create_folder_in_progress">フォルダを作成しています</string>
+    <string name="create_folder_complete">フォルダの作成が完了しました</string>
+
+    <!-- Workflow FILTERS -->
+    <string name="empty_tasks">タスクなし</string>
+    <string name="tasks_assignee_unassigned">担当者なし</string>
+    <string name="task_delegate_in_progress">再割り当てしています...</string>
+    <string name="task_delegate_complete">再割り当てが完了しました</string>
+    <string name="update_sucess">\"%s\" の更新が完了しました。</string>
+
+    <!-- Delete -->
+    <string name="delete_in_progress">削除しています...</string>
+    <string name="delete_complete">削除が完了しました</string>
+
+    <!-- Quick Action Folder -->
+    <string name="like_in_progress">[いいね!] をつけています</string>
+    <string name="like_completed">[いいね!] が完了しました</string>
+    <string name="like_complete">[いいね!] 完了</string>
+
+    <!-- MEMBERS -->
+    <string name="members">メンバーリスト</string>
+    <string name="members_of">%s のメンバー</string>
+
+    <!-- MAIN MENU -->
+    <string name="menu_browse_userhome">あなたのファイル</string>
+    <string name="menu_browse_shared">共有ファイル</string>
+
+    <!-- Accessibility -->
+    <string name="mime_folder">フォルダ</string>
+    <string name="mime_document">文書</string>
+    <string name="more_options_folder">フォルダ %s のその他のオプション</string>
+    <string name="more_options_favorite">%s のその他のオプション</string>
+    <string name="mime_site">サイト</string>
+    <string name="more_options_site">サイト %s のその他のオプション</string>
+    <string name="navigation_drawer_description">Alfresco: ホームパネルを開きます</string>
+    <string name="metadata_modified">変更日 </string>
+    <string name="metadata_created_by">作成者: %s</string>
+    <string name="metadata_size">サイズ </string>
+    <string name="contact_card">%s の連絡先カードを開きます </string>
+    <string name="add_comment">コメントを送信します</string>
+    <string name="advanced_search_hint">詳細検索</string>
+    <string name="add_menu">このフォルダに追加</string>
+
+    <!-- Site Membership Request -->
+    <string name="empty_joinsiterequest">保留中のリクエストはありません</string>
+
+    <!-- Update Properties -->
+    <string name="filename_error_character">この名前は無効です。</string>
+
+    <!-- NETWORKS -->
+    <string name="cloud_networks_empty">使用可能なネットワークはありません</string>
+    <string name="manage_accounts">アカウントの管理...</string>
+    <string name="cloud_networks_switch">ネットワークの切り替え...</string>
+
+    <!-- PROFILES -->
+    <string name="profiles_empty">使用可能なプロファイルはありません</string>
+    <string name="manage_profiles">プロファイルの管理&#8230;</string>
+    <string name="profiles_switch">プロファイルの切り換え&#8230;</string>
+
+    <!-- WORKFLOW -->
+    <string name="empty_process_definition">プロセスはありません</string>
+    <string name="my_tasks">あなたのタスク</string>
+
+    <!-- BUG REPORT -->
+    <string name="bug_report_title">[バグの報告] : </string>
+    <string name="waiting_operations">お待ちください...</string>
+
+    <!-- Favorites -->
+    <string name="menu_favorites_folder">お気に入りのフォルダ</string>
+    <string name="menu_favorites">お気に入り</string>
+    <string name="synced_documents">同期されているコンテンツ</string>
+    <string name="empty_favorites">お気に入りはありません</string>
+    <string name="favorites_document">お気に入り</string>
+    <string name="error_retrieve_favorite">このコンテンツのお気に入り情報は取得できませんでした。</string>
+    <string name="favorites_activate">\"%s\"のコンテンツを同期</string>
+    <string name="favorites_activate_description">お気に入りのコンテンツを自動的にこのデバイスと同期しますか?</string>
+    <string name="favorites_deactivate">同期の無効化</string>
+    <string name="favorites_deactivate_description"><![CDATA[<p>同期を無効にしますか?</p> 無効にすると、同期されているすべてのコンテンツがデバイスから削除されます。]]></string>
+    <string name="sync_error_title">同期エラー</string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>編集を開始したため、<b>%s</b>のお気に入りが解除されました。 <br/>編集済みのバージョンをサーバーと<b>同期</b>するか、\"ダウンロード\" フォルダに<b>保存</b>してください。 </p>]]></string>
+    <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> はサーバーから削除されましたが、\"ダウンロード\" フォルダにコピーが保存されています。</p>]]></string>
+    <string name="sync_error_no_permission"><![CDATA[<p> <b>%s</b> の編集済みバージョンをアップロードするのに必要な権限がありません。 \"ダウンロード\" フォルダに<b>保存</b>するか、サーバーにあるバージョンで<b>上書き</b>して編集済みバージョンを破棄することもできます。]]></string>
+    <string name="sync_error_node_local_modification">同期エラー</string>
+    <string name="sync_action">同期</string>
+    <string name="sync_override_action">上書き</string>
+    <string name="sync_save_action">保存</string>
+    <string name="sync_resolve_conflict">競合の解決</string>
+    <string name="sync_complete">同期が完了しました</string>
+    <string name="sync_in_progress">同期しています...</string>
+    <string name="upload_await">アップロードを待っています...</string>
+    <string name="download_await">ダウンロードを待っています...</string>
+    <string name="sync_favorites">お気に入り</string>
+
+    <plurals name="sync_complete_description">
+        <item quantity="zero">同期されたコンテンツはありません</item>
+        <item quantity="one">1 ファイル同期済み</item>
+        <item quantity="other">%1$s 個のファイルが同期されました</item>
+    </plurals>
+    <plurals name="download_complete_description">
+        <item quantity="zero">ダウンロードされたコンテンツはありません</item>
+        <item quantity="one">オフラインで使用できるファイルが 1 個あります</item>
+        <item quantity="other">オフラインで使用できるファイルが %1$s 個あります</item>
+    </plurals>
+    <plurals name="upload_complete_description">
+        <item quantity="zero">アップロードされたコンテンツはありません</item>
+        <item quantity="one">1 個のアイテムがアップロードされました。</item>
+        <item quantity="other">%1$s 個のアイテムがアップロードされました。</item>
+    </plurals>
+    <plurals name="update_complete_description">
+        <item quantity="zero">更新されたコンテンツはありません。</item>
+        <item quantity="one">1 個のファイルが更新されました。</item>
+        <item quantity="other">%1$s 個のファイルが更新されました。</item>
+    </plurals>
+    <plurals name="batch_failed">
+        <item quantity="zero">失敗した転送はありません。</item>
+        <item quantity="one">1 個の転送に失敗しました。</item>
+        <item quantity="other">%1$s 個の転送に失敗しました。</item>
+    </plurals>
+    <plurals name="batch_in_progress">
+        <item quantity="zero">進行中の転送はありません。</item>
+        <item quantity="one">1 個の転送が進行中です。</item>
+        <item quantity="other">%1$s 個の転送が進行中です。</item>
+    </plurals>
+    <plurals name="download_in_progress">
+        <item quantity="zero">進行中のダウンロードはありません。</item>
+        <item quantity="one">1 個のダウンロードが進行中です。</item>
+        <item quantity="other">%1$s 個のダウンロードが進行中です。</item>
+    </plurals>
+
+    <string name="sync_warning">同期の警告</string>
+    <string name="sync_error">同期エラー</string>
+    <string name="sync_warning_mobile_data"><![CDATA[<p>通信事業者の接続を経由して <b>%s</b> を同期しようとしています。</p> 続行しますか?]]></string>
+    <string name="sync_error_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、容量が %2$s しかありません。</p> デバイスの空き容量を増やすか、一部のコンテンツのお気に入りを解除してください。]]></string>
+    <string name="sync_warning_storage"><![CDATA[<p> <b>%1$s</b> を同期しようとしていますが、デバイスの空き容量が%2$s しかありません。</p> 続行しますか?]]></string>
+    <string name="sync_document_not_available">この文書はデバイスにありません。</string>
+
+    <!-- NOTIFICATION -->
+    <string name="upload">アップロード </string>
+    <string name="upload_complete">アップロードが完了しました。</string>
+    <string name="upload_in_progress">アップロードしています...</string>
+    <string name="update_complete">更新が完了しました。</string>
+    <string name="update_in_progress">更新しています...</string>
+
+    <!-- Fujitsu ScanSnap -->
+    <string name="scan">スキャン</string>
 </resources>
