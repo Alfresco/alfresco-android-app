@@ -18,8 +18,11 @@
 package org.alfresco.mobile.android.sync.operations;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.alfresco.mobile.android.api.model.Document;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.api.model.impl.ContentFileImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.async.Operation;
@@ -108,8 +111,20 @@ public class FavoriteSyncDelete extends FavoriteSync
                         {
                             // Unfavorite operation
                             // Request to update
-                            Log.d(TAG, "Unfavorited");
-                            requestUserInteraction(syncUri, FavoriteSyncStatus.REASON_NODE_UNFAVORITED);
+                            if (FavoriteSyncStatus.STATUS_TO_UPDATE == cursor
+                                    .getInt(FavoritesSyncSchema.COLUMN_REASON_ID))
+                            {
+                                Node n = session.getServiceRegistry().getDocumentFolderService()
+                                        .getNodeByIdentifier(nodeIdentifier);
+                                session.getServiceRegistry().getDocumentFolderService()
+                                        .updateContent((Document) n, new ContentFileImpl(dlFile));
+                                delete(dlFile);
+                            }
+                            else
+                            {
+                                Log.d(TAG, "Unfavorited");
+                                requestUserInteraction(syncUri, FavoriteSyncStatus.REASON_NODE_UNFAVORITED);
+                            }
                         }
                         else
                         {
@@ -126,12 +141,7 @@ public class FavoriteSyncDelete extends FavoriteSync
                 {
                     // No local modification
                     // Delete IT!
-                    IOUtils.deleteContents(dlFile.getParentFile());
-                    dlFile.getParentFile().delete();
-                    context.getContentResolver().delete(
-                            FavoritesSyncManager.getUri(cursor.getLong(cursor
-                                    .getColumnIndex(FavoritesSyncSchema.COLUMN_ID))), null, null);
-
+                    delete(dlFile);
                 }
                 syncResult.stats.numDeletes++;
             }
@@ -151,6 +161,15 @@ public class FavoriteSyncDelete extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS UTILS
     // ///////////////////////////////////////////////////////////////////////////
+    private void delete(File dlFile) throws IOException
+    {
+        IOUtils.deleteContents(dlFile.getParentFile());
+        dlFile.getParentFile().delete();
+        context.getContentResolver().delete(
+                FavoritesSyncManager.getUri(cursor.getLong(cursor.getColumnIndex(FavoritesSyncSchema.COLUMN_ID))),
+                null, null);
+    }
+
     private void move(Cursor c, Uri notificationUri)
     {
         ContentValues cValues = new ContentValues();
@@ -163,7 +182,8 @@ public class FavoriteSyncDelete extends FavoriteSync
         File parentFolder = localFile.getParentFile();
 
         // New File
-        File downloadFolder = AlfrescoStorageManager.getInstance(context).getDownloadFolder(SessionUtils.getAccount(context));
+        File downloadFolder = AlfrescoStorageManager.getInstance(context).getDownloadFolder(
+                SessionUtils.getAccount(context));
         File newLocalFile = new File(downloadFolder, c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
 

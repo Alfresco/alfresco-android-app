@@ -224,20 +224,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     private void download(Cursor c)
     {
         String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-        String parentIdentifier = c.getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID);
-        String nodeName = c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID);
 
-        /*
-         * OperationsRequestGroup group = new
-         * OperationsRequestGroup(getActivity(),
-         * SessionUtils.getAccount(getActivity())); SyncDownloadRequest dl = new
-         * SyncDownloadRequest(parentIdentifier, nodeIdentifier);
-         * dl.setNotificationUri(SynchroManager.getUri(favoriteId));
-         * dl.setNotificationTitle(nodeName);
-         * group.enqueue(dl.setNotificationVisibility
-         * (Request.VISIBILITY_NOTIFICATIONS));
-         * SynchroManager.getInstance(getActivity()).enqueue(group);
-         */
         FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         ContentValues cValues = new ContentValues();
@@ -249,29 +236,13 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
     private void update(Cursor c)
     {
-
-        String parentIdentifier = c.getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID);
         String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-        String nodeName = c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID);
-        Uri localFileUri = Uri.parse(c.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
-        File localFile = new File(localFileUri.getPath());
-
-        /*
-         * OperationsRequestGroup group = new
-         * OperationsRequestGroup(getActivity(),
-         * SessionUtils.getAccount(getActivity())); SyncUpdateRequest
-         * updateRequest = new SyncUpdateRequest(parentIdentifier,
-         * nodeIdentifier, nodeName, new ContentFileProgressImpl(localFile),
-         * true);
-         * updateRequest.setNotificationUri(SynchroManager.getUri(favoriteId));
-         * group.enqueue(updateRequest);
-         * //SynchroManager.getInstance(getActivity()).enqueue(group);
-         */
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
+        cValues.put(OperationSchema.COLUMN_REASON, FavoriteSyncStatus.STATUS_TO_UPDATE);
         getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+
+        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         c.close();
     }

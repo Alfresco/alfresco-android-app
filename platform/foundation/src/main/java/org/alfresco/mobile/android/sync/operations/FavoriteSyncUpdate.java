@@ -173,6 +173,10 @@ public class FavoriteSyncUpdate extends FavoriteSync
             cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, contentFile.getFile().lastModified());
             cValues.put(FavoritesSyncSchema.COLUMN_CONTENT_URI,
                     (String) updatedNode.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue());
+            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, updatedNode.getContentStreamLength());
+            cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, updatedNode.getContentStreamLength());
+            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
+
             context.getContentResolver().update(localUri, cValues, null, null);
         }
     }

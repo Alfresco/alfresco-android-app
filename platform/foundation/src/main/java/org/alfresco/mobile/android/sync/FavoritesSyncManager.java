@@ -445,10 +445,9 @@ public class FavoritesSyncManager extends Manager
         if (appContext != null && acc != null)
         {
             File synchroFolder = getSynchroFolder(acc);
-            // TODO Check if clean or not ?
-            File uuidFolder = new File(synchroFolder, NodeRefUtils.getCleanIdentifier(NodeRefUtils
-                    .getNodeIdentifier(nodeIdentifier)));
+            File uuidFolder = new File(synchroFolder, NodeRefUtils.getNodeIdentifier(nodeIdentifier));
             uuidFolder.mkdirs();
+            if (!uuidFolder.exists()) { return null; }
             return new File(uuidFolder, documentName);
         }
         return null;
@@ -558,7 +557,7 @@ public class FavoritesSyncManager extends Manager
         }
     }
 
-    private Long retrieveSize(String query)
+    protected Long retrieveSize(String query)
     {
         return 0L;
     }

@@ -27,6 +27,8 @@ public interface FavoriteSyncStatus extends OperationStatus
 
     int STATUS_MODIFIED = 256;
 
+    int STATUS_TO_UPDATE = 512;
+
     /**
      * Local Document has modification but remote document has been unfavorited.
      */

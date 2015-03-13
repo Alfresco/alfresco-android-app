@@ -46,6 +46,12 @@ public class PrepareFavoriteHelper extends PrepareBaseHelper
         super(context, acc, session, mode, syncScanningTimeStamp, result, node);
     }
 
+    public PrepareFavoriteHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
+            long syncScanningTimeStamp, SyncResult result, String nodeIdentifier)
+    {
+        super(context, acc, session, mode, syncScanningTimeStamp, result, nodeIdentifier);
+    }
+
     @Override
     public List<FavoriteSync> prepare()
     {

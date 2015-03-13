@@ -348,8 +348,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                                 SessionUtils.getAccount(getActivity())))
                         {
                             FavoritesSyncManager.getInstance(getActivity()).sync(
-                                    SessionUtils.getAccount(getActivity()),
-                                    NodeRefUtils.getCleanIdentifier(node.getIdentifier()));
+                                    SessionUtils.getAccount(getActivity()), node.getIdentifier());
                         }
                     }
                     else
