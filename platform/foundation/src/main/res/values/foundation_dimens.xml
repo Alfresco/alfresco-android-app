@@ -1,0 +1,140 @@
+<!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+
+-->
+<resources>
+
+    <!-- =============================================================== -->
+    <!-- DIMENSION -->
+    <!-- =============================================================== -->
+    <!-- PANELS -->
+    <item name="weight_left_panel" format="float" type="dimen">0.7</item>
+    <item name="weight_right_panel" format="float" type="dimen">0.3</item>
+
+    <dimen name="sliding_panel">300dip</dimen>
+
+    <!-- ABOUT -->
+    <dimen name="about_text_size">16sp</dimen>
+
+    <!-- LIST TEXT HDPI -->
+    <dimen name="properties_toptext_size">18sp</dimen>
+    <dimen name="properties_bottomtext_size">12sp</dimen>
+    <dimen name="properties_marginleft">6dip</dimen>
+    <dimen name="accountname_size">20sp</dimen>
+
+    <!-- HOME SCREEN -->
+    <dimen name="home_title_size">24sp</dimen>
+    <dimen name="home_button_size">18sp</dimen>
+    <dimen name="home_description_size">12sp</dimen>
+
+    <!-- AlfrescoAccount WIZARD -->
+    <dimen name="wizard_main_margin">5dip</dimen>
+    <dimen name="button_padding">25dip</dimen>
+    <dimen name="accountlist_padding">15dip</dimen>
+
+    <!-- MAIN MENU DETAILS -->
+    <dimen name="properties_padding">5dip</dimen>
+    <dimen name="preview_margin">10dip</dimen>
+
+    <!-- FRAGMENT DETAILS -->
+    <dimen name="properties_details_padding">15dip</dimen>
+    <dimen name="properties_details_icon_size">140dip</dimen>
+    <dimen name="properties_actions_margin">14dip</dimen>
+
+    <!-- PREVIEW IMAGE -->
+    <integer name="width_320">150</integer>
+    <integer name="width_480">200</integer>
+    <integer name="width_600">300</integer>
+    <integer name="width_720">350</integer>
+    <integer name="width_1000">400</integer>
+    <integer name="width_max">500</integer>
+
+    <!-- PASSCODE -->
+    <dimen name="passcode_text_size">40sp</dimen>
+    <dimen name="path_leftright_margin">10dip</dimen>
+    <dimen name="path_topbottom_margin">10dip</dimen>
+    <dimen name="folderpath_margin">30dip</dimen>
+
+    <!-- LIST ROW -->
+    <dimen name="row_height">60dp</dimen>
+    <dimen name="avatar_thumbnail">38dip</dimen>
+    <dimen name="thumbnail_height">42dip</dimen>
+    <dimen name="thumbnail_margin">6dip</dimen>
+    <dimen name="thumbnail_margin_min">6dip</dimen>
+    <dimen name="top_text_size">18sp</dimen>
+    <dimen name="bottom_text_size">12sp</dimen>
+
+    <!-- IMPORT MARGIN -->
+    <dimen name="margin_top">3dip</dimen>
+    <dimen name="margin_large">15dip</dimen>
+
+    <!-- IMAX FILE SIZE -->
+    <integer name="text_editor_max_file_size">204800</integer>
+
+    <!-- PROFILE -->
+    <dimen name="name_size">26sp</dimen>
+    <dimen name="location_size">16sp</dimen>
+    <dimen name="profile_row_padding">5dip</dimen>
+    <dimen name="profile_minwidth">150dip</dimen>
+    <dimen name="profile_icon_size">80dip</dimen>
+
+    <!-- PROCESS -->
+    <dimen name="process_thumbnail_height">72dip</dimen>
+    <dimen name="process_diagram_width">300dip</dimen>
+    <dimen name="process_diagram_height">250dip</dimen>
+    <dimen name="task_complete_margin">5dip</dimen>
+    <dimen name="task_filter_margin">60dip</dimen>
+
+    <!-- SEARCH -->
+    <dimen name="aggregator_icon_height">48dip</dimen>
+
+    <!-- ACTION BAR -->
+    <dimen name="actionbar_dropdown_min_width">250dip</dimen>
+    <dimen name="actionbar_dropdown_top_height">10sp</dimen>
+    <dimen name="user_magin">0dip</dimen>
+
+    <!-- GRID VIEW -->
+    <dimen name="grid_width">250dip</dimen>
+    <dimen name="grid_height">200dip</dimen>
+    <dimen name="tiles_height">64dip</dimen>
+    <dimen name="tiles_width">64dip</dimen>
+
+    <!-- SAMSUNG MULTI WINDOWS VIEW -->
+    <dimen name="app_defaultsize_w">640dip</dimen>
+    <dimen name="app_defaultsize_h">400dip</dimen>
+    <dimen name="app_minimumsize_w">400dip</dimen>
+    <dimen name="app_minimumsize_h">200dip</dimen>
+
+    <!-- SPINNER -->
+    <dimen name="spinning_frame">64dp</dimen>
+    <dimen name="spinning_progress">32dp</dimen>
+
+    <!-- LIST -->
+    <dimen name="browse_toptext_size">18sp</dimen>
+    <dimen name="browse_bottomtext_size">12sp</dimen>
+    <dimen name="browse_margin">6dip</dimen>
+    <dimen name="browse_icons">50dip</dimen>
+
+    <!-- DAILOG -->
+    <dimen name="width_dialog">500dip</dimen>
+    <dimen name="padding_dialog">10dip</dimen>
+
+    <dimen name="welcome_screen_dimen">600dip</dimen>
+
+
+</resources>

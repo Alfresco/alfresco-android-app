@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Change parent to override with custom theme. -->
+    <style name="MainTheme" parent="AlfrescoHoloTheme" />
+
+    <style name="MainTheme.Dialog" parent="AlfrescoHoloTheme.Dialog" />
+
+    <dimen name="widget_margin">8dp</dimen>
+
+
+</resources>

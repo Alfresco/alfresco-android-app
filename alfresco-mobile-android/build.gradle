@@ -1,0 +1,114 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        applicationId APPLICATION_ID
+
+        minSdkVersion 11
+        targetSdkVersion 21
+        versionCode 40
+        versionName VERSION_NAME
+
+        manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]
+        resValue "string", "account_name", ACCOUNT_ID
+        resValue "string", "sync_adapter", SYNC_ADAPTER
+
+        defaultPublishConfig DEFAULT_PUBLISH
+        resValue "string", "oauth_api_key", OAUTH_API_KEY
+        resValue "string", "oauth_api_secret", OAUTH_API_SECRET
+        resValue "string", "oauth_callback", OAUTH_CALLBACK
+        resValue "string", "oauth_scope", OAUTH_SCOPE
+        resValue "string", "bamboo_buildnumber", BUILDNUMBER
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    signingConfigs {
+
+        custom {
+            //Add here your custom sign configuration
+        }
+
+
+        release {
+            storeFile file(RELEASE_STORE_FILE)
+            storePassword RELEASE_STORE_PASSWORD
+            keyAlias RELEASE_KEY_ALIAS
+            keyPassword RELEASE_KEY_PASSWORD
+        }
+    }
+
+    buildTypes {
+        debug {
+            // Important : In case of custom application
+            // Don't forget to change all values to custom debug values
+            applicationIdSuffix ".debug"
+
+            manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY_DEBUG]
+            resValue "string", "account_name", ACCOUNT_ID_DEBUG
+            resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
+
+            resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
+
+        }
+
+        release {
+
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace(".apk", "-${variant.versionName}.apk"))
+                }
+            }
+        }
+    }
+
+
+    productFlavors {
+        //CUSTOM EXTENSION FLAVOR
+        custom {
+            //Add here custom configuration
+
+            dependencies {
+                //Add here 3rd party dependencies
+            }
+        }
+
+        //PLAY STORE FLAVOR
+        store {
+            dependencies {
+                storeCompile project(':extensions:samsung')
+                storeCompile project(':extensions:scansnap')
+            }
+        }
+
+        //MOBILE IRON FLAVOR
+        mobileiron {
+            dependencies {
+                mobileironCompile project(':mdm:mobileiron')
+            }
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+    }
+}
+
+dependencies {
+    //COMMON TO ALL VARIANTS
+    compile project(':platform:foundation')
+
+    //DEBUG BUILD TYPE
+    debugCompile project(':extensions:hockeyapp')
+}

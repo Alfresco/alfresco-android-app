@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+
+    <!-- Override -->
+    <string name="ok">OK</string>
+    <string name="cancel">Abbrechen</string>
+    <string name="search">Suche</string>
+    <string name="search_hint">Suchbegriff eingeben</string>
+    <string name="comment_add_hint">Kommentar hier eingeben...</string>
+    <string name="add">Hinzufügen</string>
+
+
+    <!-- Samsung -->
+    <string name="extension_name">Samsung Extension</string>
+    <string name="thumbnail">Miniaturansicht</string>
+    <string name="note_editor_name">Alfresco S Note Editor</string>
+
+    <!-- Editor -->
+    <string name="editor_select">Samsung Extension</string>
+
+    <!-- Editor MENU -->
+    <!-- Tools -->
+    <string name="editor_tools">Werkzeuge</string>
+    <string name="editor_pen">Stift</string>
+    <string name="editor_selection">Auswahl</string>
+    <string name="editor_eraser">Radiergummi</string>
+    <string name="editor_text">Text</string>
+
+    <!-- Settings -->
+    <string name="editor_tools_settings">Werkzeug-Einstellungen</string>
+
+    <!-- Action Mode -->
+    <string name="editor_group_menu">Gruppieren</string>
+    <string name="editor_group">Gruppieren</string>
+    <string name="editor_ungroup">Gruppierung aufheben</string>
+    <string name="editor_front_menu">In den Vordergrund</string>
+    <string name="editor_forward">Nach vorne</string>
+    <string name="editor_front">In den Vordergrund</string>
+    <string name="editor_back_menu">In den Hintergrund</string>
+    <string name="editor_backward">Nach hinten</string>
+    <string name="editor_back">In den Hintergrund</string>
+
+    <!-- Add -->
+    <string name="editor_add_menu">Hinzufügen...</string>
+    <string name="editor_add_page">Seite hinzufügen</string>
+    <string name="editor_add_image">Bild hinzufügen</string>
+
+    <!-- Pages -->
+    <string name="editor_pages">Seiten...</string>
+    <string name="editor_pages_add">Seite hinzufügen</string>
+    <string name="editor_pages_remove">Seite entfernen</string>
+    <string name="editor_pages_move">Auf Seite verschieben</string>
+
+    <!-- Extra -->
+    <string name="editor_error_open">Dieser S Note kann nicht geöffnet werden.</string>
+    <string name="editor_save_request">Der S Note wurde geändert.</string>
+    <string name="editor_save_description"><![CDATA[Möchten Sie den Vorgang ohne Speichern beenden? <br/> Alle nicht gespeicherten Änderungen gehen verloren.]]></string>
+    <string name="editor_save">Speichern</string>
+    <string name="editor_discard">Verwerfen</string>
+    <string name="editor_save_confirmation">S Note wurde gespeichert.</string>
+    <string name="editor_paging">Seite %1$s / %2$s</string>
+
+    <!-- CREATION -->
+    <string name="create_samsung_note">Samsung S Note</string>
+
+    <!-- ERROR PEN SDK -->
+    <string name="error_sdk_dialog">S Note-Anforderungen</string>
+    <string name="error_sdk_unsupported">Dieses Gerät bietet keine Unterstützung für S Pen.</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Sie müssen zusätzliche S Pen-Software installieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Sie müssen Ihre S Pen-Software aktualisieren, um diese Funktion zu nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Wir empfehlen Ihnen, Ihre S Pen-Software zu aktualisieren, bevor Sie diese Funktion nutzen. <br/>Sie werden zum Installationsbildschirm weitergeleitet.</p> Starten Sie diese Anwendung neu, nachdem die Software installiert wurde.]]></string>
+
+</resources>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0.0dip"
+        android:layout_weight="1.0"
+        android:fillViewport="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/passcode_hint"
+                style="?MainTheme.TextView.ListItem.Primary"
+                android:layout_marginLeft="0dip"
+                android:layout_marginTop="16dip"
+                android:gravity="center"
+                android:text="@string/passcode_title" />
+
+            <TextView
+                android:id="@+id/passcode_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/passcode_error_confirmation"
+                android:textColor="@color/dark_red"
+                android:visibility="invisible" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="52.0dip"
+                android:layout_marginLeft="20.0dip"
+                android:layout_marginRight="20.0dip"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/passcode"
+                    style="?MainTheme.PasscodeInput"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"></EditText>
+
+                <ImageView
+                    android:id="@+id/delete_passcode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/alfrescohololight_list_selector_holo_light"
+                    android:clickable="true"
+                    android:paddingLeft="20.0dip"
+                    android:paddingRight="20.0dip"
+                    android:src="@drawable/ic_clear_search_api_holo_light" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1.0dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:background="@color/grey_lighter" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10.0dip"
+                android:layout_marginLeft="32.0dip"
+                android:layout_marginRight="32.0dip"
+                android:layout_marginTop="30.0dip"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_1"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="1" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true"
+                        android:gravity="center">
+
+                        <Button
+                            android:id="@+id/keyboard_2"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="2" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_3"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="3" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15.0dip"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_4"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="4" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_5"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="5" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_6"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="6" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15.0dip"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_7"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="7" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_8"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="8" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_9"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="9" />
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:baselineAligned="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15.0dip"
+                    android:orientation="horizontal">
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            style="?MainTheme.PasscodeButton"
+                            android:enabled="false"
+                            android:text=""
+                            android:visibility="invisible" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_0"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="0" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="0.0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.0"
+                        android:clickable="true">
+
+                        <Button
+                            android:id="@+id/keyboard_back"
+                            style="?MainTheme.PasscodeButton"
+                            android:text="OK"
+                            android:visibility="invisible" />
+                    </FrameLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

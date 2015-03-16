@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="?MainTheme.Background.White"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+    <LinearLayout
+        android:id="@+id/create_task_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/wizard_main_margin"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/task_todo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_round_simple"
+            android:padding="25dip"
+            android:text="@string/task_todo"
+            android:textSize="@dimen/home_button_size" />
+
+        <TextView
+            android:id="@+id/task_todo_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_large"
+            android:layout_marginTop="@dimen/margin_top"
+            android:gravity="center"
+            android:text="@string/task_todo_description"
+            android:textSize="@dimen/home_description_size" />
+
+        <Button
+            android:id="@+id/task_review_approve"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_round_simple"
+            android:padding="25dip"
+            android:text="@string/task_review_approve"
+            android:textSize="@dimen/home_button_size" />
+
+        <TextView
+            android:id="@+id/task_review_approve_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/margin_top"
+            android:gravity="center"
+            android:text="@string/task_review_approve_description"
+            android:textSize="@dimen/home_description_size" />
+    </LinearLayout>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/app_progress_emtpy" />
+
+</FrameLayout>

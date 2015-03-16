@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <!-- SITES -->
+    <!-- Use view pager with getChildrenFragmentManager only available on API 17 -->
+    <string name="config_org_alfresco_client_view_site_browser" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesPagerFragment$Builder</string>
+
+    <!-- NODE DETAILS -->
+    <!-- Use view pager with getChildrenFragmentManager only available on API 17 -->
+    <string name="config_org_alfresco_client_view_node_details" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.fragments.node.details.PagerNodeDetailsFragment$Builder</string>
+
+</resources>

@@ -1,0 +1,520 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <ScrollView
+        android:id="@+id/profile_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginBottom="@dimen/properties_details_padding">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/preview"
+                    android:layout_width="@dimen/profile_icon_size"
+                    android:layout_height="@dimen/profile_icon_size"
+                    android:layout_gravity="center"
+                    android:layout_margin="15dip"
+                    android:contentDescription="@null"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_person_light" />
+
+                <LinearLayout
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dip"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="4dip">
+
+                    <TextView
+                        android:id="@+id/name"
+                        style="?MainTheme.TextView.ListItem.Primary"
+                        android:layout_margin="0dp"
+                        android:gravity="left"
+                        android:paddingLeft="0dip"
+                        android:paddingRight="@dimen/properties_details_padding"
+                        tools:text="John John"
+                        android:textSize="@dimen/name_size" />
+
+                    <TextView
+                        android:id="@+id/jobTitle"
+                        style="?MainTheme.TextView.ListItem.Secondary"
+                        android:layout_marginLeft="0dip"
+                        android:gravity="left"
+                        android:paddingLeft="0dip"
+                        tools:text="Admin at Alfresco"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/location_size" />
+
+                    <TextView
+                        android:id="@+id/location"
+                        style="?MainTheme.TextView.ListItem.Secondary"
+                        android:layout_marginLeft="0dip"
+                        android:gravity="left"
+                        android:paddingLeft="0dip"
+                        tools:text="Maidenhead" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/tools_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/properties_actions_margin"
+                android:layout_marginLeft="@dimen/browse_margin"
+                android:layout_marginTop="@dimen/properties_actions_margin">
+
+                <ImageView
+                    android:id="@+id/action_call"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/call"
+                    android:src="@drawable/ic_call" />
+
+                <ImageView
+                    android:id="@+id/action_skype"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/skype"
+                    android:src="@drawable/ic_skype" />
+
+                <ImageView
+                    android:id="@+id/action_email"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/email"
+                    android:src="@drawable/ic_send_mail" />
+
+                <ImageView
+                    android:id="@+id/action_im"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/instantMessaging"
+                    android:src="@drawable/ic_im" />
+
+                <ImageView
+                    android:id="@+id/action_addcontact"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/contact_add"
+                    android:src="@drawable/ic_add_contact" />
+
+                <ImageView
+                    android:id="@+id/action_geolocation"
+                    style="?MainTheme.ImageView.ActionIcon"
+                    android:contentDescription="@string/geolocation"
+                    android:src="@drawable/ic_location" />
+            </LinearLayout>
+
+            <!-- SUMMARY -->
+
+            <LinearLayout
+                android:id="@+id/summary_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/properties_details_padding"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/properties_details_padding"
+                android:paddingRight="@dimen/properties_details_padding">
+
+                <TextView
+                    android:id="@+id/summary"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:text="@string/summary" />
+
+                <TextView
+                    android:id="@+id/description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="fill_horizontal"
+                    android:maxLines="1000"
+                    android:paddingLeft="@dimen/profile_row_padding"
+                    tools:text="Lorem ipsum ez azejmflkja zekmlfj azlkefj mlkzafej mlkzaje fmlkzaje lmkjr azklerj zaklejf miezajfmoiejzafmkaejzf mzioejf mzioejf"
+                    android:textIsSelectable="true" />
+            </LinearLayout>
+
+            <!-- CONTACT INFO -->
+
+            <LinearLayout
+                android:id="@+id/contactInfo_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/properties_details_padding"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/properties_details_padding"
+                android:paddingRight="@dimen/properties_details_padding">
+
+                <TextView
+                    android:id="@+id/contactInfo_title"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:text="@string/contactInformation" />
+
+                <LinearLayout
+                    android:id="@+id/email_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email" />
+
+                    <TextView
+                        android:id="@+id/email_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/telephone_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/telephone" />
+
+                    <TextView
+                        android:id="@+id/telephone_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/mobile_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/mobile" />
+
+                    <TextView
+                        android:id="@+id/mobile_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/skypeId_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/skypeId" />
+
+                    <TextView
+                        android:id="@+id/skypeId_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/instantMessagingId_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/instantMessagingId" />
+
+                    <TextView
+                        android:id="@+id/instantMessagingId_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/googleId_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/googleId" />
+
+                    <TextView
+                        android:id="@+id/googleId_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- COMPANY INFO -->
+
+            <LinearLayout
+                android:id="@+id/company_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/properties_details_padding"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/properties_details_padding"
+                android:paddingRight="@dimen/properties_details_padding">
+
+                <TextView
+                    android:id="@+id/company_title"
+                    style="?MainTheme.TextView.SectionHeader.Primary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:text="@string/companyDetails" />
+
+                <LinearLayout
+                    android:id="@+id/companyName_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyName" />
+
+                    <TextView
+                        android:id="@+id/companyName_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyAdress1_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyAdress" />
+
+                    <TextView
+                        android:id="@+id/companyAdress1_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyAdress2_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/companyAdress2_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyAdress3_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/companyAdress3_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyPostcode_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyPostCode" />
+
+                    <TextView
+                        android:id="@+id/companyPostcode_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyTelephone_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyTelephone" />
+
+                    <TextView
+                        android:id="@+id/companyTelephone_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyFax_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyFax" />
+
+                    <TextView
+                        android:id="@+id/companyFax_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/companyEmail_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="?MainTheme.TextView.SecondaryBold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/companyEmail" />
+
+                    <TextView
+                        android:id="@+id/companyEmail_value"
+                        android:layout_width="0dip"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="2dip"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:textIsSelectable="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/app_progress_emtpy" />
+
+</FrameLayout>

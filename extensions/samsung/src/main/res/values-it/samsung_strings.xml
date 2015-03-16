@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2013 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<resources>
+
+    <!-- Override -->
+    <string name="ok">OK</string>
+    <string name="cancel">Annulla</string>
+    <string name="search">Cerca</string>
+    <string name="search_hint">Immetti termine da cercare</string>
+    <string name="comment_add_hint">Immetti qui un commento...</string>
+    <string name="add">Aggiungi</string>
+
+
+    <!-- Samsung -->
+    <string name="extension_name">Samsung Extension</string>
+    <string name="thumbnail">Miniatura</string>
+    <string name="note_editor_name">Alfresco S Note Editor</string>
+
+    <!-- Editor -->
+    <string name="editor_select">Samsung Extension</string>
+
+    <!-- Editor MENU -->
+    <!-- Tools -->
+    <string name="editor_tools">Strumenti</string>
+    <string name="editor_pen">Penna</string>
+    <string name="editor_selection">Selezione</string>
+    <string name="editor_eraser">Gomma</string>
+    <string name="editor_text">Testo</string>
+
+    <!-- Settings -->
+    <string name="editor_tools_settings">Impostazioni strumenti</string>
+
+    <!-- Action Mode -->
+    <string name="editor_group_menu">Raggruppa</string>
+    <string name="editor_group">Raggruppa</string>
+    <string name="editor_ungroup">Separa</string>
+    <string name="editor_front_menu">Porta in primo piano</string>
+    <string name="editor_forward">Porta avanti</string>
+    <string name="editor_front">Porta in primo piano</string>
+    <string name="editor_back_menu">Porta in secondo piano</string>
+    <string name="editor_backward">Porta indietro</string>
+    <string name="editor_back">Porta in secondo piano</string>
+
+    <!-- Add -->
+    <string name="editor_add_menu">Aggiungi...</string>
+    <string name="editor_add_page">Aggiungi pagina</string>
+    <string name="editor_add_image">Aggiungi immagine</string>
+
+    <!-- Pages -->
+    <string name="editor_pages">Pagine...</string>
+    <string name="editor_pages_add">Aggiungi pagina</string>
+    <string name="editor_pages_remove">Rimuovi pagina</string>
+    <string name="editor_pages_move">Sposta nella pagina</string>
+
+    <!-- Extra -->
+    <string name="editor_error_open">Impossibile aprire questa S Note.</string>
+    <string name="editor_save_request">L\'S Note è stata modificata.</string>
+    <string name="editor_save_description"><![CDATA[Uscire senza salvare le modifiche? <br/> Le modifiche non salvate andranno perse.]]></string>
+    <string name="editor_save">Salva</string>
+    <string name="editor_discard">Elimina</string>
+    <string name="editor_save_confirmation">L\'S Note è stata salvata.</string>
+    <string name="editor_paging">Pagina %1$s / %2$s</string>
+
+    <!-- CREATION -->
+    <string name="create_samsung_note">Samsung S Note</string>
+
+    <!-- ERROR PEN SDK -->
+    <string name="error_sdk_dialog">Requisiti S Note</string>
+    <string name="error_sdk_unsupported">Questo dispositivo non supporta l\'S Pen</string>
+    <string name="error_sdk_library_not_installed"><![CDATA[<p>Per utilizzare questa funzione, installare il software aggiuntivo dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
+    <string name="error_sdk_library_update_required"><![CDATA[<p>Per utilizzare questa funzione, aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
+    <string name="error_sdk_library_update_recommended"><![CDATA[<p>Prima di utilizzare questa funzione, si consiglia di aggiornare il software dell\'S Pen. <br/>La schermata di installazione verrà aperta.</p> Dopo l\'installazione del software, riavviare l\'applicazione.]]></string>
+
+</resources>

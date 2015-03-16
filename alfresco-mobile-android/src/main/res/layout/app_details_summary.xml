@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/background_light"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <com.nirhart.parallaxscroll.views.ParallaxScrollView
+        android:id="@+id/properties_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:parallax_factor="1.9"
+        tools:context=".MainActivity">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/preview_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ab_solid_alfrescohololight"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <it.sephiroth.android.library.imagezoom.ImageViewTouch
+                    android:id="@+id/preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dip"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dip"
+                    android:contentDescription="@string/preview"
+                    android:gravity="center"
+                    android:scaleType="fitCenter" />
+
+                <TextView
+                    android:id="@+id/preview_message"
+                    style="?MainTheme.TextView.ListItem.Secondary"
+                    android:gravity="center"
+                    android:text="@string/preview_unavailable"
+                    android:visibility="invisible" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/background_light"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dip"
+                    android:layout_gravity="center"
+                    android:layout_margin="4dip"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:paddingLeft="4dip">
+
+                    <TextView
+                        android:id="@+id/title"
+                        style="?MainTheme.TextView.ListItem.Primary"
+                        android:layout_gravity="left"
+                        android:layout_margin="0dp"
+                        android:paddingLeft="0dip"
+                        android:paddingRight="@dimen/properties_details_padding"
+                        tools:text="Commotus post primos advocatos super decere primos consulens advocatos est sonu perferens vocis fidis securius.JPG" />
+
+                    <TextView
+                        android:id="@+id/details"
+                        style="?MainTheme.TextView.ListItem.Secondary"
+                        android:layout_marginLeft="0dip"
+                        android:paddingLeft="0dip"
+                        tools:text="G419 days ago - 142Kb, version 1.0" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/tools_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/properties_actions_margin"
+                    android:layout_marginLeft="@dimen/browse_margin"
+                    android:layout_marginTop="@dimen/properties_actions_margin"
+                    android:background="@android:color/background_light">
+
+                    <ImageView
+                        android:id="@+id/action_openin"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/open_in"
+                        android:src="@drawable/ic_open_dark" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/action_favorite"
+                            style="?MainTheme.ImageView.ActionIcon"
+                            android:contentDescription="@string/favorites_document"
+                            android:src="@drawable/ic_unfavorite_dark" />
+
+                        <ProgressBar
+                            android:id="@+id/favorite_progress"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </FrameLayout>
+
+                    <ImageView
+                        android:id="@+id/action_share"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/share"
+                        android:src="@drawable/ic_share" />
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/action_like"
+                            style="?MainTheme.ImageView.ActionIcon"
+                            android:contentDescription="@string/like"
+                            android:src="@drawable/ic_unlike" />
+
+                        <ProgressBar
+                            android:id="@+id/like_progress"
+                            style="?android:attr/progressBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </FrameLayout>
+
+                    <ImageView
+                        android:id="@+id/action_geolocation"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/geolocation"
+                        android:src="@drawable/ic_location"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <include
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    layout="@layout/app_properties" />
+            </LinearLayout>
+        </LinearLayout>
+    </com.nirhart.parallaxscroll.views.ParallaxScrollView>
+
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        layout="@layout/app_progress_emtpy" />
+
+</FrameLayout>

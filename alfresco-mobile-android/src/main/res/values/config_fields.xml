@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Fields Congif Type -->
+    <!-- Pattern : <CONFIG-NAME>_<TYPE> : ClassName -->
+    <!-- Example : Replace All "."  by "_" -->
+
+    <!-- TEXT -->
+    <string name="form_org_alfresco_client_form_field_text" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.TextField</string>
+
+    <!-- FILE SIZE -->
+    <string name="form_org_alfresco_client_form_field_size" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.SizeField</string>
+
+    <!-- NUMERIC -->
+    <string name="form_org_alfresco_client_form_field_number" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.NumberField</string>
+    <string name="form_org_alfresco_client_form_field_decimal" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.DecimalField</string>
+
+    <!-- DATE TIME -->
+    <string name="form_org_alfresco_client_form_field_dateTime" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.DateTimeField</string>
+
+    <!-- BOOLEAN -->
+    <string name="form_org_alfresco_client_form_field_boolean" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.BooleanField</string>
+
+    <!-- AUTHORITY -->
+    <string name="form_org_alfresco_client_form_field_authority" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.AuthorityField</string>
+
+    <!-- NODE : Document/Folder -->
+    <string name="form_org_alfresco_client_form_field_node" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.NodeField</string>
+
+    <!-- PATH -->
+    <string name="form_org_alfresco_client_form_field_folder_path" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.FolderPathField</string>
+    <string name="form_org_alfresco_client_form_field_path" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.PathField</string>
+
+    <!-- TAGS -->
+    <string name="form_org_alfresco_client_form_field_tags" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.TagsField</string>
+
+
+    <!-- +++++++++++++++++++++++++++ -->
+    <!-- VALIDATION -->
+    <!-- +++++++++++++++++++++++++++ -->
+
+    <!-- Mandatory -->
+    <string name="validation_org_alfresco_client_validation_mandatory" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.validation.MandatoryValidationRule</string>
+
+    <!-- String Length -->
+    <string name="validation_org_alfresco_client_validation_stringLength" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.validation.StringLengthValidationRule</string>
+
+    <!-- Number Range -->
+    <string name="validation_org_alfresco_client_validation_numberRange" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.validation.NumberRangeValidationRule</string>
+
+    <!-- Filename -->
+    <string name="validation_org_alfresco_client_validation_nodeName" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.validation.FileNameValidationRule</string>
+
+    <!-- Pattern Regex -->
+    <string name="validation_org_alfresco_client_validation_regex" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.ui.form.validation.RegexValidationRule</string>
+
+</resources>

@@ -1,0 +1,17 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.alfresco.mobile.android.application.mdm.mobileiron">
+
+    <application>
+        <service
+            android:enabled="true"
+            android:exported="true"
+            android:name=".AppConnectService"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="com.mobileiron.HANDLE_CONFIG" />
+            </intent-filter>
+        </service>
+    </application>
+
+</manifest>

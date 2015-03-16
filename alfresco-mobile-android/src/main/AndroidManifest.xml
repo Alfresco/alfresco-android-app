@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="org.alfresco.mobile.android.application">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!-- Create AlfrescoAccount & retrieve AlfrescoAccount informations -->
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+
+    <!-- Responsible for sync operations -->
+    <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
+    <uses-permission android:name="android.permission.READ_SYNC_STATS" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+
+    <application
+        android:name="org.alfresco.mobile.android.application.AlfrescoApplication"
+        android:allowBackup="false"
+        android:configChanges="locale|keyboardHidden|orientation|screenSize"
+        android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_application_icon"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:logo="@drawable/ic_application_logo"
+        android:theme="@style/MainTheme">
+
+        <!-- *************************************************************** -->
+        <!-- ALFRESCO APP -->
+        <!-- *************************************************************** -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.activity.WelcomeActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <action android:name="android.intent.action.VIEW" />
+
+                <data
+                    android:host="view_help_guide"
+                    android:scheme="alfresco" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.alfresco.mobile.android.application.activity.MainActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:logo="@drawable/ic_application_logo"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.MULTIWINDOW_LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_RESTRICTIONS_CHANGED" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_SYNCHRO_DISPLAY" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+            <!-- Fujitsu scan result -->
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_SCAN_RESULT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:scheme="alfresco"
+                    android:host="document" />
+                <data
+                    android:scheme="alfresco"
+                    android:host="folder" />
+                <data
+                    android:scheme="alfresco"
+                    android:host="file" />
+
+                <data />
+            </intent-filter>
+        </activity>
+
+        <!-- Private : Passcode Activity -->
+        <activity
+            android:name=".security.PassCodeActivity"
+            android:exported="false"
+            android:label="@string/app_name" />
+
+        <!-- Private : Text Editor Activity -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.editors.text.TextEditorActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="false"
+            android:label="@string/file_editor_name"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_CREATE_TEXT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <!-- used to filter rtf file -->
+                <data android:mimeType="text/plain" />
+                <data android:mimeType="text/html" />
+                <data android:mimeType="text/css" />
+                <data android:mimeType="text/xml" />
+                <data android:mimeType="text/x-setext" />
+                <data android:mimeType="text/x-javascript" />
+                <data android:mimeType="text/x-markdown" />
+                <data android:mimeType="text/mediawiki" />
+                <data android:mimeType="text/sgml" />
+                <data android:mimeType="text/tab-separated-values" />
+                <data android:mimeType="text/x-vcard" />
+            </intent-filter>
+        </activity>
+
+        <!-- Public : Official entry point for 3rd party application -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.activity.PublicDispatcherActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:exported="true"
+            android:icon="@drawable/ic_application_icon"
+            android:label="@string/app_name"
+            android:logo="@drawable/ic_application_icon"
+            android:theme="@style/MainTheme.Dialog"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <action android:name="android.intent.action.SEND_MULTIPLE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="*/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Internal : Activity As a Dialog -->
+        <activity
+            android:name="org.alfresco.mobile.android.application.activity.PrivateDialogActivity"
+            android:exported="false"
+            android:icon="@drawable/ic_application_icon"
+            android:label="@string/app_name"
+            android:logo="@drawable/ic_application_icon"
+            android:theme="@style/MainTheme.Dialog"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_SETTINGS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_DISPLAY_OPERATIONS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_START_PROCESS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="org.alfresco.mobile.android.intent.ACTION_EDIT_NODE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.alfresco.mobile.android.application.intent.IntentAPIDispatcherActivity"
+            android:exported="true"
+            android:theme="@style/MainTheme.Dialog">
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.CREATE" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/jpg" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.SEND" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.alfresco.android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.alfresco.mobile.android.application.widgets.ActionShortcutActivity"
+            android:theme="@style/MainTheme.Dialog"
+            android:label="@string/shortcut_actions_title"
+            android:enabled="@bool/widgetEnabled">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="org.alfresco.mobile.android.application.widgets.FolderShortcutActivity"
+            android:theme="@style/MainTheme.Dialog"
+            android:label="@string/shortcut_title"
+            android:enabled="@bool/widgetEnabled">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- *************************************************************** -->
+        <!-- WIDGET -->
+        <!-- *************************************************************** -->
+        <receiver
+            android:name="org.alfresco.mobile.android.application.widgets.ToolbarWidgetProvider"
+            android:enabled="@bool/widgetEnabled">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/toolbar_widget" />
+        </receiver>
+        <!-- *************************************************************** -->
+        <!-- CONTENT PROVIDER -->
+        <!-- *************************************************************** -->
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.FavoritesSyncProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.sync"
+            android:exported="false"
+            android:label="@string/sync_favorites"
+            android:syncable="true" />
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.mimetypes"
+            android:exported="false" />
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.OperationsProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.operations"
+            android:exported="false" />
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.search.HistorySearchProvider"
+            android:authorities="${PROVIDER_AUTHORITY}.searches"
+            android:exported="false" />
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.storage.StorageAccessDocumentsProvider"
+            android:authorities="${PROVIDER_AUTHORITY}.documents"
+            android:enabled="@bool/atLeastKitKat"
+            android:exported="true"
+            android:grantUriPermissions="true"
+            android:permission="android.permission.MANAGE_DOCUMENTS">
+            <intent-filter>
+                <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+            </intent-filter>
+        </provider>
+
+        <!-- *************************************************************** -->
+        <!-- SERVICES -->
+        <!-- *************************************************************** -->
+        <service
+            android:name="org.alfresco.mobile.android.sync.FavoritesSyncService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/favorites_sync_adapter" />
+        </service>
+
+        <!-- Used For AlfrescoAccount Authentication -->
+        <service
+            android:name="org.alfresco.mobile.android.application.accounts.AccountAuthenticationService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
+
+        <service
+            android:name="org.alfresco.mobile.android.platform.io.FileCleanerService"
+            android:exported="false" />
+
+        <!-- *************************************************************** -->
+        <!-- EXTENSION : SAMSUNG -->
+        <!-- *************************************************************** -->
+        <!-- SAMSUNG Multi Windows. -->
+        <uses-library
+            android:name="com.sec.android.app.multiwindow"
+            android:required="false" />
+
+        <meta-data
+            android:name="com.sec.android.support.multiwindow"
+            android:value="true" />
+        <meta-data
+            android:name="com.sec.android.multiwindow.DEFAULT_SIZE_W"
+            android:resource="@dimen/app_defaultsize_w" />
+        <meta-data
+            android:name="com.sec.android.multiwindow.DEFAULT_SIZE_H"
+            android:resource="@dimen/app_defaultsize_h" />
+        <meta-data
+            android:name="com.sec.android.multiwindow.MINIMUM_SIZE_W"
+            android:resource="@dimen/app_minimumsize_w" />
+        <meta-data
+            android:name="com.sec.android.multiwindow.MINIMUM_SIZE_H"
+            android:resource="@dimen/app_minimumsize_h" />
+
+        <!-- *************************************************************** -->
+        <!-- EXTENSION : ANDROID FOR WORK -->
+        <!-- *************************************************************** -->
+        <meta-data
+            android:name="android.content.APP_RESTRICTIONS"
+            android:resource="@xml/app_restrictions" />
+
+        <!-- *************************************************************** -->
+        <!-- DEPRECATED -->
+        <!-- *************************************************************** -->
+        <!-- Accounts are managed by Android AccountManager. -->
+        <!-- Still available for migration from older version. (version <1.5) -->
+        <provider
+            android:name="org.alfresco.mobile.android.application.providers.AccountProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.accounts"
+            android:exported="false" />
+    </application>
+
+</manifest>

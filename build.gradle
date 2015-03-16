@@ -1,0 +1,22 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.0.0'
+    }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        maven {
+            url "https://artifacts.alfresco.com/nexus/content/groups/public"
+        }
+        maven {
+            url "https://artifacts.alfresco.com/nexus/content/groups/public-snapshots"
+        }
+        jcenter()
+        mavenCentral()
+    }
+}

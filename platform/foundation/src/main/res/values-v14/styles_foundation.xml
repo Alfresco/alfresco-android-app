@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- =============================================================== -->
+    <!-- STYLE -->
+    <!-- =============================================================== -->
+
+    <style name="AlfrescoBaseTheme.PasscodeInput">
+        <item name="android:ems">1</item>
+    </style>
+
+    <!-- ========= -->
+    <!-- MAIN MENU -->
+    <!-- ========= -->
+    <style name="AlfrescoBaseTheme.TextView.SectionHeader">
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+</resources>

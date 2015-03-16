@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="all">
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--  APPLICATION ID  -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Change this value to override the default configuration mechanism -->
+    <string name="configuration_application_key">org.alfresco.mobile.android.application</string>
+    
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--  LIST OF MANAGERS -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Samsung Manager -->
+    <bool name="manager_isEnable_SamsungManager">false</bool>
+    <string name="manager_SamsungManager">org.alfresco.mobile.android.application.extension.samsung.SamsungManagerImpl</string>
+
+    <!-- HockeyApp Manager -->
+    <bool name="manager_isEnable_HockeyAppManager">false</bool>
+    <string name="manager_HockeyAppManager">org.alfresco.mobile.android.application.extension.hockeyapp.HockeyAppManagerImpl</string>
+
+    <!-- Rendition Manager -->
+    <bool name="manager_isEnable_RenditionManager">false</bool>
+    <string name="manager_RenditionManager">org.alfresco.mobile.android.commons.manager.RenditionManager</string>
+
+    <!-- Storage Manager -->
+    <bool name="manager_isEnable_AlfrescoStorageManager">false</bool>
+    <string name="manager_AlfrescoStorageManager">org.alfresco.mobile.android.persistence.io.AlfrescoStorageManager</string>
+
+    <!-- Favorite Sync Manager -->
+    <bool name="manager_isEnable_FavoritesSyncManager">false</bool>
+    <string name="manager_FavoritesSyncManager">org.alfresco.mobile.android.sync.FavoritesSyncManager</string>
+
+    <!-- Data Protection Manager -->
+    <bool name="manager_isEnable_DataProtectionManager">false</bool>
+    <string name="manager_DataProtectionManager">org.alfresco.mobile.android.manager.security.DataProtectionManager</string>
+
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!--  ENABLE BY DEFAULT -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Account Manager -->
+    <bool name="manager_isEnable_AlfrescoAccountManager">true</bool>
+    <string name="manager_AlfrescoAccountManager">org.alfresco.mobile.android.platform.accounts.DefaultAccountManager</string>
+    
+    <!-- Session Manager -->
+    <bool name="manager_isEnable_SessionManager">true</bool>
+    <string name="manager_SessionManager">org.alfresco.mobile.android.platform.DefaultSessionManager</string>
+    
+    <!-- MimeType Manager -->
+    <bool name="manager_isEnable_MimeTypeManager">true</bool>
+    <string name="manager_MimeTypeManager">org.alfresco.mobile.android.platform.mimetype.DefaultMimeTypeManager</string>
+
+    <!-- Notification Manager -->
+    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
+    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.platform.DefaultNotificationManager</string>
+
+</resources>

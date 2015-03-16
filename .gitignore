@@ -21,3 +21,9 @@ gen-external-apklibs
 target
 release.properties
 pom.xml.*
+
+#GRADLE
+.gradle
+/local.properties
+.DS_Store
+/build

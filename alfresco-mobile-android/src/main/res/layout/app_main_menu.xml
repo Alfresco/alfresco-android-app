@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  Copyright (C) 2005-2014 Alfresco Software Limited.
+  
+  This file is part of Alfresco Mobile for Android.
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?MainTheme.Background.GreyGradient"
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/properties_padding"
+        android:layout_marginRight="@dimen/properties_padding"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/accounts_label"
+            style="?MainTheme.TextView.SectionHeader.Grey"
+            android:text="@string/menu_accounts" />
+
+        <Spinner
+            android:id="@+id/accounts_spinner"
+            style="@android:style/Widget.Holo.Spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:popupBackground="@color/sliding_account_background"
+            android:textColor="@android:color/white" />
+
+        <LinearLayout
+            android:id="@+id/main_menu_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                style="?MainTheme.TextView.SectionHeader.Grey"
+                android:text="@string/menu_view" />
+
+            <Button
+                android:id="@+id/menu_browse_activities"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_activities_dark"
+                android:drawableLeft="@drawable/ic_activities_dark"
+                android:text="@string/menu_browse_activities" />
+
+            <Button
+                android:id="@+id/menu_browse_root"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_repository_dark"
+                android:drawableLeft="@drawable/ic_repository_dark"
+                android:text="@string/menu_browse_root" />
+
+            <Button
+                android:id="@+id/menu_browse_shared"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_shared_dark"
+                android:drawableLeft="@drawable/ic_shared_dark"
+                android:text="@string/menu_browse_shared"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/menu_browse_my_sites"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_site_dark"
+                android:drawableLeft="@drawable/ic_site_dark"
+                android:text="@string/menu_browse_sites" />
+
+            <Button
+                android:id="@+id/menu_browse_userhome"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_myfiles_dark"
+                android:drawableLeft="@drawable/ic_myfiles_dark"
+                android:text="@string/menu_browse_userhome"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/menu_workflow"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_task_dark"
+                android:drawableLeft="@drawable/ic_task_dark"
+                android:text="@string/my_tasks" />
+
+            <Button
+                android:id="@+id/menu_favorites"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_favorite_dark"
+                android:drawableLeft="@drawable/ic_favorite_dark"
+                android:text="@string/menu_favorites" />
+
+            <Button
+                android:id="@+id/menu_search"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_search_dark"
+                android:drawableLeft="@drawable/ic_search_dark"
+                android:text="@string/menu_search" />
+
+            <Button
+                android:id="@+id/menu_downloads"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_download_dark"
+                android:drawableLeft="@drawable/ic_download_dark"
+                android:text="@string/menu_local_files" />
+
+            <Button
+                android:id="@+id/menu_notifications"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_events_dark"
+                android:drawableLeft="@drawable/ic_events_dark"
+                android:text="@string/notifications" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/custom_menu_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

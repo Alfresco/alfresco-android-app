@@ -1,0 +1,46 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 11
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        defaultPublishConfig DEFAULT_PUBLISH
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    buildTypes {
+        debug {
+            buildConfigField "String", "PROVIDER_AUTHORITY", "\"" + PROVIDER_AUTHORITY_DEBUG + "\""
+            buildConfigField "String", "ACCOUNT_ID", "\"" + ACCOUNT_ID_DEBUG + "\""
+        }
+
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            buildConfigField "String", "PROVIDER_AUTHORITY", "\"" + PROVIDER_AUTHORITY + "\""
+            buildConfigField "String", "ACCOUNT_ID", "\"" + ACCOUNT_ID + "\""
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile project(':platform:thirdparty')
+    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.0-SNAPSHOT'
+}
