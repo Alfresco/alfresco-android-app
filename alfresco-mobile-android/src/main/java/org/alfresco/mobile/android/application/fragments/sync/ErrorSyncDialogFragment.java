@@ -70,8 +70,8 @@ public class ErrorSyncDialogFragment extends DialogFragment
         int negativeId = android.R.string.no;
         onFavoriteChangeListener = downloadListener;
 
-        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(title)
-                .setMessage(Html.fromHtml(message)).setCancelable(false);
+        Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(title).setMessage(Html.fromHtml(message))
+                .setCancelable(false);
 
         if (info.hasError())
         {
@@ -137,6 +137,11 @@ public class ErrorSyncDialogFragment extends DialogFragment
             FavoritesSyncManager.getInstance(getActivity()).runPendingOperationGroup(
                     SessionUtils.getAccount(getActivity()));
             getActivity().invalidateOptionsMenu();
+
+            if (getFragmentManager().findFragmentByTag(SyncFragment.TAG) != null)
+            {
+                ((SyncFragment) getFragmentManager().findFragmentByTag(SyncFragment.TAG)).awaitNextSync();
+            }
         }
 
         @Override
