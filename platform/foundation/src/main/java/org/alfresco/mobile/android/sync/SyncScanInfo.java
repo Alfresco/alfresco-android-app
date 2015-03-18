@@ -99,7 +99,7 @@ public class SyncScanInfo
         return deltaDataTransfer;
     }
 
-    public long getDateToTransfer()
+    public long getDataToTransfer()
     {
         return dataToTransfer;
     }

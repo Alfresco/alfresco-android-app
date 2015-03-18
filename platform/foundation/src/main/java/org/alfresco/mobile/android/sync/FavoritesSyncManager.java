@@ -76,7 +76,7 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // SYNC MODE
     // ////////////////////////////////////////////////////
-    public static final String ARGUMENT_MODE = "mode";
+    public static final String ARGUMENT_MODE = "syncMode";
 
     public static final int MODE_NODE = 0;
 
@@ -246,6 +246,7 @@ public class FavoritesSyncManager extends Manager
         settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_BOTH);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+        settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
                 FavoritesSyncProvider.AUTHORITY, settingsBundle);
     }
@@ -258,6 +259,7 @@ public class FavoritesSyncManager extends Manager
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_NODE);
         settingsBundle.putSerializable(ARGUMENT_NODE_ID, nodeIdentifier);
+        settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
                 FavoritesSyncProvider.AUTHORITY, settingsBundle);
     }
@@ -267,7 +269,8 @@ public class FavoritesSyncManager extends Manager
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_NODE);
+        settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, true);
+        settingsBundle.putInt(FavoritesSyncManager.ARGUMENT_MODE, FavoritesSyncManager.MODE_BOTH);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
                 FavoritesSyncProvider.AUTHORITY, settingsBundle);
     }

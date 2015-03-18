@@ -209,6 +209,8 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
             case SyncScanInfo.RESULT_WARNING_MOBILE_DATA:
                 if (ignoreWarning)
                 {
+                    currentSyncScan = new SyncScanInfo(currentSyncScan.getDeltaDataTransfer(),
+                            currentSyncScan.getDataToTransfer(), SyncScanInfo.RESULT_SUCCESS);
                     for (FavoriteSync operation : requests)
                     {
                         operation.execute();

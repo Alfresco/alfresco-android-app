@@ -648,6 +648,16 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         return super.onOptionsItemSelected(item);
     }
 
+    public void awaitNextSync()
+    {
+        if (mi != null)
+        {
+            getActivity().invalidateOptionsMenu();
+            info = null;
+            mi.setActionView(R.layout.app_spinning);
+        }
+    }
+
     @Override
     public void refresh()
     {
