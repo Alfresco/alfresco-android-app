@@ -89,7 +89,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
             if (((Document) node).getContentStreamLength() > 0 && !isRestrict)
             {
                 mi = menu.add(Menu.NONE, R.id.menu_action_download, Menu.FIRST, R.string.download);
-                mi.setIcon(R.drawable.ic_download_dark);
+                mi.setIcon(R.drawable.ic_download_light);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
             }
 
