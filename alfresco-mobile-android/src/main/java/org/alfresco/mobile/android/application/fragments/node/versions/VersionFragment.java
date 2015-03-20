@@ -23,12 +23,10 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.node.version.DocumentVersionsEvent;
 import org.alfresco.mobile.android.ui.node.version.VersionsNodeFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -71,14 +69,9 @@ public class VersionFragment extends VersionsNodeFragment
     }
 
     @Override
-    public void onResume()
+    protected String onCreateTitle(String title)
     {
-        if (!DisplayUtils.hasCentralPane(getActivity()))
-        {
-            UIUtils.displayTitle(getActivity(), R.string.document_version_header);
-        }
-        getActivity().invalidateOptionsMenu();
-        super.onResume();
+        return getString(R.string.document_version_header);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

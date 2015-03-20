@@ -220,6 +220,7 @@ public abstract class SessionManager extends Manager
         if (hasSession(currentAccount.getId()))
         {
             removeAccount(currentAccount.getId());
+            saveAccount(currentAccount);
         }
 
         Builder request = new Builder();

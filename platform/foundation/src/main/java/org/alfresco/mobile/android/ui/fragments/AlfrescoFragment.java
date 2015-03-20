@@ -114,9 +114,9 @@ public abstract class AlfrescoFragment extends DialogFragment
 
     public AlfrescoSession getSession()
     {
-        if (alfSession == null)
+        if (alfSession == null || alfSession.get() == null)
         {
-            alfSession = new WeakReference<AlfrescoSession>(SessionUtils.getSession(getActivity()));
+            alfSession = new WeakReference<>(SessionUtils.getSession(getActivity()));
         }
         return alfSession.get();
     }
