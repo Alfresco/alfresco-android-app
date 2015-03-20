@@ -177,7 +177,7 @@ public class NodeActions extends AbstractActions<Node>
         if (selectedFolder.isEmpty())
         {
             mi = menu.add(Menu.NONE, R.id.menu_action_download_all, Menu.FIRST, R.string.download);
-            mi.setIcon(R.drawable.ic_download_dark);
+            mi.setIcon(R.drawable.ic_download_light);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             if (!(SessionUtils.getSession(activity) instanceof CloudSession))
