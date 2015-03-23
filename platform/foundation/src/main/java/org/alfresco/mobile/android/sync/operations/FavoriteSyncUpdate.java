@@ -17,6 +17,8 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.sync.operations;
 
+import java.io.File;
+
 import org.alfresco.cmis.client.AlfrescoDocument;
 import org.alfresco.mobile.android.api.model.ContentFile;
 import org.alfresco.mobile.android.api.model.Document;
@@ -27,6 +29,7 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
+import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
@@ -52,6 +55,8 @@ public class FavoriteSyncUpdate extends FavoriteSync
     private final Document document;
 
     private final boolean doRemove;
+
+    private File destFile;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -135,11 +140,24 @@ public class FavoriteSyncUpdate extends FavoriteSync
                 updatedNode = (Document) session.getServiceRegistry().getDocumentFolderService()
                         .getNodeByIdentifier(cmisDoc.getId());
 
+                // Retrieve the sync file from the latest version of the node
+                // If version number increase we move the doc into the new path
+                File parentFolderFile = contentFile.getFile().getParentFile();
+                destFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc, updatedNode);
+                if (!contentFile.getFile().getPath().equals(destFile.getPath()))
+                {
+                    contentFile.getFile().renameTo(destFile);
+                    if (parentFolderFile.list().length == 0)
+                    {
+                        parentFolderFile.delete();
+                    }
+                }
+
                 // Enable data protection if necessary
                 if (DataProtectionManager.getInstance(context).isEncryptionEnable()
-                        && !DataProtectionManager.getInstance(context).isEncrypted(contentFile.getFile().getPath()))
+                        && !DataProtectionManager.getInstance(context).isEncrypted(destFile.getPath()))
                 {
-                    EncryptionUtils.encryptFile(context, contentFile.getFile().getPath(), true);
+                    EncryptionUtils.encryptFile(context, destFile.getPath(), true);
                 }
             }
 
@@ -170,12 +188,13 @@ public class FavoriteSyncUpdate extends FavoriteSync
             cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
             cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
                     .getTimeInMillis());
-            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, contentFile.getFile().lastModified());
+            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, destFile.lastModified());
             cValues.put(FavoritesSyncSchema.COLUMN_CONTENT_URI,
                     (String) updatedNode.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue());
             cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, updatedNode.getContentStreamLength());
             cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, updatedNode.getContentStreamLength());
             cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
 
             context.getContentResolver().update(localUri, cValues, null, null);
         }
