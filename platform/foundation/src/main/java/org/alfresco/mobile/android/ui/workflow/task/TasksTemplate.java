@@ -44,7 +44,7 @@ public interface TasksTemplate extends ListingTemplate
     String FILTER_DUE_TODAY = "today";
 
     /** Only tasks which are due tomorrow. */
-    String FILTER_DUE_TOMORROW = "tomorow";
+    String FILTER_DUE_TOMORROW = "tomorrow";
 
     /** Only tasks which are due in the next 7 days. */
     String FILTER_DUE_7DAYS = "week";
