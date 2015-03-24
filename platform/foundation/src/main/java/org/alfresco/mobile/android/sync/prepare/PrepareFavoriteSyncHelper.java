@@ -128,7 +128,8 @@ public class PrepareFavoriteSyncHelper extends PrepareFavoriteHelper
     {
         // If Synced document
         // Flag the item inside the referential
-        if (FavoriteSyncStatus.STATUS_MODIFIED != cursorId.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID))
+        if (FavoriteSyncStatus.STATUS_MODIFIED != cursorId.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID)
+                && 100 < cursorId.getInt(FavoritesSyncSchema.COLUMN_REASON_ID))
         {
             ContentValues cValues = new ContentValues();
             cValues.put(FavoritesSyncSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_HIDDEN);
@@ -142,14 +143,14 @@ public class PrepareFavoriteSyncHelper extends PrepareFavoriteHelper
             context.getContentResolver().update(
                     FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null,
                     null);
+            FavoriteSync.saveStatus(context,
+                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
+                    FavoriteSyncStatus.STATUS_PENDING);
         }
 
         // Execute Delete
         try
         {
-            FavoriteSync.saveStatus(context,
-                    FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
-                    FavoriteSyncStatus.STATUS_PENDING);
             group.add(new FavoriteSyncDelete(context, acc, session, syncResult, id, FavoritesSyncManager
                     .getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID))));
         }
