@@ -73,7 +73,6 @@ public class FavoriteSyncDelete extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     public void execute()
     {
-        super.execute();
         try
         {
             Log.d("Alfresco", "Delete for doc[" + nodeIdentifier + "]");
@@ -96,6 +95,20 @@ public class FavoriteSyncDelete extends FavoriteSync
                 File dlFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc,
                         cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID),
                         cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+
+                // Resolution available
+                if (FavoriteSyncStatus.STATUS_TO_UPDATE == cursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID))
+                {
+                    // Update & Delete
+                    Node n = session.getServiceRegistry().getDocumentFolderService()
+                            .getNodeByIdentifier(nodeIdentifier);
+                    session.getServiceRegistry().getDocumentFolderService()
+                            .updateContent((Document) n, new ContentFileImpl(dlFile));
+                    delete(dlFile);
+                    syncResult.stats.numDeletes++;
+                    return;
+                }
+
                 if (dlFile.lastModified() > localTimeStamp && hasLocalModification())
                 {
                     try
@@ -111,30 +124,21 @@ public class FavoriteSyncDelete extends FavoriteSync
                         {
                             // Unfavorite operation
                             // Request to update
-                            if (FavoriteSyncStatus.STATUS_TO_UPDATE == cursor
-                                    .getInt(FavoritesSyncSchema.COLUMN_REASON_ID))
-                            {
-                                Node n = session.getServiceRegistry().getDocumentFolderService()
-                                        .getNodeByIdentifier(nodeIdentifier);
-                                session.getServiceRegistry().getDocumentFolderService()
-                                        .updateContent((Document) n, new ContentFileImpl(dlFile));
-                                delete(dlFile);
-                            }
-                            else
-                            {
-                                Log.d(TAG, "Unfavorited");
-                                requestUserInteraction(syncUri, FavoriteSyncStatus.REASON_NODE_UNFAVORITED);
-                            }
+                            Log.d(TAG, "Unfavorited");
+                            requestUserInteraction(syncUri, FavoriteSyncStatus.REASON_NODE_UNFAVORITED);
+                            syncResult.stats.numSkippedEntries++;
                         }
                         else
                         {
                             // Delete operation
                             move(cursor, syncUri);
+                            syncResult.stats.numDeletes++;
                         }
                     }
                     catch (Exception e)
                     {
                         move(cursor, syncUri);
+                        syncResult.stats.numDeletes++;
                     }
                 }
                 else
@@ -142,8 +146,8 @@ public class FavoriteSyncDelete extends FavoriteSync
                     // No local modification
                     // Delete IT!
                     delete(dlFile);
+                    syncResult.stats.numDeletes++;
                 }
-                syncResult.stats.numDeletes++;
             }
         }
         catch (Exception e)
@@ -210,6 +214,7 @@ public class FavoriteSyncDelete extends FavoriteSync
         if (DataProtectionManager.getInstance(context).isEncryptionEnable())
         {
             if (FavoriteSyncStatus.STATUS_MODIFIED == cursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID)) { return true; }
+            if (100 >= cursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID)) { return true; }
             return false;
         }
         return true;

@@ -824,7 +824,7 @@ public abstract class PrepareBaseHelper
                 }
                 catch (Exception e)
                 {
-                    Log.e(TAG, Log.getStackTraceString(e));
+                    prepareDelete(nodeCursor, nodeId);
                 }
             }
             else
