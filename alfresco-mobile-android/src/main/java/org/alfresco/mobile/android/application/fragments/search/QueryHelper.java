@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * @since 1.4
@@ -130,7 +129,7 @@ public class QueryHelper
 
         queryBuilder.append(whereClause);
 
-        Log.d("Query", queryBuilder.toString());
+        // Log.d("Query", queryBuilder.toString());
 
         return queryBuilder.toString();
     }

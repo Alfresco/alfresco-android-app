@@ -44,7 +44,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -179,7 +178,7 @@ public class EditPropertiesFragment extends EditNodePropertiesFragment implement
     public void onTimePicked(String fieldId, int hourOfDay, int minute)
     {
         // TODO
-        Log.d(TAG, "Time :" + hourOfDay + ":" + minute);
+        // Log.d(TAG, "Time :" + hourOfDay + ":" + minute);
     }
 
     @Override

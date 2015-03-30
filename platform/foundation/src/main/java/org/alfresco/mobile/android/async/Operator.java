@@ -29,7 +29,6 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 @SuppressWarnings("rawtypes")
 public class Operator
@@ -136,7 +135,7 @@ public class Operator
 
     void complete(Operation operation)
     {
-        Log.d("Operations", "[Complete] " + operation.getOperationId());
+        // Log.d("Operations", "[Complete] " + operation.getOperationId());
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -23,7 +23,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 public abstract class OperationRequest implements Serializable
 {
@@ -83,7 +82,8 @@ public abstract class OperationRequest implements Serializable
         this.mimeType = mimeType;
         this.requestTypeId = requestTypeId;
         this.notificationUri = generateNotificationUri(context);
-        Log.d("Provider", "[Create] " + notificationUri + " " + getClass().getSimpleName());
+        // Log.d("Provider", "[Create] " + notificationUri + " " +
+        // getClass().getSimpleName());
     }
 
     public OperationRequest(Cursor cursor)

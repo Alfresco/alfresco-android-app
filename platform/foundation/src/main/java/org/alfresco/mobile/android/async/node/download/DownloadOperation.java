@@ -116,7 +116,8 @@ public class DownloadOperation extends NodeOperation<ContentFile>
     {
         if ((totalDownloaded / segment > currentSegment) || totalDownloaded == totalLength)
         {
-            Log.d("Progress", request.notificationUri + " " + totalDownloaded);
+            // Log.d("Progress", request.notificationUri + " " +
+            // totalDownloaded);
             ++currentSegment;
             saveProgress(totalDownloaded);
         }
@@ -195,7 +196,7 @@ public class DownloadOperation extends NodeOperation<ContentFile>
     {
         if (request.notificationUri != null && request instanceof DownloadRequest)
         {
-            Log.d("Progress", request.notificationUri + " " + progress);
+            // Log.d("Progress", request.notificationUri + " " + progress);
             context.getContentResolver().update(request.notificationUri,
                     ((DownloadRequest) request).createContentValues(progress), null, null);
         }

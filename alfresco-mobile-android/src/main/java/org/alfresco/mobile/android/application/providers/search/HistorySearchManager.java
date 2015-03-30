@@ -21,7 +21,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * @since 1.4
@@ -91,7 +90,7 @@ public final class HistorySearchManager
     public static HistorySearch retrieveHistorySearch(Context context, long id)
     {
         Cursor cursor = context.getContentResolver().query(getUri(id), COLUMN_ALL, null, null, null);
-        Log.d(TAG, cursor.getCount() + " ");
+        // Log.d(TAG, cursor.getCount() + " ");
         if (cursor.getCount() == 1)
         {
             cursor.moveToFirst();
@@ -131,7 +130,7 @@ public final class HistorySearchManager
         if (cursor == null) { return null; }
         if (cursor.getCount() == 0)
         {
-            Log.d(TAG, cursor.getCount() + " ");
+            // Log.d(TAG, cursor.getCount() + " ");
             cursor.close();
             return null;
         }

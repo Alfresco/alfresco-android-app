@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 public class EncodedQueryUri
 {
@@ -123,7 +122,7 @@ public class EncodedQueryUri
             encodedItem.append("=");
             encodedItem.append(id);
         }
-        Log.d(TAG, "encodeItem : " + encodedItem.toString());
+        // Log.d(TAG, "encodeItem : " + encodedItem.toString());
         return encodedItem.toString();
     }
 

@@ -47,7 +47,6 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -130,8 +129,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.activityRef = new WeakReference<Activity>(fr.getActivity());
     }
 
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems,
-            Map<String, Node> selectedItems)
+    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems, Map<String, Node> selectedItems)
     {
         super(activity, textViewResourceId, listItems);
         originalNodes = listItems;
@@ -205,7 +203,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         {
             add(objects[i]);
         }
-        Log.d("NodeAdapter", size + "");
+        // Log.d("NodeAdapter", size + "");
     }
 
     public synchronized void replaceNode(Node node)
@@ -386,8 +384,12 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             }
             else
             {
-                RenditionManager.with(getActivity()).loadNode(item).placeHolder(mime != null ? mime.getLargeIconId(getActivity())
-                        : MimeTypeManager.getInstance(getActivity()).getIcon(item.getName(), true)).into(vh.icon);
+                RenditionManager
+                        .with(getActivity())
+                        .loadNode(item)
+                        .placeHolder(
+                                mime != null ? mime.getLargeIconId(getActivity()) : MimeTypeManager.getInstance(
+                                        getActivity()).getIcon(item.getName(), true)).into(vh.icon);
             }
             vh.choose.setVisibility(View.GONE);
             AccessibilityUtils.addContentDescription(vh.icon,

@@ -419,7 +419,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                     String name = cursor.getString(OperationSchema.COLUMN_TITLE_ID);
                     int type = cursor.getInt(OperationSchema.COLUMN_REQUEST_TYPE_ID);
 
-                    Log.d("UI", "[Update]" + name + "/" + status);
+                    // Log.d("UI", "[Update]" + name + "/" + status);
 
                     switch (status)
                     {
@@ -428,7 +428,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                             // Add Node if not present
                             if (name != null && !hasNode(name))
                             {
-                                Log.d("UI", "[Init Placeholder]" + name);
+                                // Log.d("UI", "[Init Placeholder]" + name);
                                 placeHolder = new NodePlaceHolder(name, type, status);
                                 placeHolderMap.put(name, placeHolder);
                                 replaceNode(placeHolder);
@@ -440,7 +440,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                             long totalSize = cursor.getLong(OperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                             if (name != null)
                             {
-                                Log.d("UI", "[Update Placeholder]" + name + " : " + progress + "/" + totalSize);
+                                // Log.d("UI", "[Update Placeholder]" + name +
+                                // " : " + progress + "/" + totalSize);
                                 placeHolder = new NodePlaceHolder(name, type, status, totalSize, progress);
                                 placeHolderMap.put(name, placeHolder);
                                 replaceNode(placeHolder);
