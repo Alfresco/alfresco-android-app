@@ -40,7 +40,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.ActionMode.Callback;
 import android.view.LayoutInflater;
@@ -110,7 +109,7 @@ public class NodePropertiesFragment extends NodeDetailsFragment
     @Override
     protected void display(Node refreshedNode)
     {
-        Log.d(TAG, "Display Node" + refreshedNode.getName());
+        // Log.d(TAG, "Display Node" + refreshedNode.getName());
         // Detect if restrictable
         isRestrictable = node.hasAspect(ContentModel.ASPECT_RESTRICTABLE);
         renditionManager = RenditionManagerImpl.getInstance(getActivity());

@@ -223,7 +223,8 @@ public class FormConfigManager extends BaseConfigManager
             // View Generation depending on State : Edition or Read
             if (isEdition)
             {
-                Log.d("Form", fieldConfig.getModelIdentifier() + " " + field.getClass());
+                // Log.d("Form", fieldConfig.getModelIdentifier() + " " +
+                // field.getClass());
                 fieldView = field.getEditView(typeDefinition, groupview);
                 if (currentValues != null)
                 {

@@ -165,7 +165,8 @@ public class EvaluatorHelper extends HelperConfig
                 break;
         }
 
-        Log.d(TAG, "EVALUATOR [" + evalConfig.identifier + "] : " + ((evalConfig.hasNegation) ? !result : result));
+        // Log.d(TAG, "EVALUATOR [" + evalConfig.identifier + "] : " +
+        // ((evalConfig.hasNegation) ? !result : result));
 
         return (evalConfig.hasNegation) ? !result : result;
     }

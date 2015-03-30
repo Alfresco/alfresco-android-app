@@ -41,7 +41,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 
 import com.squareup.otto.Subscribe;
 
@@ -293,7 +292,7 @@ public class OperationWaitingDialogFragment extends DialogFragment implements Lo
         // If no data, we consider the job has been done
         if (cursor.getCount() == 0)
         {
-            Log.d(TAG, "onLoadFinished dismiss");
+            // Log.d(TAG, "onLoadFinished dismiss");
             canDismiss = true;
         }
 

@@ -355,7 +355,7 @@ public class AlfrescoNotificationManager extends Manager
             createNotificationChannel(channelId);
             if (channelStatus[getIndex(channelId)])
             {
-                Log.d(TAG, "Refresh");
+                // Log.d(TAG, "Refresh");
                 downloadHandler.postDelayed(this, 1000);
             }
         }
@@ -422,7 +422,7 @@ public class AlfrescoNotificationManager extends Manager
 
     public void monitorChannel(int requestTypeId)
     {
-        Log.d(TAG, "[Refresh] START");
+        // Log.d(TAG, "[Refresh] START");
 
         int channelId = CHANNEL_DEFAULT;
         switch (requestTypeId)
@@ -448,14 +448,14 @@ public class AlfrescoNotificationManager extends Manager
 
     public void cancelMonitorChannel(int channelId)
     {
-        Log.d(TAG, "[Refresh] STOP");
+        // Log.d(TAG, "[Refresh] STOP");
         channelStatus[getIndex(channelId)] = false;
         channelTimers[getIndex(channelId)] = null;
     }
 
     public void unMonitorChannel(int requestTypeId)
     {
-        Log.d(TAG, "[Refresh] STOP");
+        // Log.d(TAG, "[Refresh] STOP");
         int channelId = CHANNEL_DEFAULT;
         switch (requestTypeId)
         {

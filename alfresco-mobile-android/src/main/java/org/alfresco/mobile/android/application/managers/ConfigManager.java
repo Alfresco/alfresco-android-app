@@ -126,6 +126,12 @@ public class ConfigManager extends Manager
                 ConfigService customConfigService = loadCustom(acc);
                 configService = (customConfigService != null) ? customConfigService : embedConfigService;
             }
+
+            if (SessionUtils.getSession(appContext) != null && configService instanceof LocalConfigServiceImpl)
+            {
+                ((LocalConfigServiceImpl) configService).setSession(SessionUtils.getSession(appContext));
+            }
+
             currentService.put(acc.getId(), configService);
 
             // Config is available. Send an event
