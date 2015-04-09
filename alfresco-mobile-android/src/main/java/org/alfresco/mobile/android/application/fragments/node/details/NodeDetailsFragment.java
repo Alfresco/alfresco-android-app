@@ -777,7 +777,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                     b.putInt(DownloadDialogFragment.ARGUMENT_ACTION, DownloadDialogFragment.ACTION_EMAIL);
                     DialogFragment frag = new DownloadDialogFragment();
                     frag.setArguments(b);
-                    frag.show(getFragmentManager(), DownloadDialogFragment.TAG);
+                    frag.show(getActivity().getFragmentManager(), DownloadDialogFragment.TAG);
                 }
             });
             builder.setNegativeButton(R.string.link_to_repo, new DialogInterface.OnClickListener()
