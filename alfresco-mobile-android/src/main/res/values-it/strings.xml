@@ -28,8 +28,8 @@
     <!-- AlfrescoAccount WIZARD SCRE STEP 1 -->
     <string name="account_wizard_alfresco_server">Server Alfresco</string>
     <string name="account_wizard_alfresco_server_description">Connetti a un server Alfresco</string>
-    <string name="account_wizard_alfresco_cloud">Cloud Alfresco</string>
-    <string name="account_wizard_alfresco_cloud_description">Accedi all\'account personale del Cloud Alfresco</string>
+    <string name="account_wizard_alfresco_cloud">Alfresco Cloud</string>
+    <string name="account_wizard_alfresco_cloud_description">Accedi all\'account personale Alfresco Cloud</string>
 
     <!-- AlfrescoAccount WIZARD SCREEN STEP 2 -->
     <string name="account">Account</string>
@@ -72,7 +72,7 @@
 
     <!-- ACCOUNTS -->
     <string name="account_not_activated">Account Alfresco non attivato. Controllare la schermata Gestione account.</string>
-    <string name="account_default_cloud">Cloud Alfresco</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
     <string name="account_default_onpremise">Server Alfresco</string>
     <string name="account_edit_hint">Modifica informazioni account Alfresco "%s"</string>
     <string name="account_delete_hint">Elimina account "%s"</string>
@@ -109,7 +109,7 @@
         Verificare le impostazioni dell\'account Alfresco e riprovare.<br/> Se il problema persiste, contattare l\'amministratore.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Il carico di lavoro del Cloud Alfresco è al momento eccessivo.</b><br/></p>
+<![CDATA[<p><b>Il carico di lavoro di Alfresco nel cloud è al momento eccessivo.</b><br/></p>
         Riprovare tra qualche minuto.<br/>]]>
     </string>
     <string name="error_session_expired">La sessione è scaduta. Ripetere l\'accesso.</string>
@@ -475,7 +475,7 @@
     <string name="action_view_properties">Visualizza proprietà</string>
     <string name="action_edit_properties">Modifica proprietà</string>
     <string name="like_in_progress">"Mi piace" in corso</string>
-    <string name="like_completed">"Mi piace" completo</string>
+    <string name="like_completed">"Mi piace" completato</string>
     <string name="like_complete">"Mi piace" completo</string>
     <string name="favorite">Preferito</string>
     <string name="unfavorite">Rimuovi dai preferiti</string>
@@ -745,7 +745,7 @@
     <!-- Storage Access Framework -->
     <string name="menu_browse_favorites_folder">Cartella dei preferiti</string>
     <string name="account_alfresco">Alfresco</string>
-    <string name="account_alfresco_cloud">Cloud Alfresco</string>
+    <string name="account_alfresco_cloud">Alfresco Cloud</string>
     <string name="account_alfresco_onpremise">Alfresco in locale</string>
 
 

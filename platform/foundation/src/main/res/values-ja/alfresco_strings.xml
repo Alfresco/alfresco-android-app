@@ -70,7 +70,7 @@
     <string name="org_alfresco_documentlibrary_folder_deleted">{0} が {1} によって削除されました</string>
     <string name="org_alfresco_documentlibrary_folders_deleted">{0} 個のフォルダが {1} によって削除されました</string>
     <string name="org_alfresco_documentlibrary_google_docs_checkout">{0} ファイルが {1} によってGoogle ドキュメント™ にチェックアウトされました</string>
-    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} ファイルが {1} によって Google Docs からチェックインされました</string>
+    <string name="org_alfresco_documentlibrary_google_docs_checkin">{0} ファイルが {1} によって Google ドキュメント™ からチェックインされました</string>
     <string name="org_alfresco_documentlibrary_inline_edit">{0} ファイルが {1} によって編集されました</string>
     <string name="org_alfresco_documentlibrary_file_liked">{1} がファイル {0} に [いいね !] を付けました</string>
     <string name="org_alfresco_documentlibrary_folder_liked">{1} がフォルダ {0} に [いいね!] を付けました</string>
@@ -162,7 +162,7 @@
     <string name="metadata_prop_version_comment">コメント</string>
     <string name="metadata_prop_version_current">現在のバージョン</string>
     <!-- Metadata RESTRICTABLE -->
-    <string name="metadata_aspect_restrictable">限定可能</string>
+    <string name="metadata_aspect_restrictable">制限可能</string>
     <string name="metadata_prop_offline_expires_after">オフラインでの残り使用時間</string>
     <!-- Upload/Create Content -->
     <string name="content_app_pick_file">ファイルを見つけるアプリケーションを選択してください</string>
@@ -273,7 +273,7 @@
     <string name="share_url">リンクの共有</string>
     <string name="share_content">コンテンツの共有</string>
     <string name="share_url_long">Alfresco Android Mobile からリンクを共有</string>
-    <string name="validate">検証</string>
+    <string name="validate">有効</string>
 
     <!-- SSL -->
     <string name="security_ssl_disable">SSL 証明書の検証が無効になっています。</string>

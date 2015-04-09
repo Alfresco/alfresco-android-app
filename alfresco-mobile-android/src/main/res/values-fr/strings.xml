@@ -154,7 +154,7 @@
     <string name="menu_search">Rechercher</string>
     <string name="menu_downloads">Téléchargements</string>
     <string name="menu_local_files">Fichiers locaux</string>
-    <string name="menu_about">À Propos</string>
+    <string name="menu_about">A propos</string>
     <string name="menu_settings">Paramètres</string>
     <string name="menu_accounts">Comptes</string>
     <string name="menu_view">Vues</string>
@@ -264,7 +264,7 @@
     <string name="data_protection">Protection des données</string>
     <string name="data_protection_blurb"><![CDATA[<p><b>Protection des données disponible.</b><br/> Voulez-vous l\'activer ? <p>  Cette opération va chiffrer tous les contenus Alfresco téléchargés pour chaque compte. Ces contenus ne pourront plus être lus par aucune application, sauf l\'application Alfresco. ]]></string>
     <string name="decryption_failed">Échec du déchiffrement</string>
-    <string name="protect_question"><![CDATA[<p><b>Souhaitez-vous protéger touts les contenus Alfresco téléchargés maintenant ?</b><p>  Cette opération s\'appliquera à tous les contenus que vous avez téléchargés à partir de vos comptes Alfresco. Ces contenus ne pourront plus être lus par aucune application, sauf l\'application Alfresco.]]></string>
+    <string name="protect_question"><![CDATA[<p><b>Souhaitez-vous protéger tous les contenus Alfresco téléchargés maintenant ?</b><p>  Cette opération s\'appliquera à tous les contenus que vous avez téléchargés à partir de vos comptes Alfresco. Ces contenus ne pourront plus être lus par aucune application, sauf l\'application Alfresco.]]></string>
     <string name="unprotect_question"><![CDATA[<p><b>Souhaitez-vous désactiver la protection sur tous les contenus Alfresco téléchargés maintenant ?</b><p>  Ce sera appliqué à tous les contenus téléchargés à partir de tous vos comptes Alfresco.]]></string>
     <string name="decryption_title">Désactivation de la protection des données en cours&#8230;</string>
     <string name="encryption_title">Activation de la protection des données en cours&#8230;</string>

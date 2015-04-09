@@ -616,7 +616,7 @@
 
     <!-- Tasks -->
     <string name="task_filter_view">タスクの表示</string>
-    <string name="validate">検証</string>
+    <string name="validate">有効</string>
     <string name="workflow_priority_low">優先度: 低</string>
     <string name="workflow_priority_medium">優先度: 中</string>
     <string name="workflow_priority_high">優先度: 高</string>
@@ -715,7 +715,7 @@
     <string name="display_gallery">ギャラリーの表示</string>
 
     <!-- Metadata RESTRICTABLE -->
-    <string name="metadata_aspect_restrictable">限定可能</string>
+    <string name="metadata_aspect_restrictable">制限可能</string>
     <string name="metadata_prop_offline_expires_after">オフラインでの残り使用時間</string>
 
     <!-- Advanced Search -->
