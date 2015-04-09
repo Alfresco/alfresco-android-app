@@ -258,7 +258,7 @@
         Verificare le impostazioni dell\'account e riprovare.<br/> Se il problema persiste, contattare l\'amministratore.]]>
     </string>
     <string name="error_session_cloud_unavailable">
-<![CDATA[<p><b>Il carico di lavoro del Cloud Alfresco è al momento eccessivo.</b><br/></p>
+<![CDATA[<p><b>Il carico di lavoro di Alfresco nel cloud è al momento eccessivo.</b><br/></p>
         Riprovare tra qualche minuto.<br/>]]>
     </string>
     <string name="error_session_expired">La sessione è scaduta. Ripetere l\'accesso.</string>
@@ -282,7 +282,7 @@
     <string name="account_verify">Verifica delle informazioni account in corso...</string>
     <string name="account_wizard_alldone_description">Account pronto per l\'utilizzo.</string>
     <string name="account_default_onpremise">Server Alfresco</string>
-    <string name="account_default_cloud">Cloud Alfresco</string>
+    <string name="account_default_cloud">Alfresco Cloud</string>
 
     <!-- WAITING SESSION -->
     <string name="wait_title">Attendere</string>
@@ -306,7 +306,7 @@
 
     <!-- Quick Action Folder -->
     <string name="like_in_progress">"Mi piace" in corso</string>
-    <string name="like_completed">"Mi piace" completo</string>
+    <string name="like_completed">"Mi piace" completato</string>
     <string name="like_complete">"Mi piace" completo</string>
 
     <!-- MEMBERS -->
@@ -324,7 +324,7 @@
     <string name="more_options_favorite">Altre opzioni per %s</string>
     <string name="mime_site">Sito</string>
     <string name="more_options_site">Altre opzioni per il sito %s</string>
-    <string name="navigation_drawer_description">Alfresco: pannello apri Homepage</string>
+    <string name="navigation_drawer_description">Alfresco: apri Homepage</string>
     <string name="metadata_modified">Modificato </string>
     <string name="metadata_created_by">Creato da %s</string>
     <string name="metadata_size">Dimensioni </string>
