@@ -256,7 +256,7 @@ public class AlfrescoNotificationManager extends Manager
             builder.setContentText(params.getString(ARGUMENT_DESCRIPTION));
         }
         builder.setNumber(0);
-        builder.setSmallIcon(R.drawable.ic_empty);
+        builder.setSmallIcon(R.drawable.ic_notification_icon);
 
         if (params.containsKey(ARGUMENT_DESCRIPTION))
         {
