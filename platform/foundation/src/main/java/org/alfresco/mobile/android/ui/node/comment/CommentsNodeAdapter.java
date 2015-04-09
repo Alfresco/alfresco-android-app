@@ -71,14 +71,15 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, CommentViewHol
     {
         if (vh.content != null)
         {
+            String value = (item.getContent() == null || item.getContent().isEmpty()) ? "" : item.getContent().trim();
             if (AccessibilityUtils.isEnabled(getContext()))
             {
                 vh.content.setTextIsSelectable(false);
                 AccessibilityUtils.addContentDescription(vh.content,
-                        Html.fromHtml(item.getContent().trim(), null, tagHandler).toString());
+ Html.fromHtml(value, null, tagHandler).toString());
             }
             vh.content
-                    .setText(Html.fromHtml(item.getContent().trim(), null, tagHandler), TextView.BufferType.SPANNABLE);
+.setText(Html.fromHtml(value, null, tagHandler), TextView.BufferType.SPANNABLE);
         }
     }
 
