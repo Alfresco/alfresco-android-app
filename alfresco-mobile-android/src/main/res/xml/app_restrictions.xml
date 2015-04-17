@@ -3,26 +3,26 @@
 
     <restriction
         android:description="@string/description_alfresco_username"
-        android:key="@string/alfresco_username"
+        android:key="AlfrescoUserName"
         android:restrictionType="string"
         android:title="@string/title_alfresco_username" />
 
     <restriction
         android:description="@string/description_alfresco_repository_url"
-        android:key="@string/alfresco_repository_url"
+        android:key="AlfrescoRepositoryURL"
         android:restrictionType="string"
         android:title="@string/title_alfresco_repository_url" />
 
     <restriction
         android:description="@string/description_alfresco_share_url"
-        android:key="@string/alfresco_share_url"
+        android:key="AlfrescoShareURL"
         android:restrictionType="string"
         android:title="@string/title_alfresco_share_url" />
 
     <restriction
         android:defaultValue="@string/default_alfresco_display_name"
         android:description="@string/description_alfresco_display_name"
-        android:key="@string/alfresco_display_name"
+        android:key="AlfrescoDisplayName"
         android:restrictionType="string"
         android:title="@string/title_alfresco_display_name" />
 
