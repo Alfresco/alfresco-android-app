@@ -302,7 +302,6 @@
         <item name="android:background">@drawable/btn_default_holo_light_underline</item>
         <item name="android:drawablePadding">8dip</item>
         <item name="android:gravity">left|center_vertical</item>
-        <item name="android:onClick">showMainMenuFragment</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
 
