@@ -63,7 +63,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected CharSequence createTitle()
+    protected String createTitle()
     {
         String title = "";
         if (selectedItems.size() == 1)

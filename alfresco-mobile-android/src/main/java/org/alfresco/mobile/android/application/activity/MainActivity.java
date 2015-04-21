@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplor
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
@@ -375,6 +376,10 @@ public class MainActivity extends BaseActivity
             else if (AlfrescoIntentAPI.AUTHORITY_FILE.equals(intent.getData().getAuthority()))
             {
                 FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
+            }
+            else if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(intent.getData().getAuthority()))
+            {
+                NodeDetailsFragment.with(this).nodeId(intent.getData().getPathSegments().get(0)).back(false).display();
             }
         }
     }
