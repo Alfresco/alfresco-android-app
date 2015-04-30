@@ -366,7 +366,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private void addReference(String identifier, String url, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             previewUriStore.put(identifier, url);
         }
@@ -378,7 +378,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private boolean hasReference(String identifier, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             return previewUriStore.containsKey(identifier) && !previewUriStore.get(identifier).equals(AWAIT);
         }
@@ -390,7 +390,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private String getReference(String identifier, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             return previewUriStore.get(identifier);
         }
