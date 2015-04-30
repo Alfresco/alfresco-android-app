@@ -162,8 +162,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // //////////////////////////////////////////////////////////////////////
     public NodeDetailsFragment()
     {
-        requiredSession = true;
-        checkSession = true;
+        requiredSession = false;
+        checkSession = false;
         layoutId = R.layout.app_details;
     }
 
@@ -204,10 +204,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // Define the View
         setRootView(inflater.inflate(layoutId, container, false));
-        if (!getArguments().containsKey(ARGUMENT_FAVORITE))
-        {
-            if (getSession() == null) { return getRootView(); }
-        }
+        /*
+         * if (!getArguments().containsKey(ARGUMENT_FAVORITE)) { if
+         * (getSession() == null) { return getRootView(); } }
+         */
 
         // If node not present we display nothing.
         if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath))
@@ -496,6 +496,19 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if ((node instanceof Document && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
                 || (node instanceof NodeSyncPlaceHolder && !isRestrictable))
         {
+            // Tablet : Header thumbnail must be clickable
+            if (viewById(R.id.icon) != null)
+            {
+                viewById(R.id.icon).setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
+            }
+
             b.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -1103,12 +1116,16 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Subscribe
     public void onResult(RetrieveNodeEvent event)
     {
+        if (getActivity() == null) { return; }
         if (event.hasException)
         {
             displayEmptyView();
-            ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            if (((TextView) viewById(R.id.empty_text)) != null)
+            {
+                ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            }
         }
-        else if (getActivity() != null)
+        else
         {
             node = event.data;
             parentNode = event.parentFolder;
