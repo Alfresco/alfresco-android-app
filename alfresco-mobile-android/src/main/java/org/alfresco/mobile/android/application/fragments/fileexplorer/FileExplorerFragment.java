@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.create.DocumentTypesDialogFragment;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
@@ -338,6 +339,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         if (mode == MODE_LISTING)
         {
 

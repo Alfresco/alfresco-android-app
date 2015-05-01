@@ -868,6 +868,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         getMenu(menu);
     }

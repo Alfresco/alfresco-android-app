@@ -38,6 +38,7 @@ import org.alfresco.mobile.android.api.utils.WorkflowUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.user.UserPickerCallback;
@@ -490,6 +491,7 @@ public class TaskDetailsFragment extends AlfrescoFragment implements UserPickerC
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         getMenu(menu);
     }

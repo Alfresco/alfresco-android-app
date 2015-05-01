@@ -17,28 +17,9 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.activity;
 
-import android.annotation.TargetApi;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-
-import com.squareup.otto.Subscribe;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -103,13 +84,32 @@ import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import android.annotation.TargetApi;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+
+import com.squareup.otto.Subscribe;
 
 /**
  * Main activity of the application.
- * 
+ *
  * @author Jean Marie Pascal
  */
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -229,8 +229,8 @@ public class MainActivity extends BaseActivity
                 {
                     slidefragment.refreshData();
                 }
-                invalidateOptionsMenu();
                 super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
             }
         };
 
@@ -410,7 +410,7 @@ public class MainActivity extends BaseActivity
         mDrawerLayout.closeDrawer(mDrawer);
     }
 
-    private boolean isSlideMenuVisible()
+    public boolean isSlideMenuVisible()
     {
         return mDrawerLayout.isDrawerOpen(mDrawer);
     }
@@ -611,16 +611,6 @@ public class MainActivity extends BaseActivity
         {
             MenuItem mi = menu.add(Menu.NONE, R.id.menu_account_reload, Menu.FIRST, R.string.retry_account_loading);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
-        {
-            MainMenuFragment fr = ((MainMenuFragment) getFragment(MainMenuFragment.TAG));
-            if (fr != null)
-            {
-                fr.getMenu(menu);
-            }
-            return true;
         }
 
         if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)

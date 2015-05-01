@@ -17,29 +17,10 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.details;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
+import java.io.File;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -58,6 +39,7 @@ import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
@@ -119,10 +101,29 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.otto.Subscribe;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
@@ -391,7 +392,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(getTag()), RequestCode.FILEPICKER);
+                    ActionUtils
+                            .actionPickFile(getFragmentManager().findFragmentByTag(getTag()), RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
                 {
@@ -1057,6 +1059,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         getMenu(menu);
     }

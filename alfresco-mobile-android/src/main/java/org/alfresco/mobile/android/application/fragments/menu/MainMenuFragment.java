@@ -74,6 +74,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -113,6 +114,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         checkSession = false;
         requiredSession = false;
+        setHasOptionsMenu(true);
     }
 
     protected static MainMenuFragment newInstanceByTemplate(Bundle b)
@@ -610,8 +612,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // OVERFLOW MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public void getMenu(Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        menu.clear();
+
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_settings, Menu.FIRST + 1, R.string.menu_prefs);
@@ -633,6 +638,23 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
     }
+
+    /*
+     * public void getMenu(Menu menu) { MenuItem mi; mi = menu.add(Menu.NONE,
+     * R.id.menu_settings, Menu.FIRST + 1, R.string.menu_prefs);
+     * mi.setIcon(R.drawable.ic_settings_light);
+     * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER); mi =
+     * menu.add(Menu.NONE, R.id.menu_help, Menu.FIRST + 2, R.string.menu_help);
+     * mi.setIcon(R.drawable.ic_help);
+     * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER); mi =
+     * menu.add(Menu.NONE, R.id.menu_about, Menu.FIRST + 3,
+     * R.string.menu_about); mi.setIcon(R.drawable.ic_about_light);
+     * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER); if
+     * (showOperationsMenu) { mi = menu.add(Menu.NONE, R.id.menu_notifications,
+     * Menu.FIRST, R.string.notifications);
+     * mi.setIcon(R.drawable.ic_events_dark);
+     * mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER); } }
+     */
 
     // ///////////////////////////////////////////////////////////////////////////
     // BROADCAST RECEIVER

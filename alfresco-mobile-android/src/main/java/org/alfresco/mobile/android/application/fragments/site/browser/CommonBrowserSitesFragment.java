@@ -120,6 +120,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         MenuItem mi;
         mi = menu.add(Menu.NONE, R.id.menu_site_list_request, Menu.FIRST, R.string.joinsiterequest_list_title);

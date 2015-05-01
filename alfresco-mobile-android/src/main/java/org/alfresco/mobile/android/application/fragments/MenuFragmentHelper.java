@@ -18,8 +18,10 @@
 package org.alfresco.mobile.android.application.fragments;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -46,4 +48,11 @@ public class MenuFragmentHelper
             return null;
         }
     }
+
+    public static boolean canDisplayFragmentMenu(Activity activity)
+    {
+        if (activity != null && activity instanceof MainActivity && ((MainActivity) activity).isSlideMenuVisible()) { return false; }
+        return true;
+    }
+
 }

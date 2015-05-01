@@ -119,6 +119,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         getMenu(menu);
     }
 
