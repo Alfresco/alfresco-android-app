@@ -41,7 +41,10 @@ import org.alfresco.mobile.android.api.model.PagingResult;
 import org.alfresco.mobile.android.async.OperationEvent;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
+import org.alfresco.mobile.android.foundation.R;
+import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
+import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 
 import android.annotation.TargetApi;
 import android.os.Bundle;
@@ -206,6 +209,17 @@ public abstract class BaseGridFragment extends CommonGridFragment
     @Override
     public void refresh()
     {
+        if (!ConnectivityUtils.hasNetwork(getActivity()))
+        {
+            if (refreshHelper != null)
+            {
+                refreshHelper.setRefreshComplete();
+            }
+            AlfrescoNotificationManager.getInstance(getActivity()).showInfoCrouton(getActivity(),
+                    getString(R.string.error_session_nodata));
+            return;
+        }
+
         reload();
     }
 

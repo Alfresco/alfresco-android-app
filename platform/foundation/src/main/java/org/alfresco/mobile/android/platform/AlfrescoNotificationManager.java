@@ -43,6 +43,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -169,13 +170,13 @@ public class AlfrescoNotificationManager extends Manager
     public void showInfoCrouton(Activity activity, String text)
     {
         Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.INFO);
+        Crouton.showText(activity, Html.fromHtml(text), Style.INFO);
     }
 
     public void showAlertCrouton(Activity activity, String text)
     {
         Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.ALERT);
+        Crouton.showText(activity, Html.fromHtml(text), Style.ALERT);
     }
 
     public void showInfoCrouton(Activity activity, int text)

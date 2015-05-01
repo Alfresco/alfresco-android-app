@@ -80,7 +80,6 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
-import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
@@ -769,8 +768,6 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
 
     public void refresh()
     {
-        if (!ConnectivityUtils.hasNetwork(getActivity())) { return; }
-
         if (parentFolder == null)
         {
             parentFolder = SessionUtils.getSession(getActivity()).getRootFolder();
