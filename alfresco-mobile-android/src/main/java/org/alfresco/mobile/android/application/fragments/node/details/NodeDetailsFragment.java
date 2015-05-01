@@ -17,10 +17,29 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.details;
 
-import java.io.File;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.Map;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.squareup.otto.Subscribe;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -100,29 +119,10 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.content.ActivityNotFoundException;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.squareup.otto.Subscribe;
+import java.io.File;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.Map;
 
 import it.sephiroth.android.library.imagezoom.ImageViewTouch;
 import it.sephiroth.android.library.imagezoom.ImageViewTouchBase;
@@ -391,7 +391,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(TAG), RequestCode.FILEPICKER);
+                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(getTag()), RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
                 {
@@ -1082,6 +1082,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         .getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 startActivityForResult(i, RequestCode.FILEPICKER);
+                return true;
             case R.id.menu_action_edit:
                 edit();
                 return true;
