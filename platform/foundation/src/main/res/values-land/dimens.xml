@@ -18,5 +18,6 @@
 <resources>
 
     <dimen name="actionbar_dropdown_top_height">8sp</dimen>
-    
+  <dimen name="actionbar_dropdown_bottom_height">13sp</dimen>
+
 </resources>

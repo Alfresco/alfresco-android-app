@@ -17,19 +17,6 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.welcome;
 
-import java.util.Map;
-
-import org.alfresco.mobile.android.application.BuildConfig;
-import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.account.AccountSignInFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.platform.mdm.MDMEvent;
-import org.alfresco.mobile.android.platform.mdm.MDMManager;
-import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
-
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -43,6 +30,19 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
+
+import org.alfresco.mobile.android.application.BuildConfig;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.account.AccountSignInFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
+import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
+import org.alfresco.mobile.android.platform.mdm.MDMEvent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
+
+import java.util.Map;
 
 /**
  * It's the first screen seens by the user when the application starts. Display
@@ -103,7 +103,7 @@ public class WelcomeFragment extends AlfrescoFragment
     public void onResume()
     {
         super.onResume();
-        // Request Mobile Iron Info
+        // Request MDM Info
         MDMManager mdmManager = MDMManager.getInstance(getActivity());
         mdmManager.requestConfig(getActivity(), BuildConfig.APPLICATION_ID);
 

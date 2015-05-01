@@ -31,6 +31,9 @@ public interface AlfrescoIntentAPI
 
     String EXTRA_DOCUMENT_ID = PREFIX_EXTRA.concat(".DOCUMENT_ID");
 
+    String EXTRA_PATH = PREFIX_EXTRA.concat(".PATH");
+
+
     // CREATION
     // ///////////////////////////////////////////////////////////////////////////
     /**
@@ -52,12 +55,5 @@ public interface AlfrescoIntentAPI
     // EDIT/UPDATE
     // ///////////////////////////////////////////////////////////////////////////
     String ACTION_RENAME = PREFIX_ACTION.concat(".RENAME");
-
-    // ///////////////////////////////////////////////////////////////////////////
-    // TYPE
-    // ///////////////////////////////////////////////////////////////////////////
-    String TYPE_DOCUMENT = "alfresco:document";
-
-    String TYPE_FOLDER = "alfresco:folder";
 
 }

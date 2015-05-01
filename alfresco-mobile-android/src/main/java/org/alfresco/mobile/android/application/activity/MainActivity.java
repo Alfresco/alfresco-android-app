@@ -17,9 +17,28 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.activity;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import android.annotation.TargetApi;
+import android.app.FragmentManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.net.ConnectivityManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+
+import com.squareup.otto.Subscribe;
 
 import org.alfresco.mobile.android.api.constants.OnPremiseConstant;
 import org.alfresco.mobile.android.api.model.Folder;
@@ -84,28 +103,9 @@ import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
-import android.annotation.TargetApi;
-import android.app.FragmentManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-
-import com.squareup.otto.Subscribe;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Main activity of the application.
@@ -615,7 +615,11 @@ public class MainActivity extends BaseActivity
 
         if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
         {
-            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).getMenu(menu);
+            MainMenuFragment fr = ((MainMenuFragment) getFragment(MainMenuFragment.TAG));
+            if (fr != null)
+            {
+                fr.getMenu(menu);
+            }
             return true;
         }
 

@@ -181,6 +181,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:ellipsize">middle</item>
         <item name="android:textStyle">bold</item>
+        <item name="android:textSize">@dimen/actionbar_dropdown_bottom_height</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
         <item name="android:lines">1</item>
         <item name="android:singleLine">true</item>

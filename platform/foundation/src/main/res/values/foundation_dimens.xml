@@ -106,6 +106,7 @@
     <!-- ACTION BAR -->
     <dimen name="actionbar_dropdown_min_width">250dip</dimen>
     <dimen name="actionbar_dropdown_top_height">10sp</dimen>
+    <dimen name="actionbar_dropdown_bottom_height">16sp</dimen>
     <dimen name="user_magin">0dip</dimen>
 
     <!-- GRID VIEW -->
