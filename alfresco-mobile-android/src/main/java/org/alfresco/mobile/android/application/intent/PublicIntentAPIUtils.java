@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 
 import android.content.Intent;
@@ -78,8 +79,8 @@ public class PublicIntentAPIUtils
 
     public static Intent viewFile(long accountId, File file)
     {
-        Uri.Builder b = new Uri.Builder().scheme(AlfrescoIntentAPI.SCHEME)
-                .authority(AlfrescoIntentAPI.AUTHORITY_FILE).appendPath(file.getPath());
+        Uri.Builder b = new Uri.Builder().scheme(AlfrescoIntentAPI.SCHEME).authority(AlfrescoIntentAPI.AUTHORITY_FILE)
+                .appendPath(file.getPath());
         return new Intent(AlfrescoIntentAPI.ACTION_VIEW).setData(b.build()).putExtra(
                 AlfrescoIntentAPI.EXTRA_ACCOUNT_ID, accountId);
     }

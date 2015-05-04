@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,7 +133,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                         vh.icon.setImageDrawable(getContext().getResources().getDrawable(defaultIcon));
                         break;
                     default:
-                        displayAvatar(acc, defaultIcon, vh.icon);
+                        displayAvatar(getContext(), acc, defaultIcon, vh.icon);
                         break;
                 }
                 break;
@@ -143,11 +144,11 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
 
     }
 
-    private void displayAvatar(AlfrescoAccount acc, int defaultIcon, ImageView imageView)
+    public static void displayAvatar(Context context, AlfrescoAccount acc, int defaultIcon, ImageView imageView)
     {
-        File f = AlfrescoStorageManager.getInstance(getContext()).getPrivateFolder(acc);
+        File f = AlfrescoStorageManager.getInstance(context).getPrivateFolder(acc);
         File icon = new File(f, acc.getUsername().concat(".jpg"));
-        Picasso.with(activityRef.get()).load(icon).placeholder(defaultIcon).into(imageView);
+        Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
     }
 
     private void updateIconList(GenericViewHolder vh, AlfrescoAccount acc)
@@ -170,7 +171,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
                 descriptionId = R.string.account_alfresco_onpremise;
                 break;
         }
-        displayAvatar(acc, iconId, vh.icon);
+        displayAvatar(getContext(), acc, iconId, vh.icon);
         AccessibilityUtils.addContentDescription(vh.icon, descriptionId);
     }
 }

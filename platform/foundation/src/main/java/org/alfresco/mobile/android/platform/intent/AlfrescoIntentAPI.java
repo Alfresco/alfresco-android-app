@@ -1,4 +1,4 @@
-package org.alfresco.mobile.android.application.intent;
+package org.alfresco.mobile.android.platform.intent;
 
 /**
  * @since 1.5
@@ -20,7 +20,7 @@ public interface AlfrescoIntentAPI
     String AUTHORITY_FOLDER = "folder";
 
     String AUTHORITY_DOCUMENT = "document";
-    
+
     String AUTHORITY_FILE = "file";
 
     // EXTRA
@@ -32,7 +32,6 @@ public interface AlfrescoIntentAPI
     String EXTRA_DOCUMENT_ID = PREFIX_EXTRA.concat(".DOCUMENT_ID");
 
     String EXTRA_PATH = PREFIX_EXTRA.concat(".PATH");
-
 
     // CREATION
     // ///////////////////////////////////////////////////////////////////////////
@@ -55,5 +54,18 @@ public interface AlfrescoIntentAPI
     // EDIT/UPDATE
     // ///////////////////////////////////////////////////////////////////////////
     String ACTION_RENAME = PREFIX_ACTION.concat(".RENAME");
+
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACCOUNT
+    // ///////////////////////////////////////////////////////////////////////////
+    String ACTION_CREATE_ACCOUNT = PREFIX_ACTION.concat(".CREATE_ACCOUNT");
+
+    String EXTRA_ALFRESCO_USERNAME = "AlfrescoUserName";
+
+    String EXTRA_ALFRESCO_DISPLAY_NAME = "AlfrescoDisplayName";
+
+    String EXTRA_ALFRESCO_REPOSITORY_URL = "AlfrescoRepositoryURL";
+
+    String EXTRA_ALFRESCO_SHARE_URL = "AlfrescoShareURL";
 
 }

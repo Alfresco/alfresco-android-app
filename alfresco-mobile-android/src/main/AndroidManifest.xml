@@ -48,6 +48,10 @@
                     android:host="view_help_guide"
                     android:scheme="alfresco" />
             </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="com.alfresco.android.intent.action.CREATE_ACCOUNT" />
+            </intent-filter>
         </activity>
         <activity
             android:name="org.alfresco.mobile.android.application.activity.MainActivity"

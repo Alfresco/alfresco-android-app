@@ -29,7 +29,6 @@ import org.alfresco.mobile.android.api.utils.IOUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.capture.DeviceCapture;
-import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.PublicIntentAPIUtils;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -37,6 +36,7 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.file.open.OpenFileEvent;
 import org.alfresco.mobile.android.async.file.open.OpenFileRequest;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 

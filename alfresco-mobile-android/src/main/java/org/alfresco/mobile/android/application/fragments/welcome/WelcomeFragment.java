@@ -17,6 +17,20 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.welcome;
 
+import java.util.Map;
+
+import org.alfresco.mobile.android.application.BuildConfig;
+import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.account.AccountSignInFragment;
+import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
+import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
+import org.alfresco.mobile.android.platform.mdm.MDMEvent;
+import org.alfresco.mobile.android.platform.mdm.MDMManager;
+import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
+import org.alfresco.mobile.android.ui.utils.UIUtils;
+
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
@@ -30,19 +44,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
-
-import org.alfresco.mobile.android.application.BuildConfig;
-import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.account.AccountSignInFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
-import org.alfresco.mobile.android.platform.mdm.MDMEvent;
-import org.alfresco.mobile.android.platform.mdm.MDMManager;
-import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
-import org.alfresco.mobile.android.ui.utils.UIUtils;
-
-import java.util.Map;
 
 /**
  * It's the first screen seens by the user when the application starts. Display
@@ -114,20 +115,49 @@ public class WelcomeFragment extends AlfrescoFragment
             hide(R.id.homescreen_login);
             hide(R.id.help_guide);
         }
+        else if (getActivity().getIntent() != null
+                && AlfrescoIntentAPI.ACTION_CREATE_ACCOUNT.equals(getActivity().getIntent().getAction()))
+        {
+            Bundle b = getActivity().getIntent().getExtras();
+            if (b.containsKey(AlfrescoIntentAPI.EXTRA_ALFRESCO_REPOSITORY_URL)
+                    && b.containsKey(AlfrescoIntentAPI.EXTRA_ALFRESCO_USERNAME))
+            {
+                // Display progressbar until MDM Event
+                show(R.id.homescreen_configuration);
+                hide(R.id.homescreen_login);
+                hide(R.id.help_guide);
+
+                FragmentDisplayer
+                        .load(AccountSignInFragment.with(getActivity())
+                                .repoUrl(b.getString(AlfrescoIntentAPI.EXTRA_ALFRESCO_REPOSITORY_URL))
+                                .shareUrl(b.getString(AlfrescoIntentAPI.EXTRA_ALFRESCO_SHARE_URL))
+                                .username(b.getString(AlfrescoIntentAPI.EXTRA_ALFRESCO_USERNAME)).back(false))
+                        .animate(null).into(FragmentDisplayer.PANEL_LEFT);
+            }
+            else
+            {
+                displayLogin();
+            }
+        }
         else
         {
-            Button login = (Button) viewById(R.id.homescreen_login);
-            login.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    AccountTypesFragment.with(getActivity()).display();
-                }
-            });
-            TextView tv = (TextView) viewById(R.id.help_guide);
-            tv.setMovementMethod(LinkMovementMethod.getInstance());
+            displayLogin();
         }
+    }
+
+    private void displayLogin()
+    {
+        Button login = (Button) viewById(R.id.homescreen_login);
+        login.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                AccountTypesFragment.with(getActivity()).display();
+            }
+        });
+        TextView tv = (TextView) viewById(R.id.help_guide);
+        tv.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -138,22 +168,26 @@ public class WelcomeFragment extends AlfrescoFragment
     {
         if (event.exception != null)
         {
-            hide(R.id.homescreen_config_progress);
-            hide(R.id.homescreen_config_message);
-            show(R.id.homescreen_config_error);
-
-            TextView txt = (TextView) viewById(R.id.homescreen_config_error);
-            txt.setText(Html.fromHtml(String.format(getString(R.string.error_mdm_loading_configuration),
-                    event.exception.getMessage())));
-            txt.setMaxLines(5);
-            txt.setSingleLine(false);
-            txt.setHorizontallyScrolling(false);
+            displayError(event.exception.getMessage());
         }
         else
         {
             FragmentDisplayer.load(AccountSignInFragment.with(getActivity()).back(false)).animate(null)
                     .into(FragmentDisplayer.PANEL_LEFT);
         }
+    }
+
+    private void displayError(String errorMessage)
+    {
+        hide(R.id.homescreen_config_progress);
+        hide(R.id.homescreen_config_message);
+        show(R.id.homescreen_config_error);
+
+        TextView txt = (TextView) viewById(R.id.homescreen_config_error);
+        txt.setText(Html.fromHtml(String.format(getString(R.string.error_mdm_loading_configuration), errorMessage)));
+        txt.setMaxLines(5);
+        txt.setSingleLine(false);
+        txt.setHorizontallyScrolling(false);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

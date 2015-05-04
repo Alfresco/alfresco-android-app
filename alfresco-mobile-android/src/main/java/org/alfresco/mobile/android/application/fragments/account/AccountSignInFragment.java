@@ -60,15 +60,25 @@ public class AccountSignInFragment extends AlfrescoFragment
 
     public static final String ARGUMENT_ACCOUNT_ID = "accountID";
 
-    public static final String ARGUMENT_ACCOUNT = "account";
+    private static final String ARGUMENT_ACCOUNT = "account";
+
+    private static final String ARGUMENT_SHARE_URL = "shareUrl";
+
+    private static final String ARGUMENT_REPO_URL = "repoUrl";
+
+    private static final String ARGUMENT_USERNAME = "username";
 
     private AlfrescoAccount account;
+
+    private String usernameIntent, shareUrlIntent, alfrescoUrlIntent;
 
     private EditTextFieldView passwordField;
 
     private EditTextFieldView userField;
 
     private MDMManager mdmManager;
+
+    private boolean hasIntentConfig = false;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -97,6 +107,10 @@ public class AccountSignInFragment extends AlfrescoFragment
         if (getArguments() != null || !getArguments().isEmpty())
         {
             account = (AlfrescoAccount) getArguments().getSerializable(ARGUMENT_ACCOUNT);
+            usernameIntent = getArguments().getString(ARGUMENT_USERNAME);
+            alfrescoUrlIntent = getArguments().getString(ARGUMENT_REPO_URL);
+            shareUrlIntent = getArguments().getString(ARGUMENT_SHARE_URL);
+            hasIntentConfig = !TextUtils.isEmpty(alfrescoUrlIntent) && !TextUtils.isEmpty(usernameIntent);
         }
 
         getActivity().setTitle(R.string.app_name);
@@ -120,6 +134,10 @@ public class AccountSignInFragment extends AlfrescoFragment
         if (account != null)
         {
             userField.setText(account.getUsername());
+        }
+        else if (hasIntentConfig)
+        {
+            userField.setText(usernameIntent);
         }
         else
         {
@@ -176,10 +194,12 @@ public class AccountSignInFragment extends AlfrescoFragment
                 return;
             }
 
+            String alfrescoUrl = (hasIntentConfig) ? alfrescoUrlIntent : mdmManager.getAlfrescoURL();
+            String description = (hasIntentConfig) ? null : mdmManager.getDescription();
+
             // Create AlfrescoAccount + Session
             Operator.with(getActivity()).load(
-                    new CreateAccountRequest.Builder(mdmManager.getAlfrescoURL(), username, password, mdmManager
-                            .getDescription()));
+                    new CreateAccountRequest.Builder(alfrescoUrl, username, password, description));
 
             OperationWaitingDialogFragment.newInstance(CreateAccountRequest.TYPE_ID, R.drawable.ic_onpremise,
                     getString(R.string.account), getString(R.string.account_verify), null, -1, null).show(
@@ -257,6 +277,24 @@ public class AccountSignInFragment extends AlfrescoFragment
         public Builder account(AlfrescoAccount account)
         {
             extraConfiguration.putSerializable(ARGUMENT_ACCOUNT, account);
+            return this;
+        }
+
+        public Builder username(String username)
+        {
+            extraConfiguration.putString(ARGUMENT_USERNAME, username);
+            return this;
+        }
+
+        public Builder repoUrl(String repositoryUrl)
+        {
+            extraConfiguration.putString(ARGUMENT_REPO_URL, repositoryUrl);
+            return this;
+        }
+
+        public Builder shareUrl(String shareUrl)
+        {
+            extraConfiguration.putString(ARGUMENT_SHARE_URL, shareUrl);
             return this;
         }
     }

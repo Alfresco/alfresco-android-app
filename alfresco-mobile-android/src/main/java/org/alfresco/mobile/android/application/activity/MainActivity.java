@@ -35,10 +35,7 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationConsta
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
 import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
@@ -48,7 +45,6 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -73,6 +69,7 @@ import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -403,11 +400,13 @@ public class MainActivity extends BaseActivity
     public void showSlideMenu()
     {
         mDrawerLayout.openDrawer(mDrawer);
+        invalidateOptionsMenu();
     }
 
     public void hideSlideMenu()
     {
         mDrawerLayout.closeDrawer(mDrawer);
+        invalidateOptionsMenu();
     }
 
     public boolean isSlideMenuVisible()
@@ -611,13 +610,6 @@ public class MainActivity extends BaseActivity
         {
             MenuItem mi = menu.add(Menu.NONE, R.id.menu_account_reload, Menu.FIRST, R.string.retry_account_loading);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
-                && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
-        {
-            ((AccountsFragment) getFragment(AccountsFragment.TAG)).getMenu(this, menu);
-            return true;
         }
 
         return super.onCreateOptionsMenu(menu);

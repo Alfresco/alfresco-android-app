@@ -32,13 +32,32 @@
             style="?MainTheme.TextView.SectionHeader.Grey"
             android:text="@string/menu_accounts" />
 
-        <Spinner
-            android:id="@+id/accounts_spinner"
+        <LinearLayout
+            android:id="@+id/accounts_spinner_button"
             style="@android:style/Widget.Holo.Spinner"
+            android:clickable="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:popupBackground="@color/sliding_account_background"
-            android:textColor="@android:color/white" />
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            tools:context=".activity.BaseActivity">
+
+            <ImageView
+                android:id="@+id/accounts_spinner_icon"
+                style="?MainTheme.ImageView.Thumbnail"
+                android:layout_width="@dimen/avatar_thumbnail"
+                android:layout_height="@dimen/avatar_thumbnail"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_account_light" />
+
+            <TextView
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:id="@+id/accounts_spinner_title"
+                style="?MainTheme.TextView.ListItem.Primary"
+                android:textColor="@color/grey_lighter" />
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/main_menu_group"
