@@ -27,4 +27,6 @@
     <dimen name="home_description_size">16sp</dimen>
     <dimen name="about_text_size">25sp</dimen>
 
+    <dimen name="actionbar_dropdown_bottom_height">16sp</dimen>
+
 </resources>

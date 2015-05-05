@@ -81,6 +81,7 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
@@ -1147,7 +1148,12 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
         if (event.hasException) { return; }
-        ((ProgressNodeAdapter) adapter).refreshOperations();
+        if (FavoritesSyncManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+        {
+            FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                    event.node.getIdentifier());
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+        }
         refreshListView();
         favorite(nodesToFavorite, doFavorite, true);
     }

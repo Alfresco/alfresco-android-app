@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.node.create;
 import java.io.File;
 
 import org.alfresco.mobile.android.api.model.Folder;
+import org.alfresco.mobile.android.async.node.create.RetrieveDocumentNameEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
@@ -29,6 +30,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+
+import com.squareup.otto.Subscribe;
 
 /**
  * Display a dialogFragment to retrieve user information about the document he
@@ -105,5 +108,14 @@ public class AddContentDialogFragment extends CreateDocumentDialogFragment
             getDialog().setDismissMessage(null);
         }
         super.onDestroyView();
+    }
+
+    // //////////////////////////////////////////////////////////////////////
+    // EVENTS RECEIVER
+    // //////////////////////////////////////////////////////////////////////
+    @Subscribe
+    public void onRetrieveDocumentName(RetrieveDocumentNameEvent event)
+    {
+        super.onRetrieveDocumentName(event);
     }
 }
