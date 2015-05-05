@@ -243,46 +243,52 @@ public class RenditionManagerImpl extends RenditionManager
 
     private void startPicasso(String url, final RenditionRequest request)
     {
-        if (request.iv == null || url == null)
-        {
-            displayPlaceHolder(request.iv.get(), request.placeHolderId);
-            displayErrorMessage(request.iv.get());
-            return;
-        }
+        if (request.iv == null || request.iv.get() == null || url == null) { return; }
         picasso.cancelRequest(request.iv.get());
-        picasso.load(url).placeholder(request.placeHolderId).into(request.iv.get(), new Callback()
+        try
         {
-            @Override
-            public void onSuccess()
+            picasso.load(url).placeholder(request.placeHolderId).into(request.iv.get(), new Callback()
             {
-                if (request.iv.get() instanceof ImageViewTouch)
+                @Override
+                public void onSuccess()
                 {
-                    if (request.touchViewEnabled != null)
+                    if (request.iv.get() instanceof ImageViewTouch)
                     {
-                        ((ImageViewTouch) request.iv.get()).setScaleEnabled(request.touchViewEnabled);
-                        ((ImageViewTouch) request.iv.get()).setDoubleTapEnabled(request.touchViewEnabled);
-                    }
-                    ((ImageViewTouch) request.iv.get()).setDisplayType(DisplayType.FIT_TO_SCREEN);
-                    if (((ViewGroup) request.iv.get().getParent()).findViewById(R.id.preview_message) != null)
-                    {
-                        ((ViewGroup) request.iv.get().getParent()).findViewById(R.id.preview_message).setVisibility(
-                                View.GONE);
+                        if (request.touchViewEnabled != null)
+                        {
+                            ((ImageViewTouch) request.iv.get()).setScaleEnabled(request.touchViewEnabled);
+                            ((ImageViewTouch) request.iv.get()).setDoubleTapEnabled(request.touchViewEnabled);
+                        }
+                        ((ImageViewTouch) request.iv.get()).setDisplayType(DisplayType.FIT_TO_SCREEN);
+                        if (((ViewGroup) request.iv.get().getParent()).findViewById(R.id.preview_message) != null)
+                        {
+                            ((ViewGroup) request.iv.get().getParent()).findViewById(R.id.preview_message)
+                                    .setVisibility(View.GONE);
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onError()
-            {
-                if (request.iv.get() instanceof ImageViewTouch)
+                @Override
+                public void onError()
                 {
-                    ((ImageViewTouch) request.iv.get()).setDisplayType(DisplayType.FIT_IF_BIGGER);
-                    request.iv.get().setScaleType(ScaleType.FIT_CENTER);
+                    if (request.iv.get() instanceof ImageViewTouch)
+                    {
+                        ((ImageViewTouch) request.iv.get()).setDisplayType(DisplayType.FIT_IF_BIGGER);
+                        request.iv.get().setScaleType(ScaleType.FIT_CENTER);
+                    }
+                    displayPlaceHolder(request.iv.get(), request.placeHolderId);
+                    displayErrorMessage(request.iv.get());
                 }
-                displayPlaceHolder(request.iv.get(), request.placeHolderId);
-                displayErrorMessage(request.iv.get());
-            }
-        });
+            });
+        }
+        catch (IllegalArgumentException e)
+        {
+            // Do nothing
+        }
+        catch (Exception e)
+        {
+            // Do nothing
+        }
     }
 
     private void displayErrorMessage(ImageView iv)
@@ -360,7 +366,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private void addReference(String identifier, String url, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             previewUriStore.put(identifier, url);
         }
@@ -372,7 +378,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private boolean hasReference(String identifier, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             return previewUriStore.containsKey(identifier) && !previewUriStore.get(identifier).equals(AWAIT);
         }
@@ -384,7 +390,7 @@ public class RenditionManagerImpl extends RenditionManager
 
     private String getReference(String identifier, Integer preview)
     {
-        if (preview != null)
+        if (preview != null && preview == RenditionRequest.RENDITION_PREVIEW)
         {
             return previewUriStore.get(identifier);
         }

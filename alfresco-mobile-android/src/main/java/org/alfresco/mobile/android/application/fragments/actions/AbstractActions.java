@@ -30,6 +30,7 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.text.TextUtils;
 import android.view.ActionMode;
 import android.view.Menu;
 
@@ -61,6 +62,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     @Override
     public boolean onCreateActionMode(ActionMode mode, Menu menu)
     {
+        this.mode = mode;
         mode.setTitle(createTitle());
         return true;
     }
@@ -80,7 +82,7 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
     // ///////////////////////////////////////////////////////////////////////////
     // INTERNALS
     // ///////////////////////////////////////////////////////////////////////////
-    protected abstract CharSequence createTitle();
+    protected abstract String createTitle();
 
     // ///////////////////////////////////////////////////////////////////////////////////
     // LIST MANAGEMENT
@@ -100,13 +102,16 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
         {
             addNode(n);
         }
+
+        if (mode == null) { return; }
         if (selectedItems.isEmpty())
         {
             mode.finish();
         }
         else
         {
-            mode.setTitle(createTitle());
+            String title = createTitle();
+            mode.setTitle((TextUtils.isEmpty(title) ? "" : title));
             mode.invalidate();
         }
     }
@@ -118,7 +123,8 @@ public abstract class AbstractActions<T> implements ActionMode.Callback
         {
             addNode(node);
         }
-        mode.setTitle(createTitle());
+        String title = createTitle();
+        mode.setTitle((TextUtils.isEmpty(title) ? "" : title));
         mode.invalidate();
     }
 

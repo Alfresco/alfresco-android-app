@@ -35,19 +35,16 @@ import org.alfresco.mobile.android.application.configuration.ConfigurationConsta
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.about.AboutFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountEditFragment;
 import org.alfresco.mobile.android.application.fragments.account.AccountOAuthFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountTypesFragment;
-import org.alfresco.mobile.android.application.fragments.account.AccountsFragment;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.builder.FragmentBuilderFactory;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.help.HelpDialogFragment;
 import org.alfresco.mobile.android.application.fragments.menu.MainMenuFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -72,6 +69,7 @@ import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
+import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
@@ -108,7 +106,7 @@ import com.squareup.otto.Subscribe;
 
 /**
  * Main activity of the application.
- * 
+ *
  * @author Jean Marie Pascal
  */
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -228,8 +226,8 @@ public class MainActivity extends BaseActivity
                 {
                     slidefragment.refreshData();
                 }
-                invalidateOptionsMenu();
                 super.onDrawerOpened(drawerView);
+                invalidateOptionsMenu();
             }
         };
 
@@ -376,6 +374,10 @@ public class MainActivity extends BaseActivity
             {
                 FileExplorerFragment.with(this).file(new File(intent.getData().getPathSegments().get(0))).display();
             }
+            else if (AlfrescoIntentAPI.AUTHORITY_DOCUMENT.equals(intent.getData().getAuthority()))
+            {
+                NodeDetailsFragment.with(this).nodeId(intent.getData().getPathSegments().get(0)).back(false).display();
+            }
         }
     }
 
@@ -398,14 +400,16 @@ public class MainActivity extends BaseActivity
     public void showSlideMenu()
     {
         mDrawerLayout.openDrawer(mDrawer);
+        invalidateOptionsMenu();
     }
 
     public void hideSlideMenu()
     {
         mDrawerLayout.closeDrawer(mDrawer);
+        invalidateOptionsMenu();
     }
 
-    private boolean isSlideMenuVisible()
+    public boolean isSlideMenuVisible()
     {
         return mDrawerLayout.isDrawerOpen(mDrawer);
     }
@@ -606,19 +610,6 @@ public class MainActivity extends BaseActivity
         {
             MenuItem mi = menu.add(Menu.NONE, R.id.menu_account_reload, Menu.FIRST, R.string.retry_account_loading);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_WITH_TEXT | MenuItem.SHOW_AS_ACTION_ALWAYS);
-        }
-
-        if (isSlideMenuVisible() || isVisible(MainMenuFragment.TAG))
-        {
-            ((MainMenuFragment) getFragment(MainMenuFragment.TAG)).getMenu(menu);
-            return true;
-        }
-
-        if (isVisible(AccountsFragment.TAG) && !isVisible(AccountTypesFragment.TAG)
-                && !isVisible(AccountEditFragment.TAG) && !isVisible(AccountOAuthFragment.TAG))
-        {
-            ((AccountsFragment) getFragment(AccountsFragment.TAG)).getMenu(this, menu);
-            return true;
         }
 
         return super.onCreateOptionsMenu(menu);

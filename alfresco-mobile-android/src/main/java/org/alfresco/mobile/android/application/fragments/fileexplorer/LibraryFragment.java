@@ -25,6 +25,7 @@ import java.util.Map;
 import org.alfresco.mobile.android.api.model.ListingContext;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileActions.onFinishModeListerner;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -43,6 +44,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.BaseAdapter;
@@ -73,6 +76,7 @@ public class LibraryFragment extends BaseCursorGridFragment
     {
         emptyListMessageId = R.string.empty_download;
         mode = ListingModeFragment.MODE_LISTING;
+        setHasOptionsMenu(true);
     }
 
     public static LibraryFragment newInstanceByTemplate(Bundle b)
@@ -296,6 +300,14 @@ public class LibraryFragment extends BaseCursorGridFragment
         Uri baseUri = MediaStore.Files.getContentUri("external");
         return new CursorLoader(getActivity(), baseUri, projection, selectionFinal, arguments,
                 MediaStore.Files.FileColumns.DATA + " ASC");
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
+        menu.clear();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

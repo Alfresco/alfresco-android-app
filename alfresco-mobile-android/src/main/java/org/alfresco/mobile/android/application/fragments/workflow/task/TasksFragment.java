@@ -136,6 +136,7 @@ public class TasksFragment extends TasksFoundationFragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         getMenu(getActivity(), menu);
     }

@@ -82,6 +82,7 @@ public class RetrieveDocumentNameRequest extends NodeRequest
             this();
             this.documentName = folderName;
             this.parentFolder = parentFolder;
+            this.parentFolderIdentifier = parentFolder.getIdentifier();
         }
 
         public RetrieveDocumentNameRequest build(Context context)

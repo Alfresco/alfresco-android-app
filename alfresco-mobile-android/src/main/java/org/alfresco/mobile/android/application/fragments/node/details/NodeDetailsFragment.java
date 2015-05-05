@@ -39,6 +39,7 @@ import org.alfresco.mobile.android.application.activity.PrivateDialogActivity;
 import org.alfresco.mobile.android.application.activity.PublicDispatcherActivity;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
@@ -162,8 +163,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     // //////////////////////////////////////////////////////////////////////
     public NodeDetailsFragment()
     {
-        requiredSession = true;
-        checkSession = true;
+        requiredSession = false;
+        checkSession = false;
         layoutId = R.layout.app_details;
     }
 
@@ -204,10 +205,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // Define the View
         setRootView(inflater.inflate(layoutId, container, false));
-        if (!getArguments().containsKey(ARGUMENT_FAVORITE))
-        {
-            if (getSession() == null) { return getRootView(); }
-        }
+        /*
+         * if (!getArguments().containsKey(ARGUMENT_FAVORITE)) { if
+         * (getSession() == null) { return getRootView(); } }
+         */
 
         // If node not present we display nothing.
         if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath))
@@ -391,7 +392,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             case RequestCode.FILEPICKER:
                 if (data != null && PrivateIntent.ACTION_PICK_FILE.equals(data.getAction()))
                 {
-                    ActionUtils.actionPickFile(getFragmentManager().findFragmentByTag(TAG), RequestCode.FILEPICKER);
+                    ActionUtils
+                            .actionPickFile(getFragmentManager().findFragmentByTag(getTag()), RequestCode.FILEPICKER);
                 }
                 else if (data != null && data.getData() != null)
                 {
@@ -496,6 +498,19 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if ((node instanceof Document && ((Document) node).getContentStreamLength() > 0 && !isRestrictable)
                 || (node instanceof NodeSyncPlaceHolder && !isRestrictable))
         {
+            // Tablet : Header thumbnail must be clickable
+            if (viewById(R.id.icon) != null)
+            {
+                viewById(R.id.icon).setOnClickListener(new OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        openin();
+                    }
+                });
+            }
+
             b.setOnClickListener(new OnClickListener()
             {
                 @Override
@@ -1044,6 +1059,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
         getMenu(menu);
     }
@@ -1069,6 +1085,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         .getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 startActivityForResult(i, RequestCode.FILEPICKER);
+                return true;
             case R.id.menu_action_edit:
                 edit();
                 return true;
@@ -1103,12 +1120,16 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     @Subscribe
     public void onResult(RetrieveNodeEvent event)
     {
+        if (getActivity() == null) { return; }
         if (event.hasException)
         {
             displayEmptyView();
-            ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            if (((TextView) viewById(R.id.empty_text)) != null)
+            {
+                ((TextView) viewById(R.id.empty_text)).setText(R.string.empty_child);
+            }
         }
-        else if (getActivity() != null)
+        else
         {
             node = event.data;
             parentNode = event.parentFolder;

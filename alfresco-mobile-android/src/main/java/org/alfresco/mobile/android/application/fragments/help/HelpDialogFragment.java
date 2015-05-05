@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.fragments.help;
 import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBuilder;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.ui.RefreshFragment;
@@ -213,6 +214,7 @@ public class HelpDialogFragment extends DialogFragment implements RefreshFragmen
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
         super.onCreateOptionsMenu(menu, inflater);
+        if (!MenuFragmentHelper.canDisplayFragmentMenu(getActivity())) { return; }
         menu.clear();
 
         refreshIcon = menu.add(Menu.NONE, R.id.menu_refresh, Menu.FIRST, R.string.refresh);

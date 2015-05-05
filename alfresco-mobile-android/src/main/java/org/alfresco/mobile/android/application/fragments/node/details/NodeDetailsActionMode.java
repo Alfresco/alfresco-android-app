@@ -17,9 +17,12 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.application.fragments.node.details;
 
-import java.io.Serializable;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import org.alfresco.mobile.android.api.constants.ContentModel;
 import org.alfresco.mobile.android.api.model.Document;
@@ -37,12 +40,9 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.apache.chemistry.opencmis.commons.enums.Action;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.content.Intent;
-import android.view.ActionMode;
-import android.view.Menu;
-import android.view.MenuItem;
+import java.io.Serializable;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class NodeDetailsActionMode extends AbstractActions<Node>
 {
@@ -63,7 +63,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
     // LIFECYCLE
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    protected CharSequence createTitle()
+    protected String createTitle()
     {
         String title = "";
         if (selectedItems.size() == 1)
@@ -147,6 +147,7 @@ public class NodeDetailsActionMode extends AbstractActions<Node>
                         .getDownloadFolder(getAccount()));
                 i.putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, getAccount().getId());
                 getFragment().startActivityForResult(i, RequestCode.FILEPICKER);
+                return true;
             case R.id.menu_action_edit:
                 ((NodeDetailsFragment) getFragment()).edit();
                 return true;

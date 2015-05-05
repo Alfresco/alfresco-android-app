@@ -70,21 +70,25 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.database.Cursor;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
-import android.widget.Spinner;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListPopupWindow;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
-public class MainMenuFragment extends AlfrescoFragment implements OnItemSelectedListener
+public class MainMenuFragment extends AlfrescoFragment implements AdapterView.OnItemClickListener
 {
     private boolean showOperationsMenu = false;
 
@@ -92,11 +96,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
 
     private AlfrescoAccount currentAccount;
 
-    private Spinner spinnerAccount;
-
-    private int accountIndex;
+    private ListPopupWindow listPopupWindow;
 
     private Button menuFavorites;
+
+    private LinearLayout accountsSpinnerButton;
 
     private List<View> syncFavoritesMenuItem = new ArrayList<>();
 
@@ -113,6 +117,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         checkSession = false;
         requiredSession = false;
+        setHasOptionsMenu(true);
     }
 
     protected static MainMenuFragment newInstanceByTemplate(Bundle b)
@@ -130,7 +135,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     {
         setRootView(inflater.inflate(R.layout.app_main_menu, container, false));
 
-        spinnerAccount = (Spinner) getRootView().findViewById(R.id.accounts_spinner);
+        accountsSpinnerButton = (LinearLayout) viewById(R.id.accounts_spinner_button);
 
         menuFavorites = (Button) viewById(R.id.menu_favorites);
 
@@ -241,9 +246,9 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // DROPDOWN EVENTS
     // ///////////////////////////////////////////////////////////////////////////
     @Override
-    public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id)
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        AlfrescoAccount acc = (AlfrescoAccount) parentView.getItemAtPosition(position);
+        AlfrescoAccount acc = (AlfrescoAccount) parent.getItemAtPosition(position);
         int accountId = (int) acc.getId();
 
         switch (accountId)
@@ -268,6 +273,8 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 {
                     if (getActivity() instanceof AlfrescoActivity)
                     {
+                        ((TextView) accountsSpinnerButton.findViewById(R.id.accounts_spinner_title)).setText(acc
+                                .getTitle());
                         ((AlfrescoActivity) getActivity()).swapAccount(acc);
                         if (SLIDING_TAG.equals(getTag()))
                         {
@@ -282,11 +289,9 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
                 }
                 break;
         }
-    }
 
-    @Override
-    public void onNothingSelected(AdapterView<?> arg0)
-    {
+        listPopupWindow.dismiss();
+        listPopupWindow = null;
     }
 
     public void swapAccount()
@@ -411,17 +416,7 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
             if (currentAccount == null) { return; }
         }
 
-        // We retrieve index of the current account to select it
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
-        for (int i = 0; i < list.size(); i++)
-        {
-            if (currentAccount.getId() == list.get(i).getId())
-            {
-                accountIndex = i;
-                break;
-            }
-        }
-
         // We add all extra parameters at the end of the list.
         if (currentAccount.getTypeId() == AlfrescoAccount.TYPE_ALFRESCO_CLOUD)
         {
@@ -453,9 +448,35 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
         }
 
         accountsAdapter.setNotifyOnChange(false);
-        spinnerAccount.setAdapter(accountsAdapter);
-        spinnerAccount.setSelection(accountIndex, false);
-        spinnerAccount.setOnItemSelectedListener(this);
+
+        ((TextView) accountsSpinnerButton.findViewById(R.id.accounts_spinner_title)).setText(currentAccount.getTitle());
+        AccountsAdapter.displayAvatar(getActivity(), currentAccount, R.drawable.ic_account_light,
+                ((ImageView) accountsSpinnerButton.findViewById(R.id.accounts_spinner_icon)));
+        accountsSpinnerButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (listPopupWindow != null)
+                {
+                    listPopupWindow.dismiss();
+                    listPopupWindow = null;
+                }
+                else
+                {
+                    listPopupWindow = new ListPopupWindow(getActivity());
+                    GradientDrawable gd = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, new int[] {
+                            0xFF282828, 0xFF282828 });
+                    gd.setCornerRadius(0f);
+                    listPopupWindow.setBackgroundDrawable(gd);
+                    listPopupWindow.setAnchorView(accountsSpinnerButton);
+                    listPopupWindow.setAdapter(accountsAdapter);
+                    listPopupWindow.setOnItemClickListener(MainMenuFragment.this);
+                    listPopupWindow.setWidth(ListPopupWindow.WRAP_CONTENT);
+                    listPopupWindow.show();
+                }
+            }
+        });
 
         if (OperationsFragment.canDisplay(getActivity(), currentAccount))
         {
@@ -610,8 +631,11 @@ public class MainMenuFragment extends AlfrescoFragment implements OnItemSelected
     // ///////////////////////////////////////////////////////////////////////////
     // OVERFLOW MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public void getMenu(Menu menu)
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
+        menu.clear();
+
         MenuItem mi;
 
         mi = menu.add(Menu.NONE, R.id.menu_settings, Menu.FIRST + 1, R.string.menu_prefs);
