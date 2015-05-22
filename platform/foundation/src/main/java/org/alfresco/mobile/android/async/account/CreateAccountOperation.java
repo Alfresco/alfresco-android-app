@@ -37,6 +37,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
 
+import android.util.Log;
+
 public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
 {
     protected String baseUrl;
@@ -104,6 +106,7 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
             if (e instanceof AlfrescoSessionException)
             {
                 result.setException((Exception) e.getCause());
+                Log.e("TAG", Log.getStackTraceString(e));
             }
             else
             {

@@ -25,9 +25,13 @@ public class RetrieveDocumentNameEvent extends OperationEvent<String>
 {
     public final Folder parentFolder;
 
-    public RetrieveDocumentNameEvent(String requestId, LoaderResult<String> results, Folder parentFolder)
+    public final String originalName;
+
+    public RetrieveDocumentNameEvent(String requestId, LoaderResult<String> results, String originalName,
+            Folder parentFolder)
     {
         super(requestId, results);
+        this.originalName = originalName;
         this.parentFolder = parentFolder;
     }
 
