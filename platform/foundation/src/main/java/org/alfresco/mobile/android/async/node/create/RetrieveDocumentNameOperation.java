@@ -144,6 +144,7 @@ public class RetrieveDocumentNameOperation extends BaseOperation<String>
     protected void onPostExecute(LoaderResult<String> result)
     {
         super.onPostExecute(result);
-        EventBusManager.getInstance().post(new RetrieveDocumentNameEvent(getRequestId(), result, parentFolder));
+        EventBusManager.getInstance().post(
+                new RetrieveDocumentNameEvent(getRequestId(), result, documentName, parentFolder));
     }
 }

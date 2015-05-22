@@ -88,9 +88,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="com.alfresco.android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <data
                     android:scheme="alfresco"
                     android:host="document" />
@@ -100,8 +98,18 @@
                 <data
                     android:scheme="alfresco"
                     android:host="file" />
-
                 <data />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:path="/android-app"
+                    android:host="mobile.alfresco.com"
+                    android:scheme="http" />
             </intent-filter>
         </activity>
 

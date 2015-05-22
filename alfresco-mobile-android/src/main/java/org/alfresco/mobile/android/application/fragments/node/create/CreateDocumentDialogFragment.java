@@ -93,7 +93,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
     private String recommandedName = null;
 
-    private String originalName = null;
+    private String tempName = null;
 
     private ContentFile contentFile;
 
@@ -102,6 +102,12 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     private CreateConfigManager createConfigManager;
 
     private ItemConfig type;
+
+    private Button bcreate;
+
+    private boolean requestCheck = true;
+
+    private boolean requestInProgress = false;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -166,7 +172,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             }
         });
 
-        final Button bcreate = UIUtils.initValidation(rootView, R.string.confirm);
+        bcreate = UIUtils.initValidation(rootView, R.string.confirm);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -178,8 +184,8 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         if (getArguments().getSerializable(ARGUMENT_CONTENT_FILE) != null)
         {
             contentFile = (ContentFile) getArguments().getSerializable(ARGUMENT_CONTENT_FILE);
-            originalName = contentFile.getFileName();
-            tv.setText(originalName);
+            tempName = contentFile.getFileName();
+            tv.setText(tempName);
             tsize.setText(Formatter.formatFileSize(getActivity(), contentFile.getLength()));
             tsize.setVisibility(View.VISIBLE);
             bcreate.setEnabled(true);
@@ -193,6 +199,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         {
             public void afterTextChanged(Editable s)
             {
+                tempName = tv.getText().toString();
                 if (tv.getText().length() == 0)
                 {
                     bcreate.setEnabled(false);
@@ -200,7 +207,6 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                 }
                 else
                 {
-                    bcreate.setEnabled(true);
                     if (UIUtils.hasInvalidName(tv.getText().toString().trim()))
                     {
                         tv.setError(getString(R.string.filename_error_character));
@@ -209,15 +215,19 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
                     else
                     {
                         tv.setError(null);
+                        bcreate.setEnabled(false);
+                        if (!requestInProgress)
+                        {
+                            Operator.with(getActivity(), getAccount()).load(
+                                    new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
+                            requestCheck = false;
+                            requestInProgress = true;
+                        }
+                        else
+                        {
+                            requestCheck = true;
+                        }
                     }
-                }
-                if (originalName.equals(tv.getText().toString()))
-                {
-                    tv.setError(getString(R.string.create_document_filename_error));
-                }
-                else
-                {
-                    tv.setError(null);
                 }
             }
 
@@ -311,11 +321,6 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         Map<String, Serializable> props = new HashMap<String, Serializable>();
         String documentName = tv.getText().toString().trim();
 
-        if (originalName.equals(documentName) && recommandedName != null && !recommandedName.equals(originalName))
-        {
-            documentName = recommandedName;
-        }
-
         if (desc.getText() != null && desc.getText().length() > 0)
         {
             props.put(ContentModel.PROP_DESCRIPTION, desc.getText().toString());
@@ -375,10 +380,25 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     public void onRetrieveDocumentName(RetrieveDocumentNameEvent event)
     {
+        requestInProgress = false;
         recommandedName = event.data;
-        if (!recommandedName.equals(originalName))
+        if (!recommandedName.equals(event.originalName))
         {
             tv.setError(getString(R.string.create_document_filename_error));
+            bcreate.setEnabled(false);
+        }
+        else
+        {
+            tv.setError(null);
+            bcreate.setEnabled(true);
+        }
+
+        if (requestCheck)
+        {
+            Operator.with(getActivity(), getAccount()).load(
+                    new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
+            requestCheck = false;
+            requestInProgress = true;
         }
     }
 

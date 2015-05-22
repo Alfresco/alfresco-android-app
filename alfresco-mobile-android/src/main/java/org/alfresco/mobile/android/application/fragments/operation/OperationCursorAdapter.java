@@ -70,11 +70,13 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
         switch (status)
         {
             case Operation.STATUS_PENDING:
+                vh.choose.setVisibility(View.VISIBLE);
                 vh.choose.setImageResource(R.drawable.ic_cancel);
                 statusValue += context.getString(R.string.status_pending);
                 break;
             case Operation.STATUS_RUNNING:
-                vh.choose.setImageResource(R.drawable.ic_cancel);
+                vh.choose.setVisibility(View.GONE);
+                // vh.choose.setImageResource(R.drawable.ic_cancel);
                 vh.progress.setVisibility(View.VISIBLE);
                 long totalSize = cursor.getLong(OperationSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                 if (totalSize == -1)
@@ -100,18 +102,22 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
                 statusValue += context.getString(R.string.status_running);
                 break;
             case Operation.STATUS_PAUSED:
+                vh.choose.setVisibility(View.VISIBLE);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_paused);
                 break;
             case Operation.STATUS_SUCCESSFUL:
+                vh.choose.setVisibility(View.VISIBLE);
                 vh.choose.setImageResource(R.drawable.ic_validate);
                 statusValue += context.getString(R.string.status_successful);
                 break;
             case Operation.STATUS_FAILED:
+                vh.choose.setVisibility(View.VISIBLE);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_failed);
                 break;
             case Operation.STATUS_CANCEL:
+                vh.choose.setVisibility(View.VISIBLE);
                 vh.choose.setImageResource(R.drawable.ic_retry);
                 statusValue += context.getString(R.string.status_cancelled);
                 break;
