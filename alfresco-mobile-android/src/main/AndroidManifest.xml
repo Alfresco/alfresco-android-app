@@ -107,6 +107,11 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
+                    android:path="/"
+                    android:host="mobile.alfresco.com"
+                    android:scheme="http" />
+
+                <data
                     android:path="/android-app"
                     android:host="mobile.alfresco.com"
                     android:scheme="http" />
