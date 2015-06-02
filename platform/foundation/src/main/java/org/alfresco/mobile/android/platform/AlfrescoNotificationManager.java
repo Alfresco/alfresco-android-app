@@ -33,7 +33,6 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Notification;
-import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -43,6 +42,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -250,14 +250,23 @@ public class AlfrescoNotificationManager extends Manager
         Notification notification;
 
         // Get the builder to create notification.
-        Builder builder = new Builder(appContext.getApplicationContext());
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(appContext.getApplicationContext());
         builder.setContentTitle(params.getString(ARGUMENT_TITLE));
         if (params.containsKey(ARGUMENT_DESCRIPTION))
         {
             builder.setContentText(params.getString(ARGUMENT_DESCRIPTION));
         }
         builder.setNumber(0);
-        builder.setSmallIcon(R.drawable.ic_notification_icon);
+
+        if (AndroidVersion.isLollipopOrAbove())
+        {
+            builder.setSmallIcon(R.drawable.ic_notification);
+            builder.setColor(appContext.getResources().getColor(R.color.alfresco_sky));
+        }
+        else
+        {
+            builder.setSmallIcon(R.drawable.ic_notification);
+        }
 
         if (params.containsKey(ARGUMENT_DESCRIPTION))
         {

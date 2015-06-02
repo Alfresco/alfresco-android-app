@@ -256,6 +256,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         // Current File
         Uri localFileUri = Uri.parse(c.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
+        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
 
         // New File
         File parentFolder = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
@@ -274,6 +275,8 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
             cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_FAILED);
             getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
         }
+
+        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         // Encrypt file if necessary
         AlfrescoStorageManager.getInstance(getActivity()).manageFile(newLocalFile);
