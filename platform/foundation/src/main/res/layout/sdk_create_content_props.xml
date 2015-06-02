@@ -51,7 +51,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/content_name_hint"
                     android:imeOptions="actionNext"
-                    android:inputType="text"></EditText>
+                    android:inputType="text"/>
             </TableRow>
 
             <TextView
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/content_description_hint"
                     android:imeOptions="actionNext"
-                    android:inputType="text"></EditText>
+                    android:inputType="text"/>
             </TableRow>
 
             <TableRow

@@ -173,6 +173,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         });
 
         bcreate = UIUtils.initValidation(rootView, R.string.confirm);
+        bcreate.setEnabled(false);
         bcreate.setOnClickListener(new OnClickListener()
         {
             public void onClick(View v)
@@ -188,7 +189,6 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             tv.setText(tempName);
             tsize.setText(Formatter.formatFileSize(getActivity(), contentFile.getLength()));
             tsize.setVisibility(View.VISIBLE);
-            bcreate.setEnabled(true);
         }
         else
         {
@@ -246,6 +246,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
             {
+                if (!bcreate.isEnabled()) { return false; }
                 boolean handled = false;
                 if (actionId == EditorInfo.IME_ACTION_DONE)
                 {
@@ -395,6 +396,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
 
         if (requestCheck)
         {
+            bcreate.setEnabled(false);
             Operator.with(getActivity(), getAccount()).load(
                     new RetrieveDocumentNameRequest.Builder(getParent(), tv.getText().toString()));
             requestCheck = false;
