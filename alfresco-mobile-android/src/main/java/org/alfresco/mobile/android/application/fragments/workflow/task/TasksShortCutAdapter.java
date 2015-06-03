@@ -86,7 +86,7 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
         return v;
     }
 
-    public static final int FILTER_ACTIVE = 0;
+    public static final int FILTER_ASSIGNED = 0;
 
     public static final int FILTER_INITIATOR = 1;
 
@@ -98,7 +98,7 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
 
     public static final int FILTER_OVERDUE = 5;
 
-    public static final int FILTER_ASSIGNED = 6;
+    public static final int FILTER_ACTIVE = 6;
 
     public static final int FILTER_CUSTOM = 7;
 
@@ -106,13 +106,13 @@ public class TasksShortCutAdapter extends BaseListAdapter<Integer, SimpleViewHol
     {
         private static final long serialVersionUID = 1L;
         {
-            add(R.string.task_filter_active);
+            add(R.string.task_filter_assigned_me);
             add(R.string.task_filter_initiator);
             add(R.string.task_filter_completed);
             add(R.string.task_filter_high_priority);
             add(R.string.task_filter_due_today);
             add(R.string.task_filter_overdue);
-            add(R.string.task_filter_assigned_me);
+            add(R.string.task_filter_active);
             add(R.string.task_filter_custom);
         }
     };
