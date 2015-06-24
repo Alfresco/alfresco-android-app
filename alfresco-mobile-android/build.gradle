@@ -85,6 +85,9 @@ android {
         //PLAY STORE FLAVOR
         store {
             dependencies {
+                //DEBUG BUILD TYPE
+                debugCompile project(':extensions:hockeyapp')
+
                 storeCompile project(':extensions:samsung')
                 storeCompile project(':extensions:scansnap')
             }
@@ -108,7 +111,4 @@ android {
 dependencies {
     //COMMON TO ALL VARIANTS
     compile project(':platform:foundation')
-
-    //DEBUG BUILD TYPE
-    debugCompile project(':extensions:hockeyapp')
 }
