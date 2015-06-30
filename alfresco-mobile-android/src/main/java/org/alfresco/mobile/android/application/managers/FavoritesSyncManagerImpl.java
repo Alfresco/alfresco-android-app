@@ -61,5 +61,5 @@ public final class FavoritesSyncManagerImpl extends FavoritesSyncManager
         }
         return totalSize;
     }
-    
+
 }

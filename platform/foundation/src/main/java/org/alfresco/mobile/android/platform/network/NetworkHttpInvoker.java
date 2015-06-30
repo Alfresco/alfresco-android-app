@@ -22,20 +22,23 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.OkUrlFactory;
 
 public class NetworkHttpInvoker extends org.alfresco.mobile.android.api.network.NetworkHttpInvoker
 {
     private OkHttpClient httpClient;
 
+    private OkUrlFactory urlFactory;
+
     public NetworkHttpInvoker()
     {
         httpClient = NetworkSingleton.getInstance().getHttpClient();
+        urlFactory = new OkUrlFactory(NetworkSingleton.getInstance().getHttpClient());
     }
 
     @Override
     protected HttpURLConnection getHttpURLConnection(URL url) throws IOException
     {
-        return httpClient.open(url);
+        return urlFactory.open(url);
     }
-
 }

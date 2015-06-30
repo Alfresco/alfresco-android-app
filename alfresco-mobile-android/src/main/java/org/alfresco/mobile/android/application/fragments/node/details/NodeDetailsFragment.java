@@ -383,6 +383,20 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 }
                 else
                 {
+                    DataProtectionManager.getInstance(getActivity()).checkEncrypt(
+                            SessionUtils.getAccount(getActivity()), dlFile);
+
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+                        cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, dlFile.lastModified());
+                        getActivity().getContentResolver().update(
+                                FavoritesSyncManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+                    }
+
                     // File with no modification
                     // Encrypt sync file if necessary
                     // Delete otherwise

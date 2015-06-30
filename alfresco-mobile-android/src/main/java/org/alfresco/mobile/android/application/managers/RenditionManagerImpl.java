@@ -1,14 +1,14 @@
 /*******************************************************************************
  * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * <p/>
  * This file is part of Alfresco Mobile for Android.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,7 +19,6 @@ package org.alfresco.mobile.android.application.managers;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +34,7 @@ import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.api.utils.OnPremiseUrlRegistry;
 import org.alfresco.mobile.android.application.R;
+import org.alfresco.mobile.android.platform.network.NetworkSingleton;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.rendition.RenditionRequest;
@@ -45,13 +45,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
@@ -62,7 +63,7 @@ import it.sephiroth.android.library.imagezoom.ImageViewTouchBase.DisplayType;
 
 /**
  * Utility class for downloading content and display it.
- * 
+ *
  * @author jpascal
  */
 public class RenditionManagerImpl extends RenditionManager
@@ -511,7 +512,20 @@ public class RenditionManagerImpl extends RenditionManager
         {
             picasso.shutdown();
         }
-        ImageDownloader imageLoader = new ImageDownloader(appContext, session);
+
+        OkHttpClient client = null;
+        // Specific to detect if OKhttp is used
+        try
+        {
+            Class.forName("org.alfresco.mobile.android.platform.network.MobileIronHttpInvoker");
+            //OKhttp compatible with MobileIron ?
+            client = new OkHttpClient();
+        }
+        catch (ClassNotFoundException e)
+        {
+            client = NetworkSingleton.getInstance().getHttpClient().clone();
+        }
+        ImageDownloader imageLoader = new ImageDownloader(client, alfrescoSession);
         Builder builder = new Builder(appContext);
         picasso = builder.downloader(imageLoader).build();
     }
@@ -521,21 +535,13 @@ public class RenditionManagerImpl extends RenditionManager
     // ///////////////////////////////////////////////////////////////////////////
     public class ImageDownloader extends OkHttpDownloader
     {
-        private AlfrescoSession alfSession;
 
-        public ImageDownloader(Context context, AlfrescoSession alfSession)
+        public ImageDownloader(OkHttpClient client, AlfrescoSession alfSession)
         {
-            super(context);
-            this.alfSession = alfSession;
-        }
-
-        @Override
-        protected HttpURLConnection openConnection(Uri uri) throws IOException
-        {
-            HttpURLConnection conn = super.openConnection(uri);
-
+            super(client);
             Map<String, List<String>> httpHeaders = ((AbstractAlfrescoSessionImpl) alfSession)
                     .getAuthenticationProvider().getHTTPHeaders();
+            Map<String, String> headers = new HashMap<>(httpHeaders.size());
             // set other headers
             if (httpHeaders != null)
             {
@@ -545,12 +551,29 @@ public class RenditionManagerImpl extends RenditionManager
                     {
                         for (String value : header.getValue())
                         {
-                            conn.addRequestProperty(header.getKey(), value);
+                            headers.put(header.getKey(), value);
                         }
                     }
                 }
+                addHeaders(client, headers);
             }
-            return conn;
+        }
+
+        private void addHeaders(OkHttpClient okHttpClient, final Map<String, String> headers)
+        {
+            okHttpClient.interceptors().add(new com.squareup.okhttp.Interceptor()
+            {
+                @Override
+                public com.squareup.okhttp.Response intercept(Chain chain) throws IOException
+                {
+                    Request.Builder builder = chain.request().newBuilder();
+                    for (Map.Entry<String, String> header : headers.entrySet())
+                    {
+                        builder.addHeader(header.getKey(), header.getValue()).build();
+                    }
+                    return chain.proceed(builder.build());
+                }
+            });
         }
     }
 }
