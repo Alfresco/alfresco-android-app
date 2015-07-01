@@ -20,6 +20,7 @@ import org.alfresco.mobile.android.application.fragments.activitystream.Activity
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.fileexplorer.FileExplorerFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
+import org.alfresco.mobile.android.application.fragments.node.favorite.FavoritesFragment;
 import org.alfresco.mobile.android.application.fragments.search.SearchFragment;
 import org.alfresco.mobile.android.application.fragments.site.browser.BrowserSitesFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
@@ -27,6 +28,7 @@ import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFrag
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
+import org.alfresco.mobile.android.sync.FavoritesSyncManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -37,12 +39,15 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 /**
  * Created by jpascal on 21/01/2015.
@@ -150,15 +155,16 @@ public class MenuConfigFragment extends AlfrescoFragment
         {
             public void onClick(View v)
             {
-                if (defaultMenuItems.get(VIEW_SYNC).isEnable() == originalSyncState)
+                if (!defaultMenuItems.get(VIEW_SYNC).isEnable() && originalSyncState
+                        || (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState))
                 {
-                    saveConfiguration();
+                    manageSyncSetting();
                 }
                 else
                 {
-                    displaySyncWarning();
+                    saveConfiguration();
+                    getActivity().onBackPressed();
                 }
-                getActivity().onBackPressed();
             }
         });
 
@@ -168,11 +174,30 @@ public class MenuConfigFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // HELPER
     // ///////////////////////////////////////////////////////////////////////////
-    public void displaySyncWarning()
+    public void manageSyncSetting()
     {
-        if (defaultMenuItems.get(VIEW_SYNC).isEnable() == originalSyncState)
+        if (!defaultMenuItems.get(VIEW_SYNC).isEnable() && originalSyncState)
         {
-            // TODO Display Warning
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity()).cancelable(false)
+                    .title(R.string.favorites_deactivate).callback(new MaterialDialog.ButtonCallback()
+                    {
+                        @Override
+                        public void onPositive(MaterialDialog dialog)
+                        {
+                            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
+                            FavoritesSyncManager.getInstance(getActivity()).unsync(getAccount());
+                            saveConfiguration();
+                            getActivity().onBackPressed();
+                        }
+                    }).content(Html.fromHtml(getString(R.string.favorites_deactivate_description)))
+                    .positiveText(R.string.ok).negativeText(R.string.cancel);
+            builder.show();
+        }
+        else if (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState)
+        {
+            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
+            saveConfiguration();
+            getActivity().onBackPressed();
         }
     }
 
@@ -330,7 +355,7 @@ public class MenuConfigFragment extends AlfrescoFragment
                 R.drawable.ic_task_light, null);
 
         // Favorites
-        addMenuConfigItem(VIEW_FAVORITES, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_FAVORITES,
+        addMenuConfigItem(VIEW_FAVORITES, FavoritesFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_FAVORITES,
                 R.drawable.ic_favorite_light, null);
 
         // Sync
