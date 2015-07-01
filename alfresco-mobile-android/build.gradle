@@ -9,7 +9,7 @@ android {
 
         minSdkVersion 11
         targetSdkVersion 21
-        versionCode 45
+        versionCode 46
         versionName VERSION_NAME
 
         manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]
