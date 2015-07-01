@@ -43,13 +43,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
-import android.text.Html;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import de.keyboardsurfer.android.widget.crouton.Crouton;
-import de.keyboardsurfer.android.widget.crouton.Style;
 
 /**
  * Manager responsible of all dialog, notification and warning
@@ -169,26 +166,22 @@ public class AlfrescoNotificationManager extends Manager
     // //////////////////////////////////////////////////////////////////////
     public void showInfoCrouton(Activity activity, String text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, Html.fromHtml(text), Style.INFO);
+        // Implement in subclass
     }
 
     public void showAlertCrouton(Activity activity, String text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, Html.fromHtml(text), Style.ALERT);
+        // Implement in subclass
     }
 
     public void showInfoCrouton(Activity activity, int text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.INFO);
+        // Implement in subclass
     }
 
     public void showAlertCrouton(Activity activity, int text)
     {
-        Crouton.cancelAllCroutons();
-        Crouton.showText(activity, text, Style.ALERT);
+        // Implement in subclass
     }
 
     // ///////////////////////////////////////////////////////////////////////////

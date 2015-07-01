@@ -21,4 +21,8 @@
     <bool name="manager_isEnable_ConfigManager">true</bool>
     <string name="manager_ConfigManager" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.config.ConfigManager</string>
 
+    <!-- Notification Manager -->
+    <bool name="manager_isEnable_AlfrescoNotificationManager">true</bool>
+    <string name="manager_AlfrescoNotificationManager">org.alfresco.mobile.android.application.managers.NotificationManager</string>
+
 </resources>

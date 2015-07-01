@@ -360,7 +360,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Cartelle dei preferiti</string>
     <string name="menu_favorites">Preferiti</string>
-    <string name="synced_documents">Contenuti sincronizzati</string>
+    <string name="synced_content">Contenuti sincronizzati</string>
     <string name="empty_favorites">Nessun preferito</string>
     <string name="favorites_document">Preferito</string>
     <string name="error_retrieve_favorite">Impossibile recuperare le informazioni sui preferiti per questo contenuto.</string>

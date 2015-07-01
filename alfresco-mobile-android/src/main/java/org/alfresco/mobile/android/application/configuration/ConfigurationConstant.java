@@ -42,6 +42,8 @@ public interface ConfigurationConstant
 
     String KEY_FAVORITES = "org.alfresco.client.view.favorites";
 
+    String KEY_SYNC = "org.alfresco.client.view.sync";
+
     String KEY_SEARCH = "org.alfresco.client.view.search";
 
     String KEY_PERSONS = "org.alfresco.client.view.persons";

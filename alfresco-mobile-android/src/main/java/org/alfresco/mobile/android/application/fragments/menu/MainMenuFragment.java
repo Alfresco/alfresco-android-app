@@ -204,7 +204,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
                 ((MainActivity) getActivity()).lockSlidingMenu();
             }
         }
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     @Override
@@ -239,7 +239,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     public void refreshData()
     {
         refresh();
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -551,10 +551,11 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         }
     }
 
-    public void displayFavoriteStatut()
+    public void displaySyncStatut()
     {
+        // TODO Check refactoring for independent sync menu
         Cursor statutCursor = null;
-        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite_dark);
+        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_sync_dark);
         Drawable statut = null;
 
         try
@@ -702,7 +703,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     @Subscribe
     public void onSyncCompleted(FavoritesSyncScanEvent event)
     {
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

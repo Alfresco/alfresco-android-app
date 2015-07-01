@@ -175,12 +175,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         hasSynchroActive = getMode() == MODE_PROGRESS
                 || FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(acc);
 
-        int titleId = R.string.menu_favorites;
-        if (hasSynchroActive)
-        {
-            titleId = R.string.synced_documents;
-        }
-
+        int titleId = R.string.synced_content;
         if (getFolderName() != null)
         {
             UIUtils.displayTitle(getActivity(), getFolderName());
@@ -780,9 +775,9 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     public static class Builder extends AlfrescoFragmentBuilder
     {
-        public static final int ICON_ID = R.drawable.ic_favorite_dark;
+        public static final int ICON_ID = R.drawable.ic_sync_dark;
 
-        public static final int LABEL_ID = R.string.menu_favorites;
+        public static final int LABEL_ID = R.string.synced_content;
 
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS

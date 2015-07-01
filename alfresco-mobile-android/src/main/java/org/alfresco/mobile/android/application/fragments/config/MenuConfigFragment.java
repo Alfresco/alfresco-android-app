@@ -65,6 +65,8 @@ public class MenuConfigFragment extends AlfrescoFragment
 
     public static final String VIEW_FAVORITES = "view-favorites-default";
 
+    public static final String VIEW_SYNC = "view-sync-default";
+
     public static final String VIEW_SEARCH = "view-search-default";
 
     public static final String VIEW_LOCAL_FILE = "view-local-default";
@@ -83,6 +85,8 @@ public class MenuConfigFragment extends AlfrescoFragment
     private ConfigManager configManager;
 
     private Button save;
+
+    private boolean originalSyncState;
 
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
@@ -146,7 +150,14 @@ public class MenuConfigFragment extends AlfrescoFragment
         {
             public void onClick(View v)
             {
-                saveConfiguration();
+                if (defaultMenuItems.get(VIEW_SYNC).isEnable() == originalSyncState)
+                {
+                    saveConfiguration();
+                }
+                else
+                {
+                    displaySyncWarning();
+                }
                 getActivity().onBackPressed();
             }
         });
@@ -157,6 +168,14 @@ public class MenuConfigFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     // HELPER
     // ///////////////////////////////////////////////////////////////////////////
+    public void displaySyncWarning()
+    {
+        if (defaultMenuItems.get(VIEW_SYNC).isEnable() == originalSyncState)
+        {
+            // TODO Display Warning
+        }
+    }
+
     public void updateCounter(int counter)
     {
         int selectedCounter = counter;
@@ -274,6 +293,8 @@ public class MenuConfigFragment extends AlfrescoFragment
         }
         defaultMenuItems.clear();
         defaultMenuItems = sortedItems;
+
+        originalSyncState = defaultMenuItems.get(VIEW_SYNC).isEnable();
     }
 
     private void createDefaultMenu()
@@ -308,9 +329,13 @@ public class MenuConfigFragment extends AlfrescoFragment
         addMenuConfigItem(VIEW_TASKS, TasksFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_TASKS,
                 R.drawable.ic_task_light, null);
 
-        // Sync & Favorites
+        // Favorites
         addMenuConfigItem(VIEW_FAVORITES, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_FAVORITES,
                 R.drawable.ic_favorite_light, null);
+
+        // Sync
+        addMenuConfigItem(VIEW_SYNC, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SYNC,
+                R.drawable.ic_sync_light, null);
 
         // Search
         addMenuConfigItem(VIEW_SEARCH, SearchFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SEARCH,

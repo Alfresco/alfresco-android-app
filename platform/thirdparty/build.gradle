@@ -24,16 +24,24 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:support-v13:21.0.3'
-    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
-        exclude group: 'com.google.android', module: 'support-v4'
-    }
+
+    //Support
+    compile 'com.android.support:design:22.2.0'
+    compile 'com.android.support:support-v4:22.2.0'
+    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.android.support:support-v13:22.2.0'
+
+    //Square
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.squareup:otto:1.3.4'
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.squareup.okhttp:okhttp-urlconnection:2.4.0'
+
+    //3rd Party Lib
+    compile 'com.afollestad:material-dialogs:0.7.6.0'
     compile 'com.mattprecious.telescope:telescope:1.3.0@aar'
     compile 'com.jmpergar:AwesomeText:1.0.0'
+    compile('de.keyboardsurfer.android.widget:crouton:1.8.5@aar') {
+        exclude group: 'com.google.android', module: 'support-v4'
+    }
 }

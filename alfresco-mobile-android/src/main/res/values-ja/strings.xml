@@ -400,7 +400,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">お気に入りのフォルダ</string>
     <string name="menu_favorites">お気に入り</string>
-    <string name="synced_documents">同期されているコンテンツ</string>
+    <string name="synced_content">同期されているコンテンツ</string>
     <string name="empty_favorites">お気に入りはありません</string>
     <string name="favorites_document">お気に入り</string>
     <string name="error_retrieve_favorite">このコンテンツのお気に入り情報を取得できませんでした。</string>

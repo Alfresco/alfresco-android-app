@@ -400,7 +400,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
-    <string name="synced_documents">Synced Content</string>
+    <string name="synced_content">Synced Content</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorite</string>
     <string name="error_retrieve_favorite">Favorite info for this content could not be retrieved.</string>
