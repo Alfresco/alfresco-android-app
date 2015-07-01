@@ -52,8 +52,11 @@ public interface VersionNumber
     /** Released 20 Apr 2015. */
     int VERSION_1_5_0 = 40;
 
-    /** Release Q2 2015. */
+    /** Release 11 June 2015. */
     int VERSION_1_5_1 = 45;
 
-    int LATEST_VERSION = VERSION_1_5_1;
+    /** Release Q3 2015. */
+    int VERSION_1_5_2 = 46;
+
+    int LATEST_VERSION = VERSION_1_5_2;
 }
