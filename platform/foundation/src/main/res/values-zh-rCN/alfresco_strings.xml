@@ -360,7 +360,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">收藏夹文件夹</string>
     <string name="menu_favorites">收藏夹</string>
-    <string name="synced_documents">已同步内容</string>
+    <string name="synced_content">已同步内容</string>
     <string name="empty_favorites">无收藏夹</string>
     <string name="favorites_document">收藏夹</string>
     <string name="error_retrieve_favorite">无法检索此内容的收藏夹信息。</string>

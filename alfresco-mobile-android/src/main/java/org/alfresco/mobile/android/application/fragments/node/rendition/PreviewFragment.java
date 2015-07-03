@@ -38,7 +38,7 @@ import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManager
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.rendition.RenditionBuilder;
@@ -176,7 +176,7 @@ public class PreviewFragment extends AlfrescoFragment
         Bundle b = new Bundle();
 
         // 3 cases
-        FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(getActivity());
+        SyncContentManager syncManager = SyncContentManager.getInstance(getActivity());
         AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
 
         NodeDetailsFragment detailsFragment = (NodeDetailsFragment) getFragmentManager().findFragmentByTag(

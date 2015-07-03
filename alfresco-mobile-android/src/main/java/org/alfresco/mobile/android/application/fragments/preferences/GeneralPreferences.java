@@ -34,7 +34,7 @@ import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -190,12 +190,12 @@ public class GeneralPreferences extends PreferenceFragment
             return;
         }
 
-        Boolean syncEnable = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(account);
+        Boolean syncEnable = SyncContentManager.getInstance(getActivity()).hasActivateSync(account);
         cpref.setChecked(syncEnable);
         cpref.setTitle(getString(R.string.settings_favorite_sync));
         cpref.setSummary(String.format(getString(R.string.settings_favorite_sync_summary), account.getTitle()));
 
-        Boolean syncWifiEnable = FavoritesSyncManager.getInstance(getActivity()).hasWifiOnlySync(account);
+        Boolean syncWifiEnable = SyncContentManager.getInstance(getActivity()).hasWifiOnlySync(account);
 
         if (wifiPref != null)
         {
@@ -216,10 +216,10 @@ public class GeneralPreferences extends PreferenceFragment
 
                 if (isSync)
                 {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(account, isSync);
-                    if (FavoritesSyncManager.getInstance(getActivity()).canSync(account))
+                    SyncContentManager.getInstance(getActivity()).setActivateSync(account, isSync);
+                    if (SyncContentManager.getInstance(getActivity()).canSync(account))
                     {
-                        FavoritesSyncManager.getInstance(getActivity()).sync(account);
+                        SyncContentManager.getInstance(getActivity()).sync(account);
                     }
                 }
                 else
@@ -229,15 +229,15 @@ public class GeneralPreferences extends PreferenceFragment
                         @Override
                         public void onPositive()
                         {
-                            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(account, false);
+                            SyncContentManager.getInstance(getActivity()).setActivateSync(account, false);
                             cpref.setChecked(false);
-                            FavoritesSyncManager.getInstance(getActivity()).unsync(account);
+                            SyncContentManager.getInstance(getActivity()).unsync(account);
                         }
 
                         @Override
                         public void onNegative()
                         {
-                            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(account, true);
+                            SyncContentManager.getInstance(getActivity()).setActivateSync(account, true);
                             cpref.setChecked(true);
                         }
                     };
@@ -269,7 +269,7 @@ public class GeneralPreferences extends PreferenceFragment
                     {
                         isWifiOnly = ((CheckBoxPreference) preference).isChecked();
                     }
-                    FavoritesSyncManager.getInstance(getActivity()).setWifiOnlySync(account, isWifiOnly);
+                    SyncContentManager.getInstance(getActivity()).setWifiOnlySync(account, isWifiOnly);
                     return false;
                 }
             });

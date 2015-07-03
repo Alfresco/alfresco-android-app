@@ -87,6 +87,9 @@
     <string name="operation_FavoriteNodesRequest">org.alfresco.mobile.android.async.node.favorite.FavoriteNodesOperation</string>
     <string name="operation_FavoriteNodeRequest">org.alfresco.mobile.android.async.node.favorite.FavoriteNodeOperation</string>
 
+    <!-- SYNC -->
+    <string name="operation_SyncNodeRequest">org.alfresco.mobile.android.async.node.sync.SyncNodeOperation</string>
+
     <!-- LIKE -->
     <string name="operation_LikeNodeRequest">org.alfresco.mobile.android.async.node.like.LikeNodeOperation</string>
 

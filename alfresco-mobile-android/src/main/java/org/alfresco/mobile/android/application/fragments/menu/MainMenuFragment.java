@@ -53,12 +53,12 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncScanEvent;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -204,7 +204,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
                 ((MainActivity) getActivity()).lockSlidingMenu();
             }
         }
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     @Override
@@ -239,7 +239,7 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     public void refreshData()
     {
         refresh();
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -551,19 +551,20 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
         }
     }
 
-    public void displayFavoriteStatut()
+    public void displaySyncStatut()
     {
+        // TODO Check refactoring for independent sync menu
         Cursor statutCursor = null;
-        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_favorite_dark);
+        Drawable icon = getActivity().getResources().getDrawable(R.drawable.ic_sync_dark);
         Drawable statut = null;
 
         try
         {
-            Boolean hasSynchroActive = FavoritesSyncManager.getInstance(getActivity()).hasActivateSync(currentAccount);
+            Boolean hasSynchroActive = SyncContentManager.getInstance(getActivity()).hasActivateSync(currentAccount);
 
-            long startTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(
+            long startTimeStamp = SyncContentManager.getInstance(getActivity()).getStartSyncPrepareTimestamp(
                     currentAccount);
-            long finalTimeStamp = FavoritesSyncManager.getInstance(getActivity()).getSyncPrepareTimestamp(
+            long finalTimeStamp = SyncContentManager.getInstance(getActivity()).getSyncPrepareTimestamp(
                     currentAccount);
 
             // Sync Prepare in Progress ?
@@ -589,10 +590,10 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
             if (hasSynchroActive && currentAccount != null)
             {
                 statutCursor = getActivity().getContentResolver().query(
-                        FavoritesSyncProvider.CONTENT_URI,
-                        FavoritesSyncSchema.COLUMN_ALL,
-                        FavoritesSyncProvider.getAccountFilter(currentAccount) + " AND "
-                                + FavoritesSyncSchema.COLUMN_STATUS + " == " + FavoriteSyncStatus.STATUS_REQUEST_USER,
+                        SyncContentProvider.CONTENT_URI,
+                        SyncContentSchema.COLUMN_ALL,
+                        SyncContentProvider.getAccountFilter(currentAccount) + " AND "
+                                + SyncContentSchema.COLUMN_STATUS + " == " + SyncContentStatus.STATUS_REQUEST_USER,
                         null, null);
                 if (statutCursor.getCount() > 0)
                 {
@@ -700,9 +701,9 @@ public class MainMenuFragment extends AlfrescoFragment implements AdapterView.On
     }
 
     @Subscribe
-    public void onSyncCompleted(FavoritesSyncScanEvent event)
+    public void onSyncCompleted(SyncContentScanEvent event)
     {
-        displayFavoriteStatut();
+        displaySyncStatut();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

@@ -45,8 +45,6 @@ import org.alfresco.mobile.android.application.fragments.builder.LeafFragmentBui
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.download.DownloadDialogFragment;
 import org.alfresco.mobile.android.application.fragments.node.rendition.PreviewFragment;
-import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment;
-import org.alfresco.mobile.android.application.fragments.sync.EnableSyncDialogFragment.OnSyncChangeListener;
 import org.alfresco.mobile.android.application.fragments.utils.OpenAsDialogFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -67,6 +65,8 @@ import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
@@ -76,6 +76,7 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -86,9 +87,9 @@ import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolderFormatter;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
@@ -157,6 +158,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     protected String shareUrl = null;
 
     protected String mTitle = null;
+
+    protected boolean isSynced = false;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -260,7 +263,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         File tmpFile = null;
-        boolean isSynced = FavoritesSyncManager.getInstance(getActivity()).isSynced(
+        boolean isSynced = SyncContentManager.getInstance(getActivity()).isSynced(
                 SessionUtils.getAccount(getActivity()), node);
         boolean modified = false;
         Date d = null;
@@ -281,7 +284,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 if (isSynced)
                 {
                     // We use the sync file stored locally
-                    tmpFile = FavoritesSyncManager.getInstance(getActivity()).getSyncFile(
+                    tmpFile = SyncContentManager.getInstance(getActivity()).getSyncFile(
                             SessionUtils.getAccount(getActivity()), node);
                 }
                 else
@@ -306,15 +309,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         // Update statut of the sync reference
                         ContentValues cValues = new ContentValues();
 
-                        int operationStatut = FavoriteSyncStatus.STATUS_PENDING;
+                        int operationStatut = SyncContentStatus.STATUS_PENDING;
                         if (requestCode == RequestCode.DECRYPTED)
                         {
-                            operationStatut = FavoriteSyncStatus.STATUS_MODIFIED;
+                            operationStatut = SyncContentStatus.STATUS_MODIFIED;
                         }
 
-                        cValues.put(FavoritesSyncSchema.COLUMN_STATUS, operationStatut);
+                        cValues.put(SyncContentSchema.COLUMN_STATUS, operationStatut);
                         getActivity().getContentResolver().update(
-                                FavoritesSyncManager.getInstance(getActivity()).getUri(
+                                SyncContentManager.getInstance(getActivity()).getUri(
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
                                 null);
                     }
@@ -332,23 +335,23 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         // Update statut of the sync reference
                         ContentValues cValues = new ContentValues();
 
-                        int operationStatut = FavoriteSyncStatus.STATUS_PENDING;
+                        int operationStatut = SyncContentStatus.STATUS_PENDING;
                         if (requestCode == RequestCode.DECRYPTED)
                         {
-                            operationStatut = FavoriteSyncStatus.STATUS_MODIFIED;
+                            operationStatut = SyncContentStatus.STATUS_MODIFIED;
                         }
 
-                        cValues.put(FavoritesSyncSchema.COLUMN_STATUS, operationStatut);
+                        cValues.put(SyncContentSchema.COLUMN_STATUS, operationStatut);
                         getActivity().getContentResolver().update(
-                                FavoritesSyncManager.getInstance(getActivity()).getUri(
+                                SyncContentManager.getInstance(getActivity()).getUri(
                                         SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
                                 null);
 
                         // Sync if it's possible.
-                        if (FavoritesSyncManager.getInstance(getActivity()).canSync(
+                        if (SyncContentManager.getInstance(getActivity()).canSync(
                                 SessionUtils.getAccount(getActivity())))
                         {
-                            FavoritesSyncManager.getInstance(getActivity()).sync(
+                            SyncContentManager.getInstance(getActivity()).sync(
                                     SessionUtils.getAccount(getActivity()), node.getIdentifier());
                         }
                     }
@@ -383,6 +386,20 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 }
                 else
                 {
+                    DataProtectionManager.getInstance(getActivity()).checkEncrypt(
+                            SessionUtils.getAccount(getActivity()), dlFile);
+
+                    if (isSynced)
+                    {
+                        // Update statut of the sync reference
+                        ContentValues cValues = new ContentValues();
+                        cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, dlFile.lastModified());
+                        getActivity().getContentResolver().update(
+                                SyncContentManager.getInstance(getActivity()).getUri(
+                                        SessionUtils.getAccount(getActivity()), node.getIdentifier()), cValues, null,
+                                null);
+                    }
+
                     // File with no modification
                     // Encrypt sync file if necessary
                     // Delete otherwise
@@ -525,26 +542,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             b.setVisibility(View.GONE);
         }
 
-        b = (ImageView) viewById(R.id.action_geolocation);
-        if (node.isDocument() && node.hasAspect(ContentModel.ASPECT_GEOGRAPHIC))
-        {
-            b.setVisibility(View.VISIBLE);
-            b.setOnClickListener(new OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    ActionUtils.actionShowMap(NodeDetailsFragment.this, node.getName(),
-                            node.getProperty(ContentModel.PROP_LATITUDE).getValue().toString(),
-                            node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
-                }
-            });
-        }
-        else
-        {
-            b.setVisibility(View.GONE);
-        }
-
         b = (ImageView) viewById(R.id.action_like);
         if (getSession() != null && getSession().getRepositoryInfo() != null
                 && getSession().getRepositoryInfo().getCapabilities() != null
@@ -593,6 +590,30 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         {
             b.setVisibility(View.GONE);
             viewById(R.id.favorite_progress).setVisibility(View.GONE);
+        }
+
+        // SYNC
+        b = (ImageView) viewById(R.id.action_sync);
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            b.setVisibility(View.VISIBLE);
+            b.setImageResource(R.drawable.ic_synced);
+        }
+        else if (!isRestrictable)
+        {
+            isSynced(b);
+            b.setOnClickListener(new OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    sync(v);
+                }
+            });
+        }
+        else
+        {
+            b.setVisibility(View.GONE);
         }
 
         b = (ImageView) viewById(R.id.action_share);
@@ -715,7 +736,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         if (node instanceof NodeSyncPlaceHolder)
         {
-            FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(getActivity());
+            SyncContentManager syncManager = SyncContentManager.getInstance(getActivity());
             AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
             final File syncFile = syncManager.getSyncFile(acc, node);
             if (syncFile == null || !syncFile.exists())
@@ -859,7 +880,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         Bundle b = new Bundle();
 
         // 3 cases
-        FavoritesSyncManager syncManager = FavoritesSyncManager.getInstance(getActivity());
+        SyncContentManager syncManager = SyncContentManager.getInstance(getActivity());
         AlfrescoAccount acc = SessionUtils.getAccount(getActivity());
 
         if (syncManager.isSynced(SessionUtils.getAccount(getActivity()), node))
@@ -969,30 +990,25 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         if (isRestrictable) { return; }
 
-        if (!FavoritesSyncManager.getInstance(getActivity()).hasDisplayedActivateSync(getAccount()))
-        {
-            FavoritesSyncManager.getInstance(getActivity()).setDisplayActivateSync(getAccount(), true);
-            EnableSyncDialogFragment.newInstance(new OnSyncChangeListener()
-            {
-                @Override
-                public void onPositive()
-                {
-                    FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()));
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
-                }
-
-                @Override
-                public void onNegative()
-                {
-                    FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
-                }
-            }).show(getActivity().getFragmentManager(), EnableSyncDialogFragment.TAG);
-        }
-
         viewById(R.id.favorite_progress).setVisibility(View.VISIBLE);
         if (node != null)
         {
             Operator.with(getActivity(), getAccount()).load(new FavoriteNodeRequest.Builder(parentNode, node));
+        }
+    }
+
+    public void isSynced(ImageView v)
+    {
+        isSynced = FavoritesManager.getInstance(getActivity()).isSynced(getAccount(), node);
+        v.setImageResource(isSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+    }
+
+    public void sync(View v)
+    {
+        if (isRestrictable) { return; }
+        if (node != null)
+        {
+            Operator.with(getActivity(), getAccount()).load(new SyncNodeRequest.Builder(parentNode, node, !isSynced));
         }
     }
 
@@ -1040,6 +1056,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
             mi = menu.add(Menu.NONE, R.id.menu_action_edit, Menu.FIRST + 10, R.string.edit);
             mi.setIcon(R.drawable.ic_edit);
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        }
+
+        if (node.hasAspect(ContentModel.ASPECT_GEOGRAPHIC))
+        {
+            mi = menu.add(Menu.NONE, R.id.menu_action_location, Menu.FIRST + 50, R.string.geolocation);
+            mi.setIcon(R.drawable.ic_location);
+            mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
         }
 
         if (session.getServiceRegistry().getDocumentFolderService().getPermissions(node).canDelete())
@@ -1091,6 +1114,10 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                 return true;
             case R.id.menu_action_delete:
                 delete();
+                return true;
+            case R.id.menu_action_location:
+                ActionUtils.actionShowMap(this, node.getName(), node.getProperty(ContentModel.PROP_LATITUDE).getValue()
+                        .toString(), node.getProperty(ContentModel.PROP_LONGITUDE).getValue().toString());
                 return true;
             case R.id.menu_workflow_add:
                 Intent in = new Intent(PrivateIntent.ACTION_START_PROCESS, null, getActivity(),
@@ -1223,6 +1250,34 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
         {
             ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onFavoriteNodeEvent(event);
+        }
+    }
+
+    @Subscribe
+    public void onSyncNodeEvent(SyncNodeEvent event)
+    {
+        ImageView syncButton = (ImageView) viewById(R.id.action_sync);
+        if (syncButton == null) { return; }
+
+        if (event.data == null)
+        {
+            Log.e(TAG, Log.getStackTraceString(event.exception));
+            // AlfrescoNotificationManager.getInstance(getActivity()).showToast(R.string.error_retrieve_favorite);
+        }
+        else if (event.data)
+        {
+            syncButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_synced));
+            AccessibilityUtils.addContentDescription(syncButton, R.string.unfavorite);
+        }
+        else
+        {
+            syncButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_sync_light));
+            AccessibilityUtils.addContentDescription(syncButton, R.string.favorite);
+        }
+
+        if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
+        {
+            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onSyncNodeEvent(event);
         }
     }
 

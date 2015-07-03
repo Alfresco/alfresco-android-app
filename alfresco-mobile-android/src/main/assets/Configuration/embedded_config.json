@@ -45,6 +45,10 @@
         },
         {
           "item-type": "view-id",
+          "view-id": "view-sync-default"
+        },
+        {
+          "item-type": "view-id",
           "view-id": "view-search-default"
         },
         {
@@ -82,8 +86,11 @@
       "type": "org.alfresco.client.view.tasks",
       "evaluator": "isOnPremise"
     },
-    "view-favorite-default": {
+    "view-sync-default": {
       "type": "org.alfresco.client.view.sync"
+    },
+    "view-favorite-default": {
+      "type": "org.alfresco.client.view.favorites"
     },
     "view-search-default": {
       "type": "org.alfresco.client.view.search"

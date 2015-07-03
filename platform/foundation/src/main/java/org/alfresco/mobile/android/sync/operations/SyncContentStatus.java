@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.sync.operations;
 
 import org.alfresco.mobile.android.async.OperationStatus;
 
-public interface FavoriteSyncStatus extends OperationStatus
+public interface SyncContentStatus extends OperationStatus
 {
     int STATUS_HIDDEN = 64;
 

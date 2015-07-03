@@ -39,12 +39,12 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSync;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncDownload;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContent;
+import org.alfresco.mobile.android.sync.operations.SyncContentDownload;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.ContentValues;
@@ -76,7 +76,7 @@ public abstract class PrepareBaseHelper
 
     protected long syncScanningTimeStamp;
 
-    protected FavoritesSyncManager syncManager;
+    protected SyncContentManager syncManager;
 
     protected DataProtectionManager dataProtectionManager;
 
@@ -103,7 +103,7 @@ public abstract class PrepareBaseHelper
         this.listingContext = session.getDefaultListingContext();
         this.mode = mode;
         this.syncScanningTimeStamp = syncScanningTimeStamp;
-        this.syncManager = FavoritesSyncManager.getInstance(context);
+        this.syncManager = SyncContentManager.getInstance(context);
         this.dataProtectionManager = DataProtectionManager.getInstance(context);
     }
 
@@ -127,32 +127,32 @@ public abstract class PrepareBaseHelper
         this.nodeIdentifier = nodeIdentifier;
     }
 
-    public abstract List<FavoriteSync> prepare();
+    public abstract List<SyncContent> prepare();
 
     protected void scan()
     {
         // Retrieve List of remote favorite
         switch (mode)
         {
-            case FavoritesSyncManager.MODE_BOTH:
+            case SyncContentManager.MODE_BOTH:
                 retrieveDocumentFavorites();
                 retrieveFolderFavorites();
                 break;
-            case FavoritesSyncManager.MODE_FOLDERS:
+            case SyncContentManager.MODE_FOLDERS:
                 retrieveFolderFavorites();
                 break;
-            case FavoritesSyncManager.MODE_DOCUMENTS:
+            case SyncContentManager.MODE_DOCUMENTS:
                 retrieveDocumentFavorites();
                 break;
-            case FavoritesSyncManager.MODE_NODE:
+            case SyncContentManager.MODE_NODE:
                 break;
             default:
                 break;
         }
 
         // Retrieve list of local Favorites
-        localSyncCursor = context.getContentResolver().query(FavoritesSyncProvider.CONTENT_URI,
-                FavoritesSyncSchema.COLUMN_ALL, FavoritesSyncProvider.getAccountFilter(acc), null, null);
+        localSyncCursor = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                SyncContentSchema.COLUMN_ALL, SyncContentProvider.getAccountFilter(acc), null, null);
 
         // We have our favorites
         // Update the Local referential
@@ -336,20 +336,20 @@ public abstract class PrepareBaseHelper
         // If 0 ==> Bulk Insert
         switch (mode)
         {
-            case FavoritesSyncManager.MODE_DOCUMENTS:
+            case SyncContentManager.MODE_DOCUMENTS:
                 syncResult.stats.numEntries = repoDocumentFavorites.getList().size();
                 for (Document doc : repoDocumentFavorites.getList())
                 {
                     prepareCreation(doc);
                 }
                 break;
-            case FavoritesSyncManager.MODE_FOLDERS:
+            case SyncContentManager.MODE_FOLDERS:
                 for (Folder folder : repoFolderFavorites.getList())
                 {
                     prepareCreation(folder);
                 }
                 break;
-            case FavoritesSyncManager.MODE_BOTH:
+            case SyncContentManager.MODE_BOTH:
                 for (Document doc : repoDocumentFavorites.getList())
                 {
                     prepareCreation(doc);
@@ -359,7 +359,7 @@ public abstract class PrepareBaseHelper
                     prepareCreation(folder);
                 }
                 break;
-            case FavoritesSyncManager.MODE_NODE:
+            case SyncContentManager.MODE_NODE:
                 if (node.isDocument())
                 {
                     syncResult.stats.numEntries = 1;
@@ -384,7 +384,7 @@ public abstract class PrepareBaseHelper
 
         switch (mode)
         {
-            case FavoritesSyncManager.MODE_NODE:
+            case SyncContentManager.MODE_NODE:
                 List<Node> tmpNode = new ArrayList<Node>(1);
                 if (node != null)
                 {
@@ -402,16 +402,16 @@ public abstract class PrepareBaseHelper
                 syncResult.stats.numEntries = tmpNode.size();
                 prepareUpdate(tmpNode);
                 break;
-            case FavoritesSyncManager.MODE_DOCUMENTS:
+            case SyncContentManager.MODE_DOCUMENTS:
                 List<Node> tmpNodes = new ArrayList<Node>(repoDocumentFavorites.getList());
                 syncResult.stats.numEntries = tmpNodes.size();
                 prepareUpdate(tmpNodes);
                 break;
-            case FavoritesSyncManager.MODE_BOTH:
+            case SyncContentManager.MODE_BOTH:
                 List<Node> tmpNodes2 = new ArrayList<Node>(repoDocumentFavorites.getList());
                 syncResult.stats.numEntries = tmpNodes2.size();
                 prepareUpdate(tmpNodes2);
-            case FavoritesSyncManager.MODE_FOLDERS:
+            case SyncContentManager.MODE_FOLDERS:
                 repoSyncIds = new ArrayList<String>();
                 Cursor cursorId = null;
                 try
@@ -422,12 +422,12 @@ public abstract class PrepareBaseHelper
 
                         // Check if it exists first
                         // Try to retrieve local info
-                        cursorId = FavoritesSyncManager.getCursorForId(context, acc, favoriteFolder.getIdentifier());
+                        cursorId = SyncContentManager.getCursorForId(context, acc, favoriteFolder.getIdentifier());
 
                         if (cursorId.moveToFirst())
                         {
                             // Is it a new Favorite ?
-                            Boolean favorited = cursorId.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0;
+                            Boolean favorited = cursorId.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
                             if (favorited)
                             {
                                 // If exist so update
@@ -436,16 +436,17 @@ public abstract class PrepareBaseHelper
                             else
                             {
                                 // New favorite
-                                String parent = cursorId.getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID);
+                                String parent = cursorId.getString(SyncContentSchema.COLUMN_PARENT_ID_ID);
 
                                 recursiveUpdate(favoriteFolder, favoriteFolder);
 
                                 ContentValues cValues = new ContentValues();
-                                cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
-                                cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parent);
+                                cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, SyncContentProvider.FLAG_FAVORITE);
+                                cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parent);
                                 context.getContentResolver()
-                                        .update(FavoritesSyncManager.getUri(cursorId
-                                                .getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null, null);
+.update(
+                                        SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)),
+                                        cValues, null, null);
                             }
                         }
                         else
@@ -514,15 +515,15 @@ public abstract class PrepareBaseHelper
             }
 
             // Try to retrieve local info
-            cursorId = FavoritesSyncManager.getCursorForId(context, acc, childrenNode.getIdentifier());
+            cursorId = SyncContentManager.getCursorForId(context, acc, childrenNode.getIdentifier());
 
             if (cursorId.moveToFirst())
             {
-                localUri = FavoritesSyncManager.getUri(cursorId.getLong(FavoritesSyncSchema.COLUMN_ID_ID));
+                localUri = SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID));
 
                 // NODE HAS MOVED
                 // Check Parent ID if possible
-                String parentId = cursorId.getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID);
+                String parentId = cursorId.getString(SyncContentSchema.COLUMN_PARENT_ID_ID);
                 if (parentFolder != null && !parentFolder.getIdentifier().equals(parentId))
                 {
                     ContentValues cValues = new ContentValues();
@@ -536,7 +537,7 @@ public abstract class PrepareBaseHelper
 
                     // Renamed ?
                     ContentValues cValues = new ContentValues();
-                    String folderName = cursorId.getString(FavoritesSyncSchema.COLUMN_TITLE_ID);
+                    String folderName = cursorId.getString(SyncContentSchema.COLUMN_TITLE_ID);
                     if (!childrenNode.getName().equals(folderName))
                     {
                         // FOLDER HAS BEEN RENAMED
@@ -546,7 +547,7 @@ public abstract class PrepareBaseHelper
                     }
 
                     // First creation ?
-                    long folderSize = cursorId.getLong(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                    long folderSize = cursorId.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                     if (folderSize == -1)
                     {
                         // Retrieve folder size && Flag children
@@ -555,10 +556,10 @@ public abstract class PrepareBaseHelper
                         // Flag the favorite
                         Uri uri = syncManager.getUri(acc, childrenNode.getIdentifier());
                         ContentValues contentValues = new ContentValues();
-                        contentValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, size);
+                        contentValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, size);
                         if (size == 0)
                         {
-                            contentValues.put(FavoritesSyncSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
+                            contentValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
                         }
                         context.getContentResolver().update(uri, contentValues, null, null);
                     }
@@ -576,7 +577,7 @@ public abstract class PrepareBaseHelper
                 permissions = session.getServiceRegistry().getDocumentFolderService().getPermissions(childrenNode);
 
                 // Check ContentStream modification
-                localContentUri = cursorId.getString(FavoritesSyncSchema.COLUMN_CONTENT_URI_ID);
+                localContentUri = cursorId.getString(SyncContentSchema.COLUMN_CONTENT_URI_ID);
                 docContentUri = childrenNode.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue();
                 if (localContentUri != null && docContentUri != null && !localContentUri.equals(docContentUri))
                 {
@@ -588,13 +589,13 @@ public abstract class PrepareBaseHelper
                         {
                             // Local Change present
                             // User has the right to upload
-                            requestUserInteraction(localUri, FavoriteSyncStatus.REASON_LOCAL_MODIFICATION);
+                            requestUserInteraction(localUri, SyncContentStatus.REASON_LOCAL_MODIFICATION);
                         }
                         else
                         {
                             // Local Change present
                             // User has read right
-                            requestUserInteraction(localUri, FavoriteSyncStatus.REASON_NO_PERMISSION);
+                            requestUserInteraction(localUri, SyncContentStatus.REASON_NO_PERMISSION);
                         }
                     }
                     else
@@ -609,7 +610,7 @@ public abstract class PrepareBaseHelper
 
                 // Check if Local file exist
                 // Content might been deleted with a file explorer
-                localFileUri = Uri.parse(cursorId.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+                localFileUri = Uri.parse(cursorId.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
                 localFile = new File(localFileUri.getPath());
                 if (!localFile.exists())
                 {
@@ -620,7 +621,7 @@ public abstract class PrepareBaseHelper
                 }
 
                 // Check modification Date and local modification
-                localServerTimeStamp = cursorId.getLong(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID);
+                localServerTimeStamp = cursorId.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID);
                 remoteServerTimeStamp = childrenNode.getModifiedAt().getTimeInMillis();
                 hasLocalModification = hasLocalModification(cursorId, localFile);
 
@@ -636,13 +637,13 @@ public abstract class PrepareBaseHelper
                         {
                             // Local Change present
                             // User has the right to upload
-                            requestUserInteraction(localUri, FavoriteSyncStatus.REASON_LOCAL_MODIFICATION);
+                            requestUserInteraction(localUri, SyncContentStatus.REASON_LOCAL_MODIFICATION);
                         }
                         else
                         {
                             // Local Change present
                             // User has read right
-                            requestUserInteraction(localUri, FavoriteSyncStatus.REASON_NO_PERMISSION);
+                            requestUserInteraction(localUri, SyncContentStatus.REASON_NO_PERMISSION);
                         }
                     }
                     else
@@ -670,7 +671,7 @@ public abstract class PrepareBaseHelper
                     {
                         // Local Change present
                         // User has read right
-                        requestUserInteraction(localUri, FavoriteSyncStatus.REASON_NO_PERMISSION);
+                        requestUserInteraction(localUri, SyncContentStatus.REASON_NO_PERMISSION);
                     }
                 }
             }
@@ -734,12 +735,12 @@ public abstract class PrepareBaseHelper
 
         switch (mode)
         {
-            case FavoritesSyncManager.MODE_BOTH:
-            case FavoritesSyncManager.MODE_FOLDERS:
-            case FavoritesSyncManager.MODE_DOCUMENTS:
+            case SyncContentManager.MODE_BOTH:
+            case SyncContentManager.MODE_FOLDERS:
+            case SyncContentManager.MODE_DOCUMENTS:
                 prepareSyncDelete();
                 break;
-            case FavoritesSyncManager.MODE_NODE:
+            case SyncContentManager.MODE_NODE:
                 prepareNodeDelete();
                 return;
             default:
@@ -753,20 +754,20 @@ public abstract class PrepareBaseHelper
         try
         {
             childrenCursor = context.getContentResolver().query(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL,
-                    FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_PARENT_ID
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL,
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID
                             + " == '" + NodeRefUtils.getCleanIdentifier(folderIdentifier) + "'", null, null);
 
             while (childrenCursor.moveToNext())
             {
-                if (childrenCursor.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) == 0)
+                if (childrenCursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) == 0)
                 {
-                    prepareDelete(childrenCursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID), childrenCursor);
+                    prepareDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID), childrenCursor);
                     if (ContentModel.TYPE_FOLDER.equals(childrenCursor
-                            .getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID)))
+.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
                     {
-                        prepareChildrenFolderDelete(childrenCursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+                        prepareChildrenFolderDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                     }
                 }
             }
@@ -795,7 +796,7 @@ public abstract class PrepareBaseHelper
             }
 
             // Retrieve local Cursor
-            nodeCursor = FavoritesSyncManager.getCursorForId(context, acc, nodeId);
+            nodeCursor = SyncContentManager.getCursorForId(context, acc, nodeId);
             nodeCursor.moveToNext();
 
             if (syncResult.stats.numEntries == 1) { return; }
@@ -807,14 +808,14 @@ public abstract class PrepareBaseHelper
                     // Node is unfavorited, Check if the parent is
                     // Sync/favorited
                     Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(node);
-                    parentCursor = FavoritesSyncManager.getCursorForId(context, acc, parentFolder.getIdentifier());
+                    parentCursor = SyncContentManager.getCursorForId(context, acc, parentFolder.getIdentifier());
                     if (parentCursor != null && parentCursor.getCount() > 0)
                     {
                         // Parent is present. We just unfavorite the node
                         ContentValues cValues = new ContentValues();
-                        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
+                        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
                         context.getContentResolver().update(
-                                FavoritesSyncManager.getUri(nodeCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
+                                SyncContentManager.getUri(nodeCursor.getLong(SyncContentSchema.COLUMN_ID_ID)),
                                 cValues, null, null);
                     }
                     else
@@ -852,9 +853,9 @@ public abstract class PrepareBaseHelper
             while (nodeCursor.moveToNext())
             {
                 // Check status
-                switch (nodeCursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID))
+                switch (nodeCursor.getInt(SyncContentSchema.COLUMN_STATUS_ID))
                 {
-                    case FavoriteSyncStatus.STATUS_HIDDEN:
+                    case SyncContentStatus.STATUS_HIDDEN:
                         prepareDelete(nodeId, nodeCursor);
                         break;
                     default:
@@ -884,15 +885,15 @@ public abstract class PrepareBaseHelper
     {
         // Unflag the folder favorite
         ContentValues cValues = new ContentValues();
-        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
-        cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
-        if (!ContentModel.TYPE_FOLDER.equals(nodeCursor.getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID)))
+        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
+        cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
+        if (!ContentModel.TYPE_FOLDER.equals(nodeCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
         {
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES,
-                    -nodeCursor.getLong(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID));
+            cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES,
+                    -nodeCursor.getLong(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID));
         }
         context.getContentResolver().update(
-                FavoritesSyncManager.getUri(nodeCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)), cValues, null, null);
+                SyncContentManager.getUri(nodeCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null, null);
     }
 
     private void prepareSyncDelete()
@@ -910,9 +911,9 @@ public abstract class PrepareBaseHelper
 
         while (localSyncCursor.moveToNext())
         {
-            boolean favorited = localSyncCursor.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0;
+            boolean favorited = localSyncCursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
             String nodeId = NodeRefUtils.getCleanIdentifier(localSyncCursor
-                    .getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+                    .getString(SyncContentSchema.COLUMN_NODE_ID_ID));
             if (favorited)
             {
                 // Clean Id because of version number after update
@@ -923,7 +924,7 @@ public abstract class PrepareBaseHelper
                 }
                 else
                 {
-                    nodeUnFavorited.add(localSyncCursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+                    nodeUnFavorited.add(localSyncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                 }
             }
             else
@@ -934,7 +935,7 @@ public abstract class PrepareBaseHelper
                 }
                 else
                 {
-                    nodeNonFavoritedToDelete.add(localSyncCursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+                    nodeNonFavoritedToDelete.add(localSyncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                 }
             }
         }
@@ -949,7 +950,7 @@ public abstract class PrepareBaseHelper
                 try
                 {
                     // Try to retrieve local info
-                    cursorId = FavoritesSyncManager.getCursorForId(context, acc, nodeId);
+                    cursorId = SyncContentManager.getCursorForId(context, acc, nodeId);
                     if (cursorId.moveToFirst())
                     {
                         // Unflag the folder favorite
@@ -981,16 +982,16 @@ public abstract class PrepareBaseHelper
             // If nodeIds present, favorite are no longer in repo
             for (String id : nodeToDelete)
             {
-                localFavoriteCursor = FavoritesSyncManager.getCursorForId(context, acc, id);
+                localFavoriteCursor = SyncContentManager.getCursorForId(context, acc, id);
 
                 if (localFavoriteCursor.getCount() > 1)
                 {
                     while (localFavoriteCursor.moveToNext())
                     {
                         // Check status
-                        switch (localFavoriteCursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID))
+                        switch (localFavoriteCursor.getInt(SyncContentSchema.COLUMN_STATUS_ID))
                         {
-                            case FavoriteSyncStatus.STATUS_HIDDEN:
+                            case SyncContentStatus.STATUS_HIDDEN:
                                 prepareDelete(id, localFavoriteCursor);
                                 break;
                             default:
@@ -1024,8 +1025,8 @@ public abstract class PrepareBaseHelper
         if (uri == null)
         {
             uri = context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createFavoriteContentValues(context, acc, FavoriteSyncDownload.TYPE_ID, doc,
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID, doc,
                             syncScanningTimeStamp));
         }
         // Execution
@@ -1042,8 +1043,8 @@ public abstract class PrepareBaseHelper
             Folder parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(folder);
 
             uri = context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createFavoriteContentValues(context, acc, FavoriteSyncDownload.TYPE_ID,
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createFavoriteContentValues(context, acc, SyncContentDownload.TYPE_ID,
                             parentFolder.getIdentifier(), folder, syncScanningTimeStamp, -1));
         }
 
@@ -1053,10 +1054,10 @@ public abstract class PrepareBaseHelper
         // Flag the favorite
         uri = syncManager.getUri(acc, folder.getIdentifier());
         ContentValues cValues = new ContentValues();
-        cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, size);
+        cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, size);
         if (size == 0)
         {
-            cValues.put(FavoritesSyncSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
+            cValues.put(SyncContentSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
         }
         context.getContentResolver().update(uri, cValues, null, null);
     }
@@ -1071,8 +1072,8 @@ public abstract class PrepareBaseHelper
         if (uri == null)
         {
             uri = context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createContentValues(context, acc, FavoriteSyncDownload.TYPE_ID,
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID,
                             parentFolder.getIdentifier(), currentFolder, syncScanningTimeStamp, size));
         }
     }
@@ -1123,15 +1124,15 @@ public abstract class PrepareBaseHelper
         if (uri == null)
         {
             uri = context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createContentValues(context, acc, FavoriteSyncDownload.TYPE_ID, parentFolder,
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder,
                             folder, syncScanningTimeStamp, folderSize));
         }
         else
         {
             // Already present == Favorite Folder
             ContentValues cValues = new ContentValues();
-            cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parentFolder);
+            cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder);
             context.getContentResolver().update(uri, cValues, null, null);
         }
     }
@@ -1142,8 +1143,8 @@ public abstract class PrepareBaseHelper
         if (uri == null)
         {
             uri = context.getContentResolver().insert(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncManager.createContentValues(context, acc, FavoriteSyncDownload.TYPE_ID, parentFolder,
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentManager.createContentValues(context, acc, SyncContentDownload.TYPE_ID, parentFolder,
                             doc, syncScanningTimeStamp, 0));
         }
 
@@ -1169,7 +1170,7 @@ public abstract class PrepareBaseHelper
     protected void requestUserInteraction(Uri localUri, int reasonId)
     {
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_REQUEST_USER);
+        cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_REQUEST_USER);
         cValues.put(OperationSchema.COLUMN_REASON, reasonId);
         context.getContentResolver().update(localUri, cValues, null, null);
     }
@@ -1218,12 +1219,12 @@ public abstract class PrepareBaseHelper
     {
         if (dataProtectionManager.isEncryptionEnable())
         {
-            if (FavoriteSyncStatus.STATUS_MODIFIED == cursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID)) { return true; }
+            if (SyncContentStatus.STATUS_MODIFIED == cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID)) { return true; }
             return false;
         }
 
         // Check modification Date and local modification
-        long localSyncTimeStamp = cursor.getLong(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
+        long localSyncTimeStamp = cursor.getLong(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
         return (localSyncTimeStamp != -1 && localFile != null && localFile.lastModified() > localSyncTimeStamp);
     }
 
@@ -1231,11 +1232,11 @@ public abstract class PrepareBaseHelper
     {
         if (dataProtectionManager.isEncryptionEnable())
         {
-            if (FavoriteSyncStatus.STATUS_MODIFIED == cursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID)) { return true; }
+            if (SyncContentStatus.STATUS_MODIFIED == cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID)) { return true; }
             return false;
         }
         // Check modification Date and local modification
-        Uri localFileUri = Uri.parse(cursor.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+        Uri localFileUri = Uri.parse(cursor.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
         return hasLocalModification(cursor, localFile);
     }

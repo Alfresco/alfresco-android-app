@@ -284,10 +284,16 @@
         <!-- CONTENT PROVIDER -->
         <!-- *************************************************************** -->
         <provider
-            android:name="org.alfresco.mobile.android.application.providers.FavoritesSyncProviderImpl"
-            android:authorities="${PROVIDER_AUTHORITY}.sync"
+            android:name=".providers.FavoritesProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.favorites"
             android:exported="false"
             android:label="@string/sync_favorites"
+            android:syncable="true" />
+        <provider
+            android:name=".providers.SyncProviderImpl"
+            android:authorities="${PROVIDER_AUTHORITY}.sync"
+            android:exported="false"
+            android:label="@string/sync_title"
             android:syncable="true" />
         <provider
             android:name="org.alfresco.mobile.android.application.providers.MimeTypeProviderImpl"
@@ -317,7 +323,7 @@
         <!-- SERVICES -->
         <!-- *************************************************************** -->
         <service
-            android:name="org.alfresco.mobile.android.sync.FavoritesSyncService"
+            android:name="org.alfresco.mobile.android.sync.SyncContentService"
             android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
@@ -326,8 +332,23 @@
 
             <meta-data
                 android:name="android.content.SyncAdapter"
-                android:resource="@xml/favorites_sync_adapter" />
+                android:resource="@xml/sync_adapter" />
         </service>
+
+
+        <service
+            android:name="org.alfresco.mobile.android.platform.favorite.FavoritesService"
+            android:exported="true"
+            tools:ignore="ExportedService">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/favorites_adapter" />
+        </service>
+
 
         <!-- Used For AlfrescoAccount Authentication -->
         <service

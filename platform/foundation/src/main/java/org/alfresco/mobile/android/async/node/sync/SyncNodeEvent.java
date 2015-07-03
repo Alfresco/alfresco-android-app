@@ -15,30 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.platform;
+package org.alfresco.mobile.android.async.node.sync;
 
-import android.content.Context;
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationEvent;
 
-public class DefaultNotificationManager extends AlfrescoNotificationManager
+public class SyncNodeEvent extends OperationEvent<Boolean>
 {
-    // ///////////////////////////////////////////////////////////////////////////
-    // CONSTRUCTOR
-    // ///////////////////////////////////////////////////////////////////////////
-    public static DefaultNotificationManager getInstance(Context context)
-    {
-        synchronized (LOCK)
-        {
-            if (mInstance == null)
-            {
-                mInstance = new DefaultNotificationManager(context);
-            }
+    public final Node node;
 
-            return (DefaultNotificationManager) mInstance;
-        }
+    public SyncNodeEvent(String requestId, LoaderResult<Boolean> result, Node node)
+    {
+        super(requestId, result);
+        this.node = node;
     }
 
-    protected DefaultNotificationManager(Context context)
-    {
-        super(context);
-    }
 }

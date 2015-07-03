@@ -34,6 +34,7 @@ import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoritedNodeEvent;
 import org.alfresco.mobile.android.async.node.like.LikeNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
@@ -161,6 +162,12 @@ public class TabsNodeDetailsFragment extends NodeDetailsFragment implements OnTa
     public void onIsFavoriteEvent(FavoritedNodeEvent event)
     {
         super.onIsFavoriteEvent(event);
+    }
+
+    @Subscribe
+    public void onSyncNodeEvent(SyncNodeEvent event)
+    {
+        super.onSyncNodeEvent(event);
     }
 
     @Subscribe

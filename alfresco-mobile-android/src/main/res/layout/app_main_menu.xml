@@ -121,6 +121,13 @@
                 android:text="@string/menu_favorites" />
 
             <Button
+                android:id="@+id/menu_sync"
+                style="?MainTheme.TextView.MenuItem"
+                android:drawableStart="@drawable/ic_sync_dark"
+                android:drawableLeft="@drawable/ic_sync_dark"
+                android:text="@string/synced_content" />
+
+            <Button
                 android:id="@+id/menu_search"
                 style="?MainTheme.TextView.MenuItem"
                 android:drawableStart="@drawable/ic_search_dark"

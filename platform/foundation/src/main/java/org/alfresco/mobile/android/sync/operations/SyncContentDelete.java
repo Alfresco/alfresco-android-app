@@ -33,9 +33,9 @@ import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -44,9 +44,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class FavoriteSyncDelete extends FavoriteSync
+public class SyncContentDelete extends SyncContent
 {
-    private static final String TAG = FavoriteSyncDelete.class.getName();
+    private static final String TAG = SyncContentDelete.class.getName();
 
     public static final int TYPE_ID = 240;
 
@@ -61,7 +61,7 @@ public class FavoriteSyncDelete extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public FavoriteSyncDelete(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
+    public SyncContentDelete(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
             String nodeIdenfitier, Uri localUri)
     {
         super(context, acc, session, syncResult, localUri);
@@ -78,26 +78,26 @@ public class FavoriteSyncDelete extends FavoriteSync
             Log.d("Alfresco", "Delete for doc[" + nodeIdentifier + "]");
 
             cursor = context.getContentResolver().query(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL,
-                    FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL,
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_NODE_ID
                             + " LIKE '" + nodeIdentifier + "%'", null, null);
 
             // Node has been deleted in server side.
             if (cursor != null && cursor.moveToFirst())
             {
                 // Check modification date
-                long localTimeStamp = cursor.getLong(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
-                String nodeIdentifier = cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-                nodeName = cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID);
-                favoriteId = cursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID);
+                long localTimeStamp = cursor.getLong(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
+                String nodeIdentifier = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+                nodeName = cursor.getString(SyncContentSchema.COLUMN_TITLE_ID);
+                favoriteId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
 
-                File dlFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc,
-                        cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID),
-                        cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID));
+                File dlFile = SyncContentManager.getInstance(context).getSynchroFile(acc,
+                        cursor.getString(SyncContentSchema.COLUMN_TITLE_ID),
+                        cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
 
                 // Resolution available
-                if (FavoriteSyncStatus.STATUS_TO_UPDATE == cursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID))
+                if (SyncContentStatus.STATUS_TO_UPDATE == cursor.getInt(SyncContentSchema.COLUMN_REASON_ID))
                 {
                     // Update & Delete
                     Node n = session.getServiceRegistry().getDocumentFolderService()
@@ -125,7 +125,7 @@ public class FavoriteSyncDelete extends FavoriteSync
                             // Unfavorite operation
                             // Request to update
                             Log.d(TAG, "Unfavorited");
-                            requestUserInteraction(syncUri, FavoriteSyncStatus.REASON_NODE_UNFAVORITED);
+                            requestUserInteraction(syncUri, SyncContentStatus.REASON_NODE_UNFAVORITED);
                             syncResult.stats.numSkippedEntries++;
                         }
                         else
@@ -154,7 +154,7 @@ public class FavoriteSyncDelete extends FavoriteSync
         {
             Log.e(TAG, Log.getStackTraceString(e));
             syncResult.stats.numIoExceptions++;
-            saveStatus(FavoriteSyncStatus.STATUS_FAILED);
+            saveStatus(SyncContentStatus.STATUS_FAILED);
         }
         finally
         {
@@ -170,7 +170,7 @@ public class FavoriteSyncDelete extends FavoriteSync
         IOUtils.deleteContents(dlFile.getParentFile());
         dlFile.getParentFile().delete();
         context.getContentResolver().delete(
-                FavoritesSyncManager.getUri(cursor.getLong(cursor.getColumnIndex(FavoritesSyncSchema.COLUMN_ID))),
+                SyncContentManager.getUri(cursor.getLong(cursor.getColumnIndex(SyncContentSchema.COLUMN_ID))),
                 null, null);
     }
 
@@ -178,29 +178,29 @@ public class FavoriteSyncDelete extends FavoriteSync
     {
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        context.getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        context.getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
 
         // Current File
-        Uri localFileUri = Uri.parse(c.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+        Uri localFileUri = Uri.parse(c.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
         File parentFolder = localFile.getParentFile();
 
         // New File
         File downloadFolder = AlfrescoStorageManager.getInstance(context).getDownloadFolder(
                 SessionUtils.getAccount(context));
-        File newLocalFile = new File(downloadFolder, c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+        File newLocalFile = new File(downloadFolder, c.getString(SyncContentSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
 
         // Move to "Download" and delete parent folder
         cValues.clear();
         if (localFile.renameTo(newLocalFile) && parentFolder.delete())
         {
-            requestUserInteraction(notificationUri, FavoriteSyncStatus.REASON_NODE_DELETED);
+            requestUserInteraction(notificationUri, SyncContentStatus.REASON_NODE_DELETED);
         }
         else
         {
-            cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_FAILED);
-            context.getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+            cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_FAILED);
+            context.getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
         }
 
         // Data Protection if necessary
@@ -213,8 +213,8 @@ public class FavoriteSyncDelete extends FavoriteSync
     {
         if (DataProtectionManager.getInstance(context).isEncryptionEnable())
         {
-            if (FavoriteSyncStatus.STATUS_MODIFIED == cursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID)) { return true; }
-            if (100 >= cursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID)) { return true; }
+            if (SyncContentStatus.STATUS_MODIFIED == cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID)) { return true; }
+            if (100 >= cursor.getInt(SyncContentSchema.COLUMN_REASON_ID)) { return true; }
             return false;
         }
         return true;

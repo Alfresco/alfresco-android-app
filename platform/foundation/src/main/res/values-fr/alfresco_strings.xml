@@ -360,7 +360,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Dossiers favoris</string>
     <string name="menu_favorites">Favoris</string>
-    <string name="synced_documents">Contenu synchronisé</string>
+    <string name="synced_content">Contenu synchronisé</string>
     <string name="empty_favorites">Aucun favori</string>
     <string name="favorites_document">Favori</string>
     <string name="error_retrieve_favorite">Impossible de récupérer les infos de favori de ce contenu.</string>

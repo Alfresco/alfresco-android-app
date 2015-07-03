@@ -189,6 +189,15 @@ public class NodeActions extends AbstractActions<Node>
             }
         }
 
+        // SYNC
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
+        createMenu.setIcon(R.drawable.ic_sync_light);
+        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
+        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
+
+        // FAVORITES
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
@@ -196,6 +205,7 @@ public class NodeActions extends AbstractActions<Node>
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
 
+        // LIKE
         AlfrescoSession alfSession = SessionUtils.getSession(activity);
         if (alfSession != null && alfSession.getRepositoryInfo() != null
                 && alfSession.getRepositoryInfo().getCapabilities() != null
@@ -203,7 +213,7 @@ public class NodeActions extends AbstractActions<Node>
         {
             createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 150, R.string.like);
             createMenu.setIcon(R.drawable.ic_like);
-            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
             createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
@@ -217,7 +227,7 @@ public class NodeActions extends AbstractActions<Node>
             mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
-        mi = menu.add(Menu.NONE, R.id.menu_select_all, Menu.FIRST + 200, R.string.select_all);
+        mi = menu.add(Menu.NONE, R.id.menu_select_all, Menu.FIRST + 2000, R.string.select_all);
         mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
     }
 

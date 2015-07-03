@@ -15,10 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.sync;
+package org.alfresco.mobile.android.platform.favorite;
 
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.alfresco.mobile.android.api.model.Node;
@@ -27,10 +26,6 @@ import org.alfresco.mobile.android.async.session.LoadSessionHelper;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
-import org.alfresco.mobile.android.sync.operations.FavoriteSync;
-import org.alfresco.mobile.android.sync.prepare.PrepareFavoriteHelper;
-import org.alfresco.mobile.android.sync.prepare.PrepareFavoriteSyncHelper;
-import org.alfresco.mobile.android.sync.prepare.PrepareSyncHelper;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -47,15 +42,13 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
 
     private final AccountManager mAccountManager;
 
-    private final FavoritesSyncManager syncManager;
+    private final FavoritesManager favoritesManager;
 
     private AlfrescoSession session;
 
     private AlfrescoAccount acc;
 
-    private int mode = FavoritesSyncManager.MODE_BOTH;
-
-    private boolean ignoreWarning = false;
+    private int mode = FavoritesManager.MODE_BOTH;
 
     private Node node;
 
@@ -68,7 +61,7 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     {
         super(context, autoInitialize);
         mAccountManager = AccountManager.get(context);
-        syncManager = FavoritesSyncManager.getInstance(context);
+        favoritesManager = FavoritesManager.getInstance(context);
     }
 
     // ///////////////////////////////////////////////////////////////////////////
@@ -80,7 +73,7 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     {
         // Reset all previous values
         node = null;
-        mode = FavoritesSyncManager.MODE_BOTH;
+        mode = FavoritesManager.MODE_BOTH;
 
         Log.d("Alfresco", "onPerformSync for account[" + account.name + "]");
         try
@@ -91,24 +84,19 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
             // Retrieve extra informations
             if (extras != null)
             {
-                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_MODE))
+                if (extras.containsKey(FavoritesManager.ARGUMENT_MODE))
                 {
-                    mode = extras.getInt(FavoritesSyncManager.ARGUMENT_MODE);
+                    mode = extras.getInt(FavoritesManager.ARGUMENT_MODE);
                 }
 
-                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_IGNORE_WARNING))
+                if (extras.containsKey(FavoritesManager.ARGUMENT_NODE))
                 {
-                    ignoreWarning = extras.getBoolean(FavoritesSyncManager.ARGUMENT_IGNORE_WARNING);
+                    node = (Node) extras.getSerializable(FavoritesManager.ARGUMENT_NODE);
                 }
 
-                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_NODE))
+                if (extras.containsKey(FavoritesManager.ARGUMENT_NODE_ID))
                 {
-                    node = (Node) extras.getSerializable(FavoritesSyncManager.ARGUMENT_NODE);
-                }
-
-                if (extras.containsKey(FavoritesSyncManager.ARGUMENT_NODE_ID))
-                {
-                    nodeIdentifier = extras.getString(FavoritesSyncManager.ARGUMENT_NODE_ID);
+                    nodeIdentifier = extras.getString(FavoritesManager.ARGUMENT_NODE_ID);
                 }
             }
 
@@ -150,91 +138,17 @@ public class FavoritesSyncAdapter extends AbstractThreadedSyncAdapter
     // ///////////////////////////////////////////////////////////////////////////
     protected void sync(SyncResult syncResult)
     {
-        Log.d(TAG, "Sync Scan Started");
+        Log.d(TAG, "Favorite Scan Started");
 
         // Timestamp the scan process
-        syncManager.saveStartSyncPrepareTimestamp();
+        favoritesManager.saveStartSyncPrepareTimestamp();
         long syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
 
-        // DISPATCHER
-        // Depending on what we want to achieve we use the associated helper
-        List<FavoriteSync> requests;
-        if (syncManager.hasActivateSync(acc))
-        {
-            if (syncManager.canSyncEverything(acc))
-            {
-                // SYNC ANYTHING
-                requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult,
-                        node).prepare();
-            }
-            else
-            {
-                if (node != null)
-                {
-                    // FAVORITE SYNC
-                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
-                            syncResult, node).prepare();
-                }
-                else
-                {
-                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
-                            syncResult, nodeIdentifier).prepare();
-                }
-            }
-        }
-        else
-        {
-            // FAVORITE (WITHOUT CONTENT)
-            requests = new PrepareFavoriteHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult,
-                    node).prepare();
-        }
+        // FAVORITE (WITHOUT CONTENT)
+        new FavoritesScanner(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult, node).scan();
+        favoritesManager.saveSyncPrepareTimestamp();
 
-        // Retrieve the result of the scan
-        SyncScanInfo currentSyncScan = syncManager.getScanInfo(acc);
-
-        switch (currentSyncScan.getScanResult())
-        {
-        // Normal Case
-        // Scan is Success ==> Launch the sync
-            case SyncScanInfo.RESULT_SUCCESS:
-                // Start Execution
-                for (FavoriteSync operation : requests)
-                {
-                    operation.execute();
-                }
-                break;
-            // Warning Case
-            // Scan raised a warning ==> request user decision
-            case SyncScanInfo.RESULT_WARNING_LOW_STORAGE:
-            case SyncScanInfo.RESULT_WARNING_MOBILE_DATA:
-                if (ignoreWarning)
-                {
-                    currentSyncScan = new SyncScanInfo(currentSyncScan.getDeltaDataTransfer(),
-                            currentSyncScan.getDataToTransfer(), SyncScanInfo.RESULT_SUCCESS);
-                    for (FavoriteSync operation : requests)
-                    {
-                        operation.execute();
-                    }
-                }
-                else
-                {
-                    syncResult.databaseError = true;
-                }
-                break;
-            // ERROR Case
-            // Scan raised an error ==> alert the user
-            case SyncScanInfo.RESULT_ERROR_NOT_ENOUGH_STORAGE:
-                syncResult.databaseError = true;
-                break;
-            default:
-                break;
-        }
-
-        // Flag the execution of last sync
-        currentSyncScan.save(getContext(), acc);
-        syncManager.saveSyncPrepareTimestamp();
-
-        EventBusManager.getInstance().post(new FavoritesSyncScanEvent());
+        EventBusManager.getInstance().post(new FavoriteSyncEvent());
 
         Log.d("SYNC", "Total:" + syncResult.stats.numEntries);
         Log.d("SYNC", "Skipped:" + syncResult.stats.numSkippedEntries);

@@ -19,5 +19,6 @@ limitations under the License.
 
     <bool name="atLeastKitKat">false</bool>
     <bool name="widgetEnabled">false</bool>
+    <bool name="isMobileIron">true</bool>
 
 </resources>

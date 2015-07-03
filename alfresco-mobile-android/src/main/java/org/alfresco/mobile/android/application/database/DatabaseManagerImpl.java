@@ -21,8 +21,9 @@ import org.alfresco.mobile.android.accounts.AccountSchema;
 import org.alfresco.mobile.android.application.providers.search.HistorySearchSchema;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.database.DatabaseManager;
+import org.alfresco.mobile.android.platform.favorite.FavoritesSchema;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeSchema;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -54,18 +55,20 @@ public class DatabaseManagerImpl extends DatabaseManager
     public void onCreate(SQLiteDatabase db)
     {
         OperationSchema.onCreate(ctx, db);
-        FavoritesSyncSchema.onCreate(ctx, db);
+        SyncContentSchema.onCreate(ctx, db);
         HistorySearchSchema.onCreate(ctx, db);
         MimeTypeSchema.onCreate(ctx, db);
+        FavoritesSchema.onCreate(ctx, db);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         AccountSchema.onUpgrade(ctx, db, oldVersion, newVersion);
-        FavoritesSyncSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+        SyncContentSchema.onUpgrade(ctx, db, oldVersion, newVersion);
         HistorySearchSchema.onUpgrade(ctx, db, oldVersion, newVersion);
         MimeTypeSchema.onUpgrade(ctx, db, oldVersion, newVersion);
+        FavoritesSchema.onUpgrade(ctx, db, oldVersion, newVersion);
     }
 
 }

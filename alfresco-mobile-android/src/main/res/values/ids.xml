@@ -36,6 +36,7 @@
     <item name="menu_action_share" type="id" />
     <item name="menu_action_open" type="id" />
     <item name="menu_action_delete" type="id" />
+    <item name="menu_action_location" type="id" />
     <item name="menu_action_delete_folder" type="id" />
     <item name="menu_action_edit" type="id" />
     <item name="menu_action_download" type="id" />
@@ -47,6 +48,10 @@
     <item name="menu_action_like_group" type="id" />
     <item name="menu_action_like_group_like" type="id" />
     <item name="menu_action_like_group_unlike" type="id" />
+    <item name="menu_action_sync_group" type="id" />
+    <item name="menu_action_sync_group_sync" type="id" />
+    <item name="menu_action_sync_group_unsync" type="id" />
+
 
     <!-- MENU CAPTURE -->
     <item name="menu_upload" type="id" />

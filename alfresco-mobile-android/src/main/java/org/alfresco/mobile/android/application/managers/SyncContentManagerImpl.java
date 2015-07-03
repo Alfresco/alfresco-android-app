@@ -18,31 +18,31 @@
 package org.alfresco.mobile.android.application.managers;
 
 import org.alfresco.mobile.android.application.database.DatabaseManagerImpl;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.content.Context;
 import android.database.Cursor;
 
-public final class FavoritesSyncManagerImpl extends FavoritesSyncManager
+public final class SyncContentManagerImpl extends SyncContentManager
 {
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ////////////////////////////////////////////////////
-    private FavoritesSyncManagerImpl(Context applicationContext)
+    private SyncContentManagerImpl(Context applicationContext)
     {
         super(applicationContext);
     }
 
-    public static FavoritesSyncManagerImpl getInstance(Context context)
+    public static SyncContentManagerImpl getInstance(Context context)
     {
         synchronized (LOCK)
         {
             if (mInstance == null)
             {
-                mInstance = new FavoritesSyncManagerImpl(context.getApplicationContext());
+                mInstance = new SyncContentManagerImpl(context.getApplicationContext());
             }
 
-            return (FavoritesSyncManagerImpl) mInstance;
+            return (SyncContentManagerImpl) mInstance;
         }
     }
 
@@ -61,5 +61,5 @@ public final class FavoritesSyncManagerImpl extends FavoritesSyncManager
         }
         return totalSize;
     }
-    
+
 }

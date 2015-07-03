@@ -29,8 +29,8 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.apache.chemistry.opencmis.client.api.ObjectId;
 import org.apache.chemistry.opencmis.client.api.Session;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
@@ -42,9 +42,9 @@ import android.content.SyncResult;
 import android.net.Uri;
 import android.util.Log;
 
-public class FavoriteSyncUpdate extends FavoriteSync
+public class SyncContentUpdate extends SyncContent
 {
-    private static final String TAG = FavoriteSyncUpdate.class.getName();
+    private static final String TAG = SyncContentUpdate.class.getName();
 
     public static final int TYPE_ID = 30;
 
@@ -61,7 +61,7 @@ public class FavoriteSyncUpdate extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public FavoriteSyncUpdate(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
+    public SyncContentUpdate(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
             String parentIdentifier, Document document, ContentFile contentFile, Uri localUri, boolean doRemove)
     {
         super(context, acc, session, syncResult, localUri);
@@ -143,7 +143,7 @@ public class FavoriteSyncUpdate extends FavoriteSync
                 // Retrieve the sync file from the latest version of the node
                 // If version number increase we move the doc into the new path
                 File parentFolderFile = contentFile.getFile().getParentFile();
-                destFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc, updatedNode);
+                destFile = SyncContentManager.getInstance(context).getSynchroFile(acc, updatedNode);
                 if (!contentFile.getFile().getPath().equals(destFile.getPath()))
                 {
                     contentFile.getFile().renameTo(destFile);
@@ -169,7 +169,7 @@ public class FavoriteSyncUpdate extends FavoriteSync
         {
             Log.e(TAG, Log.getStackTraceString(e));
             syncResult.stats.numIoExceptions++;
-            saveStatus(FavoriteSyncStatus.STATUS_FAILED);
+            saveStatus(SyncContentStatus.STATUS_FAILED);
         }
 
     }
@@ -184,17 +184,17 @@ public class FavoriteSyncUpdate extends FavoriteSync
         {
             // Update Sync Info
             ContentValues cValues = new ContentValues();
-            cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_SUCCESSFUL);
-            cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
-            cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
+            cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_SUCCESSFUL);
+            cValues.put(SyncContentSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
+            cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
                     .getTimeInMillis());
-            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, destFile.lastModified());
-            cValues.put(FavoritesSyncSchema.COLUMN_CONTENT_URI,
+            cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, destFile.lastModified());
+            cValues.put(SyncContentSchema.COLUMN_CONTENT_URI,
                     (String) updatedNode.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue());
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, updatedNode.getContentStreamLength());
-            cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, updatedNode.getContentStreamLength());
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
-            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
+            cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, updatedNode.getContentStreamLength());
+            cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, updatedNode.getContentStreamLength());
+            cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
 
             context.getContentResolver().update(localUri, cValues, null, null);
         }

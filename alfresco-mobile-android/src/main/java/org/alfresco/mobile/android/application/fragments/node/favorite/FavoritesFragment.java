@@ -149,6 +149,10 @@ public class FavoritesFragment extends FavoritesNodeFragment
 
     public static class Builder extends ListingFragmentBuilder
     {
+        public static final int ICON_ID = R.drawable.ic_favorite_dark;
+
+        public static final int LABEL_ID = R.string.menu_favorites;
+
         // ///////////////////////////////////////////////////////////////////////////
         // CONSTRUCTORS & HELPERS
         // ///////////////////////////////////////////////////////////////////////////
@@ -161,8 +165,8 @@ public class FavoritesFragment extends FavoritesNodeFragment
         {
             super(appActivity, configuration);
 
-            menuIconId = R.drawable.ic_favorite_dark;
-            menuTitleId = R.string.menu_favorites;
+            menuIconId = ICON_ID;
+            menuTitleId = LABEL_ID;
             templateArguments = new String[] { FILTER_KEY_MODE };
         }
 

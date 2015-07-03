@@ -21,6 +21,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
@@ -78,19 +79,35 @@ public class NodeIdActions extends AbstractActions<String>
     {
         SubMenu createMenu;
 
-        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
+        // SYNC
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
+        createMenu.setIcon(R.drawable.ic_sync_light);
+        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
+        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
+
+        // FAVORITES
+        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 2, R.string.favorite);
         createMenu.setIcon(R.drawable.ic_favorite_light);
         createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST + 1, R.string.favorite);
         createMenu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST + 2, R.string.unfavorite);
 
-        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 3, R.string.like);
-        createMenu.setIcon(R.drawable.ic_like);
-        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        // LIKE
+        AlfrescoSession alfSession = SessionUtils.getSession(activity);
+        if (alfSession != null && alfSession.getRepositoryInfo() != null
+                && alfSession.getRepositoryInfo().getCapabilities() != null
+                && alfSession.getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
+        {
+            createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_like_group, Menu.FIRST + 3, R.string.like);
+            createMenu.setIcon(R.drawable.ic_like);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
-        createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
+            createMenu.add(Menu.NONE, R.id.menu_action_like_group_like, Menu.FIRST + 1, R.string.like);
+            createMenu.add(Menu.NONE, R.id.menu_action_like_group_unlike, Menu.FIRST + 2, R.string.unlike);
+        }
     }
 
     @Override

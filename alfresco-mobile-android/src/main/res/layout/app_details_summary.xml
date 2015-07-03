@@ -94,6 +94,12 @@
                         android:contentDescription="@string/open_in"
                         android:src="@drawable/ic_open_dark" />
 
+                    <ImageView
+                        android:id="@+id/action_sync"
+                        style="?MainTheme.ImageView.ActionIcon"
+                        android:contentDescription="@string/sync_mark"
+                        android:src="@drawable/ic_sync_light" />
+
                     <FrameLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -135,13 +141,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </FrameLayout>
-
-                    <ImageView
-                        android:id="@+id/action_geolocation"
-                        style="?MainTheme.ImageView.ActionIcon"
-                        android:contentDescription="@string/geolocation"
-                        android:src="@drawable/ic_location"
-                        android:visibility="gone" />
                 </LinearLayout>
 
                 <include

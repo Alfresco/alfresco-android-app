@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.sync;
+package org.alfresco.mobile.android.platform.favorite;
 
 import java.io.File;
 import java.io.Serializable;
@@ -43,7 +43,8 @@ import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.provider.MapUtil;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncScanInfo;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
@@ -58,9 +59,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-public class FavoritesSyncManager extends Manager
+public class FavoritesManager extends Manager
 {
-    private static final String TAG = FavoritesSyncManager.class.getName();
+    private static final String TAG = FavoritesManager.class.getName();
 
     protected static final Object LOCK = new Object();
 
@@ -69,9 +70,9 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // EVENTS
     // ////////////////////////////////////////////////////
-    private static final String LAST_SYNC_ACTIVATED_AT = "LastSyncDateTime";
+    private static final String LAST_SYNC_ACTIVATED_AT = "Fav-LastSyncDateTime";
 
-    private static final String LAST_START_SYNC_PREPARE = "LastSyncPrepareDateTime";
+    private static final String LAST_START_SYNC_PREPARE = "Fav-LastSyncPrepareDateTime";
 
     // ////////////////////////////////////////////////////
     // SYNC MODE
@@ -97,19 +98,19 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // SETTINGS
     // ////////////////////////////////////////////////////
-    private static final String SYNCHRO_PREFIX = "SynchroEnable-";
+    private static final String SYNCHRO_PREFIX = "Fav-SynchroEnable-";
 
-    private static final String SYNCHRO_EVEYTHING_PREFIX = "SynchroEverythingEnable-";
+    private static final String SYNCHRO_EVEYTHING_PREFIX = "Fav-SynchroEverythingEnable-";
 
-    private static final String SYNCHRO_WIFI_PREFIX = "SynchroWifiEnable-";
+    private static final String SYNCHRO_WIFI_PREFIX = "Fav-SynchroWifiEnable-";
 
-    private static final String SYNCHRO_DISPLAY_PREFIX = "SynchroDisplayEnable-";
+    private static final String SYNCHRO_DISPLAY_PREFIX = "Fav-SynchroDisplayEnable-";
 
-    private static final String SYNCHRO_DATA_ALERT_PREFIX = "SynchroDataAlert-";
+    private static final String SYNCHRO_DATA_ALERT_PREFIX = "Fav-SynchroDataAlert-";
 
     private static final long SYNCHRO_DATA_ALERT_LENGTH = 20971520; // 20Mb
 
-    private static final String SYNCHRO_FREE_SPACE_ALERT_PREFIX = "SynchroDataAlert-";
+    private static final String SYNCHRO_FREE_SPACE_ALERT_PREFIX = "Fav-SynchroDataAlert-";
 
     // In Percent of total space
     private static final float SYNCHRO_FREE_SPACE_ALERT_LENGTH = 0.1f;
@@ -117,12 +118,12 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ////////////////////////////////////////////////////
-    protected FavoritesSyncManager(Context applicationContext)
+    protected FavoritesManager(Context applicationContext)
     {
         super(applicationContext);
     }
 
-    public static FavoritesSyncManager getInstance(Context context)
+    public static FavoritesManager getInstance(Context context)
     {
         synchronized (LOCK)
         {
@@ -130,10 +131,10 @@ public class FavoritesSyncManager extends Manager
             {
                 if (mInstance == null)
                 {
-                    mInstance = Manager.getInstance(context, FavoritesSyncManager.class.getSimpleName());
+                    mInstance = Manager.getInstance(context, FavoritesManager.class.getSimpleName());
                 }
 
-                return (FavoritesSyncManager) mInstance;
+                return (FavoritesManager) mInstance;
             }
         }
     }
@@ -141,69 +142,64 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // PUBLIC UTILS METHODS
     // ////////////////////////////////////////////////////
-    public static ContentValues createContentValues(Context context, AlfrescoAccount account, int requestType,
+    public static ContentValues createContentValues(Context context, AlfrescoAccount account,
             Node node, long time)
     {
-        return createContentValues(context, account, requestType, "", node, time, 0);
+        return createContentValues(context, account, "", node, time);
     }
 
-    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account, int requestType,
+    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account,
             Node node, long time)
     {
-        ContentValues cValues = createContentValues(context, account, requestType, "", node, time, 0);
-        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
+        ContentValues cValues = createContentValues(context, account, "", node, time);
+        cValues.put(FavoritesSchema.COLUMN_IS_FAVORITE, FavoritesProvider.FLAG_FAVORITE);
         return cValues;
     }
 
-    public static ContentValues createContentValues(Context context, AlfrescoAccount account, int requestType,
-            String parent, Node node, long time, long folderSize)
+    public static ContentValues createContentValues(Context context, AlfrescoAccount account, String parent, Node node,
+            long time)
     {
         ContentValues cValues = new ContentValues();
-        cValues.put(FavoritesSyncSchema.COLUMN_ACCOUNT_ID, account.getId());
-        cValues.put(FavoritesSyncSchema.COLUMN_TENANT_ID, account.getRepositoryId());
-        cValues.put(FavoritesSyncSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
-        cValues.put(FavoritesSyncSchema.COLUMN_REASON, -1);
-        cValues.put(FavoritesSyncSchema.COLUMN_REQUEST_TYPE, requestType);
-        cValues.put(FavoritesSyncSchema.COLUMN_TITLE, node.getName());
-        cValues.put(FavoritesSyncSchema.COLUMN_NOTIFICATION_VISIBILITY, OperationRequest.VISIBILITY_HIDDEN);
-        cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, node.getIdentifier());
-        cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parent);
+        cValues.put(FavoritesSchema.COLUMN_ACCOUNT_ID, account.getId());
+        cValues.put(FavoritesSchema.COLUMN_TENANT_ID, account.getRepositoryId());
+        cValues.put(FavoritesSchema.COLUMN_STATUS, Operation.STATUS_PENDING);
+        cValues.put(FavoritesSchema.COLUMN_REASON, -1);
+        cValues.put(FavoritesSchema.COLUMN_TITLE, node.getName());
+        cValues.put(FavoritesSchema.COLUMN_NOTIFICATION_VISIBILITY, OperationRequest.VISIBILITY_HIDDEN);
+        cValues.put(FavoritesSchema.COLUMN_NODE_ID, node.getIdentifier());
+        cValues.put(FavoritesSchema.COLUMN_PARENT_ID, parent);
         if (node instanceof Document)
         {
-            cValues.put(FavoritesSyncSchema.COLUMN_MIMETYPE, ((Document) node).getContentStreamMimeType());
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, ((Document) node).getContentStreamLength());
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, ((Document) node).getContentStreamLength());
+            cValues.put(FavoritesSchema.COLUMN_MIMETYPE, ((Document) node).getContentStreamMimeType());
+            cValues.put(FavoritesSchema.COLUMN_TOTAL_SIZE_BYTES, ((Document) node).getContentStreamLength());
+            cValues.put(FavoritesSchema.COLUMN_DOC_SIZE_BYTES, ((Document) node).getContentStreamLength());
             if (node.getProperty(PropertyIds.CONTENT_STREAM_ID) != null)
             {
-                cValues.put(FavoritesSyncSchema.COLUMN_CONTENT_URI,
-                        (String) node.getProperty(PropertyIds.CONTENT_STREAM_ID).getValue());
+                cValues.put(FavoritesSchema.COLUMN_CONTENT_URI, (String) node
+                        .getProperty(PropertyIds.CONTENT_STREAM_ID).getValue());
             }
         }
         else
         {
-            cValues.put(FavoritesSyncSchema.COLUMN_MIMETYPE, ContentModel.TYPE_FOLDER);
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, folderSize);
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
-            if (folderSize == 0)
-            {
-                cValues.put(FavoritesSyncSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
-            }
+            cValues.put(FavoritesSchema.COLUMN_MIMETYPE, ContentModel.TYPE_FOLDER);
+            cValues.put(FavoritesSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            cValues.put(FavoritesSchema.COLUMN_STATUS, Operation.STATUS_SUCCESSFUL);
         }
-        cValues.put(FavoritesSyncSchema.COLUMN_PROPERTIES, serializeProperties(node));
-        cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, 0);
-        cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_URI, "");
-        cValues.put(FavoritesSyncSchema.COLUMN_ANALYZE_TIMESTAMP, time);
-        cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, node.getModifiedAt().getTimeInMillis());
-        cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, time);
-        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, 0);
+        cValues.put(FavoritesSchema.COLUMN_PROPERTIES, serializeProperties(node));
+        cValues.put(FavoritesSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, 0);
+        cValues.put(FavoritesSchema.COLUMN_LOCAL_URI, "");
+        cValues.put(FavoritesSchema.COLUMN_ANALYZE_TIMESTAMP, time);
+        cValues.put(FavoritesSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, node.getModifiedAt().getTimeInMillis());
+        cValues.put(FavoritesSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, time);
+        cValues.put(FavoritesSchema.COLUMN_IS_FAVORITE, 1);
         return cValues;
     }
 
-    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account, int requestType,
-            String parent, Node node, long time, long folderSize)
+    public static ContentValues createFavoriteContentValues(Context context, AlfrescoAccount account, String parent,
+            Node node, long time)
     {
-        ContentValues cValues = createContentValues(context, account, requestType, parent, node, time, folderSize);
-        cValues.put(FavoritesSyncSchema.COLUMN_IS_FAVORITE, FavoritesSyncProvider.FLAG_FAVORITE);
+        ContentValues cValues = createContentValues(context, account, parent, node, time);
+        cValues.put(FavoritesSchema.COLUMN_IS_FAVORITE, FavoritesProvider.FLAG_FAVORITE);
         return cValues;
     }
 
@@ -236,19 +232,19 @@ public class FavoritesSyncManager extends Manager
 
     public static Uri getUri(long id)
     {
-        return Uri.parse(FavoritesSyncProvider.CONTENT_URI + "/" + id);
+        return Uri.parse(FavoritesProvider.CONTENT_URI + "/" + id);
     }
 
     public void sync(AlfrescoAccount account)
     {
         if (account == null) { return; }
         Bundle settingsBundle = new Bundle();
-        settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_BOTH);
+        settingsBundle.putInt(ARGUMENT_MODE, FavoritesManager.MODE_BOTH);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                FavoritesSyncProvider.AUTHORITY, settingsBundle);
+                FavoritesProvider.AUTHORITY, settingsBundle);
     }
 
     public void sync(AlfrescoAccount account, String nodeIdentifier)
@@ -257,11 +253,11 @@ public class FavoritesSyncManager extends Manager
         Bundle settingsBundle = new Bundle();
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        settingsBundle.putInt(ARGUMENT_MODE, FavoritesSyncManager.MODE_NODE);
+        settingsBundle.putInt(ARGUMENT_MODE, FavoritesManager.MODE_NODE);
         settingsBundle.putSerializable(ARGUMENT_NODE_ID, nodeIdentifier);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, false);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                FavoritesSyncProvider.AUTHORITY, settingsBundle);
+                FavoritesProvider.AUTHORITY, settingsBundle);
     }
 
     public void runPendingOperationGroup(AlfrescoAccount account)
@@ -270,9 +266,9 @@ public class FavoritesSyncManager extends Manager
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         settingsBundle.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
         settingsBundle.putBoolean(ARGUMENT_IGNORE_WARNING, true);
-        settingsBundle.putInt(FavoritesSyncManager.ARGUMENT_MODE, FavoritesSyncManager.MODE_BOTH);
+        settingsBundle.putInt(FavoritesManager.ARGUMENT_MODE, FavoritesManager.MODE_BOTH);
         ContentResolver.requestSync(AlfrescoAccountManager.getInstance(appContext).getAndroidAccount(account.getId()),
-                FavoritesSyncProvider.AUTHORITY, settingsBundle);
+                FavoritesProvider.AUTHORITY, settingsBundle);
     }
 
     public void unsync(AlfrescoAccount account)
@@ -286,10 +282,10 @@ public class FavoritesSyncManager extends Manager
         if (account == null) { return false; }
 
         Cursor favoriteCursor = appContext.getContentResolver().query(
-                FavoritesSyncProvider.CONTENT_URI,
-                FavoritesSyncSchema.COLUMN_ALL,
-                FavoritesSyncProvider.getAccountFilter(account) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID
-                        + " LIKE '" + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
+                FavoritesProvider.CONTENT_URI,
+                FavoritesSchema.COLUMN_ALL,
+                FavoritesProvider.getAccountFilter(account) + " AND " + FavoritesSchema.COLUMN_NODE_ID + " LIKE '"
+                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
         boolean b = (favoriteCursor.getCount() == 1) && hasActivateSync(account);
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -313,9 +309,9 @@ public class FavoritesSyncManager extends Manager
         if (acc == null) { return null; }
 
         return context.getContentResolver().query(
-                FavoritesSyncProvider.CONTENT_URI,
-                FavoritesSyncSchema.COLUMN_ALL,
-                FavoritesSyncProvider.getAccountFilter(acc) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID + " LIKE '"
+                FavoritesProvider.CONTENT_URI,
+                FavoritesSchema.COLUMN_ALL,
+                FavoritesProvider.getAccountFilter(acc) + " AND " + FavoritesSchema.COLUMN_NODE_ID + " LIKE '"
                         + NodeRefUtils.getCleanIdentifier(identifier) + "%'", null, null);
     }
 
@@ -327,8 +323,7 @@ public class FavoritesSyncManager extends Manager
         Cursor favoriteCursor = getCursorForId(appContext, account, nodeIdentifier);
         if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
         {
-            b = Uri.parse(FavoritesSyncProvider.CONTENT_URI + "/"
-                    + favoriteCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID));
+            b = Uri.parse(FavoritesProvider.CONTENT_URI + "/" + favoriteCursor.getLong(FavoritesSchema.COLUMN_ID_ID));
         }
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -416,8 +411,7 @@ public class FavoritesSyncManager extends Manager
 
     public static boolean isFolder(Cursor cursor)
     {
-        return cursor != null
-                && ContentModel.TYPE_FOLDER.equals(cursor.getString(FavoritesSyncSchema.COLUMN_MIMETYPE_ID));
+        return cursor != null && ContentModel.TYPE_FOLDER.equals(cursor.getString(FavoritesSchema.COLUMN_MIMETYPE_ID));
     }
 
     public boolean isSyncFile(File file)
@@ -459,27 +453,26 @@ public class FavoritesSyncManager extends Manager
     // ////////////////////////////////////////////////////
     // STORAGE MANAGEMENT
     // ////////////////////////////////////////////////////
-    private static final String QUERY_SUM = "SELECT SUM(" + FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR
-            + ") FROM " + FavoritesSyncSchema.TABLENAME + " WHERE " + FavoritesSyncSchema.COLUMN_PARENT_ID + " = '%s';";
+    private static final String QUERY_SUM = "SELECT SUM(" + FavoritesSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR + ") FROM "
+            + FavoritesSchema.TABLENAME + " WHERE " + FavoritesSchema.COLUMN_PARENT_ID + " = '%s';";
 
-    private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES
-            + ") FROM " + FavoritesSyncSchema.TABLENAME + " WHERE " + FavoritesSyncSchema.COLUMN_ACCOUNT_ID
-            + " == %s AND " + FavoritesSyncSchema.COLUMN_STATUS + " IN ( " + FavoriteSyncStatus.STATUS_PENDING + ","
-            + FavoriteSyncStatus.STATUS_HIDDEN + ");";
+    private static final String QUERY_SUM_IN_PENDING = "SELECT SUM(" + FavoritesSchema.COLUMN_DOC_SIZE_BYTES
+            + ") FROM " + FavoritesSchema.TABLENAME + " WHERE " + FavoritesSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + FavoritesSchema.COLUMN_STATUS + " IN ( " + SyncContentStatus.STATUS_PENDING + ","
+            + SyncContentStatus.STATUS_HIDDEN + ");";
 
-    private static final String QUERY_SUM_TOTAL_IN_PENDING = "SELECT SUM("
-            + FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES + ") FROM " + FavoritesSyncSchema.TABLENAME + " WHERE "
-            + FavoritesSyncSchema.COLUMN_ACCOUNT_ID + " == %s AND " + FavoritesSyncSchema.COLUMN_STATUS + " = "
-            + FavoriteSyncStatus.STATUS_PENDING + " AND " + FavoritesSyncSchema.COLUMN_MIMETYPE + " NOT IN ('"
-            + ContentModel.TYPE_FOLDER + "');";
+    private static final String QUERY_SUM_TOTAL_IN_PENDING = "SELECT SUM(" + FavoritesSchema.COLUMN_TOTAL_SIZE_BYTES
+            + ") FROM " + FavoritesSchema.TABLENAME + " WHERE " + FavoritesSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + FavoritesSchema.COLUMN_STATUS + " = " + SyncContentStatus.STATUS_PENDING + " AND "
+            + FavoritesSchema.COLUMN_MIMETYPE + " NOT IN ('" + ContentModel.TYPE_FOLDER + "');";
 
-    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES
-            + ") FROM " + FavoritesSyncSchema.TABLENAME + " WHERE " + FavoritesSyncSchema.COLUMN_ACCOUNT_ID
-            + " == %s AND " + FavoritesSyncSchema.COLUMN_STATUS + " IN (" + FavoriteSyncStatus.STATUS_PENDING + ", "
-            + FavoriteSyncStatus.STATUS_SUCCESSFUL + ");";
+    private static final String QUERY_TOTAL_STORED = "SELECT SUM(" + FavoritesSchema.COLUMN_DOC_SIZE_BYTES + ") FROM "
+            + FavoritesSchema.TABLENAME + " WHERE " + FavoritesSchema.COLUMN_ACCOUNT_ID + " == %s AND "
+            + FavoritesSchema.COLUMN_STATUS + " IN (" + SyncContentStatus.STATUS_PENDING + ", "
+            + SyncContentStatus.STATUS_SUCCESSFUL + ");";
 
-    private static final String QUERY_SUM_TOTAL = "SELECT SUM(" + FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES
-            + ") FROM " + FavoritesSyncSchema.TABLENAME + " WHERE " + FavoritesSyncSchema.COLUMN_PARENT_ID + " = '%s';";
+    private static final String QUERY_SUM_TOTAL = "SELECT SUM(" + FavoritesSchema.COLUMN_TOTAL_SIZE_BYTES + ") FROM "
+            + FavoritesSchema.TABLENAME + " WHERE " + FavoritesSchema.COLUMN_PARENT_ID + " = '%s';";
 
     public synchronized void updateParentFolder(AlfrescoAccount account, String identifier)
     {
@@ -493,20 +486,20 @@ public class FavoritesSyncManager extends Manager
             // Retrieve Uri & ParentFolder
             Uri uri = null;
             favoriteCursor = appContext.getContentResolver().query(
-                    FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL,
-                    FavoritesSyncProvider.getAccountFilter(account) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID
-                            + " == '" + NodeRefUtils.getCleanIdentifier(identifier) + "'", null, null);
+                    FavoritesProvider.CONTENT_URI,
+                    FavoritesSchema.COLUMN_ALL,
+                    FavoritesProvider.getAccountFilter(account) + " AND " + FavoritesSchema.COLUMN_NODE_ID + " == '"
+                            + NodeRefUtils.getCleanIdentifier(identifier) + "'", null, null);
             if (favoriteCursor.getCount() == 1 && favoriteCursor.moveToFirst())
             {
-                parentFolderId = favoriteCursor.getString(FavoritesSyncSchema.COLUMN_PARENT_ID_ID);
-                uri = Uri.parse(FavoritesSyncProvider.CONTENT_URI + "/"
-                        + favoriteCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID));
+                parentFolderId = favoriteCursor.getString(FavoritesSchema.COLUMN_PARENT_ID_ID);
+                uri = Uri.parse(FavoritesProvider.CONTENT_URI + "/"
+                        + favoriteCursor.getLong(FavoritesSchema.COLUMN_ID_ID));
 
                 parentCursor = appContext.getContentResolver().query(
-                        FavoritesSyncProvider.CONTENT_URI,
-                        FavoritesSyncSchema.COLUMN_ALL,
-                        FavoritesSyncProvider.getAccountFilter(account) + " AND " + FavoritesSyncSchema.COLUMN_NODE_ID
+                        FavoritesProvider.CONTENT_URI,
+                        FavoritesSchema.COLUMN_ALL,
+                        FavoritesProvider.getAccountFilter(account) + " AND " + FavoritesSchema.COLUMN_NODE_ID
                                 + " == '" + NodeRefUtils.getCleanIdentifier(parentFolderId) + "'", null, null);
             }
             else
@@ -515,7 +508,7 @@ public class FavoritesSyncManager extends Manager
             }
 
             if (parentCursor != null && parentCursor.getCount() == 1 && parentCursor.moveToFirst()
-                    && FavoriteSyncStatus.STATUS_HIDDEN == parentCursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID))
+                    && SyncContentStatus.STATUS_HIDDEN == parentCursor.getInt(FavoritesSchema.COLUMN_STATUS_ID))
             {
                 // Node has been flag to deletion
                 // We don't update
@@ -532,8 +525,8 @@ public class FavoritesSyncManager extends Manager
 
             // Update the parent
             ContentValues cValues = new ContentValues();
-            cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, currentValue);
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, totalSize);
+            cValues.put(FavoritesSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, currentValue);
+            cValues.put(FavoritesSchema.COLUMN_TOTAL_SIZE_BYTES, totalSize);
             cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
             if (totalSize.longValue() == currentValue.longValue())
             {
@@ -713,7 +706,7 @@ public class FavoritesSyncManager extends Manager
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
         sharedPref.edit().putBoolean(SYNCHRO_PREFIX + accountId, isActive).commit();
         ContentResolver.setSyncAutomatically(AlfrescoAccountManager.getInstance(appContext)
-                .getAndroidAccount(accountId), FavoritesSyncProvider.AUTHORITY, isActive);
+                .getAndroidAccount(accountId), FavoritesProvider.AUTHORITY, isActive);
     }
 
     public void setActivateSync(AlfrescoAccount account, boolean isActive)

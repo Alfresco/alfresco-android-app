@@ -33,5 +33,7 @@ public interface DatabaseVersionNumber
 
     int VERSION_1_5_0 = 6;
 
-    int LATEST_VERSION = VERSION_1_5_0;
+    int VERSION_1_6_0 = 7;
+
+    int LATEST_VERSION = VERSION_1_6_0;
 }

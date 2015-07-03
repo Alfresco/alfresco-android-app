@@ -26,6 +26,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginRight="@dimen/properties_details_padding"
-        android:layout_marginLeft="@dimen/properties_details_padding"></LinearLayout>
+        android:layout_marginLeft="@dimen/properties_details_padding" />
 
 </ScrollView>
