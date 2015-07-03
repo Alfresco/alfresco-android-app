@@ -26,7 +26,7 @@ import android.content.Context;
 import android.content.SyncResult;
 import android.net.Uri;
 
-public class FavoriteSync
+public class SyncContent
 {
     protected final Context context;
 
@@ -38,8 +38,7 @@ public class FavoriteSync
 
     protected final Uri syncUri;
 
-    public FavoriteSync(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
-            Uri syncUri)
+    public SyncContent(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult, Uri syncUri)
     {
         this.context = context;
         this.acc = acc;
@@ -51,7 +50,7 @@ public class FavoriteSync
     protected void requestUserInteraction(Uri localUri, int reasonId)
     {
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_REQUEST_USER);
+        cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_REQUEST_USER);
         cValues.put(OperationSchema.COLUMN_REASON, reasonId);
         context.getContentResolver().update(localUri, cValues, null, null);
     }
@@ -78,6 +77,6 @@ public class FavoriteSync
 
     public void execute()
     {
-        saveStatus(FavoriteSyncStatus.STATUS_RUNNING);
+        saveStatus(SyncContentStatus.STATUS_RUNNING);
     }
 }

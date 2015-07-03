@@ -15,25 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.platform.database;
+package org.alfresco.mobile.android.async.node.sync;
 
-/**
- * @since 1.2
- * @author Jean Marie Pascal
- */
-public interface DatabaseVersionNumber
+import org.alfresco.mobile.android.api.model.Node;
+import org.alfresco.mobile.android.async.LoaderResult;
+import org.alfresco.mobile.android.async.OperationEvent;
+
+public class SyncNodeEvent extends OperationEvent<Boolean>
 {
-    int VERSION_1_0_0 = 2;
+    public final Node node;
 
-    int VERSION_1_1_0 = 3;
+    public SyncNodeEvent(String requestId, LoaderResult<Boolean> result, Node node)
+    {
+        super(requestId, result);
+        this.node = node;
+    }
 
-    int VERSION_1_2_0 = 4;
-
-    int VERSION_1_4_0 = 5;
-
-    int VERSION_1_5_0 = 6;
-
-    int VERSION_1_6_0 = 7;
-
-    int LATEST_VERSION = VERSION_1_6_0;
 }

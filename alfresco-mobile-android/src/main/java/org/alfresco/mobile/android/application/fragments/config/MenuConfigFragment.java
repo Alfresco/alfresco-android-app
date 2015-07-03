@@ -28,7 +28,7 @@ import org.alfresco.mobile.android.application.fragments.workflow.task.TasksFrag
 import org.alfresco.mobile.android.application.managers.ConfigManager;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -184,8 +184,8 @@ public class MenuConfigFragment extends AlfrescoFragment
                         @Override
                         public void onPositive(MaterialDialog dialog)
                         {
-                            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
-                            FavoritesSyncManager.getInstance(getActivity()).unsync(getAccount());
+                            SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), false);
+                            SyncContentManager.getInstance(getActivity()).unsync(getAccount());
                             saveConfiguration();
                             getActivity().onBackPressed();
                         }
@@ -195,7 +195,7 @@ public class MenuConfigFragment extends AlfrescoFragment
         }
         else if (defaultMenuItems.get(VIEW_SYNC).isEnable() && !originalSyncState)
         {
-            FavoritesSyncManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
+            SyncContentManager.getInstance(getActivity()).setActivateSync(getAccount(), true);
             saveConfiguration();
             getActivity().onBackPressed();
         }

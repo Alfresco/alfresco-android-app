@@ -15,30 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.sync;
+package org.alfresco.mobile.android.application.providers;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
+import org.alfresco.mobile.android.application.database.DatabaseManagerImpl;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
 
-public class FavoritesSyncService extends Service
+public class SyncProviderImpl extends SyncContentProvider
 {
-    private static final Object sSyncAdapterLock = new Object();
-
-    private static FavoritesSyncAdapter sSyncAdapter = null;
-
     @Override
-    public void onCreate()
+    public boolean onCreate()
     {
-        synchronized (sSyncAdapterLock)
-        {
-            if (sSyncAdapter == null) sSyncAdapter = new FavoritesSyncAdapter(getApplicationContext(), true);
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent)
-    {
-        return sSyncAdapter.getSyncAdapterBinder();
+        databaseManager = DatabaseManagerImpl.getInstance(getContext());
+        return true;
     }
 }

@@ -35,9 +35,9 @@ import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
@@ -87,7 +87,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         this.selectedItems = selectedItems;
         this.mode = mode;
         vhClassName = ProgressViewHolder.class.getCanonicalName();
-        hasSynchroActive = FavoritesSyncManager.getInstance(fr.getActivity()).hasActivateSync(
+        hasSynchroActive = SyncContentManager.getInstance(fr.getActivity()).hasActivateSync(
                 SessionUtils.getAccount(context));
     }
 
@@ -115,21 +115,21 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
     protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
     {
-        if (FavoritesSyncManager.isFolder(cursor))
+        if (SyncContentManager.isFolder(cursor))
         {
             vh.icon.setImageResource(R.drawable.mime_256_folder);
         }
         else
         {
             MimeType mime = MimeTypeManager.getInstance(context).getMimetype(
-                    cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+                    cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
             RenditionManager
                     .with(fragmentRef.get().getActivity())
-                    .loadNode(cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID))
+                    .loadNode(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))
                     .placeHolder(
                             mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context).getIcon(
-                                    cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID), true)).into(vh.icon);
+                                    cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true)).into(vh.icon);
 
             if (mime != null)
             {
@@ -145,10 +145,10 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
     protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
     {
-        int status = cursor.getInt(FavoritesSyncSchema.COLUMN_STATUS_ID);
-        String nodeId = cursor.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
-        long favoriteId = cursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID);
-        boolean favorited = cursor.getInt(FavoritesSyncSchema.COLUMN_IS_FAVORITE_ID) > 0;
+        int status = cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
+        String nodeId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+        long favoriteId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
+        boolean favorited = cursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
 
         if (favorited)
         {
@@ -163,21 +163,21 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         vh.progress.setVisibility(View.GONE);
         switch (status)
         {
-            case FavoriteSyncStatus.STATUS_PENDING:
+            case SyncContentStatus.STATUS_PENDING:
                 displayStatut(vh, R.drawable.sync_status_pending);
                 break;
-            case FavoriteSyncStatus.STATUS_RUNNING:
+            case SyncContentStatus.STATUS_RUNNING:
                 displayStatut(vh, R.drawable.sync_status_loading);
                 vh.progress.setVisibility(View.VISIBLE);
                 vh.favoriteIcon.setVisibility(View.GONE);
-                long totalSize = cursor.getLong(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                long totalSize = cursor.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
                 if (totalSize == -1)
                 {
                     vh.progress.setIndeterminate(true);
                 }
                 else
                 {
-                    long progress = cursor.getLong(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
+                    long progress = cursor.getLong(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR_ID);
                     float value = (((float) progress / ((float) totalSize)) * 100);
                     int percentage = Math.round(value);
                     vh.progress.setIndeterminate(false);
@@ -185,22 +185,22 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                     vh.progress.setProgress(percentage);
                 }
                 break;
-            case FavoriteSyncStatus.STATUS_PAUSED:
+            case SyncContentStatus.STATUS_PAUSED:
                 displayStatut(vh, R.drawable.sync_status_pending);
                 break;
-            case FavoriteSyncStatus.STATUS_MODIFIED:
+            case SyncContentStatus.STATUS_MODIFIED:
                 displayStatut(vh, R.drawable.sync_status_pending);
                 break;
-            case FavoriteSyncStatus.STATUS_SUCCESSFUL:
+            case SyncContentStatus.STATUS_SUCCESSFUL:
                 displayStatut(vh, R.drawable.sync_status_success);
                 break;
-            case FavoriteSyncStatus.STATUS_FAILED:
+            case SyncContentStatus.STATUS_FAILED:
                 displayStatut(vh, R.drawable.sync_status_failed);
                 break;
-            case FavoriteSyncStatus.STATUS_CANCEL:
+            case SyncContentStatus.STATUS_CANCEL:
                 displayStatut(vh, R.drawable.sync_status_failed);
                 break;
-            case FavoriteSyncStatus.STATUS_REQUEST_USER:
+            case SyncContentStatus.STATUS_REQUEST_USER:
                 displayStatut(vh, R.drawable.sync_status_failed);
                 break;
             default:
@@ -217,7 +217,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
             UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
         }
 
-        if (FavoriteSyncStatus.STATUS_RUNNING != status)
+        if (SyncContentStatus.STATUS_RUNNING != status)
         {
             vh.bottomText.setVisibility(View.VISIBLE);
             vh.bottomText.setText(createContentBottomText(context, cursor));
@@ -242,7 +242,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
             AccessibilityUtils.addContentDescription(
                     vh.choose,
                     String.format(context.getString(R.string.more_options_favorite),
-                            cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID)));
+                            cursor.getString(SyncContentSchema.COLUMN_TITLE_ID)));
             vh.choose.setOnClickListener(new OnClickListener()
             {
                 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -288,11 +288,11 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
     {
         String s = "";
 
-        if (cursor.getLong(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID) != -1)
+        if (cursor.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID) != -1)
         {
             s = Formatter.formatToRelativeDate(context,
-                    new Date(cursor.getLong(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID)));
-            long size = cursor.getLong(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                    new Date(cursor.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID)));
+            long size = cursor.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
             if (size > 0)
             {
                 s += " - " + Formatter.formatFileSize(context, size);
@@ -308,8 +308,8 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         s.append(context.getString(R.string.metadata_modified));
         s.append(Formatter.formatToRelativeDate(context,
-                new Date(cursor.getLong(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID))));
-        long size = cursor.getLong(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
+                new Date(cursor.getLong(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP_ID))));
+        long size = cursor.getLong(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES_ID);
         if (size > 0)
         {
             s.append(" - ");
@@ -321,7 +321,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
     protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
     {
-        vh.topText.setText(cursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+        vh.topText.setText(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
     }
 
     protected void displayStatut(ProgressViewHolder vh, int imageResource)
@@ -346,12 +346,12 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         switch (statut)
         {
-            case FavoriteSyncStatus.STATUS_HIDDEN:
+            case SyncContentStatus.STATUS_HIDDEN:
                 mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST, R.string.favorite);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
-            case FavoriteSyncStatus.STATUS_FAILED:
-            case FavoriteSyncStatus.STATUS_REQUEST_USER:
+            case SyncContentStatus.STATUS_FAILED:
+            case SyncContentStatus.STATUS_REQUEST_USER:
                 mi = menu.add(Menu.NONE, R.id.menu_sync_resolution, Menu.FIRST, R.string.sync_resolve_conflict);
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
@@ -418,6 +418,6 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
     public void refresh()
     {
-        hasSynchroActive = FavoritesSyncManager.getInstance(context).hasActivateSync(SessionUtils.getAccount(context));
+        hasSynchroActive = SyncContentManager.getInstance(context).hasActivateSync(SessionUtils.getAccount(context));
     }
 }

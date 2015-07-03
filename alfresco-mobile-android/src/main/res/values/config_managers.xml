@@ -6,8 +6,11 @@
     <string name="manager_RenditionManager" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.managers.RenditionManagerImpl</string>
 
     <!-- Favorite Sync Manager -->
-    <bool name="manager_isEnable_FavoritesSyncManager">true</bool>
-    <string name="manager_FavoritesSyncManager" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.managers.FavoritesSyncManagerImpl</string>
+    <bool name="manager_isEnable_SyncContentManager">true</bool>
+    <string name="manager_SyncContentManager" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.managers.SyncContentManagerImpl</string>
+
+    <bool name="manager_isEnable_FavoritesManager">true</bool>
+    <string name="manager_FavoritesManager" translatable="false" tools:ignore="UnusedResources">org.alfresco.mobile.android.application.managers.FavoritesManagerImpl</string>
 
     <!-- Storage Manager -->
     <bool name="manager_isEnable_AlfrescoStorageManager">true</bool>

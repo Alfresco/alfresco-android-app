@@ -400,6 +400,7 @@
     <!-- Favorites -->
     <string name="menu_favorites_folder">Favorite Folders</string>
     <string name="menu_favorites">Favorites</string>
+    <string name="sync_mark">Mark as Sync</string>
     <string name="synced_content">Synced Content</string>
     <string name="empty_favorites">No Favorites</string>
     <string name="favorites_document">Favorite</string>
@@ -421,6 +422,9 @@
     <string name="sync_in_progress">Sync in progress&#8230;</string>
     <string name="upload_await">Waiting to upload&#8230;</string>
     <string name="download_await">Waiting to download&#8230;</string>
+    <string name="sync_title">Synced Content</string>
+    <string name="sync">Sync</string>
+    <string name="unsync">UnSync</string>
     <string name="sync_favorites">Favorites</string>
 
 

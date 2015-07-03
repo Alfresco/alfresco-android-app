@@ -19,7 +19,7 @@ package org.alfresco.mobile.android.application.fragments.sync;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncScanInfo;
 
 import android.app.AlertDialog.Builder;
@@ -134,7 +134,7 @@ public class ErrorSyncDialogFragment extends DialogFragment
         @Override
         public void onPositive()
         {
-            FavoritesSyncManager.getInstance(getActivity()).runPendingOperationGroup(
+            SyncContentManager.getInstance(getActivity()).runPendingOperationGroup(
                     SessionUtils.getAccount(getActivity()));
             getActivity().invalidateOptionsMenu();
 

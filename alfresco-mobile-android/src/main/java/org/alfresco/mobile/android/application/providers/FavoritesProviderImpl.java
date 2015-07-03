@@ -15,9 +15,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.sync;
+package org.alfresco.mobile.android.application.providers;
 
-public class FavoritesSyncScanEvent
+import org.alfresco.mobile.android.application.database.DatabaseManagerImpl;
+import org.alfresco.mobile.android.platform.favorite.FavoritesProvider;
+
+public class FavoritesProviderImpl extends FavoritesProvider
 {
-
+    @Override
+    public boolean onCreate()
+    {
+        databaseManager = DatabaseManagerImpl.getInstance(getContext());
+        return true;
+    }
 }

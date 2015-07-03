@@ -35,9 +35,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.util.Log;
 
-public abstract class FavoritesSyncProvider extends ContentProvider implements AlfrescoContentProvider
+public abstract class SyncContentProvider extends ContentProvider implements AlfrescoContentProvider
 {
-    private static final String TAG = FavoritesSyncProvider.class.getName();
+    private static final String TAG = SyncContentProvider.class.getName();
 
     protected DatabaseManager databaseManager;
 
@@ -73,18 +73,18 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
         switch (uriType)
         {
             case SYNC:
-                rowsDeleted = db.delete(FavoritesSyncSchema.TABLENAME, selection, selectionArgs);
+                rowsDeleted = db.delete(SyncContentSchema.TABLENAME, selection, selectionArgs);
                 break;
             case SYNC_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection))
                 {
-                    rowsDeleted = db.delete(FavoritesSyncSchema.TABLENAME, FavoritesSyncSchema.COLUMN_ID + "=" + id,
+                    rowsDeleted = db.delete(SyncContentSchema.TABLENAME, SyncContentSchema.COLUMN_ID + "=" + id,
                             null);
                 }
                 else
                 {
-                    rowsDeleted = db.delete(FavoritesSyncSchema.TABLENAME, FavoritesSyncSchema.COLUMN_ID + "=" + id
+                    rowsDeleted = db.delete(SyncContentSchema.TABLENAME, SyncContentSchema.COLUMN_ID + "=" + id
                             + " and " + selection, selectionArgs);
                 }
                 break;
@@ -111,7 +111,7 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
         switch (uriType)
         {
             case SYNC:
-                id = db.insert(FavoritesSyncSchema.TABLENAME, null, values);
+                id = db.insert(SyncContentSchema.TABLENAME, null, values);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -132,7 +132,7 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
         // Check if the caller has requested a column which does not exists
         checkColumns(projection);
 
-        queryBuilder.setTables(FavoritesSyncSchema.TABLENAME);
+        queryBuilder.setTables(SyncContentSchema.TABLENAME);
 
         int uriType = URI_MATCHER.match(uri);
         switch (uriType)
@@ -141,7 +141,7 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
                 break;
             case SYNC_ID:
                 // Adding the ID to the original query
-                queryBuilder.appendWhere(FavoritesSyncSchema.COLUMN_ID + "=" + uri.getLastPathSegment());
+                queryBuilder.appendWhere(SyncContentSchema.COLUMN_ID + "=" + uri.getLastPathSegment());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI: " + uri);
@@ -164,18 +164,18 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
         switch (uriType)
         {
             case SYNC:
-                rowsUpdated = sqlDB.update(FavoritesSyncSchema.TABLENAME, values, selection, selectionArgs);
+                rowsUpdated = sqlDB.update(SyncContentSchema.TABLENAME, values, selection, selectionArgs);
                 break;
             case SYNC_ID:
                 String id = uri.getLastPathSegment();
                 if (TextUtils.isEmpty(selection))
                 {
-                    rowsUpdated = sqlDB.update(FavoritesSyncSchema.TABLENAME, values, FavoritesSyncSchema.COLUMN_ID
+                    rowsUpdated = sqlDB.update(SyncContentSchema.TABLENAME, values, SyncContentSchema.COLUMN_ID
                             + "=" + id, null);
                 }
                 else
                 {
-                    rowsUpdated = sqlDB.update(FavoritesSyncSchema.TABLENAME, values, FavoritesSyncSchema.COLUMN_ID
+                    rowsUpdated = sqlDB.update(SyncContentSchema.TABLENAME, values, SyncContentSchema.COLUMN_ID
                             + "=" + id + " and " + selection, selectionArgs);
                 }
                 break;
@@ -191,7 +191,7 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
         if (projection != null)
         {
             HashSet<String> requestedColumns = new HashSet<String>(Arrays.asList(projection));
-            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(FavoritesSyncSchema.COLUMN_ALL));
+            HashSet<String> availableColumns = new HashSet<String>(Arrays.asList(SyncContentSchema.COLUMN_ALL));
             // Check if all columns which are requested are available
             if (!availableColumns.containsAll(requestedColumns)) { throw new IllegalArgumentException(
                     "Unknown columns in projection"); }
@@ -200,12 +200,12 @@ public abstract class FavoritesSyncProvider extends ContentProvider implements A
 
     public static String getAccountFilter(AlfrescoAccount acc)
     {
-        return FavoritesSyncSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
+        return SyncContentSchema.COLUMN_ACCOUNT_ID + " == " + acc.getId();
     }
 
     public static String getAccountFilter(long accId)
     {
-        return FavoritesSyncSchema.COLUMN_ACCOUNT_ID + " == " + accId;
+        return SyncContentSchema.COLUMN_ACCOUNT_ID + " == " + accId;
     }
 
 }

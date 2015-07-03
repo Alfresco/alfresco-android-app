@@ -125,10 +125,18 @@ public class BaseActionUtils
     /**
      * Allow to show map
      */
-    public static void actionShowMap(Fragment f, String name, String lattitude, String longitude)
+    public static void actionShowMap(Fragment fr, String name, String lattitude, String longitude)
     {
-        final String uri = "geo:0,0?q=" + lattitude + "," + longitude + " (" + name + ")";
-        f.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+        try
+        {
+            final String uri = "geo:0,0?q=" + lattitude + "," + longitude + " (" + name + ")";
+            fr.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(uri)));
+        }
+        catch (ActivityNotFoundException e)
+        {
+            AlfrescoNotificationManager.getInstance(fr.getActivity()).showAlertCrouton(fr.getActivity(),
+                    R.string.error_unable_open_map);
+        }
     }
 
     /**

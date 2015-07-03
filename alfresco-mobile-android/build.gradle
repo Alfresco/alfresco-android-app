@@ -15,6 +15,7 @@ android {
         manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY]
         resValue "string", "account_name", ACCOUNT_ID
         resValue "string", "sync_adapter", SYNC_ADAPTER
+        resValue "string", "favorites_adapter", FAVORITES_ADAPTER
 
         defaultPublishConfig DEFAULT_PUBLISH
         resValue "string", "oauth_api_key", OAUTH_API_KEY
@@ -53,6 +54,7 @@ android {
             manifestPlaceholders = [PROVIDER_AUTHORITY: PROVIDER_AUTHORITY_DEBUG]
             resValue "string", "account_name", ACCOUNT_ID_DEBUG
             resValue "string", "sync_adapter", SYNC_ADAPTER_DEBUG
+            resValue "string", "favorites_adapter", FAVORITES_ADAPTER_DEBUG
 
             resValue "string", "hockeyapp_key", HOCKEYAPP_KEY
 

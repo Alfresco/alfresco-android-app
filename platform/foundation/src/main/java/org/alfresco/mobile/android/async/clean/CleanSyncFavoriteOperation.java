@@ -27,10 +27,10 @@ import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.impl.BaseOperation;
 import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.io.IOUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncProvider;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentProvider;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -71,7 +71,7 @@ public class CleanSyncFavoriteOperation extends BaseOperation<Void>
         try
         {
             // Delete All local files in sync folder
-            File synchroFolder = FavoritesSyncManager.getInstance(context)
+            File synchroFolder = SyncContentManager.getInstance(context)
                     .getSynchroFolder(accountUsername, accountUrl);
             if (synchroFolder != null && synchroFolder.exists())
             {
@@ -79,24 +79,24 @@ public class CleanSyncFavoriteOperation extends BaseOperation<Void>
             }
 
             // For each sync row, reset status
-            Cursor allFavoritesCursor = context.getContentResolver().query(FavoritesSyncProvider.CONTENT_URI,
-                    FavoritesSyncSchema.COLUMN_ALL, FavoritesSyncProvider.getAccountFilter(accountId), null, null);
+            Cursor allFavoritesCursor = context.getContentResolver().query(SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL, SyncContentProvider.getAccountFilter(accountId), null, null);
             while (allFavoritesCursor.moveToNext())
             {
                 if (isDeletion)
                 {
                     // Update Sync Info
                     context.getContentResolver().delete(
-                            FavoritesSyncManager.getUri(allFavoritesCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
+                            SyncContentManager.getUri(allFavoritesCursor.getLong(SyncContentSchema.COLUMN_ID_ID)),
                             null, null);
                 }
                 else
                 {
                     // Update Sync Info
                     ContentValues cValues = new ContentValues();
-                    cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_PENDING);
+                    cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
                     context.getContentResolver().update(
-                            FavoritesSyncManager.getUri(allFavoritesCursor.getLong(FavoritesSyncSchema.COLUMN_ID_ID)),
+                            SyncContentManager.getUri(allFavoritesCursor.getLong(SyncContentSchema.COLUMN_ID_ID)),
                             cValues, null, null);
                 }
             }

@@ -35,8 +35,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.provider.CursorUtils;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.security.EncryptionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.apache.chemistry.opencmis.commons.PropertyIds;
 
 import android.content.ContentValues;
@@ -46,9 +46,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 
-public class FavoriteSyncDownload extends FavoriteSync
+public class SyncContentDownload extends SyncContent
 {
-    private static final String TAG = FavoriteSyncDownload.class.getName();
+    private static final String TAG = SyncContentDownload.class.getName();
 
     public static final int TYPE_ID = 10;
 
@@ -77,7 +77,7 @@ public class FavoriteSyncDownload extends FavoriteSync
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////////////////////////////////////////////////
-    public FavoriteSyncDownload(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
+    public SyncContentDownload(Context context, AlfrescoAccount acc, AlfrescoSession session, SyncResult syncResult,
             Document doc, Uri localUri)
     {
         super(context, acc, session, syncResult, localUri);
@@ -100,7 +100,7 @@ public class FavoriteSyncDownload extends FavoriteSync
             // Retrieve parent
             parentFolder = session.getServiceRegistry().getDocumentFolderService().getParentFolder(doc);
 
-            File destFile = FavoritesSyncManager.getInstance(context).getSynchroFile(acc, doc);
+            File destFile = SyncContentManager.getInstance(context).getSynchroFile(acc, doc);
 
             // Download content
             persistDocument(destFile);
@@ -113,10 +113,10 @@ public class FavoriteSyncDownload extends FavoriteSync
             contentFileResult = new ContentFileImpl(destFile);
 
             // Delete previous versioned file (name.txt, new.txt)
-            cursor = context.getContentResolver().query(syncUri, FavoritesSyncSchema.COLUMN_ALL, null, null, null);
+            cursor = context.getContentResolver().query(syncUri, SyncContentSchema.COLUMN_ALL, null, null, null);
             if (cursor != null && cursor.moveToFirst())
             {
-                Uri localFileUri = Uri.parse(cursor.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+                Uri localFileUri = Uri.parse(cursor.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
                 if (localFileUri != null && !localFileUri.getPath().isEmpty())
                 {
                     File localFile = new File(localFileUri.getPath());
@@ -135,17 +135,17 @@ public class FavoriteSyncDownload extends FavoriteSync
 
             // Update Sync Info
             ContentValues cValues = new ContentValues();
-            cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
+            cValues.put(SyncContentSchema.COLUMN_LOCAL_URI, Uri.fromFile(destFile).toString());
             if (parentFolder != null)
             {
-                cValues.put(FavoritesSyncSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
+                cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
             }
-            cValues.put(FavoritesSyncSchema.COLUMN_CONTENT_URI,
+            cValues.put(SyncContentSchema.COLUMN_CONTENT_URI,
                     (String) doc.getPropertyValue(PropertyIds.CONTENT_STREAM_ID));
-            cValues.put(FavoritesSyncSchema.COLUMN_PROPERTIES, FavoritesSyncManager.serializeProperties(doc));
-            cValues.put(FavoritesSyncSchema.COLUMN_TOTAL_SIZE_BYTES, doc.getContentStreamLength());
-            cValues.put(FavoritesSyncSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, doc.getContentStreamLength());
-            cValues.put(FavoritesSyncSchema.COLUMN_DOC_SIZE_BYTES, 0);
+            cValues.put(SyncContentSchema.COLUMN_PROPERTIES, SyncContentManager.serializeProperties(doc));
+            cValues.put(SyncContentSchema.COLUMN_TOTAL_SIZE_BYTES, doc.getContentStreamLength());
+            cValues.put(SyncContentSchema.COLUMN_BYTES_DOWNLOADED_SO_FAR, doc.getContentStreamLength());
+            cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
             context.getContentResolver().update(syncUri, cValues, null, null);
 
             onPostExecute();
@@ -156,7 +156,7 @@ public class FavoriteSyncDownload extends FavoriteSync
         {
             Log.e(TAG, Log.getStackTraceString(e));
             syncResult.stats.numIoExceptions++;
-            saveStatus(FavoriteSyncStatus.STATUS_FAILED);
+            saveStatus(SyncContentStatus.STATUS_FAILED);
         }
         finally
         {
@@ -169,16 +169,16 @@ public class FavoriteSyncDownload extends FavoriteSync
     {
         // Update Sync Info
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_SUCCESSFUL);
-        cValues.put(FavoritesSyncSchema.COLUMN_NODE_ID, doc.getIdentifier());
-        cValues.put(FavoritesSyncSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
-        cValues.put(FavoritesSyncSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, contentFileResult.getFile().lastModified());
+        cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_SUCCESSFUL);
+        cValues.put(SyncContentSchema.COLUMN_NODE_ID, doc.getIdentifier());
+        cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, doc.getModifiedAt().getTimeInMillis());
+        cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, contentFileResult.getFile().lastModified());
         context.getContentResolver().update(syncUri, cValues, null, null);
 
         // Update Parent Folder if present
         if (parentFolder != null)
         {
-            FavoritesSyncManager.getInstance(context).updateParentFolder(acc, parentFolder.getIdentifier());
+            SyncContentManager.getInstance(context).updateParentFolder(acc, parentFolder.getIdentifier());
         }
     }
 

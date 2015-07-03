@@ -23,10 +23,10 @@ import org.alfresco.mobile.android.platform.database.DatabaseVersionNumber;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-public final class FavoritesSyncSchema extends OperationsSchema
+public final class SyncContentSchema extends OperationsSchema
 {
 
-    private FavoritesSyncSchema()
+    private SyncContentSchema()
     {
     }
 

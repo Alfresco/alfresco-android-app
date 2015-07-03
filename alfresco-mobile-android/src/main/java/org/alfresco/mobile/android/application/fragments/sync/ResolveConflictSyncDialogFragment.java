@@ -25,9 +25,9 @@ import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.io.IOUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
-import org.alfresco.mobile.android.sync.FavoritesSyncSchema;
-import org.alfresco.mobile.android.sync.operations.FavoriteSyncStatus;
+import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentSchema;
+import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 
 import android.app.AlertDialog.Builder;
 import android.app.Dialog;
@@ -78,8 +78,8 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         if (getArguments() == null || !getArguments().containsKey(ARGUMENT_FAVORITEID)) { return createErrorDialog(); }
 
         favoriteId = getArguments().getLong(ARGUMENT_FAVORITEID);
-        favoriteCursor = getActivity().getContentResolver().query(FavoritesSyncManager.getUri(favoriteId),
-                FavoritesSyncSchema.COLUMN_ALL, null, null, null);
+        favoriteCursor = getActivity().getContentResolver().query(SyncContentManager.getUri(favoriteId),
+                SyncContentSchema.COLUMN_ALL, null, null, null);
 
         if (favoriteCursor.getCount() != 1) { return createErrorDialog(); }
 
@@ -91,23 +91,23 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         int positiveId = android.R.string.yes;
         int negativeId = -1;
 
-        int reason = favoriteCursor.getInt(FavoritesSyncSchema.COLUMN_REASON_ID);
+        int reason = favoriteCursor.getInt(SyncContentSchema.COLUMN_REASON_ID);
 
         switch (reason)
         {
-            case FavoriteSyncStatus.REASON_NODE_DELETED:
+            case SyncContentStatus.REASON_NODE_DELETED:
                 messageId = R.string.sync_error_node_deleted;
                 positiveId = android.R.string.ok;
                 onFavoriteChangeListener = deletedFavoriteListener;
                 break;
-            case FavoriteSyncStatus.REASON_NO_PERMISSION:
+            case SyncContentStatus.REASON_NO_PERMISSION:
                 messageId = R.string.sync_error_no_permission;
                 positiveId = R.string.sync_save_action;
                 negativeId = R.string.sync_override_action;
                 onFavoriteChangeListener = overrideListener;
                 break;
-            case FavoriteSyncStatus.REASON_LOCAL_MODIFICATION:
-            case FavoriteSyncStatus.REASON_NODE_UNFAVORITED:
+            case SyncContentStatus.REASON_LOCAL_MODIFICATION:
+            case SyncContentStatus.REASON_NODE_UNFAVORITED:
                 messageId = R.string.sync_error_node_unfavorited;
                 positiveId = R.string.sync_save_action;
                 negativeId = R.string.sync_action;
@@ -118,7 +118,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         }
 
         String message = String.format(getString(messageId),
-                favoriteCursor.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+                favoriteCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
         Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
                 .setMessage(Html.fromHtml(message)).setCancelable(false)
@@ -223,26 +223,26 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void download(Cursor c)
     {
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_PENDING);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
 
         c.close();
     }
 
     private void update(Cursor c)
     {
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         ContentValues cValues = new ContentValues();
-        cValues.put(OperationSchema.COLUMN_REASON, FavoriteSyncStatus.STATUS_TO_UPDATE);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        cValues.put(OperationSchema.COLUMN_REASON, SyncContentStatus.STATUS_TO_UPDATE);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         c.close();
     }
@@ -251,32 +251,32 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
 
         // Current File
-        Uri localFileUri = Uri.parse(c.getString(FavoritesSyncSchema.COLUMN_LOCAL_URI_ID));
+        Uri localFileUri = Uri.parse(c.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
         File localFile = new File(localFileUri.getPath());
-        String nodeIdentifier = c.getString(FavoritesSyncSchema.COLUMN_NODE_ID_ID);
+        String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         // New File
         File parentFolder = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
                 SessionUtils.getAccount(getActivity()));
-        File newLocalFile = new File(parentFolder, c.getString(FavoritesSyncSchema.COLUMN_TITLE_ID));
+        File newLocalFile = new File(parentFolder, c.getString(SyncContentSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
 
         // Move to "Download"
         cValues.clear();
         if (localFile.renameTo(newLocalFile))
         {
-            getActivity().getContentResolver().delete(FavoritesSyncManager.getUri(favoriteId), null, null);
+            getActivity().getContentResolver().delete(SyncContentManager.getUri(favoriteId), null, null);
         }
         else
         {
-            cValues.put(OperationSchema.COLUMN_STATUS, FavoriteSyncStatus.STATUS_FAILED);
-            getActivity().getContentResolver().update(FavoritesSyncManager.getUri(favoriteId), cValues, null, null);
+            cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_FAILED);
+            getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
         }
 
-        FavoritesSyncManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         // Encrypt file if necessary
         AlfrescoStorageManager.getInstance(getActivity()).manageFile(newLocalFile);
@@ -286,7 +286,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
     private void remove(Cursor c)
     {
-        getActivity().getContentResolver().delete(FavoritesSyncManager.getUri(favoriteId), null, null);
+        getActivity().getContentResolver().delete(SyncContentManager.getUri(favoriteId), null, null);
         c.close();
     }
 

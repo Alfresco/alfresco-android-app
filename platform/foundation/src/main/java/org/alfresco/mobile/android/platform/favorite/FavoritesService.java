@@ -15,25 +15,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.platform.database;
+package org.alfresco.mobile.android.platform.favorite;
 
-/**
- * @since 1.2
- * @author Jean Marie Pascal
- */
-public interface DatabaseVersionNumber
+import android.app.Service;
+import android.content.Intent;
+import android.os.IBinder;
+
+public class FavoritesService extends Service
 {
-    int VERSION_1_0_0 = 2;
+    private static final Object sSyncAdapterLock = new Object();
 
-    int VERSION_1_1_0 = 3;
+    private static FavoritesSyncAdapter sSyncAdapter = null;
 
-    int VERSION_1_2_0 = 4;
+    @Override
+    public void onCreate()
+    {
+        synchronized (sSyncAdapterLock)
+        {
+            if (sSyncAdapter == null) sSyncAdapter = new FavoritesSyncAdapter(getApplicationContext(), true);
+        }
+    }
 
-    int VERSION_1_4_0 = 5;
-
-    int VERSION_1_5_0 = 6;
-
-    int VERSION_1_6_0 = 7;
-
-    int LATEST_VERSION = VERSION_1_6_0;
+    @Override
+    public IBinder onBind(Intent intent)
+    {
+        return sSyncAdapter.getSyncAdapterBinder();
+    }
 }

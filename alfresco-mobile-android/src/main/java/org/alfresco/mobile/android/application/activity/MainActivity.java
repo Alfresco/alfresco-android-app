@@ -75,7 +75,7 @@ import org.alfresco.mobile.android.platform.mdm.MDMManager;
 import org.alfresco.mobile.android.platform.security.DataProtectionManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.ConnectivityUtils;
-import org.alfresco.mobile.android.sync.FavoritesSyncManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.RefreshFragment;
 import org.alfresco.mobile.android.ui.fragments.SimpleAlertDialogFragment;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserTemplate;
@@ -248,7 +248,7 @@ public class MainActivity extends BaseActivity
 
         super.onStart();
         AccountOAuthHelper.requestRefreshToken(getCurrentSession(), this);
-        FavoritesSyncManager.getInstance(this).cronSync(currentAccount);
+        SyncContentManager.getInstance(this).cronSync(currentAccount);
     }
 
     @Override
@@ -272,7 +272,7 @@ public class MainActivity extends BaseActivity
     protected void onPause()
     {
         super.onPause();
-        FavoritesSyncManager.getInstance(this).saveSyncPrepareTimestamp();
+        SyncContentManager.getInstance(this).saveSyncPrepareTimestamp();
     }
 
     @Override
@@ -283,7 +283,7 @@ public class MainActivity extends BaseActivity
         if (requestCode == RequestCode.DECRYPTED)
         {
             File requiredProtectionFile = DataProtectionManager.getInstance(this).getRequiredDataProtectionFile();
-            if (!FavoritesSyncManager.getInstance(this).isSyncFile(requiredProtectionFile))
+            if (!SyncContentManager.getInstance(this).isSyncFile(requiredProtectionFile))
             {
                 DataProtectionManager.getInstance(this).checkEncrypt(getCurrentAccount(), requiredProtectionFile);
             }
@@ -923,9 +923,9 @@ public class MainActivity extends BaseActivity
         }
 
         // Start Sync if active
-        if (FavoritesSyncManager.getInstance(this).hasDisplayedActivateSync(currentAccount))
+        if (SyncContentManager.getInstance(this).hasDisplayedActivateSync(currentAccount))
         {
-            FavoritesSyncManager.getInstance(this).sync(currentAccount);
+            SyncContentManager.getInstance(this).sync(currentAccount);
         }
 
         invalidateOptionsMenu();

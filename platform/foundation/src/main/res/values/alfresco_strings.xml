@@ -230,6 +230,7 @@
     <string name="error_unable_open_file">Unable to open this file</string>
     <string name="error_unable_share_link">Unable to share link</string>
     <string name="error_unable_share_content">Unable to share content</string>
+    <string name="error_unable_open_map">Unable to open map</string>
 
     <!-- SESSION ERROR -->
     <string name="retry_account_loading">Retry</string>
