@@ -28,8 +28,6 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.sync.operations.SyncContent;
-import org.alfresco.mobile.android.sync.prepare.PrepareFavoriteHelper;
-import org.alfresco.mobile.android.sync.prepare.PrepareFavoriteSyncHelper;
 import org.alfresco.mobile.android.sync.prepare.PrepareSyncHelper;
 
 import android.accounts.Account;
@@ -158,35 +156,12 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
 
         // DISPATCHER
         // Depending on what we want to achieve we use the associated helper
-        List<SyncContent> requests;
+        List<SyncContent> requests = null;
         if (syncManager.hasActivateSync(acc))
         {
-            if (syncManager.canSyncEverything(acc))
-            {
-                // SYNC ANYTHING
-                requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult,
-                        node).prepare();
-            }
-            else
-            {
-                if (node != null)
-                {
-                    // FAVORITE SYNC
-                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
-                            syncResult, node).prepare();
-                }
-                else
-                {
-                    requests = new PrepareFavoriteSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
-                            syncResult, nodeIdentifier).prepare();
-                }
-            }
-        }
-        else
-        {
-            // FAVORITE (WITHOUT CONTENT)
-            requests = new PrepareFavoriteHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult,
-                    node).prepare();
+            // SYNC ANYTHING
+            requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult, node)
+                    .prepare();
         }
 
         // Retrieve the result of the scan

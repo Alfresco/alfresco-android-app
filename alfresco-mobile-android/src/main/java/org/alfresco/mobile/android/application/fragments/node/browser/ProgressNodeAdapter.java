@@ -99,7 +99,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
     private List<String> favoritesNodeIndex;
 
-    private boolean isSynced = false, hasFavorited = false;
+    private boolean hasSync = false, hasFavorited = false;
 
     public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
@@ -205,17 +205,29 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     {
         if (favoritesNodeIndex != null && favoritesNodeIndex.contains(item.getIdentifier()))
         {
-                vh.favoriteIcon.setVisibility(View.VISIBLE);
-                vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
         }
         else
         {
             vh.favoriteIcon.setVisibility(View.GONE);
         }
 
-        if (isSynced && syncInfos.containsKey(item.getIdentifier()))
+        vh.syncIcon.setVisibility(View.GONE);
+        if (hasSync && syncInfos.containsKey(item.getIdentifier()))
         {
             SyncInfo syncInfo = syncInfos.get(item.getIdentifier());
+
+            if (syncInfo.isRoot == 1)
+            {
+                vh.syncIcon.setVisibility(View.VISIBLE);
+                vh.syncIcon.setImageResource(R.drawable.ic_sync_light);
+            }
+            else
+            {
+                vh.syncIcon.setVisibility(View.GONE);
+            }
+
             if (SyncContentManager.getInstance(getContext()).hasActivateSync(SessionUtils.getAccount(getContext())))
             {
                 switch (syncInfo.status)
@@ -396,13 +408,13 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         switch (loader.getId())
         {
             case LOADER_SYNC_ID:
-                isSynced = (cursor.getCount() > 0);
+                hasSync = (cursor.getCount() > 0);
                 if (syncInfos == null)
                 {
                     syncInfos = new HashMap<String, SyncInfo>(cursor.getCount());
                 }
                 syncInfos.clear();
-                if (isSynced)
+                if (hasSync)
                 {
                     while (cursor.moveToNext())
                     {
@@ -588,11 +600,14 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
         int status;
 
-        public SyncInfo(Cursor favoriteCursor)
+        int isRoot;
+
+        public SyncInfo(Cursor syncCursor)
         {
-            this.id = favoriteCursor.getLong(SyncContentSchema.COLUMN_NODE_ID_ID);
-            this.nodeIdentifier = favoriteCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
-            this.status = favoriteCursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
+            this.id = syncCursor.getLong(SyncContentSchema.COLUMN_NODE_ID_ID);
+            this.nodeIdentifier = syncCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
+            this.status = syncCursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
+            this.isRoot = syncCursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID);
         }
     }
 

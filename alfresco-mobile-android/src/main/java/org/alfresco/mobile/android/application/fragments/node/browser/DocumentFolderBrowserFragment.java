@@ -70,6 +70,7 @@ import org.alfresco.mobile.android.async.node.download.DownloadEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.node.update.UpdateContentEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.async.utils.ContentFileProgressImpl;
@@ -1198,6 +1199,37 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             }
             OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
                     getActivity().getString(titleId), null, parentFolder, selectedItems.size(), false).show(
+                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+        }
+    }
+
+    public void sync(List<Node> selectedItems, boolean doSync, boolean update)
+    {
+        if (selectedItems == null || selectedItems.isEmpty())
+        {
+            ((AlfrescoActivity) getActivity()).removeWaitingDialog();
+            return;
+        }
+
+        List<OperationBuilder> requestsBuilder = new ArrayList<>(selectedItems.size());
+        for (Node node : selectedItems)
+        {
+            requestsBuilder.add(new SyncNodeRequest.Builder(parentFolder, node, doSync, true)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
+
+        if (!update)
+        {
+            int titleId = R.string.unsync;
+            int iconId = R.drawable.ic_sync_light;
+            if (doSync)
+            {
+                titleId = R.string.sync;
+                iconId = R.drawable.ic_sync_light;
+            }
+            OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId,
+                    getActivity().getString(titleId), null, parentFolder, selectedItems.size(), operationId).show(
                     getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
         }
     }

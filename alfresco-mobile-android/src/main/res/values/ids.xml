@@ -134,6 +134,7 @@
     <item name="operation_id" type="id" />
     <item name="operation_status" type="id" />
     <item name="is_favorite" type="id" />
+    <item name="is_synced" type="id" />
     <item name="entry_action" type="id" />
 
     <!-- Backward compatibility -->

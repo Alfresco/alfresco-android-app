@@ -76,7 +76,6 @@ import org.alfresco.mobile.android.platform.EventBusManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.exception.AlfrescoAppException;
 import org.alfresco.mobile.android.platform.exception.AlfrescoExceptionHelper;
-import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.BaseActionUtils.ActionManagerListener;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -208,10 +207,6 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     {
         // Define the View
         setRootView(inflater.inflate(layoutId, container, false));
-        /*
-         * if (!getArguments().containsKey(ARGUMENT_FAVORITE)) { if
-         * (getSession() == null) { return getRootView(); } }
-         */
 
         // If node not present we display nothing.
         if (node == null && nodeIdentifier == null && TextUtils.isEmpty(nodePath))
@@ -351,8 +346,8 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
                         if (SyncContentManager.getInstance(getActivity()).canSync(
                                 SessionUtils.getAccount(getActivity())))
                         {
-                            SyncContentManager.getInstance(getActivity()).sync(
-                                    SessionUtils.getAccount(getActivity()), node.getIdentifier());
+                            SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                                    node.getIdentifier());
                         }
                     }
                     else
@@ -594,22 +589,34 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         // SYNC
         b = (ImageView) viewById(R.id.action_sync);
-        if (node instanceof NodeSyncPlaceHolder)
+        if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
         {
-            b.setVisibility(View.VISIBLE);
-            b.setImageResource(R.drawable.ic_synced);
-        }
-        else if (!isRestrictable)
-        {
-            isSynced(b);
-            b.setOnClickListener(new OnClickListener()
+            if (!isRootSynced(b))
             {
-                @Override
-                public void onClick(View v)
+                b.setVisibility(View.GONE);
+            }
+            else if (node instanceof NodeSyncPlaceHolder)
+            {
+                b.setVisibility(View.VISIBLE);
+                b.setImageResource(R.drawable.ic_synced);
+            }
+            else if (!isRestrictable)
+            {
+                isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+                b.setImageResource(isSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+                b.setOnClickListener(new OnClickListener()
                 {
-                    sync(v);
-                }
-            });
+                    @Override
+                    public void onClick(View v)
+                    {
+                        sync(v);
+                    }
+                });
+            }
+            else
+            {
+                b.setVisibility(View.GONE);
+            }
         }
         else
         {
@@ -997,10 +1004,19 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
     }
 
-    public void isSynced(ImageView v)
+    public boolean isRootSynced(ImageView v)
     {
-        isSynced = FavoritesManager.getInstance(getActivity()).isSynced(getAccount(), node);
-        v.setImageResource(isSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+        boolean isRootSynced = SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node);
+        if (isRootSynced)
+        {
+            v.setImageResource(isRootSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+            v.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            v.setVisibility(View.GONE);
+        }
+        return isRootSynced;
     }
 
     public void sync(View v)
@@ -1182,12 +1198,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            likeButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_like));
+            likeButton.setImageResource(R.drawable.ic_like);
             AccessibilityUtils.addContentDescription(likeButton, R.string.unlike);
         }
         else
         {
-            likeButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_unlike));
+            likeButton.setImageResource(R.drawable.ic_unlike);
             AccessibilityUtils.addContentDescription(likeButton, R.string.like);
         }
     }
@@ -1210,12 +1226,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_light));
+            favoriteButton.setImageResource(R.drawable.ic_favorite_light);
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.unfavorite);
         }
         else
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_unfavorite_dark));
+            favoriteButton.setImageResource(R.drawable.ic_unfavorite_dark);
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.favorite);
         }
     }
@@ -1238,12 +1254,12 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_favorite_light));
+            favoriteButton.setImageResource(R.drawable.ic_favorite_light);
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.unfavorite);
         }
         else
         {
-            favoriteButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_unfavorite_dark));
+            favoriteButton.setImageResource(R.drawable.ic_unfavorite_dark);
             AccessibilityUtils.addContentDescription(favoriteButton, R.string.favorite);
         }
 
@@ -1266,13 +1282,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            syncButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_synced));
-            AccessibilityUtils.addContentDescription(syncButton, R.string.unfavorite);
+            isSynced = event.data;
+            syncButton.setImageResource(R.drawable.ic_synced);
+            AccessibilityUtils.addContentDescription(syncButton, R.string.unsync);
         }
         else
         {
-            syncButton.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_sync_light));
-            AccessibilityUtils.addContentDescription(syncButton, R.string.favorite);
+            isSynced = event.data;
+            syncButton.setImageResource(R.drawable.ic_sync_light);
+            AccessibilityUtils.addContentDescription(syncButton, R.string.sync);
         }
 
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)

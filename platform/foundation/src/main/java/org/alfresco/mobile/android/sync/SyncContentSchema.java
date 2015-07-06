@@ -58,20 +58,20 @@ public final class SyncContentSchema extends OperationsSchema
     // ////////////////////////////////////////////////////
     // SYNC FOLDER
     // ////////////////////////////////////////////////////
-    public static final String COLUMN_IS_FAVORITE = "favorited";
+    public static final String COLUMN_IS_SYNC_ROOT = "favorited";
 
-    public static final int COLUMN_IS_FAVORITE_ID = COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID + 1;
+    public static final int COLUMN_IS_SYNC_ROOT_ID = COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID + 1;
 
     public static final String COLUMN_IS_ROOT = "root";
 
-    public static final int COLUMN_IS_ROOT_ID = COLUMN_IS_FAVORITE_ID + 1;
+    public static final int COLUMN_IS_ROOT_ID = COLUMN_IS_SYNC_ROOT_ID + 1;
 
     public static final String COLUMN_DOC_SIZE_BYTES = "document_size";
 
     public static final int COLUMN_DOC_SIZE_BYTES_ID = COLUMN_IS_ROOT_ID + 1;
 
     private static final String[] COLUMNS_SYNC = { COLUMN_CONTENT_URI, COLUMN_ANALYZE_TIMESTAMP,
-            COLUMN_SERVER_MODIFICATION_TIMESTAMP, COLUMN_LOCAL_MODIFICATION_TIMESTAMP, COLUMN_IS_FAVORITE,
+            COLUMN_SERVER_MODIFICATION_TIMESTAMP, COLUMN_LOCAL_MODIFICATION_TIMESTAMP, COLUMN_IS_SYNC_ROOT,
             COLUMN_IS_ROOT, COLUMN_DOC_SIZE_BYTES };
 
     public static final String[] COLUMN_ALL = join(COLUMNS, COLUMNS_SYNC);
@@ -82,12 +82,12 @@ public final class SyncContentSchema extends OperationsSchema
     private static final String QUERY_TABLE_CREATE = "CREATE TABLE IF NOT EXISTS " + TABLENAME + " ("
             + QUERY_CREATE_COLUMNS + "," + COLUMN_CONTENT_URI + " TEXT," + COLUMN_ANALYZE_TIMESTAMP + " LONG,"
             + COLUMN_SERVER_MODIFICATION_TIMESTAMP + " LONG," + COLUMN_LOCAL_MODIFICATION_TIMESTAMP + " LONG,"
-            + COLUMN_IS_FAVORITE + " INT," + COLUMN_IS_ROOT + " INT," + COLUMN_DOC_SIZE_BYTES + " LONG" + ");";
+            + COLUMN_IS_SYNC_ROOT + " INT," + COLUMN_IS_ROOT + " INT," + COLUMN_DOC_SIZE_BYTES + " LONG" + ");";
 
     // Update database to add Sync Folder column
     // DB version 5.
     private static final String QUERY_SYNC_FOLDER_COLUM_1 = "ALTER TABLE " + TABLENAME + " ADD COLUMN "
-            + COLUMN_IS_FAVORITE + " INT DEFAULT 1;";
+            + COLUMN_IS_SYNC_ROOT + " INT DEFAULT 1;";
 
     private static final String QUERY_SYNC_FOLDER_COLUM_2 = "ALTER TABLE " + TABLENAME + " ADD COLUMN "
             + COLUMN_IS_ROOT + " INT DEFAULT 0;";

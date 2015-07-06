@@ -151,7 +151,7 @@ public class SyncContentManager extends Manager
             Node node, long time)
     {
         ContentValues cValues = createContentValues(context, account, requestType, "", node, time, 0);
-        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, SyncContentProvider.FLAG_FAVORITE);
+        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, SyncContentProvider.FLAG_SYNC_SET);
         return cValues;
     }
 
@@ -195,7 +195,7 @@ public class SyncContentManager extends Manager
         cValues.put(SyncContentSchema.COLUMN_ANALYZE_TIMESTAMP, time);
         cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, node.getModifiedAt().getTimeInMillis());
         cValues.put(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP, time);
-        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
+        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, 0);
         return cValues;
     }
 
@@ -203,7 +203,7 @@ public class SyncContentManager extends Manager
             String parent, Node node, long time, long folderSize)
     {
         ContentValues cValues = createContentValues(context, account, requestType, parent, node, time, folderSize);
-        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, SyncContentProvider.FLAG_FAVORITE);
+        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, SyncContentProvider.FLAG_SYNC_SET);
         return cValues;
     }
 
@@ -278,7 +278,7 @@ public class SyncContentManager extends Manager
     public void unsync(AlfrescoAccount account)
     {
         if (account == null) { return; }
-        Operator.with(appContext).load(new CleanSyncFavoriteRequest.Builder(account, false));
+        Operator.with(appContext).load(new CleanSyncFavoriteRequest.Builder(account, true));
     }
 
     public boolean isSynced(AlfrescoAccount account, String nodeIdentifier)
@@ -289,7 +289,24 @@ public class SyncContentManager extends Manager
                 SyncContentProvider.CONTENT_URI,
                 SyncContentSchema.COLUMN_ALL,
                 SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
-                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%'", null, null);
+                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%' AND " + SyncContentSchema.COLUMN_STATUS
+                        + " NOT IN ( " + SyncContentStatus.STATUS_HIDDEN + ")", null, null);
+        boolean b = (favoriteCursor.getCount() == 1) && hasActivateSync(account);
+        CursorUtils.closeCursor(favoriteCursor);
+        return b;
+    }
+
+    public boolean isRootSynced(AlfrescoAccount account, String nodeIdentifier)
+    {
+        if (account == null) { return false; }
+
+        Cursor favoriteCursor = appContext.getContentResolver().query(
+                SyncContentProvider.CONTENT_URI,
+                SyncContentSchema.COLUMN_ALL,
+                SyncContentProvider.getAccountFilter(account) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
+                        + NodeRefUtils.getCleanIdentifier(nodeIdentifier) + "%' AND " + SyncContentSchema.COLUMN_STATUS
+                        + " NOT IN ( " + SyncContentStatus.STATUS_HIDDEN + ")" + " AND "
+                        + SyncContentSchema.COLUMN_IS_SYNC_ROOT + " == 1", null, null);
         boolean b = (favoriteCursor.getCount() == 1) && hasActivateSync(account);
         CursorUtils.closeCursor(favoriteCursor);
         return b;
@@ -298,6 +315,11 @@ public class SyncContentManager extends Manager
     public boolean isSynced(AlfrescoAccount account, Node node)
     {
         return !(account == null || node == null) && !node.isFolder() && isSynced(account, node.getIdentifier());
+    }
+
+    public boolean isRootSynced(AlfrescoAccount account, Node node)
+    {
+        return !(account == null || node == null) && isRootSynced(account, node.getIdentifier());
     }
 
     public File getSyncFile(AlfrescoAccount account, Node node)
@@ -702,7 +724,7 @@ public class SyncContentManager extends Manager
         if (account != null)
         {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(appContext);
-            return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), false);
+            return sharedPref.getBoolean(SYNCHRO_PREFIX + account.getId(), true);
         }
         return false;
     }

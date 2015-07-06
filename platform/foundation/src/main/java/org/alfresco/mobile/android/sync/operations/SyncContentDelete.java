@@ -52,7 +52,7 @@ public class SyncContentDelete extends SyncContent
 
     private final String nodeIdentifier;
 
-    private long favoriteId;
+    private long syncId;
 
     private String nodeName;
 
@@ -90,7 +90,7 @@ public class SyncContentDelete extends SyncContent
                 long localTimeStamp = cursor.getLong(SyncContentSchema.COLUMN_LOCAL_MODIFICATION_TIMESTAMP_ID);
                 String nodeIdentifier = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
                 nodeName = cursor.getString(SyncContentSchema.COLUMN_TITLE_ID);
-                favoriteId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
+                syncId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
 
                 File dlFile = SyncContentManager.getInstance(context).getSynchroFile(acc,
                         cursor.getString(SyncContentSchema.COLUMN_TITLE_ID),
@@ -178,7 +178,7 @@ public class SyncContentDelete extends SyncContent
     {
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        context.getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+        context.getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
 
         // Current File
         Uri localFileUri = Uri.parse(c.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
@@ -200,7 +200,7 @@ public class SyncContentDelete extends SyncContent
         else
         {
             cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_FAILED);
-            context.getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+            context.getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
         }
 
         // Data Protection if necessary

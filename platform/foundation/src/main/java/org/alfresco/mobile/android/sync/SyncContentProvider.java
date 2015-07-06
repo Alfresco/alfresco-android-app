@@ -55,7 +55,7 @@ public abstract class SyncContentProvider extends ContentProvider implements Alf
 
     public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/sync";
 
-    public static final int FLAG_FAVORITE = 1;
+    public static final int FLAG_SYNC_SET = 1;
 
     private static final UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
     static
