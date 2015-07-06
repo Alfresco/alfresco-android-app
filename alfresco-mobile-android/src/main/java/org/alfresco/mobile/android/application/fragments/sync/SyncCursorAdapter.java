@@ -28,8 +28,9 @@ import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
+import org.alfresco.mobile.android.async.OperationStatus;
 import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
@@ -66,7 +67,7 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  */
 public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
 {
-    // private static final String TAG = FavoriteCursorAdapter.class.getName();
+    private static final String TAG = SyncCursorAdapter.class.getName();
 
     private WeakReference<Fragment> fragmentRef;
 
@@ -148,12 +149,12 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         int status = cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
         String nodeId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
         long favoriteId = cursor.getLong(SyncContentSchema.COLUMN_ID_ID);
-        boolean favorited = cursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
+        boolean syncRoot = cursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0;
 
-        if (favorited)
+        if (syncRoot)
         {
             vh.favoriteIcon.setVisibility(View.VISIBLE);
-            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_sync_light);
         }
         else
         {
@@ -231,6 +232,11 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         if (mode == SyncFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
+            if (status == OperationStatus.STATUS_SUCCESSFUL || status == OperationStatus.STATUS_PENDING)
+            {
+                UIUtils.setBackground(vh.choose, null);
+                return;
+            }
             UIUtils.setBackground(vh.choose,
                     context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
 
@@ -238,7 +244,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
             vh.choose.setTag(R.id.node_action, nodeId);
             vh.choose.setTag(R.id.favorite_id, favoriteId);
             vh.choose.setTag(R.id.operation_status, status);
-            vh.choose.setTag(R.id.is_favorite, favorited);
+            vh.choose.setTag(R.id.is_synced, syncRoot);
             AccessibilityUtils.addContentDescription(
                     vh.choose,
                     String.format(context.getString(R.string.more_options_favorite),
@@ -252,13 +258,13 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                     String item = (String) v.getTag(R.id.node_action);
                     Integer statut = (Integer) v.getTag(R.id.operation_status);
                     long favoriteId = (Long) v.getTag(R.id.favorite_id);
-                    boolean favorited = (Boolean) v.getTag(R.id.is_favorite);
+                    boolean rootSynced = (Boolean) v.getTag(R.id.is_synced);
 
                     selectedOptionItems.add(item);
                     selectedOptionItemId.add(favoriteId);
 
                     PopupMenu popup = new PopupMenu(context, v);
-                    getMenu(popup.getMenu(), statut, favorited);
+                    getMenu(popup.getMenu(), statut, rootSynced);
 
                     if (AndroidVersion.isICSOrAbove())
                     {
@@ -340,7 +346,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
     // ///////////////////////////////////////////////////////////////////////////
     // MENU
     // ///////////////////////////////////////////////////////////////////////////
-    public void getMenu(Menu menu, Integer statut, boolean favorited)
+    public void getMenu(Menu menu, Integer statut, boolean rootSynced)
     {
         MenuItem mi;
 
@@ -356,15 +362,9 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                 mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 break;
             default:
-                if (favorited)
+                if (rootSynced)
                 {
-                    mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group_unfavorite, Menu.FIRST,
-                            R.string.unfavorite);
-                    mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
-                }
-                else
-                {
-                    mi = menu.add(Menu.NONE, R.id.menu_action_favorite_group_favorite, Menu.FIRST, R.string.favorite);
+                    mi = menu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST, R.string.unsync);
                     mi.setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
                 }
                 break;
@@ -379,18 +379,18 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         switch (item.getItemId())
         {
-            case R.id.menu_action_favorite_group_favorite:
+            case R.id.menu_action_sync_group_sync:
                 for (String nodeId : selectedOptionItems)
                 {
-                    requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, true, true));
+                    requestsBuilder.add(new SyncNodeRequest.Builder(nodeId, true, true));
                 }
                 Operator.with(context, SessionUtils.getAccount(context)).load(requestsBuilder);
                 onMenuItemClick = true;
                 break;
-            case R.id.menu_action_favorite_group_unfavorite:
+            case R.id.menu_action_sync_group_unsync:
                 for (String nodeId : selectedOptionItems)
                 {
-                    requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, false, true));
+                    requestsBuilder.add(new SyncNodeRequest.Builder(nodeId, false, true));
                 }
                 Operator.with(context, SessionUtils.getAccount(context)).load(requestsBuilder);
                 onMenuItemClick = true;

@@ -31,8 +31,6 @@ import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
-import org.alfresco.mobile.android.api.session.CloudSession;
-import org.alfresco.mobile.android.api.session.impl.RepositorySessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
@@ -70,9 +68,9 @@ public abstract class PrepareBaseHelper
 
     protected ListingContext listingContext;
 
-    protected PagingResult<Document> repoDocumentFavorites;
+    protected PagingResult<Document> nodeDocumentSynced;
 
-    protected PagingResult<Folder> repoFolderFavorites;
+    protected PagingResult<Folder> nodeFolderSynced;
 
     protected long syncScanningTimeStamp;
 
@@ -135,14 +133,14 @@ public abstract class PrepareBaseHelper
         switch (mode)
         {
             case SyncContentManager.MODE_BOTH:
-                retrieveDocumentFavorites();
-                retrieveFolderFavorites();
+                retrieveDocumentFavorites2();
+                retrieveFolderFavorites2();
                 break;
             case SyncContentManager.MODE_FOLDERS:
-                retrieveFolderFavorites();
+                retrieveFolderFavorites2();
                 break;
             case SyncContentManager.MODE_DOCUMENTS:
-                retrieveDocumentFavorites();
+                retrieveDocumentFavorites2();
                 break;
             case SyncContentManager.MODE_NODE:
                 break;
@@ -174,7 +172,7 @@ public abstract class PrepareBaseHelper
     }
 
     // ///////////////////////////////////////////////////////////////////////////
-    // SCAN : RESTRICTABLE
+    // SCAN : RETRIEVE NODES INFO
     // ///////////////////////////////////////////////////////////////////////////
     private static final String QUERY_RESTRICTABLE_DOCS = "SELECT d.cmis:objectId, d.cmis:objectTypeId, d.cmis:baseTypeId, d.cmis:name, d.cmis:createdBy, d.cmis:lastModificationDate,d.cmis:versionSeriesCheckedOutId,d.cmis:contentStreamLength,d.cmis:contentStreamMimeType,d.cmis:isVersionSeriesCheckedOut,d.cmis:versionLabel, m.dp:offlineExpiresAfter FROM cmis:document AS d JOIN dp:restrictable AS m ON d.cmis:objectId = m.cmis:objectId WHERE (d.cmis:objectId=";
 
@@ -182,20 +180,44 @@ public abstract class PrepareBaseHelper
 
     private static final String QUERY_OR = " OR d.cmis:objectId=";
 
-    private void retrieveDocumentFavorites()
+    private void retrieveDocumentFavorites2()
     {
-        repoDocumentFavorites = session.getServiceRegistry().getDocumentFolderService()
-                .getFavoriteDocuments(listingContext);
-
-        // Check if restrictable is available on repo
-        List<String> restrictableIds = new ArrayList<String>(repoDocumentFavorites.getTotalItems());
+        // Retrieve list of synced documents
+        Cursor cursorNodesIds = null;
+        List<String> syncedDocumentIds = null;
         try
         {
-            if (repoDocumentFavorites.getTotalItems() > 0)
+            cursorNodesIds = context.getContentResolver().query(
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL,
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_IS_SYNC_ROOT
+                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND "
+                            + SyncContentSchema.COLUMN_MIMETYPE + " != '" + ContentModel.TYPE_FOLDER + "'", null, null);
+
+            syncedDocumentIds = new ArrayList<String>(cursorNodesIds.getCount());
+            while (cursorNodesIds.moveToNext())
+            {
+                syncedDocumentIds.add(cursorNodesIds.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            CursorUtils.closeCursor(cursorNodesIds);
+        }
+
+        // Check if restrictable is available on repo
+        List<String> restrictableIds = new ArrayList<>(syncedDocumentIds.size());
+        try
+        {
+            if (syncedDocumentIds.size() > 0)
             {
                 StringBuilder builder = new StringBuilder();
                 builder.append(QUERY_RESTRICTABLE_DOCS);
-                join(builder, QUERY_OR, repoDocumentFavorites.getList());
+                join(builder, QUERY_OR, syncedDocumentIds);
                 builder.append(")");
 
                 List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
@@ -210,62 +232,82 @@ public abstract class PrepareBaseHelper
         {
         }
 
-        if (session instanceof CloudSession
-                || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session).hasPublicAPI()))
+        // Retrieve list of nodes from server
+        // Objects don't contain enough information
+        // We request all node object with a search query
+        // to retrieve ContentStreamId and permissions.
+        List<Document> favoriteDocumentsList = new ArrayList<>(syncedDocumentIds.size());
+        if (syncedDocumentIds.size() > 0)
         {
-            // Objects don't contain enough information
-            // We request all node object with a search query
-            // to retrieve ContentStreamId and permissions.
-            List<Document> favoriteDocumentsList = new ArrayList<Document>(repoDocumentFavorites.getTotalItems());
-            if (repoDocumentFavorites.getTotalItems() > 0)
+            StringBuilder builder = new StringBuilder();
+            builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
+            join(builder, " OR cmis:objectId=", syncedDocumentIds);
+            builder.append(")");
+
+            List<Node> nodes = session.getServiceRegistry().getSearchService()
+                    .search(builder.toString(), SearchLanguage.CMIS);
+
+            for (Node node : nodes)
             {
-                StringBuilder builder = new StringBuilder();
-                builder.append("SELECT * FROM cmis:document WHERE ( cmis:objectId=");
-                join(builder, " OR cmis:objectId=", repoDocumentFavorites.getList());
-                builder.append(")");
-
-                List<Node> nodes = session.getServiceRegistry().getSearchService()
-                        .search(builder.toString(), SearchLanguage.CMIS);
-
-                for (Node node : nodes)
-                {
-                    favoriteDocumentsList.add((Document) node);
-                }
+                favoriteDocumentsList.add((Document) node);
             }
-            repoDocumentFavorites = new PagingResultImpl<Document>(favoriteDocumentsList,
-                    repoDocumentFavorites.hasMoreItems(), repoDocumentFavorites.getTotalItems());
         }
+        nodeDocumentSynced = new PagingResultImpl<>(favoriteDocumentsList, false, favoriteDocumentsList.size());
 
         // Check Restrictable
         if (restrictableIds != null && !restrictableIds.isEmpty())
         {
-            List<Document> tmpNodes = new ArrayList<Document>(repoDocumentFavorites.getTotalItems());
-            for (Node node : repoDocumentFavorites.getList())
+            List<Document> tmpNodes = new ArrayList<>(nodeDocumentSynced.getTotalItems());
+            for (Node node : nodeDocumentSynced.getList())
             {
                 if (!restrictableIds.contains(node.getIdentifier()))
                 {
                     tmpNodes.add((Document) node);
                 }
             }
-            repoDocumentFavorites = new PagingResultImpl<Document>(tmpNodes, repoDocumentFavorites.hasMoreItems(),
-                    repoDocumentFavorites.getTotalItems());
+            nodeDocumentSynced = new PagingResultImpl<>(tmpNodes, false, nodeDocumentSynced.getTotalItems());
         }
     }
 
-    private void retrieveFolderFavorites()
+    private void retrieveFolderFavorites2()
     {
-        repoFolderFavorites = session.getServiceRegistry().getDocumentFolderService()
-                .getFavoriteFolders(listingContext);
-
-        // Check if restrictable is available on repo
-        List<String> restrictableIds = new ArrayList<String>(repoFolderFavorites.getTotalItems());
+        // Retrieve list of synced documents
+        Cursor cursorNodesIds = null;
+        List<String> syncedFolderIds = null;
         try
         {
-            if (repoFolderFavorites.getTotalItems() > 0)
+            cursorNodesIds = context.getContentResolver().query(
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL,
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_IS_SYNC_ROOT
+                            + " == '" + SyncContentProvider.FLAG_SYNC_SET + "' AND "
+                            + SyncContentSchema.COLUMN_MIMETYPE + " == '" + ContentModel.TYPE_FOLDER + "'", null, null);
+
+            syncedFolderIds = new ArrayList<>(cursorNodesIds.getCount());
+            Uri localUri = null;
+            while (cursorNodesIds.moveToNext())
+            {
+                syncedFolderIds.add(cursorNodesIds.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+            }
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            CursorUtils.closeCursor(cursorNodesIds);
+        }
+
+        // Check if restrictable is available on repo
+        List<String> restrictableIds = new ArrayList<>(syncedFolderIds.size());
+        try
+        {
+            if (syncedFolderIds.size() > 0)
             {
                 StringBuilder builder = new StringBuilder();
                 builder.append(QUERY_RESTRICTABLE_FOLDER);
-                joinF(builder, QUERY_OR, repoFolderFavorites.getList());
+                join(builder, QUERY_OR, syncedFolderIds);
                 builder.append(")");
 
                 List<Node> restrictableNodes = session.getServiceRegistry().getSearchService()
@@ -280,45 +322,39 @@ public abstract class PrepareBaseHelper
         {
         }
 
-        if (session instanceof CloudSession
-                || (session instanceof RepositorySessionImpl && ((RepositorySessionImpl) session).hasPublicAPI()))
+        // Objects don't contain enough information
+        // We request all node object with a search query
+        // to retrieve ContentStreamId and permissions.
+        List<Folder> favoriteFoldersList = new ArrayList<>(syncedFolderIds.size());
+        if (syncedFolderIds.size() > 0)
         {
-            // Objects don't contain enough information
-            // We request all node object with a search query
-            // to retrieve ContentStreamId and permissions.
-            List<Folder> favoriteFoldersList = new ArrayList<Folder>(repoFolderFavorites.getTotalItems());
-            if (repoFolderFavorites.getTotalItems() > 0)
+            StringBuilder builder = new StringBuilder();
+            builder.append("SELECT * FROM cmis:folder WHERE ( cmis:objectId=");
+            join(builder, " OR cmis:objectId=", syncedFolderIds);
+            builder.append(")");
+
+            List<Node> nodes = session.getServiceRegistry().getSearchService()
+                    .search(builder.toString(), SearchLanguage.CMIS);
+
+            for (Node node : nodes)
             {
-                StringBuilder builder = new StringBuilder();
-                builder.append("SELECT * FROM cmis:folder WHERE ( cmis:objectId=");
-                joinF(builder, " OR cmis:objectId=", repoFolderFavorites.getList());
-                builder.append(")");
-
-                List<Node> nodes = session.getServiceRegistry().getSearchService()
-                        .search(builder.toString(), SearchLanguage.CMIS);
-
-                for (Node node : nodes)
-                {
-                    favoriteFoldersList.add((Folder) node);
-                }
+                favoriteFoldersList.add((Folder) node);
             }
-            repoFolderFavorites = new PagingResultImpl<Folder>(favoriteFoldersList, repoFolderFavorites.hasMoreItems(),
-                    repoFolderFavorites.getTotalItems());
         }
+        nodeFolderSynced = new PagingResultImpl<>(favoriteFoldersList, false, favoriteFoldersList.size());
 
         // Check Restrictable
         if (restrictableIds != null && !restrictableIds.isEmpty())
         {
-            List<Folder> tmpNodes = new ArrayList<Folder>(repoFolderFavorites.getTotalItems());
-            for (Node node : repoFolderFavorites.getList())
+            List<Folder> tmpNodes = new ArrayList<>(nodeFolderSynced.getTotalItems());
+            for (Node node : nodeFolderSynced.getList())
             {
                 if (!restrictableIds.contains(node.getIdentifier()))
                 {
                     tmpNodes.add((Folder) node);
                 }
             }
-            repoFolderFavorites = new PagingResultImpl<Folder>(tmpNodes, repoFolderFavorites.hasMoreItems(),
-                    repoFolderFavorites.getTotalItems());
+            nodeFolderSynced = new PagingResultImpl<>(tmpNodes, false, nodeFolderSynced.getTotalItems());
         }
     }
 
@@ -337,24 +373,24 @@ public abstract class PrepareBaseHelper
         switch (mode)
         {
             case SyncContentManager.MODE_DOCUMENTS:
-                syncResult.stats.numEntries = repoDocumentFavorites.getList().size();
-                for (Document doc : repoDocumentFavorites.getList())
+                syncResult.stats.numEntries = nodeDocumentSynced.getList().size();
+                for (Document doc : nodeDocumentSynced.getList())
                 {
                     prepareCreation(doc);
                 }
                 break;
             case SyncContentManager.MODE_FOLDERS:
-                for (Folder folder : repoFolderFavorites.getList())
+                for (Folder folder : nodeFolderSynced.getList())
                 {
                     prepareCreation(folder);
                 }
                 break;
             case SyncContentManager.MODE_BOTH:
-                for (Document doc : repoDocumentFavorites.getList())
+                for (Document doc : nodeDocumentSynced.getList())
                 {
                     prepareCreation(doc);
                 }
-                for (Folder folder : repoFolderFavorites.getList())
+                for (Folder folder : nodeFolderSynced.getList())
                 {
                     prepareCreation(folder);
                 }
@@ -393,8 +429,7 @@ public abstract class PrepareBaseHelper
                         repoSyncIds = new ArrayList<String>();
                     }
                     if (session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(node.getIdentifier()) != null
-                            && session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+                            .getNodeByIdentifier(node.getIdentifier()) != null)
                     {
                         tmpNode.add(node);
                     }
@@ -403,12 +438,12 @@ public abstract class PrepareBaseHelper
                 prepareUpdate(tmpNode);
                 break;
             case SyncContentManager.MODE_DOCUMENTS:
-                List<Node> tmpNodes = new ArrayList<Node>(repoDocumentFavorites.getList());
+                List<Node> tmpNodes = new ArrayList<Node>(nodeDocumentSynced.getList());
                 syncResult.stats.numEntries = tmpNodes.size();
                 prepareUpdate(tmpNodes);
                 break;
             case SyncContentManager.MODE_BOTH:
-                List<Node> tmpNodes2 = new ArrayList<Node>(repoDocumentFavorites.getList());
+                List<Node> tmpNodes2 = new ArrayList<Node>(nodeDocumentSynced.getList());
                 syncResult.stats.numEntries = tmpNodes2.size();
                 prepareUpdate(tmpNodes2);
             case SyncContentManager.MODE_FOLDERS:
@@ -416,7 +451,7 @@ public abstract class PrepareBaseHelper
                 Cursor cursorId = null;
                 try
                 {
-                    for (Folder favoriteFolder : repoFolderFavorites.getList())
+                    for (Folder favoriteFolder : nodeFolderSynced.getList())
                     {
                         repoFavoriteIds.add(NodeRefUtils.getCleanIdentifier(favoriteFolder.getIdentifier()));
 
@@ -427,7 +462,7 @@ public abstract class PrepareBaseHelper
                         if (cursorId.moveToFirst())
                         {
                             // Is it a new Favorite ?
-                            Boolean favorited = cursorId.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
+                            Boolean favorited = cursorId.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0;
                             if (favorited)
                             {
                                 // If exist so update
@@ -441,10 +476,9 @@ public abstract class PrepareBaseHelper
                                 recursiveUpdate(favoriteFolder, favoriteFolder);
 
                                 ContentValues cValues = new ContentValues();
-                                cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, SyncContentProvider.FLAG_FAVORITE);
+                                cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, SyncContentProvider.FLAG_SYNC_SET);
                                 cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parent);
-                                context.getContentResolver()
-.update(
+                                context.getContentResolver().update(
                                         SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)),
                                         cValues, null, null);
                             }
@@ -756,16 +790,15 @@ public abstract class PrepareBaseHelper
             childrenCursor = context.getContentResolver().query(
                     SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
-                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID
-                            + " == '" + NodeRefUtils.getCleanIdentifier(folderIdentifier) + "'", null, null);
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
+                            + NodeRefUtils.getCleanIdentifier(folderIdentifier) + "'", null, null);
 
             while (childrenCursor.moveToNext())
             {
-                if (childrenCursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) == 0)
+                if (childrenCursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) == 0)
                 {
                     prepareDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID), childrenCursor);
-                    if (ContentModel.TYPE_FOLDER.equals(childrenCursor
-.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
+                    if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
                     {
                         prepareChildrenFolderDelete(childrenCursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
                     }
@@ -801,7 +834,7 @@ public abstract class PrepareBaseHelper
 
             if (syncResult.stats.numEntries == 1) { return; }
 
-            if (node != null && !session.getServiceRegistry().getDocumentFolderService().isFavorite(node))
+            if (node != null)
             {
                 try
                 {
@@ -813,10 +846,10 @@ public abstract class PrepareBaseHelper
                     {
                         // Parent is present. We just unfavorite the node
                         ContentValues cValues = new ContentValues();
-                        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
+                        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, 0);
                         context.getContentResolver().update(
-                                SyncContentManager.getUri(nodeCursor.getLong(SyncContentSchema.COLUMN_ID_ID)),
-                                cValues, null, null);
+                                SyncContentManager.getUri(nodeCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues,
+                                null, null);
                     }
                     else
                     {
@@ -885,7 +918,7 @@ public abstract class PrepareBaseHelper
     {
         // Unflag the folder favorite
         ContentValues cValues = new ContentValues();
-        cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
+        cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, 0);
         cValues.put(SyncContentSchema.COLUMN_DOC_SIZE_BYTES, 0);
         if (!ContentModel.TYPE_FOLDER.equals(nodeCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
         {
@@ -911,7 +944,7 @@ public abstract class PrepareBaseHelper
 
         while (localSyncCursor.moveToNext())
         {
-            boolean favorited = localSyncCursor.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0;
+            boolean favorited = localSyncCursor.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0;
             String nodeId = NodeRefUtils.getCleanIdentifier(localSyncCursor
                     .getString(SyncContentSchema.COLUMN_NODE_ID_ID));
             if (favorited)
@@ -1178,10 +1211,10 @@ public abstract class PrepareBaseHelper
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    private static void join(StringBuilder sb, CharSequence delimiter, List<Document> tokens)
+    private static void join(StringBuilder sb, CharSequence delimiter, List<String> tokens)
     {
         boolean firstTime = true;
-        for (Document token : tokens)
+        for (String token : tokens)
         {
             if (firstTime)
             {
@@ -1191,24 +1224,7 @@ public abstract class PrepareBaseHelper
             {
                 sb.append(delimiter);
             }
-            sb.append("'").append(token.getIdentifier()).append("'");
-        }
-    }
-
-    private static void joinF(StringBuilder sb, CharSequence delimiter, List<Folder> tokens)
-    {
-        boolean firstTime = true;
-        for (Folder token : tokens)
-        {
-            if (firstTime)
-            {
-                firstTime = false;
-            }
-            else
-            {
-                sb.append(delimiter);
-            }
-            sb.append("'").append(token.getIdentifier()).append("'");
+            sb.append("'").append(token).append("'");
         }
     }
 

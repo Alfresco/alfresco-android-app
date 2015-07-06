@@ -49,6 +49,7 @@ import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
 import android.app.Activity;
@@ -190,12 +191,16 @@ public class NodeActions extends AbstractActions<Node>
         }
 
         // SYNC
-        createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
-        createMenu.setIcon(R.drawable.ic_sync_light);
-        createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+        if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount())
+                && !SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), parentFolder))
+        {
+            createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_sync_group, Menu.FIRST, R.string.sync);
+            createMenu.setIcon(R.drawable.ic_sync_light);
+            createMenu.getItem().setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 
-        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
-        createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
+            createMenu.add(Menu.NONE, R.id.menu_action_sync_group_sync, Menu.FIRST + 1, R.string.sync);
+            createMenu.add(Menu.NONE, R.id.menu_action_sync_group_unsync, Menu.FIRST + 2, R.string.unsync);
+        }
 
         // FAVORITES
         createMenu = menu.addSubMenu(Menu.NONE, R.id.menu_action_favorite_group, Menu.FIRST + 135, R.string.favorite);
@@ -242,6 +247,14 @@ public class NodeActions extends AbstractActions<Node>
                 break;
             case R.id.menu_action_update:
                 update(getActivity().getFragmentManager().findFragmentByTag(TabsNodeDetailsFragment.TAG));
+                b = true;
+                break;
+            case R.id.menu_action_sync_group_sync:
+                sync(true);
+                b = true;
+                break;
+            case R.id.menu_action_sync_group_unsync:
+                sync(false);
                 b = true;
                 break;
             case R.id.menu_action_favorite_group_favorite:
@@ -310,6 +323,18 @@ public class NodeActions extends AbstractActions<Node>
         if (getFragment() instanceof DocumentFolderBrowserFragment)
         {
             ((DocumentFolderBrowserFragment) getFragment()).favorite(selectedItems, doFavorite, false);
+        }
+        else
+        {
+            // TODO ?
+        }
+    }
+
+    private void sync(boolean doSync)
+    {
+        if (getFragment() instanceof DocumentFolderBrowserFragment)
+        {
+            ((DocumentFolderBrowserFragment) getFragment()).sync(selectedItems, doSync, false);
         }
         else
         {

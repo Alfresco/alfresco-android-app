@@ -178,10 +178,10 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
             {
                 ContentValues cValues = new ContentValues();
                 cValues.put(SyncContentSchema.COLUMN_PARENT_ID, parentFolder.getIdentifier());
-                if (cursorId.getInt(SyncContentSchema.COLUMN_IS_FAVORITE_ID) > 0)
+                if (cursorId.getInt(SyncContentSchema.COLUMN_IS_SYNC_ROOT_ID) > 0)
                 {
                     // Unfavorite
-                    cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, 0);
+                    cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, 0);
                 }
 
                 if (!hasSyncParent)
@@ -230,7 +230,7 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
             // Already present in sync which means it's inside a
             // synced folder
             // We simply update the favorite
-            cValues.put(SyncContentSchema.COLUMN_IS_FAVORITE, SyncContentProvider.FLAG_FAVORITE);
+            cValues.put(SyncContentSchema.COLUMN_IS_SYNC_ROOT, SyncContentProvider.FLAG_SYNC_SET);
             context.getContentResolver().update(
                     SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null, null);
         }

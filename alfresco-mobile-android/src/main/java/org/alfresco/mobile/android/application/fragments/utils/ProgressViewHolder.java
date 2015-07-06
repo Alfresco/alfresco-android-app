@@ -34,6 +34,8 @@ public final class ProgressViewHolder extends GenericViewHolder
 
     public ImageView favoriteIcon;
 
+    public ImageView syncIcon;
+
     public ProgressViewHolder(View v)
     {
         super(v);
@@ -41,5 +43,6 @@ public final class ProgressViewHolder extends GenericViewHolder
         this.iconTopRight = (ImageView) v.findViewById(R.id.icon_top_right);
         this.iconBottomRight = (ImageView) v.findViewById(R.id.icon_bottom_right);
         this.favoriteIcon = (ImageView) v.findViewById(R.id.favorite_icon);
+        this.syncIcon = (ImageView) v.findViewById(R.id.sync_icon);
     }
 }

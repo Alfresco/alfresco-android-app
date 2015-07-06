@@ -90,6 +90,17 @@
                             android:visibility="gone" />
 
                         <ImageView
+                            android:id="@+id/sync_icon"
+                            android:layout_width="12dip"
+                            android:layout_height="match_parent"
+                            android:layout_marginLeft="0dip"
+                            android:layout_marginRight="3dip"
+                            android:contentDescription="@null"
+                            android:scaleType="centerInside"
+                            android:src="@drawable/mime_file"
+                            android:visibility="gone" />
+
+                        <ImageView
                             android:id="@+id/icon_bottom_right"
                             android:layout_width="12dip"
                             android:layout_height="match_parent"
