@@ -258,7 +258,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         File tmpFile = null;
-        boolean isSynced = SyncContentManager.getInstance(getActivity()).isSynced(
+        isSynced = SyncContentManager.getInstance(getActivity()).isSynced(
                 SessionUtils.getAccount(getActivity()), node);
         boolean modified = false;
         Date d = null;
@@ -591,24 +591,25 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         b = (ImageView) viewById(R.id.action_sync);
         if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
         {
-            if (!isRootSynced(b))
+            isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
+            if (isSynced && !isRootSynced(b))
             {
                 b.setVisibility(View.GONE);
             }
             else if (node instanceof NodeSyncPlaceHolder)
             {
                 b.setVisibility(View.VISIBLE);
-                b.setImageResource(R.drawable.ic_synced);
+                b.setImageResource(R.drawable.ic_synced_dark);
             }
             else if (!isRestrictable)
             {
-                isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
-                b.setImageResource(isSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+                b.setImageResource(isSynced ? R.drawable.ic_synced_dark : R.drawable.ic_sync_light);
                 b.setOnClickListener(new OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
+                        isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
                         sync(v);
                     }
                 });
@@ -1009,7 +1010,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         boolean isRootSynced = SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node);
         if (isRootSynced)
         {
-            v.setImageResource(isRootSynced ? R.drawable.ic_synced : R.drawable.ic_sync_light);
+            v.setImageResource(isRootSynced ? R.drawable.ic_synced_dark : R.drawable.ic_synce_dark);
             v.setVisibility(View.VISIBLE);
         }
         else
@@ -1282,15 +1283,22 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
         else if (event.data)
         {
-            isSynced = event.data;
-            syncButton.setImageResource(R.drawable.ic_synced);
+            this.isSynced = event.data;
+            syncButton.setImageResource(R.drawable.ic_synced_dark);
             AccessibilityUtils.addContentDescription(syncButton, R.string.unsync);
+
         }
         else
         {
-            isSynced = event.data;
+            this.isSynced = event.data;
             syncButton.setImageResource(R.drawable.ic_sync_light);
             AccessibilityUtils.addContentDescription(syncButton, R.string.sync);
+        }
+
+        if (SyncContentManager.getInstance(getActivity()).canSync(SessionUtils.getAccount(getActivity())))
+        {
+            SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()),
+                    event.node.getIdentifier());
         }
 
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
