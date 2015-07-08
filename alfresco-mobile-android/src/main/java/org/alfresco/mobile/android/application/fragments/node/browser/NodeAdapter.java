@@ -85,9 +85,19 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
 
     protected WeakReference<Activity> activityRef;
 
+    protected boolean fromFavorites = false;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
+    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems)
+    {
+        super(activity, textViewResourceId, listItems);
+        this.renditionManager = RenditionManagerImpl.getInstance(activity);
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<Activity>(activity);
+    }
+
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems, int mode)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
@@ -110,6 +120,7 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
         this.mode = mode;
         this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(activity);
+        this.fromFavorites = true;
     }
 
     public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
@@ -123,14 +134,6 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
         this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(fr.getActivity());
         this.gridFragment = fr;
-    }
-
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems)
-    {
-        super(activity, textViewResourceId, listItems);
-        this.renditionManager = RenditionManagerImpl.getInstance(activity);
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
     }
 
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)
@@ -298,6 +301,16 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     @Override
     protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
+        if (fromFavorites)
+        {
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+        }
+        else
+        {
+            vh.favoriteIcon.setVisibility(View.GONE);
+        }
+
         vh.bottomText.setText(createContentBottomText(getContext(), item));
         AccessibilityUtils
                 .addContentDescription(vh.bottomText, createContentDescriptionBottomText(getActivity(), item));
