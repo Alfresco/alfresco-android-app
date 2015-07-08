@@ -66,7 +66,8 @@ public class NetworksFragment extends CloudNetworksFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new CloudNetworkAdapter(getActivity(), R.layout.app_item_row, new ArrayList<CloudNetwork>(0));
+        return new CloudNetworkAdapter(getActivity(), R.layout.row_two_lines_caption_divider,
+                new ArrayList<CloudNetwork>(0));
     }
 
     @Override

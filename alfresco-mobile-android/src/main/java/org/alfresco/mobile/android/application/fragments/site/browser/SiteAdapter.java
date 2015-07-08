@@ -32,6 +32,7 @@ import org.alfresco.mobile.android.async.site.member.SiteMembershipRequest;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.site.SitesFoundationAdapter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -70,7 +71,7 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
     }
 
     @Override
-    protected void updateTopText(org.alfresco.mobile.android.ui.utils.GenericViewHolder vh, Site item)
+    protected void updateTopText(TwoLinesViewHolder vh, Site item)
     {
         super.updateTopText(vh, item);
 
@@ -80,8 +81,8 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
             return;
         }
 
-        UIUtils.setBackground(vh.choose,
-                getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+        vh.choose.setImageResource(R.drawable.ic_more_options);
+        vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
 
         vh.choose.setVisibility(View.VISIBLE);
         AccessibilityUtils.addContentDescription(vh.choose,
@@ -119,7 +120,7 @@ public class SiteAdapter extends SitesFoundationAdapter implements OnMenuItemCli
     }
 
     @Override
-    protected void updateIcon(org.alfresco.mobile.android.ui.utils.GenericViewHolder vh, Site item)
+    protected void updateIcon(TwoLinesViewHolder vh, Site item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
         AccessibilityUtils.addContentDescription(vh.icon, R.string.mime_site);

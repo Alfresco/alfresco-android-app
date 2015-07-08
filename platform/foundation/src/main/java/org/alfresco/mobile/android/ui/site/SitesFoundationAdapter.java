@@ -22,7 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Site;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Activity;
 
@@ -32,28 +32,31 @@ import android.app.Activity;
  * 
  * @author Jean Marie Pascal
  */
-public class SitesFoundationAdapter extends BaseListAdapter<Site, GenericViewHolder>
+public class SitesFoundationAdapter extends BaseListAdapter<Site, TwoLinesViewHolder>
 {
 
     public SitesFoundationAdapter(Activity context, int textViewResourceId, List<Site> listItems)
     {
         super(context, textViewResourceId, listItems);
+        vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Site item)
+    protected void updateTopText(TwoLinesViewHolder vh, Site item)
     {
         vh.topText.setText(item.getTitle());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Site item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Site item)
     {
         vh.bottomText.setText(item.getDescription());
+        vh.bottomText.setMaxLines(3);
+        vh.bottomText.setSingleLine(false);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Site item)
+    protected void updateIcon(TwoLinesViewHolder vh, Site item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_site_light));
     }

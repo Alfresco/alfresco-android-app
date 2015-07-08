@@ -138,7 +138,7 @@ public class CommentsFragment extends CommentsNodeFragment
         });
 
         gv.setSelector(android.R.color.transparent);
-        gv.setCacheColorHint(android.R.color.transparent);
+        gv.setCacheColorHint(getResources().getColor(android.R.color.transparent));
 
         return getRootView();
     }
@@ -169,7 +169,7 @@ public class CommentsFragment extends CommentsNodeFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return adapter = new CommentAdapter(getActivity(), getSession(), R.layout.sdk_list_comment_row,
+        return adapter = new CommentAdapter(getActivity(), getSession(), R.layout.row_comment,
                 new ArrayList<Comment>(0));
     }
 
@@ -199,8 +199,10 @@ public class CommentsFragment extends CommentsNodeFragment
     {
         if (commentText.getText().length() > 0)
         {
+            String commentValue = commentText.getText().toString().trim();
+            commentValue = commentValue.replaceAll("\n\n", "\n<p>&nbsp;</p>");
             Operator.with(getActivity()).load(
-                    new CreateCommentRequest.Builder(node, commentText.getText().toString().trim()));
+new CreateCommentRequest.Builder(node, commentValue));
             onPrepareRefresh();
             commentText.setEnabled(false);
             bAdd.setEnabled(false);

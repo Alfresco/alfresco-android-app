@@ -79,7 +79,7 @@ public class TextField extends BaseField
     {
         if (isMultiValued)
         {
-            return new MultiValuedStringAdapter(fr, R.layout.app_item_row, new ArrayList<>((List<String>) multiValue),
+            return new MultiValuedStringAdapter(fr, R.layout.row_two_lines, new ArrayList<>((List<String>) multiValue),
                     true);
         }
         else

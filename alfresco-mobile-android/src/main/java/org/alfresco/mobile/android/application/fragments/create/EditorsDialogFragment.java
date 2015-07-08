@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -122,7 +122,7 @@ public class EditorsDialogFragment extends DialogFragment
         }
         else
         {
-            lv.setAdapter(new EditorAdapter(getActivity(), R.layout.sdk_list_row, list));
+            lv.setAdapter(new EditorAdapter(getActivity(), R.layout.row_single_line, list));
 
             lv.setOnItemClickListener(new OnItemClickListener()
             {
@@ -157,16 +157,17 @@ public class EditorsDialogFragment extends DialogFragment
     /**
      * Inner class responsible to manage the list of Editors.
      */
-    private static class EditorAdapter extends BaseListAdapter<ResolveInfo, GenericViewHolder>
+    private static class EditorAdapter extends BaseListAdapter<ResolveInfo, SingleLineViewHolder>
     {
 
         public EditorAdapter(Activity context, int textViewResourceId, List<ResolveInfo> listItems)
         {
             super(context, textViewResourceId, listItems);
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, ResolveInfo item)
+        protected void updateTopText(SingleLineViewHolder vh, ResolveInfo item)
         {
             if (item.activityInfo.labelRes != 0)
             {
@@ -179,13 +180,12 @@ public class EditorsDialogFragment extends DialogFragment
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, ResolveInfo item)
+        protected void updateBottomText(SingleLineViewHolder vh, ResolveInfo item)
         {
-            vh.bottomText.setVisibility(View.GONE);
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, ResolveInfo item)
+        protected void updateIcon(SingleLineViewHolder vh, ResolveInfo item)
         {
             if (item.activityInfo.icon != 0)
             {

@@ -26,6 +26,7 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 
 import android.app.Activity;
@@ -39,7 +40,7 @@ import android.widget.TextView;
  * 
  * @author Jean Marie Pascal
  */
-public class CommentsNodeAdapter extends BaseListAdapter<Comment, CommentViewHolder>
+public class CommentsNodeAdapter extends BaseListAdapter<Comment, TwoLinesCaptionViewHolder>
 {
     protected RenditionManager renditionManager;
 
@@ -52,14 +53,18 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, CommentViewHol
     {
         super(activity, textViewResourceId, listItems);
         this.tagHandler = new TagHandlerList();
-        this.vhClassName = CommentViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(activity);
     }
 
     @Override
-    protected void updateTopText(CommentViewHolder vh, Comment item)
+    protected void updateTopText(TwoLinesCaptionViewHolder vh, Comment item)
     {
-        vh.topText.setText(createContentBottomText(getContext(), item));
+        vh.topText.setText(((CommentImpl) item).getCreatedByPerson().getFullName());
+        if (item.getCreatedAt() != null)
+        {
+            vh.topTextRight.setText(formatDate(getContext(), item.getCreatedAt().getTime()));
+        }
         AccessibilityUtils.addContentDescription(
                 vh.topText,
                 String.format(getContext().getString(R.string.metadata_created_by),
@@ -67,24 +72,26 @@ public class CommentsNodeAdapter extends BaseListAdapter<Comment, CommentViewHol
     }
 
     @Override
-    protected void updateBottomText(CommentViewHolder vh, Comment item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, Comment item)
     {
-        if (vh.content != null)
+        if (vh.bottomText != null)
         {
             String value = (item.getContent() == null || item.getContent().isEmpty()) ? "" : item.getContent().trim();
             if (AccessibilityUtils.isEnabled(getContext()))
             {
-                vh.content.setTextIsSelectable(false);
-                AccessibilityUtils.addContentDescription(vh.content,
- Html.fromHtml(value, null, tagHandler).toString());
+                vh.bottomText.setTextIsSelectable(false);
+                AccessibilityUtils.addContentDescription(vh.bottomText, Html.fromHtml(value, null, tagHandler)
+                        .toString());
             }
-            vh.content
-.setText(Html.fromHtml(value, null, tagHandler), TextView.BufferType.SPANNABLE);
+            vh.bottomText.setText(Html.fromHtml(value, null, tagHandler), TextView.BufferType.SPANNABLE);
+            vh.bottomText.setSingleLine(false);
+            vh.bottomText.setTextIsSelectable(true);
+            vh.bottomText.setMaxLines(25);
         }
     }
 
     @Override
-    protected void updateIcon(CommentViewHolder vh, final Comment item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, final Comment item)
     {
         RenditionManager.with(activityRef.get()).loadAvatar(item.getCreatedBy()).placeHolder(R.drawable.ic_person)
                 .into(vh.icon);

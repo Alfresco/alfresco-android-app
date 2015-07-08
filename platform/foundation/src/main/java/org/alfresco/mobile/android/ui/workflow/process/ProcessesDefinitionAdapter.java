@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.api.model.ProcessDefinition;
 import org.alfresco.mobile.android.api.model.impl.ProcessDefinitionImpl;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 
 import android.app.Activity;
 import android.content.Context;
@@ -32,31 +32,32 @@ import android.content.Context;
 /**
  * @author Jean Marie Pascal
  */
-public class ProcessesDefinitionAdapter extends BaseListAdapter<ProcessDefinition, GenericViewHolder>
+public class ProcessesDefinitionAdapter extends BaseListAdapter<ProcessDefinition, TwoLinesCaptionViewHolder>
 {
     protected Context context;
 
     public ProcessesDefinitionAdapter(Activity context, int textViewResourceId, List<ProcessDefinition> listItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.context = context;
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, ProcessDefinition item)
+    protected void updateTopText(TwoLinesCaptionViewHolder vh, ProcessDefinition item)
     {
         vh.topText.setText(item.getName());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, ProcessDefinition item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, ProcessDefinition item)
     {
         vh.bottomText.setText((String) ((ProcessDefinitionImpl) item).getData()
                 .get(OnPremiseConstant.DESCRIPTION_VALUE));
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, ProcessDefinition item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, ProcessDefinition item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_validate));
     }

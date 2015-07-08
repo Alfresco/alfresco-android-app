@@ -23,13 +23,10 @@ import org.alfresco.mobile.android.api.model.Document;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 /**
  * Provides access to history version and displays them as a view based on
@@ -37,7 +34,7 @@ import android.widget.TextView;
  * 
  * @author Jean Marie Pascal
  */
-public class VersionsNodeAdapter extends BaseListAdapter<Document, GenericVersionViewHolder>
+public class VersionsNodeAdapter extends BaseListAdapter<Document, TwoLinesProgressViewHolder>
 {
     private Resources res;
 
@@ -45,68 +42,34 @@ public class VersionsNodeAdapter extends BaseListAdapter<Document, GenericVersio
     {
         super(context, textViewResourceId, listItems);
         res = getContext().getResources();
-        vhClassName = GenericVersionViewHolder.class.getCanonicalName();
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericVersionViewHolder vh, Document item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Document item)
     {
         vh.topText.setText(res.getString(R.string.metadata_prop_version) + " " + item.getVersionLabel());
     }
 
     @Override
-    protected void updateBottomText(GenericVersionViewHolder vh, Document item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Document item)
     {
+        vh.bottomText.setSingleLine(false);
+        vh.bottomText.setMaxLines(2);
         String s = formatDate(getContext(), item.getModifiedAt().getTime());
-        vh.line1Text.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + s);
-
-        // modified by
-        s = item.getModifiedBy();
-        vh.line2Text.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + s);
-
-        // comment
-        /*
-         * s = (item.getProperty("cmis:checkinComment") != null) ? (String)
-         * item.getProperty("cmis:checkinComment") .getValue() : "";
-         * vh.line3Text.setText(res.getString(R.string.version_comment) + " " +
-         * s);
-         */
-        vh.line3Text.setVisibility(View.GONE);
-
+        vh.bottomText.setText(res.getString(R.string.metadata_prop_version_modified_by) + " " + item.getModifiedBy()
+                + " - " + s);
         // current version
-        vh.bottomText.setText(res.getString(R.string.metadata_prop_version_current) + " " + item.isLatestVersion());
+        if (item.isLatestVersion())
+        {
+            vh.topTextRight.setText(res.getString(R.string.metadata_prop_version_current));
+        }
     }
 
     @Override
-    protected void updateIcon(GenericVersionViewHolder vh, Document item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, Document item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(
                 MimeTypeManager.getInstance(getContext()).getIcon(item.getName())));
-    }
-}
-
-final class GenericVersionViewHolder extends ViewHolder
-{
-    public TextView topText;
-
-    public TextView line1Text;
-
-    public TextView line2Text;
-
-    public TextView line3Text;
-
-    public TextView bottomText;
-
-    public ImageView icon;
-
-    public GenericVersionViewHolder(View v)
-    {
-        super(v);
-        icon = (ImageView) v.findViewById(R.id.icon);
-        topText = (TextView) v.findViewById(R.id.toptext);
-        line1Text = (TextView) v.findViewById(R.id.line1);
-        line2Text = (TextView) v.findViewById(R.id.line2);
-        line3Text = (TextView) v.findViewById(R.id.line3);
-        bottomText = (TextView) v.findViewById(R.id.bottomtext);
     }
 }

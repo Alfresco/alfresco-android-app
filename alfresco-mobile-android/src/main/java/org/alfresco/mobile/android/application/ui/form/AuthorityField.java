@@ -91,7 +91,8 @@ public class AuthorityField extends BaseField
     // ///////////////////////////////////////////////////////////////////////////
     public ListAdapter getListAdapter(Fragment fr)
     {
-        return new AuthorityAdapter(fr, R.layout.app_item_row, new ArrayList<Person>(persons.values()), outputValue);
+        return new AuthorityAdapter(fr, R.layout.row_two_lines_caption_divider,
+                new ArrayList<Person>(persons.values()), outputValue);
     }
 
     public void remove(Object object)

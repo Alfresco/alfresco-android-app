@@ -26,8 +26,8 @@ import org.alfresco.mobile.android.application.fragments.node.update.EditPropert
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.application.ui.form.AuthorityField;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.person.PeopleAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Fragment;
 import android.view.View;
@@ -56,7 +56,7 @@ public class AuthorityAdapter extends PeopleAdapter
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Person item)
+    protected void updateTopText(TwoLinesViewHolder vh, Person item)
     {
         switch (outputValue)
         {
@@ -72,13 +72,13 @@ public class AuthorityAdapter extends PeopleAdapter
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Person item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Person item)
     {
         vh.bottomText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(final GenericViewHolder vh, final Person item)
+    protected void updateIcon(final TwoLinesViewHolder vh, final Person item)
     {
         super.updateIcon(vh, item);
 

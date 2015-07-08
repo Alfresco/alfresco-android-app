@@ -24,4 +24,6 @@ package org.alfresco.mobile.android.ui;
 public interface GridFragment
 {
     void setColumnWidth(int value);
+
+    void setSpacing(int value);
 }

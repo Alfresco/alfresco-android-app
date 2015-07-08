@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
@@ -51,6 +50,7 @@ import org.alfresco.mobile.android.sync.SyncContentProvider;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
@@ -101,17 +101,17 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
     private boolean hasSync = false, hasFavorited = false;
 
-    public ProgressNodeAdapter(Activity context, int textViewResourceId, Node parentNode, List<Node> listItems,
+    public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
             List<Node> selectedItems, int mode)
     {
-        super(context, textViewResourceId, listItems, selectedItems, mode);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        super(fr, textViewResourceId, listItems, selectedItems, mode);
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
-            context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
-            context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
-            context.getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
+            fr.getActivity().getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
+            fr.getActivity().getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            fr.getActivity().getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
@@ -125,7 +125,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             Map<String, Node> selectedItems)
     {
         super(context, textViewResourceId, listItems, selectedItems);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.parentNode = parentNode;
         if (parentNode != null)
         {
@@ -139,9 +139,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
     @Override
-    protected void updateTopText(ProgressViewHolder vh, Node item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Node item)
     {
-        ProgressBar progressView = (ProgressBar) ((View) vh.topText.getParent()).findViewById(R.id.status_progress);
+        ProgressBar progressView = vh.progress;
 
         if (item instanceof NodePlaceHolder)
         {
@@ -201,7 +201,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, Node item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
         if (favoritesNodeIndex != null && favoritesNodeIndex.contains(item.getIdentifier()))
         {
@@ -257,18 +257,18 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                         displayStatut(vh, R.drawable.sync_status_failed);
                         break;
                     default:
-                        vh.iconBottomRight.setVisibility(View.GONE);
+                        vh.iconRight.setVisibility(View.GONE);
                         break;
                 }
             }
             else
             {
-                vh.iconBottomRight.setVisibility(View.GONE);
+                vh.iconRight.setVisibility(View.GONE);
             }
         }
         else
         {
-            vh.iconBottomRight.setVisibility(View.GONE);
+            vh.iconRight.setVisibility(View.GONE);
         }
 
         if (item instanceof NodePlaceHolder)
@@ -307,7 +307,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, Node item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, Node item)
     {
         if (item instanceof NodePlaceHolder)
         {
@@ -328,9 +328,8 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
             if (mode == ListingModeFragment.MODE_IMPORT) { return; }
             if (mode == ListingModeFragment.MODE_PICK) { return; }
 
-            UIUtils.setBackground(vh.choose,
-                    getActivity().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
             vh.choose.setVisibility(View.VISIBLE);
             AccessibilityUtils.addContentDescription(vh.choose,
                     String.format(getActivity().getString(R.string.more_options_folder), item.getName()));
@@ -635,12 +634,12 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         return isSyncFolder;
     }
 
-    protected void displayStatut(ProgressViewHolder vh, int imageResource)
+    protected void displayStatut(TwoLinesProgressViewHolder vh, int imageResource)
     {
-        if (vh.iconBottomRight != null)
+        if (vh.iconRight != null)
         {
-            vh.iconBottomRight.setVisibility(View.VISIBLE);
-            vh.iconBottomRight.setImageResource(imageResource);
+            vh.iconRight.setVisibility(View.VISIBLE);
+            vh.iconRight.setImageResource(imageResource);
         }
     }
 

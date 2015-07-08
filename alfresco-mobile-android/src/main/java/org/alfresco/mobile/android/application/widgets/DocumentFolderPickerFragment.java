@@ -163,7 +163,7 @@ public class DocumentFolderPickerFragment extends Fragment
     {
         super.onActivityCreated(savedInstanceState);
         List<AlfrescoAccount> list = AlfrescoAccountManager.retrieveAccounts(getActivity());
-        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.sdk_list_row, null));
+        spinnerAccount.setAdapter(new AccountsAdapter(getActivity(), list, R.layout.row_two_lines, null));
     }
 
     @Override
@@ -203,11 +203,11 @@ public class DocumentFolderPickerFragment extends Fragment
         UploadFolderAdapter upLoadadapter = null;
         if (getActivity() instanceof FolderShortcutActivity)
         {
-            upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.sdk_list_row, FOLDER_SHORTCUT_LIST);
+            upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line, FOLDER_SHORTCUT_LIST);
         }
         else
         {
-            upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.sdk_list_row, FOLDER_ACTIONS_LIST);
+            upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line, FOLDER_ACTIONS_LIST);
         }
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()
@@ -240,7 +240,7 @@ public class DocumentFolderPickerFragment extends Fragment
             return;
         }
         spinner = (Spinner) rootView.findViewById(R.id.actions_spinner);
-        ActionShortcutAdapter actionAdapter = new ActionShortcutAdapter(getActivity(), R.layout.sdk_list_row,
+        ActionShortcutAdapter actionAdapter = new ActionShortcutAdapter(getActivity(), R.layout.row_single_line,
                 ACTIONS_LIST);
         spinner.setAdapter(actionAdapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()

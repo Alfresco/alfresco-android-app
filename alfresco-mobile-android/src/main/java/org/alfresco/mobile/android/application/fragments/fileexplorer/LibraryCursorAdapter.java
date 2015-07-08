@@ -32,7 +32,7 @@ import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.annotation.TargetApi;
@@ -47,16 +47,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 
 /**
  * @since 1.3
  * @author Jean Marie Pascal
  */
-public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> implements OnMenuItemClickListener
+public class LibraryCursorAdapter extends BaseCursorLoader<TwoLinesViewHolder> implements OnMenuItemClickListener
 {
     private List<File> selectedItems;
 
@@ -86,10 +86,11 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
         this.mediaTypeId = mediaTypeId;
         this.mode = mode;
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Cursor cursor)
+    protected void updateTopText(TwoLinesViewHolder vh, Cursor cursor)
     {
         String topText = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.TITLE));
         if (topText != null)
@@ -104,7 +105,7 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Cursor cursor)
+    protected void updateBottomText(TwoLinesViewHolder vh, Cursor cursor)
     {
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.Files.FileColumns._ID));
@@ -131,19 +132,22 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
             }
         }
 
+        vh.bottomText.setSingleLine(false);
+        vh.bottomText.setMaxLines(3);
+
         if (selectedItems != null && selectedItems.contains(f))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Cursor cursor)
+    protected void updateIcon(TwoLinesViewHolder vh, Cursor cursor)
     {
         String data = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         File f = new File(data);
@@ -169,9 +173,8 @@ public class LibraryCursorAdapter extends BaseCursorLoader<GenericViewHolder> im
 
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity)
         {
-            UIUtils.setBackground(vh.choose,
-                    context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
-
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, f);
             vh.choose.setOnClickListener(new OnClickListener()

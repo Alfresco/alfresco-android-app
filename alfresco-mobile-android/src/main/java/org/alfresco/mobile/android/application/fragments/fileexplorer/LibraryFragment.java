@@ -132,7 +132,8 @@ public class LibraryFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new LibraryCursorAdapter(this, null, R.layout.sdk_grid_row, selectedItems, mediaTypeId, getMode());
+        return new LibraryCursorAdapter(this, null, R.layout.row_two_lines_caption_divider, selectedItems, mediaTypeId,
+                getMode());
     }
 
     @Override

@@ -24,20 +24,20 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Task;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.content.Context;
 import android.text.Html;
 import android.view.View;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 /**
  * @author Jean Marie Pascal
  */
-public class TasksFoundationAdapter extends BaseListAdapter<Task, GenericViewHolder>
+public class TasksFoundationAdapter extends BaseListAdapter<Task, TwoLinesCaptionViewHolder>
 {
     private GregorianCalendar calendar = new GregorianCalendar();
 
@@ -49,18 +49,19 @@ public class TasksFoundationAdapter extends BaseListAdapter<Task, GenericViewHol
             List<Task> selectedItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.context = context;
         this.selectedItems = selectedItems;
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Task item)
+    protected void updateTopText(TwoLinesCaptionViewHolder vh, Task item)
     {
         vh.topText.setText(item.getDescription());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Task item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, Task item)
     {
         StringBuilder bottomText = new StringBuilder(item.getName());
 
@@ -87,17 +88,17 @@ public class TasksFoundationAdapter extends BaseListAdapter<Task, GenericViewHol
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()),
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Task item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, Task item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(getPriorityIconId(item.getPriority())));
         vh.choose.setVisibility(View.GONE);

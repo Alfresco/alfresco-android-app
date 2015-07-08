@@ -30,7 +30,7 @@ import org.alfresco.mobile.android.platform.mimetype.MimeType;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 
 import android.app.Fragment;
 import android.view.View;
@@ -43,7 +43,7 @@ import android.widget.ImageView.ScaleType;
  * 
  * @author Jean Marie Pascal
  */
-public class NodeFieldAdapter extends BaseListAdapter<Node, GenericViewHolder>
+public class NodeFieldAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolder>
 {
     protected WeakReference<Fragment> fragmentRef;
 
@@ -55,6 +55,7 @@ public class NodeFieldAdapter extends BaseListAdapter<Node, GenericViewHolder>
     public NodeFieldAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, String propertyId)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.fragmentRef = new WeakReference<Fragment>(fr);
         this.outputValue = propertyId;
     }
@@ -63,13 +64,13 @@ public class NodeFieldAdapter extends BaseListAdapter<Node, GenericViewHolder>
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
     @Override
-    protected void updateTopText(GenericViewHolder vh, Node item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Node item)
     {
         vh.topText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Node item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
         switch (outputValue)
         {
@@ -94,7 +95,7 @@ public class NodeFieldAdapter extends BaseListAdapter<Node, GenericViewHolder>
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, final Node item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, final Node item)
     {
         vh.choose.setVisibility(View.VISIBLE);
         vh.choose.setScaleType(ScaleType.CENTER_INSIDE);

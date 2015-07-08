@@ -107,7 +107,8 @@ public class ProcessesFragment extends ProcessesFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ProcessesAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Process>(0), selectedItems);
+        return new ProcessesAdapter(getActivity(), R.layout.row_two_lines_caption_divider, new ArrayList<Process>(0),
+                selectedItems);
     }
 
     @Subscribe

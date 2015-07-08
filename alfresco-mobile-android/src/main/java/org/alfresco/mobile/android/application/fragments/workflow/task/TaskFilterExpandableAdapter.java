@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.ui.utils.CheckBoxViewHolder;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
@@ -70,16 +70,17 @@ public class TaskFilterExpandableAdapter extends BaseExpandableListAdapter
     {
         Integer itemGroup = (Integer) getGroup(groupPosition);
 
-        GenericViewHolder vh = null;
+        TwoLinesViewHolder vh = null;
         if (convertView == null)
         {
-            convertView = inflater.inflate(R.layout.sdk_list_row, null);
-            vh = new GenericViewHolder(convertView);
+            convertView = inflater.inflate(R.layout.row_two_lines, null);
+            vh = new TwoLinesViewHolder(convertView);
             convertView.setTag(vh);
         }
 
-        vh = (GenericViewHolder) convertView.getTag();
+        vh = (TwoLinesViewHolder) convertView.getTag();
         vh.topText.setText(itemGroup);
+        vh.choose.setVisibility(View.VISIBLE);
         vh.choose.setImageResource(isExpanded ? R.drawable.expander_close_holo_light
                 : R.drawable.expander_open_holo_light);
 

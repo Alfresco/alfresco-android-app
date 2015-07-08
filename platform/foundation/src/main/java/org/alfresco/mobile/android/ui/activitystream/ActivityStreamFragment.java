@@ -73,7 +73,7 @@ public class ActivityStreamFragment extends SelectableGridFragment<ActivityEntry
     // ///////////////////////////////////////////////////////////////////////////
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ActivityStreamAdapter(ActivityStreamFragment.this, getSession(), R.layout.app_grid_row_activities,
+        return new ActivityStreamAdapter(ActivityStreamFragment.this, getSession(), R.layout.row_two_lines_caption,
                 new ArrayList<ActivityEntry>(0), selectedEntry);
     }
 

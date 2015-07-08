@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -32,13 +32,15 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.text.Html;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 /**
  * Provides access to activity entries and displays them as a view based on
@@ -46,7 +48,7 @@ import android.widget.LinearLayout;
  * 
  * @author Jean Marie Pascal
  */
-public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, ActivityEventViewHolder>
+public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, TwoLinesCaptionViewHolder>
 {
     protected List<ActivityEntry> selectedItems;
 
@@ -60,51 +62,54 @@ public class ActivityStreamAdapter extends BaseListAdapter<ActivityEntry, Activi
             List<ActivityEntry> listItems, List<ActivityEntry> selectedItems)
     {
         super(fr.getActivity(), textViewResourceId, listItems);
-        this.vhClassName = ActivityEventViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.selectedItems = selectedItems;
         this.activityRef = new WeakReference<>(fr.getActivity());
     }
 
     @Override
-    protected void updateTopText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateTopText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         vh.topText.setText(getUser(item));
-        vh.content.setText(Html.fromHtml(getActivityTypeMessage(item)));
+        vh.bottomText.setText(Html.fromHtml(getActivityTypeMessage(item)));
+        vh.bottomText.setSingleLine(false);
+        vh.bottomText.setMaxLines(3);
     }
 
     @Override
-    protected void updateBottomText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         String s = "";
         if (item.getCreatedAt() != null)
         {
             s = formatDate(getContext(), item.getCreatedAt().getTime());
         }
-        vh.bottomText.setText(s);
+        vh.topTextRight.setText(s);
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), getContext()
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent().getParent()), getContext()
                     .getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent().getParent()), null);
         }
     }
 
     @Override
-    protected void updateIcon(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         getCreatorAvatar(vh, item);
         AccessibilityUtils.addContentDescription(vh.icon,
                 String.format(getContext().getString(R.string.contact_card), getUser(item)));
     }
 
-    private void getCreatorAvatar(ActivityEventViewHolder vh, ActivityEntry item)
+    private void getCreatorAvatar(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         String type = item.getType();
         String tmp = null;
+        vh.icon.setVisibility(View.VISIBLE);
 
         if (type.startsWith(PREFIX_FILE))
         {

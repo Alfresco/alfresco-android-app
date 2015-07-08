@@ -46,8 +46,8 @@ import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.Formatter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -267,7 +267,7 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
         {
             DisplayUtils.show(rootView, R.id.types_group);
             Spinner spinner = (Spinner) rootView.findViewById(R.id.types_spinner);
-            TypeAdapter adapter = new TypeAdapter(getActivity(), R.layout.sdk_list_row,
+            TypeAdapter adapter = new TypeAdapter(getActivity(), R.layout.row_single_line,
                     createConfigManager.retrieveCreationDocumentTypeList());
             spinner.setAdapter(adapter);
             spinner.setOnItemSelectedListener(new OnItemSelectedListener()
@@ -407,30 +407,29 @@ public abstract class CreateDocumentDialogFragment extends AlfrescoFragment
     // //////////////////////////////////////////////////////////////////////
     // ADAPTER
     // //////////////////////////////////////////////////////////////////////
-    public class TypeAdapter extends BaseListAdapter<ItemConfig, GenericViewHolder>
+    public class TypeAdapter extends BaseListAdapter<ItemConfig, SingleLineViewHolder>
     {
         public TypeAdapter(Activity context, int textViewResourceId, List<ItemConfig> listItems)
         {
             super(context, textViewResourceId, listItems);
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, ItemConfig item)
+        protected void updateTopText(SingleLineViewHolder vh, ItemConfig item)
         {
             vh.topText.setText(item.getLabel());
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, ItemConfig item)
+        protected void updateBottomText(SingleLineViewHolder vh, ItemConfig item)
         {
-            DisplayUtils.hide(vh.bottomText);
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, ItemConfig item)
+        protected void updateIcon(SingleLineViewHolder vh, ItemConfig item)
         {
             DisplayUtils.hide(vh.icon);
-            DisplayUtils.hide(vh.choose);
         }
 
         @Override

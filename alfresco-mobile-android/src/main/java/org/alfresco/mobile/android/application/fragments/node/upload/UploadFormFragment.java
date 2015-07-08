@@ -298,7 +298,7 @@ public class UploadFormFragment extends Fragment
 
         if (adapter == null && files != null)
         {
-            adapter = new FileExplorerAdapter(this, R.layout.app_list_progress_row, files);
+            adapter = new FileExplorerAdapter(this, R.layout.row_two_lines_progress, files);
             if (lv != null)
             {
                 lv.setAdapter(adapter);
@@ -386,7 +386,7 @@ public class UploadFormFragment extends Fragment
     private void refreshImportFolder()
     {
         Spinner spinner = (Spinner) rootView.findViewById(R.id.import_folder_spinner);
-        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.sdk_list_row,
+        UploadFolderAdapter upLoadadapter = new UploadFolderAdapter(getActivity(), R.layout.row_single_line,
                 IMPORT_FOLDER_LIST);
         spinner.setAdapter(upLoadadapter);
         spinner.setOnItemSelectedListener(new OnItemSelectedListener()

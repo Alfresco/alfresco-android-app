@@ -24,7 +24,7 @@ import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Activity;
 import android.view.View;
@@ -35,27 +35,28 @@ import android.view.View;
  * 
  * @author Jean Marie Pascal
  */
-public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, GenericViewHolder>
+public class CloudNetworkAdapter extends BaseListAdapter<CloudNetwork, TwoLinesViewHolder>
 {
     public CloudNetworkAdapter(Activity context, int textViewResourceId, List<CloudNetwork> listItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, CloudNetwork item)
+    protected void updateTopText(TwoLinesViewHolder vh, CloudNetwork item)
     {
         vh.topText.setText(item.getIdentifier());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, CloudNetwork item)
+    protected void updateBottomText(TwoLinesViewHolder vh, CloudNetwork item)
     {
-        vh.bottomText.setVisibility(View.GONE);
+        vh.bottomText.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, CloudNetwork item)
+    protected void updateIcon(TwoLinesViewHolder vh, CloudNetwork item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_network));
         AlfrescoAccount currentAccount = AlfrescoAccountManager.getInstance(getContext()).getDefaultAccount();

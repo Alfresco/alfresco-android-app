@@ -73,7 +73,7 @@ public class PeopleFragment extends BaseGridFragment implements PeopleTemplate
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new PeopleAdapter(this, R.layout.sdk_grid_row, new ArrayList<Person>(0), selectedItems);
+        return new PeopleAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<Person>(0), selectedItems);
     }
 
     @Subscribe

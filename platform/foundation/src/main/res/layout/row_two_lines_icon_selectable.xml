@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~    This file is part of Alfresco Mobile for Android.
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+-->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/two_list_minHeight">
+
+    <LinearLayout
+        android:id="@+id/icon_container"
+        style="@style/AlfrescoMaterialTheme.IconContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/list_icon_size"
+            android:layout_height="@dimen/list_icon_size"
+            android:visibility="visible"
+            tools:src="@drawable/ic_empty" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/textview_container"
+        style="@style/AlfrescoMaterialTheme.Container.Relative"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_toLeftOf="@+id/choose"
+        android:layout_toRightOf="@+id/icon_container"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/toptext"
+                style="@style/AlfrescoMaterialTheme.Text.List.Primary.Bold"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                tools:text="Text for Preview" />
+
+            <TextView
+                android:id="@+id/toptext_right"
+                style="@style/AlfrescoMaterialTheme.Text.List.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Created 5 hours ago" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bottomtext"
+            style="@style/AlfrescoMaterialTheme.Text.List.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Plain Text for preview" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/choose"
+        style="@style/AlfrescoMaterialTheme.Icon.Right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:padding="@dimen/d_16"
+        android:visibility="gone"
+        tools:src="@drawable/ic_more_options" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@id/textview_container"
+        android:layout_margin="0dp"
+        android:background="@color/divider" />
+
+</RelativeLayout>

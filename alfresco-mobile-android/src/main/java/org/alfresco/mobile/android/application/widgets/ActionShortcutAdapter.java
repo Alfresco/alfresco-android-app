@@ -21,13 +21,13 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class ActionShortcutAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+public class ActionShortcutAdapter extends BaseListAdapter<Integer, SingleLineViewHolder>
 {
     public ActionShortcutAdapter(Activity context, int textViewResourceId, List<Integer> listItems)
     {
@@ -35,19 +35,19 @@ public class ActionShortcutAdapter extends BaseListAdapter<Integer, GenericViewH
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Integer item)
+    protected void updateTopText(SingleLineViewHolder vh, Integer item)
     {
         vh.topText.setText(getContext().getString(item));
+        this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Integer item)
+    protected void updateBottomText(SingleLineViewHolder vh, Integer item)
     {
-        vh.bottomText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Integer item)
+    protected void updateIcon(SingleLineViewHolder vh, Integer item)
     {
         int iconId = R.drawable.ic_doc_light;
         switch (item)

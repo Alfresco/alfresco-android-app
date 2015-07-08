@@ -29,7 +29,6 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.BaseActivity;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
@@ -40,6 +39,7 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
@@ -54,7 +54,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
@@ -65,7 +64,8 @@ import android.widget.PopupMenu.OnMenuItemClickListener;
  * 
  * @author Jean Marie Pascal
  */
-public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolder> implements OnMenuItemClickListener
+public class FileExplorerAdapter extends BaseListAdapter<File, TwoLinesProgressViewHolder> implements
+        OnMenuItemClickListener
 {
     private List<File> originalFiles;
 
@@ -103,7 +103,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
             this.downloadPath = (f != null) ? f.getPath() : null;
         }
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
     }
 
     @Override
@@ -113,24 +113,24 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     }
 
     @Override
-    protected void updateTopText(ProgressViewHolder vh, File item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, File item)
     {
         vh.topText.setText(item.getName());
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, File item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, File item)
     {
         vh.bottomText.setText(createContentBottomText(getContext(), item));
 
         if (selectedItems != null && selectedItems.contains(item))
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()),
+            UIUtils.setBackground(((View) vh.choose.getParent()),
                     getContext().getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.choose.getParent()), null);
+            UIUtils.setBackground(((View) vh.choose.getParent()), null);
         }
 
         if (DataProtectionManager.getInstance(getContext()).isEncrypted(item.getPath()))
@@ -156,7 +156,7 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, File item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, File item)
     {
         if (item.isFile())
         {
@@ -174,8 +174,8 @@ public class FileExplorerAdapter extends BaseListAdapter<File, ProgressViewHolde
         if (mode == FileExplorerFragment.MODE_LISTING && fragmentRef.get().getActivity() instanceof MainActivity
                 && ((downloadPath != null && item.getPath().startsWith(downloadPath)) || (item.isFile())))
         {
-            UIUtils.setBackground(vh.choose,
-                    getContext().getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
 
             vh.choose.setVisibility(View.VISIBLE);
             AccessibilityUtils.addContentDescription(vh.choose,

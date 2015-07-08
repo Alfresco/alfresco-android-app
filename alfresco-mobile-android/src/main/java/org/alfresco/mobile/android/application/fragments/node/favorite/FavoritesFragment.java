@@ -82,7 +82,7 @@ public class FavoritesFragment extends FavoritesNodeFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new NodeAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Node>(0), selectedItems,
+        return new NodeAdapter(getActivity(), R.layout.row_two_lines_progress, new ArrayList<Node>(0), selectedItems,
                 ListingModeFragment.MODE_LISTING);
     }
 

@@ -26,7 +26,6 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.OperationStatus;
 import org.alfresco.mobile.android.async.Operator;
@@ -41,6 +40,7 @@ import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -56,16 +56,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.RelativeLayout;
 
 /**
  * @since 1.2
  * @author Jean Marie Pascal
  */
-public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> implements OnMenuItemClickListener
+public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHolder> implements OnMenuItemClickListener
 {
     private static final String TAG = SyncCursorAdapter.class.getName();
 
@@ -87,7 +87,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         this.fragmentRef = new WeakReference<Fragment>(fr);
         this.selectedItems = selectedItems;
         this.mode = mode;
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         hasSynchroActive = SyncContentManager.getInstance(fr.getActivity()).hasActivateSync(
                 SessionUtils.getAccount(context));
     }
@@ -110,11 +110,11 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
             view.refreshDrawableState();
             return;
         }
-        ProgressViewHolder vh = (ProgressViewHolder) view.getTag();
+        TwoLinesProgressViewHolder vh = (TwoLinesProgressViewHolder) view.getTag();
         updateControls(vh, cursor);
     }
 
-    protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, Cursor cursor)
     {
         if (SyncContentManager.isFolder(cursor))
         {
@@ -144,7 +144,7 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
     }
 
-    protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, final Cursor cursor)
     {
         int status = cursor.getInt(SyncContentSchema.COLUMN_STATUS_ID);
         String nodeId = cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
@@ -210,12 +210,12 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
 
         if (selectedItems != null && selectedItems.contains(nodeId))
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent()),
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) vh.icon.getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
         }
 
         if (SyncContentStatus.STATUS_RUNNING != status)
@@ -237,8 +237,9 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
                 UIUtils.setBackground(vh.choose, null);
                 return;
             }
-            UIUtils.setBackground(vh.choose,
-                    context.getResources().getDrawable(R.drawable.quickcontact_badge_overlay_light));
+
+            vh.choose.setImageResource(R.drawable.ic_more_options);
+            vh.choose.setBackgroundResource(R.drawable.alfrescohololight_list_selector_holo_light);
 
             vh.choose.setVisibility(View.VISIBLE);
             vh.choose.setTag(R.id.node_action, nodeId);
@@ -325,21 +326,21 @@ public class SyncCursorAdapter extends BaseCursorLoader<ProgressViewHolder> impl
         return s.toString();
     }
 
-    protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
     }
 
-    protected void displayStatut(ProgressViewHolder vh, int imageResource)
+    protected void displayStatut(TwoLinesProgressViewHolder vh, int imageResource)
     {
         if (hasSynchroActive)
         {
-            vh.iconBottomRight.setVisibility(View.VISIBLE);
-            vh.iconBottomRight.setImageResource(imageResource);
+            vh.iconRight.setVisibility(View.VISIBLE);
+            vh.iconRight.setImageResource(imageResource);
         }
         else
         {
-            vh.iconBottomRight.setVisibility(View.GONE);
+            vh.iconRight.setVisibility(View.GONE);
         }
     }
 

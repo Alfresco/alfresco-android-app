@@ -40,6 +40,7 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseGridFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
 import org.alfresco.mobile.android.ui.utils.Formatter;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
@@ -52,14 +53,15 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 /**
  * Provides access to node (documents or folders) and displays them as a view
  * based on GenericViewHolder.
- * 
+ *
  * @author Jean Marie Pascal
  */
-public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
+public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolder>
 {
     protected List<Node> originalNodes;
 
@@ -83,9 +85,31 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
 
     protected WeakReference<Activity> activityRef;
 
+    protected boolean fromFavorites = false;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
+    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems)
+    {
+        super(activity, textViewResourceId, listItems);
+        this.renditionManager = RenditionManagerImpl.getInstance(activity);
+        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<Activity>(activity);
+    }
+
+    public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems, int mode)
+    {
+        super(fr.getActivity(), textViewResourceId, listItems);
+        originalNodes = Collections.synchronizedList(listItems);
+        this.selectedItems = selectedItems;
+        this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
+        this.mode = mode;
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
+        this.activityRef = new WeakReference<Activity>(fr.getActivity());
+        this.gridFragment = (BaseGridFragment) fr;
+    }
+
     public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
             int mode)
     {
@@ -94,8 +118,9 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
         this.mode = mode;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(activity);
+        this.fromFavorites = true;
     }
 
     public NodeAdapter(BaseGridFragment fr, int textViewResourceId, List<Node> listItems, List<Node> selectedItems,
@@ -106,17 +131,9 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.selectedItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
         this.mode = mode;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(fr.getActivity());
         this.gridFragment = fr;
-    }
-
-    public NodeAdapter(Activity activity, int textViewResourceId, List<Node> listItems)
-    {
-        super(activity, textViewResourceId, listItems);
-        this.renditionManager = RenditionManagerImpl.getInstance(activity);
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
-        this.activityRef = new WeakReference<Activity>(activity);
     }
 
     public NodeAdapter(Fragment fr, int textViewResourceId, List<Node> listItems, boolean isEditable)
@@ -124,7 +141,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         super(fr.getActivity(), textViewResourceId, listItems);
         this.fragmentRef = new WeakReference<Fragment>(fr);
         this.renditionManager = RenditionManagerImpl.getInstance(fr.getActivity());
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.isEditable = isEditable;
         this.activityRef = new WeakReference<Activity>(fr.getActivity());
     }
@@ -136,7 +153,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         this.selectedMapItems = selectedItems;
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
         this.mode = ListingModeFragment.MODE_PICK;
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(activity);
     }
 
@@ -167,7 +184,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
             return super.getView(position, convertView, parent);
         }
 
-        ProgressViewHolder vh = (ProgressViewHolder) v.getTag();
+        TwoLinesProgressViewHolder vh = (TwoLinesProgressViewHolder) v.getTag();
         Node item = getItem(position);
         updateControls(vh, item);
         return v;
@@ -255,7 +272,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     // ITEM LINE
     // ////////////////////////////////////////////////////////////
     @Override
-    protected void updateTopText(ProgressViewHolder vh, Node item)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Node item)
     {
         vh.topText.setText(item.getName());
         if (item.isDocument() && mode == ListingModeFragment.MODE_IMPORT)
@@ -268,14 +285,32 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
         }
     }
 
-    private LinearLayout getSelectionLayout(ProgressViewHolder vh)
+    private ViewGroup getSelectionLayout(TwoLinesProgressViewHolder vh)
     {
-        return (LinearLayout) vh.icon.getParent();
+        if (vh.icon.getParent() instanceof RelativeLayout)
+        {
+            return (RelativeLayout) vh.icon.getParent();
+        }
+        else
+        {
+            return (LinearLayout) vh.icon.getParent().getParent();
+        }
+
     }
 
     @Override
-    protected void updateBottomText(ProgressViewHolder vh, Node item)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
+        if (fromFavorites)
+        {
+            vh.favoriteIcon.setVisibility(View.VISIBLE);
+            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+        }
+        else
+        {
+            vh.favoriteIcon.setVisibility(View.GONE);
+        }
+
         vh.bottomText.setText(createContentBottomText(getContext(), item));
         AccessibilityUtils
                 .addContentDescription(vh.bottomText, createContentDescriptionBottomText(getActivity(), item));
@@ -352,7 +387,7 @@ public class NodeAdapter extends BaseListAdapter<Node, ProgressViewHolder>
     }
 
     @Override
-    protected void updateIcon(ProgressViewHolder vh, final Node item)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, final Node item)
     {
         if (isEditable)
         {

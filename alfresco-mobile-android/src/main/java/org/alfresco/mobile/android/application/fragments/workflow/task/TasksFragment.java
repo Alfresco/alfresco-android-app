@@ -108,7 +108,8 @@ public class TasksFragment extends TasksFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new TasksFoundationAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Task>(0), selectedItems);
+        return new TasksFoundationAdapter(getActivity(), R.layout.row_two_lines_caption_divider,
+                new ArrayList<Task>(0), selectedItems);
     }
 
     @Override

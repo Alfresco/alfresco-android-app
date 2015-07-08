@@ -85,7 +85,7 @@ public class TagsNodeFoundationFragment extends BaseGridFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new TagsFoundationAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<Tag>(0));
+        return new TagsFoundationAdapter(getActivity(), R.layout.row_two_lines, new ArrayList<Tag>(0));
     }
 
     @Subscribe
