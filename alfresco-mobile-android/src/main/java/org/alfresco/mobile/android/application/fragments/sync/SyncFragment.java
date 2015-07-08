@@ -82,6 +82,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -274,6 +276,16 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
             adapter = new SyncCursorAdapter(this, null, layouts[0], selectedItems, getMode());
         }
         return adapter;
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev)
+    {
+        ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
+        ((TextView) ev.findViewById(R.id.empty_text)).setText("Keep your file in sync");
+        ((TextView) ev.findViewById(R.id.empty_text_description))
+                .setText("View and edit your synced files when you're offline. When you're back online they'll automatically sync.");
+        ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
     }
 
     // /////////////////////////////////////////////////////////////

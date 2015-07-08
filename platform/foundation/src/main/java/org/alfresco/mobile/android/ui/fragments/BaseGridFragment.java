@@ -120,6 +120,7 @@ public abstract class BaseGridFragment extends CommonGridFragment
                     gv.invalidateViews();
                     gv.setAdapter(null);
                 }
+                prepareEmptyView(ev);
             }
             else
             {

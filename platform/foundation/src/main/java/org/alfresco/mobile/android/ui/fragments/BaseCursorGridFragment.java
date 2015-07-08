@@ -49,6 +49,7 @@ public abstract class BaseCursorGridFragment extends CommonGridFragment implemen
 
         if (cursor.getCount() == 0)
         {
+            prepareEmptyView(ev);
             displayEmptyView();
         }
         else
