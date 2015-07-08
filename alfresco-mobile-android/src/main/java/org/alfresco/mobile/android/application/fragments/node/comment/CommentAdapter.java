@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.api.model.Comment;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
-import org.alfresco.mobile.android.ui.node.comment.CommentViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 import org.alfresco.mobile.android.ui.node.comment.CommentsNodeAdapter;
 
 import android.app.Activity;
@@ -45,10 +45,10 @@ public class CommentAdapter extends CommentsNodeAdapter
     }
 
     @Override
-    protected void updateIcon(CommentViewHolder vh, final Comment item)
+    protected void updateIcon(TwoLinesCaptionViewHolder vh, final Comment item)
     {
         super.updateIcon(vh, item);
-        ((View) vh.icon.getParent()).setOnClickListener(new OnClickListener()
+        ((View) vh.icon).setOnClickListener(new OnClickListener()
         {
             @Override
             public void onClick(View v)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -15,31 +15,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package org.alfresco.mobile.android.ui.node.comment;
+
+package org.alfresco.mobile.android.ui.holder;
 
 import org.alfresco.mobile.android.foundation.R;
-import org.alfresco.mobile.android.ui.utils.ViewHolder;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class CommentViewHolder extends ViewHolder
+/**
+ * Default class for listing item viewholder.
+ * 
+ * @author Jean Marie Pascal
+ */
+public class TwoLinesProgressViewHolder extends TwoLinesViewHolder
 {
-    public TextView topText;
+    public ProgressBar progress;
 
-    public TextView bottomText;
+    public ImageView favoriteIcon;
 
-    public ImageView icon;
+    public ImageView syncIcon;
 
-    public TextView content;
+    public ImageView iconRight;
 
-    public CommentViewHolder(View v)
+    public TwoLinesProgressViewHolder(View v)
     {
         super(v);
-        icon = (ImageView) v.findViewById(R.id.icon);
-        topText = (TextView) v.findViewById(R.id.toptext);
-        bottomText = (TextView) v.findViewById(R.id.bottomtext);
-        content = (TextView) v.findViewById(R.id.contentweb);
+        progress = (ProgressBar) v.findViewById(R.id.status_progress);
+        favoriteIcon = (ImageView) v.findViewById(R.id.favorite_icon);
+        syncIcon = (ImageView) v.findViewById(R.id.sync_icon);
+        iconRight = (ImageView) v.findViewById(R.id.icon_bottom_right);
+        topTextRight = (TextView) v.findViewById(R.id.toptext_right);
     }
 }

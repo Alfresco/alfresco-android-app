@@ -93,7 +93,8 @@ public abstract class FileExplorerFoundationFragment extends BaseGridFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new FileExplorerAdapter(this, R.layout.sdk_grid_row, getMode(), new ArrayList<File>(0), selectedItems);
+        return new FileExplorerAdapter(this, R.layout.row_two_lines_progress, getMode(), new ArrayList<File>(0),
+                selectedItems);
     }
 
     @Override

@@ -92,7 +92,7 @@ public class OperationsFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new OperationCursorAdapter(getActivity(), null, R.layout.app_list_operation_row);
+        return new OperationCursorAdapter(getActivity(), null, R.layout.row_two_lines_progress);
     }
 
     @Override

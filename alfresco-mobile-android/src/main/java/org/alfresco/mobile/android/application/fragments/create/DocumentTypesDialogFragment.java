@@ -23,7 +23,7 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.data.DocumentTypeRecord;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -102,7 +102,7 @@ public class DocumentTypesDialogFragment extends DialogFragment
         });
 
         List<DocumentTypeRecord> fileTypes = DocumentTypeRecordHelper.getCreationDocumentTypeList(getActivity());
-        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.sdk_list_row, fileTypes);
+        FileTypeAdapter adapter = new FileTypeAdapter(getActivity(), R.layout.row_single_line, fileTypes);
         lv.setAdapter(adapter);
 
         return new AlertDialog.Builder(getActivity()).setTitle(R.string.create_document_title).setView(v).create();
@@ -111,16 +111,17 @@ public class DocumentTypesDialogFragment extends DialogFragment
     /**
      * Inner class responsible to manage the list of File Types available.
      */
-    public class FileTypeAdapter extends BaseListAdapter<DocumentTypeRecord, GenericViewHolder>
+    public class FileTypeAdapter extends BaseListAdapter<DocumentTypeRecord, SingleLineViewHolder>
     {
 
         public FileTypeAdapter(Activity context, int textViewResourceId, List<DocumentTypeRecord> listItems)
         {
             super(context, textViewResourceId, listItems);
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, DocumentTypeRecord item)
+        protected void updateTopText(SingleLineViewHolder vh, DocumentTypeRecord item)
         {
             if (item != null)
             {
@@ -129,16 +130,12 @@ public class DocumentTypesDialogFragment extends DialogFragment
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, DocumentTypeRecord item)
+        protected void updateBottomText(SingleLineViewHolder vh, DocumentTypeRecord item)
         {
-            if (item != null)
-            {
-                vh.bottomText.setVisibility(View.GONE);
-            }
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, DocumentTypeRecord item)
+        protected void updateIcon(SingleLineViewHolder vh, DocumentTypeRecord item)
         {
             if (item != null)
             {

@@ -24,7 +24,7 @@ import java.util.SortedMap;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -36,7 +36,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -95,7 +94,7 @@ public class EncodingDialogFragment extends DialogFragment
         }
         else
         {
-            lv.setAdapter(new EncodingAdapter(getActivity(), R.layout.sdk_list_row, list, defaultCharset));
+            lv.setAdapter(new EncodingAdapter(getActivity(), R.layout.row_single_line, list, defaultCharset));
             lv.setSelection(list.indexOf(defaultCharset));
 
             lv.setOnItemClickListener(new OnItemClickListener()
@@ -115,7 +114,7 @@ public class EncodingDialogFragment extends DialogFragment
 
     }
 
-    private static class EncodingAdapter extends BaseListAdapter<String, GenericViewHolder>
+    private static class EncodingAdapter extends BaseListAdapter<String, SingleLineViewHolder>
     {
         private String defaultCharSet;
 
@@ -123,31 +122,31 @@ public class EncodingDialogFragment extends DialogFragment
         {
             super(context, textViewResourceId, listItems);
             this.defaultCharSet = defaultCharSet;
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, String item)
+        protected void updateTopText(SingleLineViewHolder vh, String item)
         {
             vh.topText.setText(item);
             if (defaultCharSet.equals(item))
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), getContext().getResources()
+                UIUtils.setBackground(((View) vh.icon.getParent()), getContext().getResources()
                         .getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+                UIUtils.setBackground(((View) vh.icon.getParent()), null);
             }
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, String item)
+        protected void updateBottomText(SingleLineViewHolder vh, String item)
         {
-            vh.bottomText.setVisibility(View.GONE);
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, String item)
+        protected void updateIcon(SingleLineViewHolder vh, String item)
         {
             vh.icon.setVisibility(View.GONE);
         }

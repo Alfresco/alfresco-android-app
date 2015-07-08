@@ -672,7 +672,7 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
                     displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
         }
-        else if (adapter == null) { return new ProgressNodeAdapter(getActivity(),
+        else if (adapter == null) { return new ProgressNodeAdapter(this,
                 GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
                 new ArrayList<Node>(0), selectedItems, mode); }
         return null;

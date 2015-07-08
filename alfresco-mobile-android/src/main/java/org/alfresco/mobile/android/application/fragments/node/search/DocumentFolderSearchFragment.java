@@ -121,7 +121,7 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new NodeAdapter(this, R.layout.sdk_grid_row, new ArrayList<Node>(0), selectedItems, -1);
+        return new NodeAdapter(this, R.layout.row_two_lines_progress, new ArrayList<Node>(0), selectedItems, -1);
     }
 
     @Subscribe

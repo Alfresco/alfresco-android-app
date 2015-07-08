@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -1010,7 +1010,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         boolean isRootSynced = SyncContentManager.getInstance(getActivity()).isRootSynced(getAccount(), node);
         if (isRootSynced)
         {
-            v.setImageResource(isRootSynced ? R.drawable.ic_synced_dark : R.drawable.ic_synce_dark);
+            v.setImageResource(isRootSynced ? R.drawable.ic_synced_dark : R.drawable.ic_sync_light);
             v.setVisibility(View.VISIBLE);
         }
         else

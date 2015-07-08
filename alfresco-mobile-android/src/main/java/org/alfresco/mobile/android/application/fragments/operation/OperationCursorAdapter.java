@@ -18,7 +18,6 @@
 package org.alfresco.mobile.android.application.fragments.operation;
 
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
 import org.alfresco.mobile.android.async.OperationsContentProvider;
@@ -33,6 +32,7 @@ import org.alfresco.mobile.android.async.node.update.UpdateContentRequest;
 import org.alfresco.mobile.android.async.session.LoadSessionRequest;
 import org.alfresco.mobile.android.platform.mimetype.MimeTypeManager;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
+import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -44,26 +44,26 @@ import android.view.View.OnClickListener;
  * @since 1.2
  * @author Jean Marie Pascal
  */
-public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
+public class OperationCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHolder>
 {
     // private static final String TAG = OperationCursorAdapter.class.getName();
 
     public OperationCursorAdapter(Context context, Cursor c, int layoutResourceId)
     {
         super(context, c, layoutResourceId);
-        vhClassName = ProgressViewHolder.class.getCanonicalName();
+        vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
     }
 
-    protected void updateIcon(ProgressViewHolder vh, Cursor cursor)
+    protected void updateIcon(TwoLinesProgressViewHolder vh, Cursor cursor)
     {
         vh.icon.setImageResource(MimeTypeManager.getInstance(context).getIcon(
                 cursor.getString(OperationSchema.COLUMN_TITLE_ID)));
     }
 
-    protected void updateBottomText(ProgressViewHolder vh, final Cursor cursor)
+    protected void updateBottomText(TwoLinesProgressViewHolder vh, final Cursor cursor)
     {
         int status = cursor.getInt(OperationSchema.COLUMN_STATUS_ID);
-        String statusValue = displayType(vh, cursor.getInt(OperationSchema.COLUMN_REQUEST_TYPE_ID)) + " : ";
+        String statusValue = displayType(cursor.getInt(OperationSchema.COLUMN_REQUEST_TYPE_ID)) + " : ";
         vh.progress.setVisibility(View.GONE);
         vh.choose.setTag(R.id.operation_id, cursor.getInt(OperationSchema.COLUMN_ID_ID));
         vh.choose.setTag(R.id.operation_status, cursor.getInt(OperationSchema.COLUMN_STATUS_ID));
@@ -158,19 +158,13 @@ public class OperationCursorAdapter extends BaseCursorLoader<ProgressViewHolder>
         vh.bottomText.setText(statusValue);
     }
 
-    protected void updateTopText(ProgressViewHolder vh, Cursor cursor)
+    protected void updateTopText(TwoLinesProgressViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(OperationSchema.COLUMN_TITLE_ID));
         vh.topText.setFocusable(true);
     }
 
-    protected void displayStatut(ProgressViewHolder vh, int imageResource)
-    {
-        vh.iconTopRight.setVisibility(View.VISIBLE);
-        vh.iconTopRight.setImageResource(imageResource);
-    }
-
-    protected String displayType(ProgressViewHolder vh, int typeId)
+    protected String displayType(int typeId)
     {
 
         int resId = R.string.operation_default;

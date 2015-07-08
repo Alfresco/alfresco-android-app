@@ -23,7 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesPickerFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Fragment;
 import android.view.View;
@@ -35,7 +35,7 @@ import android.widget.ImageView.ScaleType;
  * @since 1.4.0
  * @author jpascal
  */
-public class MultiValuedStringAdapter extends BaseListAdapter<String, GenericViewHolder>
+public class MultiValuedStringAdapter extends BaseListAdapter<String, TwoLinesViewHolder>
 {
     private WeakReference<Fragment> fragmentRef;
 
@@ -45,6 +45,7 @@ public class MultiValuedStringAdapter extends BaseListAdapter<String, GenericVie
     {
         super(fr.getActivity(), textViewResourceId, listItems);
         this.fragmentRef = new WeakReference<Fragment>(fr);
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
         this.isEditable = isEditable;
     }
 
@@ -55,19 +56,19 @@ public class MultiValuedStringAdapter extends BaseListAdapter<String, GenericVie
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, String item)
+    protected void updateTopText(TwoLinesViewHolder vh, String item)
     {
         vh.topText.setVisibility(View.GONE);
     }
     
     @Override
-    protected void updateBottomText(GenericViewHolder vh, String item)
+    protected void updateBottomText(TwoLinesViewHolder vh, String item)
     {
         vh.bottomText.setText(item);
     }
 
     @Override
-    protected void updateIcon(final GenericViewHolder vh, final String item)
+    protected void updateIcon(final TwoLinesViewHolder vh, final String item)
     {
         vh.icon.setVisibility(View.GONE);
         if (isEditable)

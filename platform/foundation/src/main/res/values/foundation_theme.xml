@@ -1,4 +1,20 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~    Copyright (C) 2005-2015 Alfresco Software Limited.
+  ~
+  ~    This file is part of Alfresco Mobile for Android.
+  ~
+  ~    Licensed under the Apache License, Version 2.0 (the "License");
+  ~    you may not use this file except in compliance with the License.
+  ~    You may obtain a copy of the License at
+  ~
+  ~      http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~    Unless required by applicable law or agreed to in writing, software
+  ~    distributed under the License is distributed on an "AS IS" BASIS,
+  ~    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~    See the License for the specific language governing permissions and
+  ~    limitations under the License.
+-->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- =============================================================== -->
@@ -127,37 +143,9 @@
         </item>
         <item name="MainTheme.Dialog">@style/AlfrescoHoloTheme.Dialog</item>
     </style>
-
-    <!-- =============================================================== -->
-    <!-- DEFAULT COLOR -->
-    <!-- =============================================================== -->
-    <color name="actionbar_grey_bottom">#757575</color>
-    <color name="emphasis">#31b6e7</color>
-    <color name="grey_light">#8C8E8D</color>
-    <color name="grey_text">#818282</color>
-    <color name="grey_underline">#535554</color>
-    <color name="grey_lighter">#eeeeee</color>
-    <color name="sliding_account_background">#282828</color>
-    <color name="dark_red">#ffcc0000</color>
-    <color name="holo_blue_dark">#ff0099cc</color>
-    <color name="hint_foreground_holo_light">#808080</color>
-    <color name="blue_light">#33B5E5</color>
-    <!-- Alfresco Colors -->
-    <color name="alfresco_lime">#8DC63F</color>
-    <color name="alfresco_lemon">#FFE14F</color>
-    <color name="alfresco_tangerine">#F89829</color>
-    <color name="alfresco_sky">#0082C8</color>
-    <color name="alfresco_blueberry">#005DAB</color>
-    <color name="alfresco_leaf">#47AA42</color>
-    <color name="alfresco_chalkboard">#717174</color>
-    <color name="alfresco_soil">#7D6A55</color>
-    <color name="alfresco_clay">#80561B</color>
-    <color name="alfresco_sand">#A99A6F</color>
-
     <!-- =============================================================== -->
     <!-- DEFAULT STYLE -->
     <!-- =============================================================== -->
-
 
     <!-- ========= -->
     <!-- ACTIONBAR -->

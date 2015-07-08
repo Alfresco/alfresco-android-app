@@ -89,7 +89,7 @@ public class AccountsFragment extends SelectableGridFragment<AlfrescoAccount>
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new AccountsAdapter(getActivity(), accountListing, R.layout.sdk_grid_row, selectedItems);
+        return new AccountsAdapter(getActivity(), accountListing, R.layout.row_two_lines_caption_divider, selectedItems);
     }
 
     @Override

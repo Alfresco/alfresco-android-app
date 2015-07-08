@@ -21,48 +21,49 @@
     android:visibility="visible">
 
     <include
+        layout="@layout/sdk_grid"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="1"
-        layout="@layout/sdk_grid" />
+        android:layout_weight="1" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical" />
 
     <LinearLayout
+        android:id="@+id/comment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/ab_solid_alfrescohololight"
+        android:background="@color/white"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <EditText
+            android:id="@+id/comment_value"
+            style="@style/AlfrescoMaterialTheme.Text.Secondary"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_margin="4dip"
-            android:background="@drawable/card_flat"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:layout_weight="1"
+            android:background="@null"
+            android:ems="10"
+            android:hint="@string/comment_add_hint"
+            android:imeOptions="actionSend"
+            android:inputType="textCapSentences|textMultiLine"
+            android:lines="5"
+            android:minLines="1"
+            android:paddingBottom="@dimen/d_16"
+            android:paddingLeft="@dimen/d_16"
+            android:paddingTop="@dimen/d_16"
+            android:scrollHorizontally="false"
+            android:singleLine="false" />
 
-            <EditText
-                android:layout_marginLeft="4dip"
-                android:layout_marginRight="4dip"
-                android:id="@+id/comment_value"
-                android:layout_width="0dip"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:ems="10"
-                android:lines="2"
-                android:hint="@string/comment_add_hint"
-                android:inputType="text"
-                android:imeOptions="actionSend"></EditText>
 
-            <ImageButton
-                android:id="@+id/send_comment"
-                style="?MainTheme.ImageView.ActionIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="2dip"
-                android:src="@drawable/ic_send" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/send_comment"
+            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_send" />
     </LinearLayout>
-
 </LinearLayout>

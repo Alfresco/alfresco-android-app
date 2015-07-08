@@ -22,7 +22,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.config.ProfileConfig;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Activity;
 import android.view.View;
@@ -33,28 +33,29 @@ import android.view.View;
  * 
  * @author Jean Marie Pascal
  */
-public class ProfileConfigAdapter extends BaseListAdapter<ProfileConfig, GenericViewHolder>
+public class ProfileConfigAdapter extends BaseListAdapter<ProfileConfig, TwoLinesViewHolder>
 {
     public ProfileConfigAdapter(Activity context, int textViewResourceId, List<ProfileConfig> listItems)
     {
         super(context, textViewResourceId, listItems);
+        this.vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, ProfileConfig item)
+    protected void updateTopText(TwoLinesViewHolder vh, ProfileConfig item)
     {
         vh.topText.setText(item.getLabel());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, ProfileConfig item)
+    protected void updateBottomText(TwoLinesViewHolder vh, ProfileConfig item)
     {
         vh.bottomText.setText(item.getDescription());
         vh.choose.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, ProfileConfig item)
+    protected void updateIcon(TwoLinesViewHolder vh, ProfileConfig item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_action_settings));
     }

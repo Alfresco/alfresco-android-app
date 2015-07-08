@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -24,8 +24,8 @@ import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.user.UserProfileFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
-import org.alfresco.mobile.android.ui.activitystream.ActivityEventViewHolder;
 import org.alfresco.mobile.android.ui.activitystream.ActivityStreamAdapter;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
 
 import android.annotation.TargetApi;
 import android.app.Fragment;
@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 /**
@@ -54,11 +55,11 @@ public class ActivityFeedAdapter extends ActivityStreamAdapter implements OnMenu
         this.fr = fr;
     }
 
-    protected void updateBottomText(ActivityEventViewHolder vh, ActivityEntry item)
+    protected void updateBottomText(TwoLinesCaptionViewHolder vh, ActivityEntry item)
     {
         super.updateBottomText(vh, item);
-        ((View) vh.icon.getParent()).setTag(R.id.entry_action, item);
-        ((View) vh.icon.getParent()).setOnClickListener(new OnClickListener()
+        ((ViewGroup) vh.icon.getParent()).setTag(R.id.entry_action, item);
+        ((ViewGroup) vh.icon.getParent()).setOnClickListener(new OnClickListener()
         {
 
             @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

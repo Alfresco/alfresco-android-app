@@ -100,7 +100,7 @@ public abstract class CommonBrowserSitesFragment extends SitesFoundationFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new SiteAdapter(this, R.layout.sdk_grid_row, new ArrayList<Site>(), mode);
+        return new SiteAdapter(this, R.layout.row_two_lines_caption_divider, new ArrayList<Site>(), mode);
     }
 
     // ///////////////////////////////////////////////////////////////////////////

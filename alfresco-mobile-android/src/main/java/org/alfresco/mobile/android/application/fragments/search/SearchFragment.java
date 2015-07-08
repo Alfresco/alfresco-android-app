@@ -511,7 +511,7 @@ public class SearchFragment extends BaseCursorGridFragment
     @Override
     protected BaseAdapter onAdapterCreation()
     {
-        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.sdk_list_row, selectedItems);
+        return new HistorySearchCursorAdapter(getActivity(), null, R.layout.row_single_line_divider, selectedItems);
     }
 
     @Override

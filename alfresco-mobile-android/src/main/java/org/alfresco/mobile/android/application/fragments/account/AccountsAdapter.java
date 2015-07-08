@@ -27,7 +27,8 @@ import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.io.AlfrescoStorageManager;
 import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesCaptionViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -36,11 +37,11 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 
-public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericViewHolder>
+public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, TwoLinesViewHolder>
 {
     public static final int NETWORK_ITEM = -3;
 
@@ -58,6 +59,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
             List<AlfrescoAccount> selectedItems)
     {
         super(activity, layoutId, items);
+        this.vhClassName = TwoLinesCaptionViewHolder.class.getCanonicalName();
         this.selectedItems = selectedItems;
         this.layoutId = layoutId;
         this.activityRef = new WeakReference<>(activity);
@@ -73,7 +75,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, AlfrescoAccount acc)
+    protected void updateTopText(TwoLinesViewHolder vh, AlfrescoAccount acc)
     {
         vh.topText.setText(acc.getTitle());
         if (activityRef.get() instanceof PublicDispatcherActivity)
@@ -83,7 +85,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder v, AlfrescoAccount acc)
+    protected void updateBottomText(TwoLinesViewHolder v, AlfrescoAccount acc)
     {
         switch (layoutId)
         {
@@ -96,7 +98,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
         }
     }
 
-    private void updateBottomTextList(GenericViewHolder v, AlfrescoAccount acc)
+    private void updateBottomTextList(TwoLinesViewHolder v, AlfrescoAccount acc)
     {
         v.bottomText.setText(acc.getUsername());
         if (activityRef.get() instanceof PublicDispatcherActivity)
@@ -106,18 +108,19 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
 
         if (selectedItems != null && selectedItems.contains(acc))
         {
-            UIUtils.setBackground(((LinearLayout) v.icon.getParent().getParent()), getContext().getResources()
+            UIUtils.setBackground(((RelativeLayout) v.icon.getParent()),
+                    getContext().getResources()
                     .getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((LinearLayout) v.icon.getParent().getParent()), null);
+            UIUtils.setBackground(((RelativeLayout) v.icon.getParent()), null);
         }
         v.choose.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, AlfrescoAccount acc)
+    protected void updateIcon(TwoLinesViewHolder vh, AlfrescoAccount acc)
     {
         switch (layoutId)
         {
@@ -151,7 +154,7 @@ public class AccountsAdapter extends BaseListAdapter<AlfrescoAccount, GenericVie
         Picasso.with(context).load(icon).placeholder(defaultIcon).into(imageView);
     }
 
-    private void updateIconList(GenericViewHolder vh, AlfrescoAccount acc)
+    private void updateIconList(TwoLinesViewHolder vh, AlfrescoAccount acc)
     {
         int iconId;
         int descriptionId;

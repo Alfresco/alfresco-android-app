@@ -26,8 +26,8 @@ import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.node.update.EditPropertiesPickerFragment;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 import org.alfresco.mobile.android.ui.person.PeopleAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
 
 import android.app.Fragment;
 import android.view.View;
@@ -63,7 +63,7 @@ public class UserAdapter extends PeopleAdapter
     }
 
     @Override
-    protected void updateIcon(final GenericViewHolder vh, final Person item)
+    protected void updateIcon(final TwoLinesViewHolder vh, final Person item)
     {
         super.updateIcon(vh, item);
 

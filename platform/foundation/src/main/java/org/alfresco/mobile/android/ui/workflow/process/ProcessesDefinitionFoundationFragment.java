@@ -71,7 +71,8 @@ public class ProcessesDefinitionFoundationFragment extends BaseGridFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ProcessesDefinitionAdapter(getActivity(), R.layout.sdk_grid_row, new ArrayList<ProcessDefinition>(0));
+        return new ProcessesDefinitionAdapter(getActivity(), R.layout.row_two_lines_caption_divider,
+                new ArrayList<ProcessDefinition>(0));
     }
 
     @Subscribe

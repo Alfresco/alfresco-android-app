@@ -65,11 +65,11 @@ public class GridAdapterHelper
                 break;
             case DISPLAY_LIST_LARGE:
                 gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 320));
-                displayItemLayout = R.layout.sdk_grid_row;
+                displayItemLayout = R.layout.row_two_lines_progress;
                 break;
             case DISPLAY_GRID:
                 gv.setColumnWidth(DisplayUtils.getDPI(activity.getResources().getDisplayMetrics(), 240));
-                displayItemLayout = R.layout.sdk_grid_row;
+                displayItemLayout = R.layout.row_two_lines_progress;
                 break;
             default:
                 break;
@@ -83,8 +83,9 @@ public class GridAdapterHelper
         // First init ==> always
         int width = 1000;
         int columnWidth = 2048;
+        boolean setSpacing = true;
 
-        int layoutId = R.layout.sdk_grid_row;
+        int layoutId = R.layout.row_two_lines_progress;
         int flagLayoutId = R.id.app_grid_progress;
 
         if (context instanceof MainActivity)
@@ -93,31 +94,32 @@ public class GridAdapterHelper
             columnWidth = 240;
             if (width <= 480)
             {
-                layoutId = R.layout.sdk_grid_row;
+                layoutId = R.layout.row_two_lines_progress;
                 flagLayoutId = R.id.app_grid_progress;
                 columnWidth = 240;
+                setSpacing = false;
             }
             else if (width < 600)
             {
-                layoutId = R.layout.app_grid_card_repo;
+                layoutId = R.layout.row_tile_single_line;
                 flagLayoutId = R.id.app_grid_card;
                 columnWidth = 240;
             }
             else if (width < 800)
             {
-                layoutId = R.layout.app_grid_card_repo;
+                layoutId = R.layout.row_tile_single_line;
                 flagLayoutId = R.id.app_grid_card;
                 columnWidth = 240;
             }
             else if (width < 1000)
             {
-                layoutId = R.layout.app_grid_tiles_repo;
+                layoutId = R.layout.row_large_tile_single_line;
                 flagLayoutId = R.id.app_grid_tiles;
                 columnWidth = 240;
             }
             else
             {
-                layoutId = R.layout.app_grid_tiles_repo;
+                layoutId = R.layout.row_large_tile_single_line;
                 flagLayoutId = R.id.app_grid_tiles;
                 columnWidth = 240;
             }
@@ -126,6 +128,10 @@ public class GridAdapterHelper
         if (fragment != null)
         {
             fragment.setColumnWidth(DisplayUtils.getDPI(context.getResources().getDisplayMetrics(), columnWidth));
+            if (setSpacing)
+            {
+                fragment.setSpacing(4);
+            }
         }
 
         return new int[] { layoutId, flagLayoutId };

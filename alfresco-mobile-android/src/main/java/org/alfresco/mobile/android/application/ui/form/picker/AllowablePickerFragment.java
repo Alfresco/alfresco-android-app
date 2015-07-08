@@ -191,7 +191,8 @@ public class AllowablePickerFragment extends DialogFragment
         }
         if (lv != null && getActivity() != null)
         {
-            lv.setAdapter(new AllowableAdapter(getActivity(), R.layout.sdk_list_row, allowableValues, selectedItems));
+            lv.setAdapter(new AllowableAdapter(getActivity(), R.layout.app_list_checkbox_row, allowableValues,
+                    selectedItems));
         }
     }
 

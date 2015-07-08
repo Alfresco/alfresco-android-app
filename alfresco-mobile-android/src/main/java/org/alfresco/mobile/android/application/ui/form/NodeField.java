@@ -76,7 +76,8 @@ public class NodeField extends BaseField
     // ///////////////////////////////////////////////////////////////////////////
     public ListAdapter getListAdapter(Fragment fr)
     {
-        return new NodeFieldAdapter(fr, R.layout.app_item_row, new ArrayList<Node>(nodes.values()), outputValue);
+        return new NodeFieldAdapter(fr, R.layout.row_two_lines_progress, new ArrayList<Node>(nodes.values()),
+                outputValue);
     }
 
     public void remove(Object object)

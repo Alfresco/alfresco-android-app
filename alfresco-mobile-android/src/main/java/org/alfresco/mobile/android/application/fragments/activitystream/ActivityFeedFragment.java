@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -55,6 +55,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
         super();
         displayAsList = true;
         setHasOptionsMenu(true);
+        titleId = Builder.LABEL_ID;
     }
 
     public static ActivityFeedFragment newInstanceByTemplate(Bundle b)
@@ -129,7 +130,7 @@ public class ActivityFeedFragment extends org.alfresco.mobile.android.ui.activit
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ActivityFeedAdapter(this, getSession(), R.layout.app_grid_row_activities,
+        return new ActivityFeedAdapter(this, getSession(), R.layout.row_two_lines_icon_selectable,
                 new ArrayList<ActivityEntry>(0), selectedItems);
     }
 

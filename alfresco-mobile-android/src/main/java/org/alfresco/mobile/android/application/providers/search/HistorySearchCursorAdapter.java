@@ -21,19 +21,18 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.view.View;
-import android.widget.LinearLayout;
 
 /**
  * @since 1.4
  * @author Jean Marie Pascal
  */
-public class HistorySearchCursorAdapter extends BaseCursorLoader<GenericViewHolder>
+public class HistorySearchCursorAdapter extends BaseCursorLoader<SingleLineViewHolder>
 {
     protected List<Long> selectedItems;
     
@@ -41,10 +40,11 @@ public class HistorySearchCursorAdapter extends BaseCursorLoader<GenericViewHold
     {
         super(context, c, layoutId);
         this.selectedItems = selectedItems;
+        this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Cursor cursor)
+    protected void updateTopText(SingleLineViewHolder vh, Cursor cursor)
     {
         vh.topText.setText(cursor.getString(HistorySearchSchema.COLUMN_DESCRIPTION_ID));
         if (selectedItems != null && selectedItems.contains(cursor.getLong(HistorySearchSchema.COLUMN_ID_ID)))
@@ -59,19 +59,18 @@ public class HistorySearchCursorAdapter extends BaseCursorLoader<GenericViewHold
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder v, Cursor cursor)
+    protected void updateBottomText(SingleLineViewHolder v, Cursor cursor)
     {
-        v.bottomText.setVisibility(View.GONE);
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Cursor cursor)
+    protected void updateIcon(SingleLineViewHolder vh, Cursor cursor)
     {
         vh.icon.setImageResource(R.drawable.ic_clock);
     }
     
-    private LinearLayout getSelectionLayout(GenericViewHolder vh)
+    private View getSelectionLayout(SingleLineViewHolder vh)
     {
-        return (LinearLayout) vh.topText.getParent().getParent();
+        return (View) vh.icon.getParent();
     }
 }

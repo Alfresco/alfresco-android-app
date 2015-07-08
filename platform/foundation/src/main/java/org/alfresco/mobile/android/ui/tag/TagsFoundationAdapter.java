@@ -23,7 +23,7 @@ import java.util.List;
 import org.alfresco.mobile.android.api.model.Tag;
 import org.alfresco.mobile.android.foundation.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.TwoLinesViewHolder;
 
 import android.app.Activity;
 import android.view.View;
@@ -35,7 +35,7 @@ import android.widget.Filter;
  * 
  * @author Jean Marie Pascal
  */
-public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolder>
+public class TagsFoundationAdapter extends BaseListAdapter<Tag, TwoLinesViewHolder>
 {
 
     private List<Tag> selectedItems;
@@ -49,6 +49,7 @@ public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolde
     public TagsFoundationAdapter(Activity context, int textViewResourceId, List<Tag> listItems)
     {
         this(context, textViewResourceId, listItems, new ArrayList<Tag>(0));
+        vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     public TagsFoundationAdapter(Activity context, int textViewResourceId, List<Tag> listItems, List<Tag> selectedItems)
@@ -56,16 +57,17 @@ public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolde
         super(context, textViewResourceId, listItems);
         this.selectedItems = selectedItems;
         mOriginalValues = listItems;
+        vhClassName = TwoLinesViewHolder.class.getCanonicalName();
     }
 
     @Override
-    protected void updateTopText(GenericViewHolder vh, Tag item)
+    protected void updateTopText(TwoLinesViewHolder vh, Tag item)
     {
         vh.topText.setText(item.getValue());
     }
 
     @Override
-    protected void updateBottomText(GenericViewHolder vh, Tag item)
+    protected void updateBottomText(TwoLinesViewHolder vh, Tag item)
     {
         if (vh.bottomText != null)
         {
@@ -82,7 +84,7 @@ public class TagsFoundationAdapter extends BaseListAdapter<Tag, GenericViewHolde
     }
 
     @Override
-    protected void updateIcon(GenericViewHolder vh, Tag item)
+    protected void updateIcon(TwoLinesViewHolder vh, Tag item)
     {
         vh.icon.setImageDrawable(getContext().getResources().getDrawable(R.drawable.mime_tags));
     }

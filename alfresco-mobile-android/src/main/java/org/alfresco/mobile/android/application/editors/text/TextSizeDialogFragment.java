@@ -23,7 +23,7 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
-import org.alfresco.mobile.android.ui.utils.GenericViewHolder;
+import org.alfresco.mobile.android.ui.holder.SingleLineViewHolder;
 import org.alfresco.mobile.android.ui.utils.UIUtils;
 
 import android.app.Activity;
@@ -36,7 +36,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -133,7 +132,7 @@ public class TextSizeDialogFragment extends DialogFragment
         }
         else
         {
-            lv.setAdapter(new EncodingAdapter(getActivity(), R.layout.sdk_list_row, list, textSize));
+            lv.setAdapter(new TextSizeAdapter(getActivity(), R.layout.row_single_line, list, textSize));
 
             lv.setOnItemClickListener(new OnItemClickListener()
             {
@@ -152,39 +151,40 @@ public class TextSizeDialogFragment extends DialogFragment
 
     }
 
-    private static class EncodingAdapter extends BaseListAdapter<Integer, GenericViewHolder>
+    private static class TextSizeAdapter extends BaseListAdapter<Integer, SingleLineViewHolder>
     {
         private int textSize;
 
-        public EncodingAdapter(Activity context, int textViewResourceId, List<Integer> listItems, int textSize)
+        public TextSizeAdapter(Activity context, int textViewResourceId, List<Integer> listItems, int textSize)
         {
             super(context, textViewResourceId, listItems);
             this.textSize = textSize;
+            this.vhClassName = SingleLineViewHolder.class.getCanonicalName();
         }
 
         @Override
-        protected void updateTopText(GenericViewHolder vh, Integer item)
+        protected void updateTopText(SingleLineViewHolder vh, Integer item)
         {
             vh.topText.setText(INDEX.get(item));
             if (textSize == item)
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), getContext().getResources()
+                UIUtils.setBackground(((View) vh.icon.getParent()),
+                        getContext().getResources()
                         .getDrawable(R.drawable.list_longpressed_holo));
             }
             else
             {
-                UIUtils.setBackground(((LinearLayout) vh.icon.getParent().getParent()), null);
+                UIUtils.setBackground(((View) vh.icon.getParent()), null);
             }
         }
 
         @Override
-        protected void updateBottomText(GenericViewHolder vh, Integer item)
+        protected void updateBottomText(SingleLineViewHolder vh, Integer item)
         {
-            vh.bottomText.setVisibility(View.GONE);
         }
 
         @Override
-        protected void updateIcon(GenericViewHolder vh, Integer item)
+        protected void updateIcon(SingleLineViewHolder vh, Integer item)
         {
             vh.icon.setVisibility(View.GONE);
         }

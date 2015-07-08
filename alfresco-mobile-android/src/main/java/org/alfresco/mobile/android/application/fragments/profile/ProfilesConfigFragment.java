@@ -102,7 +102,7 @@ public class ProfilesConfigFragment extends BaseGridFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new ProfileConfigAdapter(getActivity(), R.layout.sdk_grid_row, profileListing);
+        return new ProfileConfigAdapter(getActivity(), R.layout.row_two_lines_caption_divider, profileListing);
     }
 
     private void retrieveProfiles()

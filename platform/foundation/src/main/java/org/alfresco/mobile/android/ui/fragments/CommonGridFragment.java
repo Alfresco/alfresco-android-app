@@ -558,6 +558,14 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
         gv.setColumnWidth(value);
     }
 
+    public void setSpacing(int value)
+    {
+        int padding4 = getResources().getDimensionPixelSize(R.dimen.d_4);
+        gv.setHorizontalSpacing(padding4);
+        gv.setVerticalSpacing(padding4);
+        gv.setPadding(padding4, 0, padding4, 0);
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS UTILS
     // //////////////////////////////////////////////////////////////////////
