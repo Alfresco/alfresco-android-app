@@ -98,8 +98,6 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
 
     private Map<String, SyncInfo> syncInfos;
 
-    private List<String> favoritesNodeIndex;
-
     private boolean hasSync = false, hasFavorited = false;
 
     public ProgressNodeAdapter(Fragment fr, int textViewResourceId, Node parentNode, List<Node> listItems,
@@ -132,6 +130,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         {
             context.getLoaderManager().restartLoader(LOADER_OPERATION_ID, null, this);
             context.getLoaderManager().restartLoader(LOADER_SYNC_ID, null, this);
+            getActivity().getLoaderManager().restartLoader(LOADER_FAVORITE_ID, null, this);
             hasParentFavorite();
         }
     }
@@ -204,7 +203,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
     @Override
     protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
-        if (favoritesNodeIndex != null && favoritesNodeIndex.contains(item.getIdentifier()))
+        if (favoritesNodeIndex != null && favoritesNodeIndex.contains(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
         {
             vh.favoriteIcon.setVisibility(View.VISIBLE);
             vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
@@ -437,7 +436,7 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 {
                     while (cursor.moveToNext())
                     {
-                        favoritesNodeIndex.add(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID));
+                        favoritesNodeIndex.add(NodeRefUtils.getCleanIdentifier(cursor.getString(FavoritesSchema.COLUMN_NODE_ID_ID)));
                     }
                 }
                 notifyDataSetChanged();

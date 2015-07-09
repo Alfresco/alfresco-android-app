@@ -36,6 +36,8 @@ import org.alfresco.mobile.android.platform.SessionManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoSessionSettings;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.util.Log;
 
@@ -176,6 +178,10 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
                     ((CloudSession) session).getOAuthData().getAccessToken(),
                     ((CloudSession) session).getOAuthData().getRefreshToken(), Boolean.toString(isPaidAccount));
         }
+
+        // Activate Automatic Sync for Sync Content & Favorite
+        SyncContentManager.getInstance(context).setActivateSync(acc, true);
+        FavoritesManager.getInstance(context).setActivateSync(acc, true);
 
         return acc;
     }

@@ -527,6 +527,7 @@ public class FileExplorerFragment extends FileExplorerFoundationFragment impleme
         public Builder(Activity appActivity, Map<String, Object> configuration)
         {
             super(appActivity, configuration);
+            sessionRequired = false;
             menuIconId = ICON_ID;
             menuTitleId = LABEL_ID;
             templateArguments = new String[] { ARGUMENT_FILE, ARGUMENT_PATH, ARGUMENT_SHORTCUT, ARGUMENT_MENU_ID };

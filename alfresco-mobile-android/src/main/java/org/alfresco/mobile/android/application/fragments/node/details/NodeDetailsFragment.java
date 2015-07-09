@@ -538,6 +538,11 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         }
 
         b = (ImageView) viewById(R.id.action_like);
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            b.setVisibility(View.GONE);
+            viewById(R.id.like_progress).setVisibility(View.GONE);
+        }
         if (getSession() != null && getSession().getRepositoryInfo() != null
                 && getSession().getRepositoryInfo().getCapabilities() != null
                 && getSession().getRepositoryInfo().getCapabilities().doesSupportLikingNodes())
@@ -565,8 +570,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         b = (ImageView) viewById(R.id.action_favorite);
         if (node instanceof NodeSyncPlaceHolder)
         {
-            b.setVisibility(View.VISIBLE);
-            b.setImageResource(R.drawable.ic_favorite_light);
+            b.setVisibility(View.GONE);
             viewById(R.id.favorite_progress).setVisibility(View.GONE);
         }
         else if (!isRestrictable)
@@ -589,7 +593,13 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
 
         // SYNC
         b = (ImageView) viewById(R.id.action_sync);
-        if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
+
+        if (node instanceof NodeSyncPlaceHolder)
+        {
+            b.setVisibility(View.VISIBLE);
+            b.setImageResource(R.drawable.ic_synced_dark);
+        }
+        else if (SyncContentManager.getInstance(getActivity()).hasActivateSync(getAccount()))
         {
             isSynced = SyncContentManager.getInstance(getActivity()).isSynced(getAccount(), node);
             if (isSynced && !isRootSynced(b))

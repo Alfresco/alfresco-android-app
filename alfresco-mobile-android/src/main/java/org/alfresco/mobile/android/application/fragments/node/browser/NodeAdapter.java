@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.api.services.DocumentFolderService;
 import org.alfresco.mobile.android.api.utils.NodeComparator;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
-import org.alfresco.mobile.android.application.fragments.utils.ProgressViewHolder;
 import org.alfresco.mobile.android.application.fragments.workflow.CreateTaskPickerFragment;
 import org.alfresco.mobile.android.application.managers.RenditionManagerImpl;
 import org.alfresco.mobile.android.platform.mimetype.MimeType;
@@ -87,6 +86,8 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
 
     protected boolean fromFavorites = false;
 
+    protected List<String> favoritesNodeIndex;
+
     // //////////////////////////////////////////////////////////////////////
     // CONSTRUCTORS
     // //////////////////////////////////////////////////////////////////////
@@ -94,7 +95,7 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     {
         super(activity, textViewResourceId, listItems);
         this.renditionManager = RenditionManagerImpl.getInstance(activity);
-        this.vhClassName = ProgressViewHolder.class.getCanonicalName();
+        this.vhClassName = TwoLinesProgressViewHolder.class.getCanonicalName();
         this.activityRef = new WeakReference<Activity>(activity);
     }
 
@@ -301,14 +302,17 @@ public class NodeAdapter extends BaseListAdapter<Node, TwoLinesProgressViewHolde
     @Override
     protected void updateBottomText(TwoLinesProgressViewHolder vh, Node item)
     {
-        if (fromFavorites)
+        if (favoritesNodeIndex == null)
         {
-            vh.favoriteIcon.setVisibility(View.VISIBLE);
-            vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
-        }
-        else
-        {
-            vh.favoriteIcon.setVisibility(View.GONE);
+            if (fromFavorites)
+            {
+                vh.favoriteIcon.setVisibility(View.VISIBLE);
+                vh.favoriteIcon.setImageResource(R.drawable.ic_favorite_light);
+            }
+            else
+            {
+                vh.favoriteIcon.setVisibility(View.GONE);
+            }
         }
 
         vh.bottomText.setText(createContentBottomText(getContext(), item));

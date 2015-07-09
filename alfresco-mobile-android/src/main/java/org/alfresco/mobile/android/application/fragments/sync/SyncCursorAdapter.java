@@ -124,12 +124,19 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
             MimeType mime = MimeTypeManager.getInstance(context).getMimetype(
                     cursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
-            RenditionManager
-                    .with(fragmentRef.get().getActivity())
-                    .loadNode(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))
-                    .placeHolder(
-                            mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context).getIcon(
-                                    cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true)).into(vh.icon);
+            if (SessionUtils.getSession(context) != null)
+            {
+                RenditionManager
+                        .with(fragmentRef.get().getActivity())
+                        .loadNode(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID))
+                        .placeHolder(
+                                mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context)
+                                        .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true))
+                        .into(vh.icon);
+            } else {
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context)
+                        .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true));
+            }
 
             if (mime != null)
             {
