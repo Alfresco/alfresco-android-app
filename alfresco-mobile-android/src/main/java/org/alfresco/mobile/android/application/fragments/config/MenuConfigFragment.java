@@ -361,6 +361,7 @@ public class MenuConfigFragment extends AlfrescoFragment
         // Sync
         addMenuConfigItem(VIEW_SYNC, SyncFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SYNC,
                 R.drawable.ic_sync_light, null);
+        originalSyncState = true;
 
         // Search
         addMenuConfigItem(VIEW_SEARCH, SearchFragment.Builder.LABEL_ID, ConfigurationConstant.KEY_SEARCH,

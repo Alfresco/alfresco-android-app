@@ -69,6 +69,7 @@ import org.alfresco.mobile.android.platform.accounts.AccountsPreferences;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.extensions.ScanSnapManager;
+import org.alfresco.mobile.android.platform.favorite.FavoritesManager;
 import org.alfresco.mobile.android.platform.intent.AlfrescoIntentAPI;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
 import org.alfresco.mobile.android.platform.mdm.MDMManager;
@@ -922,11 +923,10 @@ public class MainActivity extends BaseActivity
             }
         }
 
-        // Start Sync if active
-        if (SyncContentManager.getInstance(this).hasDisplayedActivateSync(currentAccount))
-        {
-            SyncContentManager.getInstance(this).sync(currentAccount);
-        }
+        // Activate Automatic Sync for Sync Content & Favorite
+        SyncContentManager.getInstance(this).setActivateSync(currentAccount,
+                SyncContentManager.getInstance(this).hasActivateSync(currentAccount));
+        FavoritesManager.getInstance(this).setActivateSync(currentAccount, true);
 
         invalidateOptionsMenu();
     }

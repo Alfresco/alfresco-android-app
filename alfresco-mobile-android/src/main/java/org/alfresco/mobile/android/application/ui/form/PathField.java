@@ -61,6 +61,7 @@ public class PathField extends FolderPathField
         if (b.containsKey(EXTRA_PARENT_FOLDER))
         {
             Folder parentFolder = (Folder) b.getSerializable(EXTRA_PARENT_FOLDER);
+            if (parentFolder == null) { return; }
             pathValue = parentFolder.getPropertyValue(PropertyIds.PATH);
             if (!TextUtils.isEmpty(pathValue))
             {

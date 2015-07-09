@@ -87,8 +87,8 @@
                 android:layout_marginRight="3dip"
                 android:contentDescription="@null"
                 android:scaleType="centerInside"
-                android:src="@drawable/mime_file"
-                android:visibility="gone" />
+                android:src="@drawable/ic_empty"
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/sync_icon"
