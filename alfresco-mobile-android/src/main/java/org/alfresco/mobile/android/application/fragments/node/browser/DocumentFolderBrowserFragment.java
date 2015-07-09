@@ -84,6 +84,7 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
@@ -672,9 +673,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
                     displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
         }
-        else if (adapter == null) { return new ProgressNodeAdapter(this,
-                GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
-                new ArrayList<Node>(0), selectedItems, mode); }
+        else if (adapter == null) { return new ProgressNodeAdapter(this, GridAdapterHelper.getDisplayItemLayout(
+                getActivity(), gv, displayMode), parentFolder, new ArrayList<Node>(0), selectedItems, mode); }
         return null;
     }
 
@@ -1153,6 +1153,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         ((ProgressNodeAdapter) adapter).refreshOperations();
         refreshListView();
         favorite(nodesToFavorite, doFavorite, true);
+    }
+
+    @Subscribe
+    public void onSyncCompleted(SyncContentScanEvent event)
+    {
+        ((ProgressNodeAdapter) adapter).refreshOperations();
+        refreshListView();
     }
 
     @Subscribe

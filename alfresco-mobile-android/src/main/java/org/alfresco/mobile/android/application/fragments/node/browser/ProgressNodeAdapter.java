@@ -27,6 +27,7 @@ import org.alfresco.mobile.android.api.model.Folder;
 import org.alfresco.mobile.android.api.model.Node;
 import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.impl.publicapi.PublicAPIPropertyIds;
+import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
@@ -214,9 +215,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
         }
 
         vh.syncIcon.setVisibility(View.GONE);
-        if (hasSync && syncInfos.containsKey(item.getIdentifier()))
+        if (hasSync && syncInfos.containsKey(NodeRefUtils.getCleanIdentifier(item.getIdentifier())))
         {
-            SyncInfo syncInfo = syncInfos.get(item.getIdentifier());
+            SyncInfo syncInfo = syncInfos.get(NodeRefUtils.getCleanIdentifier(item.getIdentifier()));
 
             if (syncInfo.isRoot == 1)
             {
@@ -417,7 +418,9 @@ public class ProgressNodeAdapter extends NodeAdapter implements LoaderManager.Lo
                 {
                     while (cursor.moveToNext())
                     {
-                        syncInfos.put(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID), new SyncInfo(cursor));
+                        syncInfos.put(
+                                NodeRefUtils.getCleanIdentifier(cursor.getString(SyncContentSchema.COLUMN_NODE_ID_ID)),
+                                new SyncInfo(cursor));
                     }
                 }
                 notifyDataSetChanged();

@@ -122,6 +122,8 @@ public class SyncContentDelete extends SyncContent
 
                         if (docServer != null)
                         {
+                            // Since 1.6 this condition is impossible.
+                            // Keep it as security
                             // Unfavorite operation
                             // Request to update
                             Log.d(TAG, "Unfavorited");

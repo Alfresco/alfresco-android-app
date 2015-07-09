@@ -58,6 +58,15 @@ public class PrepareSyncHelper extends PrepareBaseHelper
         group = new ArrayList<SyncContent>();
     }
 
+    public PrepareSyncHelper(Context context, AlfrescoAccount acc, AlfrescoSession session, int mode,
+            long syncScanningTimeStamp, SyncResult syncResult, String nodeIdentifier)
+    {
+        super(context, acc, session, mode, syncScanningTimeStamp, syncResult, nodeIdentifier);
+
+        // Create the group
+        group = new ArrayList<SyncContent>();
+    }
+
     @Override
     public List<SyncContent> prepare()
     {

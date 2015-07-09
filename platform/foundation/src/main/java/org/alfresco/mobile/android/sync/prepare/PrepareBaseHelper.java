@@ -31,6 +31,7 @@ import org.alfresco.mobile.android.api.model.Permissions;
 import org.alfresco.mobile.android.api.model.SearchLanguage;
 import org.alfresco.mobile.android.api.model.impl.PagingResultImpl;
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
+import org.alfresco.mobile.android.api.session.impl.AbstractAlfrescoSessionImpl;
 import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
@@ -133,14 +134,14 @@ public abstract class PrepareBaseHelper
         switch (mode)
         {
             case SyncContentManager.MODE_BOTH:
-                retrieveDocumentFavorites2();
-                retrieveFolderFavorites2();
+                retrieveDocumentFavorites();
+                retrieveFolderFavorites();
                 break;
             case SyncContentManager.MODE_FOLDERS:
-                retrieveFolderFavorites2();
+                retrieveFolderFavorites();
                 break;
             case SyncContentManager.MODE_DOCUMENTS:
-                retrieveDocumentFavorites2();
+                retrieveDocumentFavorites();
                 break;
             case SyncContentManager.MODE_NODE:
                 break;
@@ -180,7 +181,7 @@ public abstract class PrepareBaseHelper
 
     private static final String QUERY_OR = " OR d.cmis:objectId=";
 
-    private void retrieveDocumentFavorites2()
+    private void retrieveDocumentFavorites()
     {
         // Retrieve list of synced documents
         Cursor cursorNodesIds = null;
@@ -269,7 +270,7 @@ public abstract class PrepareBaseHelper
         }
     }
 
-    private void retrieveFolderFavorites2()
+    private void retrieveFolderFavorites()
     {
         // Retrieve list of synced documents
         Cursor cursorNodesIds = null;
@@ -428,14 +429,24 @@ public abstract class PrepareBaseHelper
                     {
                         repoSyncIds = new ArrayList<String>();
                     }
-                    if (session.getServiceRegistry().getDocumentFolderService()
-                            .getNodeByIdentifier(node.getIdentifier()) != null)
+                    try
                     {
-                        tmpNode.add(node);
+                        ((AbstractAlfrescoSessionImpl) session).getCmisSession().removeObjectFromCache(
+                                node.getIdentifier());
+                        if (session.getServiceRegistry().getDocumentFolderService()
+                                .getNodeByIdentifier(node.getIdentifier()) != null)
+                        {
+                            tmpNode.add(node);
+                        }
+                        syncResult.stats.numEntries = tmpNode.size();
+                        prepareUpdate(tmpNode);
+                    }
+                    catch (Exception e)
+                    {
+                        // Do nothing
+                        Log.d("Sync", "Sync Scan Deleted ?");
                     }
                 }
-                syncResult.stats.numEntries = tmpNode.size();
-                prepareUpdate(tmpNode);
                 break;
             case SyncContentManager.MODE_DOCUMENTS:
                 List<Node> tmpNodes = new ArrayList<Node>(nodeDocumentSynced.getList());

@@ -24,7 +24,6 @@ import java.util.List;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.activity.MainActivity;
-import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.OperationStatus;
@@ -38,7 +37,6 @@ import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
-import org.alfresco.mobile.android.ui.GridFragment;
 import org.alfresco.mobile.android.ui.fragments.BaseCursorLoader;
 import org.alfresco.mobile.android.ui.holder.TwoLinesProgressViewHolder;
 import org.alfresco.mobile.android.ui.rendition.RenditionManager;
@@ -59,7 +57,6 @@ import android.view.ViewGroup;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnDismissListener;
 import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.RelativeLayout;
 
 /**
  * @since 1.2
@@ -95,15 +92,17 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
     public View newView(Context context, Cursor cursor, ViewGroup parent)
     {
         // Specific part for dynaminc resize
-        int[] layouts = GridAdapterHelper.getGridLayoutId(context, (GridFragment) fragmentRef.get());
-        return createView(context, cursor, layouts[0]);
+        // int[] layouts = GridAdapterHelper.getGridLayoutId(context,
+        // (GridFragment) fragmentRef.get());
+        return createView(context, cursor, R.layout.row_two_lines_progress);
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor)
     {
-        int[] layouts = GridAdapterHelper.getGridLayoutId(context, (GridFragment) fragmentRef.get());
-        if (view.findViewById(layouts[1]) == null)
+        // int[] layouts = GridAdapterHelper.getGridLayoutId(context,
+        // (GridFragment) fragmentRef.get());
+        if (view.findViewById(R.id.app_grid_progress) == null)
         {
             // ((ViewGroup) view).removeAllViews();
             view.invalidate();
@@ -210,12 +209,12 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
 
         if (selectedItems != null && selectedItems.contains(nodeId))
         {
-            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()),
+            UIUtils.setBackground(((View) vh.icon.getParent()),
                     context.getResources().getDrawable(R.drawable.list_longpressed_holo));
         }
         else
         {
-            UIUtils.setBackground(((RelativeLayout) vh.icon.getParent()), null);
+            UIUtils.setBackground(((View) vh.icon.getParent()), null);
         }
 
         if (SyncContentStatus.STATUS_RUNNING != status)

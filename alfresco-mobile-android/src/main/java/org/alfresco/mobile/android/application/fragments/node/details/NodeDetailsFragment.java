@@ -87,6 +87,7 @@ import org.alfresco.mobile.android.platform.utils.AccessibilityUtils;
 import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
 import org.alfresco.mobile.android.sync.SyncContentSchema;
 import org.alfresco.mobile.android.sync.operations.SyncContentStatus;
 import org.alfresco.mobile.android.sync.utils.NodeSyncPlaceHolder;
@@ -258,8 +259,7 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         File tmpFile = null;
-        isSynced = SyncContentManager.getInstance(getActivity()).isSynced(
-                SessionUtils.getAccount(getActivity()), node);
+        isSynced = SyncContentManager.getInstance(getActivity()).isSynced(SessionUtils.getAccount(getActivity()), node);
         boolean modified = false;
         Date d = null;
 
@@ -1267,6 +1267,15 @@ public abstract class NodeDetailsFragment extends AlfrescoFragment implements De
         if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
         {
             ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onFavoriteNodeEvent(event);
+        }
+    }
+
+    @Subscribe
+    public void onSyncCompleted(SyncContentScanEvent event)
+    {
+        if (!DisplayUtils.hasCentralPane(getActivity()) && getFragment(DocumentFolderBrowserFragment.TAG) != null)
+        {
+            ((DocumentFolderBrowserFragment) getFragment(DocumentFolderBrowserFragment.TAG)).onSyncCompleted(event);
         }
     }
 
