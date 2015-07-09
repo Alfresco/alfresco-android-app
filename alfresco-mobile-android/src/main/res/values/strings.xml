@@ -410,7 +410,7 @@
     <string name="favorites_deactivate">Deactivate Synchronization</string>
     <string name="favorites_deactivate_description"><![CDATA[<p>Do you want to deactivate sync?</p> All synced content will be deleted from your device.]]></string>
     <string name="sync_error_title">Sync Errors</string>
-    <string name="sync_error_node_unfavorited"><![CDATA[<p>You\'ve unfavorited <b>%s</b> since you started editing it. <br/> <b>Sync</b> your edited version to the server or <b>Save</b> it to your \"Downloads\" folder. </p>]]></string>
+    <string name="sync_error_node_unfavorited"><![CDATA[<p>You\'ve unsynced <b>%s</b> since you started editing it. <br/> <b>Sync</b> your edited version to the server or <b>Save</b> it to your \"Downloads\" folder. </p>]]></string>
     <string name="sync_error_node_deleted"><![CDATA[<p> <b>%s</b> has been deleted on the server but a copy has been saved in your \"Downloads\" folder.</p>]]></string>
     <string name="sync_error_no_permission"><![CDATA[<p> You don\'t have the required permission to upload your edited version of <b>%s</b>. You can <b>Save</b> it to your \"Downloads\" folder, or <b>Overwrite</b> it with the server version which will discard your edits.]]></string>
     <string name="sync_error_node_local_modification">Sync Errors</string>

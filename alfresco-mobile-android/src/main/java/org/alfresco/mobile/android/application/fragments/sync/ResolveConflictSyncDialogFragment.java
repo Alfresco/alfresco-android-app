@@ -47,11 +47,13 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
     private OnChangeListener onFavoriteChangeListener;
 
-    private static final String ARGUMENT_FAVORITEID = "favoriteId";
+    private static final String ARGUMENT_SYNCID = "syncId";
 
-    private Cursor favoriteCursor;
+    private Cursor syncCursor;
 
-    private long favoriteId;
+    private long syncId;
+
+    private SyncFragment syncF;
 
     // ///////////////////////////////////////////////////////////////////////////
     // CONSTRUCTOR
@@ -64,7 +66,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         ResolveConflictSyncDialogFragment frag = new ResolveConflictSyncDialogFragment();
         Bundle b = new Bundle();
-        b.putLong(ARGUMENT_FAVORITEID, favoriteId);
+        b.putLong(ARGUMENT_SYNCID, favoriteId);
         frag.setArguments(b);
         return frag;
     }
@@ -75,23 +77,25 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        if (getArguments() == null || !getArguments().containsKey(ARGUMENT_FAVORITEID)) { return createErrorDialog(); }
+        if (getArguments() == null || !getArguments().containsKey(ARGUMENT_SYNCID)) { return createErrorDialog(); }
 
-        favoriteId = getArguments().getLong(ARGUMENT_FAVORITEID);
-        favoriteCursor = getActivity().getContentResolver().query(SyncContentManager.getUri(favoriteId),
+        syncId = getArguments().getLong(ARGUMENT_SYNCID);
+        syncCursor = getActivity().getContentResolver().query(SyncContentManager.getUri(syncId),
                 SyncContentSchema.COLUMN_ALL, null, null, null);
 
-        if (favoriteCursor.getCount() != 1) { return createErrorDialog(); }
+        syncF = (SyncFragment) getActivity().getFragmentManager().findFragmentByTag(SyncFragment.TAG);
 
-        if (!favoriteCursor.moveToFirst()) { return createErrorDialog(); }
+        if (syncCursor.getCount() != 1) { return createErrorDialog(); }
+
+        if (!syncCursor.moveToFirst()) { return createErrorDialog(); }
         // Messages informations
         int titleId = R.string.sync_error_title;
         int iconId = R.drawable.ic_application_logo;
-        int messageId = R.string.sync_error_node_unfavorited;
-        int positiveId = android.R.string.yes;
+        int messageId = R.string.sync_error_node_deleted;
+        int positiveId = android.R.string.ok;
         int negativeId = -1;
 
-        int reason = favoriteCursor.getInt(SyncContentSchema.COLUMN_REASON_ID);
+        int reason = syncCursor.getInt(SyncContentSchema.COLUMN_REASON_ID);
 
         switch (reason)
         {
@@ -107,6 +111,10 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                 onFavoriteChangeListener = overrideListener;
                 break;
             case SyncContentStatus.REASON_LOCAL_MODIFICATION:
+                messageId = R.string.sync_error_node_deleted;
+                positiveId = android.R.string.ok;
+                onFavoriteChangeListener = deletedFavoriteListener;
+                break;
             case SyncContentStatus.REASON_NODE_UNFAVORITED:
                 messageId = R.string.sync_error_node_unfavorited;
                 positiveId = R.string.sync_save_action;
@@ -118,7 +126,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         }
 
         String message = String.format(getString(messageId),
-                favoriteCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
+ syncCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
         Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
                 .setMessage(Html.fromHtml(message)).setCancelable(false)
@@ -128,7 +136,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                     {
                         if (onFavoriteChangeListener != null)
                         {
-                            onFavoriteChangeListener.onPositive(favoriteCursor);
+                            onFavoriteChangeListener.onPositive(syncCursor);
                         }
                         dialog.dismiss();
                     }
@@ -142,7 +150,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                 {
                     if (onFavoriteChangeListener != null)
                     {
-                        onFavoriteChangeListener.onNegative(favoriteCursor);
+                        onFavoriteChangeListener.onNegative(syncCursor);
                     }
                     dialog.dismiss();
                 }
@@ -229,7 +237,8 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_PENDING);
-        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
+        refreshSyncFragment();
 
         c.close();
     }
@@ -240,9 +249,10 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
 
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_REASON, SyncContentStatus.STATUS_TO_UPDATE);
-        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
 
         SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
+        refreshSyncFragment();
 
         c.close();
     }
@@ -251,7 +261,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
     {
         ContentValues cValues = new ContentValues();
         cValues.put(OperationSchema.COLUMN_STATUS, Operation.STATUS_RUNNING);
-        getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+        getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
 
         // Current File
         Uri localFileUri = Uri.parse(c.getString(SyncContentSchema.COLUMN_LOCAL_URI_ID));
@@ -268,26 +278,36 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         cValues.clear();
         if (localFile.renameTo(newLocalFile))
         {
-            getActivity().getContentResolver().delete(SyncContentManager.getUri(favoriteId), null, null);
+            getActivity().getContentResolver().delete(SyncContentManager.getUri(syncId), null, null);
         }
         else
         {
             cValues.put(OperationSchema.COLUMN_STATUS, SyncContentStatus.STATUS_FAILED);
-            getActivity().getContentResolver().update(SyncContentManager.getUri(favoriteId), cValues, null, null);
+            getActivity().getContentResolver().update(SyncContentManager.getUri(syncId), cValues, null, null);
         }
 
         SyncContentManager.getInstance(getActivity()).sync(SessionUtils.getAccount(getActivity()), nodeIdentifier);
 
         // Encrypt file if necessary
         AlfrescoStorageManager.getInstance(getActivity()).manageFile(newLocalFile);
+        refreshSyncFragment();
 
         c.close();
     }
 
     private void remove(Cursor c)
     {
-        getActivity().getContentResolver().delete(SyncContentManager.getUri(favoriteId), null, null);
+        getActivity().getContentResolver().delete(SyncContentManager.getUri(syncId), null, null);
+        refreshSyncFragment();
         c.close();
+    }
+
+    private void refreshSyncFragment()
+    {
+        if (syncF != null)
+        {
+            syncF.onSyncNodeEvent(null);
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////

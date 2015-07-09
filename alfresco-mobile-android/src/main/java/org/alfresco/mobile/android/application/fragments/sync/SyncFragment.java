@@ -31,7 +31,6 @@ import org.alfresco.mobile.android.api.utils.NodeRefUtils;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
-import org.alfresco.mobile.android.application.fragments.GridAdapterHelper;
 import org.alfresco.mobile.android.application.fragments.MenuFragmentHelper;
 import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
 import org.alfresco.mobile.android.application.fragments.actions.NodeIdActions;
@@ -41,7 +40,6 @@ import org.alfresco.mobile.android.application.fragments.node.details.NodeDetail
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.async.Operation;
 import org.alfresco.mobile.android.async.OperationSchema;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeEvent;
 import org.alfresco.mobile.android.async.node.sync.SyncNodeEvent;
 import org.alfresco.mobile.android.async.node.update.UpdateNodeEvent;
 import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
@@ -82,6 +80,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -106,10 +106,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
 
     private Date downloadDateTime;
 
-    private File localFile;
-
-    private Uri favoriteUri;
-
     private Date decryptDateTime;
 
     private AlfrescoAccount acc;
@@ -132,6 +128,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         mode = MODE_LISTING;
         checkSession = false;
         setHasOptionsMenu(true);
+        displayAsList = true;
     }
 
     protected static SyncFragment newInstanceByTemplate(Bundle b)
@@ -215,14 +212,14 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     {
         if (requestCode != RequestCode.SAVE_BACK && requestCode != RequestCode.DECRYPTED) { return; }
 
-        final File dlFile = localFile;
+        final File dlFile = null;
 
         if (dlFile == null) { return; }
 
         long datetime = dlFile.lastModified();
         Date d = new Date(datetime);
-        boolean modified = false;
-        final Uri lUri = favoriteUri;
+        boolean modified;
+        final Uri lUri = null;
 
         switch (requestCode)
         {
@@ -270,10 +267,19 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         super.onAdapterCreation();
         if (adapter == null)
         {
-            int[] layouts = GridAdapterHelper.getGridLayoutId(getActivity(), this);
-            adapter = new SyncCursorAdapter(this, null, layouts[0], selectedItems, getMode());
+            adapter = new SyncCursorAdapter(this, null, R.layout.row_two_lines_progress, selectedItems, getMode());
         }
         return adapter;
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev)
+    {
+        ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
+        ((TextView) ev.findViewById(R.id.empty_text)).setText("Keep your file in sync");
+        ((TextView) ev.findViewById(R.id.empty_text_description))
+                .setText("View and edit your synced files when you're offline. When you're back online they'll automatically sync.");
+        ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
     }
 
     // /////////////////////////////////////////////////////////////
@@ -676,12 +682,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     }
 
     @Subscribe
-    public void onFavoriteNodeEvent(FavoriteNodeEvent event)
-    {
-        refreshSilently();
-    }
-
-    @Subscribe
     public void onSyncNodeEvent(SyncNodeEvent event)
     {
         refreshSilently();
@@ -694,24 +694,24 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         Node updatedNode = event.data;
         if (updatedNode == null) { return; }
 
-        Cursor favoriteCursor = null;
+        Cursor syncCursor = null;
         try
         {
-            favoriteCursor = getActivity().getContentResolver().query(
+            syncCursor = getActivity().getContentResolver().query(
                     SyncContentProvider.CONTENT_URI,
                     SyncContentSchema.COLUMN_ALL,
                     SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_NODE_ID + " LIKE '"
                             + NodeRefUtils.getCleanIdentifier(updatedNode.getIdentifier()) + "%'", null, null);
-            boolean hasFavorite = (favoriteCursor.getCount() == 1);
-            if (hasFavorite && !hasSynchroActive)
+            boolean hasSynced = (syncCursor.getCount() == 1);
+            if (hasSynced && !hasSynchroActive)
             {
-                favoriteCursor.moveToFirst();
+                syncCursor.moveToFirst();
                 ContentValues cValues = new ContentValues();
                 cValues.put(SyncContentSchema.COLUMN_NODE_ID, updatedNode.getIdentifier());
                 cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
                         .getTimeInMillis());
                 getActivity().getContentResolver().update(
-                        SyncContentManager.getUri(favoriteCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues,
+                        SyncContentManager.getUri(syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues,
                         null, null);
             }
         }
@@ -721,7 +721,7 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
         }
         finally
         {
-            CursorUtils.closeCursor(favoriteCursor);
+            CursorUtils.closeCursor(syncCursor);
         }
     }
 

@@ -84,6 +84,7 @@ import org.alfresco.mobile.android.platform.utils.AndroidVersion;
 import org.alfresco.mobile.android.platform.utils.BundleUtils;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
+import org.alfresco.mobile.android.sync.SyncContentScanEvent;
 import org.alfresco.mobile.android.ui.activity.AlfrescoActivity;
 import org.alfresco.mobile.android.ui.fragments.BaseListAdapter;
 import org.alfresco.mobile.android.ui.node.browse.NodeBrowserFragment;
@@ -111,7 +112,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.SpinnerAdapter;
+import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
 
@@ -253,6 +256,15 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         }
 
         return v;
+    }
+
+    @Override
+    protected void prepareEmptyView(View ev)
+    {
+        ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
+        ((TextView) ev.findViewById(R.id.empty_text)).setText("Create, Add and Upload");
+        ((TextView) ev.findViewById(R.id.empty_text_description)).setText("This folder is currently empty.");
+        ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -672,9 +684,8 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
             return new ProgressNodeAdapter(getActivity(), GridAdapterHelper.getDisplayItemLayout(getActivity(), gv,
                     displayMode), parentFolder, new ArrayList<Node>(0), pickedNodes);
         }
-        else if (adapter == null) { return new ProgressNodeAdapter(this,
-                GridAdapterHelper.getDisplayItemLayout(getActivity(), gv, displayMode), parentFolder,
-                new ArrayList<Node>(0), selectedItems, mode); }
+        else if (adapter == null) { return new ProgressNodeAdapter(this, GridAdapterHelper.getDisplayItemLayout(
+                getActivity(), gv, displayMode), parentFolder, new ArrayList<Node>(0), selectedItems, mode); }
         return null;
     }
 
@@ -1153,6 +1164,13 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
         ((ProgressNodeAdapter) adapter).refreshOperations();
         refreshListView();
         favorite(nodesToFavorite, doFavorite, true);
+    }
+
+    @Subscribe
+    public void onSyncCompleted(SyncContentScanEvent event)
+    {
+        ((ProgressNodeAdapter) adapter).refreshOperations();
+        refreshListView();
     }
 
     @Subscribe

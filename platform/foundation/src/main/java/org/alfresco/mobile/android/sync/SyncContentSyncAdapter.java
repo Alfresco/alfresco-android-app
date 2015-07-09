@@ -37,6 +37,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 
 public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
@@ -148,75 +149,91 @@ public class SyncContentSyncAdapter extends AbstractThreadedSyncAdapter
     // ///////////////////////////////////////////////////////////////////////////
     protected void sync(SyncResult syncResult)
     {
-        Log.d(TAG, "Sync Scan Started");
-
-        // Timestamp the scan process
-        syncManager.saveStartSyncPrepareTimestamp();
-        long syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
-
-        // DISPATCHER
-        // Depending on what we want to achieve we use the associated helper
-        List<SyncContent> requests = null;
-        if (syncManager.hasActivateSync(acc))
+        try
         {
-            // SYNC ANYTHING
-            requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp, syncResult, node)
-                    .prepare();
-        }
+            Log.d(TAG, "Sync Scan Started");
 
-        // Retrieve the result of the scan
-        SyncScanInfo currentSyncScan = syncManager.getScanInfo(acc);
+            // Timestamp the scan process
+            syncManager.saveStartSyncPrepareTimestamp();
+            long syncScanningTimeStamp = new GregorianCalendar(TimeZone.getTimeZone("GMT")).getTimeInMillis();
 
-        switch (currentSyncScan.getScanResult())
-        {
-        // Normal Case
-        // Scan is Success ==> Launch the sync
-            case SyncScanInfo.RESULT_SUCCESS:
-                // Start Execution
-                for (SyncContent operation : requests)
+            // DISPATCHER
+            // Depending on what we want to achieve we use the associated helper
+            List<SyncContent> requests = null;
+            if (syncManager.hasActivateSync(acc))
+            {
+                // SYNC ANYTHING
+                if (node == null && !TextUtils.isEmpty(nodeIdentifier))
                 {
-                    operation.execute();
+                    requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
+                            syncResult, nodeIdentifier).prepare();
                 }
-                break;
-            // Warning Case
-            // Scan raised a warning ==> request user decision
-            case SyncScanInfo.RESULT_WARNING_LOW_STORAGE:
-            case SyncScanInfo.RESULT_WARNING_MOBILE_DATA:
-                if (ignoreWarning)
+                else
                 {
-                    currentSyncScan = new SyncScanInfo(currentSyncScan.getDeltaDataTransfer(),
-                            currentSyncScan.getDataToTransfer(), SyncScanInfo.RESULT_SUCCESS);
+                    requests = new PrepareSyncHelper(getContext(), acc, session, mode, syncScanningTimeStamp,
+                            syncResult, node).prepare();
+                }
+            }
+
+            // Retrieve the result of the scan
+            SyncScanInfo currentSyncScan = syncManager.getScanInfo(acc);
+
+            switch (currentSyncScan.getScanResult())
+            {
+            // Normal Case
+            // Scan is Success ==> Launch the sync
+                case SyncScanInfo.RESULT_SUCCESS:
+                    // Start Execution
                     for (SyncContent operation : requests)
                     {
                         operation.execute();
                     }
-                }
-                else
-                {
+                    break;
+                // Warning Case
+                // Scan raised a warning ==> request user decision
+                case SyncScanInfo.RESULT_WARNING_LOW_STORAGE:
+                case SyncScanInfo.RESULT_WARNING_MOBILE_DATA:
+                    if (ignoreWarning)
+                    {
+                        currentSyncScan = new SyncScanInfo(currentSyncScan.getDeltaDataTransfer(),
+                                currentSyncScan.getDataToTransfer(), SyncScanInfo.RESULT_SUCCESS);
+                        for (SyncContent operation : requests)
+                        {
+                            operation.execute();
+                        }
+                    }
+                    else
+                    {
+                        syncResult.databaseError = true;
+                    }
+                    break;
+                // ERROR Case
+                // Scan raised an error ==> alert the user
+                case SyncScanInfo.RESULT_ERROR_NOT_ENOUGH_STORAGE:
                     syncResult.databaseError = true;
-                }
-                break;
-            // ERROR Case
-            // Scan raised an error ==> alert the user
-            case SyncScanInfo.RESULT_ERROR_NOT_ENOUGH_STORAGE:
-                syncResult.databaseError = true;
-                break;
-            default:
-                break;
+                    break;
+                default:
+                    break;
+            }
+
+            // Flag the execution of last sync
+            currentSyncScan.save(getContext(), acc);
+            syncManager.saveSyncPrepareTimestamp();
+
+            EventBusManager.getInstance().post(new SyncContentScanEvent());
+
+            Log.d("SYNC", "Total:" + syncResult.stats.numEntries);
+            Log.d("SYNC", "Skipped:" + syncResult.stats.numSkippedEntries);
+            Log.d("SYNC", "Creation:" + syncResult.stats.numInserts);
+            Log.d("SYNC", "Update:" + syncResult.stats.numUpdates);
+            Log.d("SYNC", "Deletion:" + syncResult.stats.numDeletes);
+            Log.d("SYNC", "Exceptions:" + syncResult.stats.numIoExceptions);
         }
-
-        // Flag the execution of last sync
-        currentSyncScan.save(getContext(), acc);
-        syncManager.saveSyncPrepareTimestamp();
-
-        EventBusManager.getInstance().post(new SyncContentScanEvent());
-
-        Log.d("SYNC", "Total:" + syncResult.stats.numEntries);
-        Log.d("SYNC", "Skipped:" + syncResult.stats.numSkippedEntries);
-        Log.d("SYNC", "Creation:" + syncResult.stats.numInserts);
-        Log.d("SYNC", "Update:" + syncResult.stats.numUpdates);
-        Log.d("SYNC", "Deletion:" + syncResult.stats.numDeletes);
-        Log.d("SYNC", "Exceptions:" + syncResult.stats.numIoExceptions);
+        catch (Exception e)
+        {
+            Log.d("SYNC ERROR", Log.getStackTraceString(e));
+            syncManager.saveSyncPrepareTimestamp();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////
