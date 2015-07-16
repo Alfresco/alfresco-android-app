@@ -1161,16 +1161,22 @@ public class DocumentFolderBrowserFragment extends NodeBrowserFragment
     public void onFavoriteNodeEvent(FavoriteNodeEvent event)
     {
         if (event.hasException) { return; }
-        ((ProgressNodeAdapter) adapter).refreshOperations();
-        refreshListView();
+        if (adapter != null)
+        {
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+            refreshListView();
+        }
         favorite(nodesToFavorite, doFavorite, true);
     }
 
     @Subscribe
     public void onSyncCompleted(SyncContentScanEvent event)
     {
-        ((ProgressNodeAdapter) adapter).refreshOperations();
-        refreshListView();
+        if (adapter != null)
+        {
+            ((ProgressNodeAdapter) adapter).refreshOperations();
+            refreshListView();
+        }
     }
 
     @Subscribe
