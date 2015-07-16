@@ -81,6 +81,7 @@ import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -276,9 +277,11 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     protected void prepareEmptyView(View ev)
     {
         ((ImageView) ev.findViewById(R.id.empty_picture)).setImageResource(R.drawable.ic_empty_folder);
-        ((TextView) ev.findViewById(R.id.empty_text)).setText("Keep your file in sync");
-        ((TextView) ev.findViewById(R.id.empty_text_description))
-                .setText("View and edit your synced files when you're offline. When you're back online they'll automatically sync.");
+
+        ((ImageView) ev.findViewById(R.id.empty_picture)).setLayoutParams(new LinearLayout.LayoutParams(getDPI(
+                getResources().getDisplayMetrics(), 275), getDPI(getResources().getDisplayMetrics(), 275)));
+        ((TextView) ev.findViewById(R.id.empty_text)).setText(R.string.sync_empty_title);
+        ((TextView) ev.findViewById(R.id.empty_text_description)).setText(R.string.sync_empty_description);
         ev.findViewById(R.id.empty_text_description).setVisibility(View.VISIBLE);
     }
 
@@ -711,8 +714,8 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
                 cValues.put(SyncContentSchema.COLUMN_SERVER_MODIFICATION_TIMESTAMP, updatedNode.getModifiedAt()
                         .getTimeInMillis());
                 getActivity().getContentResolver().update(
-                        SyncContentManager.getUri(syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues,
-                        null, null);
+                        SyncContentManager.getUri(syncCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null,
+                        null);
             }
         }
         catch (Exception e)

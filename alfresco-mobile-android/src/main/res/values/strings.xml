@@ -422,11 +422,14 @@
     <string name="sync_in_progress">Sync in progress&#8230;</string>
     <string name="upload_await">Waiting to upload&#8230;</string>
     <string name="download_await">Waiting to download&#8230;</string>
+
+    <!-- Sync -->
     <string name="sync_title">Synced Content</string>
     <string name="sync">Sync</string>
     <string name="unsync">UnSync</string>
     <string name="sync_favorites">Favorites</string>
-
+    <string name="sync_empty_title">Keep your files in sync</string>
+    <string name="sync_empty_description">You can view and edit your synced files when you\'re offline</string>
 
     <plurals name="sync_complete_description">
         <item quantity="zero">no content synced</item>

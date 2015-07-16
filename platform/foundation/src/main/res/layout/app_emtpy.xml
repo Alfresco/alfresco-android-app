@@ -28,8 +28,8 @@
 
     <ImageView
         android:id="@+id/empty_picture"
-        android:layout_width="275dp"
-        android:layout_height="275dp"
+        android:layout_width="175dp"
+        android:layout_height="175dp"
         android:layout_gravity="center"
         android:scaleType="centerInside"
         android:src="@drawable/bg_alfresco_logo_light" />
