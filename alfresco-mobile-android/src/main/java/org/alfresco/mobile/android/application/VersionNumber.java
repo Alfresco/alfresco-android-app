@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -55,8 +55,11 @@ public interface VersionNumber
     /** Release 11 June 2015. */
     int VERSION_1_5_1 = 45;
 
-    /** Release Q3 2015. */
+    /** Release 3 July 2015. */
     int VERSION_1_5_2 = 46;
 
-    int LATEST_VERSION = VERSION_1_5_2;
+    /** Release Q3 2015. */
+    int VERSION_1_6_0 = 50;
+
+    int LATEST_VERSION = VERSION_1_6_0;
 }
