@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -114,7 +114,7 @@ public abstract class BaseActivity extends AlfrescoActivity
     // ///////////////////////////////////////////////////////////////////////////
     // UTILS
     // ///////////////////////////////////////////////////////////////////////////
-    protected void displayAsDialogActivity()
+    protected void displayAsDialogActivity(double defaultCoefficient, double heightCoefficient)
     {
         requestWindowFeature(Window.FEATURE_ACTION_BAR);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND, WindowManager.LayoutParams.FLAG_DIM_BEHIND);
@@ -126,7 +126,7 @@ public abstract class BaseActivity extends AlfrescoActivity
         int height = values[1];
         int width = values[0];
 
-        double coefficient = 0.90f;
+        double coefficient = defaultCoefficient;
         try
         {
             TypedValue outValue = new TypedValue();
@@ -135,14 +135,19 @@ public abstract class BaseActivity extends AlfrescoActivity
         }
         catch (Exception e)
         {
-            coefficient = 0.90f;
+            coefficient = defaultCoefficient;
         }
 
-        params.height = (int) Math.round(height * 0.9);
+        params.height = (int) Math.round(height * heightCoefficient);
         params.width = (int) Math.round(width * coefficient);
 
         params.alpha = 1.0f;
         params.dimAmount = 0.5f;
         getWindow().setAttributes(params);
+    }
+
+    protected void displayAsDialogActivity()
+    {
+        displayAsDialogActivity(0.90f, 0.9);
     }
 }

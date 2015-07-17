@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
  *
  * This file is part of Alfresco Mobile for Android.
  *
@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -139,6 +140,8 @@ public class MainActivity extends BaseActivity
     private static DeviceCapture capture = null;
 
     private int fragmentQueue = -1;
+
+    private Boolean displaySync;
 
     // SLIDING MENU
     private static DrawerLayout mDrawerLayout;
@@ -921,6 +924,17 @@ public class MainActivity extends BaseActivity
                         currentAccount.getActivation(), currentAccount.getAccessToken(),
                         currentAccount.getRefreshToken(), 1);
             }
+        }
+
+        // NB : temporary code ?
+        // Display Sync Migration
+        if (displaySync == null)
+        {
+            displaySync = SyncMigrationFragment.displaySyncInfo(this, currentAccount);
+        }
+        if (displaySync)
+        {
+            startActivity(new Intent(this, InfoActivity.class));
         }
 
         // Activate Automatic Sync for Sync Content & Favorite

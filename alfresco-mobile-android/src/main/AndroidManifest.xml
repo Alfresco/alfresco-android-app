@@ -124,6 +124,12 @@
             android:exported="false"
             android:label="@string/app_name" />
 
+        <activity
+            android:name=".activity.InfoActivity"
+            android:exported="false"
+            android:label="@string/app_name"
+            android:theme="@style/MainTheme.Dialog" />
+
         <!-- Private : Text Editor Activity -->
         <activity
             android:name="org.alfresco.mobile.android.application.editors.text.TextEditorActivity"
