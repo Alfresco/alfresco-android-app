@@ -58,17 +58,23 @@ public class SyncMigrationPagerFragment extends AlfrescoFragment
                 titleId = R.string.sync_info_two_title;
                 textId = R.string.sync_info_two_first_text;
                 secondTextId = R.string.sync_info_two_second_text;
+                hide(R.id.info_central_image);
+                hide(R.id.info_bottom_image);
                 break;
             case 2:
                 imageId = R.drawable.ic_synced;
                 titleId = R.string.sync_info_third_title;
                 textId = R.string.sync_info_third_first_text;
+                hide(R.id.info_central_image);
+                show(R.id.info_bottom_image);
                 break;
             default:
                 imageId = R.drawable.ic_synced;
                 titleId = R.string.sync_info_one_title;
                 textId = R.string.sync_info_one_first_text;
                 secondTextId = R.string.sync_info_one_second_text;
+                show(R.id.info_central_image);
+                hide(R.id.info_bottom_image);
                 break;
         }
 
