@@ -24,17 +24,13 @@ import me.relex.circleindicator.CircleIndicator;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.AlfrescoFragmentBuilder;
-import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
 import org.alfresco.mobile.android.sync.SyncContentManager;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -48,8 +44,6 @@ public class SyncMigrationFragment extends AlfrescoFragment
     public static final String TAG = SyncMigrationFragment.class.getName();
 
     private static final int NUM_PAGES = 3;
-
-    private static final String HAS_MIGRATE_SYNC = "HasMigrateSync";
 
     private ViewPager mPager;
 
@@ -184,23 +178,8 @@ public class SyncMigrationFragment extends AlfrescoFragment
     // ///////////////////////////////////////////////////////////////////////////
     private void endInfo()
     {
-        saveStateInfo(getActivity());
+        SyncContentManager.saveStateInfo(getActivity());
         getActivity().finish();
-    }
-
-    public static boolean displaySyncInfo(Context context, AlfrescoAccount account)
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        // Uncomment for test purpose prefs.edit().putBoolean(HAS_MIGRATE_SYNC,
-        // false).apply();
-        return (!prefs.getBoolean(HAS_MIGRATE_SYNC, false) && SyncContentManager.getInstance(context).hasActivateSync(
-                account));
-    }
-
-    public static void saveStateInfo(Context context)
-    {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        prefs.edit().putBoolean(HAS_MIGRATE_SYNC, true).apply();
     }
 
     // ///////////////////////////////////////////////////////////////////////////

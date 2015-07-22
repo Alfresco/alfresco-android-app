@@ -45,7 +45,6 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -930,7 +929,7 @@ public class MainActivity extends BaseActivity
         // Display Sync Migration
         if (displaySync == null)
         {
-            displaySync = SyncMigrationFragment.displaySyncInfo(this, currentAccount);
+            displaySync = SyncContentManager.displaySyncInfo(this, currentAccount);
         }
         if (displaySync)
         {

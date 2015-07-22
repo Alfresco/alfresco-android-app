@@ -73,6 +73,8 @@ public class SyncContentManager extends Manager
 
     private static final String LAST_START_SYNC_PREPARE = "LastSyncPrepareDateTime";
 
+    private static final String HAS_MIGRATE_SYNC = "HasMigrateSync";
+
     // ////////////////////////////////////////////////////
     // SYNC MODE
     // ////////////////////////////////////////////////////
@@ -823,6 +825,20 @@ public class SyncContentManager extends Manager
             final AlfrescoAccount account = SessionUtils.getAccount(appContext);
             sharedPref.edit().putFloat(SYNCHRO_FREE_SPACE_ALERT_PREFIX + account.getId(), percent).commit();
         }
+    }
+
+    public static boolean displaySyncInfo(Context context, AlfrescoAccount account)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        // Uncomment for test purpose prefs.edit().putBoolean(HAS_MIGRATE_SYNC,
+        // false).apply();
+        return (!prefs.contains(HAS_MIGRATE_SYNC) && SyncContentManager.getInstance(context).hasActivateSync(account));
+    }
+
+    public static void saveStateInfo(Context context)
+    {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
+        prefs.edit().putBoolean(HAS_MIGRATE_SYNC, true).apply();
     }
 
 }

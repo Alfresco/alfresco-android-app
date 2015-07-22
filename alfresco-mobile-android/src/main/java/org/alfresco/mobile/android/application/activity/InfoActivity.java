@@ -20,6 +20,7 @@ package org.alfresco.mobile.android.application.activity;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
+import org.alfresco.mobile.android.sync.SyncContentManager;
 
 import android.os.Bundle;
 
@@ -54,7 +55,7 @@ public class InfoActivity extends BaseActivity
     {
         if (getFragment(SyncMigrationFragment.TAG) != null)
         {
-            SyncMigrationFragment.saveStateInfo(this);
+            SyncContentManager.saveStateInfo(this);
             finish();
         }
         else
@@ -62,4 +63,5 @@ public class InfoActivity extends BaseActivity
             super.onBackPressed();
         }
     }
+
 }
