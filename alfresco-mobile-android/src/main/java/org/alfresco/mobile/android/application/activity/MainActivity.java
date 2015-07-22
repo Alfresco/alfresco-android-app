@@ -214,7 +214,9 @@ public class MainActivity extends BaseActivity
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_in, R.string.cancel)
         {
 
-            /** Called when a drawer has settled in a completely closed state. */
+            /**
+             * Called when a drawer has settled in a completely closed state.
+             */
             public void onDrawerClosed(View view)
             {
                 super.onDrawerClosed(view);
@@ -262,8 +264,8 @@ public class MainActivity extends BaseActivity
 
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
-            EventBusManager.getInstance().post(
-                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
+            EventBusManager.getInstance()
+                    .post(new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
             requestSwapAccount = false;
         }
 
@@ -489,8 +491,8 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(
-                            PrivateIntent.EXTRA_ACCOUNT_ID, currentAccount.getId()));
+                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
+                            .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, currentAccount.getId()));
                 }
                 break;
             default:
@@ -641,7 +643,8 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case R.id.menu_refresh:
-                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                if (getFragmentManager()
+                        .findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
                     ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
                             .refresh();
@@ -931,10 +934,10 @@ public class MainActivity extends BaseActivity
         {
             displaySync = SyncContentManager.displaySyncInfo(this, currentAccount);
         }
-        // if (displaySync)
-        // {
+        if (displaySync)
+        {
             startActivity(new Intent(this, InfoActivity.class));
-        // }
+        }
 
         // Activate Automatic Sync for Sync Content & Favorite
         SyncContentManager.getInstance(this).setActivateSync(currentAccount,
