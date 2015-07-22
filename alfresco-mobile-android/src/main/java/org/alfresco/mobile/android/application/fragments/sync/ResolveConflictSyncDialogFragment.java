@@ -125,8 +125,7 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
                 break;
         }
 
-        String message = String.format(getString(messageId),
- syncCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
+        String message = String.format(getString(messageId), syncCursor.getString(SyncContentSchema.COLUMN_TITLE_ID));
 
         Builder builder = new Builder(getActivity()).setIcon(iconId).setTitle(titleId)
                 .setMessage(Html.fromHtml(message)).setCancelable(false)
@@ -269,8 +268,8 @@ public class ResolveConflictSyncDialogFragment extends DialogFragment
         String nodeIdentifier = c.getString(SyncContentSchema.COLUMN_NODE_ID_ID);
 
         // New File
-        File parentFolder = AlfrescoStorageManager.getInstance(getActivity()).getDownloadFolder(
-                SessionUtils.getAccount(getActivity()));
+        File parentFolder = AlfrescoStorageManager.getInstance(getActivity())
+                .getDownloadFolder(SessionUtils.getAccount(getActivity()));
         File newLocalFile = new File(parentFolder, c.getString(SyncContentSchema.COLUMN_TITLE_ID));
         newLocalFile = IOUtils.createFile(newLocalFile);
 

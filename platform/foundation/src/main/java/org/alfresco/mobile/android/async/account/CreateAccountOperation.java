@@ -180,6 +180,7 @@ public class CreateAccountOperation extends BaseOperation<AlfrescoAccount>
         }
 
         // Activate Automatic Sync for Sync Content & Favorite
+        SyncContentManager.saveStateInfo(context);
         SyncContentManager.getInstance(context).setActivateSync(acc, true);
         FavoritesManager.getInstance(context).setActivateSync(acc, true);
 

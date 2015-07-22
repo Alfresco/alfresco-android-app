@@ -126,6 +126,8 @@ public class PrepareSyncHelper extends PrepareBaseHelper
 
     protected void prepareDelete(String id, Cursor cursorId)
     {
+        if (SyncContentStatus.STATUS_REQUEST_USER == cursorId.getInt(SyncContentSchema.COLUMN_STATUS_ID)) { return; }
+
         // If Synced document
         // Flag the item inside the referential
         if (SyncContentStatus.STATUS_MODIFIED != cursorId.getInt(SyncContentSchema.COLUMN_STATUS_ID))
