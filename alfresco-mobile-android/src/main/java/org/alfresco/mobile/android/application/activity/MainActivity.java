@@ -931,10 +931,10 @@ public class MainActivity extends BaseActivity
         {
             displaySync = SyncContentManager.displaySyncInfo(this, currentAccount);
         }
-        if (displaySync)
-        {
+        // if (displaySync)
+        // {
             startActivity(new Intent(this, InfoActivity.class));
-        }
+        // }
 
         // Activate Automatic Sync for Sync Content & Favorite
         SyncContentManager.getInstance(this).setActivateSync(currentAccount,
