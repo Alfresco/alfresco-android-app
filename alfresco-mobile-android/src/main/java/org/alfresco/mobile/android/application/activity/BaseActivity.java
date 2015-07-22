@@ -29,6 +29,7 @@ import org.alfresco.mobile.android.ui.utils.UIUtils;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.ActionMode;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -101,6 +102,18 @@ public abstract class BaseActivity extends AlfrescoActivity
                 activateCheckPasscode = true;
             }
         }
+    }
+
+    @Override
+    public ActionMode startActionMode(final ActionMode.Callback callback)
+    {
+        // Fix for bug https://code.google.com/p/android/issues/detail?id=159527
+        final ActionMode mode = super.startActionMode(callback);
+        if (mode != null)
+        {
+            mode.invalidate();
+        }
+        return mode;
     }
 
     // ///////////////////////////////////////////////////////////////////////////
