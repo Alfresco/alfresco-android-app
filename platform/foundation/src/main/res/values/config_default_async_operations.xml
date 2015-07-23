@@ -97,6 +97,7 @@
     <!-- SITE -->
     <!-- +++++++++++++++++++ -->
     <string name="operation_SitesRequest">org.alfresco.mobile.android.async.site.SitesOperation</string>
+    <string name="operation_SiteSearchRequest">org.alfresco.mobile.android.async.site.search.SiteSearchOperation</string>
     <string name="operation_SiteMembershipRequest">org.alfresco.mobile.android.async.site.member.SiteMembershipOperation</string>
     <string name="operation_SitesPendingMembershipRequest">org.alfresco.mobile.android.async.site.member.SitesPendingMembershipOperation</string>
     <string name="operation_CancelPendingMembershipRequest">org.alfresco.mobile.android.async.site.member.CancelPendingMembershipOperation</string>

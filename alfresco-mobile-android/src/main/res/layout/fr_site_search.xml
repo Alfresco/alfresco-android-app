@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="visible">
+
+    <LinearLayout
+        style="@style/AlfrescoMaterialTheme.Container.Padding16"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingRight="0dp"
+        android:background="@color/secondary_background"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            style="@style/AlfrescoMaterialTheme.Text.Primary"
+            android:id="@+id/search_query"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@null"
+            android:hint="@string/person_search"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:nextFocusForward="@id/search_query" />
+
+        <ImageButton
+            android:id="@+id/search_microphone"
+            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_microphone"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/search_action"
+            style="@style/AlfrescoMaterialTheme.Button.BorderLess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_search_light" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="?android:attr/dividerVertical"
+        android:visibility="visible" />
+
+    <include
+        layout="@layout/sdk_grid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

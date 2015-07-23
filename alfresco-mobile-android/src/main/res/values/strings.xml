@@ -147,7 +147,7 @@
     <string name="menu_browse_sites">Sites</string>
     <string name="menu_browse_userhome">My Files</string>
     <string name="menu_browse_shared">Shared Files</string>
-    <string name="menu_browse_all_sites">All Sites</string>
+    <string name="menu_browse_all_sites">Site Finder</string>
     <string name="menu_browse_my_sites">My Sites</string>
     <string name="menu_browse_favorite_sites">Favorite Sites</string>
     <string name="menu_browse_activities">Activities</string>
@@ -279,6 +279,7 @@
     <string name="open_as_txt">Text Document</string>
 
     <!-- SITES ACTION -->
+    <string name="sites_empty_title">No sites found</string>
     <string name="action_join_site">Join</string>
     <string name="action_join_request_site">Request to join</string>
     <string name="action_leave_site">Leave</string>
@@ -440,8 +441,8 @@
     <string name="sync_info_third_title">Where do I find synced files?</string>
     <string name="sync_info_third_first_text">You can find all your synced files in the new Synced Content view!</string>
     <string name="sync_info_third_second_text">Synced Content</string>
-    <string name="sync_info_more_information">Synced Content</string>
     <string name="sync_info_validation">Ok, I\'ve got it.</string>
+    <string name="sync_info_more_information">Learn more</string>
     <string name="sync_info_skip">Skip</string>
     <string name="sync_info_next">Next</string>
 
