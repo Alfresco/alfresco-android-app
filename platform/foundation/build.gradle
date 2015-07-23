@@ -43,5 +43,5 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':platform:thirdparty')
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.0'
+    compile 'org.alfresco.mobile.android.sdk:alfresco-mobile-android-client-api:1.4.1-SNAPSHOT'
 }

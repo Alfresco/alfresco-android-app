@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
+import org.alfresco.mobile.android.application.fragments.site.search.SearchSitesFragment;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.ui.fragments.AlfrescoFragment;
 import org.alfresco.mobile.android.ui.site.SitesTemplate;
@@ -156,7 +157,7 @@ class SitesPagerAdapter extends FragmentStatePagerAdapter
                 builder.favorite(false);
                 break;
             default:
-                break;
+                return SearchSitesFragment.with(activity.get()).createFragment();
         }
         return builder.createFragment();
     }

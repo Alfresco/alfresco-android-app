@@ -201,8 +201,7 @@ public class CommentsFragment extends CommentsNodeFragment
         {
             String commentValue = commentText.getText().toString().trim();
             commentValue = commentValue.replaceAll("\n\n", "\n<p>&nbsp;</p>");
-            Operator.with(getActivity()).load(
-new CreateCommentRequest.Builder(node, commentValue));
+            Operator.with(getActivity()).load(new CreateCommentRequest.Builder(node, commentValue));
             onPrepareRefresh();
             commentText.setEnabled(false);
             bAdd.setEnabled(false);

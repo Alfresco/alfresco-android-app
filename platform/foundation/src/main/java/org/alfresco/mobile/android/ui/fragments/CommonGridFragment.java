@@ -222,6 +222,7 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
             setListShown(true);
             adapter = onAdapterCreation();
             gv.setAdapter(adapter);
+            prepareEmptyInitialView(ev);
         }
     }
 
@@ -391,6 +392,11 @@ public abstract class CommonGridFragment extends AlfrescoFragment implements Ref
     protected void prepareEmptyView(View ev)
     {
 
+    }
+
+    protected void prepareEmptyInitialView(View ev)
+    {
+        prepareEmptyView(ev);
     }
 
     protected void displayEmptyView()

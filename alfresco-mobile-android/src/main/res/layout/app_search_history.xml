@@ -36,7 +36,7 @@
                 android:hint="@string/person_search"
                 android:inputType="text"
                 android:nextFocusForward="@id/search_query"
-                android:background="@null"></EditText>
+                android:background="@null"/>
 
             <ImageButton
                 android:id="@+id/search_microphone"

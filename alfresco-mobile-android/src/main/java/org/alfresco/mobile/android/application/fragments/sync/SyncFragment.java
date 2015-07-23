@@ -125,7 +125,6 @@ public class SyncFragment extends BaseCursorGridFragment implements RefreshFragm
     public SyncFragment()
     {
         super();
-        emptyListMessageId = R.string.empty_favorites;
         mode = MODE_LISTING;
         checkSession = false;
         setHasOptionsMenu(true);

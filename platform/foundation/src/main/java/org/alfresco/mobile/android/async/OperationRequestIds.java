@@ -47,6 +47,8 @@ public interface OperationRequestIds
 
     int OPERATION_COMPLETE = 7;
 
+    int OPERATION_SEARCH = 8;
+
     // ///////////////////////////////////////////////////////////////////////////
     // ACCOUNTS
     // ///////////////////////////////////////////////////////////////////////////
@@ -145,6 +147,8 @@ public interface OperationRequestIds
     int FAMILY_SITE = 400;
 
     int ID_SITE_LIST = FAMILY_SITE + OPERATION_LIST;
+
+    int ID_SITE_SEARCH = FAMILY_SITE + OPERATION_SEARCH;
 
     int ID_SITE_FAVORITE_UPDATE = FAMILY_SITE + OPERATION_UPDATE;
 
