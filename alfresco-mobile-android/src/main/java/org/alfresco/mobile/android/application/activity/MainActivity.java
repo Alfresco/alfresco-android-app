@@ -265,8 +265,8 @@ public class MainActivity extends BaseActivity
 
         if (getFragment(MainMenuFragment.TAG) != null && requestSwapAccount)
         {
-            EventBusManager.getInstance()
-                    .post(new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
+            EventBusManager.getInstance().post(
+                    new LoadAccountCompletedEvent(LoadAccountCompletedEvent.SWAP, currentAccount));
             requestSwapAccount = false;
         }
 
@@ -297,9 +297,13 @@ public class MainActivity extends BaseActivity
 
         // Default is Cancelled as we dont provide anything back
         // If OK it means we request the helpfragment
-        if (requestCode == SyncMigrationFragment.REQUEST_CODE && resultCode == RESULT_OK)
+        if (requestCode == SyncMigrationFragment.REQUEST_CODE)
         {
-            HelpDialogFragment.with(this).back(true).display();
+            displaySync = false;
+            if (resultCode == RESULT_OK)
+            {
+                HelpDialogFragment.with(this).back(true).display();
+            }
         }
 
         if (capture != null && requestCode == capture.getRequestCode())
@@ -499,8 +503,8 @@ public class MainActivity extends BaseActivity
                 }
                 else
                 {
-                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS)
-                            .putExtra(PrivateIntent.EXTRA_ACCOUNT_ID, currentAccount.getId()));
+                    startActivity(new Intent(PrivateIntent.ACTION_DISPLAY_OPERATIONS).putExtra(
+                            PrivateIntent.EXTRA_ACCOUNT_ID, currentAccount.getId()));
                 }
                 break;
             default:
@@ -651,8 +655,7 @@ public class MainActivity extends BaseActivity
                 }
                 return true;
             case R.id.menu_refresh:
-                if (getFragmentManager()
-                        .findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
+                if (getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)) instanceof RefreshFragment)
                 {
                     ((RefreshFragment) getFragmentManager().findFragmentById(DisplayUtils.getLeftFragmentId(this)))
                             .refresh();
@@ -940,7 +943,7 @@ public class MainActivity extends BaseActivity
         // Display Sync Migration
         if (displaySync == null)
         {
-            displaySync = SyncContentManager.displaySyncInfo(this, currentAccount);
+            displaySync = SyncContentManager.displaySyncInfo(this);
         }
         if (displaySync)
         {
