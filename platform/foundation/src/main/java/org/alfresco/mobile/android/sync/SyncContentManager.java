@@ -827,12 +827,15 @@ public class SyncContentManager extends Manager
         }
     }
 
-    public static boolean displaySyncInfo(Context context, AlfrescoAccount account)
+    public static boolean displaySyncInfo(Context context)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
-        // Uncomment for test purpose prefs.edit().putBoolean(HAS_MIGRATE_SYNC,
-        // false).apply();
-        return (!prefs.contains(HAS_MIGRATE_SYNC) && SyncContentManager.getInstance(context).hasActivateSync(account));
+        boolean hasSync = false;
+        for (AlfrescoAccount account : AlfrescoAccountManager.retrieveAccounts(context))
+        {
+            hasSync = hasSync || SyncContentManager.getInstance(context).hasActivateSync(account);
+        }
+        return (!prefs.contains(HAS_MIGRATE_SYNC) && hasSync);
     }
 
     public static void saveStateInfo(Context context)
