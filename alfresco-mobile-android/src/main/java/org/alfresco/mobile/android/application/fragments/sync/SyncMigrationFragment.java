@@ -43,6 +43,8 @@ public class SyncMigrationFragment extends AlfrescoFragment
 {
     public static final String TAG = SyncMigrationFragment.class.getName();
 
+    public static final int REQUEST_CODE = 980;
+
     private static final int NUM_PAGES = 3;
 
     private ViewPager mPager;
@@ -131,18 +133,44 @@ public class SyncMigrationFragment extends AlfrescoFragment
             {
                 if (position == NUM_PAGES - 1)
                 {
-                    skip.setVisibility(View.GONE);
+                    skip.setText(R.string.sync_info_more_information);
+                    skip.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            displayMoreInformation();
+                        }
+                    });
                     next.setVisibility(View.GONE);
                     done.setVisibility(View.VISIBLE);
                 }
                 else if (position < NUM_PAGES - 1)
                 {
+                    skip.setText(R.string.sync_info_skip);
+                    skip.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            endInfo();
+                        }
+                    });
                     skip.setVisibility(View.VISIBLE);
                     next.setVisibility(View.VISIBLE);
                     done.setVisibility(View.GONE);
                 }
                 else if (position == NUM_PAGES)
                 {
+                    skip.setText(R.string.sync_info_skip);
+                    skip.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View v)
+                        {
+                            endInfo();
+                        }
+                    });
                     endInfo();
                 }
             }
@@ -179,6 +207,12 @@ public class SyncMigrationFragment extends AlfrescoFragment
     private void endInfo()
     {
         SyncContentManager.saveStateInfo(getActivity());
+        getActivity().finish();
+    }
+
+    private void displayMoreInformation()
+    {
+        getActivity().setResult(Activity.RESULT_OK);
         getActivity().finish();
     }
 

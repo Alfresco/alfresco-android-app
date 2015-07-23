@@ -45,6 +45,7 @@ import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFo
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.preferences.GeneralPreferences;
 import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncMigrationFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
 import org.alfresco.mobile.android.application.managers.ConfigManager;
@@ -292,6 +293,13 @@ public class MainActivity extends BaseActivity
             {
                 DataProtectionManager.getInstance(this).checkEncrypt(getCurrentAccount(), requiredProtectionFile);
             }
+        }
+
+        // Default is Cancelled as we dont provide anything back
+        // If OK it means we request the helpfragment
+        if (requestCode == SyncMigrationFragment.REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            HelpDialogFragment.with(this).back(true).display();
         }
 
         if (capture != null && requestCode == capture.getRequestCode())
@@ -936,7 +944,7 @@ public class MainActivity extends BaseActivity
         }
         if (displaySync)
         {
-            startActivity(new Intent(this, InfoActivity.class));
+            startActivityForResult(new Intent(this, InfoActivity.class), SyncMigrationFragment.REQUEST_CODE);
         }
 
         // Activate Automatic Sync for Sync Content & Favorite
