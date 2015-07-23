@@ -1,14 +1,14 @@
 /*******************************************************************************
- * Copyright (C) 2005-2014 Alfresco Software Limited.
- *
+ * Copyright (C) 2005-2015 Alfresco Software Limited.
+ * <p/>
  * This file is part of Alfresco Mobile for Android.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,7 +17,11 @@
  *******************************************************************************/
 package org.alfresco.mobile.android.sync;
 
+import java.util.List;
+
 import org.alfresco.mobile.android.async.OperationsSchema;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccount;
+import org.alfresco.mobile.android.platform.accounts.AlfrescoAccountManager;
 import org.alfresco.mobile.android.platform.database.DatabaseVersionNumber;
 
 import android.content.Context;
@@ -116,6 +120,19 @@ public final class SyncContentSchema extends OperationsSchema
             db.execSQL(QUERY_SYNC_FOLDER_COLUM_2);
             db.execSQL(QUERY_SYNC_FOLDER_COLUM_3);
         }
+
+        if (oldVersion < DatabaseVersionNumber.VERSION_1_6_0)
+        {
+            List<AlfrescoAccount> accounts = AlfrescoAccountManager.retrieveAccounts(context);
+            for (AlfrescoAccount account : accounts)
+            {
+                if (!SyncContentManager.getInstance(context).hasActivateSync(account))
+                {
+                    db.execSQL("DELETE FROM " + TABLENAME + " WHERE " + COLUMN_ACCOUNT_ID + " = " + account.getId()
+                            + ";");
+                }
+            }
+        }
     }
 
     // ////////////////////////////////////////////////////
@@ -123,7 +140,9 @@ public final class SyncContentSchema extends OperationsSchema
     // ////////////////////////////////////////////////////
     private static final String QUERY_TABLE_DROP = "DROP TABLE IF EXISTS " + TABLENAME;
 
-    /** Use with caution ! */
+    /**
+     * Use with caution !
+     */
     public static void reset(SQLiteDatabase db)
     {
         db.execSQL(QUERY_TABLE_DROP);
