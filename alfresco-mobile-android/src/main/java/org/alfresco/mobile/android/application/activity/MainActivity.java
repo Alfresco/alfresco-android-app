@@ -948,8 +948,7 @@ public class MainActivity extends BaseActivity
         }
 
         // Activate Automatic Sync for Sync Content & Favorite
-        SyncContentManager.getInstance(this).setActivateSync(currentAccount,
-                SyncContentManager.getInstance(this).hasActivateSync(currentAccount));
+        SyncContentManager.getInstance(this).setActivateSync(currentAccount, true);
         FavoritesManager.getInstance(this).setActivateSync(currentAccount, true);
 
         invalidateOptionsMenu();
