@@ -191,6 +191,11 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                 context.getContentResolver().update(
                         SyncContentManager.getUri(cursorId.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues, null,
                         null);
+
+                if (node.isFolder())
+                {
+                    prepareChildrenFolderDelete(node.getIdentifier());
+                }
             }
             else
             {
@@ -254,6 +259,42 @@ public class SyncNodeOperation extends NodeOperation<Boolean>
                 if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
                 {
                     prepareChildrenFolderDelete(folder);
+                }
+            }
+
+        }
+        catch (Exception e)
+        {
+            // DO Nothing
+        }
+        finally
+        {
+            CursorUtils.closeCursor(childrenCursor);
+        }
+    }
+
+    private void prepareChildrenFolderDelete(String nodeId)
+    {
+        Cursor childrenCursor = null;
+        try
+        {
+            childrenCursor = context.getContentResolver().query(
+                    SyncContentProvider.CONTENT_URI,
+                    SyncContentSchema.COLUMN_ALL,
+                    SyncContentProvider.getAccountFilter(acc) + " AND " + SyncContentSchema.COLUMN_PARENT_ID + " == '"
+                            + NodeRefUtils.getCleanIdentifier(nodeId) + "'", null, null);
+
+            ContentValues cValues = new ContentValues(1);
+            while (childrenCursor.moveToNext())
+            {
+                cValues.clear();
+                cValues.put(SyncContentSchema.COLUMN_STATUS, SyncContentStatus.STATUS_HIDDEN);
+                context.getContentResolver().update(
+                        SyncContentManager.getUri(childrenCursor.getLong(SyncContentSchema.COLUMN_ID_ID)), cValues,
+                        null, null);
+                if (ContentModel.TYPE_FOLDER.equals(childrenCursor.getString(SyncContentSchema.COLUMN_MIMETYPE_ID)))
+                {
+                    prepareChildrenFolderDelete(nodeId);
                 }
             }
 

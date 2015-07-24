@@ -133,9 +133,11 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
                                 mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context)
                                         .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true))
                         .into(vh.icon);
-            } else {
-                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(context)
-                        .getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true));
+            }
+            else
+            {
+                vh.icon.setImageResource(mime != null ? mime.getLargeIconId(context) : MimeTypeManager.getInstance(
+                        context).getIcon(cursor.getString(SyncContentSchema.COLUMN_TITLE_ID), true));
             }
 
             if (mime != null)
@@ -191,6 +193,10 @@ public class SyncCursorAdapter extends BaseCursorLoader<TwoLinesProgressViewHold
                     vh.progress.setMax(100);
                     vh.progress.setProgress(percentage);
                 }
+                break;
+            case SyncContentStatus.STATUS_HIDDEN:
+                vh.favoriteIcon.setVisibility(View.GONE);
+                vh.iconRight.setVisibility(View.GONE);
                 break;
             case SyncContentStatus.STATUS_PAUSED:
                 displayStatut(vh, R.drawable.sync_status_pending);
