@@ -30,13 +30,18 @@ import org.alfresco.mobile.android.api.session.CloudSession;
 import org.alfresco.mobile.android.application.R;
 import org.alfresco.mobile.android.application.fragments.DisplayUtils;
 import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
+import org.alfresco.mobile.android.application.fragments.actions.AbstractActions;
+import org.alfresco.mobile.android.application.fragments.actions.NodeActions;
 import org.alfresco.mobile.android.application.fragments.builder.ListingFragmentBuilder;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.browser.NodeAdapter;
+import org.alfresco.mobile.android.application.fragments.node.browser.ProgressNodeAdapter;
+import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsActionMode;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.node.search.SearchEvent;
 import org.alfresco.mobile.android.async.node.search.SearchRequest;
+import org.alfresco.mobile.android.ui.ListingModeFragment;
 import org.alfresco.mobile.android.ui.node.search.SearchNodesFragment;
 import org.apache.chemistry.opencmis.commons.impl.JSONConverter;
 
@@ -65,7 +70,9 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
 
     private static final String QUERY_FOLDER = "SELECT * FROM cmis:folder where CONTAINS('~cmis:name:\\\'{keyword}\\\'')";
 
-    private List<Node> selectedItems = new ArrayList<Node>(1);
+    protected List<Node> selectedItems = new ArrayList<Node>(1);
+
+    private AbstractActions<Node> nActions;
 
     // //////////////////////////////////////////////////////////////////////
     // COSNTRUCTORS
@@ -121,7 +128,8 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     @Override
     protected ArrayAdapter<?> onAdapterCreation()
     {
-        return new NodeAdapter(this, R.layout.row_two_lines_progress, new ArrayList<Node>(0), selectedItems, -1);
+        return new ProgressNodeAdapter(this, R.layout.row_two_lines_progress, null, new ArrayList<Node>(0),
+                selectedItems, ListingModeFragment.MODE_LISTING);
     }
 
     @Subscribe
@@ -139,6 +147,16 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
         }
     }
 
+    @Override
+    public void onStop()
+    {
+        if (nActions != null)
+        {
+            nActions.finish();
+        }
+        super.onStop();
+    }
+
     // //////////////////////////////////////////////////////////////////////
     // LIST ACTION
     // //////////////////////////////////////////////////////////////////////
@@ -146,45 +164,117 @@ public class DocumentFolderSearchFragment extends SearchNodesFragment
     {
         Node item = (Node) g.getItemAtPosition(position);
 
+        // In other case, listing mode
         Boolean hideDetails = false;
         if (!selectedItems.isEmpty())
         {
             hideDetails = selectedItems.get(0).getIdentifier().equals(item.getIdentifier());
-            selectedItems.clear();
         }
-        g.setChoiceMode(GridView.CHOICE_MODE_SINGLE);
         g.setItemChecked(position, true);
-        g.setSelection(position);
-        v.setSelected(true);
 
-        if (DisplayUtils.hasCentralPane(getActivity()))
+        if (nActions != null && nActions.hasMultiSelectionEnabled())
         {
-            selectedItems.add(item);
+            nActions.selectNode(item);
+            if (selectedItems.size() == 0)
+            {
+                hideDetails = true;
+            }
+        }
+        else
+        {
+            selectedItems.clear();
+            if (!hideDetails && item.isDocument() && DisplayUtils.hasCentralPane(getActivity()))
+            {
+                selectedItems.add(item);
+            }
         }
 
         if (hideDetails)
         {
-            if (DisplayUtils.hasCentralPane(getActivity()))
+            FragmentDisplayer.clearCentralPane(getActivity());
+            if (nActions != null && !nActions.hasMultiSelectionEnabled())
             {
-                FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
-                FragmentDisplayer.with(getActivity()).remove(android.R.id.tabcontent);
+                nActions.finish();
             }
-            selectedItems.clear();
         }
-        else
+        else if (nActions == null || (nActions != null && !nActions.hasMultiSelectionEnabled()))
         {
-            if (item.isDocument())
+            if (item.isFolder())
             {
-                // Show properties
-                NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).display();
+                FragmentDisplayer.clearCentralPane(getActivity());
+                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(true).display();
             }
             else
             {
-                DocumentFolderBrowserFragment.with(getActivity()).folder((Folder) item).shortcut(true).display();
+                NodeDetailsFragment.with(getActivity()).nodeId(item.getIdentifier()).display();
             }
+        }
+
+        if (nActions != null && nActions.hasMultiSelectionEnabled())
+        {
+            adapter.notifyDataSetChanged();
         }
     }
 
+    public boolean onListItemLongClick(GridView l, View v, int position, long id)
+    {
+        // We disable long click during import mode.
+        if (mode == MODE_IMPORT || mode == MODE_PICK) { return false; }
+
+        if (nActions != null && nActions instanceof NodeDetailsActionMode)
+        {
+            nActions.finish();
+        }
+
+        Node n = (Node) l.getItemAtPosition(position);
+        boolean b;
+        l.setItemChecked(position, true);
+        b = startSelection(n);
+        if (DisplayUtils.hasCentralPane(getActivity()))
+        {
+            FragmentDisplayer.with(getActivity()).remove(DisplayUtils.getCentralFragmentId(getActivity()));
+            FragmentDisplayer.with(getActivity()).remove(android.R.id.tabcontent);
+        }
+        return b;
+    }
+
+    private boolean startSelection(Node item)
+    {
+        if (nActions != null) { return false; }
+
+        selectedItems.clear();
+        selectedItems.add(item);
+
+        // Start the CAB using the ActionMode.Callback defined above
+        nActions = new NodeActions(DocumentFolderSearchFragment.this, selectedItems);
+        nActions.setOnFinishModeListener(new AbstractActions.onFinishModeListener()
+        {
+            @Override
+            public void onFinish()
+            {
+                nActions = null;
+                unselect();
+                refreshListView();
+            }
+        });
+        getActivity().startActionMode(nActions);
+        adapter.notifyDataSetChanged();
+        return true;
+    }
+
+    public void unselect()
+    {
+        selectedItems.clear();
+    }
+
+    public void selectAll()
+    {
+        if (nActions != null && adapter != null)
+        {
+            nActions.selectNodes(((NodeAdapter) adapter).getNodes());
+            adapter.notifyDataSetChanged();
+        }
+    }
     // //////////////////////////////////////////////////////////////////////
     // INTERNALS
     // //////////////////////////////////////////////////////////////////////

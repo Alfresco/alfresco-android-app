@@ -18,22 +18,12 @@
 package org.alfresco.mobile.android.application.fragments.actions;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.alfresco.mobile.android.api.session.AlfrescoSession;
 import org.alfresco.mobile.android.application.R;
-import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
-import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
-import org.alfresco.mobile.android.async.OperationRequest;
-import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
-import org.alfresco.mobile.android.async.Operator;
-import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
-import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
-import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.platform.utils.SessionUtils;
 import org.alfresco.mobile.android.sync.SyncContentManager;
-import org.alfresco.mobile.android.ui.operation.OperationWaitingDialogFragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -161,77 +151,17 @@ public class NodeIdActions extends AbstractActions<String>
     // ///////////////////////////////////////////////////////////////////////////
     private void favorite(boolean doFavorite)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
-        for (String nodeId : selectedItems)
-        {
-            requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, doFavorite, true)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-        }
-        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-
-        if (getFragment() instanceof DocumentFolderBrowserFragment || getFragment() instanceof SyncFragment)
-        {
-            int titleId = R.string.unfavorite;
-            int iconId = R.drawable.ic_unfavorite_dark;
-            if (doFavorite)
-            {
-                titleId = R.string.favorite;
-                iconId = R.drawable.ic_favorite_light;
-            }
-            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId,
-                    getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
-        }
+        NodeActions.favorite(getFragment(), selectedItems, doFavorite);
     }
 
-    private void sync(boolean doFavorite)
+    private void sync(boolean doSync)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
-        for (String nodeId : selectedItems)
-        {
-            requestsBuilder.add(new SyncNodeRequest.Builder(nodeId, doFavorite, true)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-        }
-        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-
-        if (getFragment() instanceof DocumentFolderBrowserFragment || getFragment() instanceof SyncFragment)
-        {
-            int titleId = R.string.unsync;
-            int iconId = R.drawable.ic_synced;
-            if (doFavorite)
-            {
-                titleId = R.string.sync;
-                iconId = R.drawable.ic_sync_light;
-            }
-            OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId,
-                    getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
-        }
+        NodeActions.sync(getFragment(), selectedItems, doSync);
     }
 
     private void like(boolean doLike)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
-        for (String node : selectedItems)
-        {
-            requestsBuilder.add(new LikeNodeRequest.Builder(node, doLike)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-        }
-        Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-
-        if (getFragment() instanceof DocumentFolderBrowserFragment)
-        {
-            int titleId = R.string.unlike;
-            int iconId = R.drawable.ic_unlike;
-            if (doLike)
-            {
-                titleId = R.string.like;
-                iconId = R.drawable.ic_like;
-            }
-            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
-                    getActivity().getString(titleId), null, null, selectedItems.size(), null).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
-        }
+        NodeActions.like(getFragment(), selectedItems, doLike);
     }
 
 }

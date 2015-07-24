@@ -106,10 +106,11 @@ public class LikeNodeRequest extends NodeRequest
             this.requestTypeId = TYPE_ID;
         }
 
-        public Builder(String nodeIdentifier, Boolean isReadOnly)
+        public Builder(String nodeIdentifier, Boolean isReadOnly, Boolean isLike)
         {
             super(null, nodeIdentifier);
             this.isReadOnly = isReadOnly;
+            this.isLike = isLike;
             this.requestTypeId = TYPE_ID;
         }
 

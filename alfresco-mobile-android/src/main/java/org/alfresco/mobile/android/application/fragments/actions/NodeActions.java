@@ -33,7 +33,9 @@ import org.alfresco.mobile.android.application.fragments.FragmentDisplayer;
 import org.alfresco.mobile.android.application.fragments.node.browser.DocumentFolderBrowserFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.NodeDetailsFragment;
 import org.alfresco.mobile.android.application.fragments.node.details.TabsNodeDetailsFragment;
+import org.alfresco.mobile.android.application.fragments.node.search.DocumentFolderSearchFragment;
 import org.alfresco.mobile.android.application.fragments.node.update.UpdateDialogFragment;
+import org.alfresco.mobile.android.application.fragments.sync.SyncFragment;
 import org.alfresco.mobile.android.application.fragments.utils.ResolveNamingConflictFragment;
 import org.alfresco.mobile.android.application.intent.RequestCode;
 import org.alfresco.mobile.android.application.managers.ActionUtils;
@@ -43,7 +45,9 @@ import org.alfresco.mobile.android.async.OperationRequest.OperationBuilder;
 import org.alfresco.mobile.android.async.Operator;
 import org.alfresco.mobile.android.async.node.delete.DeleteNodeRequest;
 import org.alfresco.mobile.android.async.node.download.DownloadRequest;
+import org.alfresco.mobile.android.async.node.favorite.FavoriteNodeRequest;
 import org.alfresco.mobile.android.async.node.like.LikeNodeRequest;
+import org.alfresco.mobile.android.async.node.sync.SyncNodeRequest;
 import org.alfresco.mobile.android.async.utils.NodePlaceHolder;
 import org.alfresco.mobile.android.platform.AlfrescoNotificationManager;
 import org.alfresco.mobile.android.platform.intent.PrivateIntent;
@@ -164,7 +168,14 @@ public class NodeActions extends AbstractActions<Node>
 
     private void selectAll()
     {
-        ((DocumentFolderBrowserFragment) getFragment()).selectAll();
+        if (getFragment() instanceof DocumentFolderBrowserFragment)
+        {
+            ((DocumentFolderBrowserFragment) getFragment()).selectAll();
+        }
+        else if (getFragment() instanceof DocumentFolderSearchFragment)
+        {
+            ((DocumentFolderSearchFragment) getFragment()).selectAll();
+        }
     }
 
     // ///////////////////////////////////////////////////////////////////////////////////
@@ -326,7 +337,12 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            // TODO ?
+            ArrayList<String> items = new ArrayList<>(selectedItems.size());
+            for (Node node : selectedItems)
+            {
+                items.add(node.getIdentifier());
+            }
+            favorite(getFragment(), items, doFavorite);
         }
     }
 
@@ -338,32 +354,50 @@ public class NodeActions extends AbstractActions<Node>
         }
         else
         {
-            // TODO ?
+            ArrayList<String> items = new ArrayList<>(selectedItems.size());
+            for (Node node : selectedItems)
+            {
+                items.add(node.getIdentifier());
+            }
+            sync(getFragment(), items, doSync);
         }
     }
 
     private void like(boolean doLike)
     {
-        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
-        for (Node node : selectedItems)
-        {
-            requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
-                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
-        }
-        String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(requestsBuilder);
-
         if (getFragment() instanceof DocumentFolderBrowserFragment)
         {
-            int titleId = R.string.unlike;
-            int iconId = R.drawable.ic_unlike;
-            if (doLike)
+            List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+            for (Node node : selectedItems)
             {
-                titleId = R.string.like;
-                iconId = R.drawable.ic_like;
+                requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
+                        .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
             }
-            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
-                    getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
-                    getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            String operationId = Operator.with(getActivity(), SessionUtils.getAccount(getActivity())).load(
+                    requestsBuilder);
+
+            if (getFragment() instanceof DocumentFolderBrowserFragment)
+            {
+                int titleId = R.string.unlike;
+                int iconId = R.drawable.ic_unlike;
+                if (doLike)
+                {
+                    titleId = R.string.like;
+                    iconId = R.drawable.ic_like;
+                }
+                OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
+                        getFragment().getString(titleId), null, null, selectedItems.size(), operationId).show(
+                        getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+            }
+        }
+        else
+        {
+            ArrayList<String> items = new ArrayList<>(selectedItems.size());
+            for (Node node : selectedItems)
+            {
+                items.add(node.getIdentifier());
+            }
+            like(getFragment(), items, doLike);
         }
     }
 
@@ -386,7 +420,6 @@ public class NodeActions extends AbstractActions<Node>
 
     public void download()
     {
-
         List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
         for (Document doc : selectedDocument)
         {
@@ -498,4 +531,86 @@ public class NodeActions extends AbstractActions<Node>
         alert.show();
     }
 
+    // ///////////////////////////////////////////////////////////////////////////
+    // ACTIONS
+    // ///////////////////////////////////////////////////////////////////////////
+    public static void favorite(Fragment fr, List<String> selectedItems, boolean doFavorite)
+    {
+        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        for (String nodeId : selectedItems)
+        {
+            requestsBuilder.add(new FavoriteNodeRequest.Builder(nodeId, doFavorite, true)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(
+                requestsBuilder);
+
+        if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
+                || fr instanceof DocumentFolderSearchFragment)
+        {
+            int titleId = R.string.unfavorite;
+            int iconId = R.drawable.ic_unfavorite_dark;
+            if (doFavorite)
+            {
+                titleId = R.string.favorite;
+                iconId = R.drawable.ic_favorite_light;
+            }
+            OperationWaitingDialogFragment.newInstance(FavoriteNodeRequest.TYPE_ID, iconId, fr.getString(titleId),
+                    null, null, selectedItems.size(), operationId).show(fr.getActivity().getFragmentManager(),
+                    OperationWaitingDialogFragment.TAG);
+        }
+    }
+
+    public static void sync(Fragment fr, List<String> selectedItems, boolean doFavorite)
+    {
+        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        for (String nodeId : selectedItems)
+        {
+            requestsBuilder.add(new SyncNodeRequest.Builder(nodeId, doFavorite, true)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(
+                requestsBuilder);
+
+        if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
+                || fr instanceof DocumentFolderSearchFragment)
+        {
+            int titleId = R.string.unsync;
+            int iconId = R.drawable.ic_synced;
+            if (doFavorite)
+            {
+                titleId = R.string.sync;
+                iconId = R.drawable.ic_sync_light;
+            }
+            OperationWaitingDialogFragment.newInstance(SyncNodeRequest.TYPE_ID, iconId, fr.getString(titleId), null,
+                    null, selectedItems.size(), operationId).show(fr.getActivity().getFragmentManager(),
+                    OperationWaitingDialogFragment.TAG);
+        }
+    }
+
+    public static void like(Fragment fr, List<String> selectedItems, boolean doLike)
+    {
+        List<OperationBuilder> requestsBuilder = new ArrayList<OperationBuilder>(selectedItems.size());
+        for (String node : selectedItems)
+        {
+            requestsBuilder.add(new LikeNodeRequest.Builder(node, false, doLike)
+                    .setNotificationVisibility(OperationRequest.VISIBILITY_DIALOG));
+        }
+        String operationId = Operator.with(fr.getActivity(), SessionUtils.getAccount(fr.getActivity())).load(requestsBuilder);
+
+        if (fr instanceof DocumentFolderBrowserFragment || fr instanceof SyncFragment
+                || fr instanceof DocumentFolderSearchFragment)
+        {
+            int titleId = R.string.unlike;
+            int iconId = R.drawable.ic_unlike;
+            if (doLike)
+            {
+                titleId = R.string.like;
+                iconId = R.drawable.ic_like;
+            }
+            OperationWaitingDialogFragment.newInstance(LikeNodeRequest.TYPE_ID, iconId,
+                    fr.getActivity().getString(titleId), null, null, selectedItems.size(), operationId).show(
+                    fr.getActivity().getFragmentManager(), OperationWaitingDialogFragment.TAG);
+        }
+    }
 }
